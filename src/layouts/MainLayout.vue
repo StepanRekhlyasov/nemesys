@@ -48,13 +48,13 @@
           <q-expansion-item
             expand-separator
             :icon="item.icon"
-            :label="item.title"
+            :label="$t(item.title)"
             default-closed
             v-if="item.children"
-            :key="item.title">
-             <EssentialLink v-for="link in item.children" :key="link.title" v-bind="link" />
+            :key="$t(item.title)">
+             <EssentialLink v-for="link in item.children" :key="$t(link.title)" v-bind="link" />
           </q-expansion-item>
-          <EssentialLink v-else v-bind="item" :key="'es' + item.title" :main="true" />
+          <EssentialLink v-else v-bind="item" :key="'es' + $t(item.title)" :main="true" />
         </template>
       </q-list>
     </q-drawer>
@@ -92,20 +92,20 @@ export default defineComponent({
 
     const linksList = [
       {
-        title: t('menu.dashboard'),
+        title: 'menu.dashboard',
         link: '/dashboard',
         icon: 'mdi-account',
       },
       {
-        title: t('menu.clientManagement'),
+        title: 'menu.clientManagement',
         icon: 'mdi-office-building-outline',
         children: [{
-          title: t('menu.clientList'),
+          title: 'menu.clientList',
           link: '/clients',
           icon: 'mdi-account-search',
         },
         {
-          title: t('menu.clientReg'),
+          title: 'menu.clientReg',
           link: '/clientAdd',
           icon: 'mdi-account',
         }]
