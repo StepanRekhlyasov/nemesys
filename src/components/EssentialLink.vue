@@ -15,7 +15,7 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label class="text-weight-medium" :class="main ? '' : 'text-caption'">{{ title }}</q-item-label>
+      <q-item-label class="text-weight-medium" :class="main ? '' : 'text-caption'">{{ $t(title) }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
