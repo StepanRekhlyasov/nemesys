@@ -39,7 +39,15 @@ export default {
     clientManagement: 'Client Management',
     clientList: 'Client List/Search',
     clientReg: 'Client Registration',
-    dashboard: 'Dashboard'
+    dashboard: 'Dashboard',
+    system: 'System Settings',
+    branches: 'Branch Master Management',
+    users: 'Responsible Master Management'
+  },
+  settings: {
+    branch: {
+      addBranch: 'Add Branch'
+    }
   },
   client: {
     list: {

@@ -39,7 +39,15 @@ export default {
     clientManagement: 'クライアント管理',
     clientList: 'クライアント一覧・検索',
     clientReg: 'クライアント情報登録',
-    dashboard: 'ダッシュボード'
+    dashboard: 'ダッシュボード',
+    system: 'システム設定',
+    branches: '支店マスタ管理',
+    users: '担当マスタ管理'
+  },
+  settings: {
+    branch: {
+      addBranch: '新規支店追加'
+    }
   },
   client: {
     list: {
