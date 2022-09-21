@@ -110,6 +110,17 @@ export default defineComponent({
           icon: 'mdi-account',
         }]
       },
+      {
+        title: 'menu.system',
+        icon: 'mdi-cog',
+        children: [{
+          title: 'menu.branches',
+          link: 'branches',
+        },{
+          title: 'menu.users',
+          link: 'users'
+        }]
+      }
     ];
 
     // if we want to get the user details, this is how its done
@@ -140,3 +151,10 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+  @import '../css/app.scss';
+  .q-layout{
+    background-color: $gray-bg;
+  }
+</style>
