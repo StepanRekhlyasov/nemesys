@@ -10,16 +10,15 @@
   </q-layout>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-import ToolbarLanguage from "components/toolbar/ToolbarLanguage.vue";
+<script lang="ts">
+import { defineComponent } from 'vue';
+import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 
 export default defineComponent({
   name: 'AuthLayout',
-  components: {  ToolbarLanguage },
-  setup () {
-    return {
-    }
-  }
-})
+  components: { ToolbarLanguage },
+  setup() {
+    return {};
+  },
+});
 </script>

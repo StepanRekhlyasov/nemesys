@@ -4,7 +4,7 @@
       :alt="$t('systemName') + ' Logo'"
       src="~assets/CLI_dot.png"
       style="width: 200px; height: 200px"
-    >
+    />
   </q-page>
 </template>
 
@@ -12,6 +12,6 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'PageIndex'
-})
+  name: 'PageIndex',
+});
 </script>

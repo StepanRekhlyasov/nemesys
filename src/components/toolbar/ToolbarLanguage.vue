@@ -7,29 +7,27 @@
     emit-value
     map-options
     options-dense
-
-
     popup-content-class="text-grey-8"
   >
   </q-select>
 </template>
 
-<script>
-import { defineComponent, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n'
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  name: 'Language Switcher',
-  setup () {
-    const { locale } = useI18n({ useScope: 'global' })
+  name: 'LanguageSwitcher',
+  setup() {
+    const { locale } = useI18n({ useScope: 'global' });
 
     return {
       locale,
       localeOptions: [
         { value: 'en-US', label: 'English' },
-        { value: 'ja-JP', label: '日本語' }
-      ]
-    }
-  }
+        { value: 'ja-JP', label: '日本語' },
+      ],
+    };
+  },
 });
 </script>
