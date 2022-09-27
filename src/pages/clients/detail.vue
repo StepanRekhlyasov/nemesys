@@ -20,7 +20,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" @click="showBasicEditDailog" />
+              <q-btn flat round icon="edit" size="sm" @click="showBasicEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -30,7 +30,7 @@
             <q-card-section>{{ clientData['note'] }}</q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" @click="showNoteEditDailog" />
+              <q-btn flat round icon="edit" size="sm" @click="showNoteEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -54,7 +54,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" @click="showOptionEditDailog" />
+              <q-btn flat round icon="edit" size="sm" @click="showOptionEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -105,7 +105,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" @click="showFacilityEditDailog" />
+              <q-btn flat round icon="edit" size="sm" @click="showFacilityEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -124,7 +124,7 @@
         <q-card-section class="q-pa-none">
           <q-form class="q-gutter-none">
             <q-list>
-              <q-item v-if="editClientData['name']">
+              <q-item v-if="checkIfExist('name')">
                 <q-item-section>
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.clientName')
@@ -132,7 +132,7 @@
                   <q-input outlined dense v-model="editClientData['name']" />
                 </q-item-section>
               </q-item>
-              <q-item v-if="editClientData['address1']">
+              <q-item v-if="checkIfExist('address1')">
                 <q-item-section>
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.address')
@@ -144,7 +144,7 @@
                   />
                 </q-item-section>
               </q-item>
-              <q-item v-if="editClientData['tel']">
+              <q-item v-if="checkIfExist('tel')">
                 <q-item-section>
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.phoneNumber')
@@ -152,7 +152,7 @@
                   <q-input outlined dense v-model="editClientData['tel']" />
                 </q-item-section>
               </q-item>
-              <q-item v-if="editClientData['office_fax']">
+              <q-item v-if="checkIfExist('office_fax')">
                 <q-item-section>
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.faxNumber')
@@ -164,7 +164,7 @@
                   />
                 </q-item-section>
               </q-item>
-              <q-item v-if="editClientData['note']">
+              <q-item v-if="checkIfExist('note')">
                 <q-item-section>
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.memo')
@@ -177,7 +177,7 @@
                   />
                 </q-item-section>
               </q-item>
-              <q-item v-if="editClientData['options']">
+              <q-item v-if="checkIfExist('options')">
                 <div class="q-gutter-sm">
                   <q-checkbox
                     size="sm"
@@ -199,7 +199,7 @@
                   />
                 </div>
               </q-item>
-              <q-item v-if="editClientData['facilityType']">
+              <q-item v-if="checkIfExist('facilityType')">
                 <div class="q-gutter-sm">
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.memo')
@@ -214,7 +214,7 @@
                   />
                 </div>
               </q-item>
-              <q-item v-if="editClientData['facilityType']">
+              <q-item v-if="checkIfExist('coperationInfo')">
                 <q-item-section>
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.copInfo')
@@ -227,7 +227,7 @@
                   />
                 </q-item-section>
               </q-item>
-              <q-item v-if="editClientData['facilityType']">
+              <q-item v-if="checkIfExist('integrationSource')">
                 <div class="q-gutter-sm">
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.integrationSource')
@@ -442,7 +442,11 @@ export default {
       basicInfoDialog.value = true;
     };
     const showNoteEditDailog = () => {
-      editClientData.value = { note: clientData.value['note'] };
+      let note = '';
+      if (clientData.value['note']){
+        note = clientData.value['note'];
+      }
+      editClientData.value = { note: note };
       basicInfoDialog.value = true;
     };
     const showFacilityEditDailog = () => {
@@ -471,9 +475,13 @@ export default {
     };
 
     const updateClientInfo = async () => {
-      const clientRef = doc(db, 'clients', ' route.params.id');
+      const clientRef = doc(db, 'clients/' + route.params.id);
       await updateDoc(clientRef, editClientData.value);
       basicInfoDialog.value = false;
+    };
+
+    const checkIfExist = (key : string) => {
+      return Object.keys(editClientData.value).includes(key)
     };
 
     return {
@@ -492,6 +500,7 @@ export default {
       showNoteEditDailog,
       showFacilityEditDailog,
       showOptionEditDailog,
+      checkIfExist,
     };
   },
 };
