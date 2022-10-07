@@ -49,6 +49,12 @@ export default {
     branch: {
       addBranch: '新規支店追加',
     },
+    users: {
+      addUser: '新規担当者追加',
+      fio: '氏名',
+      email: 'メールアドレス',
+      password: 'パスワード'
+    }
   },
   client: {
     list: {

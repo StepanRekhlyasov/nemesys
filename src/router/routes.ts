@@ -31,12 +31,17 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: 'users',
-        component: () => import('src/pages/settings/Users.vue'),
+        path: 'system/users',
+        component: () => import('src/pages/settings/UsersList.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: 'branches',
+        path: 'system/users/add',
+        component: () => import('src/pages/settings/UserCreate.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'system/branches',
         component: () => import('src/pages/settings/Branches.vue'),
         meta: { requiresAuth: true },
       },

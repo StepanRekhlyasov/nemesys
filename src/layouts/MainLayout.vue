@@ -148,11 +148,11 @@ export default defineComponent({
         children: [
           {
             title: 'menu.branches',
-            link: 'branches',
+            link: '/system/branches',
           },
           {
             title: 'menu.users',
-            link: 'users',
+            link: '/system/users',
           },
         ],
       },
