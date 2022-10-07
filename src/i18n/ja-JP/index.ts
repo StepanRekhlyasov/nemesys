@@ -48,12 +48,27 @@ export default {
   settings: {
     branch: {
       addBranch: '新規支店追加',
+      id: '支店ID',
+      name: '支店名',
+      prefectures: '都道府県',
+      phone: '電話番号',
+      enable: '有効フラグ',
+      hidden: '非表示',
+      create_at: '作成日',
+      last_update: '更新日'
     },
     users: {
       addUser: '新規担当者追加',
       fio: '氏名',
       email: 'メールアドレス',
-      password: 'パスワード'
+      password: 'パスワード',
+      person_name: '担当者名',
+      branch_name: '所属支店',
+      manager: '管理者',
+      hidden: '非表示',
+      create_at: '作成日',
+      last_update: '更新日'
+
     }
   },
   client: {

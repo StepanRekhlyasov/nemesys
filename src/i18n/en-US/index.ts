@@ -48,12 +48,26 @@ export default {
   settings: {
     branch: {
       addBranch: 'Add Branch',
+      id: 'Branch ID',
+      name: 'Branch Name',
+      prefectures: 'Prefectures',
+      phone: 'Phone Number',
+      enable: 'Enable Flug',
+      hidden: 'Hidden',
+      create_at: 'Create At',
+      last_update: 'Last Update'
     },
     users: {
       addUser: 'Add new person',
       fio: 'FIO',
       email: 'Email',
-      password: 'Password'
+      password: 'Password',
+      person_name: "Contact Person's Name",
+      branch_name: 'Branch Name',
+      manager: 'Manager',
+      hidden: 'Hidden',
+      create_at: 'Create At',
+      last_update: 'Last Update'
     }
   },
   client: {
