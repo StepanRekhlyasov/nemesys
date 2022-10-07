@@ -49,6 +49,12 @@ export default {
     branch: {
       addBranch: 'Add Branch',
     },
+    users: {
+      addUser: 'Add new person',
+      fio: 'FIO',
+      email: 'Email',
+      password: 'Password'
+    }
   },
   client: {
     list: {
