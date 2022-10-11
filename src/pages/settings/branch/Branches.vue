@@ -1,14 +1,17 @@
 <template>
   <div class="branches-page text-caption text-weight-medium">
+    <div class="navigation q-pt-md q-pl-md q-pr-md">
+      <div v-html="$t('menu.branches')" class="text-h5"></div>
+    </div>
     <q-card class="q-ma-md">
-      <div class="row justify-between q-pt-md q-pl-md q-pr-md">
-        <div v-html="$t('menu.branches')" class="text-h5"></div>
-        <q-btn color="white" text-color="black">
+      <div class="row justify-between q-pt-md q-pl-md q-pb-md q-pr-md">
+        <div v-html="$t('menu.branches')" class="card-title"></div>
+        <q-btn color="primary" text-color="white" @click="openModal = true">
           {{ $t('settings.branch.addBranch') }}
         </q-btn>
       </div>
     </q-card>
-    <q-card class="q-ma-md">
+    <q-card class="q-ma-md q-pt-md q-pl-md q-pb-md q-pr-md">
       <q-table
         dense
         :rows="branchData"
@@ -38,22 +41,72 @@
       </q-table>
     </q-card>
   </div>
+  <q-dialog v-model="openModal" persistent>
+    <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">{{$t('settings.branch.create_branch')}}</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <q-form
+            ref="branchForm">
+            <div class="row q-gutter-md">
+              <q-input class="col" :label="$t('settings.branch.name')" stack-label v-model="branchModal['name']" />
+              <q-toggle class="col" :label="$t('settings.branch.office')"  v-model="branchModal['office']"/>
+            </div>
+            <div class="row q-gutter-md">
+              <q-input class="col" :label="$t('settings.branch.prefectures')" stack-label v-model="branchModal['prefectures']" />
+              <q-input class="col" :label="$t('settings.branch.municipalities')" stack-label v-model="branchModal['municipalities']" />
+            </div>
+            <div class="row">
+              <q-input class="col" :label="$t('settings.branch.addres')" stack-label v-model="branchModal['addres']" />
+            </div>
+            <div class="row q-gutter-md">
+              <q-input class="col" :label="$t('settings.branch.phone')" stack-label v-model="branchModal['phone']" />
+              <q-input class="col" :label="$t('settings.branch.fax')" stack-label v-model="branchModal['fax']" />
+            </div>
+            <div class="row q-gutter-md">
+              <q-input class="col" :label="$t('settings.branch.email')" stack-label v-model="branchModal['email']" />
+              <div class="col"></div>
+            </div>
+            <div class="row q-gutter-md">
+              <q-toggle class="col" :label="$t('settings.branch.car_commuting')"  v-model="branchModal['car_commuting']"/>
+              <q-toggle class="col" :label="$t('settings.branch.eat_cigarettes')"  v-model="branchModal['eat_cigarettes']"/>
+            </div>
+            <div class="row q-gutter-md">
+              <q-toggle class="col" :label="$t('settings.branch.garage')"  v-model="branchModal['garage']"/>
+            </div>
+          </q-form>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="close" v-close-popup />
+          <q-btn flat label="Ok" v-close-popup />
+        </q-card-actions>
+      </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
-  import { Branch } from '../../shared/model/Branch.model';
-  import { dataTimeFormat } from '../../shared/constants/Table.const';
+  import { Branch } from '../../../shared/model/Branch.model';
+  import { dataTimeFormat } from '../../../shared/constants/Table.const';
   import { useI18n } from 'vue-i18n';
-  import {
-    getFirestore,
-  } from 'firebase/firestore';
   import { Ref, ref } from 'vue';
   import { QTableColumn } from 'quasar';
   export default {
     name: 'BranchesPage',
     setup() {
       const { t } = useI18n({ useScope: 'global' });
-      const db = getFirestore();
+      const openModal = ref(false);
+      const branchForm = ref(null);
+      const branchDataSample = {
+        office: false,
+        car_commuting: false,
+        eat_cigarettes: false,
+        garage: false
+      };
+      const branchModal = ref(JSON.parse(JSON.stringify(branchDataSample)));
 
       const branchData: Ref<Branch[]> = ref([])
       const columns: QTableColumn[] = [
@@ -150,17 +203,21 @@
       return {
         columns,
         branchData,
+        openModal,
+        branchForm,
+        branchModal,
+        initialPagination: {
+          sortBy: 'desc',
+          descending: false,
+          rowsPerPage: 25,
+        }
       }
     },
   }
 
 </script>
 
-<!-- <style lang="scss">
-@import '../../css/app.scss';
-.branches-page {
-  .text-h5 {
-    color: $muted-color;
-  }
-}
-</style> -->
+<style lang="scss">
+@import 'src/css/imports/colors';
+
+</style>

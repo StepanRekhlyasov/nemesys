@@ -59,7 +59,7 @@
     setup() {
       const { t } = useI18n({ useScope: 'global' });
       const db = getFirestore();
-
+      console.log(db)
       const accauntData: Ref<Accaunt[]> = ref([])
       const columns:QTableColumn[] = [
         {
@@ -168,7 +168,12 @@
 
       return {
         accauntData,
-        columns
+        columns,
+        initialPagination: {
+          sortBy: 'desc',
+          descending: false,
+          rowsPerPage: 25,
+        },
       }
     }
   }

@@ -1,1 +1,13 @@
 // app global css in SCSS form
+@import 'src/css/imports/colors';
+.navigation{
+  display: flex;
+  color: #7C7C7C;
+  font-size: 20px;
+  line-height: 24px;
+}
+.card-title{
+  font-size: 24px;
+  line-height: 29px;
+  color: #616161;
+}

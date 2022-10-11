@@ -1,4 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
+import systemRouter from './system.router'
+
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,21 +32,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/dashboard/Index.vue'),
         meta: { requiresAuth: true },
       },
-      {
-        path: 'system/users',
-        component: () => import('src/pages/settings/UsersList.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'system/users/add',
-        component: () => import('src/pages/settings/UserCreate.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'system/branches',
-        component: () => import('src/pages/settings/Branches.vue'),
-        meta: { requiresAuth: true },
-      },
+      ...systemRouter
     ],
   },
   {

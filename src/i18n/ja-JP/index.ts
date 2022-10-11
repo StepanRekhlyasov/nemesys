@@ -55,7 +55,16 @@ export default {
       enable: '有効フラグ',
       hidden: '非表示',
       create_at: '作成日',
-      last_update: '更新日'
+      last_update: '更新日',
+      create_branch: '会社基本情報 編集',
+      office: '本社',
+      municipalities: '市区町村',
+      addres: '番地・建物名',
+      fax: 'FAX番号',
+      email: 'e-mail',
+      car_commuting: '車通勤可否',
+      eat_cigarettes: '喫煙可否',
+      garage: '駐車場有無'
     },
     users: {
       addUser: '新規担当者追加',

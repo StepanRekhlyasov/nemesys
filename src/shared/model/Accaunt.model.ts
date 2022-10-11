@@ -1,4 +1,4 @@
-import { Branch } from "./Branch.model";
+import { Branch } from './Branch.model';
 
 export interface Accaunt {
   email: string;

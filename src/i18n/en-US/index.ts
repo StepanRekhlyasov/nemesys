@@ -55,7 +55,16 @@ export default {
       enable: 'Enable Flug',
       hidden: 'Hidden',
       create_at: 'Create At',
-      last_update: 'Last Update'
+      last_update: 'Last Update',
+      create_branch: 'Basic Company Information Edit',
+      office: 'Main Office',
+      municipalities: 'Municipalities',
+      addres: 'Address/building name',
+      fax: 'FAX number',
+      email: 'e-mail',
+      car_commuting: 'Car Commuting',
+      eat_cigarettes: 'Can I eat cigarettes?',
+      garage: 'Garage availability'
     },
     users: {
       addUser: 'Add new person',

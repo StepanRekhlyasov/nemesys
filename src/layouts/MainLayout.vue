@@ -189,9 +189,9 @@ export default defineComponent({
 });
 </script>
 
-<!-- <style lang="scss">
-@import '../css/app.scss';
+<style lang="scss">
+@import 'src/css/imports/colors';
 .q-layout {
-  background-color: $gray-bg;
+  background-color: $grey-bg;
 }
-</style> -->
+</style>
