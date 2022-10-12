@@ -1,8 +1,8 @@
 <template>
   <!-- view="lHh Lpr lFf"  hHh lpR fFf -->
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+    <q-header >
+      <q-toolbar class="bg-white text-black">
         <q-btn
           flat
           dense
@@ -15,7 +15,7 @@
         <ToolbarLanguage />
 
         <div>
-          <q-btn-dropdown unelevated flat color="white" label="Account">
+          <q-btn-dropdown unelevated flat color="black" label="Account">
             <q-list>
               <q-item class="bg-grey-3">
                 <q-item-section avatar>
@@ -38,6 +38,7 @@
         </div>
       </q-toolbar>
     </q-header>
+    <q-separator />
 
     <q-drawer
       v-model="leftDrawerOpen"
@@ -87,7 +88,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="bg-grey-1">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -160,10 +161,14 @@ export default defineComponent({
 
     // if we want to get the user details, this is how its done
     onAuthStateChanged(auth, (user) => {
+      $q.localStorage.set('user', user)
       if (user) {
-        console.log(user);
-        //email.value = user.email;
-        //name.value = user.displayName;
+        email.value = user.email as string;
+        if (user.displayName){
+          name.value = user.displayName as string;
+        } else {
+          name.value = user.email as string;
+        }
       }
     });
     const logout = () => {

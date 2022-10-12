@@ -28,6 +28,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: 'clientDetail/:clientId/:officeId',
+        component: () => import('src/pages/clients/components/office.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: 'dashboard',
         component: () => import('src/pages/dashboard/Index.vue'),
         meta: { requiresAuth: true },
