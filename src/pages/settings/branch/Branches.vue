@@ -52,30 +52,30 @@
           <q-form
             ref="branchForm">
             <div class="row q-gutter-md">
-              <q-input class="col" :label="$t('settings.branch.name')" stack-label v-model="branchModal['name']" />
-              <q-toggle class="col" :label="$t('settings.branch.office')"  v-model="branchModal['office']"/>
+              <q-input class="col" :label="$t('settings.branch.name')" stack-label v-model="branchModalData['name']" />
+              <q-toggle class="col" :label="$t('settings.branch.office')"  v-model="branchModalData['office']"/>
             </div>
             <div class="row q-gutter-md">
-              <q-input class="col" :label="$t('settings.branch.prefectures')" stack-label v-model="branchModal['prefectures']" />
-              <q-input class="col" :label="$t('settings.branch.municipalities')" stack-label v-model="branchModal['municipalities']" />
+              <q-input class="col" :label="$t('settings.branch.prefectures')" stack-label v-model="branchModalData['prefectures']" />
+              <q-input class="col" :label="$t('settings.branch.municipalities')" stack-label v-model="branchModalData['municipalities']" />
             </div>
             <div class="row">
-              <q-input class="col" :label="$t('settings.branch.addres')" stack-label v-model="branchModal['addres']" />
+              <q-input class="col" :label="$t('settings.branch.addres')" stack-label v-model="branchModalData['addres']" />
             </div>
             <div class="row q-gutter-md">
-              <q-input class="col" :label="$t('settings.branch.phone')" stack-label v-model="branchModal['phone']" />
-              <q-input class="col" :label="$t('settings.branch.fax')" stack-label v-model="branchModal['fax']" />
+              <q-input class="col" :label="$t('settings.branch.phone')" stack-label v-model="branchModalData['phone']" />
+              <q-input class="col" :label="$t('settings.branch.fax')" stack-label v-model="branchModalData['fax']" />
             </div>
             <div class="row q-gutter-md">
-              <q-input class="col" :label="$t('settings.branch.email')" stack-label v-model="branchModal['email']" />
+              <q-input class="col" :label="$t('settings.branch.email')" stack-label v-model="branchModalData['email']" />
               <div class="col"></div>
             </div>
             <div class="row q-gutter-md">
-              <q-toggle class="col" :label="$t('settings.branch.car_commuting')"  v-model="branchModal['car_commuting']"/>
-              <q-toggle class="col" :label="$t('settings.branch.eat_cigarettes')"  v-model="branchModal['eat_cigarettes']"/>
+              <q-toggle class="col" :label="$t('settings.branch.car_commuting')"  v-model="branchModalData['car_commuting']"/>
+              <q-toggle class="col" :label="$t('settings.branch.eat_cigarettes')"  v-model="branchModalData['eat_cigarettes']"/>
             </div>
             <div class="row q-gutter-md">
-              <q-toggle class="col" :label="$t('settings.branch.garage')"  v-model="branchModal['garage']"/>
+              <q-toggle class="col" :label="$t('settings.branch.garage')"  v-model="branchModalData['garage']"/>
             </div>
           </q-form>
         </q-card-section>
@@ -94,6 +94,7 @@
   import { useI18n } from 'vue-i18n';
   import { Ref, ref } from 'vue';
   import { QTableColumn } from 'quasar';
+  import { serverTimestamp } from '@firebase/firestore';
   export default {
     name: 'BranchesPage',
     setup() {
@@ -106,7 +107,7 @@
         eat_cigarettes: false,
         garage: false
       };
-      const branchModal = ref(JSON.parse(JSON.stringify(branchDataSample)));
+      const branchModalData = ref(JSON.parse(JSON.stringify(branchDataSample)));
 
       const branchData: Ref<Branch[]> = ref([])
       const columns: QTableColumn[] = [
@@ -205,11 +206,17 @@
         branchData,
         openModal,
         branchForm,
-        branchModal,
+        branchModalData,
         initialPagination: {
           sortBy: 'desc',
           descending: false,
           rowsPerPage: 25,
+        },
+        onSubmit() {
+          let data = branchModalData.value;
+          data['created_at'] = serverTimestamp();
+          data['updated_at'] = serverTimestamp();
+          data['deleted'] = false;
         }
       }
     },
