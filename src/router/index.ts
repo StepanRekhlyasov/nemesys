@@ -1,11 +1,13 @@
 import { route } from 'quasar/wrappers';
+import { MenuToRouter } from 'src/shared/constants/Menu.const';
 import {
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
   createWebHistory,
+  RouteRecordRaw,
 } from 'vue-router';
-import routes from './routes';
+import routers from './routes';
 
 /*
  * If not building with SSR mode, you can
@@ -20,6 +22,21 @@ export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
+
+    const routes: RouteRecordRaw[]= [
+      ...MenuToRouter(routers),
+      {
+        path: '/auth',
+        component: () => import('layouts/AuthLayout.vue'),
+        children: [
+          { path: '/auth/login', component: () => import('pages/Auth.vue') },
+        ],
+      },
+      {
+        path: '/:catchAll(.*)*',
+        component: () => import('pages/ErrorNotFound.vue'),
+      },
+    ];
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),

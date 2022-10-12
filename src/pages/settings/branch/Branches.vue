@@ -94,7 +94,6 @@
   import { useI18n } from 'vue-i18n';
   import { Ref, ref } from 'vue';
   import { QTableColumn } from 'quasar';
-  import { serverTimestamp } from '@firebase/firestore';
   export default {
     name: 'BranchesPage',
     setup() {
@@ -213,10 +212,7 @@
           rowsPerPage: 25,
         },
         onSubmit() {
-          let data = branchModalData.value;
-          data['created_at'] = serverTimestamp();
-          data['updated_at'] = serverTimestamp();
-          data['deleted'] = false;
+          console.log()
         }
       }
     },
