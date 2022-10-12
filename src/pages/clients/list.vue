@@ -18,7 +18,7 @@
       <q-toolbar class="bg-primary text-white shadow-2 rounded-borders">
         <q-tabs v-model="tab" shrink stretch dense :breakpoint="0">
           <q-tab name="conditionSearch" :label="$t('client.list.conditionSearch')" />
-          <q-tab name="searchResults" :label="$t('client.list.searchResults')" />
+          <!-- <q-tab name="searchResults" :label="$t('client.list.searchResults')" /> -->
           <q-tab name="corporateSearch" :label="$t('client.list.corporateSearch')" />
         </q-tabs>
       </q-toolbar>
@@ -38,16 +38,21 @@
           </div>
 
           <div class="row full-width q-mt-md">
-            <q-btn no-caps color="primary" icon="add" :label="$t('client.list.advancedSearch')" @click="advanceSearchDialog = true" />
+            <div class="col-12">
+              <q-btn no-caps color="primary" icon="add" :label="$t('client.list.advancedSearch')" @click="advanceSearchDialog = true" />
+              <q-btn class="q-ml-lg" no-caps color="primary" icon="add" :label="$t('client.list.searchFromMap')" @click="mapSearchDialog = true" />
+              <q-btn class="q-ml-lg" no-caps color="primary" icon="add" :label="$t('client.list.searchFromPref')" @click="areaSearchDialog = true" />
+            </div>
+
           </div>
-          <div class="row full-width q-mt-md">
+          <!-- <div class="row full-width q-mt-md">
             <q-btn no-caps color="primary" icon="add" :label="$t('client.list.searchFromMap')"  @click="mapSearchDialog = true" />
           </div>
           <div class="row full-width q-mt-md">
             <div class="col-3">
               <q-btn no-caps color="primary" icon="add" :label="$t('client.list.searchFromPref')" @click="areaSearchDialog = true"/>
             </div>
-          </div>
+          </div> -->
         </q-tab-panel>
 
         <q-tab-panel name="searchResults">
@@ -75,12 +80,6 @@
 
 
 
-    <!-- <div class="row q-pb-sm q-pl-sm">
-      <div
-        v-html="$t('menu.clientList')"
-        class="text-h5 text-weight-bolder"
-      ></div>
-    </div>
     <q-table
       dense
       :rows="clientData"
@@ -102,7 +101,7 @@
           ></q-btn>
         </q-td>
       </template>
-    </q-table> -->
+    </q-table>
 
 
     <q-dialog v-model="advanceSearchDialog" persistent>
