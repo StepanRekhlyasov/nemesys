@@ -15,7 +15,7 @@
         <ToolbarLanguage />
 
         <div>
-          <q-btn-dropdown unelevated flat color="black" label="Account">
+          <q-btn-dropdown unelevated flat color="black" :label="name">
             <q-list>
               <q-item class="bg-grey-3">
                 <q-item-section avatar>
@@ -63,27 +63,30 @@
             {{ $t('systemName') }}
           </div>
         </q-item-label>
-        <template v-for="item in linksList">
+        <EssentialLink
+          v-for="item in singleList"
+          v-bind="item"
+          :key="'es' + $t(item.title)"
+          :main="true"
+        />
+        <template
+          v-for="parent in menuParent"
+          :key="$t(parent.title)">
           <q-expansion-item
             expand-separator
-            :icon="item.icon"
-            :label="$t(item.title)"
+            :icon="parent.icon"
+            :label="$t(parent.title)"
             default-closed
-            v-if="item.children"
-            :key="$t(item.title)"
           >
-            <EssentialLink
-              v-for="link in item.children"
-              :key="$t(link.title)"
-              v-bind="link"
-            />
+            <template
+              v-for="link in linksList"
+              :key="$t(link.title)">
+              <EssentialLink
+                v-if="parent.type === link.menuParent"
+                v-bind="link"
+              />
+            </template>
           </q-expansion-item>
-          <EssentialLink
-            v-else
-            v-bind="item"
-            :key="'es' + $t(item.title)"
-            :main="true"
-          />
         </template>
       </q-list>
     </q-drawer>
@@ -102,6 +105,11 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 import { defineComponent, ref } from 'vue';
+import { getFirestore, onSnapshot, doc} from '@firebase/firestore';
+import { User } from 'src/shared/model/Accaunt.model';
+import { MenuItem } from 'src/shared/model/Menu.molel'
+import { RouterToMenu, menuParent, RouterToSingleMenuItem } from 'src/shared/constants/Menu.const';
+import routes from 'src/router/routes';
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -120,56 +128,27 @@ export default defineComponent({
     const $q = useQuasar();
     const auth = getAuth();
     const router = useRouter();
+    const db = getFirestore();
 
-    const linksList = [
-      {
-        title: 'menu.dashboard',
-        link: '/dashboard',
-        icon: 'mdi-account',
-      },
-      {
-        title: 'menu.clientManagement',
-        icon: 'mdi-office-building-outline',
-        children: [
-          {
-            title: 'menu.clientList',
-            link: '/clients',
-            icon: 'mdi-account-search',
-          },
-          {
-            title: 'menu.clientReg',
-            link: '/clientAdd',
-            icon: 'mdi-account',
-          },
-        ],
-      },
-      {
-        title: 'menu.system',
-        icon: 'mdi-cog',
-        children: [
-          {
-            title: 'menu.branches',
-            link: '/system/branches',
-          },
-          {
-            title: 'menu.users',
-            link: '/system/users',
-          },
-        ],
-      },
-    ];
+    const linksList: MenuItem[] =  RouterToMenu(routes);
+    const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
+    console.log(singleList)
 
     // if we want to get the user details, this is how its done
     onAuthStateChanged(auth, (user) => {
       $q.localStorage.set('user', user)
-      if (user) {
-        email.value = user.email as string;
-        if (user.displayName){
-          name.value = user.displayName as string;
-        } else {
-          name.value = user.email as string;
+      user && onSnapshot(doc(db, 'users/' + user?.uid), (dt) => {
+        let data = dt.data() as User | undefined;
+        if (data) {
+          $q.localStorage.set('userData', data)
+          email.value = user.email as string;
+          if (data.displayName){
+            name.value = data.displayName as string;
+          } else {
+            name.value = data.name as string;
+          }
         }
-      }
+      });
     });
     const logout = () => {
       getAuth().signOut();
@@ -185,6 +164,8 @@ export default defineComponent({
       email,
       name,
       leftDrawerOpen,
+      menuParent,
+      singleList,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
