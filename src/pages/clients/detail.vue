@@ -22,8 +22,8 @@
                 <q-icon name="mdi-domain" size="2rem"></q-icon>
                 {{ clientData['name'] }}
               </div>
-              <div class="q-pt-xs text-grey-6 text-h6 text-weight-regular">{{ clientData['address1'] }}</div>
-              <div class="q-pt-xs text-grey-6 text-h6 text-weight-regular">
+              <div class="q-pt-xs text-grey-7 text-h6 text-weight-regular">{{ clientData['address1'] }}</div>
+              <div class="q-pt-xs text-grey-7 text-h6 text-weight-regular">
                 <span class="">TEL</span>
                 {{ clientData['tel'] }}
                 <span class="q-ml-md">FAX </span>
@@ -40,7 +40,7 @@
 
         <q-card class="q-ma-xs q-mb-md q-pa-xm q-pl-md q-pr-md">
           <q-card-section horizontal>
-            <q-card-section class="text-grey-6">
+            <q-card-section class="text-grey-7">
               <div class="q-pb-sm text-h6 text-weight-regular">
                   {{$t('client.add.memo')}}
               </div>
@@ -69,13 +69,13 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showOptionEditDailog" />
+              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-7" @click="showOptionEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
 
         <q-card class="bg-yellow-1 q-ma-xs q-mb-md q-pa-md">
-          <q-card-section class="q-pb-none text-grey-6" horizontal>
+          <q-card-section class="q-pb-none text-grey-7" horizontal>
             <q-card-section>
               <div class="q-pb-md">
                 <div class="text-weight-regular text-h6 text-weight-regular q-pb-sm">
@@ -108,7 +108,7 @@
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showFacilityEditDailog" />
+              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-7" @click="showFacilityEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -116,8 +116,8 @@
 
         <q-card class="q-ma-xs q-pa-md">
           <q-card-section class="q-pb-none" horizontal>
-            <div class="full-width">
-              <q-table dense flat :title="$t('client.add.busInfoReg')" :rows="officeListCurrent" :columns="officeColumn" row-key="id" hide-bottom :pagination="pagination">
+            <div class="full-width text-h7">
+              <q-table dense flat :title="$t('client.add.busInfoReg')" title-class="text-grey-7 text-weight-regular" :rows="officeListCurrent" :columns="officeColumn" row-key="id" hide-bottom :pagination="pagination">
                 <template v-slot:body-cell-office_name="props">
                   <q-td :props="props">
                     <!-- <q-side-link tag="a" @click="$router.push('/clientDetail/' + clientId + '/' + props.key)" class="cursor-pointer text-primary">{{ props.value }}</q-side-link> -->
@@ -129,13 +129,13 @@
                 </template>
                 <template v-slot:body-cell-main_office="props">
                   <q-td :props="props">
-                  <q-icon v-if="props.value" name="check_circle" color="primary" size="xs"></q-icon>
+                  <q-icon v-if="props.value" name="check_circle" size="xs"></q-icon>
                   </q-td>
                 </template>
               </q-table>
               <div class="text-center" v-if="officeList.length > 3">
-                <q-btn flat round size="sm" color="primary" icon="expand_less" v-if="showMore" @click="showMore=!showMore"/>
-                <q-btn flat round size="sm" color="primary" icon="expand_more" v-else @click="showMore=!showMore" />
+                <q-btn flat round size="sm" icon="expand_less" v-if="showMore" @click="showMore=!showMore"/>
+                <q-btn flat round size="sm" icon="expand_more" v-else @click="showMore=!showMore" />
                 </div>
               </div>
               <q-space></q-space>
