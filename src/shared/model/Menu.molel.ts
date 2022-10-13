@@ -5,9 +5,9 @@ export interface MenuRouter {
   children?: MenuRouter[];
   icon?: string;
   title?: string;
-  permissions?: UserPermissionNames [];
   meta?: {
     requiresAuth: boolean;
+    permissions?: UserPermissionNames [];
   }
   component?: RouteComponent;
   path: string;
@@ -32,5 +32,6 @@ export interface MenuItem {
   link?: string;
   icon?: string;
   menuParent?: MenuParent;
+  permissions?: UserPermissionNames[];
   children?: MenuItem[];
 }

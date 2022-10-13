@@ -5,7 +5,7 @@ export const MenuToRouter = (routers: MenuRouter[]): RouteRecordRaw[] => routers
   return {
     path: route.path,
     component: route.component,
-    children: route.children ? MenuToRouter(route.children) : []
+    children: route.children ? MenuToRouter(route.children) : [],
   }
 })
 
@@ -27,7 +27,8 @@ export const RouterToMemuItem = (router: MenuRouter): MenuItem => {
     link: '/'+router.path,
     menuParent: router.menuParent,
     title: router.title,
-    icon: router.icon
+    icon: router.icon,
+    permissions: router.meta?.permissions
   } as MenuItem;
 }
 

@@ -15,15 +15,14 @@ export interface User{
   name: string;
   addedAt:  Date;
   deleted: boolean;
-  role: string;
+  role?: string;
   displayName: string;
-  permissions: UserPermissionNames[];
 }
 
-export interface Roles {
+export interface Role {
   createdAt: Date;
   name: string;
-  permissions: UserPermissionNames[];
+  permission: UserPermissionNames[];
   updatedAt?: Date;
 }
 

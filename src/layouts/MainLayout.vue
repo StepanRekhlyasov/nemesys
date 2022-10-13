@@ -82,7 +82,7 @@
               v-for="link in linksList"
               :key="$t(link.title)">
               <EssentialLink
-                v-if="parent.type === link.menuParent"
+                v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true )"
                 v-bind="link"
               />
             </template>
@@ -106,9 +106,10 @@ import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 import { defineComponent, ref } from 'vue';
 import { getFirestore, onSnapshot, doc} from '@firebase/firestore';
-import { User } from 'src/shared/model/Accaunt.model';
+import { Role, User, UserPermissionNames } from 'src/shared/model/Accaunt.model';
 import { MenuItem } from 'src/shared/model/Menu.molel'
-import { RouterToMenu, menuParent, RouterToSingleMenuItem } from 'src/shared/constants/Menu.const';
+import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
+import { isPermission } from 'src/shared/utils/User.utils'
 import routes from 'src/router/routes';
 //import { useI18n } from 'vue-i18n';
 
@@ -125,6 +126,7 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const email = ref('');
     const name = ref('');
+    const permissions = ref([] as UserPermissionNames[])
     const $q = useQuasar();
     const auth = getAuth();
     const router = useRouter();
@@ -132,7 +134,6 @@ export default defineComponent({
 
     const linksList: MenuItem[] =  RouterToMenu(routes);
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
-    console.log(singleList)
 
     // if we want to get the user details, this is how its done
     onAuthStateChanged(auth, (user) => {
@@ -147,6 +148,11 @@ export default defineComponent({
           } else {
             name.value = data.name as string;
           }
+          data.role && onSnapshot(doc(db, 'roles/' + data.role), roles => {
+            let role = roles.data() as Role;
+            $q.localStorage.set('role', role)
+            permissions.value = role.permission
+          })
         }
       });
     });
@@ -159,10 +165,15 @@ export default defineComponent({
         })
         .catch((error) => console.log('error', error));
     };
+    const permissionMenuItem = (item: UserPermissionNames[]) => {
+      console.log(permissions.value, item)
+      return item.length === 0 || item.some(permission => isPermission(permissions.value, permission))
+    }
     return {
       linksList,
       email,
       name,
+      permissions,
       leftDrawerOpen,
       menuParent,
       singleList,
@@ -170,6 +181,7 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       logout,
+      permissionMenuItem
     };
   },
 });
