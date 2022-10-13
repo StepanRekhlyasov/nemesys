@@ -166,7 +166,6 @@ export default defineComponent({
         .catch((error) => console.log('error', error));
     };
     const permissionMenuItem = (item: UserPermissionNames[]) => {
-      console.log(permissions.value, item)
       return item.length === 0 || item.some(permission => isPermission(permissions.value, permission))
     }
     return {
@@ -188,8 +187,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import 'src/css/imports/colors';
 .q-layout {
-  background-color: $grey-bg;
+  background-color: $grey-1;
 }
 </style>

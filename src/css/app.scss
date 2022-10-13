@@ -1,5 +1,8 @@
 // app global css in SCSS form
 @import 'src/css/imports/colors';
+*{
+  font: Inter;
+}
 .navigation{
   display: flex;
   color: #7C7C7C;
@@ -10,4 +13,14 @@
   font-size: 24px;
   line-height: 29px;
   color: #616161;
+}
+
+.breadcrumbs, .breadcrumbs > breadcrumbs-el{
+  font-size: 20px;
+  line-height: 24px;
+  color: $grey-6;
+  & .link {
+    cursor: pointer;
+    color: $grey-6;
+  }
 }

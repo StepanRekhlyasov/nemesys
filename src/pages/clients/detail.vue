@@ -2,110 +2,119 @@
   <div class="q-pa-sm">
     <!-- {{clientData}} -->
     <div class="q-pa-md q-gutter-sm">
-      <q-breadcrumbs class="text-brown">
+      <q-breadcrumbs class="breadcrumbs">
         <template v-slot:separator>
-          <q-icon size="1.5em" name="chevron_right" color="primary"></q-icon>
+          <q-icon size="1.5em" name="chevron_right" ></q-icon>
         </template>
 
-        <q-breadcrumbs-el :label="$t('client.list.client')" icon="mdi-domain" @click="$router.push('/clients')" class="cursor-pointer"></q-breadcrumbs-el>
-        <q-breadcrumbs-el :label="$t('client.list.corporation')"></q-breadcrumbs-el>
-        <q-breadcrumbs-el :label="clientData['name']" icon="mdi-domain" @click="$router.push('/clientDetail/' + clientId)" class="cursor-pointer"></q-breadcrumbs-el>
+        <q-breadcrumbs-el :label="$t('client.list.client')" @click="$router.push('/clients')" class="link"></q-breadcrumbs-el>
+        <q-breadcrumbs-el :label="$t('client.list.corporation')" class="link"></q-breadcrumbs-el>
+        <q-breadcrumbs-el :label="clientData['name']" @click="$router.push('/clientDetail/' + clientId)" class="link"></q-breadcrumbs-el>
         <q-breadcrumbs-el :label="$t('client.list.clientDetail')" ></q-breadcrumbs-el>
       </q-breadcrumbs>
     </div>
-    <div class="row full-width">
+    <div class="row full-width q-pl-lg" >
       <div class="col-8">
-        <q-card class="bg-yellow-1 q-ma-xs">
+        <q-card class="bg-yellow-1 q-ma-xs q-pa-md q-mb-md">
           <q-card-section class="q-pb-none" horizontal>
             <q-card-section>
-              <div class="text-h5 text-weight-medium">
+              <div class="text-h4 text-weight-medium text-grey-9">
                 <q-icon name="mdi-domain" size="2rem"></q-icon>
                 {{ clientData['name'] }}
               </div>
-              <div class="q-pt-xs">{{ clientData['address1'] }}</div>
-              <div class="q-pt-xs">
-                <span class="text-weight-medium">TEL: </span>
+              <div class="q-pt-xs text-grey-6 text-h6 text-weight-regular">{{ clientData['address1'] }}</div>
+              <div class="q-pt-xs text-grey-6 text-h6 text-weight-regular">
+                <span class="">TEL</span>
                 {{ clientData['tel'] }}
-                <span class="q-ml-md text-weight-medium">FAX: </span>
+                <span class="q-ml-md">FAX </span>
                 {{ clientData['fax'] }}
+
               </div>
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" size="sm" @click="showBasicEditDailog" />
+              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showBasicEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
 
-        <q-card class="q-ma-xs">
+        <q-card class="q-ma-xs q-mb-md q-pa-xm q-pl-md q-pr-md">
           <q-card-section horizontal>
-            <q-card-section>{{ clientData['note'] }}</q-card-section>
+            <q-card-section class="text-grey-6">
+              <div class="q-pb-sm text-h6 text-weight-regular">
+                  {{$t('client.add.memo')}}
+              </div>
+              <span class="text-h7 text-weight-regular">{{ clientData['note'] }}</span>
+            </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" size="sm" @click="showNoteEditDailog" />
+              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showNoteEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
 
-        <q-card class="q-ma-xs">
+        <q-card class="q-ma-xs q-mb-md q-pa-xm q-pl-md q-pr-md">
           <q-card-section horizontal>
             <q-card-section v-if="clientData['options']">
-              <q-chip size="sm" :color="
+              <q-chip size="md" :color="
                 arrayColors[
                   Math.floor(Math.random() * (arrayColors.length - 1) + 1)
                 ]
-              " text-color="white" v-for="option in clientData['options']" :key="option">
+              "
+              text-color="white" v-for="option in clientData['options']"
+              class="q-pa-md"
+              :key="option">
                 {{ $t('client.add.options.' + option) }}
               </q-chip>
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" size="sm" @click="showOptionEditDailog" />
+              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showOptionEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
 
-        <q-card class="bg-yellow-1 q-ma-xs">
-          <q-card-section class="q-pb-none" horizontal>
+        <q-card class="bg-yellow-1 q-ma-xs q-mb-md q-pa-md">
+          <q-card-section class="q-pb-none text-grey-6" horizontal>
             <q-card-section>
-              <div class="text-weight-bolder">
-                {{ $t('client.add.facilityType') }}
+              <div class="q-pb-md">
+                <div class="text-weight-regular text-h6 text-weight-regular q-pb-sm">
+                  {{ $t('client.add.facilityType') }}
+                </div>
+                <div class="flex">
+                  <div v-for="option in clientData['facilityType']" :key="option" class="text-h7 q-pr-md">
+                    {{ $t('client.add.facilityOp.' + option) }}
+                  </div>
+                </div>
               </div>
-              <div>
-                <q-chip size="sm" :color="
-                  arrayColors[
-                    Math.floor(Math.random() * (arrayColors.length - 1) + 1)
-                  ]
-                " text-color="white" v-for="option in clientData['facilityType']" :key="option">
-                  {{ $t('client.add.facilityOp.' + option) }}
-                </q-chip>
+
+              <div class="q-pb-md">
+                <div class="text-weight-regular q-pt-sm text-h6 q-pb-sm">
+                  {{ $t('client.add.copInfo') }}
+                </div>
+                <div class="text-h7 text-weight-regular">{{ clientData['coperationInfo'] }}</div>
               </div>
-              <div class="text-weight-bolder q-pt-sm">
-                {{ $t('client.add.copInfo') }}
-              </div>
-              <div>{{ clientData['coperationInfo'] }}</div>
-              <div class="text-weight-bolder q-pt-xs">
-                {{ $t('client.add.integrationSource') }}
-              </div>
-              <div>
-                <q-chip size="sm" :color="
-                  arrayColors[
-                    Math.floor(Math.random() * (arrayColors.length - 1) + 1)
-                  ]
-                " text-color="white" v-for="option in clientData['integrationSource']" :key="option">
-                  {{ option }}
-                </q-chip>
+
+              <div class="flex">
+                <div class="text-weight-regular text-h7">
+                  {{ $t('client.add.integrationSource') }}
+                </div>
+                <div>
+                  <div v-for="option in clientData['integrationSource']" :key="option" class="text-h7 q-pl-md text-weight-bolder">
+                    {{ option }}
+                  </div>
+                </div>
               </div>
             </q-card-section>
             <q-space></q-space>
             <q-card-actions vertical>
-              <q-btn flat round icon="edit" size="sm" @click="showFacilityEditDailog" />
+              <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showFacilityEditDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
 
 
-        <q-card class="q-ma-xs">
+        <q-card class="q-ma-xs q-pa-md">
           <q-card-section class="q-pb-none" horizontal>
             <div class="full-width">
               <q-table dense flat :title="$t('client.add.busInfoReg')" :rows="officeListCurrent" :columns="officeColumn" row-key="id" hide-bottom :pagination="pagination">
@@ -131,7 +140,7 @@
               </div>
               <q-space></q-space>
               <q-card-actions vertical>
-                <q-btn flat round icon="edit" size="sm" @click="showBusInfoDailog" />
+                <q-btn flat round icon="mdi-pencil-outline" size="md" class="text-grey-6" @click="showBusInfoDailog" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -207,7 +216,7 @@
                   $t('client.add.facilityType')
                   }}</q-item-label>
                   <q-checkbox size="xs" v-model="editClientData['facilityType']" :val="option.value"
-                    :label="option.name" v-for="option in facilityOp" :key="option" />
+                    :label="option.name" v-for="option in facilityOp" :key="option.name" />
                 </div>
               </q-item>
               <q-item v-if="checkIfExist('coperationInfo')">
@@ -224,7 +233,7 @@
                   $t('client.add.integrationSource')
                   }}</q-item-label>
                   <q-checkbox size="xs" v-model="editClientData['integrationSource']" :val="option.value"
-                    :label="option.name" v-for="option in intSourceOption" :key="option" />
+                    :label="option.name" v-for="option in intSourceOption" :key="option.name" />
                 </div>
               </q-item>
             </q-list>
@@ -272,7 +281,7 @@
                   $t('client.add.facilityType')
                   }}</q-item-label>
                   <q-checkbox size="xs" v-model="officeData['office_facilityType']" :val="option.value"
-                    :label="option.name" v-for="option in facilityOp" :key="option" />
+                    :label="option.name" v-for="option in facilityOp" :key="option.name" />
                 </div>
               </q-item>
 
