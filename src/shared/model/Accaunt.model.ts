@@ -16,6 +16,8 @@ export interface User{
   addedAt:  Date;
   deleted: boolean;
   role?: string;
+  organization_ids: string[];
+  branch_ids: string[];
   displayName: string;
 }
 

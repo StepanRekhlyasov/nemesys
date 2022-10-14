@@ -62,6 +62,7 @@ export default {
     system: 'システム設定',
     branches: '支店マスタ管理',
     users: '担当マスタ管理',
+    organization: '組織マスター管理'
   },
   settings: {
     branch: {
@@ -96,7 +97,8 @@ export default {
       create_at: '作成日',
       last_update: '更新日'
 
-    }
+    },
+    title: 'システム',
   },
   client: {
     list: {

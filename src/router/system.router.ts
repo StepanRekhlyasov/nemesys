@@ -20,6 +20,17 @@ const system_router: MenuRouter[] = [
       permissions: [ UserPermissionNames.UserUpdate ]
     },
     menuParent: MenuParent.SystemSettings,
+  },
+  {
+    path: 'system/organization',
+    title: 'menu.organization',
+    icon: 'mdi-office-building-outline',
+    component: () => import('src/pages/settings/organization/Organization.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.SystemSettings,
+
   }
 ]
 

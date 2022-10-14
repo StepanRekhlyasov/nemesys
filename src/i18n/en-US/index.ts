@@ -61,6 +61,7 @@ export default {
     system: 'System Settings',
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
+    organization: 'Organization Master Management'
   },
   settings: {
     branch: {
@@ -94,7 +95,8 @@ export default {
       hidden: 'Hidden',
       create_at: 'Create At',
       last_update: 'Last Update'
-    }
+    },
+    title: 'Settings'
   },
   client: {
     list: {

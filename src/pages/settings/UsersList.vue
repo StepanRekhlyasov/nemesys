@@ -49,17 +49,12 @@
   import { Accaunt } from '../../shared/model/Accaunt.model';
   import { dataTimeFormat } from '../../shared/constants/Table.const';
   import { useI18n } from 'vue-i18n';
-  import {
-    getFirestore,
-  } from 'firebase/firestore';
   import { Ref, ref } from 'vue';
   import { QTableColumn } from 'quasar';
   export default {
     name: 'UserList',
     setup() {
       const { t } = useI18n({ useScope: 'global' });
-      const db = getFirestore();
-      console.log(db)
       const accauntData: Ref<Accaunt[]> = ref([])
       const columns:QTableColumn[] = [
         {
