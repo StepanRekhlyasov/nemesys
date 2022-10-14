@@ -177,7 +177,7 @@
                 <q-checkbox v-model="backOrderData['status']" dense val="sad" class="q-ml-md">
                   <q-icon size="1.5em" name="mdi-emoticon-sad" color="amber-10"></q-icon>
                 </q-checkbox>
-                <q-checkbox v-model="backOrderData['status']" dense val="red" class="q-ml-md">
+                <q-checkbox v-model="backOrderData['status']" dense val="angry" class="q-ml-md">
                   <q-icon size="1.5em" name="mdi-emoticon-angry" color="red"></q-icon>
                 </q-checkbox>
               </div>

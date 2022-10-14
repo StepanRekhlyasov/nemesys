@@ -47,7 +47,7 @@
                   <q-item-label class="q-pb-xs">
                     {{$t('client.add.email') }}
                   </q-item-label>
-                  <q-input outlined dense v-model="clientData['office_mailaddress']"
+                  <q-input outlined dense v-model="clientData['mailaddress']"
                     :placeholder="$t('client.add.emailLabel1') + '@' + $t('client.add.emailLabel2')" />
                 </div>
                 <div class="col-6 q-pl-sm">
@@ -102,12 +102,12 @@
                 <div class="col-6 q-pr-sm">
                   <q-item-label class="q-pb-xs"> {{$t('client.add.longitude') }}</q-item-label>
                   <q-input outlined dense type="number" v-model.number="clientData['lon']"
-                    :placeholder="$t('client.add.latitudeLabel')" />
+                    :placeholder="$t('client.add.latitudeLabel')" step="any" />
                 </div>
                 <div class="col-6 q-pl-sm ">
                   <q-item-label class="q-pb-xs"> {{$t('client.add.latitude') }}</q-item-label>
                   <q-input outlined dense type="number" v-model.number="clientData['lat']"
-                    :placeholder="$t('client.add.latitudeLabel')" />
+                    :placeholder="$t('client.add.latitudeLabel')" step="any" />
                 </div>
               </div>
             </q-item-section>
@@ -164,7 +164,19 @@ export default {
       data['updated_at'] = serverTimestamp();
       data['deleted'] = false;
       const clientRef = collection(db, 'clients/');
-      await addDoc(clientRef, data);
+      const docRef = await addDoc(clientRef, data);
+
+      let main_office_data = { deleted: false, created_at: serverTimestamp(), updated_at: serverTimestamp() };
+      main_office_data['office_name'] = '本社';
+      main_office_data['office_tel'] = data['tel'];
+      main_office_data['office_fax'] = data['fax'];
+      main_office_data['lat'] = data['lat'];
+      main_office_data['lon'] = data['lon'];
+      main_office_data['office_mailaddress'] = data['mailaddress'];
+      main_office_data['main_office'] = true;
+      const officeRef = collection(db, 'clients/' + docRef.id + '/office/');
+      await addDoc(officeRef, main_office_data);
+
       context.emit('closeDialog')
       $q.notify({
         color: 'green-4',
