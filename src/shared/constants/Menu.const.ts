@@ -5,6 +5,7 @@ export const MenuToRouter = (routers: MenuRouter[]): RouteRecordRaw[] => routers
   return {
     path: route.path,
     component: route.component,
+    meta: route.meta,
     children: route.children ? MenuToRouter(route.children) : [],
   }
 })

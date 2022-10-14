@@ -17,7 +17,7 @@ const system_router: MenuRouter[] = [
     component: () => import('src/pages/settings/branch/Branches.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [ UserPermissionNames.UserUpdate ]
+      permissions: [ UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings,
   },

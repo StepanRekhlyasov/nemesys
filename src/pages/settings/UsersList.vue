@@ -118,8 +118,8 @@
             prefectures: '東京都',
             flug: '有効',
             hidden: false,
-            create_at: new Date('2022-07-26 09:43:42'),
-            last_update: new Date('2022-07-26 09:43:42')
+            createAt: new Date('2022-07-26 09:43:42'),
+            updateAt: new Date('2022-07-26 09:43:42')
           },
           manager: true,
           hidden: false,
@@ -134,8 +134,8 @@
             prefectures: '東京都',
             flug: '有効',
             hidden: true,
-            create_at: new Date('2022-07-26 09:49:00'),
-            last_update: new Date('2022-07-26 09:49:33')
+            createAt: new Date('2022-07-26 09:49:00'),
+            updateAt: new Date('2022-07-26 09:49:33')
           },
           manager: true,
           hidden: false,
@@ -150,8 +150,8 @@
             prefectures: '大阪府',
             flug: '有効',
             hidden: false,
-            create_at: new Date('2022-07-26 09:49:27'),
-            last_update: new Date('2022-07-26 09:49:27')
+            createAt: new Date('2022-07-26 09:49:27'),
+            updateAt: new Date('2022-07-26 09:49:27')
           },
           manager: false,
           hidden: false,

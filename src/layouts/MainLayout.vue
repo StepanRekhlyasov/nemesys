@@ -118,7 +118,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 import { defineComponent, Ref, ref } from 'vue';
-import { getFirestore, doc, getDoc} from '@firebase/firestore';
+import { getFirestore, doc, getDoc, DocumentSnapshot, DocumentData} from '@firebase/firestore';
 import { Role, User, UserPermissionNames } from 'src/shared/model/Accaunt.model';
 import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem } from 'src/shared/model/Menu.molel'
@@ -177,9 +177,9 @@ export default defineComponent({
             let ss = data.organization_ids.reduce((organization_list, organization_id) => {
               let organizationRef = getDoc(doc(db, 'organization/'+organization_id));
               return [...organization_list, organizationRef]
-            }, [] as Promise<any>[])
+            }, [] as Promise<DocumentSnapshot<DocumentData>>[])
             Promise.all(ss).then(result => {
-              let organizations: Organization[]  = result.map(organization => organization.data());
+              let organizations: Organization[]  = result.map(organization => organization.data() as Organization);
               if (organizations.length) {
                 $q.localStorage.set('organizations', organizations);
                 $q.localStorage.set('active_organizations', 0)

@@ -24,11 +24,14 @@ export interface User{
 export interface Role {
   createdAt: Date;
   name: string;
+  displayName: string;
   permission: UserPermissionNames[];
   updatedAt?: Date;
 }
 
 export enum UserPermissionNames {
   ContentsRead = 'CONTENTS_READ',
-  UserUpdate = 'USER_UPDATE'
+  UserUpdate = 'USER_UPDATE',
+  BranchUpdate = 'BRANCH_UPDATE',
+  BranchView = 'BRANCH_VIEW'
 }

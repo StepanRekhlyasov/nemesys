@@ -6,6 +6,7 @@ export interface Branch {
   phone?: string;
   flug: string;
   hidden: boolean;
-  create_at: Date;
-  last_update: Date;
+  createAt: Date;
+  updateAt?: Date;
+  deletedAt?: Date;
 }
