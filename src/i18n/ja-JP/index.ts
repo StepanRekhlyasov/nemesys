@@ -143,6 +143,7 @@ export default {
       keyboard: 'キーワード',
       presenceContract: '基本契約締結有無',
       availJobPostings: '求人情報掲載有無',
+      jobPostings: '求人情報掲載',
       postingStartDate: '掲載期間開始日',
       postingEndDate: '期間最終日',
       evaluationRank: '評価ランク',
@@ -180,6 +181,13 @@ export default {
       distanceFromOrigin: '起点からの距離 (km)',
       corporateSearch: '法人検索',
       addNewClient: 'クライアント新規追加',
+      basicContractConclusion: '基本契約 締結',
+      contactMorning: '接電傾向午前',
+      contactAfternoon: '接電傾向午後',
+      contactEvening: '接電傾向夕方',
+      numDispatchedBOs: '自社派遣BO数',
+      numInhouseDispatchedFIX: '自社派遣FIX数',
+      numInhouseDispatchedJobs: '自社派遣職見数',
 
     },
     add: {
