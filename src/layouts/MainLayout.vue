@@ -17,12 +17,12 @@
         <div class="flex">
           <q-btn-dropdown
             v-if="organization && (activeOrganization || activeOrganization === 0)"
-            :label="organization[activeOrganization]['staff_name']"
-            unelevated flat color="black">
+            :label="organization[activeOrganization]?.staff_name"
+            flat color="black">
             <q-list>
               <q-item clickable v-close-popup v-for="item in organization" :key="item.code">
                 <q-item-section>
-                  <q-item-label>{{item.staff_name}}</q-item-label>
+                  <q-item-label>{{'staff_name' in item ? item['staff_name'] : ''}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -144,7 +144,7 @@ export default defineComponent({
     const email = ref('');
     const name = ref('');
     const organization:Ref<Organization[]> = ref([]);
-    const activeOrganization:Ref<number> = ref(0)
+    const activeOrganization:Ref<number | undefined> = ref(undefined)
 
 
     const leftDrawerOpen = ref(false);
