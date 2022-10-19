@@ -13,6 +13,7 @@
         <q-breadcrumbs-el :label="$t('client.list.clientDetail')" ></q-breadcrumbs-el>
       </q-breadcrumbs>
     </div>
+
     <div class="row full-width q-pl-lg" >
       <div class="col-8">
         <q-card class="bg-yellow-1 q-ma-xs q-pa-md q-mb-md">
