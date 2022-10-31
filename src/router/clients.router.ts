@@ -7,25 +7,16 @@ const clientRouters = [
     meta: { requiresAuth: true },
     menuParent: MenuParent.ClientMenagment,
     title: 'menu.clientList',
-    icon: 'mdi-account-search',
+    icon: 'face',
+    single: true,
   },
   {
-    path: 'clientAdd',
-    component: () => import('src/pages/clients/add.vue'),
+    path: 'clients',
+    component: () => import('src/pages/clients/list.vue'),
     meta: { requiresAuth: true },
-    menuParent: MenuParent.ClientMenagment,
-    title: 'menu.clientReg',
-    icon: 'mdi-account',
-  },
-  {
-    path: 'clientDetail/:id',
-    component: () => import('src/pages/clients/detail.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: 'clientDetail/:clientId/:officeId',
-    component: () => import('src/pages/clients/components/office.vue'),
-    meta: { requiresAuth: true },
+    title: 'menu.clientList',
+    icon: 'business',
+    single: true,
   }
 ]
 

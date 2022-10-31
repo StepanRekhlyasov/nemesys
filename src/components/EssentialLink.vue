@@ -11,15 +11,18 @@
       avatar
       :class="main ? '' : 'q-pl-md'"
     >
-      <q-icon :name="icon" :size="main ? 'md' : 'xs'" />
+      <q-icon :name="icon" :size="main ? 'sm' : 'xs'" />
+      <q-tooltip anchor="center right" self="center left" :offset="[20, 20]">
+          <strong>{{ $t(title) }}</strong>
+        </q-tooltip>
     </q-item-section>
 
-    <q-item-section>
+    <!-- <q-item-section>
       <q-item-label class="text-weight-medium" :class="main ? '' : 'text-caption'">{{ $t(title) }}</q-item-label>
       <q-item-label caption>
         {{ caption }}
       </q-item-label>
-    </q-item-section>
+    </q-item-section> -->
   </q-item>
 </template>
 

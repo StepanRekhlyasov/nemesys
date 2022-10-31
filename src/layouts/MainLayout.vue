@@ -1,17 +1,17 @@
 <template>
   <!-- view="lHh Lpr lFf"  hHh lpR fFf -->
-  <q-layout view="lHh Lpr lFf">
-    <q-header >
+  <q-layout view="hHh Lpr lFf">
+    <q-header class="shadow-1">
       <q-toolbar class="bg-white text-black">
-        <q-btn
+        <!-- <q-btn
           flat
           dense
           round
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
-        />
-        <q-toolbar-title> </q-toolbar-title>
+        /> -->
+        <q-toolbar-title class="text-h6 text-weight-bolder"> nemesys </q-toolbar-title>
         <ToolbarLanguage />
 
         <div class="flex">
@@ -59,13 +59,14 @@
       bordered
       style="background: #2a3f54"
       :width="260"
+      :mini="miniState"
     >
       <q-list
         bordered
         padding
         class="rounded-borders text-white text-subtitle2"
       >
-        <q-item-label header>
+        <!-- <q-item-label header>
           <div class="text-h6 q-ma-none text-white">
             <img
               :alt="$t('systemName') + ' Logo'"
@@ -75,14 +76,14 @@
             />
             {{ $t('systemName') }}
           </div>
-        </q-item-label>
+        </q-item-label> -->
         <EssentialLink
           v-for="item in singleList"
           v-bind="item"
           :key="'es' + $t(item.title)"
           :main="true"
         />
-        <template
+        <!-- <template
           v-for="parent in menuParent"
           :key="$t(parent.title)">
           <q-expansion-item
@@ -100,7 +101,7 @@
               />
             </template>
           </q-expansion-item>
-        </template>
+        </template> -->
       </q-list>
     </q-drawer>
 
@@ -148,6 +149,7 @@ export default defineComponent({
 
 
     const leftDrawerOpen = ref(false);
+    const miniState = ref(true);
     const permissions = ref([] as UserPermissionNames[])
     const linksList: MenuItem[] =  RouterToMenu(routes);
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
@@ -215,6 +217,7 @@ export default defineComponent({
       organization,
       activeOrganization,
       singleList,
+      miniState,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },

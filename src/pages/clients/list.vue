@@ -1,155 +1,38 @@
 <template>
-  <div class="q-pa-sm">
-    <q-breadcrumbs class="text-brown">
-      <template v-slot:separator>
-        <q-icon size="1.5em" name="chevron_right" color="primary"></q-icon>
-      </template>
-
-      <q-breadcrumbs-el :label="$t('client.list.client')" icon="mdi-domain" @click="$router.push('/clients')"
-        class="cursor-pointer"></q-breadcrumbs-el>
-      <q-breadcrumbs-el :label="$t('client.list.search')"></q-breadcrumbs-el>
-    </q-breadcrumbs>
-
-    <!-- <GoogleMap :api-key="apiKey" style="width: 100%; height: 500px" :center="center" :zoom="18">
-        <Marker :options="{ position: center }" />
-      </GoogleMap> -->
-
-    <q-card class="q-mt-sm">
-      <q-toolbar class="bg-primary text-white shadow-2 rounded-borders">
-        <q-tabs v-model="tab" shrink stretch dense :breakpoint="0">
-          <q-tab name="conditionSearch" :label="$t('client.list.conditionSearch')" />
-          <!-- <q-tab name="searchResults" :label="$t('client.list.searchResults')" /> -->
-          <q-tab name="corporateSearch" :label="$t('client.list.corporateSearch')" />
-        </q-tabs>
-      </q-toolbar>
-
-      <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="conditionSearch">
-          <div class="row full-width">
-            <div class="col-4">
-              <q-input outlined dense :label="$t('client.list.keywordSearch')" />
-              <!-- v-model="editofficeData['tel']" -->
-            </div>
-            <div class="col-3 q-pl-sm">
-              <q-btn no-caps color="primary" icon="search" :label="$t('client.list.searchButton')" />
-            </div>
-            <div class="col-3 q-pl-sm">
-              <q-btn no-caps color="secondary" icon="save" :label="$t('client.list.saveKeywords')" />
-            </div>
-          </div>
-
-          <div class="row full-width q-mt-md">
-            <div class="col-12">
-              <q-btn no-caps color="primary" icon="add" :label="$t('client.list.advancedSearch')"
-                @click="advanceSearchDialog = true" />
-              <q-btn class="q-ml-lg" no-caps color="primary" icon="add" :label="$t('client.list.searchFromMap')"
-                @click="mapSearchDialog = true" />
-              <q-btn class="q-ml-lg" no-caps color="primary" icon="add" :label="$t('client.list.searchFromPref')"
-                @click="areaSearchDialog = true" />
-            </div>
-
-          </div>
-          <!-- <div class="row full-width q-mt-md">
-            <q-btn no-caps color="primary" icon="add" :label="$t('client.list.searchFromMap')"  @click="mapSearchDialog = true" />
-          </div>
-          <div class="row full-width q-mt-md">
-            <div class="col-3">
-              <q-btn no-caps color="primary" icon="add" :label="$t('client.list.searchFromPref')" @click="areaSearchDialog = true"/>
-            </div>
-          </div> -->
-        </q-tab-panel>
-
-        <q-tab-panel name="searchResults">
-
-        </q-tab-panel>
-
-        <q-tab-panel name="corporateSearch">
-          <div class="row full-width">
-            <div class="col-4">
-              <q-input outlined dense :label="$t('client.list.keywordSearch')" />
-              <!-- v-model="editofficeData['tel']" -->
-            </div>
-            <div class="col-3 q-pl-sm">
-              <q-btn no-caps color="primary" icon="search" :label="$t('client.list.searchButton')" />
-            </div>
-          </div>
-
-          <div class="row full-width q-mt-md">
-            <q-btn no-caps color="green" icon="add" :label="$t('client.list.addNewClient')"
-              @click="addClientDialog = true" />
-          </div>
-
-        </q-tab-panel>
-
-      </q-tab-panels>
-    </q-card>
-
-    <q-card class="q-pa-sm q-mt-xs">
-
-      <q-table dense :rows="officeData" :columns="columns" row-key="id" separator="cell"
-        :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selectedRows"
-        v-model:pagination="pagination" hide-pagination>
-        <template v-slot:body-cell-name="props">
-          <q-td :props="props">
-            <q-btn flat dense no-caps @click="$router.push('/clientDetail/' +  props.row.clientId)" color="primary"
-              :label="props.value" class="q-pt-none q-pb-none text-caption" />
-          </q-td>
-        </template>
-        <template v-slot:body-cell-status="props">
-          <q-td :props="props">
-            <template v-if="props.value">
-              <q-icon size="1.5em" :name="'mdi-emoticon-' + item" :color="colors[item]" v-for="item in props.value"
-                :key="item"></q-icon>
+  <div>
+  <div class="q-pa-md" style="max-width: 350px">
+    <q-list bordered separator>
+      <q-item>
+        <q-item-section class="text-h6">{{$t('client.list.client')}} </q-item-section>
+      </q-item>
+      <q-item clickable v-ripple class="q-pa-none">
+        <q-item-section>
+          <q-input square outlined placeholder="Search by client" height="auto">
+            <template v-slot:prepend>
+              <q-icon name="search" />
             </template>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-tel="props">
-          <q-td :props="props">
-            <q-btn flat dense no-caps @click="$router.push('/clientDetail/' +  props.row.clientId)" color="primary"
-              :label="props.value" class="q-pt-none q-pb-none text-caption" />
-          </q-td>
-        </template>
-        <template v-slot:body-cell-fax="props">
-          <q-td :props="props">
-            <q-btn flat dense no-caps @click="$router.push('/clientDetail/' +  props.row.clientId)" color="primary"
-              :label="props.value" class="q-pt-none q-pb-none text-caption" />
-          </q-td>
-        </template>
+          </q-input>
+        </q-item-section>
+      </q-item>
 
-        <!-- <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            icon="mdi-account-arrow-right-outline"
-            @click="$router.push('/clientDetail/' + props.row.id)"
-          ></q-btn>
-        </q-td>
-      </template> -->
-      </q-table>
-      <div class="row justify-center q-mt-sm">
-        <q-pagination v-model="pagination.page" size="sm" :max="pagesNumber" direction-links boundary-links
-          icon-first="skip_previous" icon-last="skip_next" icon-prev="fast_rewind" icon-next="fast_forward" />
-      </div>
-    </q-card>
+      <q-item clickable v-ripple>
+        <q-item-section>
+          <q-item-label>Item with caption</q-item-label>
+          <q-item-label caption>Caption</q-item-label>
+        </q-item-section>
+      </q-item>
 
-    <q-dialog v-model="advanceSearchDialog" persistent>
-      <advanceSearch @closeDialog="advanceSearchDialog = false" />
-    </q-dialog>
-    <q-dialog v-model="mapSearchDialog" persistent>
-      <mapSearch @closeDialog="mapSearchDialog = false" />
-    </q-dialog>
-    <q-dialog v-model="areaSearchDialog" persistent>
-      <areaSearch @closeDialog="areaSearchDialog = false" />
-    </q-dialog>
-    <q-dialog v-model="addClientDialog" persistent>
-      <addClient @closeDialog="addClientDialog = false" />
-    </q-dialog>
-
+      <q-item clickable v-ripple>
+        <q-item-section>
+          <q-item-label overline>OVERLINE</q-item-label>
+          <q-item-label>Item with caption</q-item-label>
+        </q-item-section>
+      </q-item>
+    </q-list>
   </div>
+</div>
 </template>
+
 
 <script>
 import { useI18n } from 'vue-i18n';
@@ -161,10 +44,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { ref, computed, onBeforeUnmount } from 'vue';
-import advanceSearch from './components/advanceSearch.vue';
-import areaSearch from './components/areaSearch.vue';
-import mapSearch from './components/mapSearch.vue';
-import addClient from './components/addClient.vue';
+
 
 // import { defineComponent } from "vue";
 // import { GoogleMap, Marker } from "vue3-google-map";
@@ -172,11 +52,6 @@ import addClient from './components/addClient.vue';
 export default {
   name: 'clientsList',
   components: {
-    //GoogleMap, Marker
-    advanceSearch,
-    areaSearch,
-    mapSearch,
-    addClient
   },
 
   setup() {
