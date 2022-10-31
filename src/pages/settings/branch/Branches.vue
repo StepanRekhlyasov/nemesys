@@ -58,7 +58,8 @@
         </q-card-section>
         <q-card-section>
           <q-form
-            ref="branchForm">
+            ref="branchForm"
+            @submit="onSubmit">
             <div class="row q-gutter-md">
               <q-input class="col" :label="$t('settings.branch.name')" stack-label v-model="branchModalData['name']" />
               <q-toggle class="col" :label="$t('settings.branch.office')"  v-model="branchModalData['office']"/>
@@ -85,13 +86,12 @@
             <div class="row q-gutter-md">
               <q-toggle class="col" :label="$t('settings.branch.garage')"  v-model="branchModalData['garage']"/>
             </div>
+            <q-card-actions align="right" class="bg-white text-teal">
+              <q-btn flat :label="$t('common.cancel')" v-close-popup color="red"/>
+              <q-btn flat :label="$t('common.save')" type="submit" />
+            </q-card-actions>
           </q-form>
         </q-card-section>
-
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="close" v-close-popup />
-          <q-btn flat label="Ok" v-close-popup />
-        </q-card-actions>
       </q-card>
   </q-dialog>
 </template>
@@ -102,11 +102,13 @@ import { dataTimeFormat } from '../../../shared/constants/Table.const';
 import { useI18n } from 'vue-i18n';
 import { Ref, ref } from 'vue';
 import { QTableColumn } from 'quasar';
+import { collection, getDocs, getFirestore, query } from 'firebase/firestore';
 export default {
   name: 'BranchesPage',
   components: {},
   setup() {
     const { t } = useI18n({ useScope: 'global' });
+    const db = getFirestore();
     const openModal = ref(false);
     const branchForm = ref(null);
     const branchDataSample = {
@@ -176,7 +178,9 @@ export default {
       { name: 'actions', label: '', field: '', align: 'center' },
     ]
 
-    const loadBranchData = ():void => {
+    const loadBranchData = async ():Promise<void> => {
+      const branch = await getDocs(query(collection(db, 'branch/')))
+      console.log(branch.docs)
       branchData.value = [
         {
           id: 1,
@@ -221,7 +225,7 @@ export default {
         rowsPerPage: 25,
       },
       onSubmit() {
-        console.log()
+        console.log(branchModalData.value)
       }
     }
   },

@@ -183,7 +183,7 @@ export default defineComponent({
             Promise.all(ss).then(result => {
               let organizations: Organization[]  = result.map(organization => organization.data() as Organization);
               if (organizations.length) {
-                $q.localStorage.set('organizations', organizations);
+                $q.localStorage.set('organizations', organizations[0]);
                 $q.localStorage.set('active_organizations', 0)
                 organization.value = organizations;
                 activeOrganization.value = 0;
