@@ -1,9 +1,10 @@
 <template>
-<q-item
+  <q-item
     clickable
-    :to="link"
+    :to="link ? link : undefined"
     exact
     v-ripple
+    :active="active"
     active-class="menu-active-class"
   >
     <q-item-section
@@ -36,22 +37,22 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     caption: {
       type: String,
       default: ''
     },
-
     link: {
-      type: String,
-      default: '#'
+      type: String ,
+      required: false
     },
-
     icon: {
       type: String,
       default: ''
     },
-
+    active: {
+      type: Boolean,
+      default: false,
+    },
     main: {
       type: Boolean,
       default: false
@@ -59,8 +60,10 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="sass">
-.menu-active-class
-  color: white
-  background: #374A5E
+<style lang="scss">
+@import "src/css/imports/colors";
+.menu-active-class{
+  color: $main-primary;
+  background: $main_bg;
+}
 </style>

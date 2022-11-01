@@ -1,3 +1,4 @@
+
 import { RouteRecordRaw } from 'vue-router';
 import { MenuItem, MenuParent, MenuParentType, MenuRouter } from '../model/Menu.molel';
 
@@ -49,7 +50,7 @@ export const RouterToSingleMenuItem = (routers: MenuRouter[]):MenuItem[] => rout
 export const menuParent: MenuParentType[] = [{
   type: MenuParent.ClientMenagment,
   title: 'menu.clientManagement',
-  icon: 'mdi-office-building-outline',
+  icon: 'mdi-office-building-outline'
 },{
   type: MenuParent.SystemSettings,
   title: 'menu.system',

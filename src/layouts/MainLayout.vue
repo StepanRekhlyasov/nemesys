@@ -1,21 +1,12 @@
 <template>
-  <!-- view="lHh Lpr lFf"  hHh lpR fFf -->
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf" class="main-layout">
     <q-header class="shadow-1">
       <q-toolbar class="bg-white text-black">
-        <!-- <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        /> -->
-        <q-toolbar-title class="text-h6 text-weight-bolder"> nemesys </q-toolbar-title>
+        <q-toolbar-title class="text-h4 text-weight-bolder header"> nemesys </q-toolbar-title>
         <ToolbarLanguage />
 
         <div class="flex">
-          <q-btn-dropdown
+          <!-- <q-btn-dropdown
             v-if="organization && (activeOrganization || activeOrganization === 0)"
             :label="organization[activeOrganization]?.staff_name"
             flat color="black">
@@ -26,9 +17,12 @@
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown>
+          </q-btn-dropdown> -->
 
-          <q-btn-dropdown unelevated flat color="black" :label="name">
+          <q-btn-dropdown
+            flat
+            color="blue"
+            class="dropdown" >
             <q-list>
               <q-item class="bg-grey-3">
                 <q-item-section avatar>
@@ -47,6 +41,11 @@
                 </q-item-section>
               </q-item>
             </q-list>
+            <template v-slot:label>
+              <div class="row items-center bg-primary">
+                  <q-icon left name="mdi-account" color="white"/>
+              </div>
+            </template>
           </q-btn-dropdown>
         </div>
       </q-toolbar>
@@ -57,62 +56,74 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      style="background: #2a3f54"
+      style="background: linear-gradient(180deg, #085374 0%, #043246 100%);"
       :width="260"
       :mini="miniState"
     >
       <q-list
         bordered
         padding
-        class="rounded-borders text-white text-subtitle2"
+        class="rounded-borders text-white text-subtitle2 q-pa-none"
       >
-        <!-- <q-item-label header>
-          <div class="text-h6 q-ma-none text-white">
-            <img
-              :alt="$t('systemName') + ' Logo'"
-              src="~assets/CLI_dot.png"
-              style="width: 25px; height: 25px"
-              class="q-mr-sm"
-            />
-            {{ $t('systemName') }}
-          </div>
-        </q-item-label> -->
         <EssentialLink
           v-for="item in singleList"
           v-bind="item"
           :key="'es' + $t(item.title)"
+          :active="item.link === active_menu"
           :main="true"
+          @click="onChangeMenu(item.link)"
         />
-        <!-- <template
+        <EssentialLink
           v-for="parent in menuParent"
-          :key="$t(parent.title)">
-          <q-expansion-item
-            expand-separator
-            :icon="parent.icon"
-            :label="$t(parent.title)"
-            default-closed
-          >
-            <template
-              v-for="link in linksList"
-              :key="$t(link.title)">
-              <EssentialLink
-                v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true )"
-                v-bind="link"
-              />
-            </template>
-          </q-expansion-item>
-        </template> -->
+          :key="$t(parent.title)"
+          :active="parent.type === active_menu"
+          v-bind="parent"
+          @click="onChangeMenu(parent.type)"
+        />
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-grey-1">
-      <router-view />
+    <q-page-container class="bg-grey-1 flex">
+      <template v-for="parent in menuParent" :key="parent.title">
+        <q-list
+          class="menu_slidebar q-pa-none"
+          :class="{'active': parent.type == active_menu}">
+          <q-item class="menu_header text-weight-bold">
+            <q-item-section>
+              <div class="row">
+                <q-icon :name="parent.icon" class="q-pr-sm text-h5"/>
+                <div>
+                  {{$t(parent.title)}}
+                </div>
+              </div>
+            </q-item-section>
+          </q-item>
+          <template v-for="link in linksList" :key="link.link">
+            <q-item
+              v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true)"
+              class="menu_slidebar_item q-pl-xl text-justify flex justify-between"
+              :to="link.link"
+              exact
+              v-ripple
+              clickable
+              active-class="menu_slidebar_class"
+              >
+              <q-item-section>
+                {{$t(link.title)}}
+              </q-item-section>
+              <q-icon name="mdi-chevron-right text-grey-7" size="sm" class="content-end"/>
+            </q-item>
+          </template>
+        </q-list>
+      </template>
+      <div class="main_content shadow-5" :class="{'open_left_slidebar': openLeftSlidebar}">
+        <router-view />
+      </div>
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
-// import router from '../router';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -122,7 +133,7 @@ import { defineComponent, Ref, ref } from 'vue';
 import { getFirestore, doc, getDoc, DocumentSnapshot, DocumentData} from '@firebase/firestore';
 import { Role, User, UserPermissionNames } from 'src/shared/model/Accaunt.model';
 import { Organization } from 'src/shared/model/Organization.model';
-import { MenuItem } from 'src/shared/model/Menu.molel'
+import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
 import routes from 'src/router/routes';
@@ -145,6 +156,8 @@ export default defineComponent({
     const email = ref('');
     const name = ref('');
     const organization:Ref<Organization[]> = ref([]);
+    const openLeftSlidebar: Ref<boolean> = ref(false)
+    const active_menu: Ref<MenuParent | string | undefined> = ref(undefined);
     const activeOrganization:Ref<number | undefined> = ref(undefined)
 
 
@@ -194,6 +207,17 @@ export default defineComponent({
       }
     });
 
+    const onChangeMenu = (active: MenuParent | string | undefined) => {
+      if (active && active_menu.value !== active){
+        openLeftSlidebar.value = false;
+        active_menu.value = active;
+        if (Object.values(MenuParent).toString().includes(active)) {
+          openLeftSlidebar.value = true;
+        }
+      }
+      console.log(openLeftSlidebar.value)
+    }
+
     const logout = () => {
       getAuth().signOut();
       router
@@ -218,10 +242,13 @@ export default defineComponent({
       activeOrganization,
       singleList,
       miniState,
+      active_menu,
+      openLeftSlidebar,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       logout,
+      onChangeMenu,
       permissionMenuItem
     };
   },
@@ -229,7 +256,62 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@import "src/css/imports/colors";
+@import "src/css/imports/variables";
 .q-layout {
-  background-color: $grey-1;
+  background-color: $main_bg;
+}
+.main-layout{
+  .dropdown{
+    .q-btn{
+      padding: unset;
+    }
+    .q-btn__content .row{
+      height: 30px;
+      width: 30px;
+      border-radius: 4px;
+      .on-left{
+        margin: auto;
+      }
+    }
+  }
+  .header{
+    background: -webkit-linear-gradient(#155792 0%, #051E34 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .q-drawer--left.q-drawer--bordered, .q-list--bordered{
+    border: unset;
+  }
+  .menu{
+    &_header{
+      background-color: $grey-2;
+      border-bottom: 2px solid $grey-5;
+    }
+    &_slidebar{
+      color: $main-primary;
+      width: $left-sidebar-open-width;
+      height: calc(100vh - #{$top-header-height});
+      display: none;
+      &.active {
+        display: block;
+      }
+      &_item{
+        border-bottom: 2px solid white;
+        background-color: $grey-2;
+        align-items: center;
+        &.menu_slidebar_class{
+          background-color: white;
+        }
+      }
+    }
+  }
+  .main_content{
+    width: 100%;
+    z-index: 50;
+    &.open_left_slidebar{
+      width: calc(100% - #{$left-sidebar-open-width});
+    }
+  }
 }
 </style>

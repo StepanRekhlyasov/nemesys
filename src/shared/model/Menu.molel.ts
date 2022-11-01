@@ -24,6 +24,7 @@ export interface MenuParentType {
   type: MenuParent;
   title: string;
   icon: string;
+  link?: string;
   children?: MenuItem[];
 }
 

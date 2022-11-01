@@ -1,16 +1,14 @@
 <template>
-  <q-select
-    v-model="locale"
-    :options="localeOptions"
-    dense
-    borderless
-    emit-value
-    map-options
-    options-dense
-    popup-content-class="text-grey-8"
-    @update:model-value="setLang"
-  >
-  </q-select>
+  <div class="flex">
+    <q-btn-toggle
+      flat
+      color="black"
+      toggle-color="primary"
+      v-model='locale'
+      @input="setLang"
+      :options="localeOptions"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -23,20 +21,26 @@ export default defineComponent({
   setup() {
     const q = useQuasar();
     const { locale } = useI18n({ useScope: 'global' });
-
-    const setLang = () => {
-      q.localStorage.set('lang', locale.value)
+    const setLang = (item) => {
+      console.log(item, q.lang)
+      q.lang.set(q.lang)
     };
 
     return {
-      locale,
       localeOptions: [
         { value: 'en-US', label: 'English' },
         { value: 'ja-JP', label: '日本語' },
       ],
+      locale,
 
       setLang,
     };
   },
 });
 </script>
+
+<style lang="scss">
+.toolbarLanguage-item{
+
+}
+</style>
