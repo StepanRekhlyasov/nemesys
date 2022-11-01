@@ -100,6 +100,8 @@ export default {
   },
   client: {
     list: {
+      clients: 'Clients',
+      jobs: 'Jobs',
       destination: 'Destination',
       address: 'address',
       distance: 'distance',

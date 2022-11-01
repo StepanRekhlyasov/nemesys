@@ -102,6 +102,8 @@ export default {
   },
   client: {
     list: {
+      clients: '企業一覧',
+      jobs: '求人一覧',
       destination: '送信先',
       address: '住所',
       distance: '距離',

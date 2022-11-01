@@ -1,36 +1,81 @@
 <template>
-  <div>
-  <div class="q-pa-md" style="max-width: 350px">
-    <q-list bordered separator>
-      <q-item>
-        <q-item-section class="text-h6">{{$t('client.list.client')}} </q-item-section>
-      </q-item>
-      <q-item clickable v-ripple class="q-pa-none">
-        <q-item-section>
-          <q-input square outlined placeholder="Search by client" height="auto">
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </q-item-section>
-      </q-item>
+  <div class="row q-pa-sm">
+    <div class="col-3" style="max-width: 350px">
+      <q-list bordered separator>
+        <q-item>
+          <q-item-section class="text-h6 text-weight-medium">{{ $t('client.list.clients') }} </q-item-section>
+        </q-item>
+        <q-item clickable v-ripple class="q-pa-none">
+          <q-item-section>
+            <q-input square outlined placeholder="Search by client" height="auto">
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </q-item-section>
+        </q-item>
 
-      <q-item clickable v-ripple>
-        <q-item-section>
-          <q-item-label>Item with caption</q-item-label>
-          <q-item-label caption>Caption</q-item-label>
-        </q-item-section>
-      </q-item>
+        <q-item clickable v-ripple v-for="office in officeData" :key="office.id" @click="drawerRight = !drawerRight; $router.push('/clients/' + office.id)">
+          <q-item-section>
+            <q-item-label> {{ office.name }} </q-item-label>
+            <q-item-label caption> Added at: {{ office.created_at.toDate().toDateString() }}</q-item-label>
+          </q-item-section>
 
-      <q-item clickable v-ripple>
-        <q-item-section>
-          <q-item-label overline>OVERLINE</q-item-label>
-          <q-item-label>Item with caption</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
+          <q-item-section avatar>
+            <q-icon name="chevron_right"></q-icon>
+          </q-item-section>
+
+        </q-item>
+
+      </q-list>
+    </div>
+    <div class="col-9 text-center self-center">
+      <!-- <div>
+      <p class="text-h6">Select the client</p>
+      <p>You will be able to check the requisitions by selecting the client</p>
+    </div> -->
+
+      <q-drawer side="right" v-model="drawerRight" show-if-above bordered :width="1000" :breakpoint="500"
+        class="bg-grey-3" overlay elevated>
+        <q-scroll-area class="fit text-left">
+          <div class="row q-pa-sm">
+            <div class="col-4" style="max-width: 350px">
+              <q-list bordered separator>
+                <q-item>
+                  <q-item-section class="text-h6 text-weight-medium">{{ $t('client.list.jobs') }} </q-item-section>
+                </q-item>
+                <q-item clickable v-ripple class="q-pa-none">
+                  <q-item-section>
+                    <q-input square outlined placeholder="Search job by search word" height="auto">
+                      <template v-slot:prepend>
+                        <q-icon name="search" />
+                      </template>
+                    </q-input>
+                  </q-item-section>
+                </q-item>
+
+                <q-item clickable v-ripple v-for="office in officeData" :key="office.id"
+                  @click="drawerRight = !drawerRight">
+                  <q-item-section>
+                    <q-item-label> {{ office.name }} </q-item-label>
+                    <q-item-label caption> Added at: {{ office.created_at.toDate().toDateString() }}</q-item-label>
+                  </q-item-section>
+
+                  <q-item-section avatar>
+                    <q-icon name="chevron_right"></q-icon>
+                  </q-item-section>
+
+                </q-item>
+
+              </q-list>
+            </div>
+            <div class="col-8 text-center self-center">
+            </div>
+          </div>
+        </q-scroll-area>
+      </q-drawer>
+    </div>
   </div>
-</div>
 </template>
 
 
@@ -178,6 +223,9 @@ export default {
     const areaSearchDialog = ref(false);
     const mapSearchDialog = ref(false);
     const addClientDialog = ref(false);
+
+    const drawerRight = ref(false);
+
     const selectedRows = ref([]);
     const pagination = ref({
       sortBy: 'desc',
@@ -245,6 +293,8 @@ export default {
       areaSearchDialog,
       mapSearchDialog,
       addClientDialog,
+
+      drawerRight,
 
       getSelectedString() {
         return selectedRows.value.length === 0 ? '' : `${selectedRows.value.length} record${selectedRows.value.length > 1 ? 's' : ''} selected of ${officeData.value.length}`

@@ -10,6 +10,14 @@ const clientRouters = [
     icon: 'face',
     single: true,
   },
+  {
+    path: 'clients/:clientId',
+    component: () => import('src/pages/clients/list.vue'),
+    meta: { requiresAuth: true },
+    title: 'menu.clientList',
+    icon: 'business',
+    single: true,
+  }
 ]
 
 export default  clientRouters;
