@@ -31,7 +31,7 @@
               >
               <template v-slot:body-cell-name="props">
                 <q-td :props="props">
-                  <q-btn flat dense no-caps @click="openDrawer(props.row.clientId)" color="primary"
+                  <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
                     :label="props.value" class="q-pt-none q-pb-none text-caption" />
                     <div>
                       {{ props.row.office_name }} | {{ props.row.address1 }}
@@ -71,14 +71,49 @@
         class="bg-grey-3" overlay elevated v-if="drawerRight">
         <q-scroll-area class="fit text-left">
           <q-card>
-            <q-card-section>
+            <q-card-section class="text-white" style="background-color: #175680;">
               <div class="text-h6">
                 <q-btn dense flat icon="close" @click="drawerRight = false" />
-                
+                {{ selectedClient.name }}
+                <div class="q-ml-md">{{ selectedClient.office_name }} </div>
               </div>
             </q-card-section>
             <q-separator />
-            
+          <q-card-section>
+            <div class="row">
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-4 text-right"> {{$t('client.list.businessAddress') }} </div>
+                  <div class="col-8 q-pl-md"> {{ selectedClient.address1 }}  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-right"> TEL </div>
+                  <div class="col-8 q-pl-md"> {{ selectedClient.tel }}  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-right"> FAX </div>
+                  <div class="col-8 q-pl-md"> {{ selectedClient.fax }}  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-right"> {{$t('client.list.presenceContract') }} </div>
+                  <div class="col-8 q-pl-md">  </div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-right"> {{$t('client.list.tradingPerformance') }} </div>
+                  <div class="col-8 q-pl-md"> </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-4 text-right"> {{$t('client.list.officesConcludedBasicContract') }} </div>
+                  <div class="col-8 q-pl-md"> </div>
+                </div>
+              </div>
+            </div>
+          </q-card-section>
+          <q-separator />
+          <q-separator></q-separator>
+            <!-- {{ selectedClient }} -->
           </q-card>
         </q-scroll-area>
       </q-drawer>
@@ -96,7 +131,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { ref, computed, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
+//import { useRouter } from 'vue-router';
 
 // import { defineComponent } from "vue";
 // import { GoogleMap, Marker } from "vue3-google-map";
@@ -112,7 +147,7 @@ export default {
     const center = { lat: 40.689247, lng: -74.044502 };
     const apiKey = '';
     const tab = ref('conditionSearch');
-    const router = useRouter();
+    //const router = useRouter();
     
     const colors = {
       excited: 'green',
@@ -157,6 +192,7 @@ export default {
     });
 
     const officeData = ref([]);
+    const selectedClient = ref({});
 
     const advanceSearchDialog = ref(false);
     const areaSearchDialog = ref(false);
@@ -234,6 +270,7 @@ export default {
       addClientDialog,
 
       drawerRight,
+      selectedClient,
 
       getSelectedString() {
         return selectedRows.value.length === 0 ? '' : `${selectedRows.value.length} record${selectedRows.value.length > 1 ? 's' : ''} selected of ${officeData.value.length}`
@@ -246,9 +283,11 @@ export default {
         return val;
       }),
 
-      openDrawer(clientId){
+      openDrawer(data){
         drawerRight.value = true; 
-        router.push('/clients/' +  clientId)
+        //router.push('/clients/' +  data.clientId)
+        selectedClient.value = data;
+        console.log(data);
       }
     };
   },

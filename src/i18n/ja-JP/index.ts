@@ -146,7 +146,7 @@ export default {
       searchFromPref: '都道府県一覧から検索する',
       detailedConditionSearch: '詳細条件検索',
       keyboard: 'キーワード',
-      presenceContract: '基本契約締結有無',
+      presenceContract: '基本契約締結',
       availJobPostings: '求人情報掲載有無',
       jobPostings: '求人情報掲載',
       postingStartDate: '掲載期間開始日',
@@ -195,6 +195,9 @@ export default {
       numInhouseDispatchedJobs: '自社派遣職見数',
       businessLocation: '事業所所在地',
       callingTendency: '今の時間帯の接電傾向',
+      businessAddress: '事業所住所',
+      tradingPerformance: '取引実績',
+      officesConcludedBasicContract: '同一法人内で基本契約締結済みの他事務所',
 
     },
     add: {

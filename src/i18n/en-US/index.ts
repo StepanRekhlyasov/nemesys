@@ -195,6 +195,10 @@ export default {
       numInhouseDispatchedJobs: 'Number of in-house dispatched jobs',
       businessLocation: 'Business Location',
       callingTendency: 'Calling tendency of the current time zone',
+      businessAddress: 'Business Address',
+      tradingPerformance: 'Trading Performance',
+      officesConcludedBasicContract: 'Within the same corporation other offices that have concluded a basic contract',
+
     },
     add: {
       newReg: 'Client new registration',
