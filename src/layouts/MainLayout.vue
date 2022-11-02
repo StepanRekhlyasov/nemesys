@@ -213,9 +213,9 @@ export default defineComponent({
         active_menu.value = active;
         if (Object.values(MenuParent).toString().includes(active)) {
           openLeftSlidebar.value = true;
+          router.push('/')
         }
       }
-      console.log(openLeftSlidebar.value)
     }
 
     const logout = () => {
