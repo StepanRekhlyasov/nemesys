@@ -193,6 +193,8 @@ export default {
       numDispatchedBOs: 'Number of dispatched BOs',
       numInhouseDispatchedFIX: 'Number of in-house dispatched FIX',
       numInhouseDispatchedJobs: 'Number of in-house dispatched jobs',
+      businessLocation: 'Business Location',
+      callingTendency: 'Calling tendency of the current time zone',
     },
     add: {
       newReg: 'Client new registration',

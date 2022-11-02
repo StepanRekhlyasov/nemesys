@@ -35,8 +35,6 @@ const clientRouters = [
     component: () => import('src/pages/clients/list.vue'),
     meta: { requiresAuth: true },
     title: 'menu.clientList',
-    icon: 'business',
-    single: true,
   },
 ]
 

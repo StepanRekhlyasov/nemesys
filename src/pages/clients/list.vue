@@ -1,80 +1,87 @@
 <template>
   <div class="row q-pa-sm">
-    <div class="col-3" style="max-width: 350px">
-      <q-list bordered separator>
-        <q-item>
-          <q-item-section class="text-h6 text-weight-medium">{{ $t('client.list.clients') }} </q-item-section>
-        </q-item>
-        <q-item clickable v-ripple class="q-pa-none">
-          <q-item-section>
-            <q-input square outlined placeholder="Search by client" height="auto">
-              <template v-slot:prepend>
-                <q-icon name="search" />
+      <q-card>
+            <q-card-section>
+              <div class="text-h6">詳細条件検索</div>
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <div class="text-subtitle2">検索条件 / 東京都全域, 今の時間帯のテレアポ接電率:高い</div>
+              <div class="row q-mt-xs">
+                <div class="q-gutter-md" style="max-width: 150px">
+                  <q-select outlined dense>
+                    <template v-slot:prepend>
+                      <q-icon name="filter_alt" color="primary" />
+                    </template>
+                  </q-select>
+                </div>
+                <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
+                  <q-select outlined dense>
+              
+                  </q-select>
+                </div>
+              </div>
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <q-table                
+                :columns="columns"
+                :rows="officeData"
+                row-key="name"
+              >
+              <template v-slot:body-cell-name="props">
+                <q-td :props="props">
+                  <q-btn flat dense no-caps @click="openDrawer(props.row.clientId)" color="primary"
+                    :label="props.value" class="q-pt-none q-pb-none text-caption" />
+                    <div>
+                      {{ props.row.office_name }} | {{ props.row.address1 }}
+                    </div>
+                </q-td>
               </template>
-            </q-input>
-          </q-item-section>
-        </q-item>
 
-        <q-item clickable v-ripple v-for="office in officeData" :key="office.id" @click="drawerRight = !drawerRight; $router.push('/clients/' + office.id)">
-          <q-item-section>
-            <q-item-label> {{ office.name }} </q-item-label>
-            <q-item-label caption> Added at: {{ office.created_at.toDate().toDateString() }}</q-item-label>
-          </q-item-section>
+              <template v-slot:body-cell-callingTendency="props">
+                <q-td :props="props">
+                  <span class="text-green">〇：高い</span>
+                </q-td>
+              </template>
 
-          <q-item-section avatar>
-            <q-icon name="chevron_right"></q-icon>
-          </q-item-section>
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                  <q-icon size="1.5em" name="mdi-emoticon-neutral" color="yellow-8"></q-icon>
+                </q-td>
+              </template>
 
-        </q-item>
+              <template v-slot:body-cell-dispatchIndex="props">
+                <q-td :props="props">
+                  <span class="text-green">とても高い </span> <span>｜標準</span>
+                </q-td>
+              </template>
 
-      </q-list>
-    </div>
-    <div class="col-9 text-center self-center">
+
+              </q-table>
+            </q-card-section>
+          </q-card>
+
       <!-- <div>
       <p class="text-h6">Select the client</p>
       <p>You will be able to check the requisitions by selecting the client</p>
     </div> -->
-
+    
       <q-drawer side="right" v-model="drawerRight" show-if-above bordered :width="1000" :breakpoint="500"
-        class="bg-grey-3" overlay elevated>
+        class="bg-grey-3" overlay elevated v-if="drawerRight">
         <q-scroll-area class="fit text-left">
-          <div class="row q-pa-sm">
-            <div class="col-4" style="max-width: 350px">
-              <q-list bordered separator>
-                <q-item>
-                  <q-item-section class="text-h6 text-weight-medium">{{ $t('client.list.jobs') }} </q-item-section>
-                </q-item>
-                <q-item clickable v-ripple class="q-pa-none">
-                  <q-item-section>
-                    <q-input square outlined placeholder="Search job by search word" height="auto">
-                      <template v-slot:prepend>
-                        <q-icon name="search" />
-                      </template>
-                    </q-input>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-ripple v-for="office in officeData" :key="office.id"
-                  @click="drawerRight = !drawerRight">
-                  <q-item-section>
-                    <q-item-label> {{ office.name }} </q-item-label>
-                    <q-item-label caption> Added at: {{ office.created_at.toDate().toDateString() }}</q-item-label>
-                  </q-item-section>
-
-                  <q-item-section avatar>
-                    <q-icon name="chevron_right"></q-icon>
-                  </q-item-section>
-
-                </q-item>
-
-              </q-list>
-            </div>
-            <div class="col-8 text-center self-center">
-            </div>
-          </div>
+          <q-card>
+            <q-card-section>
+              <div class="text-h6">
+                <q-btn dense flat icon="close" @click="drawerRight = false" />
+                
+              </div>
+            </q-card-section>
+            <q-separator />
+            
+          </q-card>
         </q-scroll-area>
       </q-drawer>
-    </div>
   </div>
 </template>
 
@@ -89,7 +96,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { ref, computed, onBeforeUnmount } from 'vue';
-
+import { useRouter } from 'vue-router';
 
 // import { defineComponent } from "vue";
 // import { GoogleMap, Marker } from "vue3-google-map";
@@ -105,6 +112,8 @@ export default {
     const center = { lat: 40.689247, lng: -74.044502 };
     const apiKey = '';
     const tab = ref('conditionSearch');
+    const router = useRouter();
+    
     const colors = {
       excited: 'green',
       happy: 'light-green',
@@ -118,102 +127,32 @@ export default {
         {
           name: 'name',
           required: true,
-          label: t('client.add.clientName'),
+          label: t('client.add.officeName') + ' | ' + t('client.add.clientName') + ' | ' + t('client.list.businessLocation'),
           align: 'left',
           field: 'name',
           sortable: false,
         },
         {
-          name: 'office_name',
+          name: 'callingTendency',
           align: 'center',
-          label: t('client.add.officeName'),
-          field: 'office_name',
+          label: t('client.list.callingTendency'),
+          field: 'callingTendency',
           sortable: true,
-        },
-        {
-          name: 'address1',
-          align: 'center',
-          label: t('client.list.address'),
-          field: 'address1',
-          sortable: true,
-        },
-        {
-          name: 'distance',
-          label: t('client.list.distance'),
-          field: 'distance',
-          sortable: true,
-        },
-        // { name: 'score', label: t('client.list.score'), field: 'score' },
-        { name: 'tel', label: t('client.list.phone'), field: 'tel' },
-        { name: 'fax', label: t('client.list.fax'), field: 'fax' },
-        {
-          name: 'basicContractConclusion',
-          label: t('client.list.basicContractConclusion'),
-          field: 'basicContractConclusion',
-          sortable: true,
-          //sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-        },
-        {
-          name: 'jobPostings',
-          label: t('client.list.jobPostings'),
-          field: 'jobPostings',
-          sortable: true
-        },
-        {
-          name: 'contactMorning',
-          label: t('client.list.contactMorning'),
-          field: 'contactMorning',
-          sortable: true
-        },
-        {
-          name: 'contactAfternoon',
-          label: t('client.list.contactAfternoon'),
-          field: 'contactAfternoon',
-          sortable: true
-        },
-        {
-          name: 'contactEvening',
-          label: t('client.list.contactEvening'),
-          field: 'contactEvening',
-          sortable: true
-        },
-        {
-          name: 'dispatchIndex',
-          label: t('client.list.dispatchIndex'),
-          field: 'dispatchIndex',
-          sortable: true,
-        },
-        {
-          name: 'referralMetrics',
-          label: t('client.list.referralMetrics'),
-          field: 'referralMetrics',
-          sortable: true
         },
         {
           name: 'status',
+          align: 'center',
           label: t('client.list.status'),
           field: 'status',
-          sortable: true
+          sortable: true,
         },
         {
-          name: 'numDispatchedBOs',
-          label: t('client.list.numDispatchedBOs'),
-          field: 'numDispatchedBOs',
-          sortable: true
+          name: 'dispatchIndex',
+          label: t('client.list.dispatchIndex') + ' | ' + t('client.list.referralMetrics'),
+          field: 'dispatchIndex',
+          sortable: true,
         },
-        {
-          name: 'numInhouseDispatchedFIX',
-          label: t('client.list.numInhouseDispatchedFIX'),
-          field: 'numInhouseDispatchedFIX',
-          sortable: true
-        },
-        {
-          name: 'numInhouseDispatchedJobs',
-          label: t('client.list.numInhouseDispatchedJobs'),
-          field: 'numInhouseDispatchedJobs',
-          sortable: true
-        },
-        { name: 'actions', label: '', field: '', align: 'center' },
+        
       ];
     });
 
@@ -305,7 +244,12 @@ export default {
           return val;
         }
         return val;
-      })
+      }),
+
+      openDrawer(clientId){
+        drawerRight.value = true; 
+        router.push('/clients/' +  clientId)
+      }
     };
   },
 };

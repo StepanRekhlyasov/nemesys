@@ -50,7 +50,7 @@ export const RouterToSingleMenuItem = (routers: MenuRouter[]):MenuItem[] => rout
 export const menuParent: MenuParentType[] = [{
   type: MenuParent.ClientMenagment,
   title: 'menu.clientManagement',
-  icon: 'mdi-office-building-outline'
+  icon: 'business'
 },{
   type: MenuParent.SystemSettings,
   title: 'menu.system',

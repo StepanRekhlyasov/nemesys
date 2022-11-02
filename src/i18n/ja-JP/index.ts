@@ -193,6 +193,8 @@ export default {
       numDispatchedBOs: '自社派遣BO数',
       numInhouseDispatchedFIX: '自社派遣FIX数',
       numInhouseDispatchedJobs: '自社派遣職見数',
+      businessLocation: '事業所所在地',
+      callingTendency: '今の時間帯の接電傾向',
 
     },
     add: {
