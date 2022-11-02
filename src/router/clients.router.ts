@@ -2,13 +2,33 @@ import { MenuParent } from 'src/shared/model/Menu.molel';
 
 const clientRouters = [
   {
+    path: 'clients/mapSearch',
+    component: () => import('src/pages/clients/list.vue'),
+    meta: { requiresAuth: true },
+    menuParent: MenuParent.ClientMenagment,
+    title: 'menu.mapSearch',
+  },
+  {
+    path: 'clients/areaSearch',
+    component: () => import('src/pages/clients/list.vue'),
+    meta: { requiresAuth: true },
+    menuParent: MenuParent.ClientMenagment,
+    title: 'menu.areaSearch',
+  },
+  {
+    path: 'clients/advancedSearch',
+    component: () => import('src/pages/clients/list.vue'),
+    meta: { requiresAuth: true },
+    menuParent: MenuParent.ClientMenagment,
+    title: 'menu.advancedSearch',
+  },
+  {
     path: 'clients',
     component: () => import('src/pages/clients/list.vue'),
     meta: { requiresAuth: true },
     menuParent: MenuParent.ClientMenagment,
     title: 'menu.clientList',
     icon: 'face',
-    single: true,
   },
   {
     path: 'clients/:clientId',
@@ -17,7 +37,7 @@ const clientRouters = [
     title: 'menu.clientList',
     icon: 'business',
     single: true,
-  }
+  },
 ]
 
 export default  clientRouters;

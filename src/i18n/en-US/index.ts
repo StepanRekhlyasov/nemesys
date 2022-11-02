@@ -61,7 +61,10 @@ export default {
     system: 'System Settings',
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
-    organization: 'Organization Master Management'
+    organization: 'Organization Master Management',
+    mapSearch: 'Map Search',
+    areaSearch: 'Area Search',
+    advancedSearch: 'Advanced search'
   },
   settings: {
     branch: {
