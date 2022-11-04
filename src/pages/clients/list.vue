@@ -68,7 +68,7 @@
     </div> -->
     
       <q-drawer side="right" v-model="drawerRight" show-if-above bordered :width="1000" :breakpoint="500"
-        class="bg-grey-3" overlay elevated v-if="drawerRight">
+        class="bg-grey-3" overlay elevated v-if="selectedClient">
         <q-scroll-area class="fit text-left">
           <q-card>
             <q-card-section class="text-white" style="background-color: #175680;">
@@ -112,7 +112,20 @@
             </div>
           </q-card-section>
           <q-separator />
-          <q-separator></q-separator>
+          <q-card-section>
+            <div class="row">
+              <div class="col-3 text-center text-primary"> {{$t('client.list.contactTendency') }} </div>
+              <div class="col-9 q-pl-md"> 午前：△　午後：〇　夕方：- </div>
+            </div>
+            <div class="row">
+              <div class="col-3 text-center text-primary"> {{$t('client.add.officeMemo') }} </div>
+              <div class="col-9 q-pl-md"> 各社用のメモ。主任はｘｘｘ様。</div>
+            </div>
+          </q-card-section>
+          <q-separator />
+          <q-card-section>
+            <detailComponent />
+          </q-card-section>
             <!-- {{ selectedClient }} -->
           </q-card>
         </q-scroll-area>
@@ -131,6 +144,8 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { ref, computed, onBeforeUnmount } from 'vue';
+import detailComponent from './components/detail.vue';
+
 //import { useRouter } from 'vue-router';
 
 // import { defineComponent } from "vue";
@@ -139,6 +154,7 @@ import { ref, computed, onBeforeUnmount } from 'vue';
 export default {
   name: 'clientsList',
   components: {
+    detailComponent
   },
 
   setup() {
@@ -192,7 +208,7 @@ export default {
     });
 
     const officeData = ref([]);
-    const selectedClient = ref({});
+    const selectedClient = ref(null);
 
     const advanceSearchDialog = ref(false);
     const areaSearchDialog = ref(false);
@@ -284,10 +300,11 @@ export default {
       }),
 
       openDrawer(data){
-        drawerRight.value = true; 
+        drawerRight.value = false; 
         //router.push('/clients/' +  data.clientId)
         selectedClient.value = data;
         console.log(data);
+        setTimeout(() => drawerRight.value = true, 300);
       }
     };
   },
