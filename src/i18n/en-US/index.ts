@@ -157,6 +157,9 @@ export default {
       periodStartDate: 'Period start date',
       numBOsAcquired: 'Number of BOs acquired',
       numBOs: 'Number of BOs',
+      listBO: 'BO List',
+      officeDetail: 'Office Detail',
+      variousAchievements: 'Various Achievements',
       numFixResults: 'Number of FIX results',
       jobSearchResults: 'Job search results',
       numJobOffers: 'Number of job offers',
@@ -198,6 +201,7 @@ export default {
       businessAddress: 'Business Address',
       tradingPerformance: 'Trading Performance',
       officesConcludedBasicContract: 'Within the same corporation other offices that have concluded a basic contract',
+      contactTendency: 'Contact Tendency',
 
     },
     add: {

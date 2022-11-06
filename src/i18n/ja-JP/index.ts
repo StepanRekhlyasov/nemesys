@@ -159,6 +159,9 @@ export default {
       periodStartDate: '期間開始日',
       numBOsAcquired: '取得したBO数',
       numBOs: 'BO数',
+      listBO: 'BOリスト',
+      officeDetail: '事業所詳細情報',
+      variousAchievements: '各種実績数',
       numFixResults: 'FIX実績数',
       jobSearchResults: '職見実績数',
       numJobOffers: '内定実績数',
@@ -198,6 +201,7 @@ export default {
       businessAddress: '事業所住所',
       tradingPerformance: '取引実績',
       officesConcludedBasicContract: '同一法人内で基本契約締結済みの他事務所',
+      contactTendency: '接電傾向',
 
     },
     add: {
@@ -305,7 +309,7 @@ export default {
       carCommutingPossible: '車通勤可能',
       parkingAvailable: '駐車場有',
       parkingLotRemarks: '駐車場備考',
-      officeMemo: '事業所メモ欄',
+      officeMemo: '事業所メモ',
       longLatInfo: '経度・緯度情報',
       calOfficeInfo: '事業所情報から算出する',
       numTeleAppoint: 'テレアポ件数',
