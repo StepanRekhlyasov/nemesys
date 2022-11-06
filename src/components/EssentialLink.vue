@@ -64,6 +64,6 @@ export default defineComponent({
 @import "src/css/imports/colors";
 .menu-active-class{
   color: $main-primary;
-  background: $main_bg;
+  background: $grey-3;
 }
 </style>

@@ -1,72 +1,74 @@
 <template>
-  <div class="row q-pa-sm">
-      <q-card>
-            <q-card-section>
-              <div class="text-h6">詳細条件検索</div>
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <div class="text-subtitle2">検索条件 / 東京都全域, 今の時間帯のテレアポ接電率:高い</div>
-              <div class="row q-mt-xs">
-                <div class="q-gutter-md" style="max-width: 150px">
-                  <q-select outlined dense>
-                    <template v-slot:prepend>
-                      <q-icon name="filter_alt" color="primary" />
-                    </template>
-                  </q-select>
-                </div>
-                <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
-                  <q-select outlined dense>
-              
-                  </q-select>
-                </div>
+  <div class="row no-shadow full-height">
+    <q-card class="no-shadow  bg-grey-1">
+      <q-card-section class="bg-grey-3">
+        <div class="text-h6 text-primary">{{$t('menu.advancedSearch')}}</div>
+      </q-card-section>
+      <q-separator color="white"  size="2px"/>
+      <q-card-section class="bg-grey-3">
+        <div class="text-subtitle2">検索条件 / 東京都全域, 今の時間帯のテレアポ接電率:高い</div>
+        <div class="row q-mt-xs">
+          <div class="q-gutter-md" style="max-width: 150px">
+            <q-select outlined dense>
+              <template v-slot:prepend>
+                <q-icon name="filter_alt" color="primary" />
+              </template>
+            </q-select>
+          </div>
+          <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
+            <q-select outlined dense>
+
+            </q-select>
+          </div>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section class=" no-padding">
+        <q-table
+          :columns="columns"
+          :rows="officeData"
+          row-key="name"
+          selection="multiple"
+          v-model:selected="selected"
+        >
+        <template v-slot:body-cell-name="props">
+          <q-td :props="props">
+            <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
+              :label="props.value" class="q-pt-none q-pb-none text-caption" />
+              <div>
+                {{ props.row.office_name }} | {{ props.row.address1 }}
               </div>
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <q-table                
-                :columns="columns"
-                :rows="officeData"
-                row-key="name"
-              >
-              <template v-slot:body-cell-name="props">
-                <q-td :props="props">
-                  <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
-                    :label="props.value" class="q-pt-none q-pb-none text-caption" />
-                    <div>
-                      {{ props.row.office_name }} | {{ props.row.address1 }}
-                    </div>
-                </q-td>
-              </template>
+          </q-td>
+        </template>
 
-              <template v-slot:body-cell-callingTendency="props">
-                <q-td :props="props">
-                  <span class="text-green">〇：高い</span>
-                </q-td>
-              </template>
+        <template v-slot:body-cell-callingTendency="props">
+          <q-td :props="props">
+            <span class="text-green">〇：高い</span>
+          </q-td>
+        </template>
 
-              <template v-slot:body-cell-status="props">
-                <q-td :props="props">
-                  <q-icon size="1.5em" name="mdi-emoticon-neutral" color="yellow-8"></q-icon>
-                </q-td>
-              </template>
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <q-icon size="1.5em" name="mdi-emoticon-neutral" color="yellow-8"></q-icon>
+          </q-td>
+        </template>
 
-              <template v-slot:body-cell-dispatchIndex="props">
-                <q-td :props="props">
-                  <span class="text-green">とても高い </span> <span>｜標準</span>
-                </q-td>
-              </template>
+        <template v-slot:body-cell-dispatchIndex="props">
+          <q-td :props="props">
+            <span class="text-green">とても高い </span> <span>｜標準</span>
+          </q-td>
+        </template>
 
 
-              </q-table>
-            </q-card-section>
-          </q-card>
+        </q-table>
+      </q-card-section>
+    </q-card>
 
       <!-- <div>
       <p class="text-h6">Select the client</p>
       <p>You will be able to check the requisitions by selecting the client</p>
     </div> -->
-    
+
       <q-drawer side="right" v-model="drawerRight" show-if-above bordered :width="1000" :breakpoint="500"
         class="bg-grey-3" overlay elevated v-if="drawerRight">
         <q-scroll-area class="fit text-left">
@@ -147,8 +149,9 @@ export default {
     const center = { lat: 40.689247, lng: -74.044502 };
     const apiKey = '';
     const tab = ref('conditionSearch');
+    const selected = ref([])
     //const router = useRouter();
-    
+
     const colors = {
       excited: 'green',
       happy: 'light-green',
@@ -187,7 +190,7 @@ export default {
           field: 'dispatchIndex',
           sortable: true,
         },
-        
+
       ];
     });
 
@@ -262,6 +265,7 @@ export default {
       colors,
       selectedRows,
       pagination,
+      selected,
 
       //dialog
       advanceSearchDialog,
@@ -284,7 +288,7 @@ export default {
       }),
 
       openDrawer(data){
-        drawerRight.value = true; 
+        drawerRight.value = true;
         //router.push('/clients/' +  data.clientId)
         selectedClient.value = data;
         console.log(data);

@@ -285,7 +285,7 @@ export default defineComponent({
   }
   .menu{
     &_header{
-      background-color: $grey-2;
+      background-color: $grey-3;
       border-bottom: 2px solid $grey-5;
     }
     &_slidebar{
@@ -298,7 +298,7 @@ export default defineComponent({
       }
       &_item{
         border-bottom: 2px solid white;
-        background-color: $grey-2;
+        background-color: $grey-3;
         align-items: center;
         &.menu_slidebar_class{
           background-color: white;
