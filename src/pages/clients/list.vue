@@ -252,15 +252,15 @@ export default {
           sortable: false,
         },{
           name: 'teleAppointmentInfo',
-          align: 'center',
+          align: 'left',
           label: t('client.list.teleAppointmentInfo'),
           field: 'teleAppointmentInfo',
           sortable: false,
         },{
-          name: 'teleAppointmentInfo',
-          align: 'center',
+          name: 'contactPeroneName',
+          align: 'left',
           label: t('client.list.contactPeroneName'),
-          field: 'teleAppointmentInfo',
+          field: 'contactPeroneName',
           sortable: false,
         }
 
