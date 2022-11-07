@@ -56,6 +56,7 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      behavior="desktop"
       style="background: linear-gradient(180deg, #085374 0%, #043246 100%);"
       :width="260"
       :mini="miniState"
@@ -166,6 +167,11 @@ export default defineComponent({
     const permissions = ref([] as UserPermissionNames[])
     const linksList: MenuItem[] =  RouterToMenu(routes);
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
+
+    if (router.currentRoute.value.meta.parent) {
+      active_menu.value = router.currentRoute.value.meta.parent as string | undefined;
+      openLeftSlidebar.value = true;
+    }
 
     // if we want to get the user details, this is how its done
     onAuthStateChanged(auth, async (user) => {
