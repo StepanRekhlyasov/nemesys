@@ -1,6 +1,6 @@
 <template>
   <div class="row no-shadow full-height">
-    <q-card class="no-shadow  bg-grey-1">
+    <q-card class="no-shadow full-width bg-grey-1">
       <q-card-section class="bg-grey-3">
         <div class="text-h6 text-primary">{{$t('menu.advancedSearch')}}</div>
       </q-card-section>
@@ -9,14 +9,14 @@
         <div class="text-subtitle2">検索条件 / 東京都全域, 今の時間帯のテレアポ接電率:高い</div>
         <div class="row q-mt-xs">
           <div class="q-gutter-md" style="max-width: 150px">
-            <q-select outlined dense>
+            <q-select outlined dense class="bg-white">
               <template v-slot:prepend>
                 <q-icon name="filter_alt" color="primary" />
               </template>
             </q-select>
           </div>
           <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
-            <q-select outlined dense>
+            <q-select outlined dense class="bg-white">
 
             </q-select>
           </div>
@@ -29,15 +29,22 @@
           :rows="officeData"
           row-key="name"
           selection="multiple"
+          class="client_table"
           v-model:selected="selected"
         >
         <template v-slot:body-cell-name="props">
-          <q-td :props="props">
+          <q-td :props="props" >
             <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
-              :label="props.value" class="q-pt-none q-pb-none text-caption" />
-              <div>
-                {{ props.row.office_name }} | {{ props.row.address1 }}
-              </div>
+              :label="props.value" class="q-pa-none text-body1" />
+            <div>
+              {{ props.row.office_name }} <br/> {{ props.row.address1 }}
+            </div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-dispatchIndex="props">
+          <q-td :props="props">
+            <span class="text-green">とても高い </span> <span>｜標準</span>
           </q-td>
         </template>
 
@@ -53,9 +60,40 @@
           </q-td>
         </template>
 
-        <template v-slot:body-cell-dispatchIndex="props">
+        <template v-slot:body-cell-office="props">
           <q-td :props="props">
-            <span class="text-green">とても高い </span> <span>｜標準</span>
+            {{props.row.office_location}}
+            <div>
+              100.0m
+            </div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-tel="props">
+          <q-td :props="props" class="no-wrap">
+            {{props.row.tel}}
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-fax="props">
+          <q-td :props="props" class="no-wrap">
+            <q-btn disable unelevated color="grey" :label="$t('client.list.faxNotAvailable')"></q-btn>
+          </q-td>
+        </template>teleAppointmentInfo
+
+        <template v-slot:body-cell-presenceContract="props">
+          <q-td :props="props" class="no-wrap">
+            契約 未締結
+            <br />
+            求人 情報なし
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-teleAppointmentInfo="props">
+          <q-td :props="props" class="no-wrap">
+            2022/10/01 15:30
+            <br />
+            接電
           </q-td>
         </template>
 
@@ -65,9 +103,9 @@
     </q-card>
 
       <!-- <div>
-      <p class="text-h6">Select the client</p>
-      <p>You will be able to check the requisitions by selecting the client</p>
-    </div> -->
+        <p class="text-h6">Select the client</p>
+        <p>You will be able to check the requisitions by selecting the client</p>
+      </div> -->
 
       <q-drawer side="right" v-model="drawerRight" show-if-above bordered :width="1000" :breakpoint="500"
         class="bg-grey-3" overlay elevated v-if="selectedClient">
@@ -176,36 +214,55 @@ export default {
       sad: 'amber-10',
       angry: 'red',
     };
+
     const columns = computed(() => {
       return [
         {
           name: 'name',
           required: true,
-          label: t('client.add.officeName') + ' | ' + t('client.add.clientName') + ' | ' + t('client.list.businessLocation'),
+          label: t('client.add.officeName') + ' | ' + t('client.add.clientName'),
           align: 'left',
           field: 'name',
           sortable: false,
-        },
-        {
-          name: 'callingTendency',
+        },{
+          name: 'office',
+          required: true,
+          label: t('client.list.officeLocation') + ' | ' + t('client.list.distanceStartingPoint') ,
+          align: 'left',
+          field: 'office_location',
+          sortable: false,
+        },{
+          name: 'tel',
+          required: true,
+          label: t('client.add.phoneNumber') ,
+          align: 'left',
+          field: 'tel',
+          sortable: false,
+        },{
+          name: 'fax',
           align: 'center',
-          label: t('client.list.callingTendency'),
-          field: 'callingTendency',
-          sortable: true,
-        },
-        {
-          name: 'status',
+          label: t('client.add.faxNumber'),
+          field: 'fax',
+          sortable: false,
+        },{
+          name: 'presenceContract',
+          label: t('client.list.presenceContract') + ' | ' + t('client.list.jobPostings'),
+          align: 'left',
+          field: 'presenceContract',
+          sortable: false,
+        },{
+          name: 'teleAppointmentInfo',
           align: 'center',
-          label: t('client.list.status'),
-          field: 'status',
-          sortable: true,
-        },
-        {
-          name: 'dispatchIndex',
-          label: t('client.list.dispatchIndex') + ' | ' + t('client.list.referralMetrics'),
-          field: 'dispatchIndex',
-          sortable: true,
-        },
+          label: t('client.list.teleAppointmentInfo'),
+          field: 'teleAppointmentInfo',
+          sortable: false,
+        },{
+          name: 'teleAppointmentInfo',
+          align: 'center',
+          label: t('client.list.contactPeroneName'),
+          field: 'teleAppointmentInfo',
+          sortable: false,
+        }
 
       ];
     });
@@ -314,3 +371,26 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.client_table{
+  color: $grey-7;
+  th  {
+    color: $grey-10;
+  }
+  td  {
+    max-width: 200px;
+    white-space: pre-wrap;
+  }
+  tr  {
+    background-color: $grey-1;
+    &.opened{
+      background-color: white;
+      border-left: 3px solid $primary;
+    }
+  }
+  .no-wrap{
+    white-space: nowrap;
+  }
+}
+</style>
