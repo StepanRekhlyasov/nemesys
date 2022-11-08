@@ -23,34 +23,23 @@
         </div>
       </q-card-section>
       <q-separator />
-      <q-card-section class=" no-padding">
+      <q-card-section class="no-padding client_table">
         <q-table
           :columns="columns"
           :rows="officeData"
           row-key="name"
           selection="multiple"
-          class="client_table"
           v-model:selected="selected"
+          v-model:pagination="pagination"
+          hide-pagination
         >
         <template v-slot:body-cell-name="props">
-          <q-td :props="props" >
+          <q-td :props="props" class="q-pa-none" >
             <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
               :label="props.value" class="q-pa-none text-body1" />
             <div>
-              {{ props.row.office_name }} <br/> {{ props.row.address1 }}
+              {{ props.row.address1 }}
             </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-dispatchIndex="props">
-          <q-td :props="props">
-            <span class="text-green">とても高い </span> <span>｜標準</span>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-callingTendency="props">
-          <q-td :props="props">
-            <span class="text-green">〇：高い</span>
           </q-td>
         </template>
 
@@ -62,43 +51,62 @@
 
         <template v-slot:body-cell-office="props">
           <q-td :props="props">
-            {{props.row.office_location}}
-            <div>
-              100.0m
-            </div>
+            <template v-if="props.row.office_location">
+              {{props.row.office_location}}
+              <div>
+                100.0m
+              </div>
+            </template>
           </q-td>
         </template>
 
         <template v-slot:body-cell-tel="props">
-          <q-td :props="props" class="no-wrap">
+          <q-td :props="props" class="no-wrap q-pa-none">
             {{props.row.tel}}
           </q-td>
         </template>
 
         <template v-slot:body-cell-fax="props">
-          <q-td :props="props" class="no-wrap">
+          <q-td :props="props" class="no-wrap q-pa-none">
             <q-btn disable unelevated color="grey" :label="$t('client.list.faxNotAvailable')"></q-btn>
           </q-td>
         </template>teleAppointmentInfo
 
         <template v-slot:body-cell-presenceContract="props">
-          <q-td :props="props" class="no-wrap">
+          <q-td :props="props" class="no-wrap q-pa-none">
             契約 未締結
             <br />
             求人 情報なし
           </q-td>
-        </template>
+        </template>ああああああ
 
         <template v-slot:body-cell-teleAppointmentInfo="props">
-          <q-td :props="props" class="no-wrap">
+          <q-td :props="props" class="no-wrap q-pa-none">
             2022/10/01 15:30
             <br />
             接電
           </q-td>
         </template>
 
+        <template v-slot:body-cell-contactPeroneName="props">
+          <q-td :props="props" class="no-wrap">
+            ああああああ
+          </q-td>
+        </template>
+
 
         </q-table>
+        <div class="row justify-start q-mt-md pagination">
+          <q-pagination
+            v-model="pagination.page"
+            color="grey-8"
+            padding="5px 16px"
+            gutter="md"
+            :max="(officeData.length/pagination.rowsPerPage) >= 1 ?  officeData.length/pagination.rowsPerPage : 1"
+            direction-links
+            outline
+          />
+        </div>
       </q-card-section>
     </q-card>
 
@@ -282,7 +290,7 @@ export default {
       sortBy: 'desc',
       descending: false,
       page: 1,
-      rowsPerPage: 25
+      rowsPerPage: 10
       // rowsNumber: xx if getting data from a server
     });
     const unsubscribe = ref();
@@ -320,6 +328,7 @@ export default {
         });
         unsubscribeOffice.value.push(unsub);
       }
+      console.log((officeData.value.length/pagination.value.rowsPerPage) > 0 ?  officeData.value.length/pagination.value.rowsPerPage : 1)
     }
 
     onBeforeUnmount(() => {
@@ -387,6 +396,25 @@ export default {
     &.opened{
       background-color: white;
       border-left: 3px solid $primary;
+    }
+  }
+  .pagination {
+    .row button {
+      border: 2px solid $grey-10;
+      color: $grey-10;
+      padding: unset !important;
+      height: 40px;
+      width: 40px;
+      border-radius: 4px;
+      background-color: #fff;
+      margin-left: 10px;
+      &.disabled{
+        background-color: $grey-4;
+        border-color: $grey-6;
+      }
+    }
+    .q-btn--outline:before{
+      border: unset;
     }
   }
   .no-wrap{
