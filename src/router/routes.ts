@@ -1,6 +1,7 @@
 import { MenuRouter } from 'src/shared/model/Menu.molel';
 import systemRouter from './system.router';
 import clientRouters from './clients.router';
+import applicantRouters from './applicant.router';
 
 const routes: MenuRouter[] = [{
   path: '/',
@@ -20,7 +21,9 @@ const routes: MenuRouter[] = [{
       single: true,
     },
     ...systemRouter,
-    ...clientRouters
+    ...clientRouters,
+    ...applicantRouters
+
   ]
 }]
 

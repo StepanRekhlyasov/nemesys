@@ -62,7 +62,10 @@ export default {
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
     organization: 'Organization Master Management',
+    applicant: 'Applicant Management',
     mapSearch: 'Map Search',
+    newApplicant: 'New Applicant Registration',
+    applicantSearch : 'Applicant Search',
     areaSearch: 'Area Search',
     advancedSearch: 'Advanced search'
   },
@@ -164,6 +167,7 @@ export default {
       numBOs: 'Number of BOs',
       listBO: 'BO List',
       officeDetail: 'Office Detail',
+      officeHead: 'Office Head',
       variousAchievements: 'Various Achievements',
       numFixResults: 'Number of FIX results',
       jobSearchResults: 'Job search results',

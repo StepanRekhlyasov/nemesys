@@ -47,12 +47,18 @@ export const RouterToSingleMenuItem = (routers: MenuRouter[]):MenuItem[] => rout
   return [...items]
 }, [] as MenuItem[])
 
-export const menuParent: MenuParentType[] = [{
-  type: MenuParent.ClientMenagment,
-  title: 'menu.clientManagement',
-  icon: 'business'
-},{
-  type: MenuParent.SystemSettings,
-  title: 'menu.system',
-  icon: 'mdi-cog',
-}]
+export const menuParent: MenuParentType[] = [
+  {
+    type: MenuParent.ApplicantManagement,
+    title: 'menu.applicant',
+    icon: 'mdi-face-outline'
+  },{
+    type: MenuParent.ClientMenagment,
+    title: 'menu.clientManagement',
+    icon: 'business'
+  },{
+    type: MenuParent.SystemSettings,
+    title: 'menu.system',
+    icon: 'mdi-cog',
+  }
+]

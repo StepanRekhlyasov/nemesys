@@ -23,7 +23,7 @@
         </div>
       </q-card-section>
       <q-separator />
-      <q-card-section class="no-padding client_table">
+      <q-card-section class="no-padding new_table">
         <q-table
           :columns="columns"
           :rows="officeData"
@@ -115,11 +115,19 @@
         <p>You will be able to check the requisitions by selecting the client</p>
       </div> -->
 
-      <q-drawer side="right" v-model="drawerRight" show-if-above bordered :width="1000" :breakpoint="500"
-        class="bg-grey-3" overlay elevated v-if="selectedClient">
+      <q-drawer
+        v-model="drawerRight"
+        v-if="selectedClient"
+        class="bg-grey-3"
+        :width="1000"
+        :breakpoint="500"
+        side="right"
+        overlay elevated
+        bordered
+        >
         <q-scroll-area class="fit text-left">
-          <q-card>
-            <q-card-section class="text-white" style="background-color: #175680;">
+          <q-card class="no-shadow bg-grey-3">
+            <q-card-section class="text-white bg-primary" >
               <div class="text-h6">
                 <q-btn dense flat icon="close" @click="drawerRight = false" />
                 {{ selectedClient.name }}
@@ -127,54 +135,51 @@
               </div>
             </q-card-section>
             <q-separator />
-          <q-card-section>
-            <div class="row">
-              <div class="col-6">
-                <div class="row">
-                  <div class="col-4 text-right"> {{$t('client.list.businessAddress') }} </div>
-                  <div class="col-8 q-pl-md"> {{ selectedClient.address1 }}  </div>
+            <q-card-section class="bg-grey-1">
+              <div class="row">
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-4 text-right"> {{$t('client.list.businessAddress') }} </div>
+                    <div class="col-8 q-pl-md"> {{ selectedClient.address1 }}  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4 text-right"> TEL </div>
+                    <div class="col-8 q-pl-md"> {{ selectedClient.tel }}  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4 text-right"> FAX </div>
+                    <div class="col-8 q-pl-md"> {{ selectedClient.fax }}  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4 text-right"> {{$t('client.list.presenceContract') }} </div>
+                    <div class="col-8 q-pl-md">  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4 text-right"> {{$t('client.list.tradingPerformance') }} </div>
+                    <div class="col-8 q-pl-md"> </div>
+                  </div>
                 </div>
-                <div class="row">
-                  <div class="col-4 text-right"> TEL </div>
-                  <div class="col-8 q-pl-md"> {{ selectedClient.tel }}  </div>
-                </div>
-                <div class="row">
-                  <div class="col-4 text-right"> FAX </div>
-                  <div class="col-8 q-pl-md"> {{ selectedClient.fax }}  </div>
-                </div>
-                <div class="row">
-                  <div class="col-4 text-right"> {{$t('client.list.presenceContract') }} </div>
-                  <div class="col-8 q-pl-md">  </div>
-                </div>
-                <div class="row">
-                  <div class="col-4 text-right"> {{$t('client.list.tradingPerformance') }} </div>
-                  <div class="col-8 q-pl-md"> </div>
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-4 text-right"> {{$t('client.list.officesConcludedBasicContract') }} </div>
+                    <div class="col-8 q-pl-md"> </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-6">
-                <div class="row">
-                  <div class="col-4 text-right"> {{$t('client.list.officesConcludedBasicContract') }} </div>
-                  <div class="col-8 q-pl-md"> </div>
-                </div>
+            </q-card-section>
+            <q-separator />
+            <q-card-section class="bg-grey-1 q-ma-md shadow-2">
+              <div class="row q-pl-xl q-pr-xl">
+                <div class="col-2 text-center text-primary text-weight-regular text-left"> {{$t('client.list.contactTendency') }} </div>
+                <div class="col-4 q-pl-md text-left"> 午前：△　午後：〇　夕方：- </div>
+                <div class="col-2 text-center text-primary text-weight-regular text-left"> {{$t('client.add.officeMemo') }} </div>
+                <div class="col-4 q-pl-md text-left"> 各社用のメモ。主任はｘｘｘ様。</div>
               </div>
-            </div>
-          </q-card-section>
-          <q-separator />
-          <q-card-section>
-            <div class="row">
-              <div class="col-3 text-center text-primary"> {{$t('client.list.contactTendency') }} </div>
-              <div class="col-9 q-pl-md"> 午前：△　午後：〇　夕方：- </div>
-            </div>
-            <div class="row">
-              <div class="col-3 text-center text-primary"> {{$t('client.add.officeMemo') }} </div>
-              <div class="col-9 q-pl-md"> 各社用のメモ。主任はｘｘｘ様。</div>
-            </div>
-          </q-card-section>
-          <q-separator />
-          <q-card-section>
-            <detailComponent />
-          </q-card-section>
-            <!-- {{ selectedClient }} -->
+            </q-card-section>
+            <q-card-section class="q-pt-none">
+              <detailComponent />
+            </q-card-section>
+              <!-- {{ selectedClient }} -->
           </q-card>
         </q-scroll-area>
       </q-drawer>
@@ -382,43 +387,5 @@ export default {
 </script>
 
 <style lang="scss">
-.client_table{
-  color: $grey-7;
-  th  {
-    color: $grey-10;
-  }
-  td  {
-    max-width: 200px;
-    white-space: pre-wrap;
-  }
-  tr  {
-    background-color: $grey-1;
-    &.opened{
-      background-color: white;
-      border-left: 3px solid $primary;
-    }
-  }
-  .pagination {
-    .row button {
-      border: 2px solid $grey-10;
-      color: $grey-10;
-      padding: unset !important;
-      height: 40px;
-      width: 40px;
-      border-radius: 4px;
-      background-color: #fff;
-      margin-left: 10px;
-      &.disabled{
-        background-color: $grey-4;
-        border-color: $grey-6;
-      }
-    }
-    .q-btn--outline:before{
-      border: unset;
-    }
-  }
-  .no-wrap{
-    white-space: nowrap;
-  }
-}
+
 </style>

@@ -63,8 +63,11 @@ export default {
     branches: '支店マスタ管理',
     users: '担当マスタ管理',
     organization: '組織マスター管理',
+    applicant: '応募者管理',
     mapSearch: 'マップ検索',
     areaSearch: 'エリア検索',
+    newApplicant: '応募者 新規登録',
+    applicantSearch : '応募者 検索',
     advancedSearch: '詳細条件検索'
   },
   settings: {
@@ -166,6 +169,7 @@ export default {
       numBOs: 'BO数',
       listBO: 'BOリスト',
       officeDetail: '事業所詳細情報',
+      officeHead: '本社事業所',
       variousAchievements: '各種実績数',
       numFixResults: 'FIX実績数',
       jobSearchResults: '職見実績数',
