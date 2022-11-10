@@ -1,83 +1,160 @@
 <template>
-  <q-card class="no-shadow full-width bg-grey-1">
-    <q-card-section class="bg-grey-3">
-      <div class="text-h6 text-primary">{{ $t('menu.applicantSearch') }}</div>
-    </q-card-section>
+  <div class="row no-shadow full-height new">
+    <q-card class="no-shadow full-width bg-grey-1">
+      <q-card-section class="bg-grey-3">
+        <div class="text-h6 text-primary">{{ $t('menu.applicantSearch') }}</div>
+      </q-card-section>
 
-    <q-separator color="white" size="2px" />
+      <q-separator color="white" size="2px" />
 
-    <q-card-section class="bg-grey-3">
-      <div class="text-subtitle2">検索条件 / 東京都全域, 今の時間帯のテレアポ接電率:高い</div>
-      <div class="row q-mt-xs">
-          <div class="q-gutter-md" style="max-width: 150px">
-            <q-select outlined dense class="bg-white" v-model="filters">
-              <template v-slot:prepend>
-                <q-icon name="filter_alt" color="primary" />
-              </template>
-            </q-select>
-          </div>
-          <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
-            <q-select outlined dense class="bg-white" v-model="filters">
-
-            </q-select>
-          </div>
-        </div>
-    </q-card-section>
-
-    <q-separator color="white" size="2px" />
-
-    <q-card-section>
-
-      <q-table
-          :columns="columns"
-          :rows="applicantData"
-          row-key="id"
-          selection="multiple"
-          v-model:selected="selected"
-          v-model:pagination="pagination"
-          hide-pagination
-          
-        >
-        <template v-slot:header-cell-name="props">
-          <q-th :props="props" class="q-pa-none" >
-            <div> {{ $t('applicant.list.name') }} </div>
-            <div> {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} </div>
-            <div> {{ $t('applicant.list.address') }} </div>
-          </q-th>
-        </template>
-
-        <template v-slot:body-cell-name="props">
-          <q-td :props="props" class="q-pa-none" >
-            <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
-              :label="props.value" class="q-pa-none text-body1" />
-            <div>
-              {{props.row.occupation}} <span v-if="props.row.category">| {{props.row.category}}</span>
+      <q-card-section class="bg-grey-3">
+        <div class="text-subtitle2">検索条件 / 東京都全域, 今の時間帯のテレアポ接電率:高い</div>
+        <div class="row q-mt-xs">
+            <div class="q-gutter-md" style="max-width: 150px">
+              <q-select outlined dense class="bg-white" v-model="filters">
+                <template v-slot:prepend>
+                  <q-icon name="filter_alt" color="primary" />
+                </template>
+              </q-select>
             </div>
-          </q-td>
-        </template>
+            <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
+              <q-select outlined dense class="bg-white" v-model="filters">
 
-        <template v-slot:body-cell-status="props">
-          <q-td :props="props">
-            <span v-if="props.value">{{getStatus(props.value)}}</span>
-          </q-td>
-        </template>
+              </q-select>
+            </div>
+          </div>
+      </q-card-section>
+      <q-separator color="white" size="2px" />
+      <q-card-section>
+        <q-table
+            :columns="columns"
+            :rows="applicantData"
+            row-key="id"
+            selection="multiple"
+            v-model:selected="selected"
+            v-model:pagination="pagination"
+            hide-pagination
+          >
+          <template v-slot:header-cell-name="props">
+            <q-th :props="props" class="q-pa-none" >
+              <div> {{ $t('applicant.list.name') }} </div>
+              <div> {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} </div>
+              <div> {{ $t('applicant.list.address') }} </div>
+            </q-th>
+          </template>
+
+          <template v-slot:body-cell-name="props">
+            <q-td :props="props" class="q-pa-none" >
+              <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary"
+                :label="props.value" class="q-pa-none text-body1" />
+              <div>
+                {{props.row.occupation}} <span v-if="props.row.category">| {{props.row.category}}</span>
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <span v-if="props.value">{{getStatus(props.value)}}</span>
+            </q-td>
+          </template>
 
 
-        </q-table>
-        <div class="row justify-start q-mt-md pagination">
-          <q-pagination
-            v-model="pagination.page"
-            color="grey-8"
-            padding="5px 16px"
-            gutter="md"
-            :max="(applicantData.length/pagination.rowsPerPage) >= 1 ?  applicantData.length/pagination.rowsPerPage : 1"
-            direction-links
-            outline
-          />
-        </div>
-    </q-card-section>
+          </q-table>
+          <div class="row justify-start q-mt-md pagination">
+            <q-pagination
+              v-model="pagination.page"
+              color="grey-8"
+              padding="5px 16px"
+              gutter="md"
+              :max="(applicantData.length/pagination.rowsPerPage) >= 1 ?  applicantData.length/pagination.rowsPerPage : 1"
+              direction-links
+              outline
+            />
+          </div>
+      </q-card-section>
 
-  </q-card>
+    </q-card>
+
+
+    <q-drawer
+      v-model="drawerRight"
+      show
+      class="bg-grey-3"
+      :width="1000"
+      :breakpoint="500"
+      side="right"
+      overlay elevated
+      bordered
+      >
+      <q-scroll-area
+        class="fit text-left"
+        v-if="selectedApplicant">
+        <q-card class="no-shadow bg-grey-3">
+          <q-card-section class="text-white bg-primary rounded-borders" >
+            <div class="row">
+              <div class="col-2 flex items-start">
+                <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
+                <q-img
+                  :src="'https://placeimg.com/500/300/nature'"
+                  spinner-color="white"
+                  style="height: 90px; max-width: 90px"
+                />
+              </div>
+              <div class="col-10">
+                <div class="row">
+                  <div class="col-9 flex items-center">
+                    <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{$t('applicant.add.'+selectedApplicant.sex)}}
+                  </div>
+                  <div class="col-3 flex items-center">
+                    <div class="row text-weight-regular">
+                      {{$t('applicant.add.occupation')}}  {{$t('applicant.add.'+selectedApplicant.occupation)}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-9 flex items-center">
+                    {{[selectedApplicant.municipalities, selectedApplicant.street,  selectedApplicant.apartment].join(', ')}}
+                  </div>
+                  <div class="col-3 flex items-center">
+                    <div class="row text-weight-regular">
+                      {{$t('applicant.list.category')}}  {{$t('applicant.statusOption.'+selectedApplicant.status)}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <span class="q-pr-md">TEL: {{selectedApplicant.phone}}</span>
+                  MAIL: {{selectedApplicant.email}}
+                </div>
+                <div class="row">
+                  <span class="q-pr-md">{{$t('applicant.add.applicationDate')}}: {{selectedApplicant.applicationDate}}</span>
+                  <span class="q-pr-md">{{$t('applicant.add.applicationMedia')}}: indeed</span>
+                  <span class="q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
+                </div>
+              </div>
+
+            </div>
+          </q-card-section>
+          <q-separator />
+
+          <q-card-section class="bg-white q-ma-md">
+            <div class="row q-pb-md">
+              <div class="col-2 text-right text-primary text-weight-regular"> {{$t('applicant.list.qualification')}} </div>
+              <div class="col-10 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic.children)).join(', ') }}  </div>
+            </div>
+            <div class="row">
+              <div class="col-2 text-right text-primary text-weight-regular"> {{$t('applicant.list.memo') }} </div>
+              <div class="col-10 q-pl-md"> </div>
+            </div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <detailComponent />
+          </q-card-section>
+        </q-card>
+      </q-scroll-area>
+    </q-drawer>
+  </div>
 </template>
 
 
@@ -92,11 +169,13 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { statusList } from '../../shared/constants/Applicant.const';
+import detailComponent from '../clients/components/detail.vue';
 
 export default {
   name: 'applicantList',
 
   components: {
+    detailComponent
   },
 
   setup() {
@@ -106,6 +185,9 @@ export default {
     const filters = ref(null);
     const applicantData = ref([]);
     const selected = ref([])
+    const drawerRight = ref(false);
+    const selectedApplicant = ref(null)
+
     //const selectedRows = ref([]);
 
     const pagination = ref({
@@ -161,10 +243,8 @@ export default {
         querySnapshot.forEach((doc) => {
           data.push({ id: doc.id, ...doc.data() });
         });
-        
-        console.log(data);
-        
         applicantData.value = data;
+        console.log(data)
       });
     };
 
@@ -175,11 +255,15 @@ export default {
       pagination,
       applicantData,
       selected,
+      drawerRight,
+      selectedApplicant,
 
-  
-
-      openDrawer(){
-        return false
+      openDrawer(data){
+        if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
+          drawerRight.value = false;
+        }
+        selectedApplicant.value = data;
+        setTimeout(() => drawerRight.value = true, 300);
       },
       getStatus(status){
         let item = statusList.value.find(x => x.value === status);
@@ -187,7 +271,7 @@ export default {
           return item.label;
         }
       }
-      
+
     };
   },
 };

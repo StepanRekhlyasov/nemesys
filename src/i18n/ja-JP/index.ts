@@ -481,6 +481,8 @@ export default {
       assistantNurse: '準看護師',
       newcomer: '初任者',
       careWorker: '介護福祉士',
+      applicationMedia: '応募媒体',
+      applicationMetod: '応募方法'
     },
     list: {
       name: 'スタッフ名 ',
@@ -489,6 +491,7 @@ export default {
       rank: 'スタッフランク',
       status: '応募ステータス',
       qualification: '資格',
+      memo: 'スタッフメモ'
     },
     statusOption: {
       notCompatible: '未対応',

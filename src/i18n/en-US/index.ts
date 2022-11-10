@@ -483,7 +483,8 @@ export default {
       assistantNurse: 'Assistant Nurse',
       newcomer: 'Newcomer',
       careWorker: 'Care Worker',
-
+      applicationMedia: 'Application Media',
+      applicationMetod: 'Application Metod'
     },
     list: {
       name: 'Staff Name ',
@@ -492,6 +493,7 @@ export default {
       rank: 'Staff Rank',
       status: 'Application Status',
       qualification: 'Qualification',
+      memo: 'Staff Memo'
     },
     statusOption: {
       notCompatible: 'Not Compatible',
