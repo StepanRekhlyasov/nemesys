@@ -167,14 +167,14 @@
               {{ $t('applicant.add.qualification') }}
             </div>
             <div class="col-9 q-pl-sm">
-              <q-checkbox dense v-model="applicantData['qualification']" val="registeredNurse"
+              <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
                 :label="$t('applicant.add.registeredNurse')" />
-              <q-checkbox dense v-model="applicantData['qualification']" val="assistantNurse"
-                :label="$t('applicant.add.assistantNurse')" class="q-pl-md" />
-              <q-checkbox dense v-model="applicantData['qualification']" val="newcomer"
-                :label="$t('applicant.add.newcomer')" class="q-pl-md" />
-              <q-checkbox dense v-model="applicantData['qualification']" val="careWorker"
-                :label="$t('applicant.add.careWorker')" class="q-pl-md" />
+              <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
+                :label="$t('applicant.add.assistantNurse')"/>
+              <q-checkbox v-model="applicantData['qualification']" val="newcomer"
+                :label="$t('applicant.add.newcomer')" />
+              <q-checkbox v-model="applicantData['qualification']" val="careWorker"
+                :label="$t('applicant.add.careWorker')" />
             </div>
           </div>
 

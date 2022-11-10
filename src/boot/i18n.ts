@@ -24,15 +24,15 @@ declare module 'vue-i18n' {
 /* eslint-enable @typescript-eslint/no-empty-interface */
 
 let lang  = 'ja-JP'
-  if (LocalStorage.getItem('lang')){
-    lang = LocalStorage.getItem('lang') as string
-  }
-  const i18n = createI18n<{ message: MessageSchema }, MessageLanguages>({
-    locale: lang as string,
-    legacy: false,
-    messages,
-    globalInjection: true,
-  });
+if (LocalStorage.getItem('lang')){
+  lang = LocalStorage.getItem('lang') as string
+}
+const i18n = createI18n<{ message: MessageSchema }, MessageLanguages>({
+  locale: lang as string,
+  legacy: false,
+  messages,
+  globalInjection: true,
+});
   
 export default boot(({ app }) => {
   // Set i18n instance on app
