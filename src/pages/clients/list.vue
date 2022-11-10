@@ -31,6 +31,7 @@
           selection="multiple"
           v-model:selected="selected"
           v-model:pagination="pagination"
+          card-class=""
           hide-pagination
         >
         <template v-slot:body-cell-name="props">
@@ -333,6 +334,7 @@ export default {
             }
           });
         });
+        console.log(officeData.value)
         unsubscribeOffice.value.push(unsub);
       }
     }
@@ -376,7 +378,9 @@ export default {
       }),
 
       openDrawer(data){
-        drawerRight.value = true;
+        if (selectedClient.value?.id && selectedClient.value.id !== data.id) {
+          drawerRight.value = false;
+        }
         //router.push('/clients/' +  data.clientId)
         selectedClient.value = data;
         setTimeout(() => drawerRight.value = true, 300);
