@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-shadow full-height">
+  <div class="row no-shadow full-height new">
     <q-card class="no-shadow full-width bg-grey-1">
       <q-card-section class="bg-grey-3">
         <div class="text-h6 text-primary">{{$t('menu.advancedSearch')}}</div>
@@ -23,7 +23,7 @@
         </div>
       </q-card-section>
       <q-separator />
-      <q-card-section class="no-padding new_table">
+      <q-card-section class="no-padding table">
         <q-table
           :columns="columns"
           :rows="officeData"
@@ -117,7 +117,7 @@
 
       <q-drawer
         v-model="drawerRight"
-        v-if="selectedClient"
+        show
         class="bg-grey-3"
         :width="1000"
         :breakpoint="500"
@@ -125,7 +125,9 @@
         overlay elevated
         bordered
         >
-        <q-scroll-area class="fit text-left">
+        <q-scroll-area
+          class="fit text-left"
+          v-if="selectedClient">
           <q-card class="no-shadow bg-grey-3">
             <q-card-section class="text-white bg-primary" >
               <div class="text-h6">
@@ -333,7 +335,6 @@ export default {
         });
         unsubscribeOffice.value.push(unsub);
       }
-      console.log((officeData.value.length/pagination.value.rowsPerPage) > 0 ?  officeData.value.length/pagination.value.rowsPerPage : 1)
     }
 
     onBeforeUnmount(() => {
@@ -378,7 +379,6 @@ export default {
         drawerRight.value = true;
         //router.push('/clients/' +  data.clientId)
         selectedClient.value = data;
-        console.log(data);
         setTimeout(() => drawerRight.value = true, 300);
       }
     };
