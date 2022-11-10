@@ -452,6 +452,16 @@ export default {
       title: '就業経験者',
     },
   },
+  detal: {
+    teleAppoint: {
+      registredUser: '登録ユーザー',
+      date: '連絡日時',
+      teleAppointmentResult: 'テレアポ結果',
+      jobResult: '求人ヒアリング結果',
+      requiredService: '必要なサービス',
+      remark: '備考',
+    }
+  },
   applicant: {
     add: {
       name: '氏名',

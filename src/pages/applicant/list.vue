@@ -169,7 +169,7 @@ import {
   getFirestore,
 } from 'firebase/firestore';
 import { statusList } from '../../shared/constants/Applicant.const';
-import detailComponent from '../clients/components/detail.vue';
+import detailComponent from './components/detail.vue';
 
 export default {
   name: 'applicantList',

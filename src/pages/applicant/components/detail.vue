@@ -20,8 +20,9 @@
   <q-separator />
 
   <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="teleAppointHistory" class="q-pa-none">
-        <teleAppointHistory />
+      <q-tab-panel name="teleAppointHistory">
+          <div class="text-h6"> {{ $t('client.tele.teleAppointHistory') }}</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
       </q-tab-panel>
 
       <q-tab-panel name="listBO">
@@ -51,12 +52,10 @@
 <script>
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
-import teleAppointHistory from 'src/components/detal/TeleAppointHistory.vue';
 
 export default {
   name: 'clientDetails',
   components: {
-    teleAppointHistory
   },
 
   setup() {

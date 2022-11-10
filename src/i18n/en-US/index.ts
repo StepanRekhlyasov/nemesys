@@ -454,6 +454,16 @@ export default {
         title: 'Work Experience',
       },
   },
+  detal: {
+    teleAppoint: {
+      registredUser: 'RegistredUser',
+      date: 'Date',
+      teleAppointmentResult: 'Tele Appointment Result',
+      jobResult: 'Job Result',
+      requiredService: 'Required Service',
+      remark: 'Remark',
+    }
+  },
   applicant: {
     add: {
       name: 'Name',
