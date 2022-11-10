@@ -18,16 +18,16 @@ export const statusList = computed(() => {
       value: 'waitingContact',
     },
     {
-      label: t('applicant.statusOption.noContact'),
-      value: 'noContact',
+      label: t('applicant.statusOption.contactNG'),
+      value: 'contactNG',
     },
     {
-      label: t('applicant.statusOption.contacted'),
-      value: 'contacted',
+      label: t('applicant.statusOption.contactedWI'),
+      value: 'contactedWI',
     },
     {
-      label: t('applicant.statusOption.notAllowed'),
-      value: 'notAllowed',
+      label: t('applicant.statusOption.invitationNG'),
+      value: 'invitationNG',
     },
     {
       label: t('applicant.statusOption.invitedWaiting'),
@@ -42,44 +42,44 @@ export const statusList = computed(() => {
       value: 'attendedNG',
     },
     {
-      label: t('applicant.statusOption.attendedWaiting'),
-      value: 'attendedWaiting',
+      label: t('applicant.statusOption.attendedWaitingFix'),
+      value: 'attendedWaitingFix',
     },
     {
-      label: t('applicant.statusOption.fixing'),
-      value: 'fixing',
+      label: t('applicant.statusOption.fixNG'),
+      value: 'fixNG',
     },
     {
-      label: t('applicant.statusOption.fixed'),
-      value: 'fixed',
+      label: t('applicant.statusOption.fixedWaiting'),
+      value: 'fixedWaiting',
     },
     {
-      label: t('applicant.statusOption.jobNG'),
-      value: 'jobNG',
+      label: t('applicant.statusOption.visitingNG'),
+      value: 'visitingNG',
     },
     {
-      label: t('applicant.statusOption.lookingJob'),
-      value: 'lookingJob',
+      label: t('applicant.statusOption.visitedWaitingOffer'),
+      value: 'visitedWaitingOffer',
     },
     {
-      label: t('applicant.statusOption.noOffer'),
-      value: 'noOffer',
+      label: t('applicant.statusOption.offerNG'),
+      value: 'offerNG',
     },
     {
-      label: t('applicant.statusOption.offered'),
-      value: 'offered',
+      label: t('applicant.statusOption.OfferedWaitingEntry'),
+      value: 'OfferedWaitingEntry',
     },
     {
       label: t('applicant.statusOption.notHiring'),
       value: 'notHiring',
     },
     {
-      label: t('applicant.statusOption.employed'),
-      value: 'employed',
+      label: t('applicant.statusOption.entered'),
+      value: 'entered',
     },
     {
-      label: t('applicant.statusOption.withdrawal'),
-      value: 'withdrawal',
+      label: t('applicant.statusOption.expiryNG'),
+      value: 'expiryNG',
     },
     {
       label: t('applicant.statusOption.end'),

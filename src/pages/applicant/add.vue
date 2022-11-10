@@ -1,230 +1,230 @@
 <template>
-  <div class="text-caption text-weight-medium">
-    <q-card class="no-shadow full-width bg-grey-1">
-      <q-card-section class="bg-grey-3">
-        <div class="text-h6 text-primary">{{ $t('menu.newApplicant') }}</div>
-      </q-card-section>
-      <q-separator color="white" size="2px" />
+  <q-card class="no-shadow full-width bg-grey-1">
+    <q-card-section class="bg-grey-3">
+      <div class="text-h6 text-primary">{{ $t('menu.newApplicant') }}</div>
+    </q-card-section>
 
+    <q-separator color="white" size="2px" />
 
-      <q-card-section class="bg-grey-3">
+    <q-card-section class="bg-grey-3">
 
-        <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
-          <div class="row">
-            <div class="col-6">
-          <div class="row">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.name') }}
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.name') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['name']" bg-color="white" lazy-rules
+                  :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+              </div>
             </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['name']" bg-color="white" lazy-rules
-                  :rules="[(val) => (val && val.length > 0) || '']"  hide-bottom-space/>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.kanaName') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['kanaName']" bg-color="white" />
+              </div>
             </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.postCode') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['postCode']" bg-color="white" />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.prefecture') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
+                  bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.municipalities') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['municipalities']" bg-color="white" />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.street') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['street']" bg-color="white" />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.apartment') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['apartment']" bg-color="white" />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.phone') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['phone']" bg-color="white" />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.email') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['email']" bg-color="white" />
+              </div>
+            </div>
+
           </div>
+          <div class="col-6">
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.status') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
+                   :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
+            </div>
 
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.kanaName') }}
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.branchIncharge') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-select outlined dense v-model="applicantData['branchIncharge']" bg-color="white"
+                  :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
             </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['kanaName']" bg-color="white" />
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.sex') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
+                <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
+              </div>
             </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.dob') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-input dense outlined bg-color="white" v-model="applicantData['dob']">
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="applicantData['dob']" default-view="Years" :options="limitDate">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.occupation') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
+                <q-radio v-model="applicantData['occupation']" val="nursingCare"
+                  :label="$t('applicant.add.nursingCare')" />
+                <q-radio v-model="applicantData['occupation']" val="lifeCounselor"
+                  :label="$t('applicant.add.lifeCounselor')" />
+                <q-radio v-model="applicantData['occupation']" val="careManager"
+                  :label="$t('applicant.add.careManager')" />
+                <q-radio v-model="applicantData['occupation']" val="others" :label="$t('applicant.add.others')" />
+              </div>
+            </div>
+
+            <div class="row q-pt-md q-pb-sm ">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.qualification') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
+                  :label="$t('applicant.add.registeredNurse')" />
+                <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
+                  :label="$t('applicant.add.assistantNurse')" />
+                <q-checkbox v-model="applicantData['qualification']" val="newcomer"
+                  :label="$t('applicant.add.newcomer')" />
+                <q-checkbox v-model="applicantData['qualification']" val="careWorker"
+                  :label="$t('applicant.add.careWorker')" />
+              </div>
+            </div>
+
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.applicationDate') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
+                  <template v-slot:prepend>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm" format24h>
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+
+              </div>
+            </div>
+
           </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.postCode') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['postCode']" bg-color="white" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.prefecture') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']" bg-color="white" :label="$t('common.pleaseSelect')" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.municipalities') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['municipalities']" bg-color="white" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.street') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['street']" bg-color="white" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.apartment') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['apartment']" bg-color="white" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.phone') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['phone']" bg-color="white" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.email') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['email']" bg-color="white" />
-            </div>
-          </div>
-
         </div>
-        <div class="col-6">
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.status') }}
-            </div>
-            <div class="col-6 q-pl-sm">
-              <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white" :label="$t('common.pleaseSelect')" />
-            </div>
-          </div>
+        <q-separator color="white" size="2px" class="q-mt-md" />
 
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.branchIncharge') }}
-            </div>
-            <div class="col-6 q-pl-sm">
-              <q-select outlined dense v-model="applicantData['branchIncharge']" bg-color="white" :label="$t('common.pleaseSelect')" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.sex') }}
-            </div>
-            <div class="col-8 q-pl-sm">
-              <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
-              <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.dob') }}
-            </div>
-            <div class="col-6 q-pl-sm">
-              <q-input dense outlined bg-color="white" v-model="applicantData['dob']">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="applicantData['dob']" default-view="Years" :options="limitDate" >
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Close" color="primary" flat />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.occupation') }}
-            </div>
-            <div class="col-9 q-pl-sm">
-              <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
-              <q-radio v-model="applicantData['occupation']" val="nursingCare"
-                :label="$t('applicant.add.nursingCare')" />
-              <q-radio v-model="applicantData['occupation']" val="lifeCounselor"
-                :label="$t('applicant.add.lifeCounselor')" />
-              <q-radio v-model="applicantData['occupation']" val="careManager"
-                :label="$t('applicant.add.careManager')" />
-              <q-radio  v-model="applicantData['occupation']" val="others"
-                :label="$t('applicant.add.others')" />
-            </div>
-          </div>
-
-          <div class="row q-pt-md q-pb-sm ">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.qualification') }}
-            </div>
-            <div class="col-9 q-pl-sm">
-              <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
-                :label="$t('applicant.add.registeredNurse')" />
-              <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
-                :label="$t('applicant.add.assistantNurse')"/>
-              <q-checkbox v-model="applicantData['qualification']" val="newcomer"
-                :label="$t('applicant.add.newcomer')" />
-              <q-checkbox v-model="applicantData['qualification']" val="careWorker"
-                :label="$t('applicant.add.careWorker')" />
-            </div>
-          </div>
-
-          <div class="row q-pt-sm">
-            <div class="col-3 text-right self-center q-pr-sm">
-              {{ $t('applicant.add.applicationDate') }}
-            </div>
-            <div class="col-6 q-pl-sm">
-              <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
-                <template v-slot:prepend>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Close" color="primary" flat />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-
-                <template v-slot:append>
-                  <q-icon name="access_time" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm" format24h>
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Close" color="primary" flat />
-                        </div>
-                      </q-time>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-
-            </div>
-          </div>
-
+        <div class="q-pt-sm">
+          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
+          <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
-      </div>
-          <q-separator color="white" size="2px" class="q-mt-md" />
+      </q-form>
+    </q-card-section>
 
-          <div class="q-pt-sm">
-            <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
-            <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
-          </div>
-        </q-form>
-      </q-card-section>
-
-    </q-card>
-  </div>
+  </q-card>
 </template>
 
 <script lang="ts">
@@ -309,7 +309,7 @@ export default {
         //applicantForm.value.resetValidation();
       },
 
-      limitDate (date) {
+      limitDate(date) {
         return date <= new Date().toLocaleDateString('ja-JP')
       },
     };
