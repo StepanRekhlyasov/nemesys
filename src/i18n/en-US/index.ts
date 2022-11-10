@@ -42,6 +42,7 @@ export default {
     yesShort: 'Yes',
     above: 'Above',
     moreThan: 'or More',
+    pleaseSelect: 'Please Select',
   },
   weekDay: {
     sunday: 'Suny',
@@ -483,6 +484,30 @@ export default {
       newcomer: 'Newcomer',
       careWorker: 'Care Worker',
 
+    },
+    statusOption: {
+      notCompatible: 'Not Compatible',
+      excludedApplicant: 'Excluded Applicant',
+      waitingContact: 'Applied/Waiting for Contact',
+      noContact: 'No Contact',
+      contacted: 'Contacted/Waiting to be invited',
+      notAllowed: 'Not Allowed',
+      invitedWaiting: 'Invited/Waiting',
+      invitedNoContact: 'Invited/No Contact',
+      attendedNG: 'Attend NG',
+      attendedWaiting: 'Attended/Awaiting FIX',
+      fixing: 'FIXING',
+      fixed: 'FIXED/Pending Job Offer',
+      jobNG: 'Job NG',
+      lookingJob: 'Looking for a Job/Pending',
+      noOffer: 'Not Offered',
+      offered: 'Offered/Pending',
+      notHiring: 'Not Hiring',
+      employed: 'Employed (waiting for expiry)',
+      withdrawal: 'End of term NG (withdrawal)',
+      end: 'End',
+      update: 'Update',
+      futureTalent: 'Future Talent',
     }
   },
   prefectures: {

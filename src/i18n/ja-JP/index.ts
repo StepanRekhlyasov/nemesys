@@ -42,6 +42,7 @@ export default {
     yesShort: '有',
     above: '以上',
     moreThan: '件以上',
+    pleaseSelect: '選択してください',
 
   },
   weekDay: {
@@ -480,7 +481,30 @@ export default {
       assistantNurse: '準看護師',
       newcomer: '初任者',
       careWorker: '介護福祉士',
-
+    },
+    statusOption: {
+      notCompatible: '未対応',
+      excludedApplicant: '応募除外',
+      waitingContact: '応募済み／接触待ち',
+      noContact: '接触NG',
+      contacted: '接触済み／誘致待ち',
+      notAllowed: '誘致NG',
+      invitedWaiting: '誘致済み／アテンド待ち',
+      invitedNoContact: '誘致済み／連絡不通',
+      attendedNG: 'アテンドNG',
+      attendedWaiting: 'アテンド済み／FIX待ち',
+      fixing: 'FIXNG',
+      fixed: 'FIX済み／職見待ち',
+      jobNG: '職見NG',
+      lookingJob: '職見済み／内定待ち',
+      noOffer: '内定NG',
+      offered: '内定済み／入職待ち',
+      notHiring: '入職NG',
+      employed: '入職済み（満期終了待ち）',
+      withdrawal: '満期終了NG（離脱）',
+      end: '終了',
+      update: '更新',
+      futureTalent: '未来人材',
     }
   },
   prefectures: {

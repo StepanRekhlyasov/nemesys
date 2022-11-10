@@ -17,7 +17,8 @@
               {{ $t('applicant.add.name') }}
             </div>
             <div class="col-8 q-pl-sm">
-              <q-input outlined dense v-model="applicantData['name']" bg-color="white" />
+              <q-input outlined dense v-model="applicantData['name']" bg-color="white" lazy-rules
+                  :rules="[(val) => (val && val.length > 0) || '']"  hide-bottom-space/>
             </div>
           </div>
 
@@ -44,7 +45,7 @@
               {{ $t('applicant.add.prefecture') }}
             </div>
             <div class="col-8 q-pl-sm">
-              <q-select outlined dense v-model="applicantData['prefecture']" bg-color="white" />
+              <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']" bg-color="white" :label="$t('common.pleaseSelect')" />
             </div>
           </div>
 
@@ -100,7 +101,7 @@
               {{ $t('applicant.add.status') }}
             </div>
             <div class="col-6 q-pl-sm">
-              <q-select outlined dense v-model="applicantData['status']" bg-color="white" />
+              <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white" :label="$t('common.pleaseSelect')" />
             </div>
           </div>
 
@@ -109,7 +110,7 @@
               {{ $t('applicant.add.branchIncharge') }}
             </div>
             <div class="col-6 q-pl-sm">
-              <q-select outlined dense v-model="applicantData['status']" bg-color="white" />
+              <q-select outlined dense v-model="applicantData['branchIncharge']" bg-color="white" :label="$t('common.pleaseSelect')" />
             </div>
           </div>
 
@@ -132,7 +133,7 @@
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="applicantData['dob']">
+                      <q-date v-model="applicantData['dob']" default-view="Years" :options="limitDate" >
                         <div class="row items-center justify-end">
                           <q-btn v-close-popup label="Close" color="primary" flat />
                         </div>
@@ -216,7 +217,7 @@
           <q-separator color="white" size="2px" class="q-mt-md" />
 
           <div class="q-pt-sm">
-            <q-btn :label="$t('common.submit')" type="submit" color="primary" />
+            <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
             <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
           </div>
         </q-form>
@@ -238,6 +239,9 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 
+import { prefectureList } from '../../shared/constants/Prefecture.const';
+import { statusList } from '../../shared/constants/Applicant.const';
+
 export default {
   name: 'applicantAdd',
   setup() {
@@ -250,35 +254,23 @@ export default {
       qualification: []
     };
     const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
+    const prefectureOption = ref(prefectureList);
+    const statusOption = ref(statusList);
 
     const accept = ref(false);
     const applicantForm = ref(null);
-
-    const repeatItem = ref([
-      {
-        name: t('client.add.workplaceInformation'),
-        key: 'office',
-        color: 'bg-blue-grey-1',
-      },
-      {
-        name: t('client.add.contractor'),
-        key: 'contract',
-        color: 'bg-light-green-1',
-      },
-      {
-        name: t('client.add.prSheetDestination'),
-        key: 'prsheet',
-        color: 'bg-deep-orange-1',
-      },
-    ]);
+    const loading = ref(false);
 
     return {
       applicantData,
       accept,
-      repeatItem,
       applicantForm,
+      prefectureOption,
+      statusOption,
+      loading,
 
       async onSubmit() {
+        loading.value = true;
         let data = applicantData.value;
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
@@ -290,6 +282,7 @@ export default {
             applicantData.value
           );
           console.log('Document written with ID: ', docRef.id);
+          loading.value = false;
 
           $q.notify({
             color: 'green-4',
@@ -301,6 +294,7 @@ export default {
           //applicantForm.value.resetValidation();
         } catch (error) {
           console.log(error);
+          loading.value = false;
           $q.notify({
             color: 'red-5',
             textColor: 'white',
@@ -313,6 +307,10 @@ export default {
       onReset() {
         applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
+      },
+
+      limitDate (date) {
+        return date <= new Date().toLocaleDateString('ja-JP')
       },
     };
   },
