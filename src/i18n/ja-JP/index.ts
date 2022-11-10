@@ -507,7 +507,7 @@ export default {
       visitedWaitingOffer: '職見済み／内定待ち',
       offerNG: '内定NG',
       OfferedWaitingEntry: '内定済み／入職待ち',
-      notHiring: '入職NG',
+      entryNG: '入職NG',
       entered: '入職済み（満期終了待ち）',
       expiryNG: '満期終了NG（離脱）',
       end: '終了',

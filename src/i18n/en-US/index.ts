@@ -510,7 +510,7 @@ export default {
       visitedWaitingOffer: 'Visited/Waiting for offer',
       offerNG: 'Offer NG',
       OfferedWaitingEntry: 'Offered/Waiting for entry',
-      notHiring: 'Not Hiring',
+      entryNG: 'Entry NG',
       entered: 'Entered (Waiting for Expiry)',
       expiryNG: 'Expiry NG',
       end: 'End',

@@ -70,8 +70,8 @@ export const statusList = computed(() => {
       value: 'OfferedWaitingEntry',
     },
     {
-      label: t('applicant.statusOption.notHiring'),
-      value: 'notHiring',
+      label: t('applicant.statusOption.entryNG'),
+      value: 'entryNG',
     },
     {
       label: t('applicant.statusOption.entered'),
