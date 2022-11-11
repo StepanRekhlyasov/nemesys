@@ -94,15 +94,13 @@
               </div>
             </div>
 
-          </div>
-          <div class="col-6">
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.status') }}
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                   :label="$t('common.pleaseSelect')" emit-value map-options />
+                  :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
 
@@ -115,6 +113,10 @@
                   :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
+
+
+          </div>
+          <div class="col-6">
 
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
@@ -213,6 +215,25 @@
               </div>
             </div>
 
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.image') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+
+                <q-file name="applicant_image" v-model="applicantImage" multiple use-chips outlined dense
+                  bg-color="white" @update:model-value="onFileChange" accept=".jpg, image/*">
+                  <template v-slot:append>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file>
+                <div class="">
+                  <q-img :src="imageURL" spinner-color="white" style="height: 150px; max-width: 150px" v-if="imageURL"
+                    class="q-mt-sm" />
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
@@ -234,10 +255,13 @@ import { useI18n } from 'vue-i18n';
 //import { doc, setDoc, getFirestore, serverTimestamp, getDoc, addDoc } from "firebase/firestore";
 import {
   collection,
-  addDoc,
+  setDoc,
+  doc,
   getFirestore,
   serverTimestamp,
 } from 'firebase/firestore';
+
+import { getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 
 import { prefectureList } from '../../shared/constants/Prefecture.const';
 import { statusList } from '../../shared/constants/Applicant.const';
@@ -260,6 +284,39 @@ export default {
     const accept = ref(false);
     const applicantForm = ref(null);
     const loading = ref(false);
+    const imageURL = ref('');
+    const applicantImage = ref([]);
+
+    async function saveApplicantData(docRef, data) {
+      try {
+        await setDoc(
+          docRef,
+          data
+        );
+        loading.value = false;
+        imageURL.value = '';
+        applicantImage.value = [];
+
+        $q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: t('success'),
+        });
+        applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
+        //applicantForm.value.resetValidation();
+      } catch (error) {
+        console.log(error);
+        loading.value = false;
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: t('failed'),
+        });
+      }
+    }
+
 
     return {
       applicantData,
@@ -268,6 +325,8 @@ export default {
       prefectureOption,
       statusOption,
       loading,
+      imageURL,
+      applicantImage,
 
       async onSubmit() {
         loading.value = true;
@@ -275,34 +334,31 @@ export default {
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
         data['deleted'] = false;
+        const docRef = doc(collection(db, 'applicants'));
 
-        try {
-          const docRef = await addDoc(
-            collection(db, 'applicants'),
-            applicantData.value
-          );
-          console.log('Document written with ID: ', docRef.id);
-          loading.value = false;
+        if (applicantImage.value && applicantImage.value.length > 0) {
+          const file = applicantImage.value[0];
+          const storage = getStorage();
+          const storageRef = refStorage(storage, 'applicants/' + docRef.id + '/image/' + file['name']);
 
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
-          applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-          //applicantForm.value.resetValidation();
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
+          uploadBytes(storageRef, file).then((snapshot) => {
+            data['imagePath'] = snapshot.ref.fullPath;
+            saveApplicantData(docRef, data);
+          }).catch((error) => {
+            console.log(error);
+            $q.notify({
+              color: 'red-5',
+              textColor: 'white',
+              icon: 'warning',
+              message: t('failed'),
+            });
           });
         }
+        else {
+          saveApplicantData(docRef, data);
+        }
       },
+
 
       onReset() {
         applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
@@ -312,6 +368,13 @@ export default {
       limitDate(date) {
         return date <= new Date().toLocaleDateString('ja-JP')
       },
+      onFileChange(files) {
+        imageURL.value = '';
+        if (files && files.length > 0) {
+          const file = files[0];
+          imageURL.value = URL.createObjectURL(file);
+        }
+      }
     };
   },
 };

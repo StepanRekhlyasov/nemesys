@@ -496,7 +496,8 @@ export default {
       newcomer: '初任者',
       careWorker: '介護福祉士',
       applicationMedia: '応募媒体',
-      applicationMetod: '応募方法'
+      applicationMetod: '応募方法',
+      image: '応募者画像',
     },
     list: {
       name: 'スタッフ名 ',

@@ -498,7 +498,8 @@ export default {
       newcomer: 'Newcomer',
       careWorker: 'Care Worker',
       applicationMedia: 'Application Media',
-      applicationMetod: 'Application Metod'
+      applicationMetod: 'Application Metod',
+      image: 'Applicant Image',
     },
     list: {
       name: 'Staff Name ',
