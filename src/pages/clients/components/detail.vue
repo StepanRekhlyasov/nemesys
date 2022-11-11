@@ -24,9 +24,8 @@
         <teleAppointHistory />
       </q-tab-panel>
 
-      <q-tab-panel name="listBO">
-          <div class="text-h6"> {{$t('client.list.listBO')}} </div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="listBO" class="q-pa-none">
+        <backOrder />
       </q-tab-panel>
 
       <q-tab-panel name="officeDetail">
@@ -52,11 +51,13 @@
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import teleAppointHistory from 'src/components/detal/TeleAppointHistory.vue';
+import backOrder from 'src/components/detal/BackOrder.vue';
 
 export default {
   name: 'clientDetails',
   components: {
-    teleAppointHistory
+    teleAppointHistory,
+    backOrder
   },
 
   setup() {
