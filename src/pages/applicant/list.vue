@@ -59,7 +59,15 @@
             </q-td>
           </template>
 
+          <template v-slot:body-cell-qualification="props">
+            <q-td :props="props">
+              <span v-if="props.value && props.value.length > 0">
+                {{ props.value.map(item => $t('applicant.add.' + item)).join(', ') }} 
+              </span>
+            </q-td>
+          </template>
 
+          
           </q-table>
           <div class="row justify-start q-mt-md pagination">
             <q-pagination
@@ -244,7 +252,6 @@ export default {
           data.push({ id: doc.id, ...doc.data() });
         });
         applicantData.value = data;
-        console.log(data)
       });
     };
 
