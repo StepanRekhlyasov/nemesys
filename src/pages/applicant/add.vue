@@ -261,7 +261,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 
-import { getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
+import { getStorage, ref as refStorage, uploadBytes, getDownloadURL} from 'firebase/storage';
 
 import { prefectureList } from '../../shared/constants/Prefecture.const';
 import { statusList } from '../../shared/constants/Applicant.const';
@@ -341,8 +341,9 @@ export default {
           const storage = getStorage();
           const storageRef = refStorage(storage, 'applicants/' + docRef.id + '/image/' + file['name']);
 
-          uploadBytes(storageRef, file).then((snapshot) => {
+          uploadBytes(storageRef, file).then(async (snapshot) => {
             data['imagePath'] = snapshot.ref.fullPath;
+            data['imageURL'] = await getDownloadURL(storageRef)
             saveApplicantData(docRef, data);
           }).catch((error) => {
             console.log(error);

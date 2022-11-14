@@ -62,12 +62,12 @@
           <template v-slot:body-cell-qualification="props">
             <q-td :props="props">
               <span v-if="props.value && props.value.length > 0">
-                {{ props.value.map(item => $t('applicant.add.' + item)).join(', ') }} 
+                {{ props.value.map(item => $t('applicant.add.' + item)).join(', ') }}
               </span>
             </q-td>
           </template>
 
-          
+
           </q-table>
           <div class="row justify-start q-mt-md pagination">
             <q-pagination
@@ -104,7 +104,8 @@
               <div class="col-2 flex items-start">
                 <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
                 <q-img
-                  :src="'https://placeimg.com/500/300/nature'"
+                  v-if="selectedApplicant.imageURL"
+                  :src="selectedApplicant.imageURL"
                   spinner-color="white"
                   style="height: 90px; max-width: 90px"
                 />
@@ -148,7 +149,7 @@
           <q-card-section class="bg-white q-ma-md">
             <div class="row q-pb-md">
               <div class="col-2 text-right text-primary text-weight-regular"> {{$t('applicant.list.qualification')}} </div>
-              <div class="col-10 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic.children)).join(', ') }}  </div>
+              <div class="col-10 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') }}  </div>
             </div>
             <div class="row">
               <div class="col-2 text-right text-primary text-weight-regular"> {{$t('applicant.list.memo') }} </div>
@@ -265,7 +266,7 @@ export default {
       drawerRight,
       selectedApplicant,
 
-      openDrawer(data){
+      async openDrawer(data){
         if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
           drawerRight.value = false;
         }
