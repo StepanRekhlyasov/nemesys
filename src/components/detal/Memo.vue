@@ -59,7 +59,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, Ref } from 'vue';
-import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc, runTransaction} from 'firebase/firestore';
+import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc } from 'firebase/firestore';
 import { ClientMemo } from 'src/shared/model/Client.model';
 import { toDate } from 'src/shared/utils/utils';
 import { getAuth } from '@firebase/auth';
