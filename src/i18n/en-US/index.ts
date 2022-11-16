@@ -110,6 +110,7 @@ export default {
       clients: 'Clients',
       jobs: 'Jobs',
       destination: 'Destination',
+      memo: 'Memo',
       address: 'address',
       distance: 'distance',
       score: 'Score',
@@ -460,12 +461,20 @@ export default {
   },
   detal: {
     teleAppoint: {
-      registredUser: 'RegistredUser',
+      registredUser: 'Registred User',
       date: 'Date',
       teleAppointmentResult: 'Tele Appointment Result',
       jobResult: 'Job Result',
       requiredService: 'Required Service',
       remark: 'Remark',
+    },
+    memo: {
+      registredUser: 'Registred User',
+      contents: 'Contents',
+      creationDay: 'Creation Day',
+      updateDate: 'Update Date',
+      addNew: 'Add New',
+      addNewMemo: 'Add New Memo'
     }
   },
   applicant: {

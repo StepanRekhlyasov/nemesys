@@ -111,11 +111,6 @@
       </q-card-section>
     </q-card>
 
-      <!-- <div>
-        <p class="text-h6">Select the client</p>
-        <p>You will be able to check the requisitions by selecting the client</p>
-      </div> -->
-
       <q-drawer
         v-model="drawerRight"
         show
@@ -180,7 +175,7 @@
               </div>
             </q-card-section>
             <q-card-section class="q-pt-none">
-              <detailComponent />
+              <detailComponent :client="selectedClient"/>
             </q-card-section>
               <!-- {{ selectedClient }} -->
           </q-card>
@@ -334,7 +329,6 @@ export default {
             }
           });
         });
-        console.log(officeData.value)
         unsubscribeOffice.value.push(unsub);
       }
     }

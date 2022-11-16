@@ -112,6 +112,7 @@ export default {
       clients: '企業一覧',
       jobs: '求人一覧',
       destination: '送信先',
+      memo: 'メモ',
       address: '住所',
       distance: '距離',
       score: 'スコア',
@@ -464,6 +465,14 @@ export default {
       jobResult: '求人ヒアリング結果',
       requiredService: '必要なサービス',
       remark: '備考',
+    },
+    memo: {
+      registredUser: '登録ユーザー',
+      contents: '内容',
+      creationDay: '作成日',
+      updateDate: '更新日',
+      addNew: '新規追加',
+      addNewMemo: 'メモ新規追加'
     }
   },
   applicant: {

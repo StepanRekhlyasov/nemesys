@@ -5,16 +5,18 @@
     class="bg-grey-3 text-primary new tabs"
     active-color="primary"
     indicator-color="primary"
-    align="left"
+    :breakpoint="0"
+    align="justify"
     narrow-indicator
     inline-label
     switch-indicator
     active-bg-color="white">
-      <q-tab name="teleAppointHistory" :label="$t('client.tele.teleAppointHistory')" />
-      <q-tab name="listBO" :label="$t('client.list.listBO')" />
-      <q-tab name="officeDetail" :label="$t('client.list.officeDetail')" />
-      <q-tab name="officeHead" :label="$t('client.list.officeHead')" />
-      <q-tab name="variousAchievements" :label="$t('client.list.variousAchievements')" />
+      <q-tab name="teleAppointHistory" class="col-2 q-pa-none" :label="$t('client.tele.teleAppointHistory')" />
+      <q-tab name="officeDetail" class="col-2  q-pa-none"  :label="$t('client.list.officeDetail')" />
+      <q-tab name="listBO" class="col-2  q-pa-none"  :label="$t('client.list.listBO')" />
+      <q-tab name="officeHead" class="col-2 q-pa-none"  :label="$t('client.list.officeHead')" />
+      <q-tab name="variousAchievements" class="col-2 q-pa-none"  :label="$t('client.list.variousAchievements')" />
+      <q-tab name="memo" class="col-2 q-pa-none"  :label="$t('client.list.memo')" />
   </q-tabs>
 
   <q-separator />
@@ -24,13 +26,13 @@
         <teleAppointHistory />
       </q-tab-panel>
 
+    <q-tab-panel name="officeDetail">
+        <div class="text-h6">{{ $t('client.list.officeDetail') }}</div>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </q-tab-panel>
+
       <q-tab-panel name="listBO" class="q-pa-none">
         <backOrder />
-      </q-tab-panel>
-
-      <q-tab-panel name="officeDetail">
-          <div class="text-h6">{{ $t('client.list.officeDetail') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
       </q-tab-panel>
 
       <q-tab-panel name="officeHead">
@@ -42,6 +44,10 @@
           <div class="text-h6">{{ $t('client.list.variousAchievements') }}</div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
       </q-tab-panel>
+
+      <q-tab-panel name="memo" class="q-pa-none">
+        <memo :client="client" />
+      </q-tab-panel>
   </q-tab-panels>
 </template>
 
@@ -52,14 +58,20 @@
 import { ref } from 'vue';
 import teleAppointHistory from 'src/components/detal/TeleAppointHistory.vue';
 import backOrder from 'src/components/detal/BackOrder.vue';
+import memo from 'src/components/detal/Memo.vue';
 
 export default {
   name: 'clientDetails',
   components: {
     teleAppointHistory,
-    backOrder
+    backOrder,
+    memo
   },
-
+  props: {
+    client: {
+      required: true
+    }
+  },
   setup() {
     //const { t } = useI18n({ useScope: 'global' });
 

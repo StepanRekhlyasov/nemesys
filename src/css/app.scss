@@ -32,6 +32,12 @@
     color: $primary;
     .q-tab{
       background-color: #E3ECF0;
+      .q-tab__content{
+        width: 100%;
+      }
+      .q-tab__indicator{
+        height: 3px;
+      }
     }
   }
   &.table, .table{
