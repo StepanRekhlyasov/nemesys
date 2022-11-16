@@ -43,6 +43,7 @@ export default {
     above: '以上',
     moreThan: '件以上',
     pleaseSelect: '選択してください',
+    addNew: '新規追加',
 
   },
   weekDay: {
@@ -353,6 +354,7 @@ export default {
       teleAppointContactPerson: 'テレアポ先 担当者',
       jobInterviewResults: '求人ヒアリング結果',
       noJobOffer: '求人不要',
+      needForRecruiting: '求人必要',
       reasonNoJobOffer: '求人不要の理由',
       reasonNoJobOfferOption: {
         supplierNG: '業者NG',
@@ -368,7 +370,7 @@ export default {
       reqRecruitmentServicesOption: {
         referral: '紹介（直接雇用のみ）',
         introduction: '紹介（NTTP）',
-        referralTTP: '紹介（通常TTP）',
+        referralNTTP: '紹介（通常NTTP）',
         dispatch: '派遣',
       },
       remark: '備考',

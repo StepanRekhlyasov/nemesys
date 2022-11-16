@@ -43,6 +43,7 @@ export default {
     above: 'Above',
     moreThan: 'or More',
     pleaseSelect: 'Please Select',
+    addNew: 'Add New',
   },
   weekDay: {
     sunday: 'Suny',
@@ -356,6 +357,7 @@ export default {
         teleAppointContactPerson: 'Tele Appointment Contact Person',
         jobInterviewResults: 'Job Interview Results',
         noJobOffer: 'No Job Offer',
+        needForRecruiting: 'Need For Recruiting',
         reasonNoJobOffer: 'Reason for no job offer',
         reasonNoJobOfferOption: {
           supplierNG: 'Supplier NG',
@@ -371,7 +373,7 @@ export default {
         reqRecruitmentServicesOption: {
           referral: 'Referral (direct hire only)',
           introduction: 'Introduction (NTTP)',
-          referralTTP: 'Referral (usually TTP)',
+          referralNTTP: 'Referral (usually NTTP)',
           dispatch: 'Dispatch',
         },
         remark: 'Remark',

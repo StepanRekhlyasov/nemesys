@@ -175,7 +175,7 @@
               </div>
             </q-card-section>
             <q-card-section class="q-pt-none">
-              <detailComponent :client="selectedClient"/>
+              <detailComponent :client="selectedClient" :clientId="selectedClient.clientId" :key="selectedClient.clientId" />
             </q-card-section>
               <!-- {{ selectedClient }} -->
           </q-card>
