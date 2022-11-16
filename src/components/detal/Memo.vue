@@ -14,8 +14,16 @@
       <q-btn color="negative" class="no-shadow q-ml-md" v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteMemo"/>
     </template>
 
+    <template v-slot:body-cell-edit="props">
+      <q-td :props="props">
+        <q-btn icon="mdi-pencil-outline"  color="grey-8" flat @click="showEditDialog(props.row)"/>
+      </q-td>
+    </template>
+
+
   </q-table>
 
+  <!-- Add Dialog Window -->
   <q-dialog v-model="openMemoAdd">
       <q-card style="min-width: 500px">
         <q-card-section class="row items-center">
@@ -37,8 +45,12 @@
           </div>
         </q-card-section>
 
-        <q-card-actions align="center">
+        <q-card-actions align="center" v-if="dialogType === 'create'">
           <q-btn :label="$t('detal.memo.addNew')" color="primary" @click="addNewMemo"/>
+        </q-card-actions>
+
+        <q-card-actions align="center" v-if="dialogType === 'update'">
+          <q-btn :label="$t('detal.memo.addNew')" color="primary" @click="updateMemo()"/>
         </q-card-actions>
       </q-card>
   </q-dialog>
@@ -47,7 +59,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, Ref } from 'vue';
-import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc} from 'firebase/firestore';
+import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc, runTransaction} from 'firebase/firestore';
 import { ClientMemo } from 'src/shared/model/Client.model';
 import { toDate } from 'src/shared/utils/utils';
 import { getAuth } from '@firebase/auth';
@@ -66,6 +78,7 @@ export default {
 
     const memoData: Ref<ClientMemo[]> = ref([])
     const selected: Ref<ClientMemo[]> = ref([])
+    const selectMemo: Ref<ClientMemo | undefined> = ref()
     const loadData: Ref<boolean> = ref(true);
     const pagination = ref({
       sortBy: 'desc',
@@ -74,6 +87,7 @@ export default {
       rowsPerPage: 10
     });
     const openMemoAdd =  ref(false)
+    const dialogType: Ref<'create' | 'update'> = ref('create')
     const content = ref('');
 
     const columns = computed(() => {
@@ -100,7 +114,10 @@ export default {
           label: t('detal.memo.updateDate') ,
           field: 'updated_date',
           align: 'left',
-        },
+        },{
+          name: 'edit',
+          align: 'left',
+        }
       ];
     });
 
@@ -161,6 +178,27 @@ export default {
 
     const showMemoAdd = () => {
       openMemoAdd.value = true;
+      dialogType.value = 'create';
+    }
+
+    const showEditDialog = (editmemo) => {
+      openMemoAdd.value = true;
+      dialogType.value = 'update';
+      selectMemo.value = editmemo;
+      content.value = editmemo.content;
+    }
+
+    const updateMemo = async () => {
+      try {
+        const memoRef = docDb(db, 'clients/'+props.client.clientId+'/memo/'+selectMemo.value?.id);
+        await updateDoc(memoRef, {
+          content: content.value
+        })
+        loadMemoData();
+        openMemoAdd.value = false;
+      } catch {
+
+      }
     }
 
     loadMemoData()
@@ -170,11 +208,14 @@ export default {
       content,
       selected,
       loadData,
+      dialogType,
 
       columns,
       addNewMemo,
       showMemoAdd,
+      updateMemo,
       loadMemoData,
+      showEditDialog,
       deleteMemo,
       pagination,
       memoData
