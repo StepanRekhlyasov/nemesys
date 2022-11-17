@@ -414,6 +414,7 @@ export default {
       experienceReq: '必要な経験',
       moreHalfYearExp: '半年以上の経験',
       unnecessary: '不要',
+      necessary: '必要',
       upperAgeLimit: '年齢上限',
       talent: '才',
       employmentStatus: '雇用形態',
@@ -476,6 +477,9 @@ export default {
       updateDate: '更新日',
       addNew: '新規追加',
       addNewMemo: 'メモ新規追加'
+    },
+    boList: {
+      clientCorporationName: 'クライアント法人名'
     }
   },
   applicant: {

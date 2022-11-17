@@ -416,6 +416,7 @@ export default {
         experienceReq: 'Experience Required',
         moreHalfYearExp: 'More than half a year experience',
         unnecessary: 'Unnecessary',
+        necessary: 'Necessary',
         upperAgeLimit: 'Upper Age Limit',
         talent: 'Talent',
         employmentStatus: 'Employment Status',
@@ -478,6 +479,9 @@ export default {
       updateDate: 'Update Date',
       addNew: 'Add New',
       addNewMemo: 'Add New Memo'
+    },
+    boList: {
+      clientCorporationName: 'Client Corporation Name'
     }
   },
   applicant: {

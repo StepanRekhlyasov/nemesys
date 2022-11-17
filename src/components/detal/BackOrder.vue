@@ -98,7 +98,17 @@
       </q-td>
     </template>
 
+    <template v-slot:top >
+      <q-btn color="primary" icon="mdi-plus-thick" class="no-shadow q-ml-md"  :label="$t('common.add')" @click="showAddBO"/>
+      <q-btn color="negative" class="no-shadow q-ml-md" v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteBo"/>
+    </template>
+
   </q-table>
+
+  <!-- add ot edit BO -->
+  <q-dialog v-model="openDialog">
+    <backOrderForm :clientId="clientId" @closeDialog="openDialog = false"/>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -106,15 +116,23 @@ import { useI18n } from 'vue-i18n';
 import {  ref, computed, Ref } from 'vue';
 import { backOrderData } from 'src/shared/constants/BackOrder.const'
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
+import backOrderForm from 'src/components/detal/components/BackOrder.form.vue';
 export default {
-  name: 'TeleAppointHistory',
+  name: 'BackOrder',
   components: {
+    backOrderForm
   },
-
+  props: {
+    clientId: {
+      type: String,
+      required: true,
+    }
+  },
   setup() {
     const { t } = useI18n({ useScope: 'global' });
     const historyData: Ref<BackOrderModel[]> = ref([])
     const selected: Ref<BackOrderModel[]> = ref([])
+    const openDialog: Ref<boolean> = ref(false);
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -172,16 +190,28 @@ export default {
       ];
   });
 
-  loadTeleAppointmentData()
+    loadTeleAppointmentData()
     function loadTeleAppointmentData() {
       historyData.value = backOrderData
+    }
+
+    const showAddBO = () => {
+      openDialog.value =  true
+    }
+
+    const deleteBo = () => {
+      selected.value.map(bo => console.log(bo))
     }
 
     return {
       columns,
       historyData,
       selected,
-      pagination
+      pagination,
+      openDialog,
+
+      showAddBO,
+      deleteBo
     };
   },
 };

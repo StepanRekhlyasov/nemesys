@@ -32,7 +32,7 @@
     </q-tab-panel>
 
       <q-tab-panel name="listBO" class="q-pa-none">
-        <backOrder />
+        <backOrder :clientId="client.id" />
       </q-tab-panel>
 
       <q-tab-panel name="officeHead">
