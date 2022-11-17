@@ -214,6 +214,7 @@ export default {
       tradingPerformance: '取引実績',
       officesConcludedBasicContract: '同一法人内で基本契約締結済みの他事務所',
       contactTendency: '接電傾向',
+      position: '役職',
 
     },
     add: {

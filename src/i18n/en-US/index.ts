@@ -214,6 +214,7 @@ export default {
       tradingPerformance: 'Trading Performance',
       officesConcludedBasicContract: 'Within the same corporation other offices that have concluded a basic contract',
       contactTendency: 'Contact Tendency',
+      position: 'Position',
 
     },
     add: {

@@ -1,8 +1,30 @@
 <template>
   <q-card class="no-shadow full-width">
-    <q-card-section>
+    <q-card-section style="background-color: #E3ECF0;" class="q-ma-sm q-pa-none">
+      <div class="row">
+        <div class="col-2 text-right self-center q-pa-sm">
+          {{ $t('client.list.personIncharge') }}
+        </div>
+        <div class="col-2 q-pa-sm rightBorder">
+          {{ client.manager }}
+        </div>
+        <div class="col-2 text-right self-center q-pa-sm">
+          {{ $t('client.list.position') }}
+        </div>
+        <div class="col-2 q-pa-sm rightBorder">
+          {{ client.manager }}
+        </div>
+        <div class="col-2 text-right self-center q-pa-sm">
+          TEL
+        </div>
+        <div class="col-2 q-pa-sm">
+          {{ client.office_tel }}
+        </div>
+      </div>
+    </q-card-section>
+    <q-card-section class="q-ma-sm q-pa-sm">
       <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
-        <div class="row q-pt-sm">
+        <div class="row">
           <div class="col-2 text-right self-center q-pr-sm">
             {{ $t('client.tele.list.teleAppointmentResult') }}
           </div>
@@ -14,7 +36,7 @@
         </div>
 
 
-        <div class="row q-pt-sm">
+        <div class="row q-pt-sm" v-if="teleData['result'] != 'notConnected'">
           <div class="col-2 text-right self-center q-pr-sm">
             {{ $t('detal.teleAppoint.jobResult') }}
           </div>
@@ -28,7 +50,8 @@
         </div>
 
 
-        <div class="row q-pt-md q-pb-sm ">
+        <div class="row q-pt-md q-pb-sm"
+          v-if="teleData['result'] != 'notConnected' && teleData['jobResult'] != 'noJobOffer' && teleData['jobResult'] != 'noNeedContact'">
           <div class="col-2 text-right self-center q-pr-sm">
             {{ $t('detal.teleAppoint.requiredService') }}
           </div>
@@ -54,7 +77,7 @@
         </div>
 
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.addNew')" type="submit" color="primary" :loading="loading" icon="add" />
+          <q-btn :label="$t('common.addNew')" type="submit" color="primary" icon="mdi-plus-thick" class="no-shadow q-ml-md" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
@@ -96,12 +119,18 @@
 
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
-          {{ formatDate(props.value) }}
+          {{ props.value }}
         </q-td>
       </template>
       <template v-slot:body-cell-created_by="props">
         <q-td :props="props">
           {{ getUserName(props.value) }}
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-edit="props">
+        <q-td :props="props">
+          <q-btn icon="mdi-pencil-outline" size="sm" round color="grey-8" flat @click="showEditDialog(props.row)" />
         </q-td>
       </template>
 
@@ -111,9 +140,10 @@
 
 <script>
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount } from 'vue';
-import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
+import { ref, computed, onBeforeUnmount, watch } from 'vue';
+import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
+import { toDate } from 'src/shared/utils/utils';
 
 //import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
 //import { teleAppointmentData } from 'src/shared/constants/TeleAppoint.const';
@@ -124,10 +154,10 @@ export default {
   },
 
   props: {
-    clientId: {
-      type: String,
-      required: true,
-    },
+    client: {
+      type: Object,
+      required: true
+    }
   },
 
   setup(props) {
@@ -183,6 +213,10 @@ export default {
           field: 'remark',
           align: 'left',
         },
+        {
+          name: 'edit',
+          align: 'left',
+        }
       ];
     });
 
@@ -191,27 +225,28 @@ export default {
       requiredService: []
     });
 
-    const clientID = ref(props.clientId);
     const db = getFirestore();
     const $q = useQuasar();
     const unsubscribe = ref();
     const unsubscribeUsers = ref();
 
+    const dialogType = ref('create')
+
     loadTeleAppointmentData()
     function loadTeleAppointmentData() {
-      const q = query(collection(db, 'clients/' + props.clientId + '/teleAppointments'), where('deleted', '==', false));
+      const q = query(collection(db, 'clients/' + props.client.clientId + '/teleAppointments'), where('deleted', '==', false),  orderBy("created_at", "desc"),);
       unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-        let teleAppointmentData  = [];
+        let teleAppointmentData = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           data['id'] = doc.id;
-          teleAppointmentData.push({ id: doc.id, ...data});
+          teleAppointmentData.push({ ...data, id: doc.id, created_at: toDate(data.created_at)});
         });
         historyData.value = teleAppointmentData;
       });
     }
 
-    const users  = ref([]);
+    const users = ref([]);
     loadUsers()
     function loadUsers() {
       const q = query(collection(db, 'users/'), where('deleted', '==', false));
@@ -230,6 +265,37 @@ export default {
       unsubscribeUsers.value();
     });
 
+    watch(
+      () => (teleData.value.result),
+      (newVal) => {
+        if (newVal == 'notConnected') {
+          teleData.value.requiredService = [];
+          teleData.value.jobResult = '';
+        }
+      },
+    ),
+      watch(
+        () => (teleData.value.jobResult),
+        (newVal) => {
+          if (newVal){
+            teleData.value.result = 'connected';
+          }
+          if (newVal == 'noJobOffer' || newVal == 'noNeedContact') {
+            teleData.value.requiredService = [];
+          }
+        },
+      ),
+      watch(
+        () => (teleData.value.requiredService),
+        (newVal) => {
+          if (newVal.length > 0){
+            teleData.value.result = 'connected';
+            teleData.value.jobResult = 'needForRecruiting';
+          }       
+        },
+      )
+
+
     return {
       columns,
       historyData,
@@ -238,25 +304,50 @@ export default {
 
       teleData,
       loading,
-      clientID,
 
       async onSubmit() {
         loading.value = true;
         let data = teleData.value;
-        data['created_at'] = serverTimestamp();
-        data['updated_at'] = serverTimestamp();
-        data['deleted'] = false;
-        let user = $q.localStorage.getItem('user') ;
-        data['created_by'] = user.uid;
+        if (!data['result']){
+          $q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: t('failed'),
+          });
+          return
+
+        }
+        const user = $q.localStorage.getItem('user');
 
         try {
-          const docRef = await addDoc(
-            collection(db, 'clients/' + props.clientId + '/teleAppointments'),
-            data
-          );
-          console.log('Document written with ID: ', docRef.id);
-          loading.value = false;
+          if (dialogType.value == 'update') {
+            let updateData = {}
+            updateData['updated_at'] = serverTimestamp();
+            updateData['updated_by'] = user.uid;
+            updateData['result'] = data['result']
+            updateData['jobResult'] = data['jobResult']
+            updateData['requiredService'] = data['requiredService']
+            updateData['remark'] = data['remark']
 
+            await updateDoc(
+              doc(db, 'clients/' + props.client.clientId + '/teleAppointments/' + data['id']),
+              updateData
+            );
+          }
+          else {
+            data['created_at'] = serverTimestamp();
+            data['updated_at'] = serverTimestamp();
+            data['deleted'] = false;
+            data['created_by'] = user.uid;
+
+            await addDoc(
+              collection(db, 'clients/' + props.client.clientId + '/teleAppointments'),
+              data
+            );
+          }
+
+          loading.value = false;
           $q.notify({
             color: 'green-4',
             textColor: 'white',
@@ -266,6 +357,7 @@ export default {
           teleData.value = {
             requiredService: []
           };
+          dialogType.value = 'create';
           //applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
           //applicantForm.value.resetValidation();
         } catch (error) {
@@ -284,27 +376,31 @@ export default {
       onReset() {
         //teleData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
+        teleData.value = {
+          requiredService: []
+        };
+        dialogType.value = 'create';
       },
-
-      formatDate(item) {
-        if (!item) {
-          return '';
-        }
-        return item.toDate().toLocaleTimeString('ja-JP', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-        })
-      },
-
       getUserName(uid) {
         const value = users.value.find(x => x['id'] === uid)
         if (value) {
           return value['name'];
         }
         return '';
+      },
+      showEditDialog(data) {
+        dialogType.value = 'update';
+        teleData.value = JSON.parse(JSON.stringify(data));
       }
+
     };
   },
 };
 </script>
+
+<style>
+.rightBorder {
+  border-right: 2px solid white;
+}
+</style>
+

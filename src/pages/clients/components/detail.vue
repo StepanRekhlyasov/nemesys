@@ -23,7 +23,7 @@
 
   <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="teleAppointHistory" class="q-pa-none">
-        <teleAppointHistory :clientId="client" />
+        <teleAppointHistory :client="client" />
       </q-tab-panel>
 
     <q-tab-panel name="officeDetail">
