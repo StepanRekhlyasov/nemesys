@@ -87,11 +87,9 @@
 
     <q-table :columns="columns" :rows="historyData" row-key="id" selection="multiple" v-model:selected="selected"
       v-model:pagination="pagination" hide-pagination>
-      <!-- <template v-slot:body-cell-name="props">
-        <q-td :props="props">
-          {{ props.row.name }}/{{ props.row.branch }}
-        </q-td>
-      </template> -->
+      <template v-slot:top v-if="selected.length > 0">
+        <q-btn color="red" icon="delete" :label="$t('common.delete')" @click="deleteItem"/>
+      </template>
 
       <template v-slot:body-cell-result="props">
         <q-td :props="props">
@@ -234,7 +232,7 @@ export default {
 
     loadTeleAppointmentData()
     function loadTeleAppointmentData() {
-      const q = query(collection(db, 'clients/' + props.client.clientId + '/teleAppointments'), where('deleted', '==', false),  orderBy("created_at", "desc"),);
+      const q = query(collection(db, 'clients/' + props.client.clientId + '/teleAppointments'), where('deleted', '==', false),  orderBy('created_at', 'desc'),);
       unsubscribe.value = onSnapshot(q, (querySnapshot) => {
         let teleAppointmentData = [];
         querySnapshot.forEach((doc) => {
@@ -372,7 +370,28 @@ export default {
         }
       },
 
+      async deleteItem(){
+        const user = $q.localStorage.getItem('user');
 
+        let updateData = {}
+        updateData['deleted'] = true;
+        updateData['deleted_by'] = user.uid;
+        updateData['deleted_at'] = serverTimestamp();
+
+        for(let i = 0; i < selected.value.length; i++){
+          await updateDoc(
+              doc(db, 'clients/' + props.client.clientId + '/teleAppointments/' + selected.value[i].id),
+              updateData
+            );
+        }
+        $q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: t('success'),
+        });
+        selected.value = [];
+      },
       onReset() {
         //teleData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
