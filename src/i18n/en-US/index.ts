@@ -597,6 +597,26 @@ export default {
     okinawa: 'Okinawa',
 
   },
+  office: {
+    commonItems: 'Common Items',
+    referralFee: 'Referral Fee %',
+    referralFeeAmount: 'Referral Fee Amount',
+    hourlyWage: 'Hourly Wage',
+    monthlySalary: 'Monthly Salary',
+    loansRaises: 'Loans, raises, incentives',
+    payDay: 'Payday',
+    transportationExpenses: 'Transportation Expenses',
+    retirementAge: 'Retirement Age',
+    overtimeHours: 'Overtime Hours',    
+    annualholiday: 'Holiday (Annual)',
+    welfare: 'Welfare',
+    childcareLeave: 'Childcare Leave',
+    businessContent: 'Business content',
+    weeklyHolidays: 'Holidays (weekly)',
+    smokingPermitted: 'Smoking Permitted',
+    commutingByCar: 'Commuting by Car'
+
+  }, 
   failed: 'Action failed',
   success: 'Action was successful',
   authErrorCode: {

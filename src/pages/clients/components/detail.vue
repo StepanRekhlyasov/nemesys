@@ -27,8 +27,7 @@
       </q-tab-panel>
 
     <q-tab-panel name="officeDetail">
-        <div class="text-h6">{{ $t('client.list.officeDetail') }}</div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <officeDetail :client="client" />
     </q-tab-panel>
 
       <q-tab-panel name="listBO" class="q-pa-none">
@@ -59,13 +58,15 @@ import { ref } from 'vue';
 import teleAppointHistory from 'src/components/detal/TeleAppointHistory.vue';
 import backOrder from 'src/components/detal/BackOrder.vue';
 import memo from 'src/components/detal/Memo.vue';
+import officeDetail from 'src/components/detal/officeDetail.vue';
 
 export default {
   name: 'clientDetails',
   components: {
     teleAppointHistory,
     backOrder,
-    memo
+    memo,
+    officeDetail
   },
   props: {
     client: {

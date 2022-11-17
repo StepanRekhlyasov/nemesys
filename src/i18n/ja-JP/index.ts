@@ -595,6 +595,26 @@ export default {
     okinawa: '沖縄県',
 
   },
+  office: {
+    commonItems: '全職種共通項目',
+    referralFee: '紹介料の規定％',
+    referralFeeAmount: '紹介料の規定金額',
+    hourlyWage: '時給',
+    monthlySalary: '月給',
+    loansRaises: '貸与・昇給・インセンティブ',
+    payDay: '給料日',
+    transportationExpenses: '交通費',
+    retirementAge: '定年',
+    overtimeHours: '残業時間',    
+    annualholiday: '休日（年間）',
+    welfare: '福利厚生',
+    childcareLeave: '育児・介護他休暇',
+    businessContent: '業務内容',
+    weeklyHolidays: '休日（週単位）',
+    smokingPermitted: '喫煙可否',
+    commutingByCar: '車通勤'
+
+  }, 
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',
   authErrorCode: {
