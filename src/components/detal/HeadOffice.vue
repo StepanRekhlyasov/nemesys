@@ -46,7 +46,7 @@
 
 
     <q-card-section class="q-pa-xs">
-      <div class="row q-mt-xs ">
+      <div class="row q-mt-xs text-h6 text-primary">
         {{ $t('office.companyProfile') }}
       </div>
 

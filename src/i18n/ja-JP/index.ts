@@ -216,6 +216,7 @@ export default {
       contactTendency: '接電傾向',
       position: '役職',
 
+
     },
     add: {
       newReg: 'クライアント 新規登録',
@@ -460,6 +461,21 @@ export default {
     workExperience: {
       title: '就業経験者',
     },
+    variousAchievement: {
+      displayPeriod: '表示期間',
+      inHouseBO: '自社BO',
+      inHouseFIX: '自社FIX',
+      companyJob: '自社職見',
+      inHouseOffer: '自社内定',
+      inHouseEmployment: '自社入職',
+      otherCompanyBO: '他社BO',
+      competitorFIX: '他社FIX',
+      otherCompanyJob: '他社職見',
+      otherCompany: '他社内定',
+      joiningAnotherCompany: '他社入職',
+      referralResults: '紹介実績',
+      partTimeJob: 'パート・アルバイト',
+    }
   },
   detal: {
     teleAppoint: {

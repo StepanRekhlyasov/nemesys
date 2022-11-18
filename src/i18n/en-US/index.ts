@@ -462,6 +462,21 @@ export default {
        workExperience: {
         title: 'Work Experience',
       },
+      variousAchievement: {
+        displayPeriod: 'Display Period',
+        inHouseBO: 'In-house BO',
+        inHouseFIX: 'In-house FIX',
+        companyJob: 'Company job',
+        inHouseOffer: 'In-house offer',
+        inHouseEmployment: 'In-house employment',
+        otherCompanyBO: 'Other company BO',
+        competitorFIX: 'Competitor FIX',
+        otherCompanyJob: 'Other company job',
+        otherCompany: 'Other company',
+        joiningAnotherCompany: 'Joining another company',
+        referralResults: 'Referral Results',
+        partTimeJob: 'Part Time Job',
+      }
   },
   detal: {
     teleAppoint: {

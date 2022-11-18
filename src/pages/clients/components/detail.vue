@@ -39,8 +39,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="variousAchievements">
-          <div class="text-h6">{{ $t('client.list.variousAchievements') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <variousAchievements :client="client" />
       </q-tab-panel>
 
       <q-tab-panel name="memo" class="q-pa-none">
@@ -59,6 +58,7 @@ import backOrder from 'src/components/detal/BackOrder.vue';
 import memo from 'src/components/detal/Memo.vue';
 import officeDetail from 'src/components/detal/officeDetail.vue';
 import headOffice from 'src/components/detal/HeadOffice.vue';
+import variousAchievements from 'src/components/detal/VariousAchievements.vue';
 
 export default {
   name: 'clientDetails',
@@ -67,7 +67,8 @@ export default {
     backOrder,
     memo,
     officeDetail,
-    headOffice
+    headOffice,
+    variousAchievements
   },
   props: {
     client: {
