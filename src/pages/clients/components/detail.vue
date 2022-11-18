@@ -35,8 +35,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="officeHead">
-          <div class="text-h6">{{ $t('client.list.officeHead') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <headOffice :client="client" />
       </q-tab-panel>
 
       <q-tab-panel name="variousAchievements">
@@ -59,6 +58,7 @@ import teleAppointHistory from 'src/components/detal/TeleAppointHistory.vue';
 import backOrder from 'src/components/detal/BackOrder.vue';
 import memo from 'src/components/detal/Memo.vue';
 import officeDetail from 'src/components/detal/officeDetail.vue';
+import headOffice from 'src/components/detal/HeadOffice.vue';
 
 export default {
   name: 'clientDetails',
@@ -66,7 +66,8 @@ export default {
     teleAppointHistory,
     backOrder,
     memo,
-    officeDetail
+    officeDetail,
+    headOffice
   },
   props: {
     client: {
