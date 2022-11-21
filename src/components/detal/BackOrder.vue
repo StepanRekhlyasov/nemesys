@@ -48,7 +48,7 @@
 
     <template v-slot:body-cell-type="props">
       <q-td :props="props" >
-        {{$t('client.backOrder.'+props.row.typeCase)}}<br/>
+        {{props.row.typeCase && $t('client.backOrder.'+props.row.typeCase)}}<br/>
       </q-td>
     </template>
 
@@ -62,7 +62,7 @@
     <template v-slot:body-cell-age="props">
       <q-td :props="props" >
         {{props.row.ageLimit}}<br/>
-        {{$t('client.backOrder.'+props.row.status)}}<br/>
+        {{props.row.status && $t('client.backOrder.'+props.row.status)}}<br/>
         {{props.row.unitPrice}}
       </q-td>
     </template>
