@@ -92,8 +92,6 @@
       </q-form>
     </q-card-section>
 
-    <q-separator size="2px" />
-
     <q-table :columns="columns" :rows="historyData" row-key="id" selection="multiple" v-model:selected="selected"
       v-model:pagination="pagination" hide-pagination>
       <template v-slot:top v-if="selected.length > 0">

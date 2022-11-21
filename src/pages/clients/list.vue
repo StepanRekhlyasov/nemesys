@@ -174,7 +174,7 @@
                 <div class="col-4 q-pl-md text-left"> 各社用のメモ。主任はｘｘｘ様。</div>
               </div>
             </q-card-section>
-            <q-card-section class="q-pt-none">
+            <q-card-section class="q-pt-none" v-if="drawerRight">
               <detailComponent :client="selectedClient" :key="selectedClient.clientId" />
             </q-card-section>
               <!-- {{ selectedClient }} -->

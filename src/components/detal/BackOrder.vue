@@ -91,7 +91,7 @@
     </template>
 
     <template v-slot:top >
-      <q-btn color="primary" icon="mdi-plus-thick" class="no-shadow q-ml-md"  :label="$t('common.add')" @click="showAddBO"/>
+      <q-btn color="primary" icon="mdi-plus-thick" class="no-shadow "  :label="$t('common.add')" @click="showAddBO"/>
       <q-btn color="negative" class="no-shadow q-ml-md" v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteBo"/>
     </template>
 
@@ -189,7 +189,6 @@ export default {
 
     loanBoListData()
     function loanBoListData() {
-      console.log(props.clientId)
       const q = query(collection(db, 'clients/' + props.clientId + '/backOrder'), where('deleted', '==', false));
       unsubscribe.value = onSnapshot(q, (querySnapshot) => {
         let boData: BackOrderModel[] = [];
@@ -198,7 +197,6 @@ export default {
           data['id'] = doc.id;
           boData.push({ ...data as BackOrderModel, id: doc.id, created_at: toDate(data.created_at)});
         });
-        console.log(boData)
         backOrderData.value = boData
       })
     }
