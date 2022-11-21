@@ -12,3 +12,16 @@ export const toDate = (timestamp: Timestamp):string => {
   }
   return data;
 };
+
+export const today = ():string => {
+  return new Date().toISOString().slice(0, 10);
+};
+
+export const lastMonth = ():string => {
+  const date = new Date();
+  date.setMonth(date.getMonth()-1);
+  return date.toISOString().slice(0, 10);
+};
+
+
+

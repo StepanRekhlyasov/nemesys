@@ -63,6 +63,7 @@
 <script>
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
+import { today, lastMonth } from 'src/shared/utils/utils';
 
 export default {
   name: 'VariousAchievements',
@@ -77,8 +78,8 @@ export default {
   setup(props) {
     const { t } = useI18n({ useScope: 'global' });
     const filter = ref({
-      startDate: '',
-      endDate: ''
+      startDate: lastMonth(),
+      endDate: today()
     });
     const dispatchRecord = ref([]);
     const empRecord = ref([]);
