@@ -345,6 +345,7 @@ export default {
     },
     tele: {
         teleAppointHistory: 'Tele Appointment History',
+        openTeleAppointForm: 'Open the add Tele Appointment form',
         displayAll: 'Display All',
         noAppointHistory: 'No Tele Appoint History',
         addTeleAppoint: 'Add Tele Appointment',
@@ -626,7 +627,7 @@ export default {
     payDay: 'Payday',
     transportationExpenses: 'Transportation Expenses',
     retirementAge: 'Retirement Age',
-    overtimeHours: 'Overtime Hours',    
+    overtimeHours: 'Overtime Hours',
     annualholiday: 'Holiday (Annual)',
     welfare: 'Welfare',
     childcareLeave: 'Childcare Leave',
@@ -674,7 +675,7 @@ export default {
     nonRegularEmployment: 'Non-regular employment',
     temporaryEmployee: 'Temporary Employee',
     originalOperation: 'Original Operation',
-  }, 
+  },
   failed: 'Action failed',
   success: 'Action was successful',
   authErrorCode: {

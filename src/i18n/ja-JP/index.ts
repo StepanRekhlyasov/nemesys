@@ -343,6 +343,7 @@ export default {
     },
     tele: {
       teleAppointHistory: 'テレアポ履歴',
+      openTeleAppointForm: 'テレアポ追加フォームを開く',
       displayAll: '全件表示',
       noAppointHistory: '過去のテレアポ履歴はありません',
       addTeleAppoint: 'テレアポ追加',
@@ -625,7 +626,7 @@ export default {
     payDay: '給料日',
     transportationExpenses: '交通費',
     retirementAge: '定年',
-    overtimeHours: '残業時間',    
+    overtimeHours: '残業時間',
     annualholiday: '休日（年間）',
     welfare: '福利厚生',
     childcareLeave: '育児・介護他休暇',
@@ -674,7 +675,7 @@ export default {
     temporaryEmployee: '派遣入職',
     originalOperation: '原稼働',
 
-  }, 
+  },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',
   authErrorCode: {

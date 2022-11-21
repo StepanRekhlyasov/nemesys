@@ -22,7 +22,16 @@
         </div>
       </div>
     </q-card-section>
-    <q-card-section class="q-ma-sm q-pa-sm">
+    <q-card-section class="bg-grey-2 q-ma-sm q-pa-xs" v-if="!showAddForm">
+      <q-btn
+        :label="$t('client.tele.openTeleAppointForm')"
+        :icon="'mdi-arrow-down-bold-circle-outline'"
+        flat
+        :size="sm"
+        class="text-grey-9"
+        @click="showAddForm = true"/>
+    </q-card-section>
+    <q-card-section class="q-ma-sm q-pa-sm bg-grey-2 " v-if="showAddForm">
       <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
         <div class="row">
           <div class="col-2 text-right self-center q-pr-sm">
@@ -72,7 +81,7 @@
             {{ $t('detal.teleAppoint.remark') }}
           </div>
           <div class="col-9 q-pl-sm">
-            <q-input outlined dense v-model="teleData['remark']" />
+            <q-input outlined dense v-model="teleData['remark']" class="bg-white"/>
           </div>
         </div>
 
@@ -219,6 +228,7 @@ export default {
     });
 
     const loading = ref(false);
+    const showAddForm = ref(false)
     const teleData = ref({
       requiredService: []
     });
@@ -289,7 +299,7 @@ export default {
           if (newVal.length > 0){
             teleData.value.result = 'connected';
             teleData.value.jobResult = 'needForRecruiting';
-          }       
+          }
         },
       )
 
@@ -301,6 +311,7 @@ export default {
       pagination,
 
       teleData,
+      showAddForm,
       loading,
 
       async onSubmit() {
