@@ -1,6 +1,6 @@
 <template>
   <q-card style="width: 1000px; max-width: 80vw">
-    <q-form>
+    <q-form  @submit="addBackOrder">
       <q-card-section>
         <span>BO</span>{{$t('common.edit')}}
       </q-card-section>
@@ -298,7 +298,7 @@
           </div>
         </div>
 
-        <q-card-actions class="row justify-end col">
+        <q-card-actions align="right" class="bg-white text-teal">
           <q-btn :label="$t('common.save')" color="primary" class="no-shadow" type="submit"/>
           <q-btn :label="$t('common.cancel')" color="grey-8" outline />
         </q-card-actions>
@@ -317,6 +317,8 @@ import {
 } from 'src/shared/model/BackOrder.model';
 import { ref, SetupContext } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
+import { useQuasar } from 'quasar';
 
 export default {
   name: 'BackOrderForm',
@@ -332,23 +334,37 @@ export default {
   },
   setup(props, context: SetupContext){
     const { t } = useI18n({ useScope: 'global' });
+    const db = getFirestore();
+    const $q = useQuasar();
 
     const boData = ref({
       requiredService: []
     });
-    console.log(props, context)
 
-    const submit = () => {
-      console.log(context.emit('closeDialog'))
-    }
+    const addBackOrder= async () => {
+      let data = JSON.parse(JSON.stringify(boData.value));
+      data['created_at'] = serverTimestamp();
+      data['updated_at'] = serverTimestamp();
+      data['deleted'] = false;
+
+      const clientRef = collection(db, 'clients/' + props.clientId + '/backOrder/');
+      await addDoc(clientRef, data);
+
+      context.emit('closeDialog')
+      $q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: t('success'),
+      });
+    };
     return {
       boData,
       TypeOfCase,
       TypeQualifications,
       BackOrderStatus,
       WorkingDaysWeek,
-
-      submit
+      addBackOrder,
     }
   }
 }

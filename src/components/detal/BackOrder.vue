@@ -1,20 +1,13 @@
 <template>
   <q-table
     :columns="columns"
-    :rows="historyData"
+    :rows="backOrderData"
     row-key="id"
     selection="multiple"
     v-model:selected="selected"
     v-model:pagination="pagination"
     hide-pagination
   >
-    <template v-slot:header-cell-name="props">
-      <q-th :props="props">
-        {{$t('client.backOrder.caseType')}}<br/>
-        {{$t('client.backOrder.transactionType')}}<br/>
-      </q-th>
-    </template>
-
     <template v-slot:header-cell-qualification="props">
       <q-th :props="props">
         {{$t('client.backOrder.reqQualification')}}<br/>
@@ -56,7 +49,6 @@
     <template v-slot:body-cell-type="props">
       <q-td :props="props" >
         {{$t('client.backOrder.'+props.row.typeCase)}}<br/>
-        {{$t('client.backOrder.'+props.row.typeTransaction)}}
       </q-td>
     </template>
 
@@ -91,10 +83,10 @@
 
     <template v-slot:body-cell-workingTime="props">
       <q-td :props="props" >
-        {{props.row.early}}<br/>
-        {{props.row.datetime}}<br/>
-        {{props.row.shortened}}<br/>
-        {{props.row.nightShift}}
+        {{props.row.workingHoursEarly}}<br/>
+        {{props.row.workingHoursDay}}<br/>
+        {{props.row.workingHoursLate}}<br/>
+        {{props.row.workingHoursNight}}
       </q-td>
     </template>
 
@@ -114,9 +106,10 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import {  ref, computed, Ref } from 'vue';
-import { backOrderData } from 'src/shared/constants/BackOrder.const'
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
 import backOrderForm from 'src/components/detal/components/BackOrder.form.vue';
+import { collection, getFirestore, onSnapshot, doc as docDb, query, updateDoc, where } from '@firebase/firestore';
+import { toDate } from 'src/shared/utils/utils';
 export default {
   name: 'BackOrder',
   components: {
@@ -128,9 +121,9 @@ export default {
       required: true,
     }
   },
-  setup() {
+  setup(props ) {
     const { t } = useI18n({ useScope: 'global' });
-    const historyData: Ref<BackOrderModel[]> = ref([])
+    const backOrderData: Ref<BackOrderModel[]> = ref([])
     const selected: Ref<BackOrderModel[]> = ref([])
     const openDialog: Ref<boolean> = ref(false);
     const pagination = ref({
@@ -139,6 +132,10 @@ export default {
       page: 1,
       rowsPerPage: 10
     });
+
+
+    const db = getFirestore();
+    const unsubscribe = ref();
 
     const columns = computed(() => {
       return [
@@ -174,7 +171,7 @@ export default {
         },{
           name: 'dateRegistration',
           label: t('client.backOrder.dateOfRegistration') ,
-          field: 'dateRegistration',
+          field: 'created_at',
           align: 'left',
         },{
           name: 'customerRepresentative',
@@ -190,22 +187,41 @@ export default {
       ];
   });
 
-    loadTeleAppointmentData()
-    function loadTeleAppointmentData() {
-      historyData.value = backOrderData
+    loanBoListData()
+    function loanBoListData() {
+      console.log(props.clientId)
+      const q = query(collection(db, 'clients/' + props.clientId + '/backOrder'), where('deleted', '==', false));
+      unsubscribe.value = onSnapshot(q, (querySnapshot) => {
+        let boData: BackOrderModel[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          data['id'] = doc.id;
+          boData.push({ ...data as BackOrderModel, id: doc.id, created_at: toDate(data.created_at)});
+        });
+        console.log(boData)
+        backOrderData.value = boData
+      })
     }
 
     const showAddBO = () => {
       openDialog.value =  true
     }
 
-    const deleteBo = () => {
-      selected.value.map(bo => console.log(bo))
+    const deleteBo = async () => {
+      const ret = selected.value.map( async (bo) => {
+        const boRef = docDb(db, 'clients/'+props.clientId+'/backOrder/'+bo.id);
+        await updateDoc(boRef, {
+          deleted: true
+        })
+      })
+      Promise.all(ret)
+      await loanBoListData();
+      selected.value = [];
     }
 
     return {
       columns,
-      historyData,
+      backOrderData,
       selected,
       pagination,
       openDialog,

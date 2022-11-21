@@ -1,41 +1,36 @@
 export interface BackOrderModel {
+  id?: string;
   typeCase: TypeOfCase;
-  typeTransaction: TypeOfTransaction;
-  qualifications: string | TypeQualifications;
+  qualifications: TypeQualifications;
   experience: string;
-  moreHalfYearExp?: boolean;
+  moreHalfYearExp: boolean;
   ageLimit: number;
-  retirementAge?: string;
-  hourlywage?: string;
-  monthlySalary?: string;
   status: BackOrderStatus;
-  unitPrice?: string;
-  payday?: string;
-  workingDays?: string;
-  posibleDays?: number;
-  posibleObsidianDays: string;
+  retirementAge: string;
+  hourlywage: string;
+  monthlySalary: string;
   buissnesDescription: string;
-  dateRegistration: string;
-  customerRepresentative: string;
-  early: string;
-  datetime: string;
-  shortened: string;
-  nightShift: string;
+  unitPrice: string;
+  payday: string;
+  transportationExpenses: string;
+  workingDays: string;
+  workingDaysWeek: WorkingDaysWeek;
 
-  workingHoursEarly?: string;
-  workingHoursDay?: string;
-  workingHoursLate?: string;
-  workingHoursNight?: string;
+  workingHoursEarly: string;
+  workingHoursDay: string;
+  workingHoursLate: string;
+  workingHoursNight: string;
 
-  overtimeHours?: string;
-  holidaysWeekly?: string;
-  holidayAnnual?: string;
+  businessContent: string;
+  onCallPickUP: string;
+  overtimeHours: string;
+  holidaysWeekly: string;
+  holidayAnnual: string;
+  leaveChildcare: string;
+  otherNotes: string;
 
-  businessContent?: string;
-  onCallPickUP?: string;
-  welfare?: string;
-  leaveChildcare?: string;
-  otherNotes?: string;
+  created_at: string;
+  deleted: false;
 }
 
 
@@ -44,10 +39,6 @@ export enum TypeOfCase {
   NursingCare = 'nursingCare'
 }
 
-export enum TypeOfTransaction {
-  DispatchEm = 'dispatchEm',
-  Introduction = 'introduction'
-}
 
 export enum TypeQualifications {
   Registered = 'registeredNurse',
