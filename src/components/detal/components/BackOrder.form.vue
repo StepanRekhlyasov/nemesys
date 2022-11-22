@@ -11,7 +11,7 @@
             {{$t('detal.boList.clientCorporationName')}}
           </div>
           <div class="col-10">
-            oo株式会社
+            {{client.name}}
           </div>
         </div>
         <div class="row">
@@ -19,7 +19,7 @@
             {{$t('client.add.officeName')}}
           </div>
           <div class="col-10">
-            xx事業所
+            {{client.office_name}}
           </div>
         </div>
         <div class="row">
@@ -27,12 +27,12 @@
             {{$t('client.add.manager')}}
           </div>
           <div class="col-10">
-            あああああ
+            {{client.manager}}
           </div>
         </div>
       </q-card-section>
 
-      <q-scroll-area style="height: 70vh; max-width: 100%;">
+      <q-scroll-area style="height: 65vh; max-width: 100%;">
         <q-card-section >
           <div class="row q-pb-sm">
             <div class="col-2 text-right self-center q-pr-sm">
@@ -301,7 +301,7 @@
         </q-card-section>
       </q-scroll-area>
 
-      <q-card-actions align="right" class="bg-white text-teal">
+      <q-card-actions align="right" class="bg-white text-teal q-pb-md q-pr-md">
         <q-btn :label="$t('common.save')" color="primary" class="no-shadow" type="submit"/>
         <q-btn :label="$t('common.cancel')" color="grey-8" outline />
       </q-card-actions>
@@ -324,8 +324,8 @@ import { useQuasar } from 'quasar';
 export default {
   name: 'BackOrderForm',
   props: {
-    clientId: {
-      type: String,
+    client: {
+      type: Object,
       required: true,
     },
     BOcontent:{
@@ -338,6 +338,8 @@ export default {
     const db = getFirestore();
     const $q = useQuasar();
 
+    console.log(props.client)
+
     const boData = ref({
       requiredService: []
     });
@@ -348,7 +350,7 @@ export default {
       data['updated_at'] = serverTimestamp();
       data['deleted'] = false;
 
-      const clientRef = collection(db, 'clients/' + props.clientId + '/backOrder/');
+      const clientRef = collection(db, 'clients/' + props.client.clientId + '/backOrder/');
       await addDoc(clientRef, data);
 
       context.emit('closeDialog')

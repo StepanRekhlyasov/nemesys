@@ -99,7 +99,7 @@
 
   <!-- add ot edit BO -->
   <q-dialog v-model="openDialog">
-    <backOrderForm :clientId="clientId" @closeDialog="openDialog = false"/>
+    <backOrderForm :client="client" @closeDialog="openDialog = false"/>
   </q-dialog>
 </template>
 
@@ -116,8 +116,8 @@ export default {
     backOrderForm
   },
   props: {
-    clientId: {
-      type: String,
+    client: {
+      type: Object,
       required: true,
     }
   },
@@ -189,7 +189,7 @@ export default {
 
     loanBoListData()
     function loanBoListData() {
-      const q = query(collection(db, 'clients/' + props.clientId + '/backOrder'), where('deleted', '==', false));
+      const q = query(collection(db, 'clients/' + props.client.clientId + '/backOrder'), where('deleted', '==', false));
       unsubscribe.value = onSnapshot(q, (querySnapshot) => {
         let boData: BackOrderModel[] = [];
         querySnapshot.forEach((doc) => {
@@ -207,7 +207,7 @@ export default {
 
     const deleteBo = async () => {
       const ret = selected.value.map( async (bo) => {
-        const boRef = docDb(db, 'clients/'+props.clientId+'/backOrder/'+bo.id);
+        const boRef = docDb(db, 'clients/'+props.client.clientId+'/backOrder/'+bo.id);
         await updateDoc(boRef, {
           deleted: true
         })
