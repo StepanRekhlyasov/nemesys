@@ -100,11 +100,17 @@ export default {
       password: 'パスワード',
       person_name: '担当者名',
       branch_name: '所属支店',
+      company_name: 'ユーザー企業名',
+      deleteAccaunt: 'アカウント削除',
+      role: 'ロール',
+      infoEditUser: 'メールアドレス・ユーザー企業は永久に変更できません',
+      infoContact: 'ロール・ログインパスワードを変更したい場合は、チームの管理者に連絡してください。',
+      contact: '連絡先',
       manager: '管理者',
       hidden: '非表示',
       create_at: '作成日',
-      last_update: '更新日'
-
+      last_update: '更新日',
+      editProfile: 'プロフィール編集'
     },
     title: 'システム',
   },

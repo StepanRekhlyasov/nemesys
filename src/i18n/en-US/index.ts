@@ -99,10 +99,17 @@ export default {
       password: 'Password',
       person_name: "Contact Person's Name",
       branch_name: 'Branch Name',
+      company_name: 'User Company Name',
+      role: 'Role',
+      infoEditUser: 'Email addresses and user companies cannot be permanently changed',
+      infoContact: 'If you wish to change your roll or login password, please contact your team administrator.',
+      contact: 'Contact',
+      deleteAccaunt: 'Delete Accaunt',
       manager: 'Manager',
       hidden: 'Hidden',
       create_at: 'Create At',
-      last_update: 'Last Update'
+      last_update: 'Last Update',
+      editProfile: 'Edit Profile'
     },
     title: 'Settings'
   },

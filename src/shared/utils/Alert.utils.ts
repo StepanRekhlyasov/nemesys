@@ -1,23 +1,28 @@
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
+export interface AlertInterface {
+  message: string,
+  textColor?: string,
+  color?: string,
+  icon?: string
+}
 
 export const Alert = {
-  success: () => {
-    Alert.createAlert('success', 'white', 'green-4', 'cloud_done')
+  success: ( $q, t) => {
+    Alert.createAlert({
+      message:t('success'),
+      textColor: 'white',
+      color: 'green-4',
+      icon: 'cloud_done'
+  }, $q)
   },
-  warning: () => {
-    Alert.createAlert('failed', 'white', 'red-5', 'warning')
+  warning: ( $q, t) => {
+    Alert.createAlert({
+      message: t('failed'),
+      textColor:'white',
+      color:'red-5',
+      icon: 'warning'
+    }, $q)
   },
-  createAlert: ( message: string, textColor?: string, color?: string, icon?: string) => {
-    const $q = useQuasar();
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    $q.notify({
-      color: color,
-      textColor: textColor,
-      icon: icon,
-      message: t(message),
-    });
+  createAlert: ( alert: AlertInterface, $q?) => {
+    $q.notify(alert);
   }
 }

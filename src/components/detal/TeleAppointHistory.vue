@@ -27,7 +27,7 @@
         :label="$t('client.tele.openTeleAppointForm')"
         :icon="'mdi-arrow-down-bold-circle-outline'"
         flat
-        :size="sm"
+        size="md"
         class="text-grey-9"
         @click="showAddForm = true"/>
     </q-card-section>

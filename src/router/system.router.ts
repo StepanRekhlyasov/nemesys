@@ -3,6 +3,15 @@ import { MenuRouter, MenuParent} from 'src/shared/model/Menu.molel';
 
 const system_router: MenuRouter[] = [
   {
+    path: 'system/editProfile',
+    title: 'settings.users.editProfile',
+    component: () => import('src/pages/settings/EditProfile.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.SystemSettings,
+  },
+  {
     path: 'system/users',
     title: 'menu.users',
     icon: 'mdi-cog',
@@ -17,7 +26,7 @@ const system_router: MenuRouter[] = [
     component: () => import('src/pages/settings/branch/Branches.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [ UserPermissionNames.BranchUpdate]
+      permissions: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings,
   },
@@ -30,7 +39,6 @@ const system_router: MenuRouter[] = [
       requiresAuth: true,
     },
     menuParent: MenuParent.SystemSettings,
-
   }
 ]
 
