@@ -1,13 +1,12 @@
-import { Branch } from './Branch.model';
-
 export interface Accaunt {
+  id: string;
   email: string;
   person_name: string;
-  branch: Branch;
+  branch_id?: string;
   manager: boolean;
   hidden: boolean;
-  create_at: Date;
-  last_update: Date;
+  create_at: string;
+  last_update: string;
 }
 
 export interface User{
@@ -33,5 +32,5 @@ export enum UserPermissionNames {
   ContentsRead = 'CONTENTS_READ',
   UserUpdate = 'USER_UPDATE',
   BranchUpdate = 'BRANCH_UPDATE',
-  BranchView = 'BRANCH_VIEW'
+  OrganizationUpdate = 'ORGANIZATION_UPDATE'
 }

@@ -1,0 +1,184 @@
+<template>
+  <div  class="new">
+    <q-card-section class="bg-grey-3 q-pa-md">
+      <div class="row">
+        <div class="text-h6 q-pr-md text-primary">
+          <q-icon name="mdi-cog-outline" color="primary" class="q-pr-sm" size="md"/>
+          {{$t('menu.users')}}
+        </div>
+        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.users.addUser')" />
+      </div>
+    </q-card-section>
+    <q-separator color="grey-5" size="2px"/>
+    <q-card-section>
+      <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
+        <q-card-section class="row text-center">
+          <span class="row content-center">{{$t('common.keyboard')}}</span>
+          <q-input :model-value="search" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md"/>
+          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md"/>
+        </q-card-section>
+        <q-card-section class="q-pa-none" >
+          <q-table
+            :columns="columns"
+            :rows="usersListData"
+            row-key="id"
+            selection="multiple"
+            v-model:selected="selected"
+            v-model:pagination="pagination"
+            hide-pagination
+            class="no-shadow"
+            >
+              <template v-slot:body-cell-role="props">
+                <q-td :props="props" >
+                  {{roles && roles[props.row.role]?.displayName}}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-branch="props">
+                <q-td :props="props">
+                  {{branches && branches[props.row?.branch_id]?.name}}
+                </q-td>
+              </template>
+          </q-table>
+          <div class="row justify-start q-mt-md q-mb-md pagination">
+              <q-pagination
+                v-model="pagination.page"
+                color="grey-8"
+                padding="5px 16px"
+                gutter="md"
+                :max="(usersListData.length/pagination.rowsPerPage) >= 1 ?  usersListData.length/pagination.rowsPerPage : 1"
+                direction-links
+                outline
+              />
+            </div>
+        </q-card-section>
+      </q-card>
+    </q-card-section>
+  </div>
+</template>
+
+<script lang="ts">
+import { getFirestore} from '@firebase/firestore';
+import { computed, Ref, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Accaunt, Role } from 'src/shared/model/Accaunt.model';
+import { toDate } from 'src/shared/utils/utils';
+import { getAllUsers, getBranches, getRoles } from 'src/shared/utils/User.utils';
+import { Branch } from 'src/shared/model/Branch.model';
+
+export default {
+  name: 'responcibleMasterManagement',
+  setup(){
+    const { t } = useI18n({ useScope: 'global' });
+    const db = getFirestore();
+
+    const search = ref('');
+    const roles = ref({})
+    const branches = ref({})
+    const usersListData: Ref<Accaunt[]> = ref([]);
+
+    const pagination = ref({
+      sortBy: 'desc',
+      descending: false,
+      page: 1,
+      rowsPerPage: 10
+    });
+    const selected: Ref<Accaunt[]> = ref([])
+    const columns = computed(() => [{
+      name: 'email',
+      required: true,
+      label: t('settings.users.email') ,
+      field: 'email',
+      align: 'left',
+    }, {
+      name: 'name',
+      required: true,
+      label: t('settings.users.person_name') ,
+      field: 'name',
+      align: 'left',
+    }, {
+      name: 'role',
+      required: true,
+      label: t('settings.users.role') ,
+      field: 'role_name',
+      align: 'left',
+    }, {
+      name: 'branch',
+      required: true,
+      label: t('settings.users.branch_name') ,
+      field: 'branch',
+      align: 'left',
+    },{
+      name: 'hidden',
+      required: true,
+      label: t('settings.users.hidden') ,
+      field: 'hidden',
+      align: 'left',
+    },{
+      name: 'create_at',
+      required: true,
+      label: t('settings.users.create_at') ,
+      field: 'create_at',
+      align: 'left',
+    },{
+      name: 'last_update',
+      required: true,
+      label: t('settings.users.last_update') ,
+      field: 'last_update',
+      align: 'left',
+    },])
+
+    loadUsersList()
+    async function loadUsersList() {
+      const usersSnapshot = getAllUsers(db);
+      const rolesSnapshot = getRoles(db);
+      const branchesSnapshot = getBranches(db);
+
+      usersSnapshot.then(users => {
+        let list: Accaunt[] = [];
+        users.forEach((doc) => {
+          const data = doc.data();
+          data['id'] = doc.id;
+          list.push({ ...data as Accaunt, id: doc.id, create_at: toDate(data.addedAt), last_update: toDate(data.last_update)});
+        });
+        usersListData.value = list;
+      })
+
+      rolesSnapshot.then(role => {
+        const list = {}
+        role.forEach((doc) => {
+          const data = doc.data() as Role
+          list[doc.id] = data
+        })
+        roles.value = list;
+      })
+
+      branchesSnapshot.then(branch => {
+        const list = {}
+        branch.forEach((doc) => {
+          const data = doc.data() as Branch;
+          list[doc.id] = data
+        })
+        branches.value = list;
+      })
+    }
+
+    return {
+      search,
+      columns,
+      pagination,
+      selected,
+
+      roles,
+      usersListData,
+      branches
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+.input-md, .input-md .q-field__control, .input-md .q-field__control:after{
+  max-height: 35px;
+
+}
+</style>

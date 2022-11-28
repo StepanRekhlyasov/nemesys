@@ -44,6 +44,8 @@ export default {
     moreThan: 'or More',
     pleaseSelect: 'Please Select',
     addNew: 'Add New',
+    search: 'Search',
+    keyboard: 'Keyboard',
   },
   weekDay: {
     sunday: 'Suny',
@@ -93,7 +95,7 @@ export default {
       garage: 'Garage availability'
     },
     users: {
-      addUser: 'Add new person',
+      addUser: 'Add new contact person',
       fio: 'FIO',
       email: 'Email',
       password: 'Password',
@@ -109,7 +111,9 @@ export default {
       hidden: 'Hidden',
       create_at: 'Create At',
       last_update: 'Last Update',
-      editProfile: 'Edit Profile'
+      editProfile: 'Edit Profile',
+      accauntSettings: 'Accaunt Settings',
+      logout: 'Logout'
     },
     title: 'Settings'
   },

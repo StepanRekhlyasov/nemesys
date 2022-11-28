@@ -24,20 +24,24 @@
             color="blue"
             class="dropdown" >
             <q-list>
-              <q-item class="bg-grey-3">
-                <q-item-section avatar>
-                  <q-icon name="account_circle" />
-                </q-item-section>
-
-                <q-item-section>
-                  <p class="q-pt-md">
-                    Logged in as <strong>{{ name }}</strong>
-                  </p>
+              <q-item class=" q-pt-none  q-pb-none">
+                <q-item-section class="text-primary">
+                  {{ name }}
                 </q-item-section>
               </q-item>
-              <q-item clickable v-close-popup @click="logout">
+              <q-item clickable v-close-popup to='/system'  class=" q-pt-none  q-pb-none">
                 <q-item-section>
-                  <q-item-label>Logout</q-item-label>
+                  <q-item-label>{{$t('settings.title')}}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to='/system/editProfile'  class=" q-pt-none  q-pb-none">
+                <q-item-section>
+                  <q-item-label>{{$t('settings.users.accauntSettings')}}</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="logout"  class=" q-pt-none  q-pb-none">
+                <q-item-section>
+                  <q-item-label>{{$t('settings.users.logout')}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>

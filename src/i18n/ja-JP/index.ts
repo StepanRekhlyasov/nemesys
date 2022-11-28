@@ -44,7 +44,8 @@ export default {
     moreThan: '件以上',
     pleaseSelect: '選択してください',
     addNew: '新規追加',
-
+    search: '検索',
+    keyboard: 'キーワード',
   },
   weekDay: {
     sunday: '日',
@@ -94,7 +95,7 @@ export default {
       garage: '駐車場有無'
     },
     users: {
-      addUser: '新規担当者追加',
+      addUser: '担当者新規追加',
       fio: '氏名',
       email: 'メールアドレス',
       password: 'パスワード',
@@ -110,9 +111,11 @@ export default {
       hidden: '非表示',
       create_at: '作成日',
       last_update: '更新日',
-      editProfile: 'プロフィール編集'
+      editProfile: 'プロフィール編集',
+      accauntSettings: 'アカウント設定',
+      logout: 'ログアウト'
     },
-    title: 'システム',
+    title: 'システム設定',
   },
   client: {
     list: {

@@ -1,4 +1,4 @@
-import { doc, Firestore, getDoc } from 'firebase/firestore';
+import { collection, doc, Firestore, getDoc, getDocs } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
 
@@ -22,4 +22,16 @@ export const getUserOrganization = (db: Firestore, organizationId: string) => {
 
 export const getUserOrganizationList = (db: Firestore, organizationIds: string[]) => {
   return organizationIds.map(id => getUserOrganization(db, id) )
+}
+
+export const getRoles = (db: Firestore) => {
+  return getDocs(collection(db, 'roles' ))
+}
+
+export const getAllUsers = (db: Firestore) => {
+  return getDocs(collection(db, 'users'))
+}
+
+export const getBranches = (db: Firestore) => {
+  return getDocs(collection(db, 'branch'))
 }

@@ -10,36 +10,29 @@ const system_router: MenuRouter[] = [
       requiresAuth: true,
     },
     menuParent: MenuParent.SystemSettings,
-  },
-  {
+  },{
+    path: 'system',
+    title: 'menu.system',
+    component: () => import('src/pages/settings/SystemSettings.vue'),
+  },{
     path: 'system/users',
     title: 'menu.users',
-    icon: 'mdi-cog',
-    component: () => import('src/pages/settings/UsersList.vue'),
-    meta: { requiresAuth: true },
+    component: () => import('src/pages/settings/management/ResponsibleMaster.vue'),
+    meta: {
+      requiresAuth: true,
+      permissions: [UserPermissionNames.UserUpdate]
+    },
     menuParent: MenuParent.SystemSettings
-  },
-  {
+  },{
     path: 'system/branches',
     title: 'menu.branches',
-    icon: 'mdi-cog',
-    component: () => import('src/pages/settings/branch/Branches.vue'),
+    component: () => import('src/pages/settings/management/BranchMaster.vue'),
     meta: {
       requiresAuth: true,
       permissions: [UserPermissionNames.BranchUpdate]
     },
-    menuParent: MenuParent.SystemSettings,
+    menuParent: MenuParent.SystemSettings
   },
-  {
-    path: 'system/organization',
-    title: 'menu.organization',
-    icon: 'mdi-office-building-outline',
-    component: () => import('src/pages/settings/organization/Organization.vue'),
-    meta: {
-      requiresAuth: true,
-    },
-    menuParent: MenuParent.SystemSettings,
-  }
 ]
 
 export default system_router;
