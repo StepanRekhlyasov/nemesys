@@ -32,6 +32,15 @@ const system_router: MenuRouter[] = [
       permissions: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings
+  },{
+    path: 'system/template',
+    title: 'menu.template',
+    component: () => import('src/pages/settings/management/TemplateMaster.vue'),
+    meta: {
+      requiresAuth: true,
+      permissions: [UserPermissionNames.BranchUpdate]
+    },
+    menuParent: MenuParent.SystemSettings
   },
 ]
 

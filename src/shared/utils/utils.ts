@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { collection, Firestore, getDocs, Timestamp } from 'firebase/firestore';
 
 export interface dataObject{
   date: string,
@@ -44,5 +44,9 @@ export const lastMonth = ():string => {
   return date.toISOString().slice(0, 10);
 };
 
+// DB request
 
+export const getTemplates = (db: Firestore) => {
+  return getDocs(collection(db, 'templates'))
+}
 

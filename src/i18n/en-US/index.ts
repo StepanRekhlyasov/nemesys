@@ -11,6 +11,9 @@ export default {
     password: 'Password',
     button: 'Sign In',
   },
+  form: {
+    required: 'Field is required'
+  },
   common: {
     add: 'Add',
     cancel: 'Cancel',
@@ -66,6 +69,7 @@ export default {
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
     organization: 'Organization Master Management',
+    template: 'Template Management',
     applicant: 'Applicant Management',
     mapSearch: 'Map Search',
     newApplicant: 'New Applicant Registration',
@@ -97,6 +101,18 @@ export default {
         all: 'All',
         valid: 'Valid'
       }
+    },
+    template: {
+      addNew: 'New mail template added',
+      name: 'Template Name',
+      type: 'Type',
+      subject: 'Subject',
+      contents: 'Contents',
+      mail: 'Mail',
+      sms: 'SMS',
+
+      create_at: 'Create At',
+      last_update: 'Last Update',
     },
     users: {
       addUser: 'Add new contact person',

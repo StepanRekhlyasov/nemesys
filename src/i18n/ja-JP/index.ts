@@ -11,6 +11,9 @@ export default {
     password: 'パスワード',
     button: 'サインイン',
   },
+  form: {
+    required: 'フィールドは必須です'
+  },
   common: {
     add: '追加',
     cancel: 'キャンセル',
@@ -66,6 +69,7 @@ export default {
     branches: '支店マスタ管理',
     users: '担当マスタ管理',
     organization: '組織マスター管理',
+    template: 'テンプレート管理',
     applicant: '応募者管理',
     mapSearch: 'マップ検索',
     areaSearch: 'エリア検索',
@@ -97,6 +101,18 @@ export default {
         all: 'すべて',
         valid: '有効'
       }
+    },
+    template: {
+      addNew: 'メールテンプレート新規追加',
+      name: 'テンプレート名',
+      type: '種別',
+      subject: '件名',
+      contents: '内容',
+      mail: 'メール',
+      sms: 'SMS',
+
+      create_at: '作成日',
+      last_update: '更新日',
     },
     users: {
       addUser: '担当者新規追加',
