@@ -1,5 +1,10 @@
 import { Timestamp } from 'firebase/firestore';
 
+export interface dataObject{
+  date: string,
+  time: string
+}
+
 export const toDate = (timestamp: Timestamp):string => {
   let data = '';
   if (timestamp) {
@@ -12,6 +17,22 @@ export const toDate = (timestamp: Timestamp):string => {
   }
   return data;
 };
+
+export const toDateObject = (timestamp: Timestamp):dataObject => {
+  const obj:dataObject = {
+    date: '',
+    time: ''
+  }
+  if (timestamp) {
+    obj.date = timestamp.toDate().toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    obj.time = timestamp.toDate().toLocaleTimeString('ja-JP');
+  }
+  return obj
+}
 
 export const today = ():string => {
   return new Date().toISOString().slice(0, 10);

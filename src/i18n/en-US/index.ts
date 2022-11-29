@@ -78,9 +78,9 @@ export default {
       addBranch: 'Add Branch',
       id: 'Branch ID',
       name: 'Branch Name',
+      flag: 'Enable Flag',
       prefectures: 'Prefectures',
       phone: 'Phone Number',
-      enable: 'Enable Flug',
       hidden: 'Hidden',
       create_at: 'Create At',
       last_update: 'Last Update',
@@ -92,7 +92,11 @@ export default {
       email: 'e-mail',
       car_commuting: 'Car Commuting',
       eat_cigarettes: 'Can I eat cigarettes?',
-      garage: 'Garage availability'
+      garage: 'Garage availability',
+      flags: {
+        all: 'All',
+        valid: 'Valid'
+      }
     },
     users: {
       addUser: 'Add new contact person',

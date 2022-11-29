@@ -75,12 +75,12 @@ export default {
   },
   settings: {
     branch: {
-      addBranch: '新規支店追加',
+      addBranch: '支店新規追加',
       id: '支店ID',
       name: '支店名',
       prefectures: '都道府県',
+      flag: '有効フラグ',
       phone: '電話番号',
-      enable: '有効フラグ',
       hidden: '非表示',
       create_at: '作成日',
       last_update: '更新日',
@@ -92,7 +92,11 @@ export default {
       email: 'e-mail',
       car_commuting: '車通勤可否',
       eat_cigarettes: '喫煙可否',
-      garage: '駐車場有無'
+      garage: '駐車場有無',
+      flags: {
+        all: 'すべて',
+        valid: '有効'
+      }
     },
     users: {
       addUser: '担当者新規追加',

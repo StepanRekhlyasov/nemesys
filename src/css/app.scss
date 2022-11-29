@@ -85,6 +85,10 @@
     }
   }
 }
+
+.input-md, .input-md .q-field__control, .input-md .q-field__control:after{
+  max-height: 35px;
+}
 .note {
   border: 2px solid;
   border-radius: 4px;

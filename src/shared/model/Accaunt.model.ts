@@ -1,3 +1,5 @@
+import { dataObject } from '../utils/utils';
+
 export interface Accaunt {
   id: string;
   email: string;
@@ -5,8 +7,8 @@ export interface Accaunt {
   branch_id?: string;
   manager: boolean;
   hidden: boolean;
-  create_at: string;
-  last_update: string;
+  create_at: dataObject;
+  last_update: dataObject;
 }
 
 export interface User{

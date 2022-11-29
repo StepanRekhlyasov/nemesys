@@ -1,12 +1,18 @@
+import { dataObject } from '../utils/utils';
 
 export interface Branch {
-  id: number;
+  id: string;
   name: string;
   prefectures: string;
   phone?: string;
   flug: string;
   hidden: boolean;
-  createAt: Date;
-  updateAt?: Date;
+  create_at: dataObject;
+  updateAt?: dataObject;
   deletedAt?: Date;
+}
+
+export enum branchFlags {
+  All = 'all',
+  Valid = 'valid'
 }

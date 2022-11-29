@@ -27,6 +27,7 @@
             v-model:pagination="pagination"
             hide-pagination
             class="no-shadow"
+            :loading="loading"
             >
               <template v-slot:body-cell-role="props">
                 <q-td :props="props" >
@@ -36,6 +37,23 @@
               <template v-slot:body-cell-branch="props">
                 <q-td :props="props">
                   {{branches && branches[props.row?.branch_id]?.name}}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-hidden="props">
+                <q-td :props="props">
+                  <q-icon name="mdi-check-bold" v-if="props.row.hidden"/>
+                </q-td>
+              </template>
+              <template v-slot:body-cell-create_at="props">
+                <q-td :props="props">
+                  {{props.row.create_at.date}}<br/>
+                  {{props.row.create_at.time}}
+                </q-td>
+              </template>
+              <template v-slot:body-cell-updateAt="props">
+                <q-td :props="props">
+                  {{props.row.updateAt.date}}<br/>
+                  {{props.row.updateAt.time}}
                 </q-td>
               </template>
           </q-table>
@@ -61,7 +79,7 @@ import { getFirestore} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt, Role } from 'src/shared/model/Accaunt.model';
-import { toDate } from 'src/shared/utils/utils';
+import { toDateObject } from 'src/shared/utils/utils';
 import { getAllUsers, getBranches, getRoles } from 'src/shared/utils/User.utils';
 import { Branch } from 'src/shared/model/Branch.model';
 
@@ -74,6 +92,7 @@ export default {
     const search = ref('');
     const roles = ref({})
     const branches = ref({})
+    const loading = ref(false)
     const usersListData: Ref<Accaunt[]> = ref([]);
 
     const pagination = ref({
@@ -121,7 +140,6 @@ export default {
       align: 'left',
     },{
       name: 'last_update',
-      required: true,
       label: t('settings.users.last_update') ,
       field: 'last_update',
       align: 'left',
@@ -129,6 +147,7 @@ export default {
 
     loadUsersList()
     async function loadUsersList() {
+      loading.value = true;
       const usersSnapshot = getAllUsers(db);
       const rolesSnapshot = getRoles(db);
       const branchesSnapshot = getBranches(db);
@@ -138,7 +157,7 @@ export default {
         users.forEach((doc) => {
           const data = doc.data();
           data['id'] = doc.id;
-          list.push({ ...data as Accaunt, id: doc.id, create_at: toDate(data.addedAt), last_update: toDate(data.last_update)});
+          list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), last_update: toDateObject(data.last_update)});
         });
         usersListData.value = list;
       })
@@ -160,6 +179,9 @@ export default {
         })
         branches.value = list;
       })
+      Promise.all([usersSnapshot, rolesSnapshot, branchesSnapshot]).then(() => {
+        loading.value = false;
+      })
     }
 
     return {
@@ -167,6 +189,7 @@ export default {
       columns,
       pagination,
       selected,
+      loading,
 
       roles,
       usersListData,
@@ -177,8 +200,4 @@ export default {
 </script>
 
 <style lang="scss">
-.input-md, .input-md .q-field__control, .input-md .q-field__control:after{
-  max-height: 35px;
-
-}
 </style>
