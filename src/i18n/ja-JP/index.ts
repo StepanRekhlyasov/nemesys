@@ -85,6 +85,7 @@ export default {
       prefectures: '都道府県',
       flag: '有効フラグ',
       phone: '電話番号',
+      hiddenFlag: '非表示フラグ',
       hidden: '非表示',
       create_at: '作成日',
       last_update: '更新日',
@@ -97,6 +98,7 @@ export default {
       car_commuting: '車通勤可否',
       eat_cigarettes: '喫煙可否',
       garage: '駐車場有無',
+      hide: '非表示にする',
       flags: {
         all: 'すべて',
         valid: '有効'

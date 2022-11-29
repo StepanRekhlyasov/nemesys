@@ -164,16 +164,16 @@ export default {
       branchFlags,
 
       deleteTemplate() {
-      const ret = selected.value.map( async (template) => {
-        const boRef = doc(db, 'templates/'+template.id);
-        await updateDoc(boRef, {
-          deleted: true
+        const ret = selected.value.map( async (template) => {
+          const boRef = doc(db, 'templates/'+template.id);
+          await updateDoc(boRef, {
+            deleted: true
+          })
         })
-      })
-      Promise.all(ret).then(() => {
-        selected.value = [];
-        loadUsersList()
-      })
+        Promise.all(ret).then(() => {
+          selected.value = [];
+          loadUsersList()
+        })
       }
     }
   }

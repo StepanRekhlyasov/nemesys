@@ -1,21 +1,20 @@
 <template>
   <q-card style="width: 1000px; max-width: 40vw" class="no-scroll">
-    <q-form  @submit="addTemplate">
+    <q-form  @submit="addBranch">
       <q-card-section>
-        {{$t('settings.template.addNew')}}
+        {{$t('settings.branch.addBranch')}}
       </q-card-section>
       <q-separator />
       <q-card-section class="q-pb-none">
         <div class="row q-pb-sm">
           <div class="col-3 text-right q-pr-sm  q-pt-sm">
-            {{ $t('settings.template.name') }}
+            {{ $t('settings.branch.name') }}
           </div>
           <div class="col-9 q-pl-sm ">
             <q-input
-              v-model="templateData['name']"
-              :rules="[val => !!val || $t('form.required') ]"
-              :disable="loading"
+              v-model="branchData['name']"
               name="name"
+              :disable="loading"
               outlined
               dense
             />
@@ -27,27 +26,22 @@
             {{ $t('client.backOrder.reqQualification') }}
           </div>
           <div class="col-9 q-pl-sm">
-            <q-radio
-              v-for="key in TemplateType"
-              v-model="templateData['types']"
-              :label="$t('settings.template.'+key)"
-              :disable="loading"
-              :val="key"
-              :key="key"
-              class="q-pr-md"/>
+            <q-select outlined dense :options="prefectureOption" v-model="branchData['prefectures']"
+              bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
           </div>
         </div>
 
         <div class="row q-pb-sm">
           <div class="col-3 text-right q-pr-sm q-pt-sm">
-            {{ $t('settings.template.subject') }}
+            {{ $t('settings.branch.phone') }}
           </div>
           <div class="col-9 q-pl-sm">
             <q-input
-              v-model="templateData['subject']"
-              :rules="[val => !!val || $t('form.required') ]"
+              v-model="branchData['tel']"
               :disable="loading"
-              name="subject"
+              mask="phone"
+              type="tel"
+              name="tel"
               outlined
               dense
             />
@@ -56,20 +50,29 @@
 
         <div class="row q-pb-sm">
           <div class="col-3 text-right q-pr-sm q-pt-sm">
-            {{ $t('settings.template.contents') }}
+            {{ $t('settings.branch.hiddenFlag') }}
           </div>
           <div class="col-9 q-pl-sm">
-            <q-input
-              v-model="templateData['contents']"
-              :rules="[val => !!val || $t('form.required') ]"
-              :disable="loading"
-              name="contents"
-              type="textarea"
-              outlined
-              dense
-            />
+          <q-checkbox
+            v-model="branchData['hidden']"
+            :label="$t('settings.branch.hide')"
+            checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+            class="q-pr-md"/>
           </div>
         </div>
+
+      <div class="row q-pb-sm">
+        <div class="col-3 text-right q-pr-sm q-pt-sm">
+          {{ $t('settings.branch.flag') }}
+        </div>
+        <div class="col-9 q-pl-sm">
+          <q-radio
+            v-model="branchData['flag']"
+            val="valid"
+            checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+            class="q-pr-md"/>
+        </div>
+      </div>
       </q-card-section>
 
       <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
@@ -80,36 +83,40 @@
 </template>
 
 <script lang="ts">
-import { ref, SetupContext} from 'vue';
-import { TemplateType } from 'src/shared/model/Template.model'
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { ref, SetupContext } from 'vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
 export default {
-  name: 'TemplateCreateForm',
+  name: 'BranchCreateForm',
   setup(_, context: SetupContext) {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
     const $q = useQuasar();
 
-    const loading = ref(false);
-    const templateData = ref({});
+    const branchData = ref({
+      hidden: false
+    })
+    const loading = ref(false)
+    const prefectureOption = ref(prefectureList);
 
     return {
-      templateData,
-      TemplateType,
+      branchData,
       loading,
+      prefectureOption,
 
-      async addTemplate() {
+      async addBranch(){
         loading.value = true;
-        let data = JSON.parse(JSON.stringify(templateData.value));
+        let data = JSON.parse(JSON.stringify(branchData.value));
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
+
         data['deleted'] = false;
         try {
-          const clientRef = collection(db, 'templates/');
+          const clientRef = collection(db, 'branch/');
           await addDoc(clientRef, data);
 
           context.emit('closeDialog');
@@ -119,6 +126,8 @@ export default {
           Alert.success($q, t);
           loading.value = false;
         }
+
+
       }
     }
   }

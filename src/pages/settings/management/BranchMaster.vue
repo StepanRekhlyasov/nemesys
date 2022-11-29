@@ -6,7 +6,13 @@
           <q-icon name="mdi-cog-outline" color="primary" class="q-pr-sm" size="md"/>
           {{$t('menu.branches')}}
         </div>
-        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.branch.addBranch')" />
+        <q-btn
+          color="primary"
+          text-color="white"
+          class="no-shadow"
+          icon="mdi-plus"
+          :label="$t('settings.branch.addBranch')"
+          @click="openDialog=true" />
       </div>
     </q-card-section>
     <q-separator color="grey-5" size="2px"/>
@@ -38,27 +44,35 @@
                 <q-icon name="mdi-check-bold" v-if="props.row.hidden === true"/>
               </q-td>
             </template>
+
             <template v-slot:body-cell-prefectures="props">
               <q-td :props="props">
                 <span v-if="props.row.prefectures">{{$t('prefectures.'+props.row.prefectures)}}</span>
               </q-td>
             </template>
+
             <template v-slot:body-cell-flag="props">
               <q-td :props="props">
                 <span v-if="props.row.flag">{{$t('settings.branch.flags.'+props.row.flag)}}</span>
               </q-td>
             </template>
-            <template v-slot:body-cell-create_at="props">
+
+            <template v-slot:body-cell-created_at="props">
               <q-td :props="props">
-                {{props.row.create_at.date}}<br/>
-                {{props.row.create_at.time}}
+                {{props.row.created_at.date}}<br/>
+                {{props.row.created_at.time}}
               </q-td>
             </template>
-            <template v-slot:body-cell-updateAt="props">
+
+            <template v-slot:body-cell-updated_at="props">
               <q-td :props="props">
-                {{props.row.updateAt.date}}<br/>
-                {{props.row.updateAt.time}}
+                {{props.row.updated_at.date}}<br/>
+                {{props.row.updated_at.time}}
               </q-td>
+            </template>
+
+            <template v-slot:top >
+              <q-btn color="negative" class="no-shadow" unelevated v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteBranchs"/>
             </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
@@ -76,18 +90,25 @@
       </q-card>
     </q-card-section>
   </div>
+  <q-dialog v-model="openDialog">
+    <BranchCreateForm @closeDialog="loadUsersList();openDialog=false"/>
+  </q-dialog>
 </template>
 
 <script lang="ts">
-import { getFirestore} from '@firebase/firestore';
+import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt } from 'src/shared/model/Accaunt.model';
 import { getBranches } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
 import { toDateObject } from 'src/shared/utils/utils';
+import BranchCreateForm from './components/BranchCreate.form.vue';
 export default {
   name: 'branchMaster',
+  components: {
+    BranchCreateForm
+  },
   setup(){
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
@@ -98,8 +119,12 @@ export default {
     });
     const branches: Ref<Branch[]> = ref([])
     const selected: Ref<Accaunt[]> = ref([])
-    const loading = ref(false)
+    const loading = ref(false);
 
+    // dialog date
+    const openDialog = ref(false)
+
+    // table date
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -136,15 +161,15 @@ export default {
       field: 'hidden',
       align: 'left',
     },{
-      name: 'create_at',
+      name: 'created_at',
       required: true,
       label: t('settings.branch.create_at') ,
-      field: 'create_at',
+      field: 'created_at',
       align: 'left',
     },{
-      name: 'updatedAt',
+      name: 'updated_at',
       label: t('settings.branch.last_update') ,
-      field: 'updatedAt',
+      field: 'updated_at',
       align: 'left',
     },])
     const flagOptions = computed(() => Object.keys(branchFlags).map(key => {
@@ -164,7 +189,7 @@ export default {
         branch.forEach((doc) => {
           const data = doc.data();
           data.id = doc.id
-          list.push({...data, create_at: toDateObject(data.create_at), updateAt: toDateObject(data.updatedAt)} as Branch)
+          list.push({...data, created_at: toDateObject(data.created_at), updated_at: toDateObject(data.updated_at)} as Branch)
         })
         branches.value = list;
         loading.value = false;
@@ -177,6 +202,21 @@ export default {
       pagination,
       selected,
       loading,
+
+      openDialog,
+      loadUsersList,
+      deleteBranchs() {
+        const ret = selected.value.map( async (template) => {
+          const boRef = doc(db, 'templates/'+template.id);
+          await updateDoc(boRef, {
+            deleted: true
+          })
+        })
+        Promise.all(ret).then(() => {
+          selected.value = [];
+          loadUsersList()
+        })
+      },
 
       branches,
       branchFlags,

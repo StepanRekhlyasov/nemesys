@@ -1,4 +1,4 @@
-import { collection, doc, Firestore, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, Firestore, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
 
@@ -29,9 +29,9 @@ export const getRoles = (db: Firestore) => {
 }
 
 export const getAllUsers = (db: Firestore) => {
-  return getDocs(collection(db, 'users'))
+  return getDocs(query(collection(db, 'users'), where('deleted','==', false)))
 }
 
 export const getBranches = (db: Firestore) => {
-  return getDocs(collection(db, 'branch'))
+  return getDocs(query(collection(db, 'branch'), where('deleted','==', false)))
 }

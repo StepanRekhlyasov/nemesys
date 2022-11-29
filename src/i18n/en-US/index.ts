@@ -86,6 +86,7 @@ export default {
       prefectures: 'Prefectures',
       phone: 'Phone Number',
       hidden: 'Hidden',
+      hiddenFlag: 'Hidden Flag',
       create_at: 'Create At',
       last_update: 'Last Update',
       create_branch: 'Basic Company Information Edit',
@@ -97,6 +98,7 @@ export default {
       car_commuting: 'Car Commuting',
       eat_cigarettes: 'Can I eat cigarettes?',
       garage: 'Garage availability',
+      hide: 'Hide',
       flags: {
         all: 'All',
         valid: 'Valid'

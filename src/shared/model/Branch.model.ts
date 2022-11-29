@@ -7,8 +7,8 @@ export interface Branch {
   phone?: string;
   flug: string;
   hidden: boolean;
-  create_at: dataObject;
-  updateAt?: dataObject;
+  created_at: dataObject;
+  updated_at?: dataObject;
   deletedAt?: Date;
 }
 
