@@ -46,6 +46,9 @@
                 {{props.row.updated_at.time}}
               </q-td>
             </template>
+            <template v-slot:top >
+              <q-btn color="negative" class="no-shadow" unelevated v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteTemplate"/>
+            </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
               <q-pagination
@@ -68,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import { getFirestore} from '@firebase/firestore';
+import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { branchFlags } from 'src/shared/model/Branch.model';
@@ -158,7 +161,20 @@ export default {
       openDialog,
 
       templates,
-      branchFlags
+      branchFlags,
+
+      deleteTemplate() {
+      const ret = selected.value.map( async (template) => {
+        const boRef = doc(db, 'templates/'+template.id);
+        await updateDoc(boRef, {
+          deleted: true
+        })
+      })
+      Promise.all(ret).then(() => {
+        selected.value = [];
+        loadUsersList()
+      })
+      }
     }
   }
 }

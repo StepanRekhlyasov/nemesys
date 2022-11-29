@@ -6,6 +6,7 @@ export enum TemplateType {
 }
 
 export interface Template {
+  id: string;
   name: string;
   type: TemplateType;
   subject: string;

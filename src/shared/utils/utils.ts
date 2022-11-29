@@ -1,4 +1,4 @@
-import { collection, Firestore, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, Firestore, getDocs, query, Timestamp, where } from 'firebase/firestore';
 
 export interface dataObject{
   date: string,
@@ -47,6 +47,6 @@ export const lastMonth = ():string => {
 // DB request
 
 export const getTemplates = (db: Firestore) => {
-  return getDocs(collection(db, 'templates'))
+  return getDocs(query(collection(db, 'templates'), where('deleted', '==', false)))
 }
 
