@@ -31,7 +31,7 @@
             >
             <template v-slot:body-cell-type="props">
               <q-td :props="props">
-                {{$t('settings.template.'+props.row.type)}}
+                <span v-if="props.row.type">{{$t('settings.template.'+props.row.type)}}</span>
               </q-td>
             </template>
             <template v-slot:body-cell-created_at="props">
@@ -47,7 +47,14 @@
               </q-td>
             </template>
             <template v-slot:top >
-              <q-btn color="negative" class="no-shadow" unelevated v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteTemplate"/>
+              <q-btn
+                color="negative"
+                class="no-shadow"
+                unelevated
+                v-if="selected.length >0"
+                :label="$t('common.delete')"
+                @click="deleteTemplate"
+                :disable="loading"/>
             </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
@@ -66,7 +73,7 @@
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog">
-    <TemplateCreateForm  @closeDialog="openDialog = false"/>
+    <TemplateCreateForm  @closeDialog="openDialog = false; loadUsersList()"/>
   </q-dialog>
 </template>
 
@@ -75,9 +82,11 @@ import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { branchFlags } from 'src/shared/model/Branch.model';
-import { getTemplates, toDateObject } from 'src/shared/utils/utils';
+import { getOrganizationId, getTemplates, toDateObject } from 'src/shared/utils/utils';
 import TemplateCreateForm from './components/TemplateCreateForm.vue';
 import { Template } from 'src/shared/model/Template.model';
+import { useQuasar } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 export default {
   name: 'templateManager',
   components:{
@@ -86,6 +95,7 @@ export default {
   setup(){
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
+    const $q = useQuasar()
 
     const search = ref({
       keyboard: ''
@@ -104,6 +114,7 @@ export default {
       page: 1,
       rowsPerPage: 10
     });
+
     const columns = computed(() => [{
       name: 'name',
       required: true,
@@ -137,18 +148,26 @@ export default {
     loadUsersList()
     async function loadUsersList() {
       loading.value = true;
-      const branchesSnapshot = getTemplates(db);
 
-      branchesSnapshot.then(branch => {
-        const list: Template[] = []
-        branch.forEach((doc) => {
-          const data = doc.data();
-          data.id = doc.id
-          list.push({...data, created_at: toDateObject(data.created_at), updated_at: toDateObject(data.updated_at)} as Template)
-        })
-        templates.value = list;
+      try {
+        const active_organization_id = getOrganizationId($q);
+        if (active_organization_id) {
+          const branchesSnapshot = getTemplates(db, active_organization_id);
+          branchesSnapshot.then(branch => {
+            const list: Template[] = []
+            branch.forEach((doc) => {
+              const data = doc.data();
+              data.id = doc.id
+              list.push({...data, created_at: toDateObject(data.created_at), updated_at: toDateObject(data.updated_at)} as Template)
+            })
+            templates.value = list;
+            loading.value = false;
+          })
+        }
+      } catch {
         loading.value = false;
-      })
+        Alert.warning($q, t)
+      }
     }
 
     return {
@@ -164,8 +183,10 @@ export default {
       branchFlags,
 
       deleteTemplate() {
+        loading.value = true;
         const ret = selected.value.map( async (template) => {
-          const boRef = doc(db, 'templates/'+template.id);
+          const active_organization_id = getOrganizationId($q);
+          const boRef = doc(db, 'organization/'+active_organization_id+'/template/'+template.id);
           await updateDoc(boRef, {
             deleted: true
           })
@@ -174,7 +195,8 @@ export default {
           selected.value = [];
           loadUsersList()
         })
-      }
+      },
+      loadUsersList
     }
   }
 }

@@ -102,8 +102,10 @@ import { useI18n } from 'vue-i18n';
 import { Accaunt } from 'src/shared/model/Accaunt.model';
 import { getBranches } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
-import { toDateObject } from 'src/shared/utils/utils';
+import { getOrganizationId, toDateObject } from 'src/shared/utils/utils';
 import BranchCreateForm from './components/BranchCreate.form.vue';
+import { useQuasar } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 export default {
   name: 'branchMaster',
   components: {
@@ -112,6 +114,7 @@ export default {
   setup(){
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
+    const $q = useQuasar();
 
     const search = ref({
       keyboard: '',
@@ -182,18 +185,26 @@ export default {
     loadUsersList()
     async function loadUsersList() {
       loading.value = true;
-      const branchesSnapshot = getBranches(db);
+      try {
+        const active_organization_id = getOrganizationId($q)
+        if (active_organization_id) {
+          const branchesSnapshot = getBranches(db, active_organization_id);
 
-      branchesSnapshot.then(branch => {
-        const list: Branch[] = []
-        branch.forEach((doc) => {
-          const data = doc.data();
-          data.id = doc.id
-          list.push({...data, created_at: toDateObject(data.created_at), updated_at: toDateObject(data.updated_at)} as Branch)
-        })
-        branches.value = list;
+          branchesSnapshot.then(branch => {
+            const list: Branch[] = []
+            branch.forEach((doc) => {
+              const data = doc.data();
+              data.id = doc.id
+              list.push({...data, created_at: toDateObject(data.created_at), updated_at: toDateObject(data.updated_at)} as Branch)
+            })
+            branches.value = list;
+          })
+        }
         loading.value = false;
-      })
+      } catch {
+          loading.value = false;
+          Alert.warning($q, t);
+      }
     }
 
     return {
@@ -207,7 +218,8 @@ export default {
       loadUsersList,
       deleteBranchs() {
         const ret = selected.value.map( async (template) => {
-          const boRef = doc(db, 'templates/'+template.id);
+          const active_organization_id = getOrganizationId($q)
+          const boRef = doc(db, 'organization/'+active_organization_id+'/templates/'+template.id);
           await updateDoc(boRef, {
             deleted: true
           })

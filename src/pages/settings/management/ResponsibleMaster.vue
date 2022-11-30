@@ -79,15 +79,18 @@ import { getFirestore} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt, Role } from 'src/shared/model/Accaunt.model';
-import { toDateObject } from 'src/shared/utils/utils';
+import { getOrganizationId, toDateObject } from 'src/shared/utils/utils';
 import { getAllUsers, getBranches, getRoles } from 'src/shared/utils/User.utils';
 import { Branch } from 'src/shared/model/Branch.model';
+import { useQuasar } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'responcibleMasterManagement',
   setup(){
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
+    const $q = useQuasar();
 
     const search = ref('');
     const roles = ref({})
@@ -148,40 +151,48 @@ export default {
     loadUsersList()
     async function loadUsersList() {
       loading.value = true;
-      const usersSnapshot = getAllUsers(db);
-      const rolesSnapshot = getRoles(db);
-      const branchesSnapshot = getBranches(db);
+      try {
+        const active_organization_id = getOrganizationId($q)
+        if (active_organization_id) {
+          const usersSnapshot = getAllUsers(db);
+          const rolesSnapshot = getRoles(db);
+          const branchesSnapshot = getBranches(db, active_organization_id);
 
-      usersSnapshot.then(users => {
-        let list: Accaunt[] = [];
-        users.forEach((doc) => {
-          const data = doc.data();
-          data['id'] = doc.id;
-          list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), last_update: toDateObject(data.last_update)});
-        });
-        usersListData.value = list;
-      })
+          usersSnapshot.then(users => {
+            let list: Accaunt[] = [];
+            users.forEach((doc) => {
+              const data = doc.data();
+              data['id'] = doc.id;
+              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), last_update: toDateObject(data.last_update)});
+            });
+            usersListData.value = list;
+          })
 
-      rolesSnapshot.then(role => {
-        const list = {}
-        role.forEach((doc) => {
-          const data = doc.data() as Role
-          list[doc.id] = data
-        })
-        roles.value = list;
-      })
+          rolesSnapshot.then(role => {
+            const list = {}
+            role.forEach((doc) => {
+              const data = doc.data() as Role
+              list[doc.id] = data
+            })
+            roles.value = list;
+          })
 
-      branchesSnapshot.then(branch => {
-        const list = {}
-        branch.forEach((doc) => {
-          const data = doc.data() as Branch;
-          list[doc.id] = data
-        })
-        branches.value = list;
-      })
-      Promise.all([usersSnapshot, rolesSnapshot, branchesSnapshot]).then(() => {
+          branchesSnapshot.then(branch => {
+            const list = {}
+            branch.forEach((doc) => {
+              const data = doc.data() as Branch;
+              list[doc.id] = data
+            })
+            branches.value = list;
+          })
+          Promise.all([usersSnapshot, rolesSnapshot, branchesSnapshot]).then(() => {
+            loading.value = false;
+          })
+        }
+      } catch {
         loading.value = false;
-      })
+        Alert.warning($q, t)
+      }
     }
 
     return {

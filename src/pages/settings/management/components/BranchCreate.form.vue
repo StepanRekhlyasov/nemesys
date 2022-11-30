@@ -89,6 +89,8 @@ import { ref, SetupContext } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { getAuth } from '@firebase/auth';
+import { getOrganizationId } from 'src/shared/utils/utils';
 
 export default {
   name: 'BranchCreateForm',
@@ -96,7 +98,7 @@ export default {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
     const $q = useQuasar();
-
+    const auth = getAuth();
     const branchData = ref({
       hidden: false
     })
@@ -111,17 +113,19 @@ export default {
       async addBranch(){
         loading.value = true;
         let data = JSON.parse(JSON.stringify(branchData.value));
-        data['created_at'] = serverTimestamp();
-        data['updated_at'] = serverTimestamp();
-
-        data['deleted'] = false;
         try {
-          const clientRef = collection(db, 'branch/');
-          await addDoc(clientRef, data);
+            const active_organization_id = getOrganizationId($q);
+            data['created_at'] = serverTimestamp();
+            data['updated_at'] = serverTimestamp();
+            data['created_user'] = auth.currentUser?.uid;
+            data['deleted'] = false;
 
-          context.emit('closeDialog');
-          Alert.success($q, t);
-          loading.value = false;
+            const clientRef = collection(db, 'organization/'+active_organization_id+'/branch/');
+            await addDoc(clientRef, data);
+
+            context.emit('closeDialog');
+            Alert.success($q, t);
+            loading.value = false;
         } catch {
           Alert.success($q, t);
           loading.value = false;

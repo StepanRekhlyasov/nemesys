@@ -13,7 +13,6 @@
           <div class="col-9 q-pl-sm ">
             <q-input
               v-model="templateData['name']"
-              :rules="[val => !!val || $t('form.required') ]"
               :disable="loading"
               name="name"
               outlined
@@ -29,7 +28,7 @@
           <div class="col-9 q-pl-sm">
             <q-radio
               v-for="key in TemplateType"
-              v-model="templateData['types']"
+              v-model="templateData['type']"
               :label="$t('settings.template.'+key)"
               :disable="loading"
               :val="key"
@@ -45,7 +44,6 @@
           <div class="col-9 q-pl-sm">
             <q-input
               v-model="templateData['subject']"
-              :rules="[val => !!val || $t('form.required') ]"
               :disable="loading"
               name="subject"
               outlined
@@ -61,7 +59,6 @@
           <div class="col-9 q-pl-sm">
             <q-input
               v-model="templateData['contents']"
-              :rules="[val => !!val || $t('form.required') ]"
               :disable="loading"
               name="contents"
               type="textarea"
@@ -86,6 +83,8 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { getAuth } from '@firebase/auth';
+import { getOrganizationId } from 'src/shared/utils/utils';
 
 export default {
   name: 'TemplateCreateForm',
@@ -93,6 +92,7 @@ export default {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
     const $q = useQuasar();
+    const auth = getAuth();
 
     const loading = ref(false);
     const templateData = ref({});
@@ -105,18 +105,20 @@ export default {
       async addTemplate() {
         loading.value = true;
         let data = JSON.parse(JSON.stringify(templateData.value));
-        data['created_at'] = serverTimestamp();
-        data['updated_at'] = serverTimestamp();
-        data['deleted'] = false;
         try {
-          const clientRef = collection(db, 'templates/');
+          const active_organization_id = getOrganizationId($q);
+          data['created_at'] = serverTimestamp();
+          data['updated_at'] = serverTimestamp();
+          data['created_user'] = auth.currentUser?.uid;
+          data['deleted'] = false;
+          const clientRef = collection(db, 'organization/'+active_organization_id+'/template/');
           await addDoc(clientRef, data);
 
           context.emit('closeDialog');
           Alert.success($q, t);
           loading.value = false;
         } catch {
-          Alert.success($q, t);
+          Alert.warning($q, t);
           loading.value = false;
         }
       }

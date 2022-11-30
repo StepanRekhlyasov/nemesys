@@ -1,4 +1,4 @@
-import { collection, doc, Firestore, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, Firestore, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
 
@@ -32,6 +32,6 @@ export const getAllUsers = (db: Firestore) => {
   return getDocs(query(collection(db, 'users'), where('deleted','==', false)))
 }
 
-export const getBranches = (db: Firestore) => {
-  return getDocs(query(collection(db, 'branch'), where('deleted','==', false)))
+export const getBranches = (db: Firestore, active_organization_id: string) => {
+  return getDocs(query(collection(db, 'organization/'+active_organization_id+'/branch'), where('deleted','==', false), orderBy('name')))
 }
