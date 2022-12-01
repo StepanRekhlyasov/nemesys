@@ -28,8 +28,9 @@ export const getRoles = (db: Firestore) => {
   return getDocs(collection(db, 'roles' ))
 }
 
-export const getAllUsers = (db: Firestore) => {
-  return getDocs(query(collection(db, 'users'), where('deleted','==', false)))
+export const getAllUsers = (db: Firestore, active_organization_id: string) => {
+  console.log(active_organization_id)
+  return getDocs(query(collection(db, 'users'), where('deleted','==', false), orderBy('created_at'), where('organization_ids', 'array-contains', active_organization_id)))
 }
 
 export const getBranches = (db: Firestore, active_organization_id: string) => {

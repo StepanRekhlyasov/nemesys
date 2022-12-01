@@ -154,7 +154,7 @@ export default {
       try {
         const active_organization_id = getOrganizationId($q)
         if (active_organization_id) {
-          const usersSnapshot = getAllUsers(db);
+          const usersSnapshot = getAllUsers(db, active_organization_id);
           const rolesSnapshot = getRoles(db);
           const branchesSnapshot = getBranches(db, active_organization_id);
 
