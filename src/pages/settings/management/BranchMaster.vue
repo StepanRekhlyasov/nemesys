@@ -32,13 +32,23 @@
             :columns="columns"
             :rows="branches"
             row-key="id"
-            selection="multiple"
             :loading="loading"
-            v-model:selected="selected"
             v-model:pagination="pagination"
             hide-pagination
             class="no-shadow"
             >
+            <template v-slot:body-cell-delete="props">
+              <q-td :props="props" auto-width>
+                <q-btn icon="delete" flat @click="deleteBranch(props.row)"/>
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-edit="props">
+              <q-td :props="props" auto-width>
+                <q-btn icon="edit" flat @click="editBranch=props.row;openDialog=true;"/>
+              </q-td>
+            </template>
+
             <template v-slot:body-cell-hidden="props">
               <q-td :props="props">
                 <q-icon name="mdi-check-bold" v-if="props.row.hidden === true"/>
@@ -70,10 +80,6 @@
                 {{props.row.updated_at.time}}
               </q-td>
             </template>
-
-            <template v-slot:top >
-              <q-btn color="negative" class="no-shadow" unelevated v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteBranchs"/>
-            </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
               <q-pagination
@@ -90,8 +96,8 @@
       </q-card>
     </q-card-section>
   </div>
-  <q-dialog v-model="openDialog">
-    <BranchCreateForm @closeDialog="loadUsersList();openDialog=false"/>
+  <q-dialog v-model="openDialog" @hide="(editBranch=undefined)">
+    <BranchCreateForm @closeDialog="loadUsersList();openDialog=false;" :editBranch="editBranch"/>
   </q-dialog>
 </template>
 
@@ -123,6 +129,7 @@ export default {
     const branches: Ref<Branch[]> = ref([])
     const selected: Ref<Accaunt[]> = ref([])
     const loading = ref(false);
+    const editBranch: Ref<Branch | undefined> = ref(undefined)
 
     // dialog date
     const openDialog = ref(false)
@@ -134,7 +141,10 @@ export default {
       page: 1,
       rowsPerPage: 10
     });
-    const columns = computed(() => [{
+    const columns = computed(() => [
+    {
+      name: 'edit',
+    }, {
       name: 'name',
       required: true,
       label: t('settings.branch.name') ,
@@ -174,7 +184,9 @@ export default {
       label: t('settings.branch.last_update') ,
       field: 'updated_at',
       align: 'left',
-    },])
+    },{
+      name: 'delete'
+    }])
     const flagOptions = computed(() => Object.keys(branchFlags).map(key => {
       return {
         label: t('settings.branch.flags.'+branchFlags[key]),
@@ -185,6 +197,7 @@ export default {
     loadUsersList()
     async function loadUsersList() {
       loading.value = true;
+      editBranch.value=undefined;
       try {
         const active_organization_id = getOrganizationId($q)
         if (active_organization_id) {
@@ -215,18 +228,33 @@ export default {
       loading,
 
       openDialog,
+      editBranch,
       loadUsersList,
-      deleteBranchs() {
-        const ret = selected.value.map( async (template) => {
-          const active_organization_id = getOrganizationId($q)
-          const boRef = doc(db, 'organization/'+active_organization_id+'/templates/'+template.id);
-          await updateDoc(boRef, {
-            deleted: true
-          })
-        })
-        Promise.all(ret).then(() => {
-          selected.value = [];
-          loadUsersList()
+      deleteBranch(branch) {
+        $q.dialog({
+          title: t('common.delete'),
+          message: t('settings.branch.deletedInfo'),
+          ok:{
+            label: t('common.delete'),
+            color: 'negative',
+            class: 'no-shadow',
+            unelevated: true
+          },
+        }).onOk(async () => {
+          try{
+            loading.value = true;
+            const active_organization_id = getOrganizationId($q)
+            const boRef = doc(db, 'organization/'+active_organization_id+'/branch/'+branch.id);
+            await updateDoc(boRef, {
+              deleted: true
+            })
+            loadUsersList();
+            Alert.success($q, t)
+          } catch (e) {
+            console.log(e)
+            Alert.warning($q, t)
+            loading.value = false;
+          }
         })
       },
 

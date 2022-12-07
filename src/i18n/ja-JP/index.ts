@@ -99,6 +99,7 @@ export default {
       eat_cigarettes: '喫煙可否',
       garage: '駐車場有無',
       hide: '非表示にする',
+      deletedInfo: 'この支店に関するデータはすべて消去されます',
       flags: {
         all: 'すべて',
         valid: '有効'

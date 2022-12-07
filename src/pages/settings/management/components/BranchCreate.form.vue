@@ -74,16 +74,16 @@
         </div>
       </div>
       </q-card-section>
-
       <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
-        <q-btn :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
+        <q-btn v-if="!editBranch?.id" :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
+        <q-btn v-if="editBranch?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="saveBranch"/>
       </q-card-actions>
     </q-form>
   </q-card>
 </template>
 
 <script lang="ts">
-import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
+import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { ref, SetupContext } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -94,17 +94,22 @@ import { getOrganizationId } from 'src/shared/utils/utils';
 
 export default {
   name: 'BranchCreateForm',
-  setup(_, context: SetupContext) {
+  props: {
+    editBranch: {
+      type: Object,
+      required: false
+    }
+  },
+  setup(props, context: SetupContext) {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
     const $q = useQuasar();
     const auth = getAuth();
-    const branchData = ref({
+    const branchData = ref(props.editBranch || {
       hidden: false
     })
     const loading = ref(false)
     const prefectureOption = ref(prefectureList);
-
     return {
       branchData,
       loading,
@@ -126,12 +131,34 @@ export default {
             context.emit('closeDialog');
             Alert.success($q, t);
             loading.value = false;
-        } catch {
-          Alert.success($q, t);
+        } catch (e) {
+          console.log(e)
+          Alert.warning($q, t);
           loading.value = false;
         }
+      },
+      async saveBranch() {
+        loading.value = true;
+        const data = branchData.value
+        try {
+            const active_organization_id = getOrganizationId($q);
+            const boRef = doc(db, 'organization/'+active_organization_id+'/branch/'+props.editBranch?.id);
+            await updateDoc(boRef, {
+              updated_at: serverTimestamp(),
+              hidden: data.hidden,
+              name: data.name,
+              prefectures: data.prefectures,
+              tel: data.tel
+            })
 
-
+            context.emit('closeDialog');
+            Alert.success($q, t);
+            loading.value = false;
+        } catch (e) {
+          console.log(e)
+          Alert.warning($q, t);
+          loading.value = false;
+        }
       }
     }
   }

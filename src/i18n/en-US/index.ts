@@ -99,6 +99,7 @@ export default {
       eat_cigarettes: 'Can I eat cigarettes?',
       garage: 'Garage availability',
       hide: 'Hide',
+      deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
         valid: 'Valid'
