@@ -113,6 +113,8 @@ export default {
       contents: '内容',
       mail: 'メール',
       sms: 'SMS',
+      deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
+      edit: 'メールテンプレート編集',
 
       create_at: '作成日',
       last_update: '更新日',

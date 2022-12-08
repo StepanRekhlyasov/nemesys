@@ -22,9 +22,7 @@
             :columns="columns"
             :rows="templates"
             row-key="id"
-            selection="multiple"
             :loading="loading"
-            v-model:selected="selected"
             v-model:pagination="pagination"
             hide-pagination
             class="no-shadow"
@@ -34,29 +32,34 @@
                 <span v-if="props.row.type">{{$t('settings.template.'+props.row.type)}}</span>
               </q-td>
             </template>
+
             <template v-slot:body-cell-created_at="props">
               <q-td :props="props">
                 {{props.row.created_at.date}}<br/>
                 {{props.row.created_at.time}}
               </q-td>
             </template>
+
             <template v-slot:body-cell-updated_at="props">
               <q-td :props="props">
                 {{props.row.updated_at.date}}<br/>
                 {{props.row.updated_at.time}}
               </q-td>
             </template>
-            <template v-slot:top >
-              <q-btn
-                color="negative"
-                class="no-shadow"
-                unelevated
-                v-if="selected.length >0"
-                :label="$t('common.delete')"
-                @click="deleteTemplate"
-                :disable="loading"/>
+
+            <template v-slot:body-cell-delete="props">
+              <q-td :props="props" auto-width>
+                <q-btn icon="delete" flat @click="deleteTemplate(props.row)" />
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-edit="props">
+              <q-td :props="props" auto-width>
+                <q-btn icon="edit" flat @click="editTemplate=props.row;openDialog=true;" color="primary"/>
+              </q-td>
             </template>
           </q-table>
+
           <div class="row justify-start q-mt-md q-mb-md pagination">
               <q-pagination
                 v-model="pagination.page"
@@ -72,8 +75,8 @@
       </q-card>
     </q-card-section>
   </div>
-  <q-dialog v-model="openDialog">
-    <TemplateCreateForm  @closeDialog="openDialog = false; loadUsersList()"/>
+  <q-dialog v-model="openDialog" @hide="editTemplate=undefined">
+    <TemplateCreateForm  @closeDialog="openDialog = false; loadTemplateList()" :editTemplate="editTemplate"/>
   </q-dialog>
 </template>
 
@@ -101,7 +104,7 @@ export default {
       keyboard: ''
     });
     const templates: Ref<Template[]> = ref([])
-    const selected: Ref<Template[]> = ref([])
+    const editTemplate: Ref<Template | undefined> = ref(undefined)
     const loading = ref(false)
 
     // dialog date
@@ -116,6 +119,8 @@ export default {
     });
 
     const columns = computed(() => [{
+      name: 'edit'
+    },{
       name: 'name',
       required: true,
       label: t('settings.template.name') ,
@@ -143,10 +148,12 @@ export default {
       label: t('settings.template.last_update') ,
       field: 'updated_at',
       align: 'left',
-    },])
+    },{
+      name: 'delete'
+    }])
 
-    loadUsersList()
-    async function loadUsersList() {
+    loadTemplateList()
+    async function loadTemplateList() {
       loading.value = true;
 
       try {
@@ -174,29 +181,42 @@ export default {
       search,
       columns,
       pagination,
-      selected,
       loading,
 
       openDialog,
+      editTemplate,
 
       templates,
       branchFlags,
 
-      deleteTemplate() {
-        loading.value = true;
-        const ret = selected.value.map( async (template) => {
-          const active_organization_id = getOrganizationId($q);
-          const boRef = doc(db, 'organization/'+active_organization_id+'/template/'+template.id);
-          await updateDoc(boRef, {
-            deleted: true
-          })
-        })
-        Promise.all(ret).then(() => {
-          selected.value = [];
-          loadUsersList()
+      async deleteTemplate(template) {
+        $q.dialog({
+          title: t('common.delete'),
+          message: t('settings.template.deletedInfo'),
+          ok:{
+            label: t('common.delete'),
+            color: 'negative',
+            class: 'no-shadow',
+            unelevated: true
+          },
+        }).onOk(async () => {
+          loading.value = true;
+          try {
+            const active_organization_id = getOrganizationId($q);
+            const boRef = doc(db, 'organization/'+active_organization_id+'/template/'+template.id);
+            await updateDoc(boRef, {
+              deleted: true
+            })
+
+            Alert.success($q, t)
+            loadTemplateList()
+          } catch {
+            Alert.success($q, t)
+            loading.value = false;
+          }
         })
       },
-      loadUsersList
+      loadTemplateList
     }
   }
 }

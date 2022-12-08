@@ -2,7 +2,12 @@
   <q-card style="width: 1000px; max-width: 40vw" class="no-scroll">
     <q-form  @submit="addTemplate">
       <q-card-section>
-        {{$t('settings.template.addNew')}}
+        <span v-if="!editTemplate?.id">
+          {{$t('settings.template.addNew')}}
+        </span>
+        <span v-if="editTemplate?.id">
+          {{$t('settings.template.edit')}}
+        </span>
       </q-card-section>
       <q-separator />
       <q-card-section class="q-pb-none">
@@ -70,7 +75,8 @@
       </q-card-section>
 
       <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
-        <q-btn :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
+        <q-btn v-if="!editTemplate?.id" :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
+        <q-btn v-if="editTemplate?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="saveTemplate"/>
       </q-card-actions>
     </q-form>
   </q-card>
@@ -80,7 +86,7 @@
 import { ref, SetupContext} from 'vue';
 import { TemplateType } from 'src/shared/model/Template.model'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
+import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
@@ -88,14 +94,20 @@ import { getOrganizationId } from 'src/shared/utils/utils';
 
 export default {
   name: 'TemplateCreateForm',
-  setup(_, context: SetupContext) {
+  props: {
+    editTemplate: {
+      type: Object,
+      required: false
+    }
+  },
+  setup(props, context: SetupContext) {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
     const $q = useQuasar();
     const auth = getAuth();
 
     const loading = ref(false);
-    const templateData = ref({});
+    const templateData = ref(props.editTemplate || {});
 
     return {
       templateData,
@@ -118,6 +130,30 @@ export default {
           Alert.success($q, t);
           loading.value = false;
         } catch {
+          Alert.warning($q, t);
+          loading.value = false;
+        }
+      },
+
+      async saveTemplate() {
+        loading.value = true;
+        const data = templateData.value
+        try {
+            const active_organization_id = getOrganizationId($q);
+            const boRef = doc(db, 'organization/'+active_organization_id+'/template/'+props.editTemplate?.id);
+            await updateDoc(boRef, {
+              updated_at: serverTimestamp(),
+              contents: data.contents,
+              name: data.name,
+              subject: data.subject,
+              type: data.type
+            })
+
+            context.emit('closeDialog');
+            Alert.success($q, t);
+            loading.value = false;
+        } catch (e) {
+          console.log(e)
           Alert.warning($q, t);
           loading.value = false;
         }

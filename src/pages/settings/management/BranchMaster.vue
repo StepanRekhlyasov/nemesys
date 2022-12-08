@@ -96,7 +96,7 @@
       </q-card>
     </q-card-section>
   </div>
-  <q-dialog v-model="openDialog" @hide="(editBranch=undefined)">
+  <q-dialog v-model="openDialog" @hide="editBranch=undefined">
     <BranchCreateForm @closeDialog="loadUsersList();openDialog=false;" :editBranch="editBranch"/>
   </q-dialog>
 </template>

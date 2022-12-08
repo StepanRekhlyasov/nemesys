@@ -113,6 +113,8 @@ export default {
       contents: 'Contents',
       mail: 'Mail',
       sms: 'SMS',
+      deletedInfo: 'All data related to this template will be deleted.',
+      edit: 'Mail template edit',
 
       create_at: 'Create At',
       last_update: 'Last Update',
