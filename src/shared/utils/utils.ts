@@ -1,4 +1,4 @@
-import { collection, Firestore, getDocs, query, Timestamp, where } from 'firebase/firestore';
+import { collection, endAt, Firestore, getDocs, orderBy, query, startAt, Timestamp, where, } from 'firebase/firestore';
 import { QVueGlobals } from 'quasar';
 import { Organization } from '../model/Organization.model';
 
@@ -58,7 +58,12 @@ export const getOrganizationId = ($q: QVueGlobals) => {
 
 // DB request
 
-export const getTemplates = (db: Firestore, organization_id: string) => {
-  return getDocs(query(collection(db, 'organization/'+organization_id+'/template'), where('deleted', '==', false)))
+export const getTemplates = (db: Firestore, organization_id: string, queryText?: string) => {
+  return getDocs(query(
+    collection(db, 'organization/'+organization_id+'/template'),
+    where('deleted', '==', false),
+    orderBy('name'),
+    startAt(queryText),
+    endAt(queryText+'\uf8ff')))
 }
 

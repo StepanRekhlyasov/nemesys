@@ -66,9 +66,8 @@
           {{ $t('settings.branch.flag') }}
         </div>
         <div class="col-9 q-pl-sm">
-          <q-radio
+          <q-checkbox
             v-model="branchData['flag']"
-            val="valid"
             checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
             class="q-pr-md"/>
         </div>
@@ -148,7 +147,8 @@ export default {
               hidden: data.hidden,
               name: data.name,
               prefectures: data.prefectures,
-              tel: data.tel
+              tel: data.tel,
+              flag: data.flag
             })
 
             context.emit('closeDialog');

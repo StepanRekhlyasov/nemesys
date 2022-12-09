@@ -14,8 +14,12 @@
       <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
         <q-card-section class="row text-center">
           <span class="row content-center">{{$t('common.keyboard')}}</span>
-          <q-input :model-value="search.keyboard" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md"/>
-          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md"/>
+          <q-input v-model="search.keyboard" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense >
+            <template v-slot:append>
+              <q-icon v-if="search.keyboard" name="close" @click="search.keyboard='';loadTemplateList();" class="cursor-pointer" />
+            </template>
+          </q-input>
+          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" @click="loadTemplateList()"/>
         </q-card-section>
         <q-card-section class="q-pa-none" >
           <q-table
@@ -159,7 +163,7 @@ export default {
       try {
         const active_organization_id = getOrganizationId($q);
         if (active_organization_id) {
-          const branchesSnapshot = getTemplates(db, active_organization_id);
+          const branchesSnapshot = getTemplates(db, active_organization_id, search.value.keyboard);
           branchesSnapshot.then(branch => {
             const list: Template[] = []
             branch.forEach((doc) => {
@@ -171,7 +175,8 @@ export default {
             loading.value = false;
           })
         }
-      } catch {
+      } catch (e) {
+        console.log(e)
         loading.value = false;
         Alert.warning($q, t)
       }
