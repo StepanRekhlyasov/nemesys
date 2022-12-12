@@ -56,14 +56,21 @@ export const getOrganizationId = ($q: QVueGlobals) => {
   return ;
 }
 
+// collection
+
+export const templateCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/template');
+
+export const branchCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/branch')
+
 // DB request
 
 export const getTemplates = (db: Firestore, organization_id: string, queryText?: string) => {
   return getDocs(query(
-    collection(db, 'organization/'+organization_id+'/template'),
+    templateCollection(db, organization_id),
     where('deleted', '==', false),
     orderBy('name'),
     startAt(queryText),
-    endAt(queryText+'\uf8ff')))
+    endAt(queryText+'\uf8ff')
+  ))
 }
 

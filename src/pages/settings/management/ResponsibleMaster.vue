@@ -14,7 +14,7 @@
       <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
         <q-card-section class="row text-center">
           <span class="row content-center">{{$t('common.keyboard')}}</span>
-          <q-input :model-value="search" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md"/>
+          <q-input :model-value="search" square outlined dense class="col-6 q-mr-md q-ml-md bg-grey-2 input-md"/>
           <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md"/>
         </q-card-section>
         <q-card-section class="q-pa-none" >
@@ -189,7 +189,8 @@ export default {
             loading.value = false;
           })
         }
-      } catch {
+      } catch (e) {
+        console.log(e)
         loading.value = false;
         Alert.warning($q, t)
       }

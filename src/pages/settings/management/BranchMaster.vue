@@ -20,12 +20,16 @@
       <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
         <q-card-section class="row text-center">
           <span class="row content-center">{{$t('common.keyboard')}}</span>
-          <q-input :model-value="search.keyboard" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense/>
+          <q-input v-model="search.keyboard" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense>
+            <template v-slot:append>
+              <q-icon v-if="search.keyboard" name="close" @click="search.keyboard='';loadBranchesList();" class="cursor-pointer" />
+            </template>
+          </q-input>
           <div class="row content-center q-pr-md">
             <span class="row content-center q-pr-md">{{$t('settings.branch.flag')}}</span>
             <q-select v-model="search.flag" :options="flagOptions" dense borderless/>
           </div>
-          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" unelevated/>
+          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" unelevated @click="loadBranchesList"/>
         </q-card-section>
         <q-card-section class="q-pa-none" >
           <q-table
@@ -97,7 +101,7 @@
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog" @hide="editBranch=undefined">
-    <BranchCreateForm @closeDialog="loadUsersList();openDialog=false;" :editBranch="editBranch"/>
+    <BranchCreateForm @closeDialog="loadBranchesList();openDialog=false;" :editBranch="editBranch"/>
   </q-dialog>
 </template>
 
@@ -195,14 +199,14 @@ export default {
       value: branchFlags.All
     }])
 
-    loadUsersList()
-    async function loadUsersList() {
+    loadBranchesList()
+    async function loadBranchesList() {
       loading.value = true;
       editBranch.value=undefined;
       try {
         const active_organization_id = getOrganizationId($q)
         if (active_organization_id) {
-          const branchesSnapshot = getBranches(db, active_organization_id);
+          const branchesSnapshot = getBranches(db, active_organization_id, search.value.keyboard);
 
           branchesSnapshot.then(branch => {
             const list: Branch[] = []
@@ -215,7 +219,8 @@ export default {
           })
         }
         loading.value = false;
-      } catch {
+      } catch (e) {
+          console.log(e)
           loading.value = false;
           Alert.warning($q, t);
       }
@@ -230,7 +235,7 @@ export default {
 
       openDialog,
       editBranch,
-      loadUsersList,
+      loadBranchesList,
       deleteBranch(branch) {
         $q.dialog({
           title: t('common.delete'),
@@ -249,7 +254,7 @@ export default {
             await updateDoc(boRef, {
               deleted: true
             })
-            loadUsersList();
+            loadBranchesList();
             Alert.success($q, t)
           } catch (e) {
             console.log(e)
