@@ -41,6 +41,15 @@ const system_router: MenuRouter[] = [
       permissions: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings
+  },{
+    path: 'system/item',
+    title: 'menu.item',
+    component: () => import('src/pages/settings/management/ItemMaster.vue'),
+    meta: {
+      requiresAuth: true,
+      permissions: [UserPermissionNames.BranchUpdate]
+    },
+    menuParent: MenuParent.SystemSettings
   },
 ]
 

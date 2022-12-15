@@ -1,7 +1,7 @@
 import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
-import { branchCollection } from './utils';
+import { branchCollection, itemCollection } from './utils';
 
 export const isPermission = (permissions: UserPermissionNames[], permission: UserPermissionNames) => permissions?.includes(permission);
 
@@ -36,7 +36,7 @@ export const getAllUsers = (db: Firestore, active_organization_id: string, query
     where('organization_ids', 'array-contains', active_organization_id),
     orderBy('displayName'),
     startAt(queryText || ''),
-    endAt(queryText?queryText+'\uf8ff': ''),
+    endAt(queryText+'\uf8ff'),
   ))
 }
 
@@ -46,6 +46,17 @@ export const getBranches = (db: Firestore, active_organization_id: string, query
     where('deleted','==', false),
     orderBy('name'),
     startAt(queryText || ''),
-    endAt(queryText?queryText+'\uf8ff': '')
+    endAt(queryText+'\uf8ff')
   ))
 }
+
+export const getItem = (db: Firestore, active_organization_id: string, queryText?: string) => {
+  return getDocs(query(
+    itemCollection(db, active_organization_id),
+    where('deleted','==', false),
+    orderBy('name'),
+    startAt(queryText || ''),
+    endAt(queryText+'\uf8ff')
+  ))
+}
+

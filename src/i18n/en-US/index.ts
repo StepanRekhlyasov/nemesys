@@ -66,6 +66,7 @@ export default {
     clientReg: 'Client Registration',
     dashboard: 'Dashboard',
     system: 'System Settings',
+    item: 'Item Master Management',
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
     organization: 'Organization Master Management',
@@ -118,6 +119,21 @@ export default {
 
       create_at: 'Create At',
       last_update: 'Last Update',
+    },
+    item: {
+      addItem: 'Add new item',
+      id: 'Classification Id',
+      name: 'Classification Name',
+      itemName: 'Item Name',
+      displayOrder: 'Display Order',
+      flag: 'Enable Flag',
+      hide: 'Hide',
+      edit: 'Item Edit',
+      classification: {
+        oualifications: 'Qualifications',
+        job: 'Job Title',
+        media: 'Application Media'
+      }
     },
     users: {
       addUser: 'Add new contact person',

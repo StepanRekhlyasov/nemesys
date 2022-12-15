@@ -66,6 +66,7 @@ export default {
     clientReg: 'クライアント情報登録',
     dashboard: 'ダッシュボード',
     system: 'システム設定',
+    item: '項目マスタ管理',
     branches: '支店マスタ管理',
     users: '担当マスタ管理',
     organization: '組織マスター管理',
@@ -118,6 +119,21 @@ export default {
 
       create_at: '作成日',
       last_update: '更新日',
+    },
+    item: {
+      addItem: '項目新規追加',
+      id: '区分ID',
+      name: '区分名',
+      itemName: '項目名',
+      displayOrder: '表示順',
+      flag: '有効フラグ',
+      hide: '非表示にする',
+      edit: '項目編集',
+      classification: {
+        oualifications: '資格',
+        job: '職種',
+        media: '応募媒体'
+      }
     },
     users: {
       addUser: '担当者新規追加',
