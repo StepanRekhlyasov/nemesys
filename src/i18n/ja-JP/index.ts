@@ -19,6 +19,7 @@ export default {
     cancel: 'キャンセル',
     description: '説明',
     delete: '削除',
+    deleteInfo: 'このアイテムを削除しますか?',
     create: '作成',
     title: '題名',
     save: '保存',
@@ -573,7 +574,24 @@ export default {
       rank: 'スタッフランク',
       status: '応募ステータス',
       qualification: '資格',
-      memo: 'スタッフメモ'
+      memo: 'スタッフメモ',
+      contactInfo: 'コンタクト情報',
+      applicationInfo: '応募／誘致情報',
+      attendanceInfo: 'アテンド情報',
+      fixEmployInfo: 'FIX-入職情報',
+      operationInfo: '稼働情報',
+      contacts: {
+        openContactForm: 'コンタクト追加フォームを開く',
+        dateTime: '日時',
+        contactMethod: '連絡方法',
+        userInharge: '担当ユーザー',
+        content: '内容',
+        note: 'ノート',
+        phone: '電話',
+        
+      },
+
+
     },
     statusOption: {
       notCompatible: '未対応',

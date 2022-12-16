@@ -10,39 +10,38 @@
     inline-label
     switch-indicator
     active-bg-color="white">
-      <q-tab name="teleAppointHistory" :label="$t('client.tele.teleAppointHistory')" />
-      <q-tab name="listBO" :label="$t('client.list.listBO')" />
-      <q-tab name="officeDetail" :label="$t('client.list.officeDetail')" />
-      <q-tab name="officeHead" :label="$t('client.list.officeHead')" />
-      <q-tab name="variousAchievements" :label="$t('client.list.variousAchievements')" />
-  </q-tabs>
+      <q-tab name="contactInfo" :label="$t('applicant.list.contactInfo')" />
+      <q-tab name="applicationInfo" :label="$t('applicant.list.applicationInfo')" />
+      <q-tab name="attendanceInfo" :label="$t('applicant.list.attendanceInfo')" />
+      <q-tab name="fixEmployInfo" :label="$t('applicant.list.fixEmployInfo')" />
+      <q-tab name="operationInfo" :label="$t('applicant.list.operationInfo')" />
+      <q-tab name="memo" :label="$t('client.list.memo')" />
+  </q-tabs> 
 
   <q-separator />
 
   <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="teleAppointHistory">
-          <div class="text-h6"> {{ $t('client.tele.teleAppointHistory') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="contactInfo">
+        <contactInfo :applicant="applicant" :key="applicant.id"/> 
       </q-tab-panel>
 
-      <q-tab-panel name="listBO">
-          <div class="text-h6"> {{$t('client.list.listBO')}} </div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="applicationInfo">
+         
       </q-tab-panel>
 
-      <q-tab-panel name="officeDetail">
-          <div class="text-h6">{{ $t('client.list.officeDetail') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="attendanceInfo">
+         
       </q-tab-panel>
 
-      <q-tab-panel name="officeHead">
-          <div class="text-h6">{{ $t('client.list.officeHead') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="fixEmployInfo">
+          
       </q-tab-panel>
 
-      <q-tab-panel name="variousAchievements">
-          <div class="text-h6">{{ $t('client.list.variousAchievements') }}</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="operationInfo">
+          
+      </q-tab-panel>
+      <q-tab-panel name="memo">
+         
       </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -52,16 +51,24 @@
 <script>
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import contactInfo from './contactInfo.vue';
 
 export default {
   name: 'clientDetails',
   components: {
+    contactInfo
+  },
+
+  props: {
+    applicant: {
+      required: true
+    }
   },
 
   setup() {
     //const { t } = useI18n({ useScope: 'global' });
 
-    const tab = ref('teleAppointHistory');
+    const tab = ref('contactInfo');
 
 
     return {

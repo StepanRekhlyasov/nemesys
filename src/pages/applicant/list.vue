@@ -158,7 +158,7 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            <detailComponent />
+            <detailComponent :applicant="selectedApplicant" />
           </q-card-section>
         </q-card>
       </q-scroll-area>
