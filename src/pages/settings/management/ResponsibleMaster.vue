@@ -14,7 +14,11 @@
       <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
         <q-card-section class="row text-center">
           <span class="row content-center">{{$t('common.keyboard')}}</span>
-          <q-input :model-value="search" square outlined dense class="col-6 q-mr-md q-ml-md bg-grey-2 input-md"/>
+          <q-input v-model="search" square outlined dense class="col-6 q-mr-md q-ml-md bg-grey-2 input-md">
+            <template v-slot:append>
+              <q-icon v-if="search" name="close" @click="search='';loadUsersList();" class="cursor-pointer" />
+            </template>
+          </q-input>
           <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md"/>
         </q-card-section>
         <q-card-section class="q-pa-none" >
@@ -205,6 +209,7 @@ export default {
 
       roles,
       usersListData,
+      loadUsersList,
       branches
     }
   }
