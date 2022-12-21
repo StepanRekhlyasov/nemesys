@@ -59,6 +59,7 @@
                 v-model="branchData['displayOrder']"
                 :disable="loading"
                 name="displayOrder"
+                type="number"
                 outlined
                 dense
               />
@@ -154,7 +155,7 @@
                 itemName: data.itemName,
                 segment: data.segment,
                 name: data.name,
-                flag: data.flag
+                flag: data.flag? 'valid': ''
               })
 
               context.emit('closeDialog');

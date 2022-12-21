@@ -20,9 +20,9 @@
         <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
           <q-card-section class="row text-center">
             <span class="row content-center">{{$t('common.keyboard')}}</span>
-            <q-input v-model="search.keyboard" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense>
+            <q-input v-model="search.queryText" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense>
               <template v-slot:append>
-                <q-icon v-if="search.keyboard" name="close" @click="search.keyboard='';loadData();" class="cursor-pointer" />
+                <q-icon v-if="search.queryText" name="close" @click="search.queryText='';loadData();" class="cursor-pointer" />
               </template>
             </q-input>
             <div class="row content-center q-pr-md">
@@ -46,6 +46,13 @@
                   <q-btn icon="mdi-delete-outline" flat @click="deleteItem(props.row)"/>
                 </q-td>
               </template>
+
+              <template v-slot:body-cell-segment="props">
+                <q-td :props="props">
+                  <span>{{props.row.segment && $t('settings.item.classification.'+props.row.segment)}}</span>
+                </q-td>
+              </template>
+
 
               <template v-slot:body-cell-edit="props">
                 <q-td :props="props" auto-width>
@@ -110,7 +117,7 @@
   import { computed, Ref, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { Accaunt } from 'src/shared/model/Accaunt.model';
-  import { getItem } from 'src/shared/utils/User.utils';
+  import { getItem, ItemsSearch } from 'src/shared/utils/User.utils';
   import { getOrganizationId, toDateObject } from 'src/shared/utils/utils';
   import { useQuasar } from 'quasar';
   import { Alert } from 'src/shared/utils/Alert.utils';
@@ -128,8 +135,8 @@
       const db = getFirestore();
       const $q = useQuasar();
 
-      const search = ref({
-        keyboard: '',
+      const search: Ref<ItemsSearch> = ref({
+        queryText: '',
         flag: itemFlags.All
       });
       const branches: Ref<Item[]> = ref([])
@@ -208,7 +215,7 @@
         try {
           const active_organization_id = getOrganizationId($q)
           if (active_organization_id) {
-            const branchesSnapshot = getItem(db, active_organization_id, search.value.keyboard);
+            const branchesSnapshot = getItem(db, active_organization_id, search.value);
 
             branchesSnapshot.then(branch => {
               const list: Item[] = []
