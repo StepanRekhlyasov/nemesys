@@ -155,6 +155,7 @@ export default {
       last_update: '更新日',
       editProfile: 'プロフィール編集',
       accauntSettings: 'アカウント設定',
+      deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
       logout: 'ログアウト'
     },
     title: 'システム設定',
@@ -604,7 +605,7 @@ export default {
         content: '内容',
         note: 'ノート',
         phone: '電話',
-        
+
       },
 
 

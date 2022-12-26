@@ -155,6 +155,7 @@ export default {
       last_update: 'Last Update',
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
+      deletedInfo: 'All data related to this template will be deleted.',
       logout: 'Logout'
     },
     title: 'Settings'

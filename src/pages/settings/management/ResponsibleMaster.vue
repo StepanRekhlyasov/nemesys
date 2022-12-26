@@ -26,8 +26,6 @@
             :columns="columns"
             :rows="usersListData"
             row-key="id"
-            selection="multiple"
-            v-model:selected="selected"
             v-model:pagination="pagination"
             hide-pagination
             class="no-shadow"
@@ -38,26 +36,42 @@
                   {{roles && roles[props.row.role]?.displayName}}
                 </q-td>
               </template>
+
               <template v-slot:body-cell-branch="props">
                 <q-td :props="props">
                   {{branches && branches[props.row?.branch_id]?.name}}
                 </q-td>
               </template>
+
               <template v-slot:body-cell-hidden="props">
                 <q-td :props="props">
                   <q-icon name="mdi-check-bold" v-if="props.row.hidden"/>
                 </q-td>
               </template>
+
               <template v-slot:body-cell-create_at="props">
                 <q-td :props="props">
                   {{props.row.create_at.date}}<br/>
                   {{props.row.create_at.time}}
                 </q-td>
               </template>
+
               <template v-slot:body-cell-updateAt="props">
                 <q-td :props="props">
                   {{props.row.updateAt.date}}<br/>
                   {{props.row.updateAt.time}}
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-delete="props">
+                <q-td :props="props" auto-width>
+                  <q-btn icon="delete" flat @click="deleteAccaunt(props.row)" />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-edit="props">
+                <q-td :props="props" auto-width>
+                  <q-btn icon="edit" flat @click="editUser=props.row;openDialog=true;" color="primary"/>
                 </q-td>
               </template>
           </q-table>
@@ -76,10 +90,13 @@
       </q-card>
     </q-card-section>
   </div>
+  <q-dialog v-model="openDialog" @hide="editUser=undefined">
+    <TemplateCreateForm  @closeDialog="openDialog = false; loadUsersList()" :editTemplate="editUser"/>
+  </q-dialog>
 </template>
 
 <script lang="ts">
-import { getFirestore} from '@firebase/firestore';
+import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt, Role } from 'src/shared/model/Accaunt.model';
@@ -102,6 +119,11 @@ export default {
     const loading = ref(false)
     const usersListData: Ref<Accaunt[]> = ref([]);
 
+    // dialog data
+    const openDialog = ref(false)
+    const editUser: Ref<Accaunt | undefined> = ref(undefined)
+
+    // Table data
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -109,7 +131,10 @@ export default {
       rowsPerPage: 10
     });
     const selected: Ref<Accaunt[]> = ref([])
-    const columns = computed(() => [{
+    const columns = computed(() => [
+      {
+        name: 'edit',
+      },{
       name: 'email',
       required: true,
       label: t('settings.users.email') ,
@@ -150,6 +175,8 @@ export default {
       label: t('settings.users.last_update') ,
       field: 'last_update',
       align: 'left',
+    },{
+      name: 'delete',
     },])
 
     loadUsersList()
@@ -200,6 +227,8 @@ export default {
       }
     }
 
+
+
     return {
       search,
       columns,
@@ -207,9 +236,38 @@ export default {
       selected,
       loading,
 
+      editUser,
+      openDialog,
+
       roles,
       usersListData,
       loadUsersList,
+      deleteAccaunt(user) {
+        $q.dialog({
+          title: t('common.delete'),
+          message: t('settings.users.deletedInfo'),
+          ok:{
+            label: t('common.delete'),
+            color: 'negative',
+            class: 'no-shadow',
+            unelevated: true
+          },
+        }).onOk(async () => {
+          try{
+            loading.value = true;
+            const boRef = doc(db, 'users/'+user.uid);
+            await updateDoc(boRef, {
+              deleted: true
+            })
+            loadUsersList();
+            Alert.success($q, t)
+          } catch (e) {
+            console.log(e)
+            Alert.warning($q, t)
+            loading.value = false;
+          }
+        })
+      },
       branches
     }
   }
@@ -218,3 +276,4 @@ export default {
 
 <style lang="scss">
 </style>
+
