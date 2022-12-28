@@ -6,7 +6,7 @@
           <q-icon name="mdi-cog-outline" color="primary" class="q-pr-sm" size="md"/>
           {{$t('menu.users')}}
         </div>
-        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.users.addUser')" />
+        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.users.addUser')"  @click="openDialog=true"/>
       </div>
     </q-card-section>
     <q-separator color="grey-5" size="2px"/>
@@ -91,7 +91,7 @@
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog" @hide="editUser=undefined">
-    <TemplateCreateForm  @closeDialog="openDialog = false; loadUsersList()" :editTemplate="editUser"/>
+    <ResponsibleCreateForm  @closeDialog="openDialog = false; loadUsersList()" :editAccount="editUser" :roles="roles" :branches="branches"/>
   </q-dialog>
 </template>
 
@@ -105,9 +105,13 @@ import { getAllUsers, getBranches, getRoles } from 'src/shared/utils/User.utils'
 import { Branch } from 'src/shared/model/Branch.model';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import ResponsibleCreateForm from './components/ResponsibleCreate.form.vue';
 
 export default {
   name: 'responcibleMasterManagement',
+  components:{
+    ResponsibleCreateForm
+  },
   setup(){
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
@@ -135,49 +139,50 @@ export default {
       {
         name: 'edit',
       },{
-      name: 'email',
-      required: true,
-      label: t('settings.users.email') ,
-      field: 'email',
-      align: 'left',
-    }, {
-      name: 'name',
-      required: true,
-      label: t('settings.users.person_name') ,
-      field: 'name',
-      align: 'left',
-    }, {
-      name: 'role',
-      required: true,
-      label: t('settings.users.role') ,
-      field: 'role_name',
-      align: 'left',
-    }, {
-      name: 'branch',
-      required: true,
-      label: t('settings.users.branch_name') ,
-      field: 'branch',
-      align: 'left',
-    },{
-      name: 'hidden',
-      required: true,
-      label: t('settings.users.hidden') ,
-      field: 'hidden',
-      align: 'left',
-    },{
-      name: 'create_at',
-      required: true,
-      label: t('settings.users.create_at') ,
-      field: 'create_at',
-      align: 'left',
-    },{
-      name: 'last_update',
-      label: t('settings.users.last_update') ,
-      field: 'last_update',
-      align: 'left',
-    },{
-      name: 'delete',
-    },])
+        name: 'email',
+        required: true,
+        label: t('settings.users.email') ,
+        field: 'email',
+        align: 'left',
+      }, {
+        name: 'name',
+        required: true,
+        label: t('settings.users.person_name') ,
+        field: 'displayName',
+        align: 'left',
+      }, {
+        name: 'role',
+        required: true,
+        label: t('settings.users.role') ,
+        field: 'role_name',
+        align: 'left',
+      }, {
+        name: 'branch',
+        required: true,
+        label: t('settings.users.branch_name') ,
+        field: 'branch',
+        align: 'left',
+      },{
+        name: 'hidden',
+        required: true,
+        label: t('settings.users.hidden') ,
+        field: 'hidden',
+        align: 'left',
+      },{
+        name: 'create_at',
+        required: true,
+        label: t('settings.users.create_at') ,
+        field: 'create_at',
+        align: 'left',
+      },{
+        name: 'last_update',
+        label: t('settings.users.last_update') ,
+        field: 'last_update',
+        align: 'left',
+      },{
+        name: 'delete',
+      }
+    ])
 
     loadUsersList()
     async function loadUsersList() {
@@ -194,7 +199,7 @@ export default {
             users.forEach((doc) => {
               const data = doc.data();
               data['id'] = doc.id;
-              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), last_update: toDateObject(data.last_update)});
+              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), updated_at: toDateObject(data.updated_at)});
             });
             usersListData.value = list;
           })

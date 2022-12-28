@@ -3,12 +3,13 @@ import { dataObject } from '../utils/utils';
 export interface Accaunt {
   id: string;
   email: string;
-  person_name: string;
+  displayName: string;
   branch_id?: string;
   manager: boolean;
+  role?: string;
   hidden: boolean;
   create_at: dataObject;
-  last_update: dataObject;
+  updated_at: dataObject;
 }
 
 export interface User{
