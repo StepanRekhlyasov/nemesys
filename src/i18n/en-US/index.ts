@@ -144,6 +144,7 @@ export default {
       person_name: "Contact Person's Name",
       branch_name: 'Branch Name',
       company_name: 'User Company Name',
+      passworld: 'passworld',
       role: 'Role',
       infoEditUser: 'Email addresses and user companies cannot be permanently changed',
       infoContact: 'If you wish to change your roll or login password, please contact your team administrator.',
