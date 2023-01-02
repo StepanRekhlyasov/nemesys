@@ -171,7 +171,8 @@ export default {
       async addAccaunt(){
         const url = 'https://create-user-account-planwvepxa-an.a.run.app'
         const headers = {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Headers': 'Content-Type'
         };
 
         const data = accountData.value
