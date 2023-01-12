@@ -6,7 +6,7 @@
           <q-icon name="mdi-cog-outline" color="primary" class="q-pr-sm" size="md"/>
           {{$t('menu.users')}}
         </div>
-        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.users.addUser')" />
+        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.users.addUser')"  @click="openDialog=true"/>
       </div>
     </q-card-section>
     <q-separator color="grey-5" size="2px"/>
@@ -26,8 +26,6 @@
             :columns="columns"
             :rows="usersListData"
             row-key="id"
-            selection="multiple"
-            v-model:selected="selected"
             v-model:pagination="pagination"
             hide-pagination
             class="no-shadow"
@@ -38,26 +36,42 @@
                   {{roles && roles[props.row.role]?.displayName}}
                 </q-td>
               </template>
+
               <template v-slot:body-cell-branch="props">
                 <q-td :props="props">
                   {{branches && branches[props.row?.branch_id]?.name}}
                 </q-td>
               </template>
+
               <template v-slot:body-cell-hidden="props">
                 <q-td :props="props">
                   <q-icon name="mdi-check-bold" v-if="props.row.hidden"/>
                 </q-td>
               </template>
+
               <template v-slot:body-cell-create_at="props">
                 <q-td :props="props">
                   {{props.row.create_at.date}}<br/>
                   {{props.row.create_at.time}}
                 </q-td>
               </template>
+
               <template v-slot:body-cell-updateAt="props">
                 <q-td :props="props">
                   {{props.row.updateAt.date}}<br/>
                   {{props.row.updateAt.time}}
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-delete="props">
+                <q-td :props="props" auto-width>
+                  <q-btn icon="delete" flat @click="deleteAccaunt(props.row)" />
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-edit="props">
+                <q-td :props="props" auto-width>
+                  <q-btn icon="edit" flat @click="editUser=props.row;openDialog=true;" color="primary"/>
                 </q-td>
               </template>
           </q-table>
@@ -76,10 +90,13 @@
       </q-card>
     </q-card-section>
   </div>
+  <q-dialog v-model="openDialog" @hide="editUser=undefined">
+    <ResponsibleCreateForm  @closeDialog="openDialog = false; loadUsersList()" :editAccount="editUser" :roles="roles" :branches="branches"/>
+  </q-dialog>
 </template>
 
 <script lang="ts">
-import { getFirestore} from '@firebase/firestore';
+import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt, Role } from 'src/shared/model/Accaunt.model';
@@ -88,9 +105,13 @@ import { getAllUsers, getBranches, getRoles } from 'src/shared/utils/User.utils'
 import { Branch } from 'src/shared/model/Branch.model';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import ResponsibleCreateForm from './components/ResponsibleCreate.form.vue';
 
 export default {
   name: 'responcibleMasterManagement',
+  components:{
+    ResponsibleCreateForm
+  },
   setup(){
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
@@ -102,6 +123,11 @@ export default {
     const loading = ref(false)
     const usersListData: Ref<Accaunt[]> = ref([]);
 
+    // dialog data
+    const openDialog = ref(false)
+    const editUser: Ref<Accaunt | undefined> = ref(undefined)
+
+    // Table data
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -109,48 +135,54 @@ export default {
       rowsPerPage: 10
     });
     const selected: Ref<Accaunt[]> = ref([])
-    const columns = computed(() => [{
-      name: 'email',
-      required: true,
-      label: t('settings.users.email') ,
-      field: 'email',
-      align: 'left',
-    }, {
-      name: 'name',
-      required: true,
-      label: t('settings.users.person_name') ,
-      field: 'name',
-      align: 'left',
-    }, {
-      name: 'role',
-      required: true,
-      label: t('settings.users.role') ,
-      field: 'role_name',
-      align: 'left',
-    }, {
-      name: 'branch',
-      required: true,
-      label: t('settings.users.branch_name') ,
-      field: 'branch',
-      align: 'left',
-    },{
-      name: 'hidden',
-      required: true,
-      label: t('settings.users.hidden') ,
-      field: 'hidden',
-      align: 'left',
-    },{
-      name: 'create_at',
-      required: true,
-      label: t('settings.users.create_at') ,
-      field: 'create_at',
-      align: 'left',
-    },{
-      name: 'last_update',
-      label: t('settings.users.last_update') ,
-      field: 'last_update',
-      align: 'left',
-    },])
+    const columns = computed(() => [
+      {
+        name: 'edit',
+      },{
+        name: 'email',
+        required: true,
+        label: t('settings.users.email') ,
+        field: 'email',
+        align: 'left',
+      }, {
+        name: 'name',
+        required: true,
+        label: t('settings.users.person_name') ,
+        field: 'displayName',
+        align: 'left',
+      }, {
+        name: 'role',
+        required: true,
+        label: t('settings.users.role') ,
+        field: 'role_name',
+        align: 'left',
+      }, {
+        name: 'branch',
+        required: true,
+        label: t('settings.users.branch_name') ,
+        field: 'branch',
+        align: 'left',
+      },{
+        name: 'hidden',
+        required: true,
+        label: t('settings.users.hidden') ,
+        field: 'hidden',
+        align: 'left',
+      },{
+        name: 'create_at',
+        required: true,
+        label: t('settings.users.create_at') ,
+        field: 'create_at',
+        align: 'left',
+      },{
+        name: 'last_update',
+        label: t('settings.users.last_update') ,
+        field: 'last_update',
+        align: 'left',
+      },{
+        name: 'delete',
+      }
+    ])
 
     loadUsersList()
     async function loadUsersList() {
@@ -167,7 +199,7 @@ export default {
             users.forEach((doc) => {
               const data = doc.data();
               data['id'] = doc.id;
-              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), last_update: toDateObject(data.last_update)});
+              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), updated_at: toDateObject(data.updated_at)});
             });
             usersListData.value = list;
           })
@@ -200,6 +232,8 @@ export default {
       }
     }
 
+
+
     return {
       search,
       columns,
@@ -207,9 +241,38 @@ export default {
       selected,
       loading,
 
+      editUser,
+      openDialog,
+
       roles,
       usersListData,
       loadUsersList,
+      deleteAccaunt(user) {
+        $q.dialog({
+          title: t('common.delete'),
+          message: t('settings.users.deletedInfo'),
+          ok:{
+            label: t('common.delete'),
+            color: 'negative',
+            class: 'no-shadow',
+            unelevated: true
+          },
+        }).onOk(async () => {
+          try{
+            loading.value = true;
+            const boRef = doc(db, 'users/'+user.uid);
+            await updateDoc(boRef, {
+              deleted: true
+            })
+            loadUsersList();
+            Alert.success($q, t)
+          } catch (e) {
+            console.log(e)
+            Alert.warning($q, t)
+            loading.value = false;
+          }
+        })
+      },
       branches
     }
   }
@@ -218,3 +281,4 @@ export default {
 
 <style lang="scss">
 </style>
+

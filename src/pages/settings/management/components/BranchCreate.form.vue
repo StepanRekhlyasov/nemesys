@@ -148,7 +148,7 @@ export default {
               name: data.name,
               prefectures: data.prefectures,
               tel: data.tel,
-              flag: data.flag
+              flag: data.flag? 'valid': ''
             })
 
             context.emit('closeDialog');

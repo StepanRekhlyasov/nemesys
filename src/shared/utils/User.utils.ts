@@ -1,7 +1,19 @@
 import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
+import { branchFlags } from '../model/Branch.model';
+import { itemFlags } from '../model/system';
 import { branchCollection, itemCollection } from './utils';
+
+export interface BranchesSearch {
+  queryText?: string;
+  flag?: branchFlags;
+}
+
+export interface ItemsSearch {
+  queryText?: string;
+  flag?: itemFlags;
+}
 
 export const isPermission = (permissions: UserPermissionNames[], permission: UserPermissionNames) => permissions?.includes(permission);
 
@@ -40,23 +52,25 @@ export const getAllUsers = (db: Firestore, active_organization_id: string, query
   ))
 }
 
-export const getBranches = (db: Firestore, active_organization_id: string, queryText?: string) => {
+export const getBranches = (db: Firestore, active_organization_id: string, search?: BranchesSearch) => {
   return getDocs(query(
     branchCollection(db, active_organization_id),
     where('deleted','==', false),
     orderBy('name'),
-    startAt(queryText || ''),
-    endAt(queryText+'\uf8ff')
+    search?.flag !== branchFlags.All && search?.flag ? where('flag', 'array-contains', search.flag): where('flag', 'in', ['valid', '']),
+    startAt(search?.queryText || ''),
+    endAt(search?.queryText+'\uf8ff')
   ))
 }
 
-export const getItem = (db: Firestore, active_organization_id: string, queryText?: string) => {
+export const getItem = (db: Firestore, active_organization_id: string, search?: ItemsSearch) => {
   return getDocs(query(
     itemCollection(db, active_organization_id),
     where('deleted','==', false),
     orderBy('name'),
-    startAt(queryText || ''),
-    endAt(queryText+'\uf8ff')
+    search?.flag !== itemFlags.All && search?.flag ? where('flag', 'array-contains', search.flag): where('flag', 'in', ['valid', '']),
+    startAt(search?.queryText || ''),
+    endAt(search?.queryText+'\uf8ff')
   ))
 }
 

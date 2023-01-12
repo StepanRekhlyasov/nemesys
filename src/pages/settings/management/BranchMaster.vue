@@ -20,9 +20,9 @@
       <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
         <q-card-section class="row text-center">
           <span class="row content-center">{{$t('common.keyboard')}}</span>
-          <q-input v-model="search.keyboard" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense>
+          <q-input v-model="search.queryText" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense>
             <template v-slot:append>
-              <q-icon v-if="search.keyboard" name="close" @click="search.keyboard='';loadBranchesList();" class="cursor-pointer" />
+              <q-icon v-if="search.queryText" name="close" @click="search.queryText='';loadBranchesList();" class="cursor-pointer" />
             </template>
           </q-input>
           <div class="row content-center q-pr-md">
@@ -110,7 +110,7 @@ import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt } from 'src/shared/model/Accaunt.model';
-import { getBranches } from 'src/shared/utils/User.utils';
+import { BranchesSearch, getBranches } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
 import { getOrganizationId, toDateObject } from 'src/shared/utils/utils';
 import BranchCreateForm from './components/BranchCreate.form.vue';
@@ -126,8 +126,8 @@ export default {
     const db = getFirestore();
     const $q = useQuasar();
 
-    const search = ref({
-      keyboard: '',
+    const search: Ref<BranchesSearch> = ref({
+      queryText: '',
       flag: branchFlags.All
     });
     const branches: Ref<Branch[]> = ref([])
@@ -206,7 +206,7 @@ export default {
       try {
         const active_organization_id = getOrganizationId($q)
         if (active_organization_id) {
-          const branchesSnapshot = getBranches(db, active_organization_id, search.value.keyboard);
+          const branchesSnapshot = getBranches(db, active_organization_id, search.value);
 
           branchesSnapshot.then(branch => {
             const list: Branch[] = []
