@@ -598,6 +598,7 @@ export default {
       operationInfo: '稼働情報',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
+        closeContactForm: 'コンタクト追加フォームを閉じる',
         dateTime: '日時',
         contactMethod: '連絡方法',
         userInharge: '担当ユーザー',
@@ -605,6 +606,15 @@ export default {
         note: 'ノート',
         phone: '電話',
         
+      },
+      fixEmployment: {
+        fixDestinationOffice: 'FIX先事業所',
+        fixedDestination: 'FIX先',
+        fixDate: 'FIX日',
+        workDay: '職見日',
+        informalOfferDate: '内定日',
+        hiringDate: '入職日',
+        memo: 'メモ',
       },
 
 

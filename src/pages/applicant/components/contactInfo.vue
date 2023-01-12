@@ -1,10 +1,14 @@
 <template>
   <q-card class="no-shadow full-width">
-    <q-card-section class="bg-grey-2 q-ma-sm q-pa-xs" v-if="!showAddForm">
+
+    <q-card-section class="bg-grey-2 q-pa-xs q-mb-none">
+      <q-btn :label="$t('applicant.list.contacts.closeContactForm')" :icon="'arrow_drop_up'" flat size="md"
+        class="text-grey-9" @click="onReset" v-if="showAddForm" />
       <q-btn :label="$t('applicant.list.contacts.openContactForm')" :icon="'arrow_drop_down'" flat size="md"
-        class="text-grey-9" @click="showAddForm = true" />
+        class="text-grey-9" @click="showAddForm = true" v-else />
     </q-card-section>
-    <q-card-section class="q-ma-sm q-pa-sm bg-grey-2 " v-if="showAddForm">
+
+    <q-card-section class="q-pa-sm bg-grey-2 q-mt-none" v-if="showAddForm">
       <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
         <div class="row">
           <div class="col-2 text-right self-center q-pr-sm">
@@ -12,8 +16,7 @@
           </div>
           <div class="col-9 q-pl-sm">
             <q-radio v-model="contactData['contactMethod']" val="phone" :label="$t('applicant.list.contacts.phone')" />
-            <q-radio v-model="contactData['contactMethod']" val="sms" label="SMS"
-              class="q-ml-sm" />
+            <q-radio v-model="contactData['contactMethod']" val="sms" label="SMS" class="q-ml-sm" />
           </div>
         </div>
 
@@ -69,8 +72,12 @@
 
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
-          <q-btn icon="mdi-pencil-outline" size="sm" round color="grey-8" flat @click="showEditDialog(props.row)" />
-          <q-btn color="red" icon="delete" size="sm" round flat @click="showDeleteDialog(props.row)" />
+          <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat @click="showEditDialog(props.row)" />
+        </q-td>
+      </template>
+      <template v-slot:body-cell-delete="props">
+        <q-td :props="props">
+          <q-btn style="color: #222222"  icon="delete" size="sm" round flat @click="showDeleteDialog(props.row)" />
         </q-td>
       </template>
 
@@ -114,14 +121,10 @@ export default {
 
     const columns = computed(() => {
       return [
-        // {
-        //   name: 'created_by',
-        //   required: true,
-        //   label: t('detal.teleAppoint.registredUser'),
-        //   align: 'left',
-        //   field: 'created_by',
-        //   sortable: false,
-        // },
+        {
+          name: 'edit',
+          align: 'left',
+        },
         {
           name: 'created_at',
           required: true,
@@ -155,7 +158,7 @@ export default {
           align: 'left',
         },
         {
-          name: 'edit',
+          name: 'delete',
           align: 'left',
         }
       ];
@@ -312,9 +315,7 @@ export default {
       onReset() {
         //contactData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
-        contactData.value = {
-          requiredService: []
-        };
+        contactData.value = {};
         dialogType.value = 'create';
         showAddForm.value = false;
       },

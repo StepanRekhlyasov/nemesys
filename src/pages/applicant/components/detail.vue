@@ -34,7 +34,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="fixEmployInfo">
-          
+        <fixEmployInfo :applicant="applicant" :key="applicant.id"/> 
       </q-tab-panel>
 
       <q-tab-panel name="operationInfo">
@@ -51,12 +51,14 @@
 <script>
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import fixEmployInfo from './fixEmployInfo.vue';
 import contactInfo from './contactInfo.vue';
 
 export default {
   name: 'clientDetails',
   components: {
-    contactInfo
+    contactInfo,
+    fixEmployInfo,
   },
 
   props: {

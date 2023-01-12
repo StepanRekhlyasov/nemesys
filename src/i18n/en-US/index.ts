@@ -601,12 +601,22 @@ export default {
       operationInfo: 'Operation Info',
       contacts: {
         openContactForm: 'Open contact add form',
+        closeContactForm: 'Close contact add form',
         dateTime: 'Date Time',
         contactMethod: 'Contact Method',
         userInharge: 'User in Charge',
         content: 'Content',
         note: 'Note',
         phone: 'Phone',
+      },
+      fixEmployment: {
+        fixDestinationOffice: 'FIX先事業所',
+        fixedDestination: 'FIX先',
+        fixDate: 'FIX日',
+        workDay: '職見日',
+        informalOfferDate: '内定日',
+        hiringDate: '入職日',
+        memo: 'メモ',
       },
     },
     statusOption: {
