@@ -62,7 +62,7 @@ export default {
     holiday: '祝日',
   },
   menu: {
-    clientManagement: 'クライアント管理',
+    clientManagement: '事業所管理',
     clientList: 'クライアント一覧・検索',
     clientReg: 'クライアント情報登録',
     dashboard: 'ダッシュボード',
@@ -74,10 +74,14 @@ export default {
     template: 'テンプレート管理',
     applicant: '応募者管理',
     mapSearch: 'マップ検索',
+    officeSearch: '事業所 検索',
+    savedSearchList: '保存した検索条件一覧',
     areaSearch: 'エリア検索',
     newApplicant: '応募者 新規登録',
     applicantSearch: '応募者 検索',
-    advancedSearch: '詳細条件検索'
+    advancedSearch: '条件検索',
+    addClient: '事業所・クライアント 新規追加',
+    addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
   },
   settings: {
     branch: {
@@ -251,7 +255,7 @@ export default {
       mapSearch: '地図検索',
       regionalSearch: '地域検索',
       originationStaff: '起点候補スタッフ',
-      distanceFromOrigin: '起点からの距離 (km)',
+      distanceFromOrigin: '検索範囲',
       corporateSearch: '法人検索',
       addNewClient: 'クライアント新規追加',
       basicContractConclusion: '基本契約 締結',
@@ -268,7 +272,8 @@ export default {
       officesConcludedBasicContract: '同一法人内で基本契約締結済みの他事務所',
       contactTendency: '接電傾向',
       position: '役職',
-
+      conditionalSearch: '条件設定',
+      searchByCondition: '設定した条件で検索',
 
     },
     add: {

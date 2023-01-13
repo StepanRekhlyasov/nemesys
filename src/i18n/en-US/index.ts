@@ -62,7 +62,7 @@ export default {
     holiday: 'Holiday',
   },
   menu: {
-    clientManagement: 'Client Management',
+    clientManagement: 'Office Management',
     clientList: 'Client List/Search',
     clientReg: 'Client Registration',
     dashboard: 'Dashboard',
@@ -73,11 +73,15 @@ export default {
     organization: 'Organization Master Management',
     template: 'Template Management',
     applicant: 'Applicant Management',
+    officeSearch: 'Office Search',
+    savedSearchList: 'Saved Search Item List',
     mapSearch: 'Map Search',
     newApplicant: 'New Applicant Registration',
     applicantSearch : 'Applicant Search',
     areaSearch: 'Area Search',
-    advancedSearch: 'Advanced search'
+    advancedSearch: 'Advanced search',
+    addClient: 'Add new Client/Office',
+    addClientHint: 'Click here if you want to add a new office or client',
   },
   settings: {
     branch: {
@@ -270,6 +274,8 @@ export default {
       officesConcludedBasicContract: 'Within the same corporation other offices that have concluded a basic contract',
       contactTendency: 'Contact Tendency',
       position: 'Position',
+      conditionalSearch: 'Conditional Search',
+      searchByCondition: 'Search by set condition',
 
     },
     add: {
