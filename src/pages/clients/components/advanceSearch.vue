@@ -1,11 +1,20 @@
 <template>
-  <q-card style="width: 1000px; max-width: 80vw">
+  <q-card class="no-shadow full-height q-pb-sm">
     <q-form class="q-gutter-none" @submit="searchClients">
-      <q-card-section class="row q-pb-sm q-pt-sm">
-        <div class="text-h6">{{ $t('client.list.detailedConditionSearch') }} </div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
+      <q-card-actions>
+        <q-btn :label="$t('client.list.settingFromMap')" unelevated color="primary"
+          class="no-shadow text-weight-bold" icon="add" />
+          <q-btn :label="$t('client.list.settingFromArea')" unelevated color="primary"
+          class="no-shadow text-weight-bold" icon="add" />
+        <q-btn :label="$t('client.list.searchByCondition')" outline color="primary" class="text-weight-bold" />
+      </q-card-actions>
+      <q-separator />
+
+      <q-card-actions>
+        <q-select outlined v-model="backOrderData['saved']" dense :label="$t('client.list.savedSearchList')" style="width: 250px" />
+        <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" />
+
+      </q-card-actions>
       <q-separator />
 
       <q-card-section class="q-pa-none scroll" style="max-height: 80vh">
@@ -35,7 +44,7 @@
               <q-item v-if="backOrderData['nursing'].length > 0">
                 <div class="q-gutter-sm">
                   <q-item-label class="q-pb-xs">{{
-                  $t('client.add.facilityType')
+                    $t('client.add.facilityType')
                   }}</q-item-label>
                   <q-checkbox size="xs" v-model="backOrderData['office_facilityType']" :val="option.value"
                     :label="option.name" v-for="option in facilityOp" :key="option"
@@ -269,7 +278,7 @@
                   <div class="col-2">
                     <q-input outlined dense v-model="backOrderData['client_name']" type="number">
                       <template v-slot:after>
-                        <span class="text-caption">{{ $t('common.moreThan')}}</span>
+                        <span class="text-caption">{{ $t('common.moreThan') }}</span>
                       </template>
                     </q-input>
                   </div>
@@ -310,20 +319,12 @@
 
       </q-card-section>
 
-      <q-separator />
-
-      <q-card-actions align="right" class="bg-white text-teal">
-        <q-btn :label="$t('common.cancel')" flat v-close-popup color="red" />
-        <q-btn flat :label="$t('client.list.saveSearchConditions')" @click="confirmSaveDialog = true"/>
-        <q-btn flat :label="$t('client.list.detailedConditionSearch')" type="submit" color="primary"  />
-      </q-card-actions>
-
     </q-form>
 
-    <q-dialog v-model="confirmSaveDialog" persistent  transition-show="scale" transition-hide="scale">
+    <q-dialog v-model="confirmSaveDialog" persistent transition-show="scale" transition-hide="scale">
       <q-card style="width: 400px; max-width: 80vw">
         <q-card-section class="row items-center">
-          <q-avatar icon="save" color="primary" text-color="white" size="md"/>
+          <q-avatar icon="save" color="primary" text-color="white" size="md" />
           <span class="q-ml-sm">Do you really want save?</span>
         </q-card-section>
 
@@ -332,7 +333,7 @@
           <q-btn flat :label="$t('common.save')" color="primary" v-close-popup />
         </q-card-actions>
       </q-card>
-      </q-dialog>
+    </q-dialog>
 
 
   </q-card>

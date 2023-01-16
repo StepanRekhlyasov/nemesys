@@ -36,6 +36,8 @@
           <q-separator />
           <q-card-section class="bg-grey-1 q-pa-none">
             <mapSearch v-if="link == 'mapSearch'" />
+            <areaSearch v-else-if="link == 'areaSearch'" />
+            <advanceSearch v-else-if="link == 'advancedSearch'" />
           </q-card-section>
         </q-card>
 
@@ -57,6 +59,8 @@ import { useI18n } from 'vue-i18n';
 // } from 'firebase/firestore';
 import { ref, computed } from 'vue';
 import mapSearch from './components/mapSearch.vue';
+import areaSearch from './components/areaSearch.vue';
+import advanceSearch from './components/advanceSearch.vue';
 
 //import { useRouter } from 'vue-router';
 
@@ -66,7 +70,9 @@ import mapSearch from './components/mapSearch.vue';
 export default {
   name: 'officeSearch',
   components: {
-    mapSearch
+    mapSearch,
+    areaSearch,
+    advanceSearch
   },
 
   setup() {

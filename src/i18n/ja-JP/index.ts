@@ -274,6 +274,10 @@ export default {
       position: '役職',
       conditionalSearch: '条件設定',
       searchByCondition: '設定した条件で検索',
+      addressHint: '地名を入力してください / 例 : 新宿区 神奈川県',
+      settingFromMap: 'マップから設定',
+      settingFromArea: 'エリアから設定',
+      savedSearchList: '保存した検索条件',
 
     },
     add: {

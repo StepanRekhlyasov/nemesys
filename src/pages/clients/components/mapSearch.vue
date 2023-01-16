@@ -1,9 +1,10 @@
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-card-actions>
-      <q-btn :label="$t('client.list.conditionalSearch')" unelevated color="primary" class="no-shadow text-weight-bold" />
+      <q-btn :label="$t('client.list.conditionalSearch')" unelevated color="primary" class="no-shadow text-weight-bold" icon="add" />
       <q-btn :label="$t('client.list.searchByCondition')" outline color="primary" class="text-weight-bold" />
     </q-card-actions>
+    <q-separator />
 
     <q-card-section>
       <GoogleMap :api-key="apiKey" style="width: 100%; height: 450px" :center="center" :zoom="15">

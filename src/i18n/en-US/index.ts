@@ -276,6 +276,10 @@ export default {
       position: 'Position',
       conditionalSearch: 'Conditional Search',
       searchByCondition: 'Search by set condition',
+      addressHint: 'Please enter a place name. Example: Shinjuku Ward Kanagawa Prefecture',
+      settingFromMap: 'Setting From Map',
+      settingFromArea: 'Setting From Area',
+      savedSearchList: 'savedSearchList',
 
     },
     add: {
