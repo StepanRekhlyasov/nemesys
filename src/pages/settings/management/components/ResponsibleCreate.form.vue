@@ -46,6 +46,7 @@
               name="passworld"
               :disable="loading"
               outlined
+              :rules="[ val => val.length >= 6 || 'Please use minimum 6 characters']"
               dense
             />
           </div>
@@ -171,10 +172,10 @@ export default {
       async addAccaunt(){
         const url = 'https://create-user-account-planwvepxa-an.a.run.app'
         const headers = {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Headers': 'Content-Type'
+          'Content-Type': 'application/json'
         };
 
+        loading.value = true;
         const data = accountData.value
         const active_organization_id = getOrganizationId($q)
 
@@ -196,13 +197,18 @@ export default {
           )
           .then((response) => {
             if (response.status === 200) {
-              console.log('Successfully create user');
+              context.emit('closeDialog');
+              Alert.success($q, t);
+              loading.value = false;
             } else {
-              console.error('Failed to create user');
-              console.log(response.statusText)
+              Alert.warning($q, t);
+              loading.value = false;
+              console.error(response.statusText)
             }
           })
           .catch((error) => {
+            Alert.warning($q, t);
+            loading.value = false;
             console.error('Failed to create user', error);
           });
       },

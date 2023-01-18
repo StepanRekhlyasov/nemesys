@@ -76,3 +76,7 @@ export const getTemplates = (db: Firestore, organization_id: string, queryText?:
   ))
 }
 
+
+// rules intut textfield
+
+// export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`

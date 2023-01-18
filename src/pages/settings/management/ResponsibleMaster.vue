@@ -199,7 +199,7 @@ export default {
             users.forEach((doc) => {
               const data = doc.data();
               data['id'] = doc.id;
-              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.addedAt), updated_at: toDateObject(data.updated_at)});
+              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.create_at), updated_at: toDateObject(data.updatedAt)});
             });
             usersListData.value = list;
           })
