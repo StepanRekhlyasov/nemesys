@@ -29,10 +29,10 @@
         <q-card class="no-shadow bg-grey-3">
           <q-card-section class="text-white bg-primary">
             <div v-if="link == 'addOffice'">
-              <div class="q-ml-lg">{{ $t('client.add.parentClientName') }}</div>
+              <div class="q-ml-lg">{{ previewData.client_name }}</div>
               <div class="text-h6">
                 <q-btn dense flat icon="close" @click="drawerRight = false" />
-                {{ $t('client.add.officeName') }}
+                {{ previewData.name }}
                 <q-btn :label="$t('client.add.officeReg')" text-color="primary" color="white"
                   class="q-ml-lg text-weight-bold" @click="officeReg" />
 
@@ -41,7 +41,7 @@
             <div v-else-if="link == 'addClient'">
               <div class="text-h6">
                 <q-btn dense flat icon="close" @click="drawerRight = false" />
-                {{ $t('client.add.clientName') }}
+                {{ previewData.name }}
                 <q-btn :label="$t('menu.clientReg')" text-color="primary" color="white"
                   class="q-ml-lg text-weight-bold" @click="clientReg" />
 
@@ -57,8 +57,8 @@
             <mapSearch v-if="link == 'mapSearch'" />
             <areaSearch v-else-if="link == 'areaSearch'" />
             <advanceSearch v-else-if="link == 'advancedSearch'" />
-            <addClient v-else-if="link == 'addClient'" ref="clientRef" />
-            <addOffice v-else-if="link == 'addOffice'" ref="addOfficeRef" />
+            <addClient v-else-if="link == 'addClient'" ref="clientRef" @updateData="updateData"/>
+            <addOffice v-else-if="link == 'addOffice'" ref="addOfficeRef" @updateData="updateData"/>
           </q-card-section>
         </q-card>
 
@@ -106,6 +106,7 @@ export default {
     const drawerRight = ref(false);
     const addOfficeRef = ref();
     const clientRef = ref();
+    const previewData = ref({});
 
     return {
       link,
@@ -138,9 +139,11 @@ export default {
       }),
       addOfficeRef,
       clientRef,
+      previewData,
 
       openLink(item) {
         link.value = item.link
+        previewData.value = {};
         drawerRight.value = true
       },
       officeReg() {
@@ -148,6 +151,10 @@ export default {
       },
       clientReg() {
         clientRef.value.validate()
+      },
+      updateData(data){
+        previewData.value.name = data.name;
+        previewData.value.client_name = data.client_name;
       }
 
 

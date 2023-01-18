@@ -231,7 +231,7 @@ export default {
       numBOs: 'BO数',
       listBO: 'BOリスト',
       officeDetail: '事業所詳細情報',
-      officeHead: '本社事業所',
+      officeHead: '本社事業所名',
       variousAchievements: '各種実績数',
       numFixResults: 'FIX実績数',
       jobSearchResults: '職見実績数',
