@@ -5,26 +5,22 @@
         <q-list>
           <q-item>
             <q-item-section>
-              <q-item-label>
-                {{ $t('client.add.officeName') }}
-                <span class="text-red-5">*</span>
-              </q-item-label>
-              <div class="row">
-                <div class="col-6 q-pr-sm">
-                  <q-select outlined v-model="clientData['office']" :options="officeList" dense emit-value map-options
-                    lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
-                </div>
-              </div>
-            </q-item-section>
-          </q-item>
-
-          <q-item>
-            <q-item-section>
               <q-item-label class="q-pb-xs">
                 {{ $t('client.add.clientName') }}
                 <span class="text-red-5">*</span>
               </q-item-label>
               <q-input outlined dense v-model="clientData['name']" :placeholder="$t('client.add.clientLabel')"
+                lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+            </q-item-section>
+          </q-item>
+
+          <q-item>
+            <q-item-section>
+              <q-item-label>
+                {{ $t('client.list.officeHead') }}
+                <span class="text-red-5">*</span>
+              </q-item-label>
+              <q-input outlined dense v-model="clientData['client_name']" :placeholder="$t('client.add.clientLabel')"
                 lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
             </q-item-section>
           </q-item>
@@ -170,7 +166,7 @@
           <q-item>
             <q-item-section>
               <q-item-label class="q-pb-xs">
-                {{ $t('client.add.officeInfo') }}
+                {{ $t('office.headOfficeInformation') }}
               </q-item-label>
 
               <div class="row">
@@ -291,11 +287,6 @@
               </div>
             </q-item-section>
           </q-item>
-
-
-
-
-
         </q-list>
 
       </q-card-section>
@@ -304,10 +295,10 @@
 </template>
 
 <script lang="ts">
-import { ref, SetupContext } from 'vue'; //ref,
+import { ref, SetupContext, watch } from 'vue'; //ref,
 import { useQuasar, QForm } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { addDoc, collection, serverTimestamp, getFirestore, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, getFirestore } from 'firebase/firestore';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
@@ -322,23 +313,28 @@ export default {
     const clientDataSample = { nursing: [], facilityType: [], conclusionDispatchContract: false, conclusionContract: false, conclusionReferralContract: false, flg_faxng: false }
     const clientData = ref(JSON.parse(JSON.stringify(clientDataSample)));
     const facilityOp = facilityList;
-    const unsubscribe = ref();
-    const officeList = ref([]);
     const clientForm = ref<QForm | null>(null);
 
 
     const addClient = async () => {
-      let data = clientData.value;
-      if (!data['office']) {
+      let data = JSON.parse(JSON.stringify(clientData.value));
+      if (!data['name']) {
         Alert.warning($q, t)
         return false
       }
       data['created_at'] = serverTimestamp();
       data['updated_at'] = serverTimestamp();
       data['deleted'] = false;
-      data['headquarter'] = false;
-      const clientRef = collection(db, 'office/' + data['office'] + '/clients/');
-      await addDoc(clientRef, data);
+      const clientRef = collection(db, 'clients/');
+      const docRef = await addDoc(clientRef, data);
+
+      data['name'] = data['client_name'];
+      delete data['client_name'];
+      data['headquarter'] = true;
+      data['nursing'] = [];
+      data['headquarterClient'] = docRef.id;
+      const officeRef = collection(db, 'clients/' + docRef.id + '/office/');
+      await addDoc(officeRef, data);
 
       context.emit('closeDialog')
       clientData.value = JSON.parse(JSON.stringify(clientDataSample));
@@ -351,26 +347,17 @@ export default {
         message: t('success'),
       });
     };
-    loadOffice();
-    function loadOffice() {
-      const qOffice = query(collection(db, 'office/'), where('deleted', '==', false), orderBy('created_at', 'desc'));
-      unsubscribe.value = onSnapshot(qOffice, (querySnapshot) => {
-        let items: object[] = [];
-        querySnapshot.forEach((doc) => {
-          items.push({ label: doc.data().name, value: doc.id });
-        });
-        officeList.value = items as never;
-      },
-        (error) => {
-          console.log(error)
-        });
-    }
 
+    watch(
+      () => (clientData.value.name),
+      () => {
+        context.emit('updateData', clientData.value)
+      },
+    );
 
     return {
       clientData,
       facilityOp,
-      officeList,
 
       clientForm,
 
@@ -385,7 +372,8 @@ export default {
             Alert.warning($q, t);
           }
         })
-      }
+      },
+
 
     }
   }

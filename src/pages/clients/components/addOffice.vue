@@ -20,8 +20,10 @@
                 {{ $t('client.add.parentClientName') }}
                 <span class="text-red-5">*</span>
               </q-item-label>
-              <q-input outlined dense v-model="officeData['client_name']" :placeholder="$t('client.add.clientLabel')"
-                lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+              <q-select outlined v-model="officeData['headquarterClient']" :options="clientList" dense emit-value
+                map-options lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space
+                style="max-width:400px" use-input @filter="filterFn" clearable />
+
             </q-item-section>
           </q-item>
 
@@ -43,7 +45,7 @@
                 </div>
                 <div class="col-6 q-pl-sm">
                   <q-item-label class="q-pb-xs">
-                    {{ $t('client.add.municipalities') }} 
+                    {{ $t('client.add.municipalities') }}
                     <span class="text-red-5">*</span>
                   </q-item-label>
                   <q-input outlined dense v-model="officeData['municipality']"
@@ -68,7 +70,7 @@
 
               <div class="row q-mt-sm">
                 <div class="col-6 q-pr-sm">
-                  <q-item-label class="q-pb-xs"> 
+                  <q-item-label class="q-pb-xs">
                     {{ $t('client.add.longitude') }}
                     <span class="text-red-5">*</span>
                   </q-item-label>
@@ -77,7 +79,7 @@
                     :rules="[(val) => (val && val > 0) || '']" hide-bottom-space />
                 </div>
                 <div class="col-6 q-pl-sm ">
-                  <q-item-label class="q-pb-xs"> 
+                  <q-item-label class="q-pb-xs">
                     {{ $t('client.add.latitude') }}
                     <span class="text-red-5">*</span>
                   </q-item-label>
@@ -123,8 +125,7 @@
                     :placeholder="$t('client.add.emailLabel1') + '@' + $t('client.add.emailLabel2')" />
                 </div>
                 <div class="col-6 q-pl-sm q-pt-lg">
-                  <q-checkbox size="xs" v-model="officeData['flg_faxng']"
-                    :label="$t('client.add.faxReceptionNG')" />
+                  <q-checkbox size="xs" v-model="officeData['flg_faxng']" :label="$t('client.add.faxReceptionNG')" />
                 </div>
               </div>
 
@@ -213,10 +214,6 @@
             </q-item-section>
           </q-item>
 
-
-
-
-
         </q-list>
 
       </q-card-section>
@@ -225,10 +222,10 @@
 </template>
 
 <script lang="ts">
-import { ref, SetupContext } from 'vue'; //ref,
+import { ref, SetupContext, watch } from 'vue'; //ref,
 import { useQuasar, QForm } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { addDoc, collection, serverTimestamp, getFirestore } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, getFirestore, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
@@ -243,28 +240,26 @@ export default {
     const officeData = ref(JSON.parse(JSON.stringify(officeDataSample)));
     const facilityOp = facilityList;
 
+    const unsubscribe = ref();
+    const clientList = ref([]);
+    const clientListAll = ref([]);
+
     const officeForm = ref<QForm | null>(null);
 
 
     const addOffice = async () => {
-      let data = JSON.parse(JSON.stringify(officeData.value));
-      if (!data['name']) {
+      let data = officeData.value;
+      if (!data['headquarterClient']) {
         Alert.warning($q, t)
         return false
       }
       data['created_at'] = serverTimestamp();
       data['updated_at'] = serverTimestamp();
       data['deleted'] = false;
-      const officeRef = collection(db, 'office/');
-      const docRef = await addDoc(officeRef, data);
-      
-      data['name'] = data['client_name'];
-      delete data['client_name'];
-      data['headquarter'] = true;
-      data['nursing'] = [];
-      data['office'] = docRef.id;
-      const clientRef = collection(db, 'office/' + docRef.id + '/clients/');
+      data['headquarter'] = false;
+      const clientRef = collection(db, 'clients/' + data['headquarterClient'] + '/office/');
       await addDoc(clientRef, data);
+
 
       context.emit('closeDialog')
       officeData.value = JSON.parse(JSON.stringify(officeDataSample));
@@ -278,11 +273,50 @@ export default {
       });
     };
 
+    loadClients();
+    function loadClients() {
+      const qOffice = query(collection(db, 'clients'), where('deleted', '==', false), orderBy('created_at', 'desc'));
+      unsubscribe.value = onSnapshot(qOffice, (querySnapshot) => {
+        let items: object[] = [];
+        querySnapshot.forEach((doc) => {
+          items.push({ label: doc.data().name, value: doc.id });
+        });
+        clientListAll.value = items as never;
+      },
+        (error) => {
+          console.log(error)
+        });
+    }
+    function
+      updateData() {
+      let data = officeData.value;
+      data['client_name'] = '';
+      let obj = clientListAll.value.find(o => o['value'] === officeData.value.headquarterClient);
+      if (obj) {
+        data['client_name'] = obj['label'];
+      }
+      context.emit('updateData', data)
+    }
+
+    watch(
+      () => (officeData.value.name),
+      () => {
+        updateData()
+      },
+    );
+
+    watch(
+      () => (officeData.value.headquarterClient),
+      () => {
+        updateData()
+      },
+    );
 
     return {
       officeData,
       facilityOp,
       officeForm,
+      clientList,
 
       addOffice,
 
@@ -295,7 +329,29 @@ export default {
             Alert.warning($q, t);
           }
         })
-      }
+      },
+      filterFn(val, update) {
+        if (val === '') {
+          update(() => {
+            clientList.value = JSON.parse(JSON.stringify(clientListAll.value));
+            return
+          })
+        }
+
+        update(() => {
+          const needle = val.toLowerCase();
+          let items = [];
+          //clientList.value = clientListAll.value.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+          for (var i = 0; i < clientListAll.value.length; i++) {
+            let label = clientListAll.value[i]['label'] as string;
+            if (label.toLowerCase().includes(needle)) {
+              items.push(clientListAll.value[i]);
+            }
+          }
+          clientList.value = items;
+        })
+      },
+
 
 
     }
