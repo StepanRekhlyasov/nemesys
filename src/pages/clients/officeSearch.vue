@@ -11,10 +11,10 @@
           <q-item clickable v-ripple :active="link === item.link" @click="openLink(item)" active-class="my-menu-link"
             v-for="item in items" :key="item.link"><!--style="border-left: 5px solid #eeeeee"-->
             <q-item-section>
-              <q-row>
+              <div class="row">
                 {{ item.name }}
                 <span v-if="item.hint" class="q-pl-lg text-caption text-weight-light">{{ item.hint }}</span>
-              </q-row>
+              </div>
             </q-item-section>
           </q-item>
 
@@ -28,9 +28,28 @@
       <q-scroll-area class="fit text-left">
         <q-card class="no-shadow bg-grey-3">
           <q-card-section class="text-white bg-primary">
-            <div class="text-h6">
+            <div v-if="link == 'addOffice'">
+              <div class="q-ml-lg">{{ $t('client.add.parentClientName') }}</div>
+              <div class="text-h6">
+                <q-btn dense flat icon="close" @click="drawerRight = false" />
+                {{ $t('client.add.officeName') }}
+                <q-btn :label="$t('client.add.officeReg')" text-color="primary" color="white"
+                  class="q-ml-lg text-weight-bold" @click="officeReg" />
+
+              </div>
+            </div>
+            <div v-else-if="link == 'addClient'">
+              <div class="text-h6">
+                <q-btn dense flat icon="close" @click="drawerRight = false" />
+                {{ $t('client.add.clientName') }}
+                <q-btn :label="$t('menu.clientReg')" text-color="primary" color="white"
+                  class="q-ml-lg text-weight-bold" @click="clientReg" />
+
+              </div>
+            </div>
+            <div class="text-h6" v-else-if="link">
               <q-btn dense flat icon="close" @click="drawerRight = false" />
-              {{ $t('menu.' + link) }}
+              {{ $t('menu.' + link) }} 
             </div>
           </q-card-section>
           <q-separator />
@@ -38,6 +57,8 @@
             <mapSearch v-if="link == 'mapSearch'" />
             <areaSearch v-else-if="link == 'areaSearch'" />
             <advanceSearch v-else-if="link == 'advancedSearch'" />
+            <addClient v-else-if="link == 'addClient'" ref="clientRef" />
+            <addOffice v-else-if="link == 'addOffice'" ref="addOfficeRef" />
           </q-card-section>
         </q-card>
 
@@ -61,6 +82,8 @@ import { ref, computed } from 'vue';
 import mapSearch from './components/mapSearch.vue';
 import areaSearch from './components/areaSearch.vue';
 import advanceSearch from './components/advanceSearch.vue';
+import addClient from './components/addClient.vue';
+import addOffice from './components/addOffice.vue';
 
 //import { useRouter } from 'vue-router';
 
@@ -72,13 +95,17 @@ export default {
   components: {
     mapSearch,
     areaSearch,
-    advanceSearch
+    advanceSearch,
+    addClient,
+    addOffice,
   },
 
   setup() {
     const { t } = useI18n({ useScope: 'global' });
     const link = ref('');
     const drawerRight = ref(false);
+    const addOfficeRef = ref();
+    const clientRef = ref();
 
     return {
       link,
@@ -98,17 +125,31 @@ export default {
             link: 'advancedSearch'
           },
           {
+            name: t('menu.addOffice'),
+            link: 'addOffice',
+            hint: t('menu.addOfficeHint'),
+          },
+          {
             name: t('menu.addClient'),
             link: 'addClient',
             hint: t('menu.addClientHint'),
           }
         ]
       }),
+      addOfficeRef,
+      clientRef,
 
       openLink(item) {
         link.value = item.link
         drawerRight.value = true
       },
+      officeReg() {
+        addOfficeRef.value.validate()
+      },
+      clientReg() {
+        clientRef.value.validate()
+      }
+
 
     };
   },

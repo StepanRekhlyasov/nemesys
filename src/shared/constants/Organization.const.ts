@@ -1,7 +1,7 @@
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { i18n } from 'boot/i18n';
 
-const { t } = useI18n({ useScope: 'global' });
+const { t } = i18n.global
 
 export const facilityList = computed(() => {
   return [
