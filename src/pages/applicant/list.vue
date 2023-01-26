@@ -115,45 +115,61 @@
                   <div class="col-9 flex items-center">
                     <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{$t('applicant.add.'+selectedApplicant.sex)}}
                   </div>
-                  <div class="col-3 flex items-center">
-                    <div class="row text-weight-regular">
-                      {{$t('applicant.add.occupation')}}  {{$t('applicant.add.'+selectedApplicant.occupation)}}
-                    </div>
+                  <div class="col-3">
+                    <span class="row">{{  selectedApplicant.municipalities }} {{ selectedApplicant.street }}</span>
+                    <span class="row">{{ selectedApplicant.apartment }}</span>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-9 flex items-center">
-                    {{[selectedApplicant.municipalities, selectedApplicant.street,  selectedApplicant.apartment].join(', ')}}
-                  </div>
-                  <div class="col-3 flex items-center">
-                    <div class="row text-weight-regular">
-                      {{$t('applicant.list.category')}}  {{$t('applicant.statusOption.'+selectedApplicant.status)}}
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <span class="q-pr-md">TEL: {{selectedApplicant.phone}}</span>
-                  MAIL: {{selectedApplicant.email}}
                 </div>
                 <div class="row">
                   <span class="q-pr-md">{{$t('applicant.add.applicationDate')}}: {{selectedApplicant.applicationDate}}</span>
-                  <span class="q-pr-md">{{$t('applicant.add.applicationMedia')}}: indeed</span>
-                  <span class="q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
+                </div>
+                <div class="row">
+                  <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: indeed</span>
+                  <span class="col-3">TEL: {{selectedApplicant.phone}}</span>
+                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{$t('applicant.add.'+selectedApplicant.occupation)}}</span>
+                </div>
+                <div class="row">
+                  <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
+                  <span class="col-3">MAIL: {{selectedApplicant.email}}</span>
+                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{$t('applicant.statusOption.'+selectedApplicant.status)}}</span>
                 </div>
               </div>
-
             </div>
           </q-card-section>
           <q-separator />
 
           <q-card-section class="bg-white q-ma-md">
-            <div class="row q-pb-md">
-              <div class="col-2 text-right text-primary text-weight-regular"> {{$t('applicant.list.qualification')}} </div>
-              <div class="col-10 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') }}  </div>
+            <div class="row q-pb-sm">
+              <div class="col-6 row">
+                <div class="col-6 text-right text-primary text-weight-regular"> {{$t('applicant.list.qualification')}} </div>
+                <div class="col-6 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') }}  </div>
+              </div>
+              <div class="col-4 row">
+                <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
+                <span class="col-6 q-pl-md">{{ selectedApplicant.experience }}</span>
+              </div>
+              <div class="col-2" >
+                <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary"/>
+              </div>
             </div>
             <div class="row">
-              <div class="col-2 text-right text-primary text-weight-regular"> {{$t('applicant.list.memo') }} </div>
-              <div class="col-10 q-pl-md"> </div>
+              <div class="col-6 row">
+                <div class="col-6 text-right">
+                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursEarly?'●': '✕' }}</span>
+                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursDay?'●': '✕' }}</span>
+                </div>
+                <div class="col-6">
+                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursLate?'●': '✕' }}</span>
+                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursNight?'●': '✕' }}</span>
+                </div>
+              </div>
+              <div class="col-4 row">
+                <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays') }}</span>
+                <span class="col-6">{{ selectedApplicant.availableDays }}</span>
+              </div>
+              <div class="col-2" >
+                <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary"/>
+              </div>
             </div>
           </q-card-section>
 
@@ -271,6 +287,7 @@ export default {
           drawerRight.value = false;
         }
         selectedApplicant.value = data;
+        console.log(data)
         setTimeout(() => drawerRight.value = true, 300);
       },
       getStatus(status){
