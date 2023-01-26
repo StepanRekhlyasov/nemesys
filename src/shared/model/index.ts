@@ -3,3 +3,7 @@ export interface selectOptions {
   label: string;
 }
 
+export interface dataTable {
+  name: string;
+  diaplsyName: string;
+}

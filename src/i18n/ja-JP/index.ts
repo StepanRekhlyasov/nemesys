@@ -50,6 +50,8 @@ export default {
     addNew: '新規追加',
     search: '検索',
     keyboard: 'キーワード',
+    closeArea: '表示エリアを閉じる',
+    openArea: '表示エリアを開く'
   },
   weekDay: {
     sunday: '日',
@@ -397,7 +399,7 @@ export default {
       basicContract: '基本契約',
       basicContractSigned: '基本契約締結済み',
       basicContractNG: '基本契約 未締結',
-      parentClientName: '親クライアント名', 
+      parentClientName: '親クライアント名',
       companyAddress: '会社住所',
       reprPhoneNumber: '代表電話番号',
       contractUnit: '契約単位',
@@ -608,6 +610,10 @@ export default {
       rank: 'スタッフランク',
       status: '応募ステータス',
       qualification: '資格',
+      experience: '経験',
+      availableDays: '勤務可能日数',
+      candidate: '候補BO',
+      locator: '事業所検索',
       memo: 'スタッフメモ',
       contactInfo: 'コンタクト情報',
       applicationInfo: '応募／誘致情報',
@@ -634,6 +640,34 @@ export default {
         hiringDate: '入職日',
         memo: 'メモ',
       },
+      info: {
+        date: '応募日',
+        media: '応募媒体',
+        apply: '応募方法',
+        tel: '電話番号',
+        email: 'メール',
+        postCode: '郵便番号',
+        addres: '住所',
+        name: '氏名',
+        kana: 'カナ',
+        gender: '性別',
+        birth: '生年月日',
+        lon: '経度',
+        lat: '緯度',
+
+        attractionsStatus: '誘致ステータス',
+        employmentStatus: '就業状況',
+        classiffication: '区分',
+        qualifications: '資格',
+        memo: '誘致メモ',
+        seductionDay: '誘致日',
+        seduser: '誘致者',
+        position: '職種',
+        period: '就業期間',
+
+        application: '■応募情報',
+        attraction: '■誘致情報'
+      }
 
 
     },

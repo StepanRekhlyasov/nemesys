@@ -50,6 +50,8 @@ export default {
     addNew: 'Add New',
     search: 'Search',
     keyboard: 'Keyboard',
+    closeArea: 'Close Display Area',
+    openArea: 'Open Display Area'
   },
   weekDay: {
     sunday: 'Suny',
@@ -612,6 +614,10 @@ export default {
       rank: 'Staff Rank',
       status: 'Application Status',
       qualification: 'Qualification',
+      experience: 'Experience',
+      availableDays: 'Available Days',
+      candidate: 'Candidate BO',
+      locator: 'Business Locator',
       memo: 'Staff Memo',
       contactInfo: 'Contact Info',
       applicationInfo: 'Application Info',
@@ -637,6 +643,34 @@ export default {
         hiringDate: '入職日',
         memo: 'メモ',
       },
+      info: {
+        date: 'Application Date',
+        media: 'Application Media',
+        apply: 'How to apply',
+        tel: 'Telephone number',
+        email: 'Email',
+        postCode: 'Post Code',
+        addres: 'Address',
+        name: 'Full Name',
+        kana: 'Kana',
+        gender: 'Gender',
+        birth: 'Date of birth',
+        lon: 'Longitude',
+        lat: 'Latitude',
+
+        attractionsStatus: 'Attractions Status',
+        employmentStatus: 'Employment Status',
+        classiffication: 'Classiffication',
+        qualifications: 'Qualifications',
+        memo: 'Attraction Memo',
+        seductionDay: 'Seduction Day',
+        seduser: 'Seduser',
+        position: 'Position',
+        period: 'Employment Period',
+
+        application: '■Application Information',
+        attraction: '■Information on Attraction'
+      }
     },
     statusOption: {
       notCompatible: 'Not Compatible',

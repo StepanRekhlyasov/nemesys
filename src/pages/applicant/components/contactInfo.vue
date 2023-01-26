@@ -72,12 +72,12 @@
 
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
-          <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat @click="showEditDialog(props.row)" />
+          <q-btn icon="edit" flat @click="showEditDialog(props.row)"  color="primary"/>
         </q-td>
       </template>
       <template v-slot:body-cell-delete="props">
         <q-td :props="props">
-          <q-btn style="color: #222222"  icon="delete" size="sm" round flat @click="showDeleteDialog(props.row)" />
+          <q-btn icon="mdi-delete-outline" flat @click="showDeleteDialog(props.row)"/>
         </q-td>
       </template>
 
@@ -124,6 +124,7 @@ export default {
         {
           name: 'edit',
           align: 'left',
+          headerStyle: 'width: 24px'
         },
         {
           name: 'created_at',
