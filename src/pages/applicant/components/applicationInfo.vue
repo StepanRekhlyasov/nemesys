@@ -199,16 +199,18 @@
     </q-card-section>
   </q-card>
 
-  <q-drawer
+  <div class="q-drawer-off-top">
+    <q-drawer
       v-model="drawerRight"
       class="bg-grey-3"
       full-height
       :width="1000"
-      side="right"
+      side="right" style="top: unset !important"
       overlay elevated
       bordered>
       <ApplicationInfoForm :applicant="applicant" @closeDialog="drawerRight = false"/>
-  </q-drawer>
+    </q-drawer>
+  </div>
 </template>
 
 <script lang="ts">
@@ -248,4 +250,9 @@ export default {
 </script>
 
 <style lang="scss">
+.q-drawer-off-top{
+  .q-drawer{
+    top: 0 !important;
+  }
+}
 </style>
