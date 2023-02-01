@@ -52,8 +52,8 @@
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import fixEmployInfo from './fixEmployInfo.vue';
-import contactInfo from './contactInfo.vue';
-import applicationInfo from './applicationInfo.vue';
+import contactInfo from './components/contactInfo.vue';
+import applicationInfo from './components/applicationInfo.vue';
 
 export default {
   name: 'clientDetails',

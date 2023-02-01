@@ -215,7 +215,7 @@
 
 <script lang="ts">
 import { ref } from 'vue';
-import ApplicationInfoForm from 'src/pages/applicant/components/applicationInfo.form.vue'
+import ApplicationInfoForm from './applicationInfo.form.vue'
 
 export default {
   name: 'ApplicationInfo',
