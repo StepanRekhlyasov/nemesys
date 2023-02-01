@@ -586,7 +586,18 @@ export default {
       phone: 'Phone Number',
       email: 'Email',
       status: 'Status',
+      wanted: 'Wanted',
       branchIncharge: 'Branch in Charge',
+      boGenerationPath: 'BO Generation Path',
+      coldCall: 'Cold Call',
+      fax: 'FAX',
+      caseType: 'Case Type',
+      hourlyMonthly: 'Hourly/monthly wage',
+      monthlySalary: 'Monthly Salary',
+      hourlyWage: 'Hourly Wage',
+      hr: 'HR Hacker',
+      web: 'WEB application ',
+      tel: 'TEL application ',
       sex: 'Sex',
       male: 'Male',
       female: 'Female',
@@ -669,7 +680,9 @@ export default {
         period: 'Employment Period',
 
         application: '■Application Information',
-        attraction: '■Information on Attraction'
+        attraction: '■Information on Attraction',
+        working: '就業中',
+        notWorking: '未就業'
       }
     },
     statusOption: {

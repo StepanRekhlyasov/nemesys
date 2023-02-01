@@ -287,7 +287,6 @@ export default {
           drawerRight.value = false;
         }
         selectedApplicant.value = data;
-        console.log(data)
         setTimeout(() => drawerRight.value = true, 300);
       },
       getStatus(status){

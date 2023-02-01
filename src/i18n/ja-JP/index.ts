@@ -582,7 +582,18 @@ export default {
       phone: '電話番号',
       email: 'メールアドレス',
       status: 'ステータス',
+      wanted: '募集中',
       branchIncharge: '担当支店',
+      boGenerationPath: 'BO発生経路',
+      coldCall: 'テレアポ',
+      fax: 'FAX',
+      caseType: '案件種別',
+      hourlyMonthly: '時給/月給',
+      monthlySalary: '月給',
+      hourlyWage: '時給',
+      hr: 'HRハッカー',
+      web: 'WEB応募',
+      tel: 'TEL応募',
       sex: '性別',
       male: '男性',
       female: '女性',
@@ -666,7 +677,9 @@ export default {
         period: '就業期間',
 
         application: '■応募情報',
-        attraction: '■誘致情報'
+        attraction: '■誘致情報',
+        working: '就業中',
+        notWorking: '未就業'
       }
 
 

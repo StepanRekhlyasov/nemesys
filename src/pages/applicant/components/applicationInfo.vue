@@ -202,31 +202,23 @@
   <q-drawer
       v-model="drawerRight"
       class="bg-grey-3"
+      full-height
       :width="1000"
       side="right"
       overlay elevated
       bordered>
-      <q-scroll-area
-        class="fit text-left"
-        v-if="applicant">
-        <q-card class="no-shadow bg-grey-3">
-          <q-card-section class="text-white bg-primary rounded-borders" >
-            <div class="row">
-              <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
-            </div>
-          </q-card-section>
-        </q-card>
-      </q-scroll-area>
+      <ApplicationInfoForm :applicant="applicant" @closeDialog="drawerRight = false"/>
   </q-drawer>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import ApplicationInfoForm from 'src/pages/applicant/components/applicationInfo.form.vue'
 
 export default {
   name: 'ApplicationInfo',
   components: {
+    ApplicationInfoForm
   },
   props: {
     applicant: {
@@ -236,7 +228,6 @@ export default {
   },
   setup(props) {
     console.log(props)
-    const { t } = useI18n({ useScope: 'global' });
 
     const loading = ref(false);
     const drawerRight = ref(false)

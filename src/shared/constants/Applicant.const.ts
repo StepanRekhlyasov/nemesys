@@ -93,8 +93,28 @@ export const statusList = computed(() => {
       label: t('applicant.statusOption.futureTalent'),
       value: 'futureTalent',
     },
-    
-    
+
+
   ];
 });
+
+export const applicationMethod = computed(() => {
+  return [{
+    label: t('applicant.add.web'),
+    value: 'web'
+  },{
+    label: t('applicant.add.tel'),
+    value: 'tel'
+  },]
+})
+
+export const employmentStatus = computed(() => {
+  return [{
+    label: t('applicant.list.info.working'),
+    value: 'working'
+  },{
+    label: t('applicant.list.info.notWorking'),
+    value: 'notWorking'
+  },]
+})
 
