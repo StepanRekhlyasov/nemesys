@@ -44,6 +44,17 @@
                   <q-item-label>{{$t('settings.users.logout')}}</q-item-label>
                 </q-item-section>
               </q-item>
+
+              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.UserUpdate)">
+                <q-item-section>
+                  <q-item-label>
+                    <router-link :to="routeNames.admin" target="_blank">
+                      {{$t('settings.users.adminPage')}}
+                    </router-link>
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+
             </q-list>
             <template v-slot:label>
               <div class="row items-center bg-primary">
@@ -142,6 +153,7 @@ import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
 import routes from 'src/router/routes';
+import { routeNames } from 'src/router/routeNames'
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -254,12 +266,15 @@ export default defineComponent({
       miniState,
       active_menu,
       openLeftSlidebar,
+      routeNames,
+      UserPermissionNames,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       logout,
       onChangeMenu,
-      permissionMenuItem
+      permissionMenuItem,
+      isPermission
     };
   },
 });
