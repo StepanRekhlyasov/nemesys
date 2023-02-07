@@ -165,7 +165,8 @@ export default {
       editProfile: 'プロフィール編集',
       accauntSettings: 'アカウント設定',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
-      logout: 'ログアウト'
+      logout: 'ログアウト',
+      adminPage: 'システム管理ページを開く',
     },
     title: 'システム設定',
   },

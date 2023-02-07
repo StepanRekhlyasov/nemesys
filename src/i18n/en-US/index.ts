@@ -165,7 +165,8 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
-      logout: 'Logout'
+      logout: 'Logout',
+      adminPage: 'Open system administration page',
     },
     title: 'Settings'
   },
