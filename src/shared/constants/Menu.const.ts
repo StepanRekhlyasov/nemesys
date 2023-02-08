@@ -62,3 +62,20 @@ export const menuParent: MenuParentType[] = [
     icon: 'mdi-cog',
   }
 ]
+
+
+export const adminMenuParent: MenuParentType[] = [
+  {
+    type: MenuParent.AdminSystemsOperationManagement,
+    title: 'menu.admin.systemsOperationManagement',
+    icon: 'corporate_fare'
+  },{
+    type: MenuParent.AdminEnterpriseManagement,
+    title: 'menu.admin.enterpriseManagement',
+    icon: 'mdi-office-building-outline'
+  },{
+    type: MenuParent.AdminAggregationData,
+    title: 'menu.admin.aggregationData',
+    icon: 'mdi-chart-box-plus-outline',
+  }
+]
