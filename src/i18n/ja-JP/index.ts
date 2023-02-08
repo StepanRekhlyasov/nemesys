@@ -51,7 +51,8 @@ export default {
     search: '検索',
     keyboard: 'キーワード',
     closeArea: '表示エリアを閉じる',
-    openArea: '表示エリアを開く'
+    openArea: '表示エリアを開く',
+    yen: '円',
   },
   weekDay: {
     sunday: '日',
@@ -707,6 +708,39 @@ export default {
       end: '終了',
       update: '更新',
       futureTalent: '未来人材',
+      ok: 'OK',
+      ng: 'NG'
+    },
+    attendant: {
+      attendantStatus: 'アテンドステータス',
+      day: 'アテンド日',
+      attendee: 'アテンド担当者',
+      memo: 'アテンドメモ',
+      desiredConditions: '希望条件',
+      timeToWork: '就業可能時期',
+      daysToWork: '週勤務可能日数',
+      daysPerWeek: '勤務可能曜日',
+      specialDay: '特日出勤',
+      shiftRemarks: '勤務可能シフト備考',
+      days: '日',
+      meansCommuting: '通勤手段',
+      nearestStation: '最寄り駅',
+      commutingTime: '通勤可能時間',
+      route: '路線',
+      commutingTimeRemarks: '通勤可能時間備考',
+      facilityDesired: '希望する施設形態',
+      ngFacilityType: 'NG施設形態',
+      hourlyRate: '希望時給',
+      transportationServices: '送迎業務可否',
+      jobSearchPriorities: '仕事探しの優先順位',
+      possible: '可',
+      no: '不可',
+
+      specialDays: {
+        gw: 'GW',
+        festival: 'お盆',
+        christmas: '年末年始'
+      },
     }
   },
   prefectures: {

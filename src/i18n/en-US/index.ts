@@ -51,7 +51,8 @@ export default {
     search: 'Search',
     keyboard: 'Keyboard',
     closeArea: 'Close Display Area',
-    openArea: 'Open Display Area'
+    openArea: 'Open Display Area',
+    yen: 'yen'
   },
   weekDay: {
     sunday: 'Suny',
@@ -708,6 +709,39 @@ export default {
       end: 'End',
       update: 'Update',
       futureTalent: 'Future Talent',
+      ok: 'OK',
+      ng: 'NG'
+    },
+    attendant: {
+      attendantStatus: 'Attendant Status',
+      day: 'Attending Day',
+      attendee: 'Attendee',
+      memo: 'Attendance Memo',
+      desiredConditions: 'Desired Conditions',
+      timeToWork: 'Possible Employment Period',
+      daysToWork: 'Possible days per week',
+      daysPerWeek: 'Available days of the week',
+      specialDay: 'Working on a special day',
+      shiftRemarks: 'Available Shift Remarks',
+      days: 'Days',
+      meansCommuting: 'Means of commuting',
+      nearestStation: 'Nearest Station',
+      commutingTime: 'Commuting Time',
+      route: 'Route',
+      commutingTimeRemarks: 'Commuting Time Remarks',
+      facilityDesired: 'Type of facility desired',
+      ngFacilityType: 'NG facility type',
+      hourlyRate: 'Hourly Rate',
+      transportationServices: 'Transportation services',
+      jobSearchPriorities: 'Job Search Priorities',
+      possible: 'Possible',
+      no: 'Not',
+
+      specialDays: {
+        gw: 'GW',
+        festival: 'Festival',
+        christmas: "New Year's"
+      },
     }
   },
   prefectures: {

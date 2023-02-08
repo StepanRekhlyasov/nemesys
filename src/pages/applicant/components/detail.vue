@@ -30,7 +30,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="attendanceInfo">
-
+        <attendanceInfo :applicant="applicant" :updateApplicant="updateApplicant" />
       </q-tab-panel>
 
       <q-tab-panel name="fixEmployInfo">
@@ -54,17 +54,24 @@ import { ref } from 'vue';
 import fixEmployInfo from './fixEmployInfo.vue';
 import contactInfo from './components/contactInfo.vue';
 import applicationInfo from './components/applicationInfo.vue';
+import attendanceInfo from './components/attendance/attendance.vue';
 
 export default {
   name: 'clientDetails',
   components: {
     contactInfo,
     fixEmployInfo,
-    applicationInfo
+    applicationInfo,
+    attendanceInfo
   },
 
   props: {
     applicant: {
+      type: Object,
+      required: true
+    },
+    updateApplicant: {
+      type: Function,
       required: true
     }
   },

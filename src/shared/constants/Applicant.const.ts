@@ -118,3 +118,54 @@ export const employmentStatus = computed(() => {
   },]
 })
 
+export const attendantStatus = computed(() =>{
+  return [{
+    label: 'OK',
+    value: 'ok'
+  }, {
+    label: 'NG',
+    value: 'ng'
+  }]
+})
+
+export const daysList = computed(() => [{
+  label: t('weekDay.sunday'),
+  value: 'sunday'
+},{
+  label: t('weekDay.monday'),
+  value: 'monday'
+},{
+  label: t('weekDay.tuesday'),
+  value: 'tuesday'
+},{
+  label: t('weekDay.wednesday'),
+  value: 'wednesday'
+},{
+  label: t('weekDay.friday'),
+  value: 'friday'
+},{
+  label: t('weekDay.saturday'),
+  value: 'saturday'
+},{
+  label: t('weekDay.holiday'),
+  value: 'holiday'
+}])
+
+export const specialDaysList = computed(() => [{
+  label: t('applicant.attendant.specialDays.gw'),
+  value: 'gw'
+},{
+  label: t('applicant.attendant.specialDays.festival'),
+  value: 'festival'
+},{
+  label: t('applicant.attendant.specialDays.christmas'),
+  value: 'christmas'
+}])
+
+export const PossibleTransportationServicesList = computed(() => [{
+  label: t('applicant.attendant.possible'),
+  value: 'possible'
+},{
+  label: t('applicant.attendant.no'),
+  value: 'no'
+}])
