@@ -54,6 +54,23 @@ export default {
     openArea: '表示エリアを開く',
     yen: '円',
   },
+  smoking: {
+    no: '無',
+    yes: '有',
+    paper: '紙たばこ',
+    electronic: '電子たばこ',
+    noWhileWworking: '就業中禁煙',
+    acceptable: '可',
+    notPossible: '不可'
+  },
+  marriedStatus: {
+    married: '既婚',
+    unmarried: '未婚'
+  },
+  tattoos: {
+    nil: '無',
+    yes: '有'
+  },
   weekDay: {
     sunday: '日',
     monday: '月',
@@ -735,12 +752,43 @@ export default {
       jobSearchPriorities: '仕事探しの優先順位',
       possible: '可',
       no: '不可',
+      experience: '職務経験',
+      personal: '本人状況',
+      assignedEvaluation: '担当評価',
 
       specialDays: {
         gw: 'GW',
         festival: 'お盆',
         christmas: '年末年始'
       },
+
+      // Assigned Evaluation Component
+      language: '言葉遣い',
+      comprehension: '理解力',
+      staffRank: 'スタッフランク (編集不可)',
+      attendeeEvaluation: 'アテンド担当者評価',
+      otherRemarks : 'その他備考',
+      remarks: '備考',
+      performance: '秀',
+      excellent: '優',
+      good: '良',
+
+      // Personal Status Component
+      smoking: '喫煙の有無',
+      tattoos: '入れ墨の有無',
+      marriedStatus: '既婚／未婚',
+      liveTogether: '同居者有無',
+      cohabitation: '同居者',
+      children: '子供',
+      medicalHistory: '既往歴',
+      vaccinationStatus: 'ワクチン接種状況',
+      startCaring: '介護を始めたきっかけ',
+      interviewsWaitingList: '面接待ち件数',
+      temporaryCompaniesRegistered: '派遣登録社数',
+      startedInCaregiving: '介護を始めたきっかけ',
+      items: '件',
+      daysVisitAtWork: '当社での職場見学可能日',
+
     }
   },
   prefectures: {

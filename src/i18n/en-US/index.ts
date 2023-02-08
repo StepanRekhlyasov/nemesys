@@ -54,6 +54,23 @@ export default {
     openArea: 'Open Display Area',
     yen: 'yen'
   },
+  smoking: {
+    no: 'No',
+    yes: 'Yes',
+    paper: 'Paper cigarettes',
+    electronic: 'Electronic cigarettes',
+    noWhileWworking: 'No smoking while working',
+    acceptable: 'Acceptable',
+    notPossible: 'Not possible'
+  },
+  marriedStatus: {
+    married: 'Married',
+    unmarried: 'Unmarried'
+  },
+  tattoos: {
+    nil: 'Nil',
+    yes: 'Yes'
+  },
   weekDay: {
     sunday: 'Suny',
     monday: 'Mon',
@@ -736,12 +753,42 @@ export default {
       jobSearchPriorities: 'Job Search Priorities',
       possible: 'Possible',
       no: 'Not',
+      experience: 'Work Experience',
+      personal: 'Personal Status',
+      assignedEvaluation: 'Assigned Evaluation',
 
       specialDays: {
         gw: 'GW',
         festival: 'Festival',
         christmas: "New Year's"
       },
+
+      // Assigned Evaluation Component
+      language: 'Language',
+      comprehension: 'Comprehension',
+      staffRank: 'Staff rank (uneditable)',
+      attendeeEvaluation: 'Attendee Evaluation',
+      otherRemarks : 'Other Remarks',
+      remarks: 'Remarks',
+      performance: 'Performance',
+      excellent: 'Excellent',
+      good: 'Good',
+
+      // Personal Status Component
+      smoking: 'Smoking',
+      tattoos: 'Tattoos',
+      marriedStatus: 'Married/Unmarried',
+      liveTogether: 'Living Together',
+      cohabitation: 'Cohabitation',
+      children: 'Children',
+      medicalHistory: 'Medical History',
+      vaccinationStatus: 'Vaccination Status',
+      startCaring: 'How did you start caring?',
+      interviewsWaitingList: 'Number of Interviews Waiting List',
+      temporaryCompaniesRegistered: 'Number of temporary staffing companies registered',
+      startedInCaregiving: 'How did you get started in caregiving?',
+      items: 'items',
+      daysVisitAtWork: 'Days when you can visit us at work',
     }
   },
   prefectures: {
