@@ -105,6 +105,12 @@ export default {
     addOfficeHint: 'Click here to add a new office',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
+    admin: {
+      systemsOperationManagement: 'Systems operation management',
+      enterpriseManagement: 'Enterprise management',
+      aggregationData: 'Companywide total'
+
+    }
   },
   settings: {
     branch: {
@@ -184,7 +190,8 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
-      logout: 'Logout'
+      logout: 'Logout',
+      adminPage: 'Open system administration page',
     },
     title: 'Settings'
   },

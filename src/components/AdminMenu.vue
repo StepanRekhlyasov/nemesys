@@ -1,78 +1,10 @@
 <template>
-  <q-layout view="hHh Lpr lFf" class="main-layout">
-    <q-header class="shadow-1">
-      <q-toolbar class="bg-white text-black">
-        <q-toolbar-title class="text-h4 text-weight-bolder header"> nemesys </q-toolbar-title>
-        <ToolbarLanguage />
-
-        <div class="flex">
-          <!-- <q-btn-dropdown
-            v-if="organization && (activeOrganization || activeOrganization === 0)"
-            :label="organization[activeOrganization]?.staff_name"
-            flat color="black">
-            <q-list>
-              <q-item clickable v-close-popup v-for="item in organization" :key="item.code">
-                <q-item-section>
-                  <q-item-label>{{'staff_name' in item ? item['staff_name'] : ''}}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown> -->
-
-          <q-btn-dropdown
-            flat
-            color="blue"
-            class="dropdown" >
-            <q-list>
-              <q-item class=" q-pt-none  q-pb-none">
-                <q-item-section class="text-primary">
-                  {{ name }}
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup to='/system'  class=" q-pt-none  q-pb-none">
-                <q-item-section>
-                  <q-item-label>{{$t('settings.title')}}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup to='/system/editProfile'  class=" q-pt-none  q-pb-none">
-                <q-item-section>
-                  <q-item-label>{{$t('settings.users.accauntSettings')}}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup @click="logout"  class=" q-pt-none  q-pb-none">
-                <q-item-section>
-                  <q-item-label>{{$t('settings.users.logout')}}</q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.UserUpdate)">
-                <q-item-section>
-                  <q-item-label>
-                    <router-link :to="routeNames.admin" target="_blank">
-                      {{$t('settings.users.adminPage')}}
-                    </router-link>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-
-            </q-list>
-            <template v-slot:label>
-              <div class="row items-center bg-primary">
-                  <q-icon left name="mdi-account" color="white"/>
-              </div>
-            </template>
-          </q-btn-dropdown>
-        </div>
-      </q-toolbar>
-    </q-header>
-    <q-separator />
-
-    <q-drawer
+   <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
       bordered
       behavior="desktop"
-      style="background: linear-gradient(180deg, #085374 0%, #043246 100%);"
+      style="background: linear-gradient(180deg, #4D0E4D 0%, #03101A 99.99%, #0C5180 100%);"
       :width="260"
       :mini="miniState"
     >
@@ -81,30 +13,31 @@
         padding
         class="rounded-borders text-white text-subtitle2 q-pa-none"
       >
-        <EssentialLink
+        <!-- <EssentialLink
           v-for="item in singleList"
           v-bind="item"
           :key="'es' + $t(item.title)"
           :active="item.link === active_menu"
           :main="true"
           @click="onChangeMenu(item.link)"
-        />
+        /> -->
         <EssentialLink
-          v-for="parent in menuParent"
+          v-for="parent in adminMenuParent"
           :key="$t(parent.title)"
           :active="parent.type === active_menu"
           v-bind="parent"
           @click="onChangeMenu(parent.type)"
+          :admin="true"
         />
       </q-list>
     </q-drawer>
 
     <q-page-container class="bg-grey-1 flex">
-      <template v-for="parent in menuParent" :key="parent.title">
+      <template v-for="parent in adminMenuParent" :key="parent.title">
         <q-list
-          class="menu_slidebar q-pa-none"
+          class="admin-menu_slidebar q-pa-none"
           :class="{'active': parent.type == active_menu}">
-          <q-item class="menu_header text-weight-bold">
+          <q-item class="admin-menu_header text-weight-bold">
             <q-item-section>
               <div class="row">
                 <q-icon :name="parent.icon" class="q-pr-sm text-h5"/>
@@ -117,12 +50,12 @@
           <template v-for="link in linksList" :key="link.link">
             <q-item
               v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true)"
-              class="menu_slidebar_item q-pl-xl text-justify flex justify-between"
+              class="admin-menu_slidebar_item q-pl-xl text-justify flex justify-between"
               :to="link.link"
               exact
               v-ripple
               clickable
-              active-class="menu_slidebar_class"
+              active-class="admin-menu_slidebar_class"
               >
               <q-item-section>
                 {{$t(link.title)}}
@@ -136,32 +69,30 @@
         <router-view />
       </div>
     </q-page-container>
-  </q-layout>
 </template>
+
 
 <script lang="ts">
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import EssentialLink from 'components/EssentialLink.vue';
-import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 import { defineComponent, Ref, ref } from 'vue';
 import { getFirestore, doc, getDoc, DocumentSnapshot, DocumentData} from '@firebase/firestore';
 import { Role, User, UserPermissionNames } from 'src/shared/model/Accaunt.model';
 import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
-import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
+import { RouterToMenu, adminMenuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: 'AdminMenu',
 
   components: {
     EssentialLink,
-    ToolbarLanguage,
   },
 
   setup() {
@@ -235,7 +166,7 @@ export default defineComponent({
         active_menu.value = active;
         if (Object.values(MenuParent).toString().includes(active)) {
           openLeftSlidebar.value = true;
-          router.push('/')
+          // router.push('/')
         }
       }
     }
@@ -259,7 +190,7 @@ export default defineComponent({
       name,
       permissions,
       leftDrawerOpen,
-      menuParent,
+      adminMenuParent,
       organization,
       activeOrganization,
       singleList,
@@ -283,38 +214,14 @@ export default defineComponent({
 <style lang="scss">
 @import "src/css/imports/colors";
 @import "src/css/imports/variables";
-.q-layout {
-  background-color: $main_bg;
-}
-.main-layout{
-  .dropdown{
-    .q-btn{
-      padding: unset;
-    }
-    .q-btn__content .row{
-      height: 30px;
-      width: 30px;
-      border-radius: 4px;
-      .on-left{
-        margin: auto;
-      }
-    }
-  }
-  .header{
-    background: -webkit-linear-gradient(#155792 0%, #051E34 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .q-drawer--left.q-drawer--bordered, .q-list--bordered{
-    border: unset;
-  }
-  .menu{
+
+  .admin-menu{
     &_header{
       background-color: $grey-3;
       border-bottom: 2px solid $grey-5;
     }
     &_slidebar{
-      color: $main-primary;
+      color: $accent;
       width: $left-sidebar-open-width;
       height: calc(100vh - #{$top-header-height});
       display: none;
@@ -325,7 +232,7 @@ export default defineComponent({
         border-bottom: 2px solid white;
         background-color: $grey-3;
         align-items: center;
-        &.menu_slidebar_class{
+        &.admin-menu_slidebar_class{
           background-color: white;
         }
       }
@@ -338,5 +245,5 @@ export default defineComponent({
       width: calc(100% - #{$left-sidebar-open-width});
     }
   }
-}
+
 </style>
