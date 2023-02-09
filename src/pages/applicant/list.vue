@@ -174,7 +174,7 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none">
-            <detailComponent :applicant="selectedApplicant" />
+            <detailComponent :applicant="selectedApplicant" :updateApplicant="updateApplicant"/>
           </q-card-section>
         </q-card>
       </q-scroll-area>
@@ -192,6 +192,8 @@ import {
   where,
   onSnapshot,
   getFirestore,
+  doc,
+  updateDoc
 } from 'firebase/firestore';
 import { statusList } from '../../shared/constants/Applicant.const';
 import detailComponent from './components/detail.vue';
@@ -294,6 +296,11 @@ export default {
         if (item){
           return item.label;
         }
+      },
+      async updateApplicant(applicant) {
+        const applicantRef = doc(db, 'applicants/'+selectedApplicant.value.id);
+        await updateDoc(applicantRef, applicant)
+        selectedApplicant.value = {...selectedApplicant.value, ...applicant}
       }
 
     };

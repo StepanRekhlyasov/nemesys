@@ -51,7 +51,26 @@ export default {
     search: 'Search',
     keyboard: 'Keyboard',
     closeArea: 'Close Display Area',
-    openArea: 'Open Display Area'
+    openArea: 'Open Display Area',
+    yen: 'yen',
+    year: 'year',
+  },
+  smoking: {
+    no: 'No',
+    yes: 'Yes',
+    paper: 'Paper cigarettes',
+    electronic: 'Electronic cigarettes',
+    noWhileWworking: 'No smoking while working',
+    acceptable: 'Acceptable',
+    notPossible: 'Not possible'
+  },
+  marriedStatus: {
+    married: 'Married',
+    unmarried: 'Unmarried'
+  },
+  tattoos: {
+    nil: 'Nil',
+    yes: 'Yes'
   },
   weekDay: {
     sunday: 'Suny',
@@ -688,8 +707,8 @@ export default {
 
         application: '■Application Information',
         attraction: '■Information on Attraction',
-        working: '就業中',
-        notWorking: '未就業'
+        working: 'Working',
+        notWorking: 'Not Working'
       }
     },
     statusOption: {
@@ -715,6 +734,83 @@ export default {
       end: 'End',
       update: 'Update',
       futureTalent: 'Future Talent',
+      ok: 'OK',
+      ng: 'NG'
+    },
+    attendant: {
+      attendantStatus: 'Attendant Status',
+      day: 'Attending Day',
+      attendee: 'Attendee',
+      memo: 'Attendance Memo',
+      desiredConditions: 'Desired Conditions',
+      timeToWork: 'Possible Employment Period',
+      daysToWork: 'Possible days per week',
+      daysPerWeek: 'Available days of the week',
+      specialDay: 'Working on a special day',
+      shiftRemarks: 'Available Shift Remarks',
+      days: 'Days',
+      meansCommuting: 'Means of commuting',
+      nearestStation: 'Nearest Station',
+      commutingTime: 'Commuting Time',
+      route: 'Route',
+      commutingTimeRemarks: 'Commuting Time Remarks',
+      facilityDesired: 'Type of facility desired',
+      ngFacilityType: 'NG facility type',
+      hourlyRate: 'Hourly Rate',
+      transportationServices: 'Transportation services',
+      jobSearchPriorities: 'Job Search Priorities',
+      possible: 'Possible',
+      no: 'Not',
+      workExperience: 'Work Experience',
+      personal: 'Personal Status',
+      assignedEvaluation: 'Assigned Evaluation',
+
+      specialDays: {
+        gw: 'GW',
+        festival: 'Festival',
+        christmas: "New Year's"
+      },
+
+      // Assigned Evaluation Component
+      language: 'Language',
+      comprehension: 'Comprehension',
+      staffRank: 'Staff rank (uneditable)',
+      attendeeEvaluation: 'Attendee Evaluation',
+      otherRemarks : 'Other Remarks',
+      remarks: 'Remarks',
+      performance: 'Performance',
+      excellent: 'Excellent',
+      good: 'Good',
+
+      // Personal Status Component
+      smoking: 'Smoking',
+      tattoos: 'Tattoos',
+      marriedStatus: 'Married/Unmarried',
+      liveTogether: 'Living Together',
+      cohabitation: 'Cohabitation',
+      children: 'Children',
+      medicalHistory: 'Medical History',
+      vaccinationStatus: 'Vaccination Status',
+      startCaring: 'How did you start caring?',
+      interviewsWaitingList: 'Number of Interviews Waiting List',
+      temporaryCompaniesRegistered: 'Number of temporary staffing companies registered',
+      startedInCaregiving: 'How did you get started in caregiving?',
+      items: 'items',
+      daysVisitAtWork: 'Days when you can visit us at work',
+      experienceDetails: 'Experience Details',
+
+      // Work Experience Component
+      experience: 'Experience',
+      facilityType: 'Facility type',
+      startMonth: 'Employment Start Month',
+      endMonth: 'End of Employment Month',
+      years: 'Years',
+      nameEstablishment: 'Name of Experienced Establishment',
+      employmentType: 'Employment Type',
+      reasonResignation: 'Reason for Resignation',
+      pastInterviews: 'Past Interviews',
+      deletedInfo: 'All data related to this experience will be deleted.',
+      totalYearsExperience: 'Total years of experience',
     }
   },
   prefectures: {

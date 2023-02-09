@@ -51,7 +51,26 @@ export default {
     search: '検索',
     keyboard: 'キーワード',
     closeArea: '表示エリアを閉じる',
-    openArea: '表示エリアを開く'
+    openArea: '表示エリアを開く',
+    yen: '円',
+    year: '年',
+  },
+  smoking: {
+    no: '無',
+    yes: '有',
+    paper: '紙たばこ',
+    electronic: '電子たばこ',
+    noWhileWworking: '就業中禁煙',
+    acceptable: '可',
+    notPossible: '不可'
+  },
+  marriedStatus: {
+    married: '既婚',
+    unmarried: '未婚'
+  },
+  tattoos: {
+    nil: '無',
+    yes: '有'
   },
   weekDay: {
     sunday: '日',
@@ -713,6 +732,83 @@ export default {
       end: '終了',
       update: '更新',
       futureTalent: '未来人材',
+      ok: 'OK',
+      ng: 'NG'
+    },
+    attendant: {
+      attendantStatus: 'アテンドステータス',
+      day: 'アテンド日',
+      attendee: 'アテンド担当者',
+      memo: 'アテンドメモ',
+      desiredConditions: '希望条件',
+      timeToWork: '就業可能時期',
+      daysToWork: '週勤務可能日数',
+      daysPerWeek: '勤務可能曜日',
+      specialDay: '特日出勤',
+      shiftRemarks: '勤務可能シフト備考',
+      days: '日',
+      meansCommuting: '通勤手段',
+      nearestStation: '最寄り駅',
+      commutingTime: '通勤可能時間',
+      route: '路線',
+      commutingTimeRemarks: '通勤可能時間備考',
+      facilityDesired: '希望する施設形態',
+      ngFacilityType: 'NG施設形態',
+      hourlyRate: '希望時給',
+      transportationServices: '送迎業務可否',
+      jobSearchPriorities: '仕事探しの優先順位',
+      possible: '可',
+      no: '不可',
+      workExperience: '職務経験',
+      personal: '本人状況',
+      assignedEvaluation: '担当評価',
+
+      specialDays: {
+        gw: 'GW',
+        festival: 'お盆',
+        christmas: '年末年始'
+      },
+
+      // Assigned Evaluation Component
+      language: '言葉遣い',
+      comprehension: '理解力',
+      staffRank: 'スタッフランク (編集不可)',
+      attendeeEvaluation: 'アテンド担当者評価',
+      otherRemarks : 'その他備考',
+      remarks: '備考',
+      performance: '秀',
+      excellent: '優',
+      good: '良',
+
+      // Personal Status Component
+      smoking: '喫煙の有無',
+      tattoos: '入れ墨の有無',
+      marriedStatus: '既婚／未婚',
+      liveTogether: '同居者有無',
+      cohabitation: '同居者',
+      children: '子供',
+      medicalHistory: '既往歴',
+      vaccinationStatus: 'ワクチン接種状況',
+      startCaring: '介護を始めたきっかけ',
+      interviewsWaitingList: '面接待ち件数',
+      temporaryCompaniesRegistered: '派遣登録社数',
+      startedInCaregiving: '介護を始めたきっかけ',
+      items: '件',
+      daysVisitAtWork: '当社での職場見学可能日',
+
+      // Work Experience Component
+      experienceDetails: '経験詳細',
+      experience: '経験業務',
+      facilityType: '施設形態',
+      startMonth: '就業開始月',
+      endMonth: '就業終了月',
+      years: '年数',
+      nameEstablishment: '経験事業所名',
+      employmentType: '雇用形態',
+      reasonResignation: '退職理由',
+      pastInterviews: '過去面談歴',
+      deletedInfo: 'All data related to this experience will be deleted.',
+      totalYearsExperience: '総経験年数',
     }
   },
   prefectures: {
