@@ -91,7 +91,7 @@ export const adminMenuParent: MenuParentType[] = [
     icon: 'mdi-movie-open',
   },{
     type: MenuParent.AdminReleaseNotes,
-    title: 'menu.admin.releaseNotes',
+    title: 'menu.admin.releaseNotesInquiry',
     icon: 'mdi-forum',
   }
 ]

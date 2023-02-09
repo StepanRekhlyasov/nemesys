@@ -112,7 +112,9 @@ export default {
       licenseManagement: 'License management',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
-      releaseNotes: 'Release Notes and Inquiries',
+      releaseNotesInquiry: 'Release Notes and Inquiries',
+      releaseNotes: 'Release Notes',
+      inquiry: 'Inquiry',
     }
   },
   settings: {

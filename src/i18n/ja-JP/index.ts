@@ -112,7 +112,9 @@ export default {
       licenseManagement: 'ライセンス管理',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
-      releaseNotes: 'リリースノート・問い合わせ',
+      releaseNotesInquiry: 'リリースノート・問い合わせ',
+      releaseNotes: 'リリースノート',
+      inquiry: '問い合わせ',
     }
   },
   settings: {
