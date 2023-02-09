@@ -52,7 +52,8 @@ export default {
     keyboard: 'Keyboard',
     closeArea: 'Close Display Area',
     openArea: 'Open Display Area',
-    yen: 'yen'
+    yen: 'yen',
+    year: 'year',
   },
   smoking: {
     no: 'No',
@@ -699,8 +700,8 @@ export default {
 
         application: '■Application Information',
         attraction: '■Information on Attraction',
-        working: '就業中',
-        notWorking: '未就業'
+        working: 'Working',
+        notWorking: 'Not Working'
       }
     },
     statusOption: {
@@ -753,7 +754,7 @@ export default {
       jobSearchPriorities: 'Job Search Priorities',
       possible: 'Possible',
       no: 'Not',
-      experience: 'Work Experience',
+      workExperience: 'Work Experience',
       personal: 'Personal Status',
       assignedEvaluation: 'Assigned Evaluation',
 
@@ -789,6 +790,20 @@ export default {
       startedInCaregiving: 'How did you get started in caregiving?',
       items: 'items',
       daysVisitAtWork: 'Days when you can visit us at work',
+      experienceDetails: 'Experience Details',
+
+      // Work Experience Component
+      experience: 'Experience',
+      facilityType: 'Facility type',
+      startMonth: 'Employment Start Month',
+      endMonth: 'End of Employment Month',
+      years: 'Years',
+      nameEstablishment: 'Name of Experienced Establishment',
+      employmentType: 'Employment Type',
+      reasonResignation: 'Reason for Resignation',
+      pastInterviews: 'Past Interviews',
+      deletedInfo: 'All data related to this experience will be deleted.',
+      totalYearsExperience: 'Total years of experience',
     }
   },
   prefectures: {

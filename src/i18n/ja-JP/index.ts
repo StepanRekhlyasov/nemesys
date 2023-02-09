@@ -53,6 +53,7 @@ export default {
     closeArea: '表示エリアを閉じる',
     openArea: '表示エリアを開く',
     yen: '円',
+    year: '年',
   },
   smoking: {
     no: '無',
@@ -752,7 +753,7 @@ export default {
       jobSearchPriorities: '仕事探しの優先順位',
       possible: '可',
       no: '不可',
-      experience: '職務経験',
+      workExperience: '職務経験',
       personal: '本人状況',
       assignedEvaluation: '担当評価',
 
@@ -789,6 +790,19 @@ export default {
       items: '件',
       daysVisitAtWork: '当社での職場見学可能日',
 
+      // Work Experience Component
+      experienceDetails: '経験詳細',
+      experience: '経験業務',
+      facilityType: '施設形態',
+      startMonth: '就業開始月',
+      endMonth: '就業終了月',
+      years: '年数',
+      nameEstablishment: '経験事業所名',
+      employmentType: '雇用形態',
+      reasonResignation: '退職理由',
+      pastInterviews: '過去面談歴',
+      deletedInfo: 'All data related to this experience will be deleted.',
+      totalYearsExperience: '総経験年数',
     }
   },
   prefectures: {
