@@ -18,7 +18,10 @@ export interface MenuRouter {
 export enum MenuParent{
   ClientMenagment = 'CLIENT_MENAGMENT',
   SystemSettings = 'SYSTEM_SETTINGS',
-  ApplicantManagement = 'APPLICANT_MANAGEMENT'
+  ApplicantManagement = 'APPLICANT_MANAGEMENT',
+  AdminSystemsOperationManagement = 'SYSTEMS_OPERATION_MANAGEMENT',
+  AdminEnterpriseManagement = 'ENTERPRISE_MANAGEMENT',
+  AdminAggregationData = 'ADMIN_AGGREGATION_DATA'
 }
 
 export interface MenuParentType {

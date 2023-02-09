@@ -87,6 +87,11 @@ export default {
     addOfficeHint: '新しく事業所を追加したい場合はこちら',
     addClient: 'クライアント新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
+    admin: {
+      systemsOperationManagement: '事業所マスタ管理',
+      enterpriseManagement: '企業管理',
+      aggregationData: '全社集計'
+    }
   },
   settings: {
     branch: {
