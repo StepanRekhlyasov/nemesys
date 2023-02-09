@@ -1,6 +1,5 @@
 import { collection, endAt, Firestore, getDocs, orderBy, query, startAt, Timestamp, where, } from 'firebase/firestore';
 import { QVueGlobals } from 'quasar';
-import { computed } from 'vue';
 import { Organization } from '../model/Organization.model';
 
 export interface dataObject{

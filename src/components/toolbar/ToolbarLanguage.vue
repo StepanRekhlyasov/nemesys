@@ -21,8 +21,7 @@ export default defineComponent({
   setup() {
     const q = useQuasar();
     const { locale } = useI18n({ useScope: 'global' });
-    const setLang = (item) => {
-      console.log(item, q.lang)
+    const setLang = () => {
       q.lang.set(q.lang)
     };
 

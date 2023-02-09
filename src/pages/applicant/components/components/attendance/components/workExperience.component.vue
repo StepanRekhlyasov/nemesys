@@ -226,7 +226,6 @@ export default {
         return count + differentDateYear(item.startMonth, item.endMonth)
       }, [0])
       totalYearsExperience.value = count
-      console.log(totalYearsExperience.value)
     }
 
     return {

@@ -338,8 +338,6 @@ export default {
     const db = getFirestore();
     const $q = useQuasar();
 
-    console.log(props.client)
-
     const boData = ref({
       requiredService: []
     });
