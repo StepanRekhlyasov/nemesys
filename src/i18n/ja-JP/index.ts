@@ -16,6 +16,7 @@ export default {
   },
   common: {
     add: '追加',
+    apply: '以下の変更点の反映を実行します。',
     cancel: 'キャンセル',
     description: '説明',
     delete: '削除',
@@ -819,7 +820,10 @@ export default {
     temporaryEmployee: '派遣入職',
     originalOperation: '原稼働',
     contractInfo: '契約情報',
-
+  },
+  import: {
+    beforeImport: '取込前',
+    afterImport: '取込後',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',

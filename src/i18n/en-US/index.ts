@@ -16,6 +16,7 @@ export default {
   },
   common: {
     add: 'Add',
+    apply: 'Apply the following changes',
     cancel: 'Cancel',
     description: 'Description',
     delete: 'Delete',
@@ -820,6 +821,10 @@ export default {
     temporaryEmployee: 'Temporary Employee',
     originalOperation: 'Original Operation',
     contractInfo: 'Contract information',
+  },
+  import: {
+    beforeImport: 'before import',
+    afterImport: 'after import'
   },
   failed: 'Action failed',
   success: 'Action was successful',
