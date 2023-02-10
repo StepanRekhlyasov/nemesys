@@ -106,10 +106,15 @@ export default {
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
     admin: {
-      systemsOperationManagement: 'Systems operation management',
+      officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
-      aggregationData: 'Companywide total'
-
+      aggregationData: 'Companywide total',
+      licenseManagement: 'License management',
+      billingInformation: 'Billing Information Management',
+      systemsOperationManagement: 'Systems Operation Management',
+      releaseNotesInquiry: 'Release Notes and Inquiries',
+      releaseNotes: 'Release Notes',
+      inquiry: 'Inquiry',
     }
   },
   settings: {

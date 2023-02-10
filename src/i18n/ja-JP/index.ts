@@ -106,9 +106,15 @@ export default {
     addClient: 'クライアント新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
     admin: {
-      systemsOperationManagement: '事業所マスタ管理',
+      officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
-      aggregationData: '全社集計'
+      aggregationData: '全社集計',
+      licenseManagement: 'ライセンス管理',
+      billingInformation: '請求情報管理',
+      systemsOperationManagement: 'システム稼働管理',
+      releaseNotesInquiry: 'リリースノート・問い合わせ',
+      releaseNotes: 'リリースノート',
+      inquiry: '問い合わせ',
     }
   },
   settings: {

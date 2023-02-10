@@ -2,6 +2,7 @@ import { MenuRouter } from 'src/shared/model/Menu.molel';
 import systemRouter from './system.router';
 import clientRouters from './clients.router';
 import applicantRouters from './applicant.router';
+import adminRouters from './admin.router';
 import { routeNames } from './routeNames';
 
 const routes: MenuRouter[] = [{
@@ -30,6 +31,9 @@ const routes: MenuRouter[] = [{
 {
   path: routeNames.admin,
   component: () => import('layouts/AdminLayout.vue'),
+  children: [
+    ...adminRouters,
+  ]
 }
 ]
 
