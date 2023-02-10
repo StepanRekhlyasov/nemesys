@@ -121,6 +121,7 @@ import { collection, doc, getFirestore, onSnapshot, query, updateDoc, where } fr
 import workExperienceForm from './companents/workExperience.form.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { differentDateYear } from 'src/shared/utils/utils';
+import { ApplicantExperience } from 'src/shared/model';
 
 export default {
   name: 'workExperienceComponent',
@@ -142,8 +143,8 @@ export default {
     const loading = ref(false);
     const openDialog = ref(false);
     const totalYearsExperience = ref(0)
-    const editExperience: Ref<any | undefined> = ref(undefined)
-    const experienceData: Ref<any[]> = ref([]);
+    const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
+    const experienceData: Ref<ApplicantExperience[]> = ref([]);
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -209,9 +210,9 @@ export default {
       editExperience.value=undefined;
       const q = query(collection(db, 'applicants/'+props.applicant.id+'/experience/'), where('deleted', '==', false));
       onSnapshot(q, (querySnapshot) => {
-        let list: any[] = [];
+        let list: ApplicantExperience[] = [];
         querySnapshot.forEach((doc) => {
-          const data = {...doc.data()};
+          const data = {...doc.data() as ApplicantExperience};
           data['id'] = doc.id;
           list.push(data);
         });
@@ -222,10 +223,10 @@ export default {
 
     function countTotalYear() {
       totalYearsExperience.value = 0;
-      let count = experienceData.value.reduce((count, item) => {
+      let ret = experienceData.value.reduce((count, item) => {
         return count + differentDateYear(item.startMonth, item.endMonth)
-      }, [0])
-      totalYearsExperience.value = count
+      }, 0)
+      totalYearsExperience.value = ret
     }
 
     return {
