@@ -30,6 +30,9 @@ const routes: MenuRouter[] = [{
 {
   path: routeNames.admin,
   component: () => import('layouts/AdminLayout.vue'),
+  children: [
+    ...clientRouters,
+  ]
 }
 ]
 
