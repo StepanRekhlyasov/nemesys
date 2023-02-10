@@ -3,7 +3,7 @@ import { MenuRouter, MenuParent} from 'src/shared/model/Menu.molel';
 
 const admin_router: MenuRouter[] = [
   {
-    path: 'admin/release-notes',
+    path: 'release-notes',
     title: 'menu.admin.releaseNotes',
     component: () => import('src/pages/admin/releaseNotes.vue'),
     meta: {
@@ -13,7 +13,7 @@ const admin_router: MenuRouter[] = [
     menuParent: MenuParent.AdminReleaseNotes
   },
   {
-    path: 'admin/inquiry',
+    path: 'inquiry',
     title: 'menu.admin.inquiry',
     component: () => import('src/pages/admin/inquiry.vue'),
     meta: {

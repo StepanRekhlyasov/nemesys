@@ -51,7 +51,7 @@
             <q-item
               v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true)"
               class="admin-menu_slidebar_item q-pl-xl text-justify flex justify-between"
-              :to="link.link"
+              :to="'/admin' + link.link"
               exact
               v-ripple
               clickable
