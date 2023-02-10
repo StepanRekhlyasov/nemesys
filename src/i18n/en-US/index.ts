@@ -115,6 +115,7 @@ export default {
       releaseNotesInquiry: 'Release Notes and Inquiries',
       releaseNotes: 'Release Notes',
       inquiry: 'Inquiry',
+      userList: 'User list',
     }
   },
   settings: {

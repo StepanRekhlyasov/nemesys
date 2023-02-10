@@ -7,6 +7,10 @@ export interface dataObject{
   time: string
 }
 
+export const sortDate = (a:dataObject, b:dataObject)=>{
+  return a.date.localeCompare(b.date)
+}
+
 export const toDate = (timestamp: Timestamp):string => {
   let data = '';
   if (timestamp) {

@@ -8,7 +8,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/releaseNotes.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.AdminReleaseNotes
   },
@@ -18,10 +18,18 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/inquiry.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.AdminReleaseNotes,
-
+  },{
+    path: 'user-list',
+    title: 'menu.admin.userList',
+    component: ()=> import('src/pages/settings/management/ResponsibleMaster.vue'),
+    meta:{
+      isAdmin:true,
+      requiresAuth:true
+    },
+    menuParent: MenuParent.AdminEnterpriseManagement
   }
 ]
 

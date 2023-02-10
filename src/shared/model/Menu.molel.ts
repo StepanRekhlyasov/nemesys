@@ -5,14 +5,17 @@ export interface MenuRouter {
   children?: MenuRouter[];
   icon?: string;
   title?: string;
-  meta?: {
-    requiresAuth: boolean;
-    permissions?: UserPermissionNames [];
-  }
+  meta?: Meta
   component?: RouteComponent;
   path: string;
   menuParent?: MenuParent;
   single?: boolean;
+}
+
+export interface Meta {
+  requiresAuth: boolean;
+  permission?: UserPermissionNames [];
+  isAdmin?: boolean;
 }
 
 export enum MenuParent{
