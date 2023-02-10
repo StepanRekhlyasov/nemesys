@@ -20,7 +20,7 @@ const system_router: MenuRouter[] = [
     component: () => import('src/pages/settings/management/ResponsibleMaster.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.UserUpdate]
+      permission: [UserPermissionNames.UserUpdate]
     },
     menuParent: MenuParent.SystemSettings
   },{
@@ -29,7 +29,7 @@ const system_router: MenuRouter[] = [
     component: () => import('src/pages/settings/management/BranchMaster.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings
   },{
@@ -38,7 +38,7 @@ const system_router: MenuRouter[] = [
     component: () => import('src/pages/settings/management/TemplateMaster.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings
   },{
@@ -47,7 +47,7 @@ const system_router: MenuRouter[] = [
     component: () => import('src/pages/settings/management/ItemMaster.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.SystemSettings
   },

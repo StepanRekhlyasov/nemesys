@@ -115,6 +115,7 @@ export default {
       releaseNotesInquiry: 'リリースノート・問い合わせ',
       releaseNotes: 'リリースノート',
       inquiry: '問い合わせ',
+      userList: 'ユーザー一覧表示',
     }
   },
   settings: {

@@ -24,7 +24,7 @@ export default boot(async ({ router }) => {
         } else if (user) {
           const permissions = getUserPermissions();
           if (to.meta && 'permissions' in to.meta) {
-            const routePermission = to.meta['permissions'] as UserPermissionNames[];
+            const routePermission = to.meta['permission'] as UserPermissionNames[];
             if (routePermission && !routePermission.some(permission => permissions.includes(permission))) {
               next('/')
             }
