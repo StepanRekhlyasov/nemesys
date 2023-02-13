@@ -38,7 +38,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="operationInfo">
-
+        <operationInfoComponent :applicant="applicant"/>
       </q-tab-panel>
       <q-tab-panel name="memo">
 
@@ -55,6 +55,7 @@ import fixEmployInfo from './fixEmployInfo.vue';
 import contactInfo from './components/contactInfo.vue';
 import applicationInfo from './components/applicationInfo.vue';
 import attendanceInfo from './components/attendance/attendance.vue';
+import operationInfoComponent from './components/operationInfo.component.vue';
 
 export default {
   name: 'clientDetails',
@@ -62,7 +63,8 @@ export default {
     contactInfo,
     fixEmployInfo,
     applicationInfo,
-    attendanceInfo
+    attendanceInfo,
+    operationInfoComponent
   },
 
   props: {

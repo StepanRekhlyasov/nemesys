@@ -817,6 +817,14 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
+
+      // Operation Info Component
+      placeOperation: 'Place of operation',
+      startDate: 'Start Date',
+      endDate: 'End Date',
+      companyInCharge: 'Company in Charge',
+      operationMemo: 'Memo',
+      operatingSites: '■Operating Sites'
     }
   },
   prefectures: {
