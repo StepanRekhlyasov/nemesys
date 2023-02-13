@@ -974,4 +974,9 @@ export default {
     'auth/invalid-password': 'メールアドレスまたはパスワードが違います',
     'auth/wrong-password': 'メールアドレスまたはパスワードが違います',
   },
+  devMode: {
+    title: 'は現在一時的に稼働を停止しています。お問合せはこちらにご連絡ください。',
+    phone: 'TEL: xxx-xxxx-xxxx',
+    email: 'MAIL: xxx@xxx.com'
+  }
 };

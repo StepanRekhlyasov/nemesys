@@ -69,6 +69,7 @@
     <q-separator />
 
     <q-drawer
+      v-if="!isDevMode"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -100,8 +101,9 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-grey-1 flex">
-      <template v-for="parent in menuParent" :key="parent.title">
+    <q-page-container class="bg-grey-1 flex" >
+      <div v-if="!isDevMode">
+      <template v-for="parent in menuParent" :key="parent.title" >
         <q-list
           class="menu_slidebar q-pa-none"
           :class="{'active': parent.type == active_menu}">
@@ -133,10 +135,13 @@
           </template>
         </q-list>
       </template>
+    </div>
       <div class="main_content shadow-5" :class="{'open_left_slidebar': openLeftSlidebar}">
         <router-view />
       </div>
     </q-page-container>
+
+
   </q-layout>
 </template>
 
@@ -183,6 +188,10 @@ export default defineComponent({
     const permissions = ref([] as UserPermissionNames[])
     const linksList: MenuItem[] =  RouterToMenu(routes);
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
+
+    // TODO: add dev mode state on firebase
+
+    const isDevMode = true;
 
     if (router.currentRoute.value.meta.parent) {
       active_menu.value = router.currentRoute.value.meta.parent as string | undefined;
@@ -285,6 +294,7 @@ export default defineComponent({
       permissionMenuItem,
       isPermission,
       switchOrganization,
+      isDevMode
     };
   },
 });

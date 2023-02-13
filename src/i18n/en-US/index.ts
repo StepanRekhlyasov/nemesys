@@ -978,4 +978,9 @@ export default {
     'auth/wrong-password': 'Invalid username or password',
     'auth/email-already-in-use': 'Email adrress already in use',
   },
+  devMode: {
+    title: 'is currently temporarily out of operation. Please contact us for further information.',
+    phone: 'TEL: xxx-xxxx-xxxx',
+    email: 'MAIL: xxx@xxx.com'
+  }
 };
