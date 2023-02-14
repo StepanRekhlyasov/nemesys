@@ -6,4 +6,8 @@ export const useCommonVars = defineStore('common-vars', {
     purple_theme: '#4D0E4D',
     isAdminLayout: false,
   }),
+
+  actions: {
+    
+  }
 });

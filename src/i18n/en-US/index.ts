@@ -15,6 +15,11 @@ export default {
     required: 'Field is required'
   },
   common: {
+    numberOfSelections: 'Number of selections',
+    detailedConditions: 'detailed conditions',
+    aroundTokio: 'around Tokio',
+    area: 'area',
+    searchCondition: 'Search condition',
     add: 'Add',
     apply: 'Apply the following changes',
     cancel: 'Cancel',
@@ -104,9 +109,11 @@ export default {
     advancedSearch: 'Advanced search',
     addOffice: 'Add New Office',
     addOfficeHint: 'Click here to add a new office',
+    addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
     admin: {
+      masterSearch: 'Office master search',
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
@@ -203,6 +210,9 @@ export default {
   },
   client: {
     list: {
+      name: 'Office name' + '\n' + 'client name',
+      officeMaster: 'Office master' + '\n' + 'presence flag',
+      basicInfo: 'Basic information' + '\n' + 'changed flag',
       clients: 'Clients',
       jobs: 'Jobs',
       destination: 'Destination',
@@ -932,6 +942,10 @@ export default {
   import: {
     beforeImport: 'before import',
     afterImport: 'after import'
+  },
+  actions: {
+    clickToAddNewClient: 'Click here to add a new client',
+    searchConditionChange: 'Search condition change',
   },
   failed: 'Action failed',
   success: 'Action was successful',

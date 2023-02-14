@@ -15,6 +15,11 @@ export default {
     required: 'フィールドは必須です'
   },
   common: {
+    numberOfSelections: '選択数',
+    detailedConditions: '詳細条件',
+    aroundTokio: '東京都全域',
+    area: 'エリア',
+    searchCondition: '検索条件',
     add: '追加',
     apply: '以下の変更点の反映を実行します。',
     cancel: 'キャンセル',
@@ -102,11 +107,13 @@ export default {
     newApplicant: '応募者 新規登録',
     applicantSearch: '応募者 検索',
     advancedSearch: '条件検索',
-    addOffice: '事業所新規追加',
+    addOffice: '事業所 新規追加',
     addOfficeHint: '新しく事業所を追加したい場合はこちら',
-    addClient: 'クライアント新規追加',
+    addNewClient: '新しくクライアントを追加したい場合はこちら',
+    addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
     admin: {
+      masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
@@ -203,6 +210,9 @@ export default {
   },
   client: {
     list: {
+      name: '事業所名' + '\r\n' +  'クライアント名',
+      officeMaster: 'クライアントマスタ' + '\r\n' + '存在フラグ',
+      basicInfo: '基本情報' + '\r\n' + '変更済フラグ',
       clients: '企業一覧',
       jobs: '求人一覧',
       destination: '送信先',
@@ -931,6 +941,10 @@ export default {
   import: {
     beforeImport: '取込前',
     afterImport: '取込後',
+  },
+  actions: {
+    clickToAddNewClient: 'クライアント新規追加はこちら',
+    searchConditionChange: '検索条件変更',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',

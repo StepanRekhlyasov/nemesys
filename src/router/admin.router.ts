@@ -22,7 +22,21 @@ const admin_router: MenuRouter[] = [
     },
     menuParent: MenuParent.AdminReleaseNotes,
 
-  }
+  },
+    {
+    path: 'officeSearch',
+    component: () => import('src/pages/admin-office-managment/OfficeSearch.vue'),
+    meta: { requiresAuth: true },
+    menuParent: MenuParent.AdminOfficeManagement,
+    title: 'menu.officeSearch',
+  },
+  {
+    path: 'savedSearchList',
+    component: () => import('src/pages/admin-office-managment/SavedList.vue'),
+    meta: { requiresAuth: true },
+    menuParent: MenuParent.AdminOfficeManagement,
+    title: 'menu.savedSearchList',
+  },
 ]
 
 export default admin_router;
