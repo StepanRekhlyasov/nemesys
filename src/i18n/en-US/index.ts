@@ -125,8 +125,12 @@ export default {
       releaseNotesInquiry: 'Release Notes and Inquiries',
       releaseNotes: 'Release Notes',
       inquiry: 'Inquiry',
+<<<<<<< HEAD
       userList: 'User list',
       userSearch: 'User search',
+=======
+      operationChange: 'Operation Change',
+>>>>>>> eb30fcf (feat: add page of system operation change)
     }
   },
   settings: {

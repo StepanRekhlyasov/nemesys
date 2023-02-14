@@ -50,6 +50,18 @@ const admin_router: MenuRouter[] = [
       permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminEnterpriseManagement
+
+  },
+  {
+    path: 'operation-change',
+    title: 'menu.admin.operationChange',
+    component: () => import('src/pages/admin/operationСhange.vue'),
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.BranchUpdate]
+    },
+    menuParent: MenuParent.AdminSystemsOperationManagement,
+
   }
 ]
 

@@ -125,8 +125,12 @@ export default {
       releaseNotesInquiry: 'リリースノート・問い合わせ',
       releaseNotes: 'リリースノート',
       inquiry: '問い合わせ',
+<<<<<<< HEAD
       userList: 'ユーザー一覧表示',
       userSearch: 'ユーザー検索',
+=======
+      operationChange: '稼働変更',
+>>>>>>> eb30fcf (feat: add page of system operation change)
     }
   },
   settings: {
