@@ -47,7 +47,7 @@
 
             <template v-slot:body-cell-name="props">
               <q-td :props="props">
-                <q-input v-if="isRowSelected(props.rowIndex)" v-model="props.row.displayName"/>
+                <q-input :color="color" v-if="isRowSelected(props.rowIndex)" v-model="props.row.displayName"/>
                 <template v-if="!isRowSelected(props.rowIndex)">
                   {{ props.row.displayName }}
                 </template>
@@ -66,6 +66,7 @@
                   :label="$t('common.pleaseSelect')"
                   emit-value
                   map-options
+                  :color="color"
                   :disable="loading" />
                   <template v-if="!isRowSelected(props.rowIndex)">
                     {{roles && roles[props.row.role]?.displayName}}
@@ -84,6 +85,7 @@
                 :disable="loading"
                 :label="$t('common.pleaseSelect')"
                 emit-value
+                :color="color"
                 map-options />
                 <template v-if="!isRowSelected(props.rowIndex)">
                     {{branches && branches[props.row?.branch_id]?.name}}
@@ -98,6 +100,7 @@
                 v-model="props.row.hidden"
                 :label="$t('settings.branch.hide')"
                 :disable="loading"
+                :color="color"
                 checked-icon="mdi-checkbox-intermediate"
                 unchecked-icon="mdi-checkbox-blank-outline"
                 class="q-pr-md"/>
