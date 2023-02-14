@@ -1,5 +1,10 @@
 <template>
   <q-card class="no-shadow full-width">
+
+    <q-card-section class="q-pa-xs q-mb-none">
+      <applicationInfoComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
+    </q-card-section>
+
     <q-card-section class="q-pa-xs q-mb-none justify-between flex">
       <div class="flex">
         <span class="text-primary text-h6"> {{ $t('applicant.list.info.application') }} </span>
@@ -198,33 +203,24 @@
       </div>
     </q-card-section>
   </q-card>
-
-  <div class="q-drawer-off-top">
-    <q-drawer
-      v-model="drawerRight"
-      class="bg-grey-3"
-      full-height
-      :width="1000"
-      side="right" style="top: unset !important"
-      overlay elevated
-      bordered>
-      <ApplicationInfoForm :applicant="applicant" @closeDialog="drawerRight = false"/>
-    </q-drawer>
-  </div>
 </template>
 
 <script lang="ts">
 import { ref } from 'vue';
-import ApplicationInfoForm from './applicationInfo.form.vue'
+import applicationInfoComponent from './components/applicationInfo.component.vue';
 
 export default {
   name: 'ApplicationInfo',
   components: {
-    ApplicationInfoForm
+    applicationInfoComponent
   },
   props: {
     applicant: {
       type: Object,
+      required: true
+    },
+    updateApplicant: {
+      type: Function,
       required: true
     }
   },
