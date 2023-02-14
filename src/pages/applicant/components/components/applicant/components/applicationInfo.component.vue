@@ -63,7 +63,7 @@
           {{ $t('applicant.list.info.media') }}
         </div>
         <div class="col-3 q-pl-md blue">
-          <span v-if="!edit">{{ applicant.media || ''}}</span>
+          <span v-if="!edit">{{ applicant.media? applicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}</span>
           <template v-if="edit">
             <q-radio v-model="data['media']" label="indeed" val="indeed"/>
             <q-radio v-model="data['media']" :label="$t('applicant.add.hr')" val="hr"/>
@@ -98,47 +98,77 @@
       </div>
 
       <div class="row q-pb-sm">
-        <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.tel') }}
         </div>
-        <div class="col-3 q-pl-md q-pb-sm ">
-          {{ applicant.phone || '' }}
+        <div class="col-3 q-pl-md blue">
+          <span v-if="!edit">{{ applicant.phone || ''}}</span>
+          <q-input v-if="edit" outlined dense v-model="data['phone']" />
         </div>
-        <div class="col-2 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.birth') }}
         </div>
-        <div class="col-2 q-pl-md q-pb-sm ">
-          {{ applicant.birth || ''}}
+        <div class="col-3 q-pl-md blue">
+          <span v-if="!edit">{{ applicant.dob || ''}}</span>
+          <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="data['dob']" default-view="Years" :options="limitDate">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
       </div>
 
       <div class="row q-pb-sm">
-        <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.email') }}
         </div>
-        <div class="col-3 q-pl-md q-pb-sm">
-          {{ applicant.email || '' }}
+        <div class="col-3 q-pl-md blue">
+          <span v-if="!edit">{{ applicant.email || ''}}</span>
+          <q-input v-if="edit" dense outlined bg-color="white" v-model="data['email']" />
         </div>
-        <div class="col-2 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.lon') }}
         </div>
-        <div class="col-2 q-pl-md q-pb-sm ">
-          {{ applicant.lon || ''}}
+        <div class="col-3 q-pl-md blue">
+          <span v-if="!edit">{{ applicant.lon || ''}}</span>
+          <q-input
+            v-if="edit"
+            outlined
+            dense
+            v-model="data['lon']"
+            :placeholder="$t('client.add.latitudeLabel')"
+          />
         </div>
       </div>
 
       <div class="row q-pb-sm">
-        <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.postCode') }}
         </div>
-        <div class="col-3 q-pl-md q-pb-sm ">
-          {{ applicant.postCode || '' }}
+        <div class="col-3 q-pl-md blue">
+          <span v-if="!edit">{{ applicant.postCode || ''}}</span>
+          <q-input v-if="edit" outlined dense v-model="data['postCode']" bg-color="white" />
         </div>
-        <div class="col-2 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.lat') }}
         </div>
-        <div class="col-2 q-pl-md q-pb-sm">
-          {{ applicant.lat || ''}}
+        <div class="col-3 q-pl-md blue">
+          <span v-if="!edit">{{ applicant.lat || ''}}</span>
+          <q-input
+            v-if="edit"
+            outlined
+            dense
+            v-model="data['lat']"
+            :placeholder="$t('client.add.latitudeLabel')"
+          />
         </div>
       </div>
 
@@ -147,29 +177,9 @@
           {{ $t('applicant.list.info.addres') }}
         </div>
         <div class="col-9 q-pa-sm">
-          {{ applicant.addres || '' }}
+          <span v-if="!edit">{{ applicant.addres || ''}}</span>
         </div>
       </div>
-
-    <div class="row q-pb-sm">
-      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.cohabitation') }}
-      </div>
-      <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant.cohabitation || ''}}</span>
-        <q-input v-if="edit" dense outlined bg-color="white"
-          v-model="data['cohabitation']" :disable="loading" />
-      </div>
-      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.children') }}
-      </div>
-      <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant.children || ''}}</span>
-        <q-input v-if="edit" dense outlined bg-color="white"
-          v-model="data['children']" :disable="loading" />
-      </div>
-    </div>
-
     </template>
   </q-form>
 </template>
@@ -198,8 +208,20 @@ export default {
     const loading = ref(false);
     const applicationMethodOption = ref(applicationMethod)
     const employmentStatusOption = ref(employmentStatus)
-    const data = ref({})
-
+    const data = ref( {
+      applicationDate: props?.applicant['applicationDate'] || '',
+      name: props?.applicant['name'] || '',
+      media: props?.applicant['media'] || '',
+      kana: props?.applicant['kana'] || '',
+      apply: props?.applicant['apply'] || '',
+      sex: props?.applicant['sex'] || '',
+      dob: props?.applicant['dob'] || '',
+      phone: props?.applicant['phone'] || '',
+      email: props?.applicant['email'] || '',
+      lon: props?.applicant['lon'] || '',
+      lat: props?.applicant['lat'] || '',
+      postCode: props?.applicant['postCode'] || '',
+    })
     const { t } = useI18n({
       useScope: 'global',
     });
@@ -224,7 +246,10 @@ export default {
           Alert.warning($q, t);
         }
         loading.value = false
-      }
+      },
+      limitDate(date) {
+        return date <= new Date().toLocaleDateString('ja-JP')
+      },
     }
   }
 

@@ -124,7 +124,7 @@
                   <span class="q-pr-md">{{$t('applicant.add.applicationDate')}}: {{selectedApplicant.applicationDate}}</span>
                 </div>
                 <div class="row">
-                  <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: indeed</span>
+                  <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: {{ selectedApplicant.media ? selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}</span>
                   <span class="col-3">TEL: {{selectedApplicant.phone}}</span>
                   <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{$t('applicant.add.'+selectedApplicant.occupation)}}</span>
                 </div>
