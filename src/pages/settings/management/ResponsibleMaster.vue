@@ -35,7 +35,7 @@
             <template v-slot:body-cell-edit="props">
                 <q-td :props="props" auto-width>
                   <q-btn v-if="!isRowSelected(props.rowIndex)" icon="edit" flat @click="editableRow=props.rowIndex; editableUser=JSON.parse(JSON.stringify(props.row))" :color="color"/>
-                  <q-btn v-if="editableRow>=0 && isRowSelected(props.rowIndex)" flat icon="mdi-content-save" @click="editUser(props.row)"/>
+                  <q-btn v-if="editableRow>=0 && isRowSelected(props.rowIndex)" flat icon="mdi-content-save" @click="editUser(props.row)" :color="color"/>
                 </q-td>
             </template>
 
