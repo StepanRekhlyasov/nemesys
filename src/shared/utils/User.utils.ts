@@ -1,5 +1,6 @@
 import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
+import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
 import { branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
@@ -51,8 +52,19 @@ export const getAllUsers = (db: Firestore, active_organization_id: string, query
     endAt(queryText + '\uf8ff'),
   ))
 }
+export const mapToSelectOptions = (values: Record<string, { name: string }>) => {
+  const list: selectOptions[] = []
+  Object.keys(values).map(key => {
+    const data = {
+      label: values[key]?.name || '',
+      value: key
+    }
+    list.push(data)
+  })
+  return list
+}
 
-export const getUsersByPermission = async (db: Firestore, permission: UserPermissionNames,  queryText?: string, active_organization_id?: string,) => {
+export const getUsersByPermission = async (db: Firestore, permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) => {
 
   const roles = await getRoles(db)
   let roleId: string | undefined = undefined;
