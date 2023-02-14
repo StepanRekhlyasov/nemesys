@@ -26,7 +26,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="applicationInfo">
-        <applicationInfo :applicant="applicant" :key="applicant.id" />
+        <applicationInfo :applicant="applicant" :key="applicant.id" :updateApplicant="updateApplicant" />
       </q-tab-panel>
 
       <q-tab-panel name="attendanceInfo">
@@ -53,7 +53,7 @@
 import { ref } from 'vue';
 import fixEmployInfo from './fixEmployInfo.vue';
 import contactInfo from './components/contactInfo.vue';
-import applicationInfo from './components/applicationInfo.vue';
+import applicationInfo from './components/applicant/applicationInfo.vue';
 import attendanceInfo from './components/attendance/attendance.vue';
 import operationInfoComponent from './components/operationInfo.component.vue';
 
