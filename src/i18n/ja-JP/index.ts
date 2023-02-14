@@ -116,6 +116,7 @@ export default {
       releaseNotes: 'リリースノート',
       inquiry: '問い合わせ',
       userList: 'ユーザー一覧表示',
+      userSearch: 'ユーザー検索',
     }
   },
   settings: {

@@ -2,9 +2,9 @@
   <div  class="new">
     <q-card-section class="bg-grey-3 q-pa-md">
       <div class="row">
-        <div class="text-h6 q-pr-md text-primary">
-          <q-icon name="mdi-cog-outline" :color="color" class="q-pr-sm" size="md"/>
-          {{$t('menu.users')}}
+        <div :class="isAdmin ?'text-h6 q-pr-md' : 'text-h6 q-pr-md text-primary'"  >
+          <q-icon v-if="!isAdmin" name="mdi-cog-outline" :color="color" class="q-pr-sm" size="md"/>
+          {{ isAdmin ? $t('menu.admin.userSearch') : $t('menu.users')}}
         </div>
         <q-btn :color="color" text-color="white" class="no-shadow" icon="mdi-plus" :label="$t('settings.users.addUser')"  @click="openDialog=true"/>
       </div>
@@ -31,21 +31,82 @@
             class="no-shadow"
             :loading="loading"
             >
+
+            <template v-slot:body-cell-edit="props">
+                <q-td :props="props" auto-width>
+                  <q-btn v-if="!isRowSelected(props.rowIndex)" icon="edit" flat @click="editableRow=props.rowIndex; editableUser=JSON.parse(JSON.stringify(props.row))" :color="color"/>
+                  <q-btn v-if="editableRow>=0 && isRowSelected(props.rowIndex)" flat icon="mdi-content-save" @click="editUser(props.row)" :color="color"/>
+                </q-td>
+            </template>
+
+            <template v-slot:body-cell-email="props">
+              <q-td :props="props">
+                  {{ props.row.email }}
+              </q-td>
+            </template>
+
+            <template v-slot:body-cell-name="props">
+              <q-td :props="props">
+                <q-input :color="color" v-if="isRowSelected(props.rowIndex)" v-model="props.row.displayName"/>
+                <template v-if="!isRowSelected(props.rowIndex)">
+                  {{ props.row.displayName }}
+                </template>
+              </q-td>
+            </template>
+
               <template v-slot:body-cell-role="props">
-                <q-td :props="props" >
-                  {{roles && roles[props.row.role]?.displayName}}
+                <q-td :props="props">
+                  <q-select
+                  v-if="isRowSelected(props.rowIndex)"
+                  outlined
+                  dense
+                  v-model="props.row.role"
+                  :options="mapToSelectOptions(roles)"
+                  bg-color="white"
+                  :label="$t('common.pleaseSelect')"
+                  emit-value
+                  map-options
+                  :color="color"
+                  :disable="loading" />
+                  <template v-if="!isRowSelected(props.rowIndex)">
+                    {{roles && roles[props.row.role]?.displayName}}
+                  </template>
                 </q-td>
               </template>
 
               <template v-slot:body-cell-branch="props">
                 <q-td :props="props">
-                  {{branches && branches[props.row?.branch_id]?.name}}
+                <q-select
+                v-if="isRowSelected(props.rowIndex)"
+                outlined dense
+                v-model="props.row.branch_id"
+                :options="mapToSelectOptions(branches)"
+                bg-color="white"
+                :disable="loading"
+                :label="$t('common.pleaseSelect')"
+                emit-value
+                :color="color"
+                map-options />
+                <template v-if="!isRowSelected(props.rowIndex)">
+                    {{branches && branches[props.row?.branch_id]?.name}}
+                </template>
                 </q-td>
               </template>
 
               <template v-slot:body-cell-hidden="props">
                 <q-td :props="props">
-                  <q-icon name="mdi-check-bold" v-if="props.row.hidden"/>
+                <q-checkbox
+                v-if="isRowSelected(props.rowIndex)"
+                v-model="props.row.hidden"
+                :label="$t('settings.branch.hide')"
+                :disable="loading"
+                :color="color"
+                checked-icon="mdi-checkbox-intermediate"
+                unchecked-icon="mdi-checkbox-blank-outline"
+                class="q-pr-md"/>
+                  <template v-if="!isRowSelected(props.rowIndex)">
+                    <q-icon name="mdi-check-bold" v-if="props.row.hidden"/>
+                  </template>
                 </q-td>
               </template>
 
@@ -66,11 +127,8 @@
                   <q-btn icon="delete" flat @click="deleteAccaunt(props.row)" />
                 </q-td>
               </template>
-
-              <template v-slot:body-cell-edit="props">
-                <q-td :props="props" auto-width>
-                  <q-btn icon="edit" flat @click="editUser=props.row;openDialog=true;" :color="color"/>
-                </q-td>
+              <template v-slot:loading>
+                <q-inner-loading showing :color="color" />
               </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
@@ -88,18 +146,18 @@
       </q-card>
     </q-card-section>
   </div>
-  <q-dialog v-model="openDialog" @hide="editUser=undefined">
-    <ResponsibleCreateForm  @closeDialog="openDialog = false; loadUsersList()" :editAccount="editUser" :roles="roles" :branches="branches"/>
+  <q-dialog v-model="openDialog" @hide="editableUser=undefined">
+    <ResponsibleCreateForm  @closeDialog="openDialog = false; loadUsersList()" :roles="roles" :branches="branches"/>
   </q-dialog>
 </template>
 
 <script lang="ts">
-import { doc, getFirestore, updateDoc} from '@firebase/firestore';
+import { doc, getFirestore, serverTimestamp, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt, Role, UserPermissionNames } from 'src/shared/model/Accaunt.model';
 import { getOrganizationId, toDateObject, sortDate } from 'src/shared/utils/utils';
-import { getBranches, getRoles, getUsersByPermission } from 'src/shared/utils/User.utils';
+import { getBranches, getRoles, getUsersByPermission, mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { Branch } from 'src/shared/model/Branch.model';
 import { QTableProps, useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -124,8 +182,8 @@ export default {
     const isAdmin = route.meta.isAdmin
     // dialog data
     const openDialog = ref(false)
-    const editUser: Ref<Accaunt | undefined> = ref(undefined)
-
+    const editableUser: Ref<Accaunt | undefined> = ref(undefined)
+    const editableRow = ref(-1);
     const color = isAdmin ? 'accent' : 'primary'
 
     // Table data
@@ -216,9 +274,7 @@ export default {
               data['id'] = doc.id;
               list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.create_at), updated_at: toDateObject(data.updated_at)});
             });
-
             usersListData.value = list;
-
           })
 
           rolesSnapshot.then(role => {
@@ -253,15 +309,48 @@ export default {
       loadUsersList()
     }
 
+    function isRowSelected(row:number){
+      return row == editableRow.value
+    }
+
+    async function editUser(user: Accaunt) {
+      const isUserChanged = !(user.displayName == editableUser.value?.displayName && user.role == editableUser.value?.role && user.branch_id == editableUser.value?.branch_id && user.hidden == editableUser.value?.hidden);
+      editableRow.value = -1;
+      if(!isUserChanged){
+        return;
+      }
+      loading.value = true
+      try {
+      const boRef = doc(db, 'users/' + user.id);
+      await updateDoc(boRef, {
+        updated_at: serverTimestamp(),
+        hidden: !!user.hidden,
+        displayName: user.displayName,
+        role: user.role,
+        branch_id: user.branch_id,
+      });
+      await loadUsersList();
+      loading.value = false
+      Alert.success($q, t);
+      } catch (error) {
+        console.log(error)
+        Alert.warning($q, t);
+        loading.value = false;
+      }
+
+    }
+
 
     return {
+      isAdmin,
+      editableRow,
       search,
       columns,
       pagination,
       selected,
       loading,
       color,
-      editUser,
+      editableUser,
       openDialog,
       route,
       roles,
@@ -296,6 +385,9 @@ export default {
       },
       searchUsers,
       sortDate,
+      isRowSelected,
+      editUser,
+      mapToSelectOptions,
     }
   }
 }
