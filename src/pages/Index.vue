@@ -30,7 +30,7 @@ export default defineComponent({
   setup() {
     // TODO: add dev mode state on firebase
 
-    const isDevMode = true;
+    const isDevMode = false;
 
     return {
       isDevMode

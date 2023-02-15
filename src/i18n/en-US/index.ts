@@ -986,5 +986,10 @@ export default {
     title: 'is currently temporarily out of operation. Please contact us for further information.',
     phone: 'TEL: xxx-xxxx-xxxx',
     email: 'MAIL: xxx@xxx.com'
+  },
+  operationChange: {
+    active: 'nemesys is now up and running.',
+    resume: 'System operation resumed',
+    stop: 'system outage',
   }
 };

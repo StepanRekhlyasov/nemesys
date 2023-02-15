@@ -981,6 +981,11 @@ export default {
   devMode: {
     title: 'は現在一時的に稼働を停止しています。お問合せはこちらにご連絡ください。',
     phone: 'TEL: xxx-xxxx-xxxx',
-    email: 'MAIL: xxx@xxx.com'
+    email: 'MAIL: xxx@xxx.com',
+  },
+  operationChange: {
+    active: 'nemesysは現在稼働中です。',
+    resume: 'システム稼働再開',
+    stop: 'システム稼働停止',
   }
 };

@@ -191,7 +191,7 @@ export default defineComponent({
 
     // TODO: add dev mode state on firebase
 
-    const isDevMode = true;
+    const isDevMode = false;
 
     if (router.currentRoute.value.meta.parent) {
       active_menu.value = router.currentRoute.value.meta.parent as string | undefined;
