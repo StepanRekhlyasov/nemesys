@@ -158,6 +158,9 @@ import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
+import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils'
+import { computed } from 'vue';
+import { useMaintainModeStore } from 'src/stores/admin/maintainMode'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
 import { useOrganization } from 'src/stores/organization';
@@ -190,8 +193,13 @@ export default defineComponent({
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
 
     // TODO: add dev mode state on firebase
-
-    const isDevMode = false;
+    const store = useMaintainModeStore()
+    const isDevMode = computed(() => store.maintainMode);
+    getMaintainEnabledEvent(db).then(data => {
+      if (data.empty) {
+        store.setMaintainModeEnabled()
+      } else store.setMaintainModeDisabled()
+    })
 
     if (router.currentRoute.value.meta.parent) {
       active_menu.value = router.currentRoute.value.meta.parent as string | undefined;
