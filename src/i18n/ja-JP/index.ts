@@ -125,6 +125,8 @@ export default {
       releaseNotesInquiry: 'リリースノート・問い合わせ',
       releaseNotes: 'リリースノート',
       inquiry: '問い合わせ',
+      userList: 'ユーザー一覧表示',
+      userSearch: 'ユーザー検索',
     }
   },
   settings: {
@@ -808,7 +810,7 @@ export default {
       children: '子供',
       medicalHistory: '既往歴',
       vaccinationStatus: 'ワクチン接種状況',
-      startCaring: '介護を始めたきっかけ',
+      startCaring: '選考状況備考',
       interviewsWaitingList: '面接待ち件数',
       temporaryCompaniesRegistered: '派遣登録社数',
       startedInCaregiving: '介護を始めたきっかけ',
@@ -827,7 +829,15 @@ export default {
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
       deletedInfo: 'All data related to this experience will be deleted.',
-      totalYearsExperience: '総経験年数',
+      totalYearsExperience: '経験',
+
+      // Operation Info Component
+      placeOperation: '稼働先',
+      startDate: '開始日',
+      endDate: '終了日',
+      companyInCharge: '稼働担当社',
+      operationMemo: 'メモ',
+      operatingSites: '■稼働先事業所'
     }
   },
   prefectures: {

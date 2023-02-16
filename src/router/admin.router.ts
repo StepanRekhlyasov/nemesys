@@ -8,7 +8,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/releaseNotes.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.AdminReleaseNotes
   },
@@ -18,12 +18,12 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/inquiry.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.BranchUpdate]
     },
     menuParent: MenuParent.AdminReleaseNotes,
 
   },
-    {
+  {
     path: 'officeSearch',
     component: () => import('src/pages/admin-office-managment/OfficeSearch.vue'),
     meta: { requiresAuth: true },
@@ -37,6 +37,16 @@ const admin_router: MenuRouter[] = [
     menuParent: MenuParent.AdminOfficeManagement,
     title: 'menu.savedSearchList',
   },
+  {
+    path: 'user-list',
+    title: 'menu.admin.userList',
+    component: ()=> import('src/pages/settings/management/ResponsibleMaster.vue'),
+    meta:{
+      isAdmin:true,
+      requiresAuth:true
+    },
+    menuParent: MenuParent.AdminEnterpriseManagement
+  }
 ]
 
 export default admin_router;

@@ -53,7 +53,7 @@
           {{ $t('applicant.attendant.daysPerWeek') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.daysPerWeek.map(day => $t('weekDay.'+day)).join('・') }}</span>
+          <span v-if="!desiredEdit">{{ applicant.daysPerWeek?applicant.daysPerWeek.map(day => $t('weekDay.'+day)).join('・'): '' }}</span>
           <template v-if="desiredEdit">
             <q-checkbox v-for="day in days" :key="day.value" :disable="loading"
               :label="day.label" :val="day.value" v-model="desiredData['daysPerWeek']" />
@@ -63,7 +63,7 @@
           {{ $t('applicant.attendant.specialDay') }}
         </div>
         <div class="col-3 q-pl-md blue self-center">
-          <span v-if="!desiredEdit">{{ applicant.specialDay.map(day => $t('applicant.attendant.specialDays.'+day)).join('・') }}</span>
+          <span v-if="!desiredEdit">{{ applicant.specialDay? applicant.specialDay.map(day => $t('applicant.attendant.specialDays.'+day)).join('・'): '' }}</span>
           <template v-if="desiredEdit">
             <q-checkbox v-for="day in specialDays" :key="day.value" :disable="loading"
               :label="day.label" :val="day.value" v-model="desiredData['specialDay']" />

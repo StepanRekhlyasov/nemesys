@@ -113,7 +113,7 @@
               <div class="col-10">
                 <div class="row">
                   <div class="col-9 flex items-center">
-                    <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{$t('applicant.add.'+selectedApplicant.sex)}}
+                    <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex)}}
                   </div>
                   <div class="col-3">
                     <span class="row">{{  selectedApplicant.municipalities }} {{ selectedApplicant.street }}</span>
@@ -124,14 +124,14 @@
                   <span class="q-pr-md">{{$t('applicant.add.applicationDate')}}: {{selectedApplicant.applicationDate}}</span>
                 </div>
                 <div class="row">
-                  <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: indeed</span>
+                  <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: {{ selectedApplicant.media ? selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}</span>
                   <span class="col-3">TEL: {{selectedApplicant.phone}}</span>
-                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{$t('applicant.add.'+selectedApplicant.occupation)}}</span>
+                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{selectedApplicant.occupation && $t('applicant.add.'+selectedApplicant.occupation)}}</span>
                 </div>
                 <div class="row">
                   <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
                   <span class="col-3">MAIL: {{selectedApplicant.email}}</span>
-                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{$t('applicant.statusOption.'+selectedApplicant.status)}}</span>
+                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.status && $t('applicant.statusOption.'+selectedApplicant.status)}}</span>
                 </div>
               </div>
             </div>
