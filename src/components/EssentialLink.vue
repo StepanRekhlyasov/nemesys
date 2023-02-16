@@ -5,7 +5,7 @@
     exact
     v-ripple
     :active="active"
-    active-class="menu-active-class"
+    :active-class=" $props.admin ? 'menu-admin-active-class' : 'menu-active-class' "
   >
     <q-item-section
       v-if="icon"
@@ -56,6 +56,10 @@ export default defineComponent({
     main: {
       type: Boolean,
       default: false
+    },
+    admin: {
+      type: Boolean,
+      default: false
     }
   }
 })
@@ -64,6 +68,11 @@ export default defineComponent({
 @import "src/css/imports/colors";
 .menu-active-class{
   color: $main-primary;
+  background: $grey-3;
+}
+
+.menu-admin-active-class{
+  color: $accent;
   background: $grey-3;
 }
 </style>

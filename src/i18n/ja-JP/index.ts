@@ -12,10 +12,18 @@ export default {
     button: 'サインイン',
   },
   form: {
-    required: 'フィールドは必須です'
+    required: 'フィールドは必須です',
+    searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    numberOfSelections: '選択数',
+    detailedConditions: '詳細条件',
+    aroundTokio: '東京都全域',
+    area: 'エリア',
+    searchCondition: '検索条件',
+    searchKeyword: '検索キーワード',
     add: '追加',
+    apply: '以下の変更点の反映を実行します。',
     cancel: 'キャンセル',
     description: '説明',
     delete: '削除',
@@ -51,7 +59,26 @@ export default {
     search: '検索',
     keyboard: 'キーワード',
     closeArea: '表示エリアを閉じる',
-    openArea: '表示エリアを開く'
+    openArea: '表示エリアを開く',
+    yen: '円',
+    year: '年',
+  },
+  smoking: {
+    no: '無',
+    yes: '有',
+    paper: '紙たばこ',
+    electronic: '電子たばこ',
+    noWhileWworking: '就業中禁煙',
+    acceptable: '可',
+    notPossible: '不可'
+  },
+  marriedStatus: {
+    married: '既婚',
+    unmarried: '未婚'
+  },
+  tattoos: {
+    nil: '無',
+    yes: '有'
   },
   weekDay: {
     sunday: '日',
@@ -82,10 +109,23 @@ export default {
     newApplicant: '応募者 新規登録',
     applicantSearch: '応募者 検索',
     advancedSearch: '条件検索',
-    addOffice: '事業所新規追加',
+    addOffice: '事業所 新規追加',
     addOfficeHint: '新しく事業所を追加したい場合はこちら',
-    addClient: 'クライアント新規追加',
+    addNewClient: '新しくクライアントを追加したい場合はこちら',
+    addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
+    admin: {
+      masterSearch: '事業所マスタ検索',
+      officeManagement: '事業所マスタ管理',
+      enterpriseManagement: '企業管理',
+      aggregationData: '全社集計',
+      licenseManagement: 'ライセンス管理',
+      billingInformation: '請求情報管理',
+      systemsOperationManagement: 'システム稼働管理',
+      releaseNotesInquiry: 'リリースノート・問い合わせ',
+      releaseNotes: 'リリースノート',
+      inquiry: '問い合わせ',
+    }
   },
   settings: {
     branch: {
@@ -165,12 +205,16 @@ export default {
       editProfile: 'プロフィール編集',
       accauntSettings: 'アカウント設定',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
-      logout: 'ログアウト'
+      logout: 'ログアウト',
+      adminPage: 'システム管理ページを開く',
     },
     title: 'システム設定',
   },
   client: {
     list: {
+      name: '事業所名' + '\r\n' +  'クライアント名',
+      officeMaster: 'クライアントマスタ' + '\r\n' + '存在フラグ',
+      basicInfo: '基本情報' + '\r\n' + '変更済フラグ',
       clients: '企業一覧',
       jobs: '求人一覧',
       destination: '送信先',
@@ -707,6 +751,83 @@ export default {
       end: '終了',
       update: '更新',
       futureTalent: '未来人材',
+      ok: 'OK',
+      ng: 'NG'
+    },
+    attendant: {
+      attendantStatus: 'アテンドステータス',
+      day: 'アテンド日',
+      attendee: 'アテンド担当者',
+      memo: 'アテンドメモ',
+      desiredConditions: '希望条件',
+      timeToWork: '就業可能時期',
+      daysToWork: '週勤務可能日数',
+      daysPerWeek: '勤務可能曜日',
+      specialDay: '特日出勤',
+      shiftRemarks: '勤務可能シフト備考',
+      days: '日',
+      meansCommuting: '通勤手段',
+      nearestStation: '最寄り駅',
+      commutingTime: '通勤可能時間',
+      route: '路線',
+      commutingTimeRemarks: '通勤可能時間備考',
+      facilityDesired: '希望する施設形態',
+      ngFacilityType: 'NG施設形態',
+      hourlyRate: '希望時給',
+      transportationServices: '送迎業務可否',
+      jobSearchPriorities: '仕事探しの優先順位',
+      possible: '可',
+      no: '不可',
+      workExperience: '職務経験',
+      personal: '本人状況',
+      assignedEvaluation: '担当評価',
+
+      specialDays: {
+        gw: 'GW',
+        festival: 'お盆',
+        christmas: '年末年始'
+      },
+
+      // Assigned Evaluation Component
+      language: '言葉遣い',
+      comprehension: '理解力',
+      staffRank: 'スタッフランク (編集不可)',
+      attendeeEvaluation: 'アテンド担当者評価',
+      otherRemarks : 'その他備考',
+      remarks: '備考',
+      performance: '秀',
+      excellent: '優',
+      good: '良',
+
+      // Personal Status Component
+      smoking: '喫煙の有無',
+      tattoos: '入れ墨の有無',
+      marriedStatus: '既婚／未婚',
+      liveTogether: '同居者有無',
+      cohabitation: '同居者',
+      children: '子供',
+      medicalHistory: '既往歴',
+      vaccinationStatus: 'ワクチン接種状況',
+      startCaring: '介護を始めたきっかけ',
+      interviewsWaitingList: '面接待ち件数',
+      temporaryCompaniesRegistered: '派遣登録社数',
+      startedInCaregiving: '介護を始めたきっかけ',
+      items: '件',
+      daysVisitAtWork: '当社での職場見学可能日',
+
+      // Work Experience Component
+      experienceDetails: '経験詳細',
+      experience: '経験業務',
+      facilityType: '施設形態',
+      startMonth: '就業開始月',
+      endMonth: '就業終了月',
+      years: '年数',
+      nameEstablishment: '経験事業所名',
+      employmentType: '雇用形態',
+      reasonResignation: '退職理由',
+      pastInterviews: '過去面談歴',
+      deletedInfo: 'All data related to this experience will be deleted.',
+      totalYearsExperience: '総経験年数',
     }
   },
   prefectures: {
@@ -760,6 +881,10 @@ export default {
 
   },
   office: {
+    searchConditionName: '検索条件名',
+    registeredUser: '登録ユーザー',
+    registeredDate: '登録日時',
+    lastModified: '最終更新日時',
     commonItems: '全職種共通項目',
     referralFee: '紹介料の規定％',
     referralFeeAmount: '紹介料の規定金額',
@@ -818,7 +943,14 @@ export default {
     temporaryEmployee: '派遣入職',
     originalOperation: '原稼働',
     contractInfo: '契約情報',
-
+  },
+  import: {
+    beforeImport: '取込前',
+    afterImport: '取込後',
+  },
+  actions: {
+    clickToAddNewClient: 'クライアント新規追加はこちら',
+    searchConditionChange: '検索条件変更',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',

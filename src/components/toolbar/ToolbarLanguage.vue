@@ -2,7 +2,7 @@
   <div class="flex">
     <q-btn-toggle
       flat
-      color="black"
+      :color="$props.admin ? 'accent' : 'black'"
       toggle-color="primary"
       v-model='locale'
       @input="setLang"
@@ -18,11 +18,13 @@ import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'LanguageSwitcher',
+  props: {
+    admin: Boolean
+  },
   setup() {
     const q = useQuasar();
     const { locale } = useI18n({ useScope: 'global' });
-    const setLang = (item) => {
-      console.log(item, q.lang)
+    const setLang = () => {
       q.lang.set(q.lang)
     };
 

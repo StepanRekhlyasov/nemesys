@@ -62,3 +62,36 @@ export const menuParent: MenuParentType[] = [
     icon: 'mdi-cog',
   }
 ]
+
+
+export const adminMenuParent: MenuParentType[] = [
+  {
+    type: MenuParent.AdminOfficeManagement,
+    title: 'menu.admin.officeManagement',
+    icon: 'corporate_fare'
+  },{
+    type: MenuParent.AdminEnterpriseManagement,
+    title: 'menu.admin.enterpriseManagement',
+    icon: 'mdi-office-building-outline'
+  },{
+    type: MenuParent.AdminAggregationData,
+    title: 'menu.admin.aggregationData',
+    icon: 'mdi-chart-box-plus-outline',
+  },{
+    type: MenuParent.AdminLicenseManagement,
+    title: 'menu.admin.licenseManagement',
+    icon: 'mdi-license',
+  },{
+    type: MenuParent.AdminBillingInformation,
+    title: 'menu.admin.billingInformation',
+    icon: 'mdi-currency-usd',
+  },{
+    type: MenuParent.AdminSystemsOperationManagement,
+    title: 'menu.admin.systemsOperationManagement',
+    icon: 'mdi-movie-open',
+  },{
+    type: MenuParent.AdminReleaseNotes,
+    title: 'menu.admin.releaseNotesInquiry',
+    icon: 'mdi-forum',
+  }
+]

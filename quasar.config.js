@@ -23,6 +23,9 @@ module.exports = configure(function (ctx) {
         },
       },
     },
+    sourceFiles: {
+      store: 'src/stores/index'
+    },
 
     // https://v2.quasar.dev/quasar-cli-webpack/prefetch-feature
     // preFetch: true,

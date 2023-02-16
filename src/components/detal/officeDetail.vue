@@ -86,7 +86,7 @@ export default {
     }
   },
 
-  setup(props) {
+  setup() {
     const { t } = useI18n({ useScope: 'global' });
     const officeData = ref({})
 
@@ -274,7 +274,6 @@ export default {
 
     loadofficeData()
     function loadofficeData() {
-      console.log(props.client)
       officeData.value = {
         referralFee: '10%',
         referralFeeAmount: '未設定',

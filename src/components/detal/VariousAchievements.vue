@@ -75,7 +75,7 @@ export default {
     }
   },
 
-  setup(props) {
+  setup() {
     const { t } = useI18n({ useScope: 'global' });
     const filter = ref({
       startDate: lastMonth(),
@@ -213,7 +213,6 @@ export default {
 
     loadData()
     function loadData() {
-      console.log(props.client)
       dispatchRecord.value = [{
         inHouseBO: 3,
         inHouseFIX: 4,
@@ -225,7 +224,6 @@ export default {
         otherCompanyJob: 12,
         otherCompany: 17,
         joiningAnotherCompany: 13,
-
       }
       ]
 

@@ -12,10 +12,18 @@ export default {
     button: 'Sign In',
   },
   form: {
-    required: 'Field is required'
+    required: 'Field is required',
+    searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    numberOfSelections: 'Number of selections',
+    detailedConditions: 'detailed conditions',
+    aroundTokio: 'around Tokio',
+    area: 'area',
+    searchCondition: 'Search condition',
+    searchKeyword: '検索キーワード',
     add: 'Add',
+    apply: 'Apply the following changes',
     cancel: 'Cancel',
     description: 'Description',
     delete: 'Delete',
@@ -51,7 +59,26 @@ export default {
     search: 'Search',
     keyboard: 'Keyboard',
     closeArea: 'Close Display Area',
-    openArea: 'Open Display Area'
+    openArea: 'Open Display Area',
+    yen: 'yen',
+    year: 'year',
+  },
+  smoking: {
+    no: 'No',
+    yes: 'Yes',
+    paper: 'Paper cigarettes',
+    electronic: 'Electronic cigarettes',
+    noWhileWworking: 'No smoking while working',
+    acceptable: 'Acceptable',
+    notPossible: 'Not possible'
+  },
+  marriedStatus: {
+    married: 'Married',
+    unmarried: 'Unmarried'
+  },
+  tattoos: {
+    nil: 'Nil',
+    yes: 'Yes'
   },
   weekDay: {
     sunday: 'Suny',
@@ -84,8 +111,21 @@ export default {
     advancedSearch: 'Advanced search',
     addOffice: 'Add New Office',
     addOfficeHint: 'Click here to add a new office',
+    addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
+    admin: {
+      masterSearch: 'Office master search',
+      officeManagement: 'Office management',
+      enterpriseManagement: 'Enterprise management',
+      aggregationData: 'Companywide total',
+      licenseManagement: 'License management',
+      billingInformation: 'Billing Information Management',
+      systemsOperationManagement: 'Systems Operation Management',
+      releaseNotesInquiry: 'Release Notes and Inquiries',
+      releaseNotes: 'Release Notes',
+      inquiry: 'Inquiry',
+    }
   },
   settings: {
     branch: {
@@ -165,12 +205,16 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
-      logout: 'Logout'
+      logout: 'Logout',
+      adminPage: 'Open system administration page',
     },
     title: 'Settings'
   },
   client: {
     list: {
+      name: 'Office name' + '\n' + 'client name',
+      officeMaster: 'Office master' + '\n' + 'presence flag',
+      basicInfo: 'Basic information' + '\n' + 'changed flag',
       clients: 'Clients',
       jobs: 'Jobs',
       destination: 'Destination',
@@ -681,8 +725,8 @@ export default {
 
         application: '■Application Information',
         attraction: '■Information on Attraction',
-        working: '就業中',
-        notWorking: '未就業'
+        working: 'Working',
+        notWorking: 'Not Working'
       }
     },
     statusOption: {
@@ -708,6 +752,83 @@ export default {
       end: 'End',
       update: 'Update',
       futureTalent: 'Future Talent',
+      ok: 'OK',
+      ng: 'NG'
+    },
+    attendant: {
+      attendantStatus: 'Attendant Status',
+      day: 'Attending Day',
+      attendee: 'Attendee',
+      memo: 'Attendance Memo',
+      desiredConditions: 'Desired Conditions',
+      timeToWork: 'Possible Employment Period',
+      daysToWork: 'Possible days per week',
+      daysPerWeek: 'Available days of the week',
+      specialDay: 'Working on a special day',
+      shiftRemarks: 'Available Shift Remarks',
+      days: 'Days',
+      meansCommuting: 'Means of commuting',
+      nearestStation: 'Nearest Station',
+      commutingTime: 'Commuting Time',
+      route: 'Route',
+      commutingTimeRemarks: 'Commuting Time Remarks',
+      facilityDesired: 'Type of facility desired',
+      ngFacilityType: 'NG facility type',
+      hourlyRate: 'Hourly Rate',
+      transportationServices: 'Transportation services',
+      jobSearchPriorities: 'Job Search Priorities',
+      possible: 'Possible',
+      no: 'Not',
+      workExperience: 'Work Experience',
+      personal: 'Personal Status',
+      assignedEvaluation: 'Assigned Evaluation',
+
+      specialDays: {
+        gw: 'GW',
+        festival: 'Festival',
+        christmas: "New Year's"
+      },
+
+      // Assigned Evaluation Component
+      language: 'Language',
+      comprehension: 'Comprehension',
+      staffRank: 'Staff rank (uneditable)',
+      attendeeEvaluation: 'Attendee Evaluation',
+      otherRemarks : 'Other Remarks',
+      remarks: 'Remarks',
+      performance: 'Performance',
+      excellent: 'Excellent',
+      good: 'Good',
+
+      // Personal Status Component
+      smoking: 'Smoking',
+      tattoos: 'Tattoos',
+      marriedStatus: 'Married/Unmarried',
+      liveTogether: 'Living Together',
+      cohabitation: 'Cohabitation',
+      children: 'Children',
+      medicalHistory: 'Medical History',
+      vaccinationStatus: 'Vaccination Status',
+      startCaring: 'How did you start caring?',
+      interviewsWaitingList: 'Number of Interviews Waiting List',
+      temporaryCompaniesRegistered: 'Number of temporary staffing companies registered',
+      startedInCaregiving: 'How did you get started in caregiving?',
+      items: 'items',
+      daysVisitAtWork: 'Days when you can visit us at work',
+      experienceDetails: 'Experience Details',
+
+      // Work Experience Component
+      experience: 'Experience',
+      facilityType: 'Facility type',
+      startMonth: 'Employment Start Month',
+      endMonth: 'End of Employment Month',
+      years: 'Years',
+      nameEstablishment: 'Name of Experienced Establishment',
+      employmentType: 'Employment Type',
+      reasonResignation: 'Reason for Resignation',
+      pastInterviews: 'Past Interviews',
+      deletedInfo: 'All data related to this experience will be deleted.',
+      totalYearsExperience: 'Total years of experience',
     }
   },
   prefectures: {
@@ -761,6 +882,10 @@ export default {
 
   },
   office: {
+    searchConditionName: 'Search condition name',
+    registeredUser: 'Registered user',
+    registeredDate: 'Registered date',
+    lastModified: 'Last modified',
     commonItems: 'Common Items',
     referralFee: 'Referral Fee %',
     referralFeeAmount: 'Referral Fee Amount',
@@ -819,6 +944,14 @@ export default {
     temporaryEmployee: 'Temporary Employee',
     originalOperation: 'Original Operation',
     contractInfo: 'Contract information',
+  },
+  import: {
+    beforeImport: 'before import',
+    afterImport: 'after import'
+  },
+  actions: {
+    clickToAddNewClient: 'Click here to add a new client',
+    searchConditionChange: 'Search condition change',
   },
   failed: 'Action failed',
   success: 'Action was successful',
