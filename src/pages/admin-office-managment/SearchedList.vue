@@ -47,7 +47,7 @@ const column_labels = [
 ]
 
 const columns = computed(() => {
-    return consts.tableColumns.map((column, index) => {
+    return consts.tableColumnsSearchedList.map((column, index) => {
         column.label = t(column_labels[index])
         return column
     })
@@ -85,9 +85,6 @@ const columns = computed(() => {
                     </q-btn>
                 </div>
             </q-card-section>
-            <!-- <q-card-section>
-
-            </q-card-section> -->
             <q-card-section class="no-padding table">
                 <q-table
                 :rows="officeData"

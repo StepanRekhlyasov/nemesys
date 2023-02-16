@@ -32,7 +32,7 @@ const admin_router: MenuRouter[] = [
   },
   {
     path: 'savedSearchList',
-    component: () => import('src/pages/admin-office-managment/SavedList.vue'),
+    component: () => import('src/pages/admin-office-managment/SavedCriteriaList.vue'),
     meta: { requiresAuth: true },
     menuParent: MenuParent.AdminOfficeManagement,
     title: 'menu.savedSearchList',

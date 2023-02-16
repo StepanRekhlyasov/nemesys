@@ -8,15 +8,15 @@ const menu = computed(() => {
     return [
         {
             name: t('menu.mapSearch'),
-            right: 'assets/admin-office-managment/map-search-image.png'
+            right: require('assets/admin-office-managment/map-search-image.png')
         },
         {
             name: t('menu.areaSearch'),
-            right: 'assets/admin-office-managment/area-search-image.png'
+            right: require('assets/admin-office-managment/area-search-image.png')
         },
         {
             name: t('menu.advancedSearch'),
-            right: 'assets/admin-office-managment/advanced-search-image.png'
+            right: require('assets/admin-office-managment/advanced-search-image.png')
         },
         {
             name: t('menu.addOffice'),
@@ -41,11 +41,12 @@ const menu = computed(() => {
                 <q-list bordered separator padding class="rounded-borders bg-grey-3">
                     <q-separator color="white" size="2px" />
                     <q-item
+                    class="item_wrapper wrapper_animate_left_border"
                     clickable
                     :key="item.name"
                     v-for="item in menu">
                         <q-item-section>
-                            <div class="menu-item">
+                            <nav class="menu-item">
                                 <div class="menu-item__name">
                                     {{ item.name }}
                                 </div>
@@ -55,7 +56,7 @@ const menu = computed(() => {
                                 <div class="menu-item__right">
                                     <q-img v-if="item.right" :src="item.right" :alt="item.name" />
                                 </div>
-                            </div>
+                            </nav>
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -66,6 +67,7 @@ const menu = computed(() => {
 
 <style lang="scss" scoped>
 @import "src/css/imports/colors";
+@import "src/css/animate-left-border.scss";
 .title {
     color: $main-black;
     font-weight: bold;
@@ -79,12 +81,12 @@ const menu = computed(() => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    max-height: 80px;
 
     &__name {
         font-weight: bold;
         font-size: 1rem;
         flex: 0 0 33%;
+        padding-left: 5%;
     }
     &__center {
         flex: 0 0 27%;
@@ -98,5 +100,8 @@ const menu = computed(() => {
             width: 100%;
         }
     }
+}
+.item_wrapper {
+    max-height: 80px;
 }
 </style>

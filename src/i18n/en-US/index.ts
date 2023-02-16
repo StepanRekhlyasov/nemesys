@@ -12,7 +12,8 @@ export default {
     button: 'Sign In',
   },
   form: {
-    required: 'Field is required'
+    required: 'Field is required',
+    searchPlaceholder: 'Please enter a keyword'
   },
   common: {
     numberOfSelections: 'Number of selections',
@@ -20,6 +21,7 @@ export default {
     aroundTokio: 'around Tokio',
     area: 'area',
     searchCondition: 'Search condition',
+    searchKeyword: '検索キーワード',
     add: 'Add',
     apply: 'Apply the following changes',
     cancel: 'Cancel',
@@ -880,6 +882,10 @@ export default {
 
   },
   office: {
+    searchConditionName: 'Search condition name',
+    registeredUser: 'Registered user',
+    registeredDate: 'Registered date',
+    lastModified: 'Last modified',
     commonItems: 'Common Items',
     referralFee: 'Referral Fee %',
     referralFeeAmount: 'Referral Fee Amount',

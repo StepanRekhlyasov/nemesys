@@ -7,7 +7,7 @@ interface TableColumn {
     label?: string
 }
 
-const tableColumns: TableColumn[] = [
+const tableColumnsSearchedList: TableColumn[] = [
     {
         name: 'office name',
         required: true,
@@ -59,6 +59,44 @@ const tableColumns: TableColumn[] = [
     }
 ]
 
+const tableColumnsSavedCriteriaList: TableColumn[] = [
+    {
+        name: 'search condition name',
+        required: true,
+        align: 'left',
+        field: 'search condition name',
+        sortable: false,
+    },
+    {
+        name: 'registered user',
+        required: true,
+        align: 'left',
+        field: 'registered user',
+        sortable: false,
+    },
+    {
+        name: 'registered Date',
+        required: true,
+        align: 'left',
+        field: 'registered Date',
+        sortable: false,
+    },
+    {
+        name: 'registered user',
+        required: true,
+        align: 'left',
+        field: 'registered user',
+        sortable: false,
+    },
+    {
+        name: 'last modified',
+        required: true,
+        align: 'left',
+        field: 'last modified',
+        sortable: false,
+    }
+]
 export default {
-    tableColumns
+    tableColumnsSearchedList,
+    tableColumnsSavedCriteriaList
 }

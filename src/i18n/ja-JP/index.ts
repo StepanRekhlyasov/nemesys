@@ -12,7 +12,8 @@ export default {
     button: 'サインイン',
   },
   form: {
-    required: 'フィールドは必須です'
+    required: 'フィールドは必須です',
+    searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
     numberOfSelections: '選択数',
@@ -20,6 +21,7 @@ export default {
     aroundTokio: '東京都全域',
     area: 'エリア',
     searchCondition: '検索条件',
+    searchKeyword: '検索キーワード',
     add: '追加',
     apply: '以下の変更点の反映を実行します。',
     cancel: 'キャンセル',
@@ -879,6 +881,10 @@ export default {
 
   },
   office: {
+    searchConditionName: '検索条件名',
+    registeredUser: '登録ユーザー',
+    registeredDate: '登録日時',
+    lastModified: '最終更新日時',
     commonItems: '全職種共通項目',
     referralFee: '紹介料の規定％',
     referralFeeAmount: '紹介料の規定金額',
