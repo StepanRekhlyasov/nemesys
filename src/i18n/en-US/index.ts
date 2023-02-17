@@ -884,6 +884,7 @@ export default {
   office: {
     searchConditionName: 'Search condition name',
     registeredUser: 'Registered user',
+    updatedUser: 'Updated user',
     registeredDate: 'Registered date',
     lastModified: 'Last modified',
     commonItems: 'Common Items',

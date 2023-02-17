@@ -5,7 +5,33 @@ import consts from './consts'
 
 const { t } = useI18n({ useScope: 'global' });
 
-const selected = ref([])
+const data = ref([
+    {
+        id: 1,
+        name: '検索条件',
+        registration: '高橋瞳／東京支店',
+        date: '2022/12/22 18:00:00',
+        update: '高橋瞳／東京支店',
+        modified: '2022/12/22 18:00:00',
+    },
+    {
+        id: 2,
+        name: '検索条件',
+        registration: '高橋瞳／東京支店',
+        date: '2022/12/22 18:00:00',
+        update: '高橋瞳／東京支店',
+        modified: '2022/12/22 18:00:00',
+    },
+    {
+        id: 3,
+        name: '検索条件',
+        registration: '高橋瞳／東京支店',
+        date: '2022/12/22 18:00:00',
+        update: '高橋瞳／東京支店',
+        modified: '2022/12/22 18:00:00',
+    },
+]);
+
 const pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -17,6 +43,7 @@ const column_labels = [
     'office.searchConditionName',
     'office.registeredUser',
     'office.registeredDate',
+    'office.updatedUser',
     'office.lastModified'
 ]
 
@@ -49,6 +76,50 @@ const columns = computed(() => {
                     </q-btn>
                 </form>
             </q-card-section>
+            <q-card-section class="no-padding">
+                <q-markup-table
+                class="table"
+                :bordered="false"
+                :square="false"
+                separator="none"
+                flat>
+                    <thead>
+                        <tr>
+                            <th class="table__column text-left"></th>
+                            <th class="table__column text-left" :key="item.name" v-for="item in columns">
+                                {{ item.label }}
+                            </th>
+                            <th class="table__column text-left"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table__row wrapper_animate_left_border" :key="item.id" v-for="item in data">
+                            <td class="table__btn-wrapper q-ml-xs"><q-icon size="1.5rem" color="accent" class="table__edit-btn" name="edit"/></td>
+                            <td class="table__row_name text-left">
+                                <a href="">{{ item.name }}</a>
+                            </td>
+                            <td class="text-left">{{ item.registration }}</td>
+                            <td class="text-left"> {{ item.date }}</td>
+                            <td class="text-left">{{ item.update }}</td>
+                            <td class="text-left">{{ item.modified }}</td>
+                            <td class="table__btn-wrapper"><q-icon size="1.5rem" color="accent" class="table__delete-btn" name="delete_outline"/></td>
+                        </tr>
+                    </tbody>
+                </q-markup-table>
+                <div class="pagination">
+                    <q-pagination
+                    v-model="pagination.page"
+                    gutter="md"
+                    color="white"
+                    size="20px"
+                    text-color="black"
+                    active-text-color="white"
+                    active-color="accent"
+                    :max="(data.length / pagination.rowsPerPage) >= 1 ? data.length / pagination.rowsPerPage : 1"
+                    direction-links
+                    outline />
+                </div>
+            </q-card-section>
         </q-card>
     </div>
 </template>
@@ -57,6 +128,39 @@ const columns = computed(() => {
 @import "src/css/imports/colors";
 @import "src/css/animate-left-border.scss";
 
+.table {
+    &__column {
+        
+    }
+    &__row {
+        position: relative;
+
+        &_name {
+            text-decoration: underline;
+            color: $main-purple;
+            font-size: 1rem;
+        }
+    }
+    &__btn-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    &__edit-btn {
+        display: block;
+        cursor: pointer;
+        padding: 5px;
+    }
+    &__delete-btn {
+        display: block;
+        cursor: pointer;
+        padding: 5px;
+    }
+}
+.wrapper_animate_left_border:before {
+    width: 1.5%;
+    z-index: 11;
+}
 .title {
     color: $main-black;
     font-weight: bold;
@@ -79,5 +183,9 @@ const columns = computed(() => {
     &__input:focus {
         outline: none;
     }
+}
+
+.pagination {
+    padding: 2% 2%;
 }
 </style>

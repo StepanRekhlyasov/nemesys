@@ -76,6 +76,9 @@ const menu = computed(() => {
 .q-list {
     color: $main-purple;
 }
+.wrapper_animate_left_border:before {
+    width: 2.5%;
+}
 .menu-item {
     display: flex;
     flex-direction: row;

@@ -883,6 +883,7 @@ export default {
   office: {
     searchConditionName: '検索条件名',
     registeredUser: '登録ユーザー',
+    updatedUser: '更新されたユーザー',
     registeredDate: '登録日時',
     lastModified: '最終更新日時',
     commonItems: '全職種共通項目',

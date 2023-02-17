@@ -82,10 +82,10 @@ const tableColumnsSavedCriteriaList: TableColumn[] = [
         sortable: false,
     },
     {
-        name: 'registered user',
+        name: 'updated user',
         required: true,
         align: 'left',
-        field: 'registered user',
+        field: 'updated user',
         sortable: false,
     },
     {
