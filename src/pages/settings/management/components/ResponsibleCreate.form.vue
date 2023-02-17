@@ -109,9 +109,9 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
-import { getOrganizationId } from 'src/shared/utils/utils';
 import { api } from 'src/boot/axios';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'ResponsibleCreateForm',
@@ -138,7 +138,7 @@ export default {
     const branch = computed(() =>{
       return mapToSelectOptions(props.branches)
     })
-
+    const organization  = useOrganization()
     const loading = ref(false)
     return {
       accountData,
@@ -154,7 +154,6 @@ export default {
 
         loading.value = true;
         const data = accountData.value
-        const active_organization_id = getOrganizationId($q)
 
         api.post(
             url,
@@ -165,7 +164,7 @@ export default {
               email: data['email'], // email address for new user
               branch: data['branch_id'], // optional at present
               role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
-              organization_ids: [active_organization_id]
+              organization_ids: [organization.currentOrganizationId]
             },
             {
               headers: headers,

@@ -6,18 +6,19 @@
         <ToolbarLanguage />
 
         <div class="flex">
-          <!-- <q-btn-dropdown
-            v-if="organization && (activeOrganization || activeOrganization === 0)"
-            :label="organization[activeOrganization]?.staff_name"
-            flat color="black">
+          <q-btn-dropdown
+            v-if="organization.state.organizations && (organization.state.activeOrganization || organization.state.activeOrganization === 0)"
+            :label="organization.state.organizations[organization.state.activeOrganization]?.staff_name"
+            flat color="black"
+            >
             <q-list>
-              <q-item clickable v-close-popup v-for="item in organization" :key="item.code">
+              <q-item clickable v-close-popup v-for="item in organization.state.organizations" :key="item.code" @click="switchOrganization(item.id)">
                 <q-item-section>
                   <q-item-label>{{'staff_name' in item ? item['staff_name'] : ''}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown> -->
+          </q-btn-dropdown>
 
           <q-btn-dropdown
             flat
@@ -45,7 +46,7 @@
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.UserUpdate)">
+              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.AdminPageAccess)">
                 <q-item-section>
                   <q-item-label>
                     <router-link :to="routeNames.admin" target="_blank">
@@ -154,6 +155,7 @@ import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/con
 import { isPermission } from 'src/shared/utils/User.utils'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
+import { useOrganization } from 'src/stores/organization';
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -172,11 +174,9 @@ export default defineComponent({
     const db = getFirestore();
     const email = ref('');
     const name = ref('');
-    const organization:Ref<Organization[]> = ref([]);
     const openLeftSlidebar: Ref<boolean> = ref(false)
     const active_menu: Ref<MenuParent | string | undefined> = ref(undefined);
-    const activeOrganization:Ref<number | undefined> = ref(undefined)
-
+    const organization = useOrganization()
 
     const leftDrawerOpen = ref(false);
     const miniState = ref(true);
@@ -217,11 +217,9 @@ export default defineComponent({
             }, [] as Promise<DocumentSnapshot<DocumentData>>[])
             Promise.all(ss).then(result => {
               let organizations: Organization[]  = result.map(organization => organization.data() as Organization);
+              organization.state.activeOrganization = 0;
               if (organizations.length) {
-                $q.localStorage.set('organizations', organizations);
-                $q.localStorage.set('active_organizations', 0)
-                organization.value = organizations;
-                activeOrganization.value = 0;
+                organization.state.organizations = organizations;
               }
             })
           }
@@ -238,6 +236,18 @@ export default defineComponent({
           router.push('/')
         }
       }
+    }
+
+    const switchOrganization = (organizationId: string) =>{
+      const organizations = organization.state.organizations
+      if(!organizations.length){
+        return
+      }
+      organization.state.organizations.forEach((org, index)=>{
+        if(org.id == organizationId){
+          organization.state.activeOrganization = index;
+        }
+      })
     }
 
     const logout = () => {
@@ -261,7 +271,6 @@ export default defineComponent({
       leftDrawerOpen,
       menuParent,
       organization,
-      activeOrganization,
       singleList,
       miniState,
       active_menu,
@@ -274,7 +283,8 @@ export default defineComponent({
       logout,
       onChangeMenu,
       permissionMenuItem,
-      isPermission
+      isPermission,
+      switchOrganization,
     };
   },
 });

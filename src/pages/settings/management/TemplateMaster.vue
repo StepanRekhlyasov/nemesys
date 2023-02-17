@@ -86,14 +86,15 @@
 
 <script lang="ts">
 import { doc, getFirestore, updateDoc} from '@firebase/firestore';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { branchFlags } from 'src/shared/model/Branch.model';
-import { getOrganizationId, getTemplates, toDateObject } from 'src/shared/utils/utils';
+import { getTemplates, toDateObject } from 'src/shared/utils/utils';
 import TemplateCreateForm from './components/TemplateCreateForm.vue';
 import { Template } from 'src/shared/model/Template.model';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useOrganization } from 'src/stores/organization';
 export default {
   name: 'templateManager',
   components:{
@@ -156,14 +157,19 @@ export default {
       name: 'delete'
     }])
 
+    const organization  = useOrganization()
+
+    watch(()=> organization.currentOrganizationId, ()=>{
+      loadTemplateList()
+    })
+
     loadTemplateList()
     async function loadTemplateList() {
       loading.value = true;
 
       try {
-        const active_organization_id = getOrganizationId($q);
-        if (active_organization_id) {
-          const branchesSnapshot = getTemplates(db, active_organization_id, search.value.keyboard);
+        if (organization.currentOrganizationId) {
+          const branchesSnapshot = getTemplates(db, organization.currentOrganizationId, search.value.keyboard);
           branchesSnapshot.then(branch => {
             const list: Template[] = []
             branch.forEach((doc) => {
@@ -207,8 +213,7 @@ export default {
         }).onOk(async () => {
           loading.value = true;
           try {
-            const active_organization_id = getOrganizationId($q);
-            const boRef = doc(db, 'organization/'+active_organization_id+'/template/'+template.id);
+            const boRef = doc(db, 'organization/'+organization.currentOrganizationId+'/template/'+template.id);
             await updateDoc(boRef, {
               deleted: true
             })

@@ -89,7 +89,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
-import { getOrganizationId } from 'src/shared/utils/utils';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'BranchCreateForm',
@@ -109,6 +109,7 @@ export default {
     })
     const loading = ref(false)
     const prefectureOption = ref(prefectureList);
+    const organization  = useOrganization()
     return {
       branchData,
       loading,
@@ -118,13 +119,12 @@ export default {
         loading.value = true;
         let data = JSON.parse(JSON.stringify(branchData.value));
         try {
-            const active_organization_id = getOrganizationId($q);
             data['created_at'] = serverTimestamp();
             data['updated_at'] = serverTimestamp();
             data['created_user'] = auth.currentUser?.uid;
             data['deleted'] = false;
 
-            const clientRef = collection(db, 'organization/'+active_organization_id+'/branch/');
+            const clientRef = collection(db, 'organization/'+organization.currentOrganizationId+'/branch/');
             await addDoc(clientRef, data);
 
             context.emit('closeDialog');
@@ -140,8 +140,7 @@ export default {
         loading.value = true;
         const data = branchData.value
         try {
-            const active_organization_id = getOrganizationId($q);
-            const boRef = doc(db, 'organization/'+active_organization_id+'/branch/'+props.editBranch?.id);
+            const boRef = doc(db, 'organization/'+organization.currentOrganizationId+'/branch/'+props.editBranch?.id);
             await updateDoc(boRef, {
               updated_at: serverTimestamp(),
               hidden: data.hidden,

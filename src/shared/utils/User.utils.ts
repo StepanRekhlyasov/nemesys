@@ -1,8 +1,8 @@
-import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
+import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Accaunt.model';
-import { branchFlags } from '../model/Branch.model';
+import { Branch, branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
 import { branchCollection, itemCollection } from './utils';
 
@@ -67,23 +67,24 @@ export const mapToSelectOptions = (values: Record<string, { name: string }>) => 
 export const getUsersByPermission = async (db: Firestore, permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) => {
 
   const roles = await getRoles(db)
-  let roleId: string | undefined = undefined;
+  const roleIds: string[] = [];
 
   roles.forEach((role) => {
     if (role.exists()) {
       const roleData = role.data() as Role
       if (roleData.permission?.includes(permission)) {
-        roleId = role.id;
+        roleIds.push(role.id);
       }
     }
   })
 
-  if (!roleId) {
+  if (!roleIds.length) {
     return;
   }
+
   type ConstraintsType = Array<QueryStartAtConstraint | QueryFieldFilterConstraint | QueryEndAtConstraint | QueryOrderByConstraint>
 
-  const constraints: ConstraintsType = [where('deleted', '==', false), where('role', '==', roleId), orderBy('displayName')]
+  const constraints: ConstraintsType = [where('deleted', '==', false), where('role', 'in', roleIds), orderBy('displayName')]
 
   if (active_organization_id) {
     constraints.push(where('organization_ids', 'array-contains', active_organization_id))
@@ -98,6 +99,32 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
     ...constraints,
   ))
 
+}
+
+export const getAllBranches = async (db: Firestore, search?: BranchesSearch) => {
+  const organizationsQuery = query(collection(db, 'organization/'));
+  const querySnapshot = await getDocs(organizationsQuery);
+  const organizationsIds: string[] = []
+  querySnapshot.forEach((doc) => {
+    if (doc.exists()) {
+      organizationsIds.push(doc.id)
+    }
+  })
+  const branches: Promise<QuerySnapshot<DocumentData>>[] = []
+  organizationsIds.forEach((id) => {
+    branches.push(getBranches(db, id, search))
+  })
+
+  const list: { [id: string]: Branch } = {}
+
+  const branchesData = await Promise.all(branches)
+  branchesData.forEach((branch) => {
+    branch.forEach((doc) => {
+      list[doc.id] = doc.data() as Branch
+    })
+  })
+
+  return list
 }
 
 export const getBranches = (db: Firestore, active_organization_id: string, search?: BranchesSearch) => {

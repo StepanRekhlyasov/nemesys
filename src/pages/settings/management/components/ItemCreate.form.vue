@@ -95,8 +95,8 @@
   import { useQuasar } from 'quasar';
   import { useI18n } from 'vue-i18n';
   import { getAuth } from '@firebase/auth';
-  import { getOrganizationId } from 'src/shared/utils/utils';
   import { segment } from 'src/shared/constants/Item.const';
+  import { useOrganization } from 'src/stores/organization';
 
   export default {
     name: 'ItemCreateForm',
@@ -116,6 +116,7 @@
       })
       const loading = ref(false)
       const segmentOption = ref(segment);
+      const organization  = useOrganization()
       return {
         branchData,
         loading,
@@ -125,13 +126,13 @@
           loading.value = true;
           let data = JSON.parse(JSON.stringify(branchData.value));
           try {
-              const active_organization_id = getOrganizationId($q);
+
               data['created_at'] = serverTimestamp();
               data['updated_at'] = serverTimestamp();
               data['created_user'] = auth.currentUser?.uid;
               data['deleted'] = false;
 
-              const clientRef = collection(db, 'organization/'+active_organization_id+'/item/');
+              const clientRef = collection(db, 'organization/'+organization.currentOrganizationId+'/item/');
               await addDoc(clientRef, data);
 
               context.emit('closeDialog');
@@ -147,8 +148,7 @@
           loading.value = true;
           const data = branchData.value
           try {
-              const active_organization_id = getOrganizationId($q);
-              const boRef = doc(db, 'organization/'+active_organization_id+'/item/'+props.edit?.id);
+              const boRef = doc(db, 'organization/'+organization.currentOrganizationId+'/item/'+props.edit?.id);
               await updateDoc(boRef, {
                 updated_at: serverTimestamp(),
                 displayOrder: data.displayOrder,
