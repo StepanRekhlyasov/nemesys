@@ -90,7 +90,7 @@ import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc } fro
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
-import { getOrganizationId } from 'src/shared/utils/utils';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'TemplateCreateForm',
@@ -108,7 +108,7 @@ export default {
 
     const loading = ref(false);
     const templateData = ref(props.editTemplate || {});
-
+    const organization  = useOrganization()
     return {
       templateData,
       TemplateType,
@@ -118,12 +118,11 @@ export default {
         loading.value = true;
         let data = JSON.parse(JSON.stringify(templateData.value));
         try {
-          const active_organization_id = getOrganizationId($q);
           data['created_at'] = serverTimestamp();
           data['updated_at'] = serverTimestamp();
           data['created_user'] = auth.currentUser?.uid;
           data['deleted'] = false;
-          const clientRef = collection(db, 'organization/'+active_organization_id+'/template/');
+          const clientRef = collection(db, 'organization/'+organization.currentOrganizationId+'/template/');
           await addDoc(clientRef, data);
 
           context.emit('closeDialog');
@@ -139,8 +138,7 @@ export default {
         loading.value = true;
         const data = templateData.value
         try {
-            const active_organization_id = getOrganizationId($q);
-            const boRef = doc(db, 'organization/'+active_organization_id+'/template/'+props.editTemplate?.id);
+            const boRef = doc(db, 'organization/'+organization.currentOrganizationId+'/template/'+props.editTemplate?.id);
             await updateDoc(boRef, {
               updated_at: serverTimestamp(),
               contents: data.contents,

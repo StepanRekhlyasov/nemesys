@@ -35,5 +35,6 @@ export enum UserPermissionNames {
   ContentsRead = 'CONTENTS_READ',
   UserUpdate = 'USER_UPDATE',
   BranchUpdate = 'BRANCH_UPDATE',
-  OrganizationUpdate = 'ORGANIZATION_UPDATE'
+  OrganizationUpdate = 'ORGANIZATION_UPDATE',
+  AdminPageAccess = 'ADMIN_PAGE_ACCESS',
 }
