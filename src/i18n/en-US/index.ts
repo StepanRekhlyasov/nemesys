@@ -825,7 +825,10 @@ export default {
       endDate: 'End Date',
       companyInCharge: 'Company in Charge',
       operationMemo: 'Memo',
-      operatingSites: '■Operating Sites'
+      operatingSites: '■Operating Sites',
+
+      // Memo Tab
+      content: 'Content'
     }
   },
   prefectures: {

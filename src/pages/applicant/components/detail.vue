@@ -41,7 +41,7 @@
         <operationInfoComponent :applicant="applicant"/>
       </q-tab-panel>
       <q-tab-panel name="memo">
-
+        <applicantMemo :applicant="applicant" :updateApplicant="updateApplicant"/>
       </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -56,6 +56,7 @@ import contactInfo from './components/contactInfo.vue';
 import applicationInfo from './components/applicant/applicationInfo.vue';
 import attendanceInfo from './components/attendance/attendance.vue';
 import operationInfoComponent from './components/operationInfo.component.vue';
+import applicantMemo from './components/memo.vue';
 
 export default {
   name: 'clientDetails',
@@ -64,7 +65,8 @@ export default {
     fixEmployInfo,
     applicationInfo,
     attendanceInfo,
-    operationInfoComponent
+    operationInfoComponent,
+    applicantMemo
   },
 
   props: {
