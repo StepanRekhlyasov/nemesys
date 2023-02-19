@@ -837,7 +837,10 @@ export default {
       endDate: '終了日',
       companyInCharge: '稼働担当社',
       operationMemo: 'メモ',
-      operatingSites: '■稼働先事業所'
+      operatingSites: '■稼働先事業所',
+
+      // Memo Tab
+      content: '内容'
     }
   },
   prefectures: {

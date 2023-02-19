@@ -9,11 +9,11 @@
           class="text-grey-9" @click="show = true" v-else />
       </div>
     </div>
-    <!-- <div class="col-3 text-right" v-if="show">
+    <div class="col-3 text-right" v-if="show">
       <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
       <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
       <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
-    </div> -->
+    </div>
   </div>
   <template v-if="show">
     <div class="row ">
@@ -142,6 +142,7 @@ export default {
     const show = ref(false);
     const loading = ref(false);
     const openDialog = ref(false);
+    const edit = ref(false);
     const totalYearsExperience = ref(0)
     const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
     const experienceData: Ref<ApplicantExperience[]> = ref([]);
@@ -231,6 +232,7 @@ export default {
 
     return {
       show,
+      edit,
       loading,
       columns,
       pagination,
