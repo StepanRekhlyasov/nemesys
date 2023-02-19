@@ -62,7 +62,11 @@
           {{ $t('applicant.list.info.seduser') }}
         </div>
         <div class="col-3 q-pl-md blue self-center">
-          <span v-if="!edit">{{ applicant.seduser || ''}}</span>
+          <span v-if="!edit">{{
+              usersListOption
+                .filter(user => user.value === data['seduser'])
+                .map(user => user.label).join('')
+          }}</span>
           <q-select v-if="edit" outlined dense :options="usersListOption" v-model="data['seduser']"
             bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
         </div>
@@ -192,7 +196,6 @@ export default {
           });
         });
         usersListOption.value = list;
-        console.log(list)
       })
     }
 

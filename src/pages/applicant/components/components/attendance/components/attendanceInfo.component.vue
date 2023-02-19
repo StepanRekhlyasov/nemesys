@@ -40,8 +40,13 @@
       {{ $t('applicant.attendant.attendee') }}
     </div>
     <div class="col-2 q-pl-md blue ">
-      <span v-if="!infoEdit">{{ applicant.attendee }}</span>
-      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="indoData['attendee']"  :disable="loading"/>
+      <span v-if="!infoEdit">{{
+          usersListOption
+            .filter(user => user.value === indoData['attendee'])
+            .map(user => user.label).join('')
+      }}</span>
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="indoData['attendee']"
+        bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
 
@@ -59,9 +64,13 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { attendantStatus } from 'src/shared/constants/Applicant.const';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useOrganization } from 'src/stores/organization';
+import { getFirestore } from '@firebase/firestore';
+import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { selectOptions, UserPermissionNames } from 'src/shared/model';
 
 export default {
   name: 'attendanceInfoComponent',
@@ -76,15 +85,38 @@ export default {
     }
   },
   setup(props) {
+    const db = getFirestore();
+    const organization = useOrganization()
     const infoEdit = ref(false);
     const loading = ref(false);
     const attendantStatusOption = ref(attendantStatus);
+    const usersListOption: Ref<selectOptions[]> = ref([])
     const indoData = ref( {
       attendingStatus: props?.applicant['attendingStatus'] || '',
       attendingDate: props?.applicant['attendingDate'] || '',
       attendee: props?.applicant['attendee'] || '',
       memo: props?.applicant['memo'] || '',
     })
+
+    if (organization.currentOrganizationId){
+      loadUser()
+    }
+
+    function loadUser() {
+      const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+
+      usersSnapshot.then(users => {
+        let list: selectOptions[] = [];
+        users?.forEach((doc) => {
+          const data = doc.data();
+          list.push({
+            label: data.displayName,
+            value: doc.id
+          });
+        });
+        usersListOption.value = list;
+      })
+    }
 
     const { t } = useI18n({
       useScope: 'global',
@@ -96,6 +128,7 @@ export default {
       indoData,
       attendantStatusOption,
       loading,
+      usersListOption,
 
       async saveInfo() {
         loading.value = true
