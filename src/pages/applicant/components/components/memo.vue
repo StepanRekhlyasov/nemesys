@@ -129,7 +129,6 @@ export default {
         const data = memo.docs.map(async (doc) => {
           let content = doc.data();
           const user = (await getDoc(docDb(db, 'users/' + content.created_user))).data();
-          console.log(user)
           return {
             ...content,
             id: doc.id,
