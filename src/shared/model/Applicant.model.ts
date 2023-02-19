@@ -19,7 +19,6 @@ export enum EmploymentStatus {
 }
 
 
-
 export interface ApplicantMemo {
   id?: string;
   created_user: string;

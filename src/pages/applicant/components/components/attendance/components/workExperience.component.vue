@@ -11,7 +11,7 @@
     </div>
     <div class="col-3 text-right" v-if="show">
       <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-      <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
+      <q-btn v-if="edit" :label="$t('common.save')" color="primary" @click="save"/>
       <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
     </div>
   </div>
@@ -101,7 +101,9 @@
         {{ $t('applicant.attendant.totalYearsExperience') }}
       </div>
       <div class="col-4 q-pl-md blue self-center">
-        {{ totalYearsExperience>0?totalYearsExperience+' ' +$t('common.year'):'' }}
+        <span v-if="!edit">{{ applicant.totalYear || ''}}</span>
+        <q-input v-if="edit" dense outlined bg-color="white"
+          v-model="data['totalYear']" :disable="loading" />
       </div>
     </div>
     <div>
@@ -143,7 +145,9 @@ export default {
     const loading = ref(false);
     const openDialog = ref(false);
     const edit = ref(false);
-    const totalYearsExperience = ref(0)
+    const data = ref({
+      totalYear: props.applicant['totalYear']
+    })
     const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
     const experienceData: Ref<ApplicantExperience[]> = ref([]);
     const pagination = ref({
@@ -218,28 +222,19 @@ export default {
           list.push(data);
         });
         experienceData.value = list;
-        countTotalYear();
       });
-    }
-
-    function countTotalYear() {
-      totalYearsExperience.value = 0;
-      let ret = experienceData.value.reduce((count, item) => {
-        return count + differentDateYear(item.startMonth, item.endMonth)
-      }, 0)
-      totalYearsExperience.value = ret
     }
 
     return {
       show,
       edit,
+      data,
       loading,
       columns,
       pagination,
       experienceData,
       openDialog,
       editExperience,
-      totalYearsExperience,
 
       differentDateYear,
       load,
@@ -269,6 +264,19 @@ export default {
           }
         })
       },
+      async save() {
+        loading.value = true
+        try {
+          await props.updateApplicant(data.value);
+          Alert.success($q, t);
+          edit.value = false;
+        } catch (error) {
+          console.log(error);
+          loading.value = false;
+          Alert.warning($q, t);
+        }
+        loading.value = false
+      }
     }
   }
 }
