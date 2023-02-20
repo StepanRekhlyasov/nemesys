@@ -111,7 +111,7 @@ const columns = computed(() => {
                     v-model="pagination.page"
                     gutter="md"
                     color="white"
-                    size="20px"
+                    size="18px"
                     text-color="black"
                     active-text-color="white"
                     active-color="accent"
@@ -157,7 +157,7 @@ const columns = computed(() => {
         padding: 5px;
     }
 }
-.wrapper_animate_left_border:before {
+.wrapper_animate_left_border::after {
     width: 1.5%;
     z-index: 11;
 }

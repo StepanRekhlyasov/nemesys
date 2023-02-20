@@ -12,7 +12,7 @@ const tableColumnsSearchedList: TableColumn[] = [
         name: 'office name',
         required: true,
         align: 'left',
-        field: 'office name',
+        field: 'office',
         sortable: false,
     },
     {
@@ -47,14 +47,21 @@ const tableColumnsSearchedList: TableColumn[] = [
         name: 'office master',
         required: true,
         align: 'left',
-        field: 'office master',
+        field: 'officeMaster',
+        sortable: false,
+    },
+    {
+        name: 'client master',
+        required: true,
+        align: 'left',
+        field: 'clientMaster',
         sortable: false,
     },
     {
         name: 'basic information',
         required: true,
         align: 'left',
-        field: 'basic information',
+        field: 'basicInfo',
         sortable: false,
     }
 ]

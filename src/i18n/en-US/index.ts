@@ -212,9 +212,10 @@ export default {
   },
   client: {
     list: {
-      name: 'Office name' + '\n' + 'client name',
-      officeMaster: 'Office master' + '\n' + 'presence flag',
-      basicInfo: 'Basic information' + '\n' + 'changed flag',
+      name: 'Office name' + ' / ' + 'client name',
+      officeMaster: 'Office master' + ' / ' + 'presence flag',
+      clientMaster: 'Client master' + ' / ' + 'presence flag',
+      basicInfo: 'Basic information' + ' / ' + 'changed flag',
       clients: 'Clients',
       jobs: 'Jobs',
       destination: 'Destination',

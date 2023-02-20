@@ -1,31 +1,43 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
+const router = useRouter()
 const { t } = useI18n({ useScope: 'global' });
 
 const menu = computed(() => {
     return [
         {
             name: t('menu.mapSearch'),
-            right: require('assets/admin-office-managment/map-search-image.png')
+            right: require('assets/admin-office-managment/map-search-image.png'),
+            click() {
+                router.push('client-factory')
+            },
         },
         {
             name: t('menu.areaSearch'),
-            right: require('assets/admin-office-managment/area-search-image.png')
+            right: require('assets/admin-office-managment/area-search-image.png'),
+            click() {
+                router.push('client-factory')
+            },
         },
         {
             name: t('menu.advancedSearch'),
-            right: require('assets/admin-office-managment/advanced-search-image.png')
+            right: require('assets/admin-office-managment/advanced-search-image.png'),
+            click() {
+                router.push('client-factory')
+            },
         },
         {
             name: t('menu.addOffice'),
-            center: t('menu.addOfficeHint')
+            center: t('menu.addOfficeHint'),
+            click: '',
         },
         {
             name: t('menu.addClient'),
             center: t('menu.addNewClient'),
-            right: ''
+            click: '',
         },
     ]
 })
@@ -41,12 +53,13 @@ const menu = computed(() => {
                 <q-list bordered separator padding class="rounded-borders bg-grey-3">
                     <q-separator color="white" size="2px" />
                     <q-item
+                    @click="item.click"
                     class="item_wrapper wrapper_animate_left_border"
                     clickable
                     :key="item.name"
                     v-for="item in menu">
                         <q-item-section>
-                            <nav class="menu-item">
+                            <div class="menu-item">
                                 <div class="menu-item__name">
                                     {{ item.name }}
                                 </div>
@@ -56,7 +69,7 @@ const menu = computed(() => {
                                 <div class="menu-item__right">
                                     <q-img v-if="item.right" :src="item.right" :alt="item.name" />
                                 </div>
-                            </nav>
+                            </div>
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -76,7 +89,7 @@ const menu = computed(() => {
 .q-list {
     color: $main-purple;
 }
-.wrapper_animate_left_border:before {
+.wrapper_animate_left_border::after {
     width: 2.5%;
 }
 .menu-item {
