@@ -55,7 +55,7 @@
       {{ $t('applicant.attendant.memo') }}
     </div>
     <div class="col-10 q-pl-md blue ">
-      <span v-if="!infoEdit">{{ applicant.memo }}</span>
+      <hidden-text v-if="!infoEdit" :value="applicant.memo" />
       <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="indoData['memo']" :disable="loading"/>
     </div>
   </div>
@@ -64,13 +64,14 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { attendantStatus } from 'src/shared/constants/Applicant.const';
-import { Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
 import { getFirestore } from '@firebase/firestore';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
+import hiddenText from 'src/components/hiddingText.component.vue';
 
 export default {
   name: 'attendanceInfoComponent',
@@ -84,6 +85,9 @@ export default {
       required: true
     }
   },
+  components: {
+    hiddenText
+  },
   setup(props) {
     const db = getFirestore();
     const organization = useOrganization()
@@ -91,11 +95,13 @@ export default {
     const loading = ref(false);
     const attendantStatusOption = ref(attendantStatus);
     const usersListOption: Ref<selectOptions[]> = ref([])
-    const indoData = ref( {
-      attendingStatus: props?.applicant['attendingStatus'] || '',
-      attendingDate: props?.applicant['attendingDate'] || '',
-      attendee: props?.applicant['attendee'] || '',
-      memo: props?.applicant['memo'] || '',
+    const indoData = computed(() => {
+      return {
+        attendingStatus: props?.applicant['attendingStatus'] || '',
+        attendingDate: props?.applicant['attendingDate'] || '',
+        attendee: props?.applicant['attendee'] || '',
+        memo: props?.applicant['memo'] || '',
+      }
     })
 
     if (organization.currentOrganizationId){
