@@ -145,8 +145,10 @@ export default {
     const loading = ref(false);
     const openDialog = ref(false);
     const edit = ref(false);
-    const data = ref({
-      totalYear: props.applicant['totalYear']
+    const data = computed(() => {
+      return {
+        totalYear: props.applicant['totalYear']
+      }
     })
     const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
     const experienceData: Ref<ApplicantExperience[]> = ref([]);

@@ -74,7 +74,7 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 
@@ -95,10 +95,12 @@ export default {
     const show = ref(false);
     const expertiseLevelOptions = ref(expertiseLevelList)
     const loading = ref(false);
-    const data = ref( {
-      language: props?.applicant['language'] || '',
-      attendingDate: props?.applicant['attendingDate'] || '',
-      staffRank: props?.applicant['staffRank'] || '',
+    const data =  computed(() => {
+      return {
+        language: props?.applicant['language'] || '',
+        attendingDate: props?.applicant['attendingDate'] || '',
+        staffRank: props?.applicant['staffRank'] || '',
+      }
     })
 
     const { t } = useI18n({
