@@ -813,7 +813,7 @@ export default {
       startCaring: '選考状況備考',
       interviewsWaitingList: '面接待ち件数',
       temporaryCompaniesRegistered: '派遣登録社数',
-      startedInCaregiving: '介護を始めたきっかけ',
+      startedInCaregiving: '選考状況備考',
       items: '件',
       daysVisitAtWork: '当社での職場見学可能日',
 

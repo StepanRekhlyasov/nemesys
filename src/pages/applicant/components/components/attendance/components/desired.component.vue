@@ -92,19 +92,8 @@
         </div>
         <div class="col-3 q-pl-md blue ">
           <span v-if="!desiredEdit">{{ applicant.meansCommuting }}</span>
-          <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="desiredData['meansCommuting']"  :disable="loading">
-            <template v-slot:prepend>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="desiredData['meansCommuting']" mask="YYYY/MM/DD">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <q-input v-if="desiredEdit" dense outlined bg-color="white"
+            v-model="desiredData['meansCommuting']" :disable="loading" />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.nearestStation') }}
