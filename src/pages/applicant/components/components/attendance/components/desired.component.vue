@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="showDesired">
-        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" />
+        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" size="sm"/>
+        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" size="sm"/>
       </div>
     </div>
 

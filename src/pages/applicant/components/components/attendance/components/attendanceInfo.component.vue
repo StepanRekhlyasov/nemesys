@@ -2,9 +2,9 @@
   <div class="row q-pb-md">
     <div class="col-9"></div>
     <div class="col-3 text-right">
-      <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="infoEdit = true" class="no-shadow q-ml-lg" />
-      <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveInfo"/>
-      <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false" />
+      <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="infoEdit = true" class="no-shadow q-ml-lg" size="sm"/>
+      <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveInfo" size="sm"/>
+      <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false" size="sm" />
     </div>
   </div>
 

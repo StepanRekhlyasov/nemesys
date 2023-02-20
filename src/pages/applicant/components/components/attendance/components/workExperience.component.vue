@@ -10,17 +10,17 @@
       </div>
     </div>
     <div class="col-3 text-right" v-if="show">
-      <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-      <q-btn v-if="edit" :label="$t('common.save')" color="primary" @click="save"/>
-      <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
+      <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm" />
+      <q-btn v-if="edit" :label="$t('common.save')" color="primary" @click="save" size="sm" />
+      <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm" />
     </div>
   </div>
   <template v-if="show">
     <div class="row ">
-      <div class="text-blue text-weight-regular self-center text-subtitle1 q-pl-md">
+      <div class="text-blue text-weight-regular self-center text-subtitle1 ">
         [{{ $t('applicant.attendant.experienceDetails') }}]
       </div>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="openDialog=true" class="no-shadow q-ml-lg" />
+      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
     </div>
 
     <div class="row q-pa-sm"></div>
@@ -147,7 +147,7 @@ export default {
     const edit = ref(false);
     const data = computed(() => {
       return {
-        totalYear: props.applicant['totalYear']
+      totalYear: props.applicant['totalYear']
       }
     })
     const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
