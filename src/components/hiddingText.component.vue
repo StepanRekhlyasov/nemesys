@@ -20,7 +20,7 @@ export default {
     const width = ref(null)
     const hidden = ref(false)
     onMounted(() => {
-        if (width.value.clientHeight > 21) {
+        if (width.value && width.value.clientHeight > 21) {
           hidden.value = true
         }
       })
