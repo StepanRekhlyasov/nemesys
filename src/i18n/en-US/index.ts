@@ -980,13 +980,25 @@ export default {
     'auth/email-already-in-use': 'Email adrress already in use',
   },
   devMode: {
-    title: 'is currently temporarily out of operation. Please contact us for further information.',
+    title: 'is currently temporarily out of operation.',
+    subtitle: 'Please contact us for further information.',
     phone: 'TEL: xxx-xxxx-xxxx',
     email: 'MAIL: xxx@xxx.com'
   },
   operationChange: {
     active: 'nemesys is now up and running.',
-    resume: 'System operation resumed',
+    disabled: 'nemesys is stopped',
+    resume: 'System operation resume',
     stop: 'system outage',
+    working: 'working, valid',
+    stopped: 'stopped',
+    information: {
+      continiousOperatingTime: 'Сontinious operating time',
+      maxOperatingTime: 'Maximum continuous operation time',
+      totalHoursWorked: 'Total hours worked',
+      continiousStopTime: 'Continuous stop time',
+      maxStopTime: 'Maximum continuous stop time',
+      totalStoppedTime: 'Total stopped time'
+    }
   }
 };
