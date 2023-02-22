@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="show">
-        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
+        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm" />
+        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm" />
       </div>
     </div>
     <template v-if="show">
@@ -113,8 +113,8 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.period') }}
         </div>
-        <div class="col-3 q-pl-md blue self-center">
-          <span v-if="!edit">{{ applicant.period || ''}}</span>
+        <div class="col-3 q-pl-md blue self-center relative-position">
+          <hidden-text v-if="!edit" :value="applicant.period" />
           <q-input v-if="edit" outlined dense v-model="data['period']" bg-color="white" />
         </div>
       </div>
@@ -123,8 +123,8 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.memo') }}
         </div>
-        <div class="col-9 q-pa-sm blue text-bold">
-          <span v-if="!edit">{{ applicant.addres || ''}}</span>
+        <div class="col-9 q-pa-sm blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.addres" />
           <q-input v-if="edit" outlined dense v-model="data['memo']" bg-color="white" />
         </div>
       </div>
@@ -143,6 +143,7 @@ import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { getFirestore } from '@firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
+import hiddenText from 'src/components/hiddingText.component.vue';
 
 export default {
   name: 'attractionInformationComponent',
@@ -155,6 +156,9 @@ export default {
       type: Function,
       required: true
     }
+  },
+  components: {
+    hiddenText
   },
   setup(props) {
     const db = getFirestore();
