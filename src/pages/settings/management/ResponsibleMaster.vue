@@ -27,13 +27,10 @@
             class="no-shadow" :loading="loading">
 
             <template v-slot:body-cell-edit="props">
-              <q-td :props="props" auto-width>
-                <q-btn v-if="!isRowSelected(props.rowIndex)" icon="edit" flat
-                  @click="editableRow = props.rowIndex; editableUser = JSON.parse(JSON.stringify(props.row))"
-                  :color="color" />
-                <q-btn v-if="editableRow >= 0 && isRowSelected(props.rowIndex)" flat icon="mdi-content-save"
-                  @click="editUser(props.row)" :color="color" />
-              </q-td>
+              <EditButton :props="props" :color="color"
+                :on-edit="() => { editableUser = JSON.parse(JSON.stringify(props.row)); discardChanges() }"
+                :on-save="() => editUser(props.row)" @onEditableRowChange="(row) => editableRow = row"
+                :editable-row="editableRow" />
             </template>
 
             <template v-slot:body-cell-email="props">
@@ -131,11 +128,13 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import ResponsibleCreateForm from './components/ResponsibleCreate.form.vue';
 import { useRoute } from 'vue-router'
 import { useOrganization } from 'src/stores/organization';
+import EditButton from 'components/EditButton.vue';
 
 export default {
   name: 'responcibleMasterManagement',
   components: {
-    ResponsibleCreateForm
+    ResponsibleCreateForm,
+    EditButton,
   },
   setup() {
     const { t } = useI18n({ useScope: 'global' });
@@ -147,6 +146,7 @@ export default {
     const branches = ref({})
     const loading = ref(false)
     const usersListData: Ref<Accaunt[]> = ref([]);
+    const copyUsersListData: Ref<Accaunt[]> = ref([]);
     const isAdmin = route.meta.isAdmin
     // dialog data
     const openDialog = ref(false)
@@ -246,6 +246,7 @@ export default {
               list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.create_at), updated_at: toDateObject(data.updated_at) });
             });
             usersListData.value = list;
+            copyUsersListData.value = list
           })
 
           rolesSnapshot.then(role => {
@@ -278,9 +279,12 @@ export default {
       return row == editableRow.value
     }
 
+    function discardChanges() {
+      usersListData.value = JSON.parse(JSON.stringify(copyUsersListData.value))
+    }
+
     async function editUser(user: Accaunt) {
       const isUserChanged = !(user.displayName == editableUser.value?.displayName && user.role == editableUser.value?.role && user.branch_id == editableUser.value?.branch_id && user.hidden == editableUser.value?.hidden);
-      editableRow.value = -1;
       if (!isUserChanged) {
         return;
       }
@@ -353,6 +357,7 @@ export default {
       isRowSelected,
       editUser,
       mapToSelectOptions,
+      discardChanges,
     }
   }
 }
