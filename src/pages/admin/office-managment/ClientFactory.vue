@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ClientFactoryDrawer from './components/ClientFactoryDrawer.vue';
 import consts from './consts'
 
 const { t } = useI18n({ useScope: 'global' });
 
+// const isDrawer = ref(false)
 const rows = ref([
     {
         id: 1,
@@ -74,20 +76,10 @@ const pagination = ref({
     rowsPerPage: 10
     // rowsNumber: xx if getting data from a server
 });
-const column_labels = [
-    'client.list.name',
-    'client.list.distanceStartingPoint',
-    'client.list.officeLocation',
-    'client.list.phone',
-    'client.list.fax',
-    'client.list.officeMaster',
-    'client.list.clientMaster',
-    'client.list.basicInfo'
-]
 
 const columns = computed(() => {
-    return consts.tableColumnsSearchedList.map((column, index) => {
-        column.label = t(column_labels[index])
+    return consts.tableColumnsClientFactory.map((column, index) => {
+        column.label = t(consts.columnLabelsClientFactory[index])
         return column
     })
 })
@@ -180,6 +172,8 @@ const columns = computed(() => {
                 </div>
             </q-card-section>
         </q-card>
+
+        <ClientFactoryDrawer />
     </div>
 </template>
 

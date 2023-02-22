@@ -1,13 +1,6 @@
-interface TableColumn {
-    name?: string,
-    required?: boolean,
-    align?: string,
-    field?: string,
-    sortable?: boolean,
-    label?: string
-}
+import { TableColumn } from '../types'
 
-const tableColumnsSearchedList: TableColumn[] = [
+export const tableColumnsClientFactory: TableColumn[] = [
     {
         name: 'office name',
         required: true,
@@ -66,44 +59,13 @@ const tableColumnsSearchedList: TableColumn[] = [
     }
 ]
 
-const tableColumnsSavedCriteriaList: TableColumn[] = [
-    {
-        name: 'search condition name',
-        required: true,
-        align: 'left',
-        field: 'search condition name',
-        sortable: false,
-    },
-    {
-        name: 'registered user',
-        required: true,
-        align: 'left',
-        field: 'registered user',
-        sortable: false,
-    },
-    {
-        name: 'registered Date',
-        required: true,
-        align: 'left',
-        field: 'registered Date',
-        sortable: false,
-    },
-    {
-        name: 'updated user',
-        required: true,
-        align: 'left',
-        field: 'updated user',
-        sortable: false,
-    },
-    {
-        name: 'last modified',
-        required: true,
-        align: 'left',
-        field: 'last modified',
-        sortable: false,
-    }
+export const columnLabelsClientFactory: string[] = [
+    'client.list.name',
+    'client.list.distanceStartingPoint',
+    'client.list.officeLocation',
+    'client.list.phone',
+    'client.list.fax',
+    'client.list.officeMaster',
+    'client.list.clientMaster',
+    'client.list.basicInfo'
 ]
-export default {
-    tableColumnsSearchedList,
-    tableColumnsSavedCriteriaList
-}
