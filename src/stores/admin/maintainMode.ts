@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useMaintainModeStore = defineStore('counter', () => {
+
+export const useMaintainModeStore = defineStore('maintainMode', () => {
   const maintainMode = ref(false)
 
   const setMaintainModeEnabled = () => {

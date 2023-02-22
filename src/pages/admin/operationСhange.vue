@@ -144,7 +144,6 @@
         getMaintainEnabledEvent(db).then(data => {
           if (!data.empty) {
             const currentOperationRef = doc(db, 'maintainModeEvent', data.docs[0].id);
-            console.log(currentOperationRef)
             updateDoc(currentOperationRef, {
               endDate: new Date(),
               totalStopPeriod: date.getDateDiff(new Date(), data.docs[0].data().startDate.toDate(), 'seconds'),
