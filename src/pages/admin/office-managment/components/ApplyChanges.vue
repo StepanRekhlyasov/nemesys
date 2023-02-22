@@ -61,6 +61,7 @@ const formData = reactive({
 
 <style lang="scss" scoped>
 @import "src/css/imports/colors";
+
 .q-card {
     color: $main-purple;
     padding: 20px;

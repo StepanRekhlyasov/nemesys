@@ -214,9 +214,10 @@ export default {
   },
   client: {
     list: {
-      name: '事業所名' + '\r\n' +  'クライアント名',
-      officeMaster: 'クライアントマスタ' + '\r\n' + '存在フラグ',
-      basicInfo: '基本情報' + '\r\n' + '変更済フラグ',
+      name: '事業所名' + ' / ' + 'クライアント名',
+      officeMaster: '事業所マスタ' + ' / ' + '存在フラグ',
+      clientMaster: 'クライアントマスタ' + ' / ' + '存在フラグ',
+      basicInfo: '基本情報' + ' / ' + '変更済フラグ',
       clients: '企業一覧',
       jobs: '求人一覧',
       destination: '送信先',
@@ -893,6 +894,7 @@ export default {
   office: {
     searchConditionName: '検索条件名',
     registeredUser: '登録ユーザー',
+    updatedUser: '更新されたユーザー',
     registeredDate: '登録日時',
     lastModified: '最終更新日時',
     commonItems: '全職種共通項目',
