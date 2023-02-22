@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="show">
-        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
+        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm" />
+        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm" />
       </div>
     </div>
     <template v-if="show">
@@ -53,7 +53,7 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.employmentStatus') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
+        <div class="col-3 q-pl-md blue self-center">
           <span v-if="!edit">{{ applicant.employmentStatus? $t('applicant.list.info.'+applicant.employmentStatus): ''}}</span>
           <q-select v-if="edit" outlined dense :options="employmentStatusOption" v-model="data['employmentStatus']"
             bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
@@ -61,8 +61,14 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.seduser') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.seduser || ''}}</span>
+        <div class="col-3 q-pl-md blue self-center">
+          <span v-if="!edit">{{
+              usersListOption
+                .filter(user => user.value === data['seduser'])
+                .map(user => user.label).join('')
+          }}</span>
+          <q-select v-if="edit" outlined dense :options="usersListOption" v-model="data['seduser']"
+            bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
         </div>
       </div>
 
@@ -70,7 +76,7 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.classiffication') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
+        <div class="col-3 q-pl-md blue self-center">
           <span v-if="!edit">{{ applicant.classiffication || ''}}</span>
           <q-select v-if="edit" outlined dense :options="classificationOption" v-model="data['classification']"
             bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
@@ -78,8 +84,12 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.position') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
+        <div class="col-3 q-pl-md blue self-center">
           <span v-if="!edit">{{ applicant.position || ''}}</span>
+          <div v-if="edit">
+            <q-checkbox size="xs" v-model="data['nursing']" :label="$t('client.add.nurse')" val="nurse" />
+            <q-checkbox size="xs" v-model="data['nursing']" :label="$t('client.add.nursing')" class="q-ml-md" val="nursing" />
+          </div>
         </div>
       </div>
 
@@ -103,8 +113,9 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.period') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.period || ''}}</span>
+        <div class="col-3 q-pl-md blue self-center relative-position">
+          <hidden-text v-if="!edit" :value="applicant.period" />
+          <q-input v-if="edit" outlined dense v-model="data['period']" bg-color="white" />
         </div>
       </div>
 
@@ -112,8 +123,8 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.memo') }}
         </div>
-        <div class="col-9 q-pa-sm blue text-bold">
-          <span v-if="!edit">{{ applicant.addres || ''}}</span>
+        <div class="col-9 q-pa-sm blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.addres" />
           <q-input v-if="edit" outlined dense v-model="data['memo']" bg-color="white" />
         </div>
       </div>
@@ -123,11 +134,16 @@
 
 <script lang="ts">
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { employmentStatus } from 'src/shared/constants/Applicant.const';
 import { segment } from 'src/shared/constants/Item.const';
+import { selectOptions, UserPermissionNames } from 'src/shared/model';
+import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { getFirestore } from '@firebase/firestore';
+import { useOrganization } from 'src/stores/organization';
+import hiddenText from 'src/components/hiddingText.component.vue';
 
 export default {
   name: 'attractionInformationComponent',
@@ -141,12 +157,19 @@ export default {
       required: true
     }
   },
+  components: {
+    hiddenText
+  },
   setup(props) {
+    const db = getFirestore();
+    const organization = useOrganization()
+
     const edit = ref(false);
     const show = ref(false);
     const loading = ref(false);
     const employmentStatusOption = ref(employmentStatus);
     const classificationOption = ref(segment);
+    const usersListOption: Ref<selectOptions []> = ref([])
     const data = ref({
       attractionsStatus: props?.applicant['attractionsStatus'] || '',
       seductionDay: props?.applicant['seductionDay'] || '',
@@ -157,7 +180,29 @@ export default {
       qualification: props?.applicant['qualification'] || [],
       period: props?.applicant['period'] || '',
       memo: props?.applicant['memo'] || '',
+      nursing: props?.applicant['nursing'] || [],
     })
+
+    if (organization.currentOrganizationId){
+      loadUser()
+    }
+
+    function loadUser() {
+      const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+
+      usersSnapshot.then(users => {
+        let list: selectOptions[] = [];
+        users?.forEach((doc) => {
+          const data = doc.data();
+          list.push({
+            label: data.displayName,
+            value: doc.id
+          });
+        });
+        usersListOption.value = list;
+      })
+    }
+
 
     const { t } = useI18n({
       useScope: 'global',
@@ -171,6 +216,7 @@ export default {
       data,
       employmentStatusOption,
       classificationOption,
+      usersListOption,
 
       async save() {
         loading.value = true

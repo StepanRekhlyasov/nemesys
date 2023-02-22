@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="show">
-        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
+        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm" />
+        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit" size="sm" />
+        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm" />
       </div>
     </div>
     <template v-if="show">
@@ -161,7 +161,7 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 
@@ -185,20 +185,22 @@ export default {
     const marriedOptions = ref(marriedStatusList)
     const tattoosOptions = ref(tattoosStatusList)
 
-    const data = ref( {
-      smoking: props?.applicant['smoking'] || '',
-      tattoos: props?.applicant['tattoos'] || '',
-      marriedStatus: props?.applicant['marriedStatus'] || '',
-      liveTogether: props?.applicant['marriedStatus'] || '',
-      cohabitation: props?.applicant['cohabitation'] || '',
-      children: props?.applicant['children'] || '',
-      medicalHistory: props?.applicant['medicalHistory'] || '',
-      vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
-      startCaring: props?.applicant['startCaring'] || '',
-      interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
-      temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
-      startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
-      daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
+    const data = computed(() => {
+      return {
+        smoking: props?.applicant['smoking'] || '',
+        tattoos: props?.applicant['tattoos'] || '',
+        marriedStatus: props?.applicant['marriedStatus'] || '',
+        liveTogether: props?.applicant['marriedStatus'] || '',
+        cohabitation: props?.applicant['cohabitation'] || '',
+        children: props?.applicant['children'] || '',
+        medicalHistory: props?.applicant['medicalHistory'] || '',
+        vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
+        startCaring: props?.applicant['startCaring'] || '',
+        interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
+        temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
+        startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
+        daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
+      }
     })
 
     const { t } = useI18n({

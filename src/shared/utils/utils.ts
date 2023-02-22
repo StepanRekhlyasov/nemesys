@@ -1,6 +1,4 @@
 import { collection, endAt, Firestore, getDocs, orderBy, query, startAt, Timestamp, where, } from 'firebase/firestore';
-import { QVueGlobals } from 'quasar';
-import { Organization } from '../model/Organization.model';
 
 export interface dataObject{
   date: string,
@@ -27,6 +25,7 @@ export const toDate = (timestamp: Timestamp):string => {
 export const differentDateYear = (date1: string, date2: string):number => {
   const d1 = new Date(date1), d2 = new Date(date2);
   const timeDiff = Math.abs(d2.getTime() - d1.getTime());
+  console.log(Math.ceil(timeDiff / (1000 * 3600 )), 'timeDiff')
   return Math.ceil(timeDiff / (1000 * 3600 * 24 * 12 * 30)) - 1;
 }
 
@@ -55,16 +54,6 @@ export const lastMonth = ():string => {
   date.setMonth(date.getMonth()-1);
   return date.toISOString().slice(0, 10);
 };
-
-export const getOrganizationId = ($q: QVueGlobals) => {
-  const organizations: Organization[] | null = $q.localStorage.getItem('organizations');
-  const active_organization: number | null = $q.localStorage.getItem('active_organizations');
-  if (organizations && (active_organization || active_organization == 0)) {
-    return organizations[active_organization].id;
-  }
-  new Error('An error occurred while receiving the user organization.')
-  return ;
-}
 
 // collection
 

@@ -170,6 +170,13 @@ export const PossibleTransportationServicesList = computed(() => [{
   value: 'no'
 }])
 
+export const occupationList = computed(() => [{
+  label: t('client.add.nurse'),
+  value: 'nurse'
+},{
+  label: t('client.add.nursing'),
+  value: 'nursing'
+}])
 
 export const expertiseLevelList = computed(() => [{
   label: t('applicant.attendant.performance'),

@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="show">
-        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
+        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm" />
+        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm" />
       </div>
     </div>
     <template v-if="show">
@@ -84,6 +84,19 @@
         </div>
         <div class="col-3 q-pl-md blue">
           <span v-if="!edit">{{ applicant.applicationDate || ''}}</span>
+          <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="data['applicationDate']" default-view="Years" :options="limitDate">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.gender') }}
@@ -101,8 +114,8 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.tel') }}
         </div>
-        <div class="col-3 q-pl-md blue">
-          <span v-if="!edit">{{ applicant.phone || ''}}</span>
+        <div class="col-3 q-pl-md blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.phone" />
           <q-input v-if="edit" outlined dense v-model="data['phone']" />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -130,15 +143,15 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.email') }}
         </div>
-        <div class="col-3 q-pl-md blue">
-          <span v-if="!edit">{{ applicant.email || ''}}</span>
+        <div class="col-3 q-pl-md blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.email" />
           <q-input v-if="edit" dense outlined bg-color="white" v-model="data['email']" />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.lon') }}
         </div>
-        <div class="col-3 q-pl-md blue">
-          <span v-if="!edit">{{ applicant.lon || ''}}</span>
+        <div class="col-3 q-pl-md blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.lon" />
           <q-input
             v-if="edit"
             outlined
@@ -153,15 +166,15 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.postCode') }}
         </div>
-        <div class="col-3 q-pl-md blue">
-          <span v-if="!edit">{{ applicant.postCode || ''}}</span>
+        <div class="col-3 q-pl-md blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.postCode" />
           <q-input v-if="edit" outlined dense v-model="data['postCode']" bg-color="white" />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.list.info.lat') }}
         </div>
-        <div class="col-3 q-pl-md blue">
-          <span v-if="!edit">{{ applicant.lat || ''}}</span>
+        <div class="col-3 q-pl-md blue relative-position">
+          <hidden-text v-if="!edit" :value="applicant.lat" />
           <q-input
             v-if="edit"
             outlined
@@ -177,7 +190,8 @@
           {{ $t('applicant.list.info.addres') }}
         </div>
         <div class="col-9 q-pa-sm">
-          <span v-if="!edit">{{ applicant.addres || ''}}</span>
+          <hidden-text v-if="!edit" :value="applicant.addres" />
+          <q-input v-if="edit" outlined dense v-model="data['addres']" />
         </div>
       </div>
     </template>
@@ -189,6 +203,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { applicationMethod, employmentStatus } from 'src/shared/constants/Applicant.const';
+import hiddenText from 'src/components/hiddingText.component.vue';
 
 export default {
   name: 'ApplicantInformationComponent',
@@ -201,6 +216,9 @@ export default {
       type: Function,
       required: true
     }
+  },
+  components: {
+    hiddenText
   },
   setup(props) {
     const edit = ref(false);

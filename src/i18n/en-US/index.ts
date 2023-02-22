@@ -127,6 +127,7 @@ export default {
       inquiry: 'Inquiry',
       userList: 'User list',
       userSearch: 'User search',
+      operationChange: 'Operation Change',
     }
   },
   settings: {
@@ -839,7 +840,10 @@ export default {
       endDate: 'End Date',
       companyInCharge: 'Company in Charge',
       operationMemo: 'Memo',
-      operatingSites: '■Operating Sites'
+      operatingSites: '■Operating Sites',
+
+      // Memo Tab
+      content: 'Content'
     }
   },
   prefectures: {
@@ -977,4 +981,26 @@ export default {
     'auth/wrong-password': 'Invalid username or password',
     'auth/email-already-in-use': 'Email adrress already in use',
   },
+  devMode: {
+    title: 'is currently temporarily out of operation.',
+    subtitle: 'Please contact us for further information.',
+    phone: 'TEL: xxx-xxxx-xxxx',
+    email: 'MAIL: xxx@xxx.com'
+  },
+  operationChange: {
+    active: 'nemesys is now up and running.',
+    disabled: 'nemesys is stopped',
+    resume: 'System operation resume',
+    stop: 'system outage',
+    working: 'working, valid',
+    stopped: 'stopped',
+    information: {
+      continiousOperatingTime: 'Сontinious operating time',
+      maxOperatingTime: 'Maximum continuous operation time',
+      totalHoursWorked: 'Total hours worked',
+      continiousStopTime: 'Continuous stop time',
+      maxStopTime: 'Maximum continuous stop time',
+      totalStoppedTime: 'Total stopped time'
+    }
+  }
 };

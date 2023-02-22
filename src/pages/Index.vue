@@ -1,5 +1,6 @@
 <template>
   <q-page class="flex flex-center">
+
     <img
       :alt="$t('systemName') + ' Logo'"
       src="~assets/CLI_dot.png"

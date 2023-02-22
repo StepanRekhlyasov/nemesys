@@ -4,6 +4,7 @@ import clientRouters from './clients.router';
 import applicantRouters from './applicant.router';
 import adminRouters from './admin.router';
 import { routeNames } from './routeNames';
+import { UserPermissionNames } from 'src/shared/model';
 
 const routes: MenuRouter[] = [{
   path: routeNames.main,
@@ -31,9 +32,13 @@ const routes: MenuRouter[] = [{
 {
   path: routeNames.admin,
   component: () => import('layouts/AdminLayout.vue'),
+  meta:{
+    permission: [UserPermissionNames.AdminPageAccess],
+    requiresAuth: true,
+  },
   children: [
     ...adminRouters,
-  ]
+  ],
 }
 ]
 

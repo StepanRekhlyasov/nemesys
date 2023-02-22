@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="showDesired">
-        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" />
+        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" size="sm"/>
+        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" size="sm"/>
       </div>
     </div>
 
@@ -78,7 +78,7 @@
           {{ $t('applicant.attendant.shiftRemarks') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!desiredEdit" class="text_dots">{{ applicant.shiftRemarks }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.shiftRemarks" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['shiftRemarks']" :disable="loading" />
         </div>
@@ -92,25 +92,14 @@
         </div>
         <div class="col-3 q-pl-md blue ">
           <span v-if="!desiredEdit">{{ applicant.meansCommuting }}</span>
-          <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="desiredData['meansCommuting']"  :disable="loading">
-            <template v-slot:prepend>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="desiredData['meansCommuting']" mask="YYYY/MM/DD">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <q-input v-if="desiredEdit" dense outlined bg-color="white"
+            v-model="desiredData['meansCommuting']" :disable="loading" />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.nearestStation') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.nearestStation }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['nearestStation']" :disable="loading" />
         </div>
@@ -121,7 +110,7 @@
           {{ $t('applicant.attendant.commutingTime') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.commutingTime }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.commutingTime" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['commutingTime']" :disable="loading" />
         </div>
@@ -129,7 +118,7 @@
           {{ $t('applicant.attendant.route') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.route }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.route" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['route']" :disable="loading"/>
         </div>
@@ -140,7 +129,7 @@
           {{ $t('applicant.attendant.commutingTimeRemarks') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!desiredEdit" class="text_dots">{{ applicant.commutingTimeRemarks }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.commutingTimeRemarks" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['commutingTimeRemarks']" :disable="loading" />
         </div>
@@ -213,12 +202,16 @@
 <script lang="ts">
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
+import hiddenText from 'src/components/hiddingText.component.vue';
 
 export default {
   name: 'desiredConditions',
+  components: {
+    hiddenText
+  },
   props: {
     applicant: {
       type: Object,
@@ -237,21 +230,23 @@ export default {
     const loading = ref(false);
     const transportationServicesOptions = ref(PossibleTransportationServicesList)
 
-    const desiredData = ref({
-      timeToWork: props.applicant['timeToWork'] || '',
-      daysToWork: props.applicant['daysToWork'] || '',
-      daysPerWeek: props.applicant['daysPerWeek'] || [],
-      specialDay: props.applicant['specialDay'] || [],
-      shiftRemarks: props.applicant['shiftRemarks'] || '',
-      meansCommuting: props.applicant['meansCommuting'] || '',
-      nearestStation: props.applicant['nearestStation'] || '',
-      commutingTime: props.applicant['commutingTime'] || '',
-      commutingTimeRemarks: props.applicant['commutingTimeRemarks'] || '',
-      facilityDesired: props.applicant['facilityDesired'] || '',
-      ngFacilityType: props.applicant['ngFacilityType'] || '',
-      hourlyRate: props.applicant['hourlyRate'] || '',
-      transportationServices: props.applicant['transportationServices'] || '',
-      jobSearchPriorities: props.applicant['jobSearchPriorities'] || [],
+    const desiredData = computed(() => {
+      return {
+        timeToWork: props.applicant['timeToWork'] || '',
+        daysToWork: props.applicant['daysToWork'] || '',
+        daysPerWeek: props.applicant['daysPerWeek'] || [],
+        specialDay: props.applicant['specialDay'] || [],
+        shiftRemarks: props.applicant['shiftRemarks'] || '',
+        meansCommuting: props.applicant['meansCommuting'] || '',
+        nearestStation: props.applicant['nearestStation'] || '',
+        commutingTime: props.applicant['commutingTime'] || '',
+        commutingTimeRemarks: props.applicant['commutingTimeRemarks'] || '',
+        facilityDesired: props.applicant['facilityDesired'] || '',
+        ngFacilityType: props.applicant['ngFacilityType'] || '',
+        hourlyRate: props.applicant['hourlyRate'] || '',
+        transportationServices: props.applicant['transportationServices'] || '',
+        jobSearchPriorities: props.applicant['jobSearchPriorities'] || [],
+      }
     })
 
     const { t } = useI18n({

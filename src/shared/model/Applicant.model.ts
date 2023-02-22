@@ -1,3 +1,5 @@
+import { User } from 'firebase/auth';
+
 export interface ApplicantExperience {
   id: string;
   experience: string;
@@ -14,4 +16,15 @@ export interface ApplicantExperience {
 export enum EmploymentStatus {
   'working',
   'notWorking'
+}
+
+
+export interface ApplicantMemo {
+  id?: string;
+  created_user: string;
+  content: string;
+  user: User;
+  created_date: string;
+  updated_date?: string;
+  delited: boolean;
 }

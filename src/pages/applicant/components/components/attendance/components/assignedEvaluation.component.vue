@@ -11,14 +11,14 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="show">
-        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" />
+        <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm"/>
+        <q-btn v-if="edit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm"/>
       </div>
     </div>
     <template v-if="show">
       <div class="row q-pa-sm ">
-        <span class="col-3 text-right text-blue text-weight-regular self-center text-subtitle1">[{{ $t('applicant.attendant.attendeeEvaluation') }}]</span>
+        <span class="col-3 text-blue text-weight-regular self-center text-subtitle1">[{{ $t('applicant.attendant.attendeeEvaluation') }}]</span>
       </div>
 
       <div class="row q-pb-sm">
@@ -52,7 +52,7 @@
       </div>
 
       <div class="row q-pa-sm ">
-        <span class="col-3 text-right text-blue text-weight-regular self-center text-subtitle1">[{{ $t('applicant.attendant.otherRemarks') }} ]</span>
+        <span class="col-3 text-blue text-weight-regular self-center text-subtitle1">[{{ $t('applicant.attendant.otherRemarks') }} ]</span>
       </div>
 
       <div class="row q-pb-sm">
@@ -74,7 +74,7 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 
@@ -95,10 +95,12 @@ export default {
     const show = ref(false);
     const expertiseLevelOptions = ref(expertiseLevelList)
     const loading = ref(false);
-    const data = ref( {
-      language: props?.applicant['language'] || '',
-      attendingDate: props?.applicant['attendingDate'] || '',
-      staffRank: props?.applicant['staffRank'] || '',
+    const data =  computed(() => {
+      return {
+        language: props?.applicant['language'] || '',
+        attendingDate: props?.applicant['attendingDate'] || '',
+        staffRank: props?.applicant['staffRank'] || '',
+      }
     })
 
     const { t } = useI18n({

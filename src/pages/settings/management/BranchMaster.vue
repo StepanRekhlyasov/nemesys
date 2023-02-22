@@ -107,15 +107,16 @@
 
 <script lang="ts">
 import { doc, getFirestore, updateDoc} from '@firebase/firestore';
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt } from 'src/shared/model/Accaunt.model';
 import { BranchesSearch, getBranches } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
-import { getOrganizationId, toDateObject } from 'src/shared/utils/utils';
+import { toDateObject } from 'src/shared/utils/utils';
 import BranchCreateForm from './components/BranchCreate.form.vue';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useOrganization } from 'src/stores/organization';
 export default {
   name: 'branchMaster',
   components: {
@@ -199,14 +200,19 @@ export default {
       value: branchFlags.All
     }])
 
+    const organization  = useOrganization()
+
+    watch(()=> organization.currentOrganizationId, ()=>{
+      loadBranchesList()
+    })
+
     loadBranchesList()
     async function loadBranchesList() {
       loading.value = true;
       editBranch.value=undefined;
       try {
-        const active_organization_id = getOrganizationId($q)
-        if (active_organization_id) {
-          const branchesSnapshot = getBranches(db, active_organization_id, search.value);
+        if (organization.currentOrganizationId) {
+          const branchesSnapshot = getBranches(db, organization.currentOrganizationId, search.value);
 
           branchesSnapshot.then(branch => {
             const list: Branch[] = []
@@ -249,8 +255,7 @@ export default {
         }).onOk(async () => {
           try{
             loading.value = true;
-            const active_organization_id = getOrganizationId($q)
-            const boRef = doc(db, 'organization/'+active_organization_id+'/branch/'+branch.id);
+            const boRef = doc(db, 'organization/'+organization.currentOrganizationId+'/branch/'+branch.id);
             await updateDoc(boRef, {
               deleted: true
             })

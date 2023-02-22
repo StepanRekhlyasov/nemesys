@@ -127,6 +127,7 @@ export default {
       inquiry: '問い合わせ',
       userList: 'ユーザー一覧表示',
       userSearch: 'ユーザー検索',
+      operationChange: '稼働変更',
     }
   },
   settings: {
@@ -814,7 +815,7 @@ export default {
       startCaring: '選考状況備考',
       interviewsWaitingList: '面接待ち件数',
       temporaryCompaniesRegistered: '派遣登録社数',
-      startedInCaregiving: '介護を始めたきっかけ',
+      startedInCaregiving: '選考状況備考',
       items: '件',
       daysVisitAtWork: '当社での職場見学可能日',
 
@@ -838,7 +839,10 @@ export default {
       endDate: '終了日',
       companyInCharge: '稼働担当社',
       operationMemo: 'メモ',
-      operatingSites: '■稼働先事業所'
+      operatingSites: '■稼働先事業所',
+
+      // Memo Tab
+      content: '内容'
     }
   },
   prefectures: {
@@ -973,4 +977,26 @@ export default {
     'auth/invalid-password': 'メールアドレスまたはパスワードが違います',
     'auth/wrong-password': 'メールアドレスまたはパスワードが違います',
   },
+  devMode: {
+    title: 'は現在一時的に稼働を停止しています。',
+    subtitle: 'お問合せはこちらにご連絡ください。',
+    phone: 'TEL: xxx-xxxx-xxxx',
+    email: 'MAIL: xxx@xxx.com',
+  },
+  operationChange: {
+    active: 'nemesysは現在稼働中です。',
+    disabled: 'nemesys停止中',
+    resume: 'システム稼働再開',
+    stop: 'システム稼働停止',
+    working: '稼働中',
+    stopped: '停止中',
+    information: {
+      continiousOperatingTime: '連続稼働時間',
+      maxOperatingTime: '最大連続稼働時間',
+      totalHoursWorked: '総稼働時間',
+      continiousStopTime: '連続停止時間',
+      maxStopTime: '最大連続停止時間',
+      totalStoppedTime: '総停止時間'
+    }
+  }
 };
