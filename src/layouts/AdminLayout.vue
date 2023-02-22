@@ -58,6 +58,8 @@ import { defineComponent, ref } from 'vue';
 import { getFirestore, doc, getDoc} from '@firebase/firestore';
 import { Role, User } from 'src/shared/model/Accaunt.model';
 import  AdminMenu  from 'src/components/AdminMenu.vue'
+import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
+import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils';
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -78,7 +80,12 @@ export default defineComponent({
     const name = ref('');
 
 
-
+    const store = useMaintainModeStore()
+    getMaintainEnabledEvent(db).then(data => {
+      if (data.empty) {
+        store.setMaintainModeDisabled()
+      } else store.setMaintainModeEnabled()
+    })
 
     // if we want to get the user details, this is how its done
     onAuthStateChanged(auth, async (user) => {

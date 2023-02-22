@@ -69,6 +69,7 @@
     <q-separator />
 
     <q-drawer
+      v-if="!isDevMode"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -100,8 +101,9 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-grey-1 flex">
-      <template v-for="parent in menuParent" :key="parent.title">
+    <q-page-container class="bg-grey-1 flex" >
+      <div v-if="!isDevMode">
+      <template v-for="parent in menuParent" :key="parent.title" >
         <q-list
           class="menu_slidebar q-pa-none"
           :class="{'active': parent.type == active_menu}">
@@ -133,14 +135,31 @@
           </template>
         </q-list>
       </template>
+    </div>
       <div class="main_content shadow-5" :class="{'open_left_slidebar': openLeftSlidebar}">
-        <router-view />
+        <q-page v-if="isDevMode" class="row flex-center">
+            <div class="col-4 ">
+            <p class="text-h6 text-weight-bolder text-center">nemesys{{$t('devMode.title')}} <br/> {{$t('devMode.subtitle')}}</p>
+            <p class="text-h6 text-weight-bolder header q-mb-none text-center" >
+              {{$t('devMode.phone')}}
+            </p>
+            <p class="text-h6 text-weight-bolder header text-center" >
+              {{$t('devMode.email')}}
+            </p>
+          </div>
+
+        </q-page>
+        <router-view v-else />
       </div>
+
     </q-page-container>
+
+
   </q-layout>
 </template>
 
 <script lang="ts">
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -153,6 +172,8 @@ import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
+import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils'
+import { useMaintainModeStore } from 'src/stores/admin/maintainMode'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
 import { useOrganization } from 'src/stores/organization';
@@ -183,6 +204,14 @@ export default defineComponent({
     const permissions = ref([] as UserPermissionNames[])
     const linksList: MenuItem[] =  RouterToMenu(routes);
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
+
+    const store = useMaintainModeStore()
+    const isDevMode = computed(() => store.maintainMode);
+    getMaintainEnabledEvent(db).then(data => {
+      if (data.empty) {
+        store.setMaintainModeDisabled()
+      } else store.setMaintainModeEnabled()
+    })
 
     if (router.currentRoute.value.meta.parent) {
       active_menu.value = router.currentRoute.value.meta.parent as string | undefined;
@@ -285,6 +314,7 @@ export default defineComponent({
       permissionMenuItem,
       isPermission,
       switchOrganization,
+      isDevMode
     };
   },
 });
