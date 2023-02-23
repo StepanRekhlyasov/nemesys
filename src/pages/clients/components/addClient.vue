@@ -301,6 +301,7 @@ import { useI18n } from 'vue-i18n';
 import { addDoc, collection, serverTimestamp, getFirestore } from 'firebase/firestore';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { geohashForLocation } from 'geofire-common';
 
 export default {
   name: 'addClient',
@@ -321,6 +322,19 @@ export default {
       if (!data['name']) {
         Alert.warning($q, t)
         return false
+      }
+
+      try {
+        data['geohash'] = geohashForLocation([data['lat'], data['lon']]);
+      }
+      catch (err) {
+        $q.notify({
+          textColor: 'white',
+          color: 'red-5',
+          icon: 'warning',
+          message: 'invalid lat or lon',
+        });
+        return
       }
       data['created_at'] = serverTimestamp();
       data['updated_at'] = serverTimestamp();
