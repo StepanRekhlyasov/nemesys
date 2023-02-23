@@ -18,6 +18,7 @@
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^9.0.2",
+    "geofire-common": "^6.0.0",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "uninstall": "^0.0.0",
@@ -58,8 +59,8 @@
     "yarn": ">= 1.21.1"
   },
   "husky": {
-      "hooks": {
-          "pre-commit": "pretty-quick --staged --pattern='frontend/oog-redesign/src/**/*.*(ts|tsx|scss)' --ignore-path='frontend/oog-redesign/.prettierignore'"
-      }
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --pattern='frontend/oog-redesign/src/**/*.*(ts|tsx|scss)' --ignore-path='frontend/oog-redesign/.prettierignore'"
+    }
   }
 }
