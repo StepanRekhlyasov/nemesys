@@ -23,7 +23,7 @@
           no-caps
           class="q-py-none text-weight-bold text-caption"
           :disable="isDevMode"
-          @click="stopOperation"
+          @click="openDialog=true;"
           >
           {{ $t('operationChange.stop') }}
         </q-btn>
@@ -46,6 +46,9 @@
       </div>
     </div>
   </div>
+  <q-dialog v-model="openDialog">
+    <DialogFormOperationChange :operationDocs="operationDocs" @closeDialog="openDialog=false;"/>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -57,10 +60,14 @@
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
+  import DialogFormOperationChange from './components/dialogForm.vue'
 
   export default {
     name: 'OperationСhangePage',
 
+    components: {
+      DialogFormOperationChange
+    },
     setup() {
       const $q = useQuasar();
       const { t } = useI18n({ useScope: 'global' });
@@ -69,6 +76,8 @@
       const isDevMode = computed(() => store.maintainMode);
       const operationDocs: Ref<QueryDocumentSnapshot<DocumentData>[]> = ref([])
       const user :User | null = $q.localStorage.getItem('userData');
+
+      const openDialog = ref(false);
 
       const information =  ref({
           continiousOperatingTime: '',
@@ -161,7 +170,9 @@
         isDevMode,
         information,
         stopOperation,
-        resumeOperation
+        resumeOperation,
+        openDialog,
+        operationDocs
       }
     }
   }
