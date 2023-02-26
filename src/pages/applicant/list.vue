@@ -173,7 +173,7 @@
             </div>
           </q-card-section>
 
-          <q-card-section class="q-pt-none">
+          <q-card-section class="q-pt-none" v-if="drawerRight">
             <detailComponent :applicant="selectedApplicant" :updateApplicant="updateApplicant"/>
           </q-card-section>
         </q-card>
