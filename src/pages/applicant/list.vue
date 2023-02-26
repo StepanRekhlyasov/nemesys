@@ -81,105 +81,102 @@
             />
           </div>
       </q-card-section>
-
     </q-card>
-
-
-    <q-drawer
-      v-model="drawerRight"
-      show
-      class="bg-grey-3"
-      :width="1000"
-      :breakpoint="500"
-      side="right"
-      overlay elevated
-      bordered
-      >
-      <q-scroll-area
-        class="fit text-left"
-        v-if="selectedApplicant">
-        <q-card class="no-shadow bg-grey-3">
-          <q-card-section class="text-white bg-primary rounded-borders" >
-            <div class="row">
-              <div class="col-2 flex items-start">
-                <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
-                <q-img
-                  v-if="selectedApplicant.imageURL"
-                  :src="selectedApplicant.imageURL"
-                  spinner-color="white"
-                  style="height: 90px; max-width: 90px"
-                />
-              </div>
-              <div class="col-10">
-                <div class="row">
-                  <div class="col-9 flex items-center">
-                    <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex)}}
-                  </div>
-                  <div class="col-3">
-                    <span class="row">{{  selectedApplicant.municipalities }} {{ selectedApplicant.street }}</span>
-                    <span class="row">{{ selectedApplicant.apartment }}</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <span class="q-pr-md">{{$t('applicant.add.applicationDate')}}: {{selectedApplicant.applicationDate}}</span>
-                </div>
-                <div class="row">
-                  <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: {{ selectedApplicant.media ? selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}</span>
-                  <span class="col-3">TEL: {{selectedApplicant.phone}}</span>
-                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{selectedApplicant.occupation && $t('applicant.add.'+selectedApplicant.occupation)}}</span>
-                </div>
-                <div class="row">
-                  <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
-                  <span class="col-3">MAIL: {{selectedApplicant.email}}</span>
-                  <span class="col-3"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.status && $t('applicant.statusOption.'+selectedApplicant.status)}}</span>
-                </div>
-              </div>
-            </div>
-          </q-card-section>
-          <q-separator />
-
-          <q-card-section class="bg-white q-ma-md">
-            <div class="row q-pb-sm">
-              <div class="col-6 row">
-                <div class="col-6 text-right text-primary text-weight-regular"> {{$t('applicant.list.qualification')}} </div>
-                <div class="col-6 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') }}  </div>
-              </div>
-              <div class="col-4 row">
-                <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
-                <span class="col-6 q-pl-md">{{ selectedApplicant.experience }}</span>
-              </div>
-              <div class="col-2 text-right" >
-                <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary"/>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6 row">
-                <div class="col-6 text-right">
-                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursEarly?'●': '✕' }}</span>
-                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursDay?'●': '✕' }}</span>
-                </div>
-                <div class="col-6">
-                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursLate?'●': '✕' }}</span>
-                  <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursNight?'●': '✕' }}</span>
-                </div>
-              </div>
-              <div class="col-4 row">
-                <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays') }}</span>
-                <span class="col-6">{{ selectedApplicant.availableDays }}</span>
-              </div>
-              <div class="col-2 text-right" >
-                <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary"/>
-              </div>
-            </div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none" v-if="drawerRight">
-            <detailComponent :applicant="selectedApplicant" :updateApplicant="updateApplicant"/>
-          </q-card-section>
-        </q-card>
-      </q-scroll-area>
-    </q-drawer>
   </div>
+  <q-drawer
+    v-model="drawerRight"
+    show
+    class="bg-grey-3"
+    :width="1000"
+    :breakpoint="500"
+    side="right"
+    overlay elevated
+    bordered
+    >
+    <q-scroll-area
+      class="fit text-left"
+      v-if="selectedApplicant">
+      <q-card class="no-shadow bg-grey-3">
+        <q-card-section class="text-white bg-primary rounded-borders" >
+          <div class="row">
+            <div class="col-2 flex items-start">
+              <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
+              <q-img
+                v-if="selectedApplicant.imageURL"
+                :src="selectedApplicant.imageURL"
+                spinner-color="white"
+                style="height: 90px; max-width: 90px"
+              />
+            </div>
+            <div class="col-10">
+              <div class="row">
+                <div class="col-9 flex items-center">
+                  <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex)}}
+                </div>
+                <div class="col-3">
+                  <span class="row">{{  selectedApplicant.municipalities }} {{ selectedApplicant.street }}</span>
+                  <span class="row">{{ selectedApplicant.apartment }}</span>
+                </div>
+              </div>
+              <div class="row">
+                <span class="q-pr-md">{{$t('applicant.add.applicationDate')}}: {{selectedApplicant.applicationDate}}</span>
+              </div>
+              <div class="row">
+                <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: {{ selectedApplicant.media ? selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}</span>
+                <span class="col-3">TEL: {{selectedApplicant.phone}}</span>
+                <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{selectedApplicant.occupation && $t('applicant.add.'+selectedApplicant.occupation)}}</span>
+              </div>
+              <div class="row">
+                <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
+                <span class="col-3">MAIL: {{selectedApplicant.email}}</span>
+                <span class="col-3"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.status && $t('applicant.statusOption.'+selectedApplicant.status)}}</span>
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-separator />
+
+        <q-card-section class="bg-white q-ma-md">
+          <div class="row q-pb-sm">
+            <div class="col-6 row">
+              <div class="col-6 text-right text-primary text-weight-regular"> {{$t('applicant.list.qualification')}} </div>
+              <div class="col-6 q-pl-md"> {{ selectedApplicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') }}  </div>
+            </div>
+            <div class="col-4 row">
+              <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
+              <span class="col-6 q-pl-md">{{ selectedApplicant.experience }}</span>
+            </div>
+            <div class="col-2 text-right" >
+              <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 row">
+              <div class="col-6 text-right">
+                <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursEarly?'●': '✕' }}</span>
+                <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursDay?'●': '✕' }}</span>
+              </div>
+              <div class="col-6">
+                <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursLate?'●': '✕' }}</span>
+                <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursNight?'●': '✕' }}</span>
+              </div>
+            </div>
+            <div class="col-4 row">
+              <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays') }}</span>
+              <span class="col-6">{{ selectedApplicant.availableDays }}</span>
+            </div>
+            <div class="col-2 text-right" >
+              <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary"/>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none" v-if="drawerRight">
+          <detailComponent :applicant="selectedApplicant" :updateApplicant="updateApplicant"/>
+        </q-card-section>
+      </q-card>
+    </q-scroll-area>
+  </q-drawer>
 </template>
 
 

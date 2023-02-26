@@ -1,22 +1,22 @@
 <template>
   <q-card class="no-shadow full-width">
-    <q-card-section class="q-pa-xs q-mb-none">
+    <q-card-section class="q-pa-none q-mb-none">
       <attendanceInfoComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
     </q-card-section>
 
-    <q-card-section class="q-pa-xs q-mb-none">
+    <q-card-section class="q-pa-none q-mb-none">
       <desiredConditionsComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
     </q-card-section>
 
-    <q-card-section class="q-pa-xs q-mb-none">
+    <q-card-section class="q-pa-none q-mb-none">
       <workExperienceComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
     </q-card-section>
 
-    <q-card-section class="q-pa-xs q-mb-none">
+    <q-card-section class="q-pa-none q-mb-none">
       <personalStatusComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
     </q-card-section>
 
-    <q-card-section class="q-pa-xs q-mb-none">
+    <q-card-section class="q-pa-none q-mb-none">
       <assignedEvaluationComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
     </q-card-section>
   </q-card>
