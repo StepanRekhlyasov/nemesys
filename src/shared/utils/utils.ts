@@ -4,6 +4,7 @@ export interface dataObject{
   date: string,
   time: string
 }
+export const pick = (obj: object, keys: string[]) => keys.reduce((acc, n) => (obj.hasOwnProperty(n) && (acc[n] = obj[n]), acc), {});
 
 export const sortDate = (a:dataObject, b:dataObject)=>{
   return a.date.localeCompare(b.date)

@@ -697,7 +697,52 @@ export default {
         workDay: '職見日',
         informalOfferDate: '内定日',
         hiringDate: '入職日',
-        memo: 'メモ',
+        save: '選考情報保存',
+        client: 'クライアント',
+        office: '事業所',
+        status: 'FIXステータス',
+        date: 'FIX日',
+        reason: 'FIXNG理由',
+        contactPerson: 'FIX担当者',
+        memo: 'FIXメモ',
+        info: '■FIX情報',
+        jobSearchInfo: '■ 職見情報',
+        jobOffersInfo: '■内定情報',
+        employmentInfo: '■入職情報',
+        inspectionStatus :'職見ステータス',
+        inspectionDate: '職見日',
+        inspectionRecord: '職見記録',
+        reasonNG: '職見NG理由',
+        chargeOfFacility: '施設担当者',
+        jobTitle: '役職',
+        contact: '連絡先',
+        comments: '感想（A-E）',
+        notesInspection: '職見メモ',
+        inspection: {
+          status :'職見ステータス',
+          date: '職見日',
+          record: '職見記録',
+          reasonNG: '職見NG理由',
+          chargeOfFacility: '施設担当者',
+          jobTitle: '役職',
+          contact: '連絡先',
+          comments: '感想（A-E）',
+          notes: '職見メモ',
+        },
+        offer:{
+          status: '内定ステータス',
+          date: '内定日',
+          reasonNG: '内定NG理由',
+          chargeOfOffer: '内定担当者',
+          memo: '内定メモ'
+        },
+        admission: {
+          status: '入職ステータス',
+          date: '入職日',
+          reasonNotJoining: '入職NG理由',
+          chargeOfAdmission: '入職担当者',
+          memo: '入職メモ'
+        }
       },
       info: {
         date: '応募日',
@@ -839,7 +884,7 @@ export default {
       endDate: '終了日',
       companyInCharge: '稼働担当社',
       operationMemo: 'メモ',
-      operatingSites: '■稼働先事業所',
+      operatingSites: '稼働先事業所',
 
       // Memo Tab
       content: '内容'

@@ -44,199 +44,35 @@
 
     </q-table>
 
-
-    <q-drawer v-model="drawerRight" show :width="800" :breakpoint="500" side="right" overlay elevated bordered>
-      <q-scroll-area class="fit text-left"><!-- v-if="selectedApplicant" -->
-        <q-card class="no-shadow">
-          <q-card-section class="text-white bg-grey-3 rounded-borders">
-            <div class="row">
-              <div class="col-12 flex items-start">
-                <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md" color="black" />
-                <span class="text-primary text-h6"> {{ $t('applicant.list.fixEmployment.fixDestinationOffice') }}
-                </span>
-              </div>
-            </div>
-          </q-card-section>
-          <q-separator />
-
-
-          <q-card-section>
-            <div class="row">
-              <div class="col-2 flex justify-end q-pa-sm">
-                {{ $t('applicant.list.fixEmployment.fixedDestination') }}
-              </div>
-              <div class="col-5 q-pl-sm">
-                <q-select outlined dense :options="options" v-model="fixData['fixedDestination']" />
-              </div>
-            </div>
-
-            <div class="row q-mt-sm">
-              <div class="col-2 flex justify-end q-pa-sm">
-                {{ $t('applicant.list.fixEmployment.fixDate') }}
-              </div>
-              <div class="col-10 q-pl-sm">
-                <div class="row">
-                  <div class="col-6">
-                    <q-input outlined v-model="fixData['fixDate']" mask="date" dense>
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-date v-model="fixData['fixDate']" minimal>
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                  <div class="col-6 q-pl-sm">
-                    <div>
-                      <q-radio v-model="fixData['fixDateStatus']" val="ok" label="OK" @click="fixData['fixDateNGReason'] = ''"/>
-                      <q-radio v-model="fixData['fixDateStatus']" val="ng" label="NG" class="q-ml-sm" />
-                    </div>
-                  </div>
-                  <div class="col-12 q-pa-sm" v-if="fixData['fixDateStatus'] == 'ng'">
-                      <q-input outlined dense v-model="fixData['fixDateNGReason']" class="bg-white" />
-                    </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row q-mt-sm">
-              <div class="col-2 flex justify-end q-pa-sm">
-                {{ $t('applicant.list.fixEmployment.workDay') }}
-              </div>
-              <div class="col-10 q-pl-sm">
-                <div class="row">
-                  <div class="col-6">
-                    <q-input outlined v-model="fixData['workDay']" mask="date" dense>
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-date v-model="fixData['workDay']" minimal>
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                  <div class="col-6 q-pl-sm">
-                    <div>
-                      <q-radio v-model="fixData['workDayStatus']" val="ok" label="OK" @click="fixData['workDayNGReason'] = ''"/>
-                      <q-radio v-model="fixData['workDayStatus']" val="ng" label="NG" class="q-ml-sm" />
-                    </div>
-                  </div>
-                  <div class="col-12 q-pa-sm" v-if="fixData['workDayStatus'] == 'ng'">
-                      <q-input outlined dense v-model="fixData['workDayNGReason']" class="bg-white" />
-                    </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row q-mt-sm">
-              <div class="col-2 flex justify-end q-pa-sm">
-                {{ $t('applicant.list.fixEmployment.informalOfferDate') }}
-              </div>
-              <div class="col-10 q-pl-sm">
-                <div class="row">
-                  <div class="col-6">
-                    <q-input outlined v-model="fixData['informalOfferDate']" mask="date" dense>
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-date v-model="fixData['informalOfferDate']" minimal>
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                  <div class="col-6 q-pl-sm">
-                    <div>
-                      <q-radio v-model="fixData['informalOfferStatus']" val="ok" label="OK" @click="fixData['informalOfferNGReason'] = ''"/>
-                      <q-radio v-model="fixData['informalOfferStatus']" val="ng" label="NG" class="q-ml-sm" />
-                    </div>
-                  </div>
-                  <div class="col-12 q-pa-sm" v-if="fixData['informalOfferStatus'] == 'ng'">
-                      <q-input outlined dense v-model="fixData['informalOfferNGReason']" class="bg-white" />
-                    </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row q-mt-sm">
-              <div class="col-2 flex justify-end q-pa-sm">
-                {{ $t('applicant.list.fixEmployment.hiringDate') }}
-              </div>
-              <div class="col-10 q-pl-sm">
-                <div class="row">
-                  <div class="col-6">
-                    <q-input outlined v-model="fixData['hiringDate']" mask="date" dense>
-                      <template v-slot:append>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-date v-model="fixData['hiringDate']" minimal>
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
-                  </div>
-                  <div class="col-6 q-pl-sm">
-                    <div>
-                      <q-radio v-model="fixData['hiringStatus']" val="ok" label="OK" @click="fixData['hiringNGReason'] = ''"/>
-                      <q-radio v-model="fixData['hiringStatus']" val="ng" label="NG" class="q-ml-sm" />
-                    </div>
-                  </div>
-                  <div class="col-12 q-pa-sm" v-if="fixData['hiringStatus'] == 'ng'">
-                      <q-input outlined dense v-model="fixData['hiringNGReason']" class="bg-white" />
-                    </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-2 flex justify-end q-pa-sm">
-                {{ $t('applicant.list.fixEmployment.memo') }}
-              </div>
-              <div class="col-10 q-pa-sm">
-                <q-input outlined dense v-model="fixData['fixedDestination']" type="textarea" row="2" />
-              </div>
-            </div>
-
-
-          </q-card-section>
-        </q-card>
-      </q-scroll-area>
-    </q-drawer>
-
   </q-card>
+
+<q-drawer
+  v-model="drawerRight"
+  show :width="800"
+  :breakpoint="500" side="right"
+  overlay elevated
+  bordered>
+  <FixEmployCreate
+    :fixData="fixData"
+    @close="drawerRight=false"
+    :applicant="applicant"
+    @updateList="loadContactData"
+    @updateDoc="updateData"/>
+</q-drawer>
 </template>
 
 <script>
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount } from 'vue';
-import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
+import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
-
-//import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
-//import { teleAppointmentData } from 'src/shared/constants/TeleAppoint.const';
+import FixEmployCreate from './components/fixEmployCreate.component.vue'
 
 export default {
   name: 'contactInfo',
   components: {
+    FixEmployCreate
   },
 
   props: {
@@ -325,8 +161,6 @@ export default {
     const unsubscribe = ref();
     const unsubscribeUsers = ref();
 
-    const dialogType = ref('create')
-
     loadContactData()
     function loadContactData() {
       const q = query(collection(db, 'applicants/' + props.applicant.id + '/contacts'), where('deleted', '==', false), orderBy('created_at', 'desc'));
@@ -359,12 +193,10 @@ export default {
       });
     }
 
-
     onBeforeUnmount(() => {
       unsubscribe.value();
       unsubscribeUsers.value();
     });
-
 
     return {
       columns,
@@ -378,72 +210,17 @@ export default {
       fixData,
 
       options,
-
-      async onSubmit() {
-        loading.value = true;
-        let data = contactData.value;
-        if (!data['contactMethod']) {
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
-          return
-
+      loadContactData,
+      async updateData(data){
+        console.log(fixData.value.id)
+        if (fixData.value.id){
+          await updateDoc(
+            doc(db, 'applicants/' + props.applicant.id + '/contacts/'+ fixData.value.id),
+            data
+          );
         }
-        const user = $q.localStorage.getItem('user');
-
-        try {
-          if (dialogType.value == 'update') {
-            let updateData = {}
-            updateData['updated_at'] = serverTimestamp();
-            updateData['updated_by'] = user.uid;
-            //updateData['result'] = data['result']
-            updateData['content'] = data['content']
-            updateData['contactMethod'] = data['contactMethod']
-            updateData['note'] = data['note']
-
-            await updateDoc(
-              doc(db, 'applicants/' + props.applicant.id + '/contacts/' + data['id']),
-              updateData
-            );
-          }
-          else {
-            data['created_at'] = serverTimestamp();
-            data['updated_at'] = serverTimestamp();
-            data['deleted'] = false;
-            data['created_by'] = user.uid;
-
-            await addDoc(
-              collection(db, 'applicants/' + props.applicant.id + '/contacts'),
-              data
-            );
-          }
-
-          loading.value = false;
-          contactData.value = {};
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
-          dialogType.value = 'create';
-          //applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-          //applicantForm.value.resetValidation();
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
-        }
+        fixData.value = {...fixData.value, ...data}
       },
-
       async deleteItem() {
         if (!deleteItemId.value) {
           return false;
@@ -467,13 +244,6 @@ export default {
           message: t('success'),
         });
       },
-      onReset() {
-        //contactData.value = JSON.parse(JSON.stringify(applicantDataSample));
-        //applicantForm.value.resetValidation();
-        contactData.value = {};
-        dialogType.value = 'create';
-        showAddForm.value = false;
-      },
       getUserName(uid) {
         const value = users.value.find(x => x['id'] === uid)
         if (value) {
@@ -482,9 +252,8 @@ export default {
         return '';
       },
       showEditDialog(data) {
-        dialogType.value = 'update';
-        contactData.value = JSON.parse(JSON.stringify(data));
-        showAddForm.value = true;
+        fixData.value = data;
+        drawerRight.value = true;
       },
       showDeleteDialog(data) {
         $q.dialog({
