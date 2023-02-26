@@ -123,13 +123,13 @@
               </div>
               <div class="row">
                 <span class="col-6 ">{{$t('applicant.add.applicationMedia')}}: {{ selectedApplicant.media ? selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}</span>
-                <span class="col-3">TEL: {{selectedApplicant.phone}}</span>
-                <span class="col-3"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{selectedApplicant.occupation && $t('applicant.add.'+selectedApplicant.occupation)}}</span>
+                <span class="col-3 relative-position"><hidden-text v-if="selectedApplicant.phone" :value="'TEL: '+selectedApplicant.phone" /></span>
+                <span class="col-3 q-pl-md"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{selectedApplicant.occupation && $t('applicant.add.'+selectedApplicant.occupation)}}</span>
               </div>
               <div class="row">
                 <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
-                <span class="col-3">MAIL: {{selectedApplicant.email}}</span>
-                <span class="col-3"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.status && $t('applicant.statusOption.'+selectedApplicant.status)}}</span>
+                <span class="col-3 relative-position "><hidden-text v-if="selectedApplicant.email" :value="'MAIL: '+selectedApplicant.email" /></span>
+                <span class="col-3 q-pl-md"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.status && $t('applicant.statusOption.'+selectedApplicant.status)}}</span>
               </div>
             </div>
           </div>
@@ -183,6 +183,7 @@
 <script>
 import { useI18n } from 'vue-i18n';
 import {  ref, computed } from 'vue';
+import hiddenText from 'src/components/hiddingText.component.vue';
 import {
   collection,
   query,
@@ -199,7 +200,8 @@ export default {
   name: 'applicantList',
 
   components: {
-    detailComponent
+    detailComponent,
+    hiddenText
   },
 
   setup() {
