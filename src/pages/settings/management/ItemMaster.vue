@@ -114,16 +114,17 @@
 
   <script lang="ts">
   import { doc, getFirestore, updateDoc} from '@firebase/firestore';
-  import { computed, Ref, ref } from 'vue';
+  import { computed, Ref, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { Accaunt } from 'src/shared/model/Accaunt.model';
   import { getItem, ItemsSearch } from 'src/shared/utils/User.utils';
-  import { getOrganizationId, toDateObject } from 'src/shared/utils/utils';
+  import { toDateObject } from 'src/shared/utils/utils';
   import { useQuasar } from 'quasar';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { itemFlags, Item } from 'src/shared/model/system';
   import ItemCteateForm from './components/ItemCreate.form.vue';
   import { segment } from 'src/shared/constants/Item.const';
+import { useOrganization } from 'src/stores/organization';
 
   export default {
     name: 'ItemMaster',
@@ -208,14 +209,19 @@
         value: itemFlags.All
       }])
 
+      const organization  = useOrganization()
+
+      watch(()=> organization.currentOrganizationId, ()=>{
+        loadData()
+      })
+
       loadData()
       async function loadData() {
         loading.value = true;
         edit.value=undefined;
         try {
-          const active_organization_id = getOrganizationId($q)
-          if (active_organization_id) {
-            const branchesSnapshot = getItem(db, active_organization_id, search.value);
+          if (organization.currentOrganizationId) {
+            const branchesSnapshot = getItem(db, organization.currentOrganizationId, search.value);
 
             branchesSnapshot.then(branch => {
               const list: Item[] = []
@@ -259,8 +265,7 @@
           }).onOk(async () => {
             try{
               loading.value = true;
-              const active_organization_id = getOrganizationId($q)
-              const boRef = doc(db, 'organization/'+active_organization_id+'/item/'+item.id);
+              const boRef = doc(db, 'organization/'+organization.currentOrganizationId+'/item/'+item.id);
               await updateDoc(boRef, {
                 deleted: true
               })

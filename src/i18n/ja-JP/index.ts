@@ -125,6 +125,21 @@ export default {
       releaseNotesInquiry: 'リリースノート・問い合わせ',
       releaseNotes: 'リリースノート',
       inquiry: '問い合わせ',
+      userList: 'ユーザー一覧表示',
+      userSearch: 'ユーザー検索',
+      operationChange: '稼働変更',
+      companyList: '企業一覧表示',
+      organizationsTable: {
+        number: 'No.',
+        companyId: '企業ID',
+        companyName: '企業名',
+        operator: '担当者名',
+        phoneNumber: '電話番号',
+        fax: 'FAX番号',
+        email: 'メールアドレス',
+        invoiceRequest: '請求書希望',
+        organizationSearh: '企業検索',
+      },
     }
   },
   settings: {
@@ -452,7 +467,7 @@ export default {
       businessOffice: '事業所単位',
       addClientButton: 'クライアント追加登録',
       homePage: 'ホームページ',
-      conclusionDispatchContract:'派遣契約締結',
+      conclusionDispatchContract: '派遣契約締結',
       conclusionReferralContract: '紹介契約締結',
       contactInfo: '担当者情報',
       officeReg: '事業所情報登録',
@@ -694,7 +709,52 @@ export default {
         workDay: '職見日',
         informalOfferDate: '内定日',
         hiringDate: '入職日',
-        memo: 'メモ',
+        save: '選考情報保存',
+        client: 'クライアント',
+        office: '事業所',
+        status: 'FIXステータス',
+        date: 'FIX日',
+        reason: 'FIXNG理由',
+        contactPerson: 'FIX担当者',
+        memo: 'FIXメモ',
+        info: '■FIX情報',
+        jobSearchInfo: '■ 職見情報',
+        jobOffersInfo: '■内定情報',
+        employmentInfo: '■入職情報',
+        inspectionStatus :'職見ステータス',
+        inspectionDate: '職見日',
+        inspectionRecord: '職見記録',
+        reasonNG: '職見NG理由',
+        chargeOfFacility: '施設担当者',
+        jobTitle: '役職',
+        contact: '連絡先',
+        comments: '感想（A-E）',
+        notesInspection: '職見メモ',
+        inspection: {
+          status :'職見ステータス',
+          date: '職見日',
+          record: '職見記録',
+          reasonNG: '職見NG理由',
+          chargeOfFacility: '施設担当者',
+          jobTitle: '役職',
+          contact: '連絡先',
+          comments: '感想（A-E）',
+          notes: '職見メモ',
+        },
+        offer:{
+          status: '内定ステータス',
+          date: '内定日',
+          reasonNG: '内定NG理由',
+          chargeOfOffer: '内定担当者',
+          memo: '内定メモ'
+        },
+        admission: {
+          status: '入職ステータス',
+          date: '入職日',
+          reasonNotJoining: '入職NG理由',
+          chargeOfAdmission: '入職担当者',
+          memo: '入職メモ'
+        }
       },
       info: {
         date: '応募日',
@@ -794,7 +854,7 @@ export default {
       comprehension: '理解力',
       staffRank: 'スタッフランク (編集不可)',
       attendeeEvaluation: 'アテンド担当者評価',
-      otherRemarks : 'その他備考',
+      otherRemarks: 'その他備考',
       remarks: '備考',
       performance: '秀',
       excellent: '優',
@@ -809,10 +869,10 @@ export default {
       children: '子供',
       medicalHistory: '既往歴',
       vaccinationStatus: 'ワクチン接種状況',
-      startCaring: '介護を始めたきっかけ',
+      startCaring: '選考状況備考',
       interviewsWaitingList: '面接待ち件数',
       temporaryCompaniesRegistered: '派遣登録社数',
-      startedInCaregiving: '介護を始めたきっかけ',
+      startedInCaregiving: '選考状況備考',
       items: '件',
       daysVisitAtWork: '当社での職場見学可能日',
 
@@ -828,7 +888,18 @@ export default {
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
       deletedInfo: 'All data related to this experience will be deleted.',
-      totalYearsExperience: '総経験年数',
+      totalYearsExperience: '経験',
+
+      // Operation Info Component
+      placeOperation: '稼働先',
+      startDate: '開始日',
+      endDate: '終了日',
+      companyInCharge: '稼働担当社',
+      operationMemo: 'メモ',
+      operatingSites: '稼働先事業所',
+
+      // Memo Tab
+      content: '内容'
     }
   },
   prefectures: {
@@ -963,4 +1034,26 @@ export default {
     'auth/invalid-password': 'メールアドレスまたはパスワードが違います',
     'auth/wrong-password': 'メールアドレスまたはパスワードが違います',
   },
+  devMode: {
+    title: 'は現在一時的に稼働を停止しています。',
+    subtitle: 'お問合せはこちらにご連絡ください。',
+    phone: 'TEL: xxx-xxxx-xxxx',
+    email: 'MAIL: xxx@xxx.com',
+  },
+  operationChange: {
+    active: 'nemesysは現在稼働中です。',
+    disabled: 'nemesys停止中',
+    resume: 'システム稼働再開',
+    stop: 'システム稼働停止',
+    working: '稼働中',
+    stopped: '停止中',
+    information: {
+      continiousOperatingTime: '連続稼働時間',
+      maxOperatingTime: '最大連続稼働時間',
+      totalHoursWorked: '総稼働時間',
+      continiousStopTime: '連続停止時間',
+      maxStopTime: '最大連続停止時間',
+      totalStoppedTime: '総停止時間'
+    }
+  }
 };

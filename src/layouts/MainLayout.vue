@@ -6,18 +6,19 @@
         <ToolbarLanguage />
 
         <div class="flex">
-          <!-- <q-btn-dropdown
-            v-if="organization && (activeOrganization || activeOrganization === 0)"
-            :label="organization[activeOrganization]?.staff_name"
-            flat color="black">
+          <q-btn-dropdown
+            v-if="organization.state.organizations && (organization.state.activeOrganization || organization.state.activeOrganization === 0)"
+            :label="organization.state.organizations[organization.state.activeOrganization]?.staff_name"
+            flat color="black"
+            >
             <q-list>
-              <q-item clickable v-close-popup v-for="item in organization" :key="item.code">
+              <q-item clickable v-close-popup v-for="item in organization.state.organizations" :key="item.code" @click="switchOrganization(item.id)">
                 <q-item-section>
                   <q-item-label>{{'staff_name' in item ? item['staff_name'] : ''}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
-          </q-btn-dropdown> -->
+          </q-btn-dropdown>
 
           <q-btn-dropdown
             flat
@@ -45,7 +46,7 @@
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.UserUpdate)">
+              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.AdminPageAccess)">
                 <q-item-section>
                   <q-item-label>
                     <router-link :to="routeNames.admin" target="_blank">
@@ -68,6 +69,7 @@
     <q-separator />
 
     <q-drawer
+      v-if="!isDevMode"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -99,8 +101,9 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-grey-1 flex">
-      <template v-for="parent in menuParent" :key="parent.title">
+    <q-page-container class="bg-grey-1 flex" >
+      <div v-if="!isDevMode">
+      <template v-for="parent in menuParent" :key="parent.title" >
         <q-list
           class="menu_slidebar q-pa-none"
           :class="{'active': parent.type == active_menu}">
@@ -132,14 +135,31 @@
           </template>
         </q-list>
       </template>
+    </div>
       <div class="main_content shadow-5" :class="{'open_left_slidebar': openLeftSlidebar}">
-        <router-view />
+        <q-page v-if="isDevMode" class="row flex-center">
+            <div class="col-4 ">
+            <p class="text-h6 text-weight-bolder text-center">nemesys{{$t('devMode.title')}} <br/> {{$t('devMode.subtitle')}}</p>
+            <p class="text-h6 text-weight-bolder header q-mb-none text-center" >
+              {{$t('devMode.phone')}}
+            </p>
+            <p class="text-h6 text-weight-bolder header text-center" >
+              {{$t('devMode.email')}}
+            </p>
+          </div>
+
+        </q-page>
+        <router-view v-else />
       </div>
+
     </q-page-container>
+
+
   </q-layout>
 </template>
 
 <script lang="ts">
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -152,8 +172,11 @@ import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
+import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils'
+import { useMaintainModeStore } from 'src/stores/admin/maintainMode'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
+import { useOrganization } from 'src/stores/organization';
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -172,17 +195,23 @@ export default defineComponent({
     const db = getFirestore();
     const email = ref('');
     const name = ref('');
-    const organization:Ref<Organization[]> = ref([]);
     const openLeftSlidebar: Ref<boolean> = ref(false)
     const active_menu: Ref<MenuParent | string | undefined> = ref(undefined);
-    const activeOrganization:Ref<number | undefined> = ref(undefined)
-
+    const organization = useOrganization()
 
     const leftDrawerOpen = ref(false);
     const miniState = ref(true);
     const permissions = ref([] as UserPermissionNames[])
     const linksList: MenuItem[] =  RouterToMenu(routes);
     const singleList: MenuItem[] = RouterToSingleMenuItem(routes);
+
+    const store = useMaintainModeStore()
+    const isDevMode = computed(() => store.maintainMode);
+    getMaintainEnabledEvent(db).then(data => {
+      if (data.empty) {
+        store.setMaintainModeDisabled()
+      } else store.setMaintainModeEnabled()
+    })
 
     if (router.currentRoute.value.meta.parent) {
       active_menu.value = router.currentRoute.value.meta.parent as string | undefined;
@@ -217,11 +246,9 @@ export default defineComponent({
             }, [] as Promise<DocumentSnapshot<DocumentData>>[])
             Promise.all(ss).then(result => {
               let organizations: Organization[]  = result.map(organization => organization.data() as Organization);
+              organization.state.activeOrganization = 0;
               if (organizations.length) {
-                $q.localStorage.set('organizations', organizations);
-                $q.localStorage.set('active_organizations', 0)
-                organization.value = organizations;
-                activeOrganization.value = 0;
+                organization.state.organizations = organizations;
               }
             })
           }
@@ -238,6 +265,18 @@ export default defineComponent({
           router.push('/')
         }
       }
+    }
+
+    const switchOrganization = (organizationId: string) =>{
+      const organizations = organization.state.organizations
+      if(!organizations.length){
+        return
+      }
+      organization.state.organizations.forEach((org, index)=>{
+        if(org.id == organizationId){
+          organization.state.activeOrganization = index;
+        }
+      })
     }
 
     const logout = () => {
@@ -261,7 +300,6 @@ export default defineComponent({
       leftDrawerOpen,
       menuParent,
       organization,
-      activeOrganization,
       singleList,
       miniState,
       active_menu,
@@ -274,7 +312,9 @@ export default defineComponent({
       logout,
       onChangeMenu,
       permissionMenuItem,
-      isPermission
+      isPermission,
+      switchOrganization,
+      isDevMode
     };
   },
 });

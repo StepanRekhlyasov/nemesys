@@ -36,7 +36,7 @@
           </div>
         </div>
 
-        <div class="row q-pb-sm" v-if="!editAccount?.id">
+        <div class="row q-pb-sm">
           <div class="col-3 text-right q-pr-sm  q-pt-sm">
             {{ $t('settings.users.passworld') }}
           </div>
@@ -97,31 +97,25 @@
         </div>
       </q-card-section>
       <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
-        <q-btn v-if="!editAccount?.id" :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
-        <q-btn v-if="editAccount?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="saveAccount"/>
+        <q-btn :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
       </q-card-actions>
     </q-form>
   </q-card>
 </template>
 
 <script lang="ts">
-import { doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
 import { computed, ref, SetupContext } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
-import { getOrganizationId } from 'src/shared/utils/utils';
-import { selectOptions } from 'src/shared/model';
 import { api } from 'src/boot/axios';
+import { mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'ResponsibleCreateForm',
   props: {
-    editAccount: {
-      type: Object,
-      required: false
-    },
     roles: {
       type: Object,
       required: true
@@ -133,35 +127,18 @@ export default {
   },
   setup(props, context: SetupContext) {
     const { t } = useI18n({ useScope: 'global' });
-    const db = getFirestore();
     const $q = useQuasar();
     const auth = getAuth();
-    const accountData = ref(props.editAccount || {
+    const accountData = ref({
       hidden: false
     })
     const role = computed(() =>{
-      let list: selectOptions[] = []
-      Object.keys(props.roles).map(key => {
-        let data =  {
-          label: props.roles[key]?.name || '',
-          value: key
-        }
-        list.push(data)
-      })
-      return list
+      return mapToSelectOptions(props.roles)
     })
     const branch = computed(() =>{
-      let list: selectOptions[] = []
-      Object.keys(props.branches).map(key => {
-        let data =  {
-          label: props.branches[key]?.name,
-          value: key
-        }
-        list.push(data)
-      })
-      return list
+      return mapToSelectOptions(props.branches)
     })
-
+    const organization  = useOrganization()
     const loading = ref(false)
     return {
       accountData,
@@ -177,7 +154,6 @@ export default {
 
         loading.value = true;
         const data = accountData.value
-        const active_organization_id = getOrganizationId($q)
 
         api.post(
             url,
@@ -188,7 +164,7 @@ export default {
               email: data['email'], // email address for new user
               branch: data['branch_id'], // optional at present
               role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
-              organization_ids: [active_organization_id]
+              organization_ids: [organization.currentOrganizationId]
             },
             {
               headers: headers,
@@ -212,28 +188,6 @@ export default {
             console.error('Failed to create user', error);
           });
       },
-      async saveAccount() {
-        loading.value = true;
-        const data = accountData.value
-        try {
-            const boRef = doc(db, 'users/'+props.editAccount?.id);
-            await updateDoc(boRef, {
-              updated_at: serverTimestamp(),
-              hidden: !!data.hidden,
-              displayName: data.displayName,
-              role: data.role,
-              branch_id: data.branch_id
-            })
-
-            context.emit('closeDialog');
-            Alert.success($q, t);
-            loading.value = false;
-        } catch (e) {
-          console.log(e)
-          Alert.warning($q, t);
-          loading.value = false;
-        }
-      }
     }
   }
 }

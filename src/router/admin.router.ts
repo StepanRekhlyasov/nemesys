@@ -1,5 +1,5 @@
 import { UserPermissionNames } from 'src/shared/model/Accaunt.model';
-import { MenuRouter, MenuParent} from 'src/shared/model/Menu.molel';
+import { MenuRouter, MenuParent } from 'src/shared/model/Menu.molel';
 
 const admin_router: MenuRouter[] = [
   {
@@ -8,7 +8,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/releaseNotes.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminReleaseNotes
   },
@@ -18,7 +18,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/inquiry.vue'),
     meta: {
       requiresAuth: true,
-      permissions: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminReleaseNotes,
 
@@ -43,6 +43,39 @@ const admin_router: MenuRouter[] = [
     menuParent: MenuParent.AdminOfficeManagement,
     title: 'menu.savedSearchList',
   },
+  {
+    path: 'user-list',
+    title: 'menu.admin.userList',
+    component: () => import('src/pages/settings/management/ResponsibleMaster.vue'),
+    meta: {
+      isAdmin: true,
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess]
+    },
+    menuParent: MenuParent.AdminEnterpriseManagement
+
+  },
+  {
+    path: 'operation-change',
+    title: 'menu.admin.operationChange',
+    component: () => import('src/pages/admin/operationСhange.vue'),
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.BranchUpdate]
+    },
+    menuParent: MenuParent.AdminSystemsOperationManagement,
+
+  },
+  {
+    path:'organization-list',
+    title: 'menu.admin.companyList',
+    component: ()=> import('src/pages/admin/EnterpriseManagement/OrganizationList.vue'),
+    meta:{
+      permission: [UserPermissionNames.AdminPageAccess],
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.AdminEnterpriseManagement
+  }
 ]
 
 export default admin_router;

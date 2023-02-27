@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="col-3 text-right" v-if="showDesired">
-        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" />
-        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit"/>
-        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" />
+        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" size="sm"/>
+        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
+        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" size="sm"/>
       </div>
     </div>
 
@@ -53,7 +53,7 @@
           {{ $t('applicant.attendant.daysPerWeek') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.daysPerWeek.map(day => $t('weekDay.'+day)).join('・') }}</span>
+          <span v-if="!desiredEdit">{{ applicant.daysPerWeek?applicant.daysPerWeek.map(day => $t('weekDay.'+day)).join('・'): '' }}</span>
           <template v-if="desiredEdit">
             <q-checkbox v-for="day in days" :key="day.value" :disable="loading"
               :label="day.label" :val="day.value" v-model="desiredData['daysPerWeek']" />
@@ -63,7 +63,7 @@
           {{ $t('applicant.attendant.specialDay') }}
         </div>
         <div class="col-3 q-pl-md blue self-center">
-          <span v-if="!desiredEdit">{{ applicant.specialDay.map(day => $t('applicant.attendant.specialDays.'+day)).join('・') }}</span>
+          <span v-if="!desiredEdit">{{ applicant.specialDay? applicant.specialDay.map(day => $t('applicant.attendant.specialDays.'+day)).join('・'): '' }}</span>
           <template v-if="desiredEdit">
             <q-checkbox v-for="day in specialDays" :key="day.value" :disable="loading"
               :label="day.label" :val="day.value" v-model="desiredData['specialDay']" />
@@ -78,7 +78,7 @@
           {{ $t('applicant.attendant.shiftRemarks') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!desiredEdit" class="text_dots">{{ applicant.shiftRemarks }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.shiftRemarks" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['shiftRemarks']" :disable="loading" />
         </div>
@@ -92,25 +92,14 @@
         </div>
         <div class="col-3 q-pl-md blue ">
           <span v-if="!desiredEdit">{{ applicant.meansCommuting }}</span>
-          <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="desiredData['meansCommuting']"  :disable="loading">
-            <template v-slot:prepend>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="desiredData['meansCommuting']" mask="YYYY/MM/DD">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <q-input v-if="desiredEdit" dense outlined bg-color="white"
+            v-model="desiredData['meansCommuting']" :disable="loading" />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.nearestStation') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.nearestStation }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['nearestStation']" :disable="loading" />
         </div>
@@ -121,7 +110,7 @@
           {{ $t('applicant.attendant.commutingTime') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.commutingTime }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.commutingTime" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['commutingTime']" :disable="loading" />
         </div>
@@ -129,7 +118,7 @@
           {{ $t('applicant.attendant.route') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!desiredEdit">{{ applicant.route }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.route" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['route']" :disable="loading"/>
         </div>
@@ -140,7 +129,7 @@
           {{ $t('applicant.attendant.commutingTimeRemarks') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!desiredEdit" class="text_dots">{{ applicant.commutingTimeRemarks }}</span>
+          <hidden-text v-if="!desiredEdit" :value="applicant.commutingTimeRemarks" />
           <q-input v-if="desiredEdit" dense outlined bg-color="white"
             v-model="desiredData['commutingTimeRemarks']" :disable="loading" />
         </div>
@@ -216,9 +205,13 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
+import hiddenText from 'src/components/hiddingText.component.vue';
 
 export default {
   name: 'desiredConditions',
+  components: {
+    hiddenText
+  },
   props: {
     applicant: {
       type: Object,
