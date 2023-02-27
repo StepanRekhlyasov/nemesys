@@ -64,7 +64,7 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { attendantStatus } from 'src/shared/constants/Applicant.const';
-import { computed, Ref, ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
@@ -95,13 +95,11 @@ export default {
     const loading = ref(false);
     const attendantStatusOption = ref(attendantStatus);
     const usersListOption: Ref<selectOptions[]> = ref([])
-    const indoData = computed(() => {
-      return {
-        attendingStatus: props?.applicant['attendingStatus'] || '',
-        attendingDate: props?.applicant['attendingDate'] || '',
-        attendee: props?.applicant['attendee'] || '',
-        memo: props?.applicant['memo'] || '',
-      }
+    const indoData = ref({
+      attendingStatus: props?.applicant['attendingStatus'] || '',
+      attendingDate: props?.applicant['attendingDate'] || '',
+      attendee: props?.applicant['attendee'] || '',
+      memo: props?.applicant['memo'] || '',
     })
 
     if (organization.currentOrganizationId){
