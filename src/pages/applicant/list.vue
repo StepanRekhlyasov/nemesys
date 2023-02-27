@@ -25,12 +25,13 @@
           </div>
       </q-card-section>
       <q-separator color="white" size="2px" />
-      <q-card-section>
+      <q-card-section class=" q-pa-none">
         <q-table
             :columns="columns"
             :rows="applicantData"
             row-key="id"
             selection="multiple"
+            class="no-shadow"
             v-model:selected="selected"
             v-model:pagination="pagination"
             hide-pagination
