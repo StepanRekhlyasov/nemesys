@@ -125,20 +125,20 @@ export default {
       releaseNotesInquiry: 'Release Notes and Inquiries',
       releaseNotes: 'Release Notes',
       inquiry: 'Inquiry',
-      userList: 'User list',
+      usersList: 'Users list',
       userSearch: 'User search',
       operationChange: 'Operation Change',
-      companyList: 'Organization List',
+      organizationsList: 'Organization List',
       organizationsTable: {
         number: 'No.',
-        companyId: 'Company ID',
-        companyName: 'Company name',
+        organizationId: 'Organization ID',
+        organizationName: 'Organization name',
         operator: 'Person in charge',
         phoneNumber: 'Phone number',
         fax: 'FAX number',
         email: 'Email',
         invoiceRequest: 'Invoice request',
-        organizationSearh: 'Organization Searh'
+        organizationsSearh: 'Organizations Searh'
       },
     }
   },

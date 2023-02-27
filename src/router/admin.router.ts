@@ -44,8 +44,8 @@ const admin_router: MenuRouter[] = [
     title: 'menu.savedSearchList',
   },
   {
-    path: 'user-list',
-    title: 'menu.admin.userList',
+    path: 'users-list',
+    title: 'menu.admin.usersList',
     component: () => import('src/pages/settings/management/ResponsibleMaster.vue'),
     meta: {
       isAdmin: true,
@@ -67,9 +67,9 @@ const admin_router: MenuRouter[] = [
 
   },
   {
-    path:'organization-list',
-    title: 'menu.admin.companyList',
-    component: ()=> import('src/pages/admin/EnterpriseManagement/OrganizationList.vue'),
+    path:'organizations-list',
+    title: 'menu.admin.organizationsList',
+    component: ()=> import('src/pages/admin/EnterpriseManagement/OrganizationsList.vue'),
     meta:{
       permission: [UserPermissionNames.AdminPageAccess],
       requiresAuth: true,
