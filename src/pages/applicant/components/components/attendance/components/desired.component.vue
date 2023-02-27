@@ -1,23 +1,13 @@
 <template>
   <q-form @submit="saveDesired" >
-    <div class="row q-pb-md justify-between">
-      <div class="flex self-center">
-        <span class="text-primary text-h6">1.{{ $t('applicant.attendant.desiredConditions') }}</span>
-        <div>
-          <q-btn :label="$t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
-            class="text-grey-9" @click="showDesired = false" v-if="showDesired" />
-          <q-btn :label="$t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
-            class="text-grey-9" @click="showDesired = true" v-else />
-        </div>
-      </div>
-      <div class="col-3 text-right" v-if="showDesired">
-        <q-btn v-if="!desiredEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="desiredEdit = true" class="no-shadow q-ml-lg" size="sm"/>
-        <q-btn v-if="desiredEdit" :label="$t('common.save')" color="primary" type="submit" size="sm"/>
-        <q-btn v-if="desiredEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="desiredEdit=false" size="sm"/>
-      </div>
-    </div>
 
-    <template v-if="showDesired">
+    <edit-view-component
+      :edit="desiredEdit"
+      :label="'1.'+ $t('applicant.attendant.desiredConditions')"
+      @openEdit="desiredEdit = true"
+      @closeEdit="desiredEdit=false"
+      @onSave="saveDesired">
+
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.timeToWork') }}
@@ -194,8 +184,7 @@
           <span v-if="!desiredEdit">③ 福利厚生の充実度</span>
         </div>
       </div>
-
-    </template>
+    </edit-view-component>
   </q-form>
 </template>
 
@@ -206,11 +195,13 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import hiddenText from 'src/components/hiddingText.component.vue';
+import editViewComponent from 'src/components/editView.component.vue';
 
 export default {
   name: 'desiredConditions',
   components: {
-    hiddenText
+    hiddenText,
+    editViewComponent
   },
   props: {
     applicant: {
@@ -224,7 +215,6 @@ export default {
   },
   setup(props) {
     const desiredEdit = ref(false);
-    const showDesired = ref(false);
     const days = ref(daysList);
     const specialDays = ref(specialDaysList);
     const loading = ref(false);
@@ -254,7 +244,6 @@ export default {
 
     return {
       desiredEdit,
-      showDesired,
       loading,
       desiredData,
       specialDays,
