@@ -1,4 +1,4 @@
-import { UserPermissionNames } from './Accaunt.model';
+import { UserPermissionNames } from './Account.model';
 import { RouteComponent } from 'vue-router';
 
 export interface MenuRouter {

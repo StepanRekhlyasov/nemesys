@@ -113,7 +113,7 @@
 import { doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Accaunt, Role, UserPermissionNames } from 'src/shared/model/Accaunt.model';
+import { Accaunt, Role, UserPermissionNames } from 'src/shared/model/Account.model';
 import { toDateObject, sortDate } from 'src/shared/utils/utils';
 import { getAllBranches, getRoles, getUsersByPermission, mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { QTableProps, useQuasar } from 'quasar';

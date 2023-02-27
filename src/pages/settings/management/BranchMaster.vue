@@ -109,7 +109,7 @@
 import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Accaunt } from 'src/shared/model/Accaunt.model';
+import { Accaunt } from 'src/shared/model/Account.model';
 import { BranchesSearch, getBranches } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
 import { toDateObject } from 'src/shared/utils/utils';

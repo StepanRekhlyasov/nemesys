@@ -1,115 +1,104 @@
 <template>
-  <div class="row q-pb-md justify-between">
-    <div class="flex self-center">
-      <span class="text-primary text-h6">2.{{ $t('applicant.attendant.workExperience') }}</span>
+  <edit-view-component
+    :edit="edit"
+    :label="'2.'+ $t('applicant.attendant.workExperience')"
+    @openEdit="edit = true"
+    @closeEdit="edit=false"
+    @onSave="save">
+      <div class="row ">
+        <div class="text-blue text-weight-regular self-center text-subtitle1 ">
+          [{{ $t('applicant.attendant.experienceDetails') }}]
+        </div>
+        <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
+      </div>
+
+      <div class="row q-pa-sm"></div>
+
+      <q-table
+        :columns="columns"
+        :rows="experienceData"
+        row-key="id"
+        v-model:pagination="pagination"
+        class="q-ma-none q-pa-none no-shadow"
+        hide-pagination>
+
+        <template v-slot:header-cell-experience="props">
+          <q-th :props="props">
+            {{$t('applicant.attendant.experience')}}<br/>
+            {{$t('applicant.attendant.facilityType')}}<br/>
+          </q-th>
+        </template>
+
+        <template v-slot:header-cell-month="props">
+          <q-th :props="props">
+            {{$t('applicant.attendant.startMonth')}}<br/>
+            {{$t('applicant.attendant.endMonth')}}<br/>
+          </q-th>
+        </template>
+
+        <template v-slot:header-cell-establishment="props">
+          <q-th :props="props">
+            {{$t('applicant.attendant.nameEstablishment')}}<br/>
+            {{$t('applicant.attendant.employmentType')}}<br/>
+          </q-th>
+        </template>
+
+        <template v-slot:body-cell-experience="props">
+          <q-td :props="props">
+            {{ props.row.experience  }}<br/>
+            {{ props.row.facilityType  }}<br/>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-years="props">
+          <q-td :props="props">
+            {{ differentDateYear(props.row.startMonth, props.row.endMonth)+' ' +$t('common.year') }}
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-month="props">
+          <q-td :props="props">
+            {{ props.row.startMonth  }}<br/>
+            {{ props.row.endMonth  }}<br/>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-establishment="props">
+          <q-td :props="props">
+            {{ props.row.nameEstablishment  }}<br/>
+            {{ props.row.employmentType? $t('applicant.list.info.'+props.row.employmentType): '' }}<br/>
+          </q-td>
+        </template>
+
+
+        <template v-slot:body-cell-edit="props">
+          <q-td :props="props">
+            <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat @click="editExperience=props.row;openDialog=true;"/>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-delete="props">
+          <q-td :props="props">
+            <q-btn style="color: #222222" icon="delete" size="sm" round flat @click="deleteExperience(props.row)" />
+          </q-td>
+        </template>
+      </q-table>
+
+      <div class="row q-pa-sm"></div>
+
+      <div class="row q-pb-sm">
+        <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
+          {{ $t('applicant.attendant.totalYearsExperience') }}
+        </div>
+        <div class="col-4 q-pl-md blue self-center">
+          <span v-if="!edit">{{ applicant.totalYear || ''}}</span>
+          <q-input v-if="edit" dense outlined bg-color="white"
+            v-model="data['totalYear']" :disable="loading" />
+        </div>
+      </div>
       <div>
-        <q-btn :label="$t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
-          class="text-grey-9" @click="show = false" v-if="show" />
-        <q-btn :label="$t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
-          class="text-grey-9" @click="show = true" v-else />
+
       </div>
-    </div>
-    <div class="col-3 text-right" v-if="show">
-      <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="edit = true" class="no-shadow q-ml-lg" size="sm" />
-      <q-btn v-if="edit" :label="$t('common.save')" color="primary" @click="save" size="sm" />
-      <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit=false" size="sm" />
-    </div>
-  </div>
-  <template v-if="show">
-    <div class="row ">
-      <div class="text-blue text-weight-regular self-center text-subtitle1 ">
-        [{{ $t('applicant.attendant.experienceDetails') }}]
-      </div>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
-    </div>
-
-    <div class="row q-pa-sm"></div>
-
-    <q-table
-      :columns="columns"
-      :rows="experienceData"
-      row-key="id"
-      v-model:pagination="pagination"
-      class="q-ma-none q-pa-none no-shadow"
-      hide-pagination>
-
-      <template v-slot:header-cell-experience="props">
-        <q-th :props="props">
-          {{$t('applicant.attendant.experience')}}<br/>
-          {{$t('applicant.attendant.facilityType')}}<br/>
-        </q-th>
-      </template>
-
-      <template v-slot:header-cell-month="props">
-        <q-th :props="props">
-          {{$t('applicant.attendant.startMonth')}}<br/>
-          {{$t('applicant.attendant.endMonth')}}<br/>
-        </q-th>
-      </template>
-
-      <template v-slot:header-cell-establishment="props">
-        <q-th :props="props">
-          {{$t('applicant.attendant.nameEstablishment')}}<br/>
-          {{$t('applicant.attendant.employmentType')}}<br/>
-        </q-th>
-      </template>
-
-      <template v-slot:body-cell-experience="props">
-        <q-td :props="props">
-          {{ props.row.experience  }}<br/>
-          {{ props.row.facilityType  }}<br/>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-years="props">
-        <q-td :props="props">
-          {{ differentDateYear(props.row.startMonth, props.row.endMonth)+' ' +$t('common.year') }}
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-month="props">
-        <q-td :props="props">
-          {{ props.row.startMonth  }}<br/>
-          {{ props.row.endMonth  }}<br/>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-establishment="props">
-        <q-td :props="props">
-          {{ props.row.nameEstablishment  }}<br/>
-          {{ props.row.employmentType? $t('applicant.list.info.'+props.row.employmentType): '' }}<br/>
-        </q-td>
-      </template>
-
-
-      <template v-slot:body-cell-edit="props">
-        <q-td :props="props">
-          <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat @click="editExperience=props.row;openDialog=true;"/>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-delete="props">
-        <q-td :props="props">
-          <q-btn style="color: #222222" icon="delete" size="sm" round flat @click="deleteExperience(props.row)" />
-        </q-td>
-      </template>
-    </q-table>
-
-    <div class="row q-pa-sm"></div>
-
-    <div class="row q-pb-sm">
-      <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.totalYearsExperience') }}
-      </div>
-      <div class="col-4 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.totalYear || ''}}</span>
-        <q-input v-if="edit" dense outlined bg-color="white"
-          v-model="data['totalYear']" :disable="loading" />
-      </div>
-    </div>
-    <div>
-
-    </div>
-  </template>
+  </edit-view-component>
   <q-dialog v-model="openDialog">
     <workExperienceForm @closeDialog="load();openDialog=false;" :editExperience="editExperience" :applicantId="applicant.id"/>
   </q-dialog>
@@ -124,6 +113,7 @@ import workExperienceForm from './companents/workExperience.form.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { differentDateYear } from 'src/shared/utils/utils';
 import { ApplicantExperience } from 'src/shared/model';
+import editViewComponent from 'src/components/editView.component.vue';
 
 export default {
   name: 'workExperienceComponent',
@@ -138,10 +128,10 @@ export default {
     }
   },
   components: {
-    workExperienceForm
+    workExperienceForm,
+    editViewComponent
   },
   setup(props) {
-    const show = ref(false);
     const loading = ref(false);
     const openDialog = ref(false);
     const edit = ref(false);
@@ -226,7 +216,6 @@ export default {
     }
 
     return {
-      show,
       edit,
       data,
       loading,

@@ -56,7 +56,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 import { defineComponent, ref } from 'vue';
 import { getFirestore, doc, getDoc} from '@firebase/firestore';
-import { Role, User } from 'src/shared/model/Accaunt.model';
+import { Role, User } from 'src/shared/model/Account.model';
 import  AdminMenu  from 'src/components/AdminMenu.vue'
 import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
 import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils';
