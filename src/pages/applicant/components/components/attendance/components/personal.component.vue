@@ -161,7 +161,7 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 
@@ -185,22 +185,20 @@ export default {
     const marriedOptions = ref(marriedStatusList)
     const tattoosOptions = ref(tattoosStatusList)
 
-    const data = computed(() => {
-      return {
-        smoking: props?.applicant['smoking'] || '',
-        tattoos: props?.applicant['tattoos'] || '',
-        marriedStatus: props?.applicant['marriedStatus'] || '',
-        liveTogether: props?.applicant['marriedStatus'] || '',
-        cohabitation: props?.applicant['cohabitation'] || '',
-        children: props?.applicant['children'] || '',
-        medicalHistory: props?.applicant['medicalHistory'] || '',
-        vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
-        startCaring: props?.applicant['startCaring'] || '',
-        interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
-        temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
-        startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
-        daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
-      }
+    const data = ref( {
+      smoking: props?.applicant['smoking'] || '',
+      tattoos: props?.applicant['tattoos'] || '',
+      marriedStatus: props?.applicant['marriedStatus'] || '',
+      liveTogether: props?.applicant['marriedStatus'] || '',
+      cohabitation: props?.applicant['cohabitation'] || '',
+      children: props?.applicant['children'] || '',
+      medicalHistory: props?.applicant['medicalHistory'] || '',
+      vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
+      startCaring: props?.applicant['startCaring'] || '',
+      interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
+      temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
+      startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
+      daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
     })
 
     const { t } = useI18n({
