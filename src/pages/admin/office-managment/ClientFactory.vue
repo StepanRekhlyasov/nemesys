@@ -1,74 +1,17 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ClientFactoryDrawer from './components/ClientFactoryDrawer.vue';
-import consts from './consts'
+import { useAdminClientFactory } from 'src/stores/admin/clientFactory';
+import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
+import ClientFactoryTable from './components/ClientFactoryTable.vue';
+import Pagination from './components/PaginationView.vue';
+import {TableRow} from './types'
 
 const { t } = useI18n({ useScope: 'global' });
+const adminClientFactory = useAdminClientFactory()
 
-// const isDrawer = ref(false)
-const rows = ref([
-    {
-        id: 1,
-        office: {
-            name: 'いろは事業所',
-            kind: 'ooooooooooooooooo株式会社'
-        },
-        distance: '100.0m',
-        location: {
-            area: '大阪府 大阪市中央区',
-            address: '町名番地1111-1111-1111',
-            building: 'ビル名'
-        },
-        telephone: '03-0000-0000',
-        fax: '03-0000-0000',
-        officeMaster: '✓（事業所）',
-        clientMaster: '✓（クライアント',
-        basicInfo: '✓（基本情報変更済）',
-        classes: 'relative-position wrapper_animate_left_border'
-    },
-    {
-        id: 2,
-        office: {
-            name: 'いろは事業所',
-            kind: 'ooooooooooooooooo株式会社'
-        },
-        distance: '100.0m',
-        location: {
-            area: '大阪府 大阪市中央区',
-            address: '町名番地1111-1111-1111',
-            building: 'ビル名'
-        },
-        telephone: '03-0000-0000',
-        fax: '03-0000-0000',
-        officeMaster: '✓（事業所）',
-        clientMaster: '✓（クライアント',
-        basicInfo: '✓（基本情報変更済）'
-    },
-    {
-        id: 3,
-        office: {
-            name: 'いろは事業所',
-            kind: 'ooooooooooooooooo株式会社'
-        },
-        distance: '100.0m',
-        location: {
-            area: '大阪府 大阪市中央区',
-            address: '町名番地1111-1111-1111',
-            building: 'ビル名'
-        },
-        telephone: '03-0000-0000',
-        fax: '03-0000-0000',
-        officeMaster: '✓（事業所）',
-        clientMaster: '✓（クライアント',
-        basicInfo: '✓（基本情報変更済）'
-    }
-]);
-const selected = ref([])
-const getSelectedString = () => {
-    return selected.value.length === 0 ? '' : `${t('common.numberOfSelections')}: ${selected.value.length}`
-}
-
+const activeClientFactoryItem = ref<TableRow | null>(null)
+const isClientFactoryDrawer = ref(false)
 const pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -77,13 +20,17 @@ const pagination = ref({
     // rowsNumber: xx if getting data from a server
 });
 
-const columns = computed(() => {
-    return consts.tableColumnsClientFactory.map((column, index) => {
-        column.label = t(consts.columnLabelsClientFactory[index])
-        return column
-    })
-})
+const clientFactoryDrawerHandler = (item: TableRow) => {
+    activeClientFactoryItem.value = item
 
+    console.log(item)
+
+    isClientFactoryDrawer.value = true
+}
+
+const hideDrawer = () => {
+    isClientFactoryDrawer.value = false
+}
 </script>
 
 <template>
@@ -117,63 +64,22 @@ const columns = computed(() => {
                 </div>
             </q-card-section>
             <q-card-section class="table no-padding">
-                <q-table
-                :rows="rows"
-                :columns="columns"
-                row-key="id"
-                color="accent"
-                dense
-                :bordered="false"
-                :selected-rows-label="getSelectedString"
-                selection="multiple"
+                <ClientFactoryTable
+                @select-item="clientFactoryDrawerHandler"
+                :rows="adminClientFactory.rows"
                 v-model:pagination="pagination"
-                v-model:selected="selected"
-                hide-pagination>
-                
-                    <template v-slot:header-cell="props">
-                        <q-th :props="props">
-                            <div :key="item" v-for="item in props.col.label.split(' / ')">
-                                {{ item }}
-                            </div>
-                        </q-th>
-                    </template>
-
-                    <template v-slot:body="props">
-                        <q-tr :props="props" class="wrapper_animate_left_border relative-position">
-                            <q-td>
-                                <q-checkbox @click="props.selected ? false : true" v-model="props.selected" color="accent"/>
-                            </q-td>
-                            <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                                <span v-if="typeof col.value === 'string' || col.value instanceof String">
-                                    {{ col.value }}
-                                </span>
-                                <div v-else :key="field" v-for="field in Object.keys(col.value)">
-                                    <span :class="field">
-                                        {{ col.value[field] }} 
-                                    </span> 
-                                </div>
-                            </q-td>
-                        </q-tr>
-                    </template>
-
-                </q-table>
-                <div class="pagination">
-                    <q-pagination
-                    v-model="pagination.page"
-                    gutter="md"
-                    size="18px"
-                    color="white"
-                    text-color="black"
-                    active-text-color="white"
-                    active-color="accent"
-                    :max="(rows.length/pagination.rowsPerPage) >= 1 ?  rows.length/pagination.rowsPerPage : 1"
-                    direction-links
-                    outline />
-                </div>
+                />
+                <Pagination
+                :rows="adminClientFactory.rows"
+                v-model:pagination="pagination"/>
             </q-card-section>
         </q-card>
 
-        <ClientFactoryDrawer />
+        <ClientFactoryDrawer
+        v-if="activeClientFactoryItem"
+        v-model:selectedItem="activeClientFactoryItem"
+        :isDrawer="isClientFactoryDrawer"
+        @hide-drawer="hideDrawer"/>
     </div>
 </template>
 
@@ -183,16 +89,6 @@ const columns = computed(() => {
 
 .title {
     color: $main-black;
-}
-.table {
-    display: flex;
-    flex-direction: column;
-    .name {
-        text-decoration: underline;
-        color: $main_purple;
-        font-size: 1rem;
-        cursor: pointer;
-    }
 }
 .pagination {
     padding: 2% 2%;
@@ -212,10 +108,5 @@ const columns = computed(() => {
     text-decoration: underline;
     line-height: 14px;
     color: $main_purple;
-}
-
-.wrapper_animate_left_border::after {
-    width: 1.2%;
-    z-index: 11;
 }
 </style>

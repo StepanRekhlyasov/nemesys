@@ -6,3 +6,23 @@ export interface TableColumn {
     sortable?: boolean,
     label?: string
 }
+
+export interface TableRow {
+        id: number,
+        office: {
+            name: string,
+            kind: string
+        },
+        distance: string,
+        location: {
+            area: string,
+            address: string,
+            building: string
+        },
+        telephone: string,
+        fax: string,
+        officeMaster: string,
+        clientMaster: string,
+        basicInfo: string,
+        classes: string
+}
