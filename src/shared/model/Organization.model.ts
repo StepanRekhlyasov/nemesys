@@ -9,7 +9,11 @@ export interface Organization {
   updatedAt?: Date;
   mailaddress: string;
   code: string;
+  operatorUser: string; //担当者
+  invoiceRequest: InvoiceRequest;
 }
+
+type InvoiceRequest = 'electronic'
 
 export enum Prefectures {
   '北海道',

@@ -1,7 +1,7 @@
-import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
+import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
-import { Role, UserPermissionNames } from '../model/Accaunt.model';
+import { Role, User, UserPermissionNames } from '../model/Accaunt.model';
 import { Branch, branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
 import { branchCollection, itemCollection } from './utils';
@@ -99,6 +99,18 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
     ...constraints,
   ))
 
+}
+
+export const getUserById = async (id: string) => {
+  const db = getFirestore();
+
+  const docRef = doc(db, 'users', id)
+
+  const userSnap = await getDoc(docRef)
+
+  if (userSnap.exists()) {
+    return userSnap.data() as User
+  }
 }
 
 export const getAllBranches = async (db: Firestore, search?: BranchesSearch) => {
