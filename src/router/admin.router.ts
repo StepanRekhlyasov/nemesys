@@ -65,6 +65,16 @@ const admin_router: MenuRouter[] = [
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
 
+  },
+  {
+    path:'organization-list',
+    title: 'menu.admin.companyList',
+    component: ()=> import('src/pages/admin/EnterpriseManagement/OrganizationList.vue'),
+    meta:{
+      permission: [UserPermissionNames.AdminPageAccess],
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.AdminEnterpriseManagement
   }
 ]
 
