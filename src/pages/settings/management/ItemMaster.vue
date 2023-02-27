@@ -116,7 +116,7 @@
   import { doc, getFirestore, updateDoc} from '@firebase/firestore';
   import { computed, Ref, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { Accaunt } from 'src/shared/model/Accaunt.model';
+  import { Accaunt } from 'src/shared/model/Account.model';
   import { getItem, ItemsSearch } from 'src/shared/utils/User.utils';
   import { toDateObject } from 'src/shared/utils/utils';
   import { useQuasar } from 'quasar';

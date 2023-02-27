@@ -6,7 +6,7 @@ import { getAuth } from 'firebase/auth';
 
 import { config } from '../helpers/firebaseConfig';
 import { getUserPermissions } from 'src/shared/utils/User.utils';
-import { UserPermissionNames } from 'src/shared/model/Accaunt.model';
+import { UserPermissionNames } from 'src/shared/model/Account.model';
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files

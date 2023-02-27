@@ -1,4 +1,4 @@
-import { UserPermissionNames } from 'src/shared/model/Accaunt.model';
+import { UserPermissionNames } from 'src/shared/model/Account.model';
 import { MenuRouter, MenuParent } from 'src/shared/model/Menu.molel';
 
 const admin_router: MenuRouter[] = [

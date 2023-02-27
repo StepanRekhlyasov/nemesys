@@ -167,7 +167,7 @@ import EssentialLink from 'components/EssentialLink.vue';
 import ToolbarLanguage from 'components/toolbar/ToolbarLanguage.vue';
 import { defineComponent, Ref, ref } from 'vue';
 import { getFirestore, doc, getDoc, DocumentSnapshot, DocumentData} from '@firebase/firestore';
-import { Role, User, UserPermissionNames } from 'src/shared/model/Accaunt.model';
+import { Role, User, UserPermissionNames } from 'src/shared/model/Account.model';
 import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
