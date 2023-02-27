@@ -202,7 +202,7 @@
 <script lang="ts">
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -230,23 +230,21 @@ export default {
     const loading = ref(false);
     const transportationServicesOptions = ref(PossibleTransportationServicesList)
 
-    const desiredData = computed(() => {
-      return {
-        timeToWork: props.applicant['timeToWork'] || '',
-        daysToWork: props.applicant['daysToWork'] || '',
-        daysPerWeek: props.applicant['daysPerWeek'] || [],
-        specialDay: props.applicant['specialDay'] || [],
-        shiftRemarks: props.applicant['shiftRemarks'] || '',
-        meansCommuting: props.applicant['meansCommuting'] || '',
-        nearestStation: props.applicant['nearestStation'] || '',
-        commutingTime: props.applicant['commutingTime'] || '',
-        commutingTimeRemarks: props.applicant['commutingTimeRemarks'] || '',
-        facilityDesired: props.applicant['facilityDesired'] || '',
-        ngFacilityType: props.applicant['ngFacilityType'] || '',
-        hourlyRate: props.applicant['hourlyRate'] || '',
-        transportationServices: props.applicant['transportationServices'] || '',
-        jobSearchPriorities: props.applicant['jobSearchPriorities'] || [],
-      }
+    const desiredData = ref({
+      timeToWork: props.applicant['timeToWork'] || '',
+      daysToWork: props.applicant['daysToWork'] || '',
+      daysPerWeek: props.applicant['daysPerWeek'] || [],
+      specialDay: props.applicant['specialDay'] || [],
+      shiftRemarks: props.applicant['shiftRemarks'] || '',
+      meansCommuting: props.applicant['meansCommuting'] || '',
+      nearestStation: props.applicant['nearestStation'] || '',
+      commutingTime: props.applicant['commutingTime'] || '',
+      commutingTimeRemarks: props.applicant['commutingTimeRemarks'] || '',
+      facilityDesired: props.applicant['facilityDesired'] || '',
+      ngFacilityType: props.applicant['ngFacilityType'] || '',
+      hourlyRate: props.applicant['hourlyRate'] || '',
+      transportationServices: props.applicant['transportationServices'] || '',
+      jobSearchPriorities: props.applicant['jobSearchPriorities'] || [],
     })
 
     const { t } = useI18n({
