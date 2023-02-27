@@ -60,6 +60,34 @@
     </div>
 
     <div class="row q-pb-sm">
+      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('office.earlyShift') }}
+      </div>
+      <div class="col-2 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursEarly?'●': '✕' }}</span>
+        <q-checkbox v-if="desiredEdit" v-model="desiredData['workingHoursEarly']" />
+      </div>
+      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('office.dayShift') }}
+      </div>
+      <div class="col-2 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursDay?'●': '✕' }}</span>
+        <q-checkbox v-if="desiredEdit" v-model="desiredData['workingHoursDay']" />
+      </div>
+      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('office.lateShift') }}
+      </div>
+      <div class="col-2 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursLate?'●': '✕' }}</span>
+        <q-checkbox v-if="desiredEdit" v-model="desiredData['workingHoursLate']" />
+      </div>
+      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('office.nightShift') }}
+      </div>
+      <div class="col-2 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursNight?'●': '✕' }}</span>
+        <q-checkbox v-if="desiredEdit" v-model="desiredData['workingHoursNight']" />
+      </div>
 
     </div>
 
