@@ -26,3 +26,10 @@ export interface TableRow {
         basicInfo: string,
         classes: string
 }
+
+export interface OfficeMenuItem {
+    name: string,
+    center?: string,
+    right?: string,
+    click: () => void
+}

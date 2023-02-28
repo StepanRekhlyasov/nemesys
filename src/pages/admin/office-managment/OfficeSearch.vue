@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import MapDrawer from './MapDrawer.vue';
+import {OfficeMenuItem} from './types'
+
+const { t } = useI18n({ useScope: 'global' });
 
 const router = useRouter()
-const { t } = useI18n({ useScope: 'global' });
+const isDrawer = ref(false)
+const activeItem = ref<null | OfficeMenuItem>(null)
+
 
 const menu = computed(() => {
     return [
@@ -12,7 +18,7 @@ const menu = computed(() => {
             name: t('menu.mapSearch'),
             right: require('assets/admin-office-managment/map-search-image.png'),
             click() {
-                router.push('client-factory')
+                isDrawer.value = true
             },
         },
         {
@@ -31,16 +37,30 @@ const menu = computed(() => {
         },
         {
             name: t('menu.addOffice'),
-            center: t('menu.addOfficeHint'),
-            click: '',
+            center: 'menu.addOfficeHint',
+            click() {
+                router.push('client-factory')
+            },
         },
         {
             name: t('menu.addClient'),
-            center: t('menu.addNewClient'),
-            click: '',
+            center: 'menu.addNewClient',
+            click() {
+                router.push('client-factory')
+            },
         },
     ]
 })
+
+const hideDrawer = () => {
+    isDrawer.value = false
+}
+
+const onMenuItem = (item: OfficeMenuItem) => {
+    activeItem.value = item
+    item.click()
+}
+
 </script>
 
 <template>
@@ -53,9 +73,11 @@ const menu = computed(() => {
                 <q-list bordered separator padding class="rounded-borders bg-grey-3">
                     <q-separator color="white" size="2px" />
                     <q-item
-                    @click="item.click"
+                    @click="onMenuItem(item)"
                     class="item_wrapper wrapper_animate_left_border"
                     clickable
+                    activeClass="active-link"
+                    :active="item.name === activeItem?.name"
                     :key="item.name"
                     v-for="item in menu">
                         <q-item-section>
@@ -67,7 +89,7 @@ const menu = computed(() => {
                                     {{ item.center }}
                                 </div>
                                 <div class="menu-item__right">
-                                    <q-img v-if="item.right" :src="item.right" :alt="item.name" />
+                                    <q-img v-if="item.right" :src="item.right " :alt="item.name" />
                                 </div>
                             </div>
                         </q-item-section>
@@ -75,6 +97,10 @@ const menu = computed(() => {
                 </q-list>
             </q-card-section>
         </q-card>
+
+        <MapDrawer
+        @hide-drawer="hideDrawer" 
+        :isDrawer="isDrawer"/>
     </div>
 </template>
 
@@ -89,7 +115,10 @@ const menu = computed(() => {
 .q-list {
     color: $main-purple;
 }
-.wrapper_animate_left_border::after {
+.active-link {
+    
+}
+.wrapper_animate_left_border::after, .active-link::after {
     width: 2.5%;
 }
 .menu-item {

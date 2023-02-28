@@ -1,8 +1,8 @@
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-card-actions>
-      <q-btn :label="$t('client.list.conditionalSearch')" unelevated color="primary" class="no-shadow text-weight-bold" icon="add" />
-      <q-btn :label="$t('client.list.searchByCondition')" outline color="primary" class="text-weight-bold" />
+      <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="theme" class="no-shadow text-weight-bold" icon="add" />
+      <q-btn :label="$t('client.list.searchByCondition')" outline :color="theme" class="text-weight-bold" />
     </q-card-actions>
     <q-separator />
 
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { watch, ref } from 'vue'; //ref,
+import { watch, ref } from 'vue'; 
 //import { useI18n } from 'vue-i18n';
 import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
 
@@ -43,6 +43,7 @@ export default {
     Markers,
     Circles
   },
+  props: ['theme'],
 
   setup() {
     //const { t } = useI18n({ useScope: 'global' });

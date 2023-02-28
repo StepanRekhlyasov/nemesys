@@ -54,7 +54,7 @@
           </q-card-section>
           <q-separator />
           <q-card-section class="bg-grey-1 q-pa-none">
-            <mapSearch v-if="link == 'mapSearch'" />
+            <mapSearch v-if="link == 'mapSearch'" theme=""/>
             <areaSearch v-else-if="link == 'areaSearch'" />
             <advanceSearch v-else-if="link == 'advancedSearch'" />
             <addClient v-else-if="link == 'addClient'" ref="clientRef" @updateData="updateData"/>
