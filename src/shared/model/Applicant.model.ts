@@ -28,3 +28,15 @@ export interface ApplicantMemo {
   updated_date?: string;
   delited: boolean;
 }
+
+export interface ContactInfo {
+  created_at: string;
+  contactMethod: ContactMethod;
+  content: string;
+  note: string;
+}
+
+export enum ContactMethod {
+  SMS = 'sms',
+  PHONE = 'phone'
+}

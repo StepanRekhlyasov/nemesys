@@ -869,7 +869,7 @@ export default {
       children: '子供',
       medicalHistory: '既往歴',
       vaccinationStatus: 'ワクチン接種状況',
-      startCaring: '選考状況備考',
+      startCaring: '介護を始めたきっかけ',
       interviewsWaitingList: '面接待ち件数',
       temporaryCompaniesRegistered: '派遣登録社数',
       startedInCaregiving: '選考状況備考',

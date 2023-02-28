@@ -202,10 +202,20 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.jobSearchPriorities') }}
       </div>
-      <div class="col-9 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities" />
+      <div class="col-3 q-pl-md blue ">
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities1" />
         <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="desiredData['jobSearchPriorities']" :disable="loading" />
+          v-model="desiredData['jobSearchPriorities1']" :disable="loading" />
+      </div>
+      <div class="col-3 q-pl-md blue ">
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities2" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white"
+          v-model="desiredData['jobSearchPriorities2']" :disable="loading" />
+      </div>
+      <div class="col-3 q-pl-md blue ">
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities3" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white"
+          v-model="desiredData['jobSearchPriorities3']" :disable="loading" />
       </div>
     </div>
   </edit-view-component>

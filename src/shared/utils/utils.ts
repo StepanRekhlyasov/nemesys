@@ -26,7 +26,6 @@ export const toDate = (timestamp: Timestamp):string => {
 export const differentDateYear = (date1: string, date2: string):number => {
   const d1 = new Date(date1), d2 = new Date(date2);
   const timeDiff = Math.abs(d2.getTime() - d1.getTime());
-  console.log(Math.ceil(timeDiff / (1000 * 3600 )), 'timeDiff')
   return Math.ceil(timeDiff / (1000 * 3600 * 24 * 12 * 30)) - 1;
 }
 
