@@ -202,14 +202,10 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.jobSearchPriorities') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">① 時給の高さ</span>
-      </div>
-      <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">② 残業の少なさ</span>
-      </div>
-      <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">③ 福利厚生の充実度</span>
+      <div class="col-9 q-pl-md blue ">
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white"
+          v-model="desiredData['jobSearchPriorities']" :disable="loading" />
       </div>
     </div>
   </edit-view-component>
