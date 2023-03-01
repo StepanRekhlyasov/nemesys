@@ -53,6 +53,7 @@
   overlay elevated
   bordered>
   <FixEmployCreate
+    v-if="drawerRight"
     :fixData="fixData"
     @close="drawerRight=false"
     :applicant="applicant"
@@ -212,8 +213,8 @@ export default {
       options,
       loadContactData,
       async updateData(data){
-        console.log(fixData.value.id)
         if (fixData.value.id){
+          data['updated_at'] = serverTimestamp();
           await updateDoc(
             doc(db, 'applicants/' + props.applicant.id + '/contacts/'+ fixData.value.id),
             data

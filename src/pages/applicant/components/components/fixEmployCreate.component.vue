@@ -19,15 +19,16 @@
       <q-form>
         <q-card-section>
           <q-select
-            v-model="data['client']"
-            @input-value="() => loadClientOffice()"
-            @update:model-value="loadClientOffice"
+            v-model="data.client"
+            @update:model-value="loadClientOffice(); data['office']=null"
             :loading="loading"
-            aria-required :options="clientOptions"
-            :label="$t('applicant.list.fixEmployment.client')" />
+            :options="clientOptions"
+            emit-value map-options
+            :label="$t('applicant.list.fixEmployment.client')"  />
           <q-select
-            v-model="data['office']" aria-required
+            v-model="data.office"
             :loading="loading"
+            emit-value map-options
             :options="officeOptions" :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
@@ -46,7 +47,7 @@
               <div class="col-3 q-pl-md blue ">
                 <span v-if="!edit.includes('info')">{{ fixData.status }}</span>
                 <template v-if="edit.includes('info')">
-                  <q-radio v-model="data['status']" val="ok" label="OK" @click="data['date'] = ''"/>
+                  <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = ''"/>
                   <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" />
                 </template>
               </div>
@@ -54,12 +55,12 @@
                 {{ $t('applicant.list.fixEmployment.date') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('info')" :value="fixData.date" />
-                <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['date']"  :disable="loading">
+                <hidden-text v-if="!edit.includes('info')" :value="fixData.data" />
+                <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['data']" :disable="loading">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="data['date']" mask="YYYY/MM/DD">
+                        <q-date v-model="data['data']" mask="YYYY/MM/DD">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup label="Close" color="primary" flat />
                           </div>
@@ -423,6 +424,9 @@ export default {
         });
         clientOptions.value = list;
         loading.value = false;
+        if (data.value['client']) {
+          loadClientOffice()
+        }
       })
 
     }
@@ -432,9 +436,8 @@ export default {
         return
       }
       try{
-        data.value['office']=null
         loading.value= true;
-        const officeSnapshot = getClientOfficeList(db, data.value['client'].value)
+        const officeSnapshot = getClientOfficeList(db, data.value['client'])
         officeSnapshot.then(office => {
           let list: selectOptions[] = [];
           office?.forEach((doc) => {
@@ -444,7 +447,6 @@ export default {
               value: doc.id
             });
           });
-          console.log(list)
           officeOptions.value = list;
           loading.value = false;
         })
@@ -502,11 +504,14 @@ export default {
         try {
           const retData = {...data.value}
           retData['updated_at'] = serverTimestamp();
+          delete retData['created_at']
           if (props.fixData.id) {
             await updateDoc(
               doc(db, 'applicants/' + props.applicant.id + '/contacts/'+ props.fixData.id),
               retData
             );
+            context.emit('updateList')
+            context.emit('close')
             return;
           }
           retData['created_at'] = serverTimestamp();
