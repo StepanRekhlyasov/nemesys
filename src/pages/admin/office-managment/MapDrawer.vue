@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
-import mapSearch from 'src/pages/clients/components/mapSearch.vue';
+import mapSearch from 'src/components/MapSearch.vue';
 
 const props = defineProps(['isDrawer'])
 const emit = defineEmits(['hideDrawer'])
