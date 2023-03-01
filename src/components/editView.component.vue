@@ -30,8 +30,7 @@ export default {
       required: true
     },
     label: {
-      type: String,
-      required: true
+      type: String
     },
     showButton: {
       type: Boolean,

@@ -50,12 +50,36 @@
 
       <template v-slot:body-cell-contactMethod="props">
         <q-td :props="props">
-          <div v-if="props.value == 'phone'">
-            {{ $t('applicant.list.contacts.phone') }}
-          </div>
-          <div v-else-if="props.value == 'sms'">
-            SMS
-          </div>
+          <template v-if="isRowSelected(props.rowIndex)">            
+            <q-radio v-model="editableContect.contactMethod" val="phone" :label="$t('applicant.list.contacts.phone')" />
+            <q-radio v-model="editableContect.contactMethod" val="sms" label="SMS" class="q-ml-sm" />
+          </template>
+          <template v-if="!isRowSelected(props.rowIndex)">
+            <div v-if="props.value == 'phone'">
+              {{ $t('applicant.list.contacts.phone') }}
+            </div>
+            <div v-else-if="props.value == 'sms'">
+              SMS
+            </div>
+          </template>
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-content="props">
+        <q-td :props="props">
+          <q-input :color="color" v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.content" />
+          <template v-if="!isRowSelected(props.rowIndex)">
+            {{ props.row.content }}
+          </template>
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-note="props">
+        <q-td :props="props">
+          <q-input :color="color" v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.note" />
+          <template v-if="!isRowSelected(props.rowIndex)">
+            {{ props.row.note }}
+          </template>
         </q-td>
       </template>
 
@@ -71,9 +95,10 @@
       </template>
 
       <template v-slot:body-cell-edit="props">
-        <q-td :props="props">
-          <q-btn icon="edit" flat @click="showEditDialog(props.row)"  color="primary"/>
-        </q-td>
+        <EditButton :props="props" color="primary"
+          :on-edit="() => { editableContect = JSON.parse(JSON.stringify(props.row))}"
+          :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
+          :editable-row="editableRow" :key="props.rowIndex"/>
       </template>
       <template v-slot:body-cell-delete="props">
         <q-td :props="props">
@@ -85,12 +110,14 @@
   </q-card>
 </template>
 
-<script>
+<script >
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount } from 'vue';
+import { ref, computed, onBeforeUnmount} from 'vue';
 import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
+import EditButton from 'src/components/EditButton.vue';
+import { getAuth } from '@firebase/auth';
 
 //import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
 //import { teleAppointmentData } from 'src/shared/constants/TeleAppoint.const';
@@ -106,9 +133,12 @@ export default {
       required: true
     }
   },
-
+  components: {
+    EditButton
+  },
   setup(props) {
     const { t } = useI18n({ useScope: 'global' });
+    const auth = getAuth()
     const contactListData = ref([])
     const deleteItemId = ref('');
 
@@ -166,7 +196,9 @@ export default {
     });
 
     const loading = ref(false);
-    const showAddForm = ref(false)
+    const showAddForm = ref(false);
+    const editableRow = ref(-1)
+    const editableContect = ref({})
     const contactData = ref({
     });
 
@@ -174,8 +206,6 @@ export default {
     const $q = useQuasar();
     const unsubscribe = ref();
     const unsubscribeUsers = ref();
-
-    const dialogType = ref('create')
 
     loadContactData()
     function loadContactData() {
@@ -185,7 +215,7 @@ export default {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           data['id'] = doc.id;
-          contData.push({ ...data, id: doc.id, created_at: toDate(data.created_at) });
+          contData.push({ ...data, created_at: toDate(data.created_at) });
         });
         contactListData.value = contData;
       },
@@ -225,6 +255,13 @@ export default {
       showAddForm,
       loading,
 
+      editableRow,
+      editableContect,
+
+
+      isRowSelected(row ) {
+        return row == editableRow.value
+      },
       async onSubmit() {
         loading.value = true;
         let data = contactData.value;
@@ -241,31 +278,15 @@ export default {
         const user = $q.localStorage.getItem('user');
 
         try {
-          if (dialogType.value == 'update') {
-            let updateData = {}
-            updateData['updated_at'] = serverTimestamp();
-            updateData['updated_by'] = user.uid;
-            //updateData['result'] = data['result']
-            updateData['content'] = data['content']
-            updateData['contactMethod'] = data['contactMethod']
-            updateData['note'] = data['note']
+          data['created_at'] = serverTimestamp();
+          data['updated_at'] = serverTimestamp();
+          data['deleted'] = false;
+          data['created_by'] = user?.uid;
 
-            await updateDoc(
-              doc(db, 'applicants/' + props.applicant.id + '/contacts/' + data['id']),
-              updateData
-            );
-          }
-          else {
-            data['created_at'] = serverTimestamp();
-            data['updated_at'] = serverTimestamp();
-            data['deleted'] = false;
-            data['created_by'] = user.uid;
-
-            await addDoc(
-              collection(db, 'applicants/' + props.applicant.id + '/contacts'),
-              data
-            );
-          }
+          await addDoc(
+            collection(db, 'applicants/' + props.applicant.id + '/contacts'),
+            data
+          );
 
           loading.value = false;
           contactData.value = {};
@@ -275,7 +296,6 @@ export default {
             icon: 'cloud_done',
             message: t('success'),
           });
-          dialogType.value = 'create';
           //applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
           //applicantForm.value.resetValidation();
         } catch (error) {
@@ -289,7 +309,6 @@ export default {
           });
         }
       },
-
       async deleteItem() {
         if (!deleteItemId.value) {
           return false;
@@ -317,8 +336,28 @@ export default {
         //contactData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
         contactData.value = {};
-        dialogType.value = 'create';
         showAddForm.value = false;
+      },
+      async onUpdate(index) {       
+        try {
+          loading.value = true;
+          let updateData = {}
+          updateData['updated_at'] = serverTimestamp();
+          updateData['updated_by'] = auth.currentUser?.uid;
+          updateData['content'] = editableContect.value.content  || '';
+          updateData['note'] = editableContect.value.note || '';
+          updateData['contactMethod'] = editableContect.value.contactMethod || '';
+
+          await updateDoc(
+            doc(db, 'applicants/' + props.applicant.id + '/contacts/' + editableContect.value['id']),
+            updateData
+          );
+          contactListData.value[index] = editableContect.value;
+          loading.value = false;
+        } catch (e) {
+          console.log(e) 
+          loading.value = false;
+        }
       },
       getUserName(uid) {
         const value = users.value.find(x => x['id'] === uid)
@@ -327,16 +366,10 @@ export default {
         }
         return '';
       },
-      showEditDialog(data) {
-        dialogType.value = 'update';
-        contactData.value = JSON.parse(JSON.stringify(data));
-        showAddForm.value = true;
-      },
       showDeleteDialog(data) {
         $q.dialog({
           title: t('common.delete'),
           message: t('common.deleteInfo'),
-          cancel: true,
           persistent: true,
           cancel: t('common.cancel'),
         }).onOk(async () => {
@@ -344,7 +377,7 @@ export default {
 
           let updateData = {}
           updateData['deleted'] = true;
-          updateData['deleted_by'] = user.uid;
+          updateData['deleted_by'] = user?.uid;
           updateData['deleted_at'] = serverTimestamp();
 
           await updateDoc(

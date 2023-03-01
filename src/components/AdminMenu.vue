@@ -79,7 +79,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import EssentialLink from 'components/EssentialLink.vue';
 import { defineComponent, Ref, ref } from 'vue';
 import { getFirestore, doc, getDoc, DocumentSnapshot, DocumentData} from '@firebase/firestore';
-import { Role, User, UserPermissionNames } from 'src/shared/model/Accaunt.model';
+import { Role, User, UserPermissionNames } from 'src/shared/model/Account.model';
 import { Organization } from 'src/shared/model/Organization.model';
 import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
 import { RouterToMenu, adminMenuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';

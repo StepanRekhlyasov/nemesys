@@ -25,12 +25,13 @@
           </div>
       </q-card-section>
       <q-separator color="white" size="2px" />
-      <q-card-section>
+      <q-card-section class=" q-pa-none">
         <q-table
             :columns="columns"
             :rows="applicantData"
             row-key="id"
             selection="multiple"
+            class="no-shadow"
             v-model:selected="selected"
             v-model:pagination="pagination"
             hide-pagination
@@ -157,8 +158,8 @@
                 <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursDay?'●': '✕' }}</span>
               </div>
               <div class="col-6">
-                <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{ selectedApplicant.workingHoursLate?'●': '✕' }}</span>
-                <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{ selectedApplicant.workingHoursNight?'●': '✕' }}</span>
+                <span class="q-pl-md"><span class="text-primary">{{ $t('office.lateShift') }}</span>: {{ selectedApplicant.workingHoursLate?'●': '✕' }}</span>
+                <span class="q-pl-md"><span class="text-primary">{{ $t('office.nightShift') }}</span>: {{ selectedApplicant.workingHoursNight?'●': '✕' }}</span>
               </div>
             </div>
             <div class="col-4 row">

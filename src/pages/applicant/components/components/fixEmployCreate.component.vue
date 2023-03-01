@@ -204,8 +204,8 @@
                 {{ $t('applicant.list.fixEmployment.inspection.notes') }}
               </div>
               <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('info')" :value="fixData.notesInspection" />
-                <q-input v-if="edit.includes('info')" dense outlined bg-color="white"
+                <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.notesInspection" />
+                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
                   v-model="data['notesInspection']" :disable="loading" />
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
-import { Role, User, UserPermissionNames } from '../model/Accaunt.model';
+import { Role, User, UserPermissionNames } from '../model/Account.model';
 import { Branch, branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
 import { branchCollection, itemCollection } from './utils';

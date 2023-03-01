@@ -9,7 +9,7 @@ export interface dataTable {
 }
 
 
-export * from './Accaunt.model';
+export * from './Account.model';
 export * from './BackOrder.model';
 export * from './Branch.model';
 export * from './Client.model';
