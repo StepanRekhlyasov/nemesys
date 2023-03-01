@@ -7,7 +7,7 @@
             <q-btn dense flat icon="close" @click="$emit('close')" class="q-mr-md"/>
           </div>
           <div class="col-11 ">
-            <span class="row">{{ $t('client.add.parentClientName') }}</span>
+            <span class="row">{{ applicant.name }}</span>
             <div class="row">
               <span class="text-h6"> {{ $t('client.add.officeName') }}</span>
               <q-btn :label="$t('applicant.list.fixEmployment.save')" class="q-ml-md" color="white" text-color="primary" @click="saveDoc" size="sm"/>
@@ -47,8 +47,8 @@
               <div class="col-3 q-pl-md blue ">
                 <span v-if="!edit.includes('info')">{{ fixData.status }}</span>
                 <template v-if="edit.includes('info')">
-                  <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = ''"/>
-                  <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" />
+                  <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';disableChange ()"/>
+                  <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" />
                 </template>
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -88,9 +88,17 @@
                 {{ $t('applicant.list.fixEmployment.contactPerson') }}
               </div>
               <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('info')" :value="fixData.contactPerson" />
-                <q-input v-if="edit.includes('info')" dense outlined bg-color="white"
-                  v-model="data['contactPerson']" :disable="loading" />
+                <span v-if="!edit.includes('info')" class="text_dots">{{ 
+                  usersListOption
+                  .filter(user => user.value === data['contactPerson'])
+                  .map(user => user.label).join('')  }}</span>
+                <q-select
+                  v-if="edit.includes('info')"
+                  v-model="data['contactPerson']"
+                  :disable="loading"
+                  emit-value map-options dense outlined
+                  :options="usersListOption" 
+                  :label="$t('common.pleaseSelect')" />
               </div>
             </div>
 
@@ -113,7 +121,8 @@
             :label="$t('applicant.list.fixEmployment.jobSearchInfo')"
             @openEdit="edit.push('jobSearchInfo')"
             @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')"
-            @onSave="save('jobSearchInfo')">
+            @onSave="save('jobSearchInfo')"
+            :disableButton="disableLevel < 1">
 
             <div class="row q-pb-sm">
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -122,8 +131,8 @@
               <div class="col-3 q-pl-md blue ">
                 <span v-if="!edit.includes('jobSearchInfo')">{{ fixData.inspectionStatus }}</span>
                 <template v-if="edit.includes('jobSearchInfo')">
-                  <q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = ''"/>
-                  <q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" />
+                  <q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';disableChange()" :disable="disableLevel < 1"/>
+                  <q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 1"/>
                 </template>
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -131,7 +140,7 @@
               </div>
               <div class="col-3 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.inspectionDate" />
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white" v-model="data['inspectionDate']"  :disable="loading">
+                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white" v-model="data['inspectionDate']"  :disable="loading || disableLevel < 1">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -154,7 +163,7 @@
               <div class="col-9 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.reasonNG" />
                 <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
-                  v-model="data['reasonNG']" :disable="loading" />
+                  v-model="data['reasonNG']" :disable="loading || disableLevel < 1" />
               </div>
             </div>
 
@@ -166,7 +175,7 @@
                 <span v-if="!edit.includes('jobSearchInfo')">{{ fixData.chargeOfFacility }}</span>
                 <template v-if="edit.includes('jobSearchInfo')">
                   <q-input v-if="edit" dense outlined bg-color="white"
-                    v-model="data['chargeOfFacility']" :disable="loading" />
+                    v-model="data['chargeOfFacility']" :disable="loading || disableLevel < 1" />
                 </template>
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -175,7 +184,7 @@
               <div class="col-3 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.jobTitle" />
                 <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
-                  v-model="data['jobTitle']" :disable="loading" />
+                  v-model="data['jobTitle']" :disable="loading || disableLevel < 1" />
               </div>
             </div>
 
@@ -184,11 +193,16 @@
                 {{ $t('applicant.list.fixEmployment.inspection.contact') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobSearchInfo')">{{ fixData.contact }}</span>
-                <template v-if="edit.includes('jobSearchInfo')">
-                  <q-input v-if="edit" dense outlined bg-color="white"
-                    v-model="data['contact']" :disable="loading" />
-                </template>
+                <span v-if="!edit.includes('jobSearchInfo')" class="text_dots">{{ 
+                  usersListOption
+                  .filter(user => user.value === data['contact'])
+                  .map(user => user.label).join('')  }}</span>
+                <q-select
+                  v-if="edit.includes('jobSearchInfo')"
+                  v-model="data['contact']"
+                  :disable="loading || disableLevel < 1"
+                  emit-value map-options dense outlined
+                  :options="usersListOption" :label="$t('common.pleaseSelect')" />
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.inspection.comments') }}
@@ -196,7 +210,7 @@
               <div class="col-3 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.comments" />
                 <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
-                  v-model="data['comments']" :disable="loading" />
+                  v-model="data['comments']" :disable="loading || disableLevel < 1" />
               </div>
             </div>
 
@@ -207,7 +221,7 @@
               <div class="col-9 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.notesInspection" />
                 <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
-                  v-model="data['notesInspection']" :disable="loading" />
+                  v-model="data['notesInspection']" :disable="loading || disableLevel < 1" />
               </div>
             </div>
           </edit-view-component>
@@ -219,7 +233,8 @@
             :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
             @openEdit="edit.push('jobOffersInfo')"
             @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')"
-            @onSave="save('jobOffersInfo')">
+            @onSave="save('jobOffersInfo')"
+            :disableButton="disableLevel < 2">
             <div class="row q-pb-sm">
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.offer.status') }}
@@ -227,8 +242,8 @@
               <div class="col-3 q-pl-md blue ">
                 <span v-if="!edit.includes('jobOffersInfo')">{{ fixData.offerStatus }}</span>
                 <template v-if="edit.includes('jobOffersInfo')">
-                  <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = ''"/>
-                  <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" />
+                  <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';disableChange()" :disable="disableLevel < 2"/>
+                  <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 2"/>
                 </template>
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -236,7 +251,7 @@
               </div>
               <div class="col-3 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobOffersInfo')" :value="fixData.offerDate" />
-                <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white" v-model="data['offerDate']"  :disable="loading">
+                <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white" v-model="data['offerDate']"  :disable="loading || disableLevel < 2">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -259,7 +274,7 @@
               <div class="col-9 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobOffersInfo')" :value="fixData.offerReasonNG" />
                 <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white"
-                  v-model="data['offerReasonNG']" :disable="loading" />
+                  v-model="data['offerReasonNG']" :disable="loading || disableLevel < 2" />
               </div>
             </div>
 
@@ -268,9 +283,16 @@
                 {{ $t('applicant.list.fixEmployment.offer.chargeOfOffer') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobOffersInfo')">{{ fixData.chargeOfOffer}}</span>
-                <q-select v-if="edit.includes('jobOffersInfo')" outlined dense :options="[]"
-                  emit-value map-options v-model="data['chargeOfOffer']" :disable="loading"/>
+                <span v-if="!edit.includes('jobOffersInfo')" class="text_dots">{{ 
+                  usersListOption
+                  .filter(user => user.value === data['chargeOfOffer'])
+                  .map(user => user.label).join('')  }}</span>
+                <q-select
+                  v-if="edit.includes('jobOffersInfo')"
+                  v-model="data['chargeOfOffer']"
+                  :disable="loading || disableLevel < 2"
+                  emit-value map-options dense outlined
+                  :options="usersListOption" :label="$t('common.pleaseSelect')" />
               </div>
             </div>
 
@@ -281,7 +303,7 @@
               <div class="col-9 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('jobOffersInfo')" :value="fixData.offerMemo" />
                 <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white"
-                  v-model="data['offerMemo']" :disable="loading" />
+                  v-model="data['offerMemo']" :disable="loading || disableLevel < 2" />
               </div>
             </div>
           </edit-view-component>
@@ -293,7 +315,8 @@
             :label="$t('applicant.list.fixEmployment.employmentInfo')"
             @openEdit="edit.push('employmentInfo')"
             @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')"
-            @onSave="save('employmentInfo')">
+            @onSave="save('employmentInfo')"
+            :disableButton="disableLevel < 3">
             <div class="row q-pb-sm">
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.admission.status') }}
@@ -301,8 +324,8 @@
               <div class="col-3 q-pl-md blue ">
                 <span v-if="!edit.includes('employmentInfo')">{{ fixData.admissionStatus }}</span>
                 <template v-if="edit.includes('employmentInfo')">
-                  <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''"/>
-                  <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" />
+                  <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
+                  <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
                 </template>
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -310,7 +333,7 @@
               </div>
               <div class="col-3 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.admissionDate" />
-                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white" v-model="data['admissionDate']"  :disable="loading">
+                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white" v-model="data['admissionDate']"  :disable="loading || disableLevel < 3">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -333,7 +356,7 @@
               <div class="col-9 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.reasonNotJoining" />
                 <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white"
-                  v-model="data['reasonNotJoining']" :disable="loading" />
+                  v-model="data['reasonNotJoining']" :disable="loading || disableLevel < 3" />
               </div>
             </div>
 
@@ -341,10 +364,17 @@
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.admission.chargeOfAdmission') }}
               </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.chargeOfAdmission" />
-                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white"
-                  v-model="data['chargeOfAdmission']" :disable="loading" />
+              <div class="col-9 q-pl-md blue ">                
+                <span v-if="!edit.includes('employmentInfo')" class="text_dots">{{ 
+                  usersListOption
+                  .filter(user => user.value === data['chargeOfAdmission'])
+                  .map(user => user.label).join('')  }}</span>
+                <q-select
+                  v-if="edit.includes('employmentInfo')"
+                  v-model="data['chargeOfAdmission']"
+                  :disable="loading || disableLevel < 3"
+                  emit-value map-options dense outlined
+                  :options="usersListOption" :label="$t('common.pleaseSelect')" />
               </div>
             </div>
 
@@ -355,7 +385,7 @@
               <div class="col-9 q-pl-md blue ">
                 <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.admissionMemo" />
                 <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white"
-                  v-model="data['admissionMemo']" :disable="loading" />
+                  v-model="data['admissionMemo']" :disable="loading || disableLevel < 3" />
               </div>
             </div>
           </edit-view-component>
@@ -369,11 +399,13 @@
 import { Ref, ref, SetupContext } from 'vue';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
 import { getClientList, getClientOfficeList } from 'src/shared/utils/Applicant.utils';
-import { selectOptions } from 'src/shared/model';
+import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import editViewComponent from 'src/components/editView.component.vue';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
+import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { useOrganization } from 'src/stores/organization';
 export default {
   name: 'FixEmployCreate',
   props: {
@@ -398,15 +430,21 @@ export default {
   setup(props, context: SetupContext) {
     const db = getFirestore();
     const auth = getAuth();
+    const organization = useOrganization();
+
     const data = ref(props.fixData);
     const loading = ref(false);
+    const disableLevel = ref(0)
     const edit: Ref<string[]> = ref([])
     const show: Ref<string[]> = ref([])
+    const usersListOption: Ref<selectOptions[]> = ref([])
+    const clientOptions: Ref<selectOptions[]> = ref([]);
+    const officeOptions: Ref<selectOptions[]> = ref([]);
+
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
     ];
-    const clientOptions: Ref<selectOptions[]> = ref([]);
-    const officeOptions: Ref<selectOptions[]> = ref([]);
+
 
     loadClientData();
     function loadClientData() {
@@ -427,8 +465,9 @@ export default {
         if (data.value['client']) {
           loadClientOffice()
         }
+        disableChange();
+        loadUser();
       })
-
     }
 
     function loadClientOffice() {
@@ -456,6 +495,36 @@ export default {
       }
     }
 
+    function disableChange() {
+      let level = 0;
+      if (data.value['status'] == 'ok') {
+        level = 1
+      }
+      if (data.value['inspectionStatus'] == 'ok') {
+        level = 2
+      }
+      if (data.value['offerStatus'] == 'ok') {
+        level = 3
+      }
+      disableLevel.value = level
+    }
+
+    function loadUser() {
+      const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+
+      usersSnapshot.then(users => {
+        let list: selectOptions[] = [];
+        users?.forEach((doc) => {
+          const data = doc.data();
+          list.push({
+            label: data.displayName,
+            value: doc.id
+          });
+        });
+        usersListOption.value = list;
+      })
+    }
+
     return {
       data,
       edit,
@@ -464,6 +533,9 @@ export default {
       loading,
       clientOptions,
       officeOptions,
+      usersListOption,
+      disableLevel,
+      disableChange,
 
       loadClientOffice,
       save(type: string) {
