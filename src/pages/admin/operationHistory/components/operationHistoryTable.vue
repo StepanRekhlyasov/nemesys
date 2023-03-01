@@ -33,7 +33,7 @@
    setup() {
       const { t } = useI18n({ useScope: 'global' });
       const db = getFirestore();
-      const historyTableRows: Ref<never | any []> = ref([])
+      const historyTableRows: Ref<any[]> = ref([])
       const loading = ref(true)
       const historyTableColumns = computed<QTableProps['columns']>(() => [
         {

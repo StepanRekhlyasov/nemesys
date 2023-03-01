@@ -12,7 +12,7 @@
           no-caps
           class="text-grey-9 q-py-none text-weight-bold text-caption"
           :disable="!isDevMode"
-          @click="resumeOperation"
+          @click="() => openOperationDialog('resume')"
         >
           {{ $t('operationChange.resume') }}
         </q-btn>
@@ -23,7 +23,7 @@
           no-caps
           class="q-py-none text-weight-bold text-caption"
           :disable="isDevMode"
-          @click="openDialog=true;"
+          @click="() => openOperationDialog('stop')"
           >
           {{ $t('operationChange.stop') }}
         </q-btn>
@@ -51,6 +51,7 @@
       @closeDialog="openDialog=false;"
       @stopOperation="stopOperation"
       @resumeOperation="resumeOperation"
+      :dialogMode="dialogMode"
     />
   </q-dialog>
 </template>
@@ -82,6 +83,9 @@
       const user :User | null = $q.localStorage.getItem('userData');
 
       const openDialog = ref(false);
+      const dialogMode = ref('')
+      const arrayOfStopOperationTime: Ref<number[]> = ref([])
+      const arrayOfWorkOperationTime: Ref<number[]>  = ref([])
 
       const information =  ref({
           continiousOperatingTime: '',
@@ -106,66 +110,84 @@
         console.log(docWorkingSnap.docs[0].data())
         const amountOfOperatingTime = date.getDateDiff(new Date(), docWorkingSnap.docs[0].data().date.toDate(), 'seconds')
         information.value.continiousOperatingTime = isDevMode.value ? t('operationChange.stopped') : parseDateSecondsToHours(amountOfOperatingTime)
+
+        if (!isDevMode.value) {
+          arrayOfWorkOperationTime.value = [...arrayOfWorkOperationTime.value, amountOfOperatingTime ]
+        }
+
+        docWorkingSnap.docs.map(item => {
+          arrayOfStopOperationTime.value = [...arrayOfStopOperationTime.value, item.data().timeFromPreviousOperation]
+        })
+
       }
 
       if (!docStoppedSnap.empty) {
         const amountOfStoppedTime = date.getDateDiff(new Date(), docStoppedSnap.docs[0].data().date.toDate(), 'seconds')
         information.value.continiousStopTime = isDevMode.value ?  parseDateSecondsToHours(amountOfStoppedTime) : t('operationChange.working')
+
+        if (isDevMode.value) {
+          arrayOfStopOperationTime.value = [...arrayOfStopOperationTime.value, amountOfStoppedTime ]
+        }
+
+        docStoppedSnap.docs.map(item => {
+          arrayOfWorkOperationTime.value = [...arrayOfWorkOperationTime.value, item.data().timeFromPreviousOperation]
+        })
       }
 
-      // if (!docTotalSecondsWorkedSnap.empty) {
-      //   const maxWorkPeriod = docTotalSecondsWorkedSnap.docs[0].data().totalWorkPeriod
-      //   information.value.maxOperatingTime =  parseDateSecondsToHours(maxWorkPeriod)
+      if (arrayOfWorkOperationTime.value.length) {
+        const maxWorkPeriod = arrayOfWorkOperationTime.value.sort((a, b) => b - a)
+        information.value.maxOperatingTime =  parseDateSecondsToHours(maxWorkPeriod[0])
 
-      //   const totalSecondsOfWorking = docTotalSecondsWorkedSnap.docs.reduce((acc, item) => {
-      //     return acc + item.data().totalWorkPeriod
-      //   }, 0)
-      //   information.value.totalHoursWorked  = parseDateSecondsToHours(+totalSecondsOfWorking)
-      // }
+        const totalSecondsOfWorking = arrayOfWorkOperationTime.value.reduce((acc, item) => {
+          return acc + item
+        }, 0)
+        information.value.totalHoursWorked  = parseDateSecondsToHours(+totalSecondsOfWorking)
+      }
 
-      // if (!docTotalSecondsStoppedSnap.empty) {
-      //   const maxStopPeriod = docTotalSecondsStoppedSnap.docs[0].data().totalStopPeriod
-      //   information.value.maxStopTime =  parseDateSecondsToHours(maxStopPeriod)
+      if (arrayOfStopOperationTime.value.length) {
+        const maxStopPeriod = arrayOfStopOperationTime.value.sort((a, b) => b - a)
+        information.value.maxStopTime =  parseDateSecondsToHours(maxStopPeriod[0])
 
-      //   const totalSecondsOfStop = docTotalSecondsStoppedSnap.docs.reduce((acc, item) => {
-      //   return acc + item.data().totalStopPeriod
-      //   }, 0)
-      // information.value.totalStoppedTime  = parseDateSecondsToHours(+totalSecondsOfStop)
-      // }
+        const totalSecondsOfStop = arrayOfStopOperationTime.value.reduce((acc, item) => {
+          return acc + item
+        }, 0)
+        information.value.totalStoppedTime  = parseDateSecondsToHours(+totalSecondsOfStop)
+      }
 
 
     });
 
 
 
-      const stopOperation = (note) => () => {
+      const stopOperation = (note: Ref<string>) => {
+        console.log(note, 'stopOperation')
         if (user) {
           addDoc(collection(db, 'maintainModeEvent'), {
             typeOperation: 'stop' ,
             date: new Date(),
             executor: user.id,
-            note,
+            note: note.value,
             timeFromPreviousOperation: date.getDateDiff(new Date(), wholeOperationDocs.value[0].data().date.toDate(), 'seconds')
           })
           .then(() =>  {
 
             openDialog.value = false
             Alert.success($q, t)
-            store.setMaintainModeEnabled()
+            store.setMaintainModeDisabled()
           })
           .catch(() => Alert.warning($q, t))
         }
 
       }
 
-      const resumeOperation =  () => {
+      const resumeOperation = (note: Ref<string>) => {
 
           if (user) {
             addDoc(collection(db, 'maintainModeEvent'), {
               typeOperation: 'resume' ,
               date: new Date(),
               executor: user.id,
-              note: 'resuming operation',
+              note: note.value,
               timeFromPreviousOperation: date.getDateDiff(new Date(), wholeOperationDocs.value[0].data().date.toDate(), 'seconds')
             })
             .then(() =>  {
@@ -178,12 +200,19 @@
         }
       }
 
+      const openOperationDialog = (mode: 'resume' | 'stop') => {
+        dialogMode.value = mode,
+        openDialog.value = true
+      }
+
       return {
         isDevMode,
         information,
         stopOperation,
         resumeOperation,
-        openDialog
+        openDialog,
+        openOperationDialog,
+        dialogMode
       }
     }
   }

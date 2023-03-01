@@ -1,7 +1,7 @@
 <template>
    <q-card style="width: 600px; max-width: 80vw">
     <q-card-section>
-      <q-form @submit="stopOperation"  class="q-mb-md">
+      <q-form class="q-mb-md">
         <div class="row items-center q-gutter-sm q-mb-md">
           <q-icon name="mdi-alert-circle text-red" size="sm" class="content-end"/>
           <div class="text-h5 text-weight-bold text-accent">システムの稼働を一時的に<span class="text-red">停止</span>します。</div>
@@ -16,7 +16,7 @@
           color="accent"
           class="q-py-none text-weight-bold text-caption "
           size="sm"
-          @click="stopOperation"
+          @click="emitOperation"
         >
           実行
         </q-btn>
@@ -47,9 +47,9 @@
     name: 'DialogFormOperationChange',
 
     props: {
-      operationDocs: {
-        type: Object,
-        required: false
+      dialogMode: {
+        type: String,
+        required: true
       },
     },
     setup(props, context: SetupContext) {
@@ -57,8 +57,11 @@
       const { t } = useI18n({ useScope: 'global' });
       const text = ref('')
 
-      const stopOperation = () => {
-        context.emit('stopOperation');
+      const emitOperation = () => {
+        console.log(props.dialogMode)
+        if (props.dialogMode === 'stop') {
+          context.emit('stopOperation', text);
+        } else context.emit('resumeOperation', text);
       }
 
       const exitDialog = () => {
@@ -66,7 +69,7 @@
       }
 
       return {
-        stopOperation,
+        emitOperation,
         exitDialog,
         text
       }
