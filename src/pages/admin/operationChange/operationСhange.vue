@@ -47,7 +47,11 @@
     </div>
   </div>
   <q-dialog v-model="openDialog">
-    <DialogFormOperationChange :operationDocs="operationDocs" @closeDialog="openDialog=false;"/>
+    <DialogFormOperationChange
+      @closeDialog="openDialog=false;"
+      @stopOperation="stopOperation"
+      @resumeOperation="resumeOperation"
+    />
   </q-dialog>
 </template>
 
@@ -55,7 +59,7 @@
   import {computed, ref, Ref, onMounted } from 'vue';
   import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
   import { getMaintainEnabledEvent, parseDateSecondsToHours } from 'src/shared/utils/Admin.utils';
-  import { getFirestore, updateDoc, addDoc, doc, collection, query, getDocs, QueryDocumentSnapshot, DocumentData, orderBy, limit } from '@firebase/firestore';
+  import { getFirestore, updateDoc, addDoc, doc, collection, query, where, getDocs, QueryDocumentSnapshot, DocumentData, orderBy, limit } from '@firebase/firestore';
   import { useQuasar, date } from 'quasar';
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
@@ -74,7 +78,7 @@
       const db = getFirestore();
       const store = useMaintainModeStore()
       const isDevMode = computed(() => store.maintainMode);
-      const operationDocs: Ref<QueryDocumentSnapshot<DocumentData>[]> = ref([])
+      const wholeOperationDocs: Ref<QueryDocumentSnapshot<DocumentData>[]> = ref([])
       const user :User | null = $q.localStorage.getItem('userData');
 
       const openDialog = ref(false);
@@ -90,57 +94,62 @@
 
 
     onMounted(async () => {
-      const docWorkingSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('endDate', 'desc'), limit(1)));
-      const docStoppedSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('startDate', 'desc'), limit(1)));
-      const docTotalSecondsWorkedSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('totalWorkPeriod', 'desc')));
-      const docTotalSecondsStoppedSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('totalStopPeriod', 'desc')));
+      const docWholeSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('date', 'desc')));
+      const docStoppedSnap = await getDocs(query(collection(db, 'maintainModeEvent'), where('typeOperation', '==', 'stop'), orderBy('date', 'desc')));
+      const docWorkingSnap = await getDocs(query(collection(db, 'maintainModeEvent'), where('typeOperation', '==', 'resume'), orderBy('date', 'desc')));
+
+      if (!docWholeSnap.empty) {
+        wholeOperationDocs.value = docWholeSnap.docs
+      }
 
       if (!docWorkingSnap.empty) {
-        operationDocs.value = docWorkingSnap.docs
-        const amountOfOperatingTime = date.getDateDiff(new Date(), docWorkingSnap.docs[0].data().endDate.toDate(), 'seconds')
+        console.log(docWorkingSnap.docs[0].data())
+        const amountOfOperatingTime = date.getDateDiff(new Date(), docWorkingSnap.docs[0].data().date.toDate(), 'seconds')
         information.value.continiousOperatingTime = isDevMode.value ? t('operationChange.stopped') : parseDateSecondsToHours(amountOfOperatingTime)
       }
 
       if (!docStoppedSnap.empty) {
-        const amountOfStoppedTime = date.getDateDiff(new Date(), docWorkingSnap.docs[0].data().endDate.toDate(), 'seconds')
+        const amountOfStoppedTime = date.getDateDiff(new Date(), docStoppedSnap.docs[0].data().date.toDate(), 'seconds')
         information.value.continiousStopTime = isDevMode.value ?  parseDateSecondsToHours(amountOfStoppedTime) : t('operationChange.working')
       }
 
-      if (!docTotalSecondsWorkedSnap.empty) {
-        const maxWorkPeriod = docTotalSecondsWorkedSnap.docs[0].data().totalWorkPeriod
-        information.value.maxOperatingTime =  parseDateSecondsToHours(maxWorkPeriod)
+      // if (!docTotalSecondsWorkedSnap.empty) {
+      //   const maxWorkPeriod = docTotalSecondsWorkedSnap.docs[0].data().totalWorkPeriod
+      //   information.value.maxOperatingTime =  parseDateSecondsToHours(maxWorkPeriod)
 
-        const totalSecondsOfWorking = docTotalSecondsWorkedSnap.docs.reduce((acc, item) => {
-          return acc + item.data().totalWorkPeriod
-        }, 0)
-        information.value.totalHoursWorked  = parseDateSecondsToHours(+totalSecondsOfWorking)
-      }
+      //   const totalSecondsOfWorking = docTotalSecondsWorkedSnap.docs.reduce((acc, item) => {
+      //     return acc + item.data().totalWorkPeriod
+      //   }, 0)
+      //   information.value.totalHoursWorked  = parseDateSecondsToHours(+totalSecondsOfWorking)
+      // }
 
-      if (!docTotalSecondsStoppedSnap.empty) {
-        const maxStopPeriod = docTotalSecondsStoppedSnap.docs[0].data().totalStopPeriod
-        information.value.maxStopTime =  parseDateSecondsToHours(maxStopPeriod)
+      // if (!docTotalSecondsStoppedSnap.empty) {
+      //   const maxStopPeriod = docTotalSecondsStoppedSnap.docs[0].data().totalStopPeriod
+      //   information.value.maxStopTime =  parseDateSecondsToHours(maxStopPeriod)
 
-        const totalSecondsOfStop = docTotalSecondsStoppedSnap.docs.reduce((acc, item) => {
-        return acc + item.data().totalStopPeriod
-        }, 0)
-      information.value.totalStoppedTime  = parseDateSecondsToHours(+totalSecondsOfStop)
-      }
+      //   const totalSecondsOfStop = docTotalSecondsStoppedSnap.docs.reduce((acc, item) => {
+      //   return acc + item.data().totalStopPeriod
+      //   }, 0)
+      // information.value.totalStoppedTime  = parseDateSecondsToHours(+totalSecondsOfStop)
+      // }
 
 
     });
 
 
 
-      const stopOperation = () => {
+      const stopOperation = (note) => () => {
         if (user) {
           addDoc(collection(db, 'maintainModeEvent'), {
-            startDate: new Date(),
-            initiator: user.id,
-            endDate: null,
-            totalStopPeriod: null,
-            totalWorkPeriod: date.getDateDiff(new Date(), operationDocs.value[0].data().endDate.toDate(), 'seconds')
+            typeOperation: 'stop' ,
+            date: new Date(),
+            executor: user.id,
+            note,
+            timeFromPreviousOperation: date.getDateDiff(new Date(), wholeOperationDocs.value[0].data().date.toDate(), 'seconds')
           })
           .then(() =>  {
+
+            openDialog.value = false
             Alert.success($q, t)
             store.setMaintainModeEnabled()
           })
@@ -149,21 +158,24 @@
 
       }
 
-      const resumeOperation = () => {
-        getMaintainEnabledEvent(db).then(data => {
-          if (!data.empty) {
-            const currentOperationRef = doc(db, 'maintainModeEvent', data.docs[0].id);
-            updateDoc(currentOperationRef, {
-              endDate: new Date(),
-              totalStopPeriod: date.getDateDiff(new Date(), data.docs[0].data().startDate.toDate(), 'seconds'),
+      const resumeOperation =  () => {
+
+          if (user) {
+            addDoc(collection(db, 'maintainModeEvent'), {
+              typeOperation: 'resume' ,
+              date: new Date(),
+              executor: user.id,
+              note: 'resuming operation',
+              timeFromPreviousOperation: date.getDateDiff(new Date(), wholeOperationDocs.value[0].data().date.toDate(), 'seconds')
             })
-            .then(() =>{
+            .then(() =>  {
+
+              openDialog.value = false
               Alert.success($q, t)
-              store.setMaintainModeDisabled()
+              store.setMaintainModeEnabled()
             })
-            .catch(() => Alert.warning($q, t) )
-          }
-        })
+            .catch(() => Alert.warning($q, t))
+        }
       }
 
       return {
@@ -171,8 +183,7 @@
         information,
         stopOperation,
         resumeOperation,
-        openDialog,
-        operationDocs
+        openDialog
       }
     }
   }

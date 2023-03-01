@@ -39,13 +39,9 @@
 </template>
 
 <script lang="ts">
-  import {  date, useQuasar } from 'quasar';
+  import { useQuasar } from 'quasar';
   import { ref, SetupContext } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { addDoc, collection, getFirestore } from '@firebase/firestore';
-  import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
-  import { User } from 'src/shared/model';
-  import { Alert } from 'src/shared/utils/Alert.utils';
 
   export default {
     name: 'DialogFormOperationChange',
@@ -59,27 +55,10 @@
     setup(props, context: SetupContext) {
       const $q = useQuasar();
       const { t } = useI18n({ useScope: 'global' });
-      const db = getFirestore();
-      const user :User | null = $q.localStorage.getItem('userData');
-      const store = useMaintainModeStore()
       const text = ref('')
 
       const stopOperation = () => {
-        if (user && props.operationDocs && props.operationDocs?.value ) {
-          addDoc(collection(db, 'maintainModeEvent'), {
-            startDate: new Date(),
-            initiator: user.id,
-            endDate: null,
-            totalStopPeriod: null,
-            totalWorkPeriod: date.getDateDiff(new Date(), props.operationDocs?.value[0].data().endDate.toDate(), 'seconds')
-          })
-          .then(() =>  {
-            context.emit('closeDialog');
-            Alert.success($q, t)
-            store.setMaintainModeEnabled()
-          })
-          .catch(() => Alert.warning($q, t))
-        }
+        context.emit('stopOperation');
       }
 
       const exitDialog = () => {

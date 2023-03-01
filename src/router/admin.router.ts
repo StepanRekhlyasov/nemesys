@@ -75,6 +75,16 @@ const admin_router: MenuRouter[] = [
       requiresAuth: true,
     },
     menuParent: MenuParent.AdminEnterpriseManagement
+  },
+  {
+    path: 'operation-history',
+    title: 'menu.admin.operationHistory',
+    component: () => import('src/pages/admin/operationHistory/operationHistory.vue'),
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.BranchUpdate]
+    },
+    menuParent: MenuParent.AdminSystemsOperationManagement,
   }
 ]
 

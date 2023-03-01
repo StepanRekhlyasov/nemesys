@@ -140,6 +140,7 @@ export default {
         invoiceRequest: '請求書希望',
         organizationsSearh: '企業検索',
       },
+      operationHistory: '稼働履歴',
     }
   },
   settings: {
@@ -1059,6 +1060,16 @@ export default {
       continiousStopTime: '連続停止時間',
       maxStopTime: '最大連続停止時間',
       totalStoppedTime: '総停止時間'
+    }
+  },
+  operationHistory: {
+    stop: '停止',
+    resume: '再開',
+    table: {
+      operation: '再開 停止',
+      executionDate: '実行日時',
+      performer: '実行者',
+      note: 'メモ'
     }
   }
 };
