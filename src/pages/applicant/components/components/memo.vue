@@ -38,11 +38,21 @@
             {{ props.row.user.displayName }}
           </q-td>
         </template>
+        
+        <template v-slot:body-cell-content="props">
+          <q-td :props="props">
+            <q-input v-if="isRowSelected(props.rowIndex) " outlined dense v-model="editableContect['content']" />
+            <template v-if="!isRowSelected(props.rowIndex)">
+              {{ props.row.content }}
+            </template>
+          </q-td>
+        </template>
 
         <template v-slot:body-cell-edit="props">
-          <q-td :props="props">
-            <q-btn icon="mdi-pencil-outline"  color="grey-8" flat @click="editMemo(props.row)"/>
-          </q-td>
+          <EditButton :props="props" color="primary"
+            :on-edit="() => { editableContect = JSON.parse(JSON.stringify(props.row))}"
+            :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
+            :editable-row="editableRow" :key="props.rowIndex"/>
         </template>
 
     </q-table>
@@ -56,9 +66,10 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { ApplicantMemo } from 'src/shared/model';
-import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { getAuth, User } from '@firebase/auth';
 import { toDate } from 'src/shared/utils/utils';
+import EditButton from 'src/components/EditButton.vue';
 
 export default {
   name: 'ApplicantMemo',
@@ -67,6 +78,9 @@ export default {
       type: Object,
       required: true
     }
+  },
+  components: {
+    EditButton
   },
   setup(props) {
     const db = getFirestore();
@@ -77,6 +91,9 @@ export default {
       useScope: 'global',
     });
     const $q = useQuasar();
+    
+    const editableRow = ref(-1)
+    const editableContect = ref({})
     const memoListData: Ref<ApplicantMemo[]> = ref([])
     const selectedMemo: Ref<ApplicantMemo[]> = ref([])
     const loadData = ref(false)
@@ -154,6 +171,8 @@ export default {
       selectedMemo,
       pagination,
       loadData,
+      editableRow,
+      editableContect,
 
       async onSubmit() {
         loading.value = true;
@@ -179,7 +198,28 @@ export default {
           Alert.warning($q, t)
         }
       },
+      async onUpdate(index) {       
+        try {
+          if (!editableContect.value) {
+            return;
+          }
+          loading.value = true;
+          let updateData = {}
+          updateData['updated_at'] = serverTimestamp();
+          updateData['updated_by'] = auth.currentUser?.uid;
+          updateData['content'] = editableContect.value['content']  || '';
 
+          await updateDoc(
+            doc(db, 'applicants/' + props.applicant.id + '/memo/' + editableContect.value['id']),
+            updateData
+          );
+          memoListData.value[index] = editableContect.value as ApplicantMemo;
+          loading.value = false;
+        } catch (e) {
+          console.log(e) 
+          loading.value = false;
+        }
+      },
       async deleteItem() {
         if (!selectedMemo.value) {
           return false;
@@ -199,7 +239,10 @@ export default {
         Promise.all(ret)
         await loadMemoData();
         selectedMemo.value = [];
-      }
+      },
+      isRowSelected(row ) {
+        return row == editableRow.value
+      },
     }
   }
 }
