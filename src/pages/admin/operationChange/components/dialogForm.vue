@@ -4,9 +4,12 @@
       <q-form class="q-mb-md">
         <div class="row items-center q-gutter-sm q-mb-md">
           <q-icon name="mdi-alert-circle text-red" size="sm" class="content-end"/>
-          <div class="text-h5 text-weight-bold text-accent">システムの稼働を一時的に<span class="text-red">停止</span>します。</div>
+          <div class="text-h5 text-weight-bold text-accent">{{ $t('operationChange.modal.temporaryOperation') }}
+            <span class="text-red">{{ $t('operationHistory.' + $props.dialogMode) }}</span>
+            {{ $t('operationChange.modal.emit') }}
+          </div>
         </div>
-        <q-input v-model="text" label="メモ*" color="accent"/>
+        <q-input v-model="text" :label="$t('operationChange.modal.note') + '*'" color="accent"/>
 
 
       </q-form>
@@ -18,7 +21,7 @@
           size="sm"
           @click="emitOperation"
         >
-          実行
+        {{ $t('operationHistory.' + $props.dialogMode) }}
         </q-btn>
 
         <q-btn
@@ -30,7 +33,7 @@
           :unelevated="false"
           @click="exitDialog"
           >
-          キャンセル
+          {{ $t('operationChange.modal.cancel') }}
         </q-btn>
       </div>
 
@@ -39,9 +42,7 @@
 </template>
 
 <script lang="ts">
-  import { useQuasar } from 'quasar';
   import { ref, SetupContext } from 'vue';
-  import { useI18n } from 'vue-i18n';
 
   export default {
     name: 'DialogFormOperationChange',
@@ -53,8 +54,6 @@
       },
     },
     setup(props, context: SetupContext) {
-      const $q = useQuasar();
-      const { t } = useI18n({ useScope: 'global' });
       const text = ref('')
 
       const emitOperation = () => {

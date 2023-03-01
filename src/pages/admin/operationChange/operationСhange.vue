@@ -59,8 +59,8 @@
 <script lang="ts">
   import {computed, ref, Ref, onMounted } from 'vue';
   import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
-  import { getMaintainEnabledEvent, parseDateSecondsToHours } from 'src/shared/utils/Admin.utils';
-  import { getFirestore, updateDoc, addDoc, doc, collection, query, where, getDocs, QueryDocumentSnapshot, DocumentData, orderBy, limit } from '@firebase/firestore';
+  import {  parseDateSecondsToHours } from 'src/shared/utils/Admin.utils';
+  import { getFirestore, addDoc, collection, query, where, getDocs, QueryDocumentSnapshot, DocumentData, orderBy } from '@firebase/firestore';
   import { useQuasar, date } from 'quasar';
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
@@ -160,7 +160,6 @@
 
 
       const stopOperation = (note: Ref<string>) => {
-        console.log(note, 'stopOperation')
         if (user) {
           addDoc(collection(db, 'maintainModeEvent'), {
             typeOperation: 'stop' ,

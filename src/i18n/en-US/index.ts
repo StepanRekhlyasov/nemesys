@@ -1065,6 +1065,12 @@ export default {
       continiousStopTime: 'Continuous stop time',
       maxStopTime: 'Maximum continuous stop time',
       totalStoppedTime: 'Total stopped time'
+    },
+    modal: {
+      temporaryOperation: 'Temporary system operation',
+      emit: 'emit',
+      note: 'note',
+      cancel: 'cancel'
     }
   },
   operationHistory: {

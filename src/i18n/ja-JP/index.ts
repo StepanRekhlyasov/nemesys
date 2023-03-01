@@ -1060,6 +1060,12 @@ export default {
       continiousStopTime: '連続停止時間',
       maxStopTime: '最大連続停止時間',
       totalStoppedTime: '総停止時間'
+    },
+    modal: {
+      temporaryOperation: 'システムの稼働を一時的に',
+      emit: 'します。',
+      note: 'メモ',
+      cancel: 'キャンセル'
     }
   },
   operationHistory: {
