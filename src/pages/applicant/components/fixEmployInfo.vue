@@ -114,13 +114,6 @@ export default {
           align: 'left',
         },
         {
-          name: 'created_at',
-          required: true,
-          label: t('applicant.list.fixEmployment.fixDate'),
-          field: 'created_at',
-          align: 'left',
-        },
-        {
           name: 'contactMethod',
           required: true,
           label: t('applicant.list.fixEmployment.workDay'),
