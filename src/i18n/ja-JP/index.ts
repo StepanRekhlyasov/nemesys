@@ -784,7 +784,12 @@ export default {
         application: '■応募情報',
         attraction: '■誘致情報',
         working: '就業中',
-        notWorking: '未就業'
+        notWorking: '未就業',
+        classification: {
+          introduction : '紹介',
+          dispatch: '派遣',
+          TTP: 'TTP'
+        }
       }
 
 

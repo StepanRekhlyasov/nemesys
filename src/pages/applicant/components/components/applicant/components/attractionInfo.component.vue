@@ -65,7 +65,7 @@
         {{ $t('applicant.list.info.classiffication') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.classification? $t('settings.item.classification.'+applicant.classification):''}}</span>
+        <span v-if="!edit">{{ applicant.classification? $t('applicant.list.info.classification.'+applicant.classification):''}}</span>
         <q-select v-if="edit" outlined dense :options="classificationOption" v-model="data['classification']"
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
@@ -124,8 +124,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { employmentStatus } from 'src/shared/constants/Applicant.const';
-import { segment } from 'src/shared/constants/Item.const';
+import { applicantClassification, employmentStatus } from 'src/shared/constants/Applicant.const';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { getFirestore } from '@firebase/firestore';
@@ -156,7 +155,7 @@ export default {
     const edit = ref(false);
     const loading = ref(false);
     const employmentStatusOption = ref(employmentStatus);
-    const classificationOption = ref(segment);
+    const classificationOption = ref(applicantClassification);
     const usersListOption: Ref<selectOptions []> = ref([])
     const data = ref({
       attractionsStatus: props?.applicant['attractionsStatus'] || '',

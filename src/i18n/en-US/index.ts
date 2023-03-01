@@ -788,7 +788,12 @@ export default {
         application: '■Application Information',
         attraction: '■Information on Attraction',
         working: 'Working',
-        notWorking: 'Not Working'
+        notWorking: 'Not Working',
+        classification: {
+          introduction : 'Introduction',
+          dispatch: 'Dispatch',
+          TTP: 'TTP'
+        }
       }
     },
     statusOption: {
