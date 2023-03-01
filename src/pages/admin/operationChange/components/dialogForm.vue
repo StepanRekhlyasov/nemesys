@@ -57,7 +57,6 @@
       const text = ref('')
 
       const emitOperation = () => {
-        console.log(props.dialogMode)
         if (props.dialogMode === 'stop') {
           context.emit('stopOperation', text);
         } else context.emit('resumeOperation', text);

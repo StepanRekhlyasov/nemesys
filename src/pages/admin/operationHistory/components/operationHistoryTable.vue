@@ -83,7 +83,6 @@
       if (!docWholeSnap.empty) {
         docWholeSnap.docs.map( (item, index) => {
           getDoc(doc(db, 'users/', item.data().executor)).then(executor => {
-            console.log(executor, 'executor')
             historyTableRows.value = [...historyTableRows.value, {
               number: index + 1,
               typeOperation: t('operationHistory.' + [item.data().typeOperation]),

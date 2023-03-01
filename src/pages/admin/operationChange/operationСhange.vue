@@ -107,7 +107,6 @@
       }
 
       if (!docWorkingSnap.empty) {
-        console.log(docWorkingSnap.docs[0].data())
         const amountOfOperatingTime = date.getDateDiff(new Date(), docWorkingSnap.docs[0].data().date.toDate(), 'seconds')
         information.value.continiousOperatingTime = isDevMode.value ? t('operationChange.stopped') : parseDateSecondsToHours(amountOfOperatingTime)
 
