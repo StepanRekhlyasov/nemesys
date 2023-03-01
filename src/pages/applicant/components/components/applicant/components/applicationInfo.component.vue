@@ -110,7 +110,7 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.birth') }}
       </div>
-      <div class="col-3 q-pl-md blue">
+      <div class="col-3 q-pl-md blue self-center">
         <span v-if="!edit">{{ applicant.dob || ''}}</span>
         <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
           <template v-slot:append>

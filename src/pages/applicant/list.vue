@@ -145,7 +145,7 @@
             </div>
             <div class="col-4 row">
               <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
-              <span class="col-6 q-pl-md">{{ selectedApplicant.experience }}</span>
+              <span class="col-6 q-pl-md">{{ selectedApplicant.totalYear || '' }}</span>
             </div>
             <div class="col-2 text-right" >
               <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary"/>
@@ -164,7 +164,7 @@
             </div>
             <div class="col-4 row">
               <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays') }}</span>
-              <span class="col-6">{{ selectedApplicant.availableDays }}</span>
+              <span class="col-6 q-pl-md">{{ selectedApplicant.daysToWork?selectedApplicant.daysToWork+' '+$t('applicant.attendant.days'):'' }}</span>
             </div>
             <div class="col-2 text-right" >
               <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary"/>
