@@ -38,6 +38,8 @@ export default {
   overflow: hidden;
   height: 19px;
   padding-right: 10px;
+  word-wrap: break-word;
+  word-break: break-all;
   &.show{
     overflow: auto;
     height: auto;

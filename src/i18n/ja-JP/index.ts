@@ -716,7 +716,7 @@ export default {
         date: 'FIX日',
         reason: 'FIXNG理由',
         contactPerson: 'FIX担当者',
-        memo: 'FIXメモ',
+        memo: 'メモ',
         info: '■FIX情報',
         jobSearchInfo: '■ 職見情報',
         jobOffersInfo: '■内定情報',
