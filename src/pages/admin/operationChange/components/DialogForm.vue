@@ -19,7 +19,7 @@
           color="accent"
           class="q-py-none text-weight-bold text-caption "
           size="sm"
-          @click="emitOperation"
+          @click.once="emitOperation"
           :disable="!note"
         >
         {{ $t('operationHistory.' + $props.dialogMode) }}
@@ -32,7 +32,7 @@
           color="accent"
           no-caps
           :unelevated="false"
-          @click="$emit('closeDialog')"
+          @click.once="$emit('closeDialog')"
           >
           {{ $t('operationChange.modal.cancel') }}
         </q-btn>

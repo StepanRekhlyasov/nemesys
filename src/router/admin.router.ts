@@ -5,7 +5,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'release-notes',
     title: 'menu.admin.releaseNotes',
-    component: () => import('src/pages/admin/releaseNotes.vue'),
+    component: () => import('src/pages/admin/ReleaseNotes/ReleaseNotes.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]
@@ -58,7 +58,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-change',
     title: 'menu.admin.operationChange',
-    component: () => import('src/pages/admin/operationChange/OperationChange.vue'),
+    component: () => import('src/pages/admin/OperationChange/OperationСhange.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]
@@ -79,7 +79,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-history',
     title: 'menu.admin.operationHistory',
-    component: () => import('src/pages/admin/operationHistory/OperationHistory.vue'),
+    component: () => import('src/pages/admin/OperationHistory/OperationHistory.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]

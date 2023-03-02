@@ -1,8 +1,8 @@
 <template>
   <div class="no-shadow full-width operation-change ">
-    <div class="operation-change__header q-py-sm q-px-md">
-      <div class="text-h6 text-accent">{{ $t('menu.admin.operationChange') }}</div>
-    </div>
+    <PageHader>
+      {{ $t('menu.admin.operationChange') }}
+    </PageHader>
     <div class="operation-change__content q-pa-md">
       <div class="text-h5 text-weight-bold text-accent">{{ isDevMode ? $t('operationChange.disabled') : $t('operationChange.active') }}</div>
       <div class="row q-mt-md q-gutter-md">
@@ -66,6 +66,7 @@
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
   import DialogFormOperationChange from './components/DialogForm.vue'
+  import PageHader from 'src/components/PageHeader.vue'
 
 
   const $q = useQuasar();
