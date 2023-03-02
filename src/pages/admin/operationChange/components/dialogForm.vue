@@ -9,7 +9,7 @@
             {{ $t('operationChange.modal.emit') }}
           </div>
         </div>
-        <q-input v-model="text" :label="$t('operationChange.modal.note') + '*'" color="accent"/>
+        <q-input v-model="note" :label="$t('operationChange.modal.note') + '*'" color="accent" aria-required="true"/>
 
 
       </q-form>
@@ -20,6 +20,7 @@
           class="q-py-none text-weight-bold text-caption "
           size="sm"
           @click="emitOperation"
+          :disable="!note"
         >
         {{ $t('operationHistory.' + $props.dialogMode) }}
         </q-btn>
@@ -31,7 +32,7 @@
           color="accent"
           no-caps
           :unelevated="false"
-          @click="exitDialog"
+          @click="$emit('closeDialog')"
           >
           {{ $t('operationChange.modal.cancel') }}
         </q-btn>
@@ -41,36 +42,25 @@
   </q-card>
 </template>
 
-<script lang="ts">
-  import { ref, SetupContext } from 'vue';
+<script lang="ts" setup>
+  import { ref } from 'vue';
 
-  export default {
-    name: 'DialogFormOperationChange',
+  const props = defineProps({
 
-    props: {
-      dialogMode: {
-        type: String,
-        required: true
-      },
+    dialogMode: {
+      type: String,
+      required: true
     },
-    setup(props, context: SetupContext) {
-      const text = ref('')
+  })
 
-      const emitOperation = () => {
-        if (props.dialogMode === 'stop') {
-          context.emit('stopOperation', text);
-        } else context.emit('resumeOperation', text);
-      }
+  const emit = defineEmits(['stopOperation', 'resumeOperation'])
 
-      const exitDialog = () => {
-        context.emit('closeDialog');
-      }
+  const note = ref('')
 
-      return {
-        emitOperation,
-        exitDialog,
-        text
-      }
-    }
+  const emitOperation = () => {
+    if (props.dialogMode === 'stop') {
+      emit('stopOperation', note);
+    } else emit('resumeOperation', note);
   }
+
 </script>

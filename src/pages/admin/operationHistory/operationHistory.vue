@@ -11,16 +11,8 @@
   </div>
 </template>
 
-<script lang="ts">
-  import  OperationHistoryTable from './components/operationHistoryTable.vue'
-
-  export default {
-    name: 'OperationHistoryPage',
-
-    components: {
-      OperationHistoryTable
-    },
-  }
+<script lang="ts" setup>
+  import  OperationHistoryTable from './components/OperationHistoryTable.vue'
 </script>
 
 <style lang="scss">

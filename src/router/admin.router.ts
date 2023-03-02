@@ -58,10 +58,10 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-change',
     title: 'menu.admin.operationChange',
-    component: () => import('src/pages/admin/operationChange/operationСhange.vue'),
+    component: () => import('src/pages/admin/operationChange/OperationСhange.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
 
@@ -79,10 +79,10 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-history',
     title: 'menu.admin.operationHistory',
-    component: () => import('src/pages/admin/operationHistory/operationHistory.vue'),
+    component: () => import('src/pages/admin/operationHistory/OperationHistory.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.BranchUpdate]
+      permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
   }
