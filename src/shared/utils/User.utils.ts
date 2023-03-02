@@ -1,7 +1,7 @@
-import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
+import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
-import { Role, User, UserPermissionNames } from '../model/Account.model';
+import { Role, UserPermissionNames } from '../model/Account.model';
 import { Branch, branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
 import { branchCollection, itemCollection } from './utils';
@@ -42,26 +42,6 @@ export const getRoles = (db: Firestore) => {
   return getDocs(collection(db, 'roles'))
 }
 
-export const getAllUsers = async (db: Firestore, active_organization_id: string, queryText?: string) => {
-  const usersData = await getDocs(query(
-    collection(db, 'users'),
-    where('deleted', '==', false),
-    where('organization_ids', 'array-contains', active_organization_id),
-    orderBy('displayName'),
-    startAt(queryText || ''),
-    endAt(queryText + '\uf8ff'),
-  ))
-
-  const users: User[] = []
-
-  usersData.forEach((user) => {
-    if (user.exists()) {
-      users.push(user.data() as User)
-    }
-  })
-
-  return users
-}
 export const mapToSelectOptions = (values: Record<string, { name: string }>) => {
   const list: selectOptions[] = []
   Object.keys(values).map(key => {
@@ -109,18 +89,6 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
     ...constraints,
   ))
 
-}
-
-export const getUserById = async (id: string) => {
-  const db = getFirestore();
-
-  const docRef = doc(db, 'users', id)
-
-  const userSnap = await getDoc(docRef)
-
-  if (userSnap.exists()) {
-    return userSnap.data() as User
-  }
 }
 
 export const getAllBranches = async (db: Firestore, search?: BranchesSearch) => {

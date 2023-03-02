@@ -1,26 +1,27 @@
 <template>
   <q-select color="accent" :options="options" option-label='displayName' :model-value="props.modelValue"
     @filter="(_, doneFn) => filterFn(doneFn, organizationId)"
-    @update:model-value="(user: User) => {emit('onUserChange', user); }" />
+    @update:model-value="(user: User) => { emit('onUserChange', user); }" />
 </template>
 
 <script setup lang="ts">
-import { getFirestore } from '@firebase/firestore';
 import { QSelect, QSelectProps } from 'quasar';
 import { User } from 'src/shared/model';
-import { getAllUsers } from 'src/shared/utils/User.utils';
+import { useUserStore } from 'src/stores/user';
+
 import { ref } from 'vue';
 
 interface SelectOrganozationProps extends QSelectProps {
   organizationId: string;
 }
 const props = defineProps<SelectOrganozationProps>()
-const db = getFirestore();
 const options = ref<User[]>();
 const emit = defineEmits<{ (e: 'onUserChange', id: User) }>()
 
+const userStore = useUserStore()
+
 async function getAllUsersInOrganization(id: string) {
-  const users = await getAllUsers(db, id)
+  const users = await userStore.getAllUsers(id)
   if (!users || !users.length) {
     return
   }

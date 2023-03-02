@@ -10,9 +10,12 @@
   <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
 
     <template v-slot:body-cell-edit="props">
-      <EditButton :props="props" color="accent" :on-edit="() => { editableRow = cloneToRaw(props.row); }"
-        :on-save="async () => { !deepEqualClone(editableRow, props.row) && await editOrganization(editableRow, props.rowIndex) }"
-        :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row" />
+      <EditButton :props="props" color="accent" :on-edit="() => { editableRow = cloneToRaw(props.row); }" :on-save="async () => {
+        isEqual = deepEqualClone(editableRow, props.row)
+        if (!isEqual) {
+          await editOrganization(editableRow, props.rowIndex)
+        }
+      }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row" />
     </template>
 
     <template v-slot:header-cell-organizationIdAndName="props">
@@ -41,12 +44,14 @@
     </template>
 
     <template v-slot:body-cell-tel="props">
-      <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel" @update:model-value="(v)=>editableRow!.tel = v"/>
+      <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
+        @update:model-value="(v) => editableRow!.tel = v" />
     </template>
 
 
     <template v-slot:body-cell-fax="props">
-     <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax" @update:model-value="(v)=>editableRow!.fax = v"/>
+      <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
+        @update:model-value="(v) => editableRow!.fax = v" />
     </template>
 
     <template v-slot:body-cell-invoiceRequest="props">
@@ -66,21 +71,22 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, toRaw } from 'vue';
+import { computed, ref } from 'vue';
 import { QInput, QTableProps, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { Organization, invoiceRequests } from 'src/shared/model';
-import { getUserById } from 'src/shared/utils/User.utils';
+import { invoiceRequests } from 'src/shared/model';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
 import { getAllOrganizations, getOrganizationsByName } from 'src/shared/utils/Organization/Organization.utils';
 import { doc, getFirestore, updateDoc } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { is } from 'quasar'
 import SelectOrganization from './SelectOrganization.vue';
 import InputCell from './InputCell.vue';
-
+import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
+import { mapOrganizationsToRow } from './handlers/handlers';
+import { Row, Rows } from './types/types'
+import { rowToOrganization } from './handlers/handlers'
 const editableRowNumber = ref(-1);
 
 const db = getFirestore();
@@ -160,13 +166,10 @@ const columns = computed<QTableProps['columns']>(() => [
   }
 ])
 
-type Rows = Awaited<ReturnType<typeof mapOrganizationsToRow>>
-const rows = ref<Rows>([])
-type ElementOf<T> = T extends Array<infer U> ? U : never
-
-type Row = ElementOf<Rows>
 const editableRow = ref<Row>()
+const rows = ref<Rows>([])
 
+const isEqual = ref(false)
 
 async function searchOrganizations(name: string) {
   loading.value = true
@@ -183,42 +186,9 @@ async function requestOrganizations() {
   loading.value = false
 }
 
-async function mapOrganizationsToRow(organizations: Organization[]) {
-  loading.value = true
-  const mapped = await Promise.all(
-    organizations.map(async (organization, index) => {
-      const user = await getUserById(organization.operatorUser)
-      return {
-        number: index + 1,
-        organizationIdAndName: organization.id + ' ' + organization.name,
-        operatorName: user?.displayName,
-        ...organization
-      }
-    })
-  )
-  loading.value = false
-  return mapped
-}
-
-function cloneToRaw<T>(obj: T) {
-  return structuredClone(toRaw(obj))
-}
-
-function deepEqualClone<T>(obj1: T, obj2: unknown) {
-  return is.deepEqual(cloneToRaw(obj1), cloneToRaw(obj2))
-}
-
 
 function isRowSelected(row: number) {
   return row == editableRowNumber.value
-}
-
-function rowToOrganization(row: Row): Organization {
-  const organization = cloneToRaw(row)
-  delete organization.number
-  delete organization.organizationIdAndName
-  delete organization.operatorName
-  return organization
 }
 
 async function editOrganization(row: Row | undefined, rowIndex: number) {
@@ -227,14 +197,12 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
   }
 
   loading.value = true;
-
   rows.value[rowIndex] = row
   rows.value[rowIndex].organizationIdAndName = row.id + ' ' + row.name
 
   try {
     const ref = doc(db, 'organization/' + row.id)
     const organization = rowToOrganization(row)
-
     await updateDoc(ref, {
       ...organization
     })
