@@ -72,20 +72,9 @@
         {{ $t('applicant.list.info.apply') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.applicationDate || ''}}</span>
-        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['applicationDate']" default-view="Years" :options="limitDate">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
+        <span v-if="!edit">{{ applicant.applicationMetod? $t('applicant.add.'+applicant.applicationMetod) :''}}</span>        
+        <q-select v-if="edit" outlined dense :options="applicationMethodOption"
+          emit-value map-options v-model="data['applicationMetod']" :disable="loading"/>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.gender') }}
@@ -220,7 +209,7 @@ export default {
       name: props?.applicant['name'] || '',
       media: props?.applicant['media'] || '',
       kana: props?.applicant['kana'] || '',
-      apply: props?.applicant['apply'] || '',
+      applicationMetod: props?.applicant['applicationMetod'] || '',
       sex: props?.applicant['sex'] || '',
       dob: props?.applicant['dob'] || '',
       phone: props?.applicant['phone'] || '',

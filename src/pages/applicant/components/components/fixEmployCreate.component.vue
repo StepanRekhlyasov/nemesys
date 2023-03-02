@@ -197,12 +197,8 @@
                   usersListOption
                   .filter(user => user.value === data['contact'])
                   .map(user => user.label).join('')  }}</span>
-                <q-select
-                  v-if="edit.includes('jobSearchInfo')"
-                  v-model="data['contact']"
-                  :disable="loading || disableLevel < 1"
-                  emit-value map-options dense outlined
-                  :options="usersListOption" :label="$t('common.pleaseSelect')" />
+                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
+                  v-model="data['contact']" :disable="loading || disableLevel < 1" />
               </div>
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.inspection.comments') }}
