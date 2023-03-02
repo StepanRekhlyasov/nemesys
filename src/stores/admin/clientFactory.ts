@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useAdminClientFactory = defineStore('admin-client-factory', {
   state: () => ({
-    rows: [
+    clients: [
         {
         id: 1,
         office: {

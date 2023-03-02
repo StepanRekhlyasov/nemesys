@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
-import mapSearch from 'src/components/MapSearch.vue';
+import MapSearchVue from 'src/components/MapSearch.vue';
 
 const props = defineProps(['isDrawer'])
 const emit = defineEmits(['hideDrawer'])
@@ -10,6 +10,10 @@ const { t } = useI18n({ useScope: 'global' });
 
 const hideDrawer = () => {
     emit('hideDrawer')
+}
+
+const getClients = (clients) => {
+    console.log(clients)
 }
 
 </script>
@@ -34,7 +38,7 @@ const hideDrawer = () => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <mapSearch theme="accent"/>
+                    <MapSearchVue theme="accent" @get-clients="getClients"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

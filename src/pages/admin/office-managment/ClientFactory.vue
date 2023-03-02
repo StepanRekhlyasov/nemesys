@@ -23,8 +23,6 @@ const pagination = ref({
 const clientFactoryDrawerHandler = (item: TableRow) => {
     activeClientFactoryItem.value = item
 
-    console.log(item)
-
     isClientFactoryDrawer.value = true
 }
 
@@ -66,11 +64,11 @@ const hideDrawer = () => {
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
-                :rows="adminClientFactory.rows"
+                :rows="adminClientFactory.clients"
                 v-model:pagination="pagination"
                 />
                 <Pagination
-                :rows="adminClientFactory.rows"
+                :rows="adminClientFactory.clients"
                 v-model:pagination="pagination"/>
             </q-card-section>
         </q-card>

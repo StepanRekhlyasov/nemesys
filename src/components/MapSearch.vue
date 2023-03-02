@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { watch, ref, defineProps } from 'vue';
+import { watch, ref, defineProps, defineEmits } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
+import { mapSearchConfig } from 'src/shared/constants/MapSearchAPI';
 
 const props = defineProps(['theme'])
+const emit = defineEmits(['getClients'])
 
-const center = ref({ lat: 36.0835255, lng: 140.0 });
-const radius = ref(500);
+const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
+const radius = ref<number>(500);
 const officeData = ref([]);
-const apiKey = 'AIzaSyCPcZ-aJupMuSWMV7_PBWL_3AVSyGW80FE';
 const circleOption = ref({
   center: center,
   radius: radius,
@@ -56,20 +57,16 @@ const searchClients = async () => {
   const auth = getAuth();
   const user = auth.currentUser;
   if (user == null) {
-    console.log('invalid user')
     return false
   }
   let token = await user.getIdToken();
-  console.log(token);
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`
   };
-  console.log(headers);
   let data = { ...center.value, 'radiusInM': radius.value }
-  console.log(data)
   api.post(
-    'https://get-office-data-planwvepxa-an.a.run.app', //getOfficeDataURL,
+    mapSearchConfig.getOfficeDataURL, //getOfficeDataURL,
     data,
     {
       headers: headers,
@@ -78,8 +75,8 @@ const searchClients = async () => {
   )
     .then((response) => {
       if (response.status === 200) {
-        console.log(response.data)
         officeData.value = response.data
+        emit('getClients', response.data)
       } else {
         console.error(response.statusText)
       }
@@ -99,12 +96,8 @@ const searchClients = async () => {
     </q-card-actions>
     <q-separator />
 
-      <div>{{ center }} </div>
-      <div>{{ radius }}</div>
-      <div>{{ officeData }}</div>
-
     <q-card-section>
-      <GoogleMap :api-key="apiKey" style="width: 100%; height: 450px" :center="center" :zoom="15">
+      <GoogleMap :api-key="mapSearchConfig.apiKey" style="width: 100%; height: 450px" :center="center" :zoom="15">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
         <Circles :options="circleOption" />
       </GoogleMap>

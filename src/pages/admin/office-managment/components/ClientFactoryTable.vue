@@ -15,7 +15,7 @@ const columns = computed(() => {
     })
 })
 
-const selected = ref([])
+const selected = ref<number[]>([])
 const getSelectedString = () => {
     return selected.value.length === 0 ? '' : `${t('common.numberOfSelections')}: ${selected.value.length}`
 }
