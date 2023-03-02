@@ -24,9 +24,43 @@
           {{ props.value }}
         </q-td>
       </template>
-      <template v-slot:body-cell-created_by="props">
+      <template v-slot:body-cell-fixDate="props">
         <q-td :props="props">
-          {{ getUserName(props.value) }}
+          <template v-if="props.row.status">
+            <span class="row">{{ props.row.data }}</span>
+            <span class="row text-uppercase">{{ props.row.status }}</span>
+          </template>
+          <span v-if="!props.row.status">-</span>
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-workDay="props">
+        <q-td :props="props">
+          <template v-if="props.row.inspectionStatus">
+            <span class="row">{{ props.row.inspectionDate }}</span>
+            <span class="row text-uppercase">{{ props.row.inspectionStatus }}</span>
+          </template>
+          <span v-if="!props.row.inspectionStatus">-</span>
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-informalOfferDate="props">
+        <q-td :props="props">
+          <template v-if="props.row.offerStatus">
+            <span class="row">{{ props.row.offerDate }}</span>
+            <span class="row text-uppercase">{{ props.row.offerStatus }}</span>
+          </template>
+          <span v-if="!props.row.offerStatus">-</span>
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-hiringDate="props">
+        <q-td :props="props">
+          <template v-if="props.row.admissionStatus">
+            <span class="row">{{ props.row.admissionDate }}</span>
+            <span class="row text-uppercase">{{ props.row.admissionStatus }}</span>
+          </template>
+          <span v-if="!props.row.admissionStatus">-</span>
         </q-td>
       </template>
 
@@ -36,6 +70,7 @@
             @click="showEditDialog(props.row)" />
         </q-td>
       </template>
+
       <template v-slot:body-cell-delete="props">
         <q-td :props="props">
           <q-btn style="color: #222222" icon="delete" size="sm" round flat @click="showDeleteDialog(props.row)" />
@@ -50,9 +85,9 @@
   v-model="drawerRight"
   show :width="800"
   :breakpoint="500" side="right"
-  overlay elevated
-  bordered>
+  overlay elevated>
   <FixEmployCreate
+    v-if="drawerRight"
     :fixData="fixData"
     @close="drawerRight=false"
     :applicant="applicant"
@@ -98,7 +133,7 @@ export default {
       page: 1,
       rowsPerPage: 10
     });
-
+    
     const columns = computed(() => {
       return [
         {
@@ -113,35 +148,35 @@ export default {
           align: 'left',
         },
         {
-          name: 'created_at',
+          name: 'fixDate',
           required: true,
           label: t('applicant.list.fixEmployment.fixDate'),
-          field: 'created_at',
+          field: 'fixDate',
           align: 'left',
         },
         {
-          name: 'contactMethod',
+          name: 'workDay',
           required: true,
           label: t('applicant.list.fixEmployment.workDay'),
-          field: 'contactMethod',
+          field: 'workDay',
           align: 'left',
         },
         {
-          name: 'created_by',
+          name: 'informalOfferDate',
           label: t('applicant.list.fixEmployment.informalOfferDate'),
-          field: 'created_by',
+          field: 'informalOfferDate',
           align: 'left',
         },
         {
-          name: 'content',
+          name: 'hiringDate',
           label: t('applicant.list.fixEmployment.hiringDate'),
-          field: 'content',
+          field: 'hiringDate',
           align: 'left',
         },
         {
-          name: 'note',
+          name: 'memo',
           label: t('applicant.list.fixEmployment.memo'),
-          field: 'note',
+          field: 'memo',
           align: 'left',
         },
         {
@@ -163,7 +198,7 @@ export default {
 
     loadContactData()
     function loadContactData() {
-      const q = query(collection(db, 'applicants/' + props.applicant.id + '/contacts'), where('deleted', '==', false), orderBy('created_at', 'desc'));
+      const q = query(collection(db, 'applicants/' + props.applicant.id + '/fix'), where('deleted', '==', false), orderBy('created_at', 'desc'));
       unsubscribe.value = onSnapshot(q, (querySnapshot) => {
         let contData = [];
         querySnapshot.forEach((doc) => {
@@ -212,10 +247,10 @@ export default {
       options,
       loadContactData,
       async updateData(data){
-        console.log(fixData.value.id)
         if (fixData.value.id){
+          data['updated_at'] = serverTimestamp();
           await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/contacts/'+ fixData.value.id),
+            doc(db, 'applicants/' + props.applicant.id + '/fix/'+ fixData.value.id),
             data
           );
         }
@@ -233,7 +268,7 @@ export default {
         updateData['deleted_at'] = serverTimestamp();
 
         await updateDoc(
-          doc(db, 'applicants/' + props.applicant.id + '/contacts/' + deleteItemId.value),
+          doc(db, 'applicants/' + props.applicant.id + '/fix/' + deleteItemId.value),
           updateData
         );
 
@@ -271,7 +306,7 @@ export default {
           updateData['deleted_at'] = serverTimestamp();
 
           await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/contacts/' + data.id),
+            doc(db, 'applicants/' + props.applicant.id + '/fix/' + data.id),
             updateData
           );
 

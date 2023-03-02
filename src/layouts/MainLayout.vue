@@ -208,7 +208,7 @@ export default defineComponent({
     const store = useMaintainModeStore()
     const isDevMode = computed(() => store.maintainMode);
     getMaintainEnabledEvent(db).then(data => {
-      if (data.empty) {
+      if (data) {
         store.setMaintainModeDisabled()
       } else store.setMaintainModeEnabled()
     })

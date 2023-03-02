@@ -140,6 +140,7 @@ export default {
         invoiceRequest: '請求書希望',
         organizationsSearh: '企業検索',
       },
+      operationHistory: '稼働履歴',
     }
   },
   settings: {
@@ -716,7 +717,7 @@ export default {
         date: 'FIX日',
         reason: 'FIXNG理由',
         contactPerson: 'FIX担当者',
-        memo: 'FIXメモ',
+        memo: 'メモ',
         info: '■FIX情報',
         jobSearchInfo: '■ 職見情報',
         jobOffersInfo: '■内定情報',
@@ -784,7 +785,12 @@ export default {
         application: '■応募情報',
         attraction: '■誘致情報',
         working: '就業中',
-        notWorking: '未就業'
+        notWorking: '未就業',
+        classification: {
+          introduction : '紹介',
+          dispatch: '派遣',
+          TTP: 'TTP'
+        }
       }
 
 
@@ -1054,6 +1060,22 @@ export default {
       continiousStopTime: '連続停止時間',
       maxStopTime: '最大連続停止時間',
       totalStoppedTime: '総停止時間'
+    },
+    modal: {
+      temporaryOperation: 'システムの稼働を一時的に',
+      emit: 'します。',
+      note: 'メモ',
+      cancel: 'キャンセル'
+    }
+  },
+  operationHistory: {
+    stop: '停止',
+    resume: '再開',
+    table: {
+      operation: '再開 停止',
+      executionDate: '実行日時',
+      performer: '実行者',
+      note: 'メモ'
     }
   }
 };

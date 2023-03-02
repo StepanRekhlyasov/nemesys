@@ -10,9 +10,18 @@
       </div>
     </div>
     <div class="col-3 text-right" v-if="show || !showButton">
-      <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="$emit('openEdit')" class="no-shadow q-ml-lg" size="sm" />
-      <q-btn v-if="edit" :label="$t('common.save')" color="primary" @click="$emit('onSave')" size="sm" />
-      <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="$emit('closeEdit')" size="sm" />
+      <q-btn v-if="!edit" 
+        :label="$t('common.edit')" color="primary" 
+        outline  icon="edit" @click="$emit('openEdit')" 
+        class="no-shadow q-ml-lg" size="sm" :disable="disableButton" />
+      <q-btn v-if="edit" 
+        :label="$t('common.save')" color="primary" 
+        @click="$emit('onSave')" size="sm" 
+        :disable="disableButton" />
+      <q-btn v-if="edit" 
+        :label="$t('common.cancel')" class="q-ml-md" 
+        outline color="primary" @click="$emit('closeEdit')"
+        size="sm" />
     </div>
   </div>
   <template v-if="show">
@@ -35,6 +44,9 @@ export default {
     showButton: {
       type: Boolean,
       default: true
+    },
+    disableButton: {
+      type: Boolean
     }
   },
   emits:{

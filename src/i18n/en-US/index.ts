@@ -140,6 +140,7 @@ export default {
         invoiceRequest: 'Invoice request',
         organizationsSearh: 'Organizations Searh'
       },
+      operationHistory: 'Operational history',
     }
   },
   settings: {
@@ -706,12 +707,12 @@ export default {
         phone: 'Phone',
       },
       fixEmployment: {
-        fixDestinationOffice: 'FIX先事業所',
-        fixedDestination: 'FIX先',
-        fixDate: 'FIX日',
-        workDay: '職見日',
-        informalOfferDate: '内定日',
-        hiringDate: '入職日',
+        fixDestinationOffice: 'FIX Destination Office',
+        fixedDestination: 'FIX Destination',
+        fixDate: 'FIX Date',
+        workDay: 'Job day',
+        informalOfferDate: 'Date of appointment',
+        hiringDate: 'Date of entry',
         save: 'Save selection information',
         client: 'Client',
         office: 'Office',
@@ -788,7 +789,12 @@ export default {
         application: '■Application Information',
         attraction: '■Information on Attraction',
         working: 'Working',
-        notWorking: 'Not Working'
+        notWorking: 'Not Working',
+        classification: {
+          introduction : 'Introduction',
+          dispatch: 'Dispatch',
+          TTP: 'TTP'
+        }
       }
     },
     statusOption: {
@@ -1059,6 +1065,22 @@ export default {
       continiousStopTime: 'Continuous stop time',
       maxStopTime: 'Maximum continuous stop time',
       totalStoppedTime: 'Total stopped time'
+    },
+    modal: {
+      temporaryOperation: 'Temporary system operation',
+      emit: 'emit',
+      note: 'note',
+      cancel: 'cancel'
+    }
+  },
+  operationHistory: {
+    stop: 'stop',
+    resume: 'resume',
+    table: {
+      operation: 'Resume / suspension',
+      executionDate: 'Execution date',
+      performer: 'performer',
+      note: 'note'
     }
   }
 };

@@ -128,9 +128,9 @@
                 <span class="col-3 q-pl-md"><span class="q-mr-md">{{$t('applicant.add.occupation')}}</span>{{selectedApplicant.occupation && $t('applicant.add.'+selectedApplicant.occupation)}}</span>
               </div>
               <div class="row">
-                <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: WEB応募</span>
+                <span class="col-6 q-pr-md">{{$t('applicant.add.applicationMetod')}}: {{selectedApplicant.applicationMetod? $t('applicant.add.'+selectedApplicant.applicationMetod) :''}}</span>
                 <span class="col-3 relative-position "><hidden-text v-if="selectedApplicant.email" :value="'MAIL: '+selectedApplicant.email" /></span>
-                <span class="col-3 q-pl-md"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.status && $t('applicant.statusOption.'+selectedApplicant.status)}}</span>
+                <span class="col-3 q-pl-md"><span class="q-mr-md">{{$t('applicant.list.category')}}</span>{{selectedApplicant.classification? $t('applicant.list.info.classification.'+selectedApplicant.classification):''}}</span>
               </div>
             </div>
           </div>
@@ -145,7 +145,7 @@
             </div>
             <div class="col-4 row">
               <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
-              <span class="col-6 q-pl-md">{{ selectedApplicant.experience }}</span>
+              <span class="col-6 q-pl-md">{{ selectedApplicant.totalYear || '' }}</span>
             </div>
             <div class="col-2 text-right" >
               <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary"/>
@@ -164,7 +164,7 @@
             </div>
             <div class="col-4 row">
               <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays') }}</span>
-              <span class="col-6">{{ selectedApplicant.availableDays }}</span>
+              <span class="col-6 q-pl-md">{{ selectedApplicant.daysToWork?selectedApplicant.daysToWork+' '+$t('applicant.attendant.days'):'' }}</span>
             </div>
             <div class="col-2 text-right" >
               <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary"/>

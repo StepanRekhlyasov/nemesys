@@ -1,17 +1,10 @@
-import { collection, Firestore, getDocs, query, where } from 'firebase/firestore';
+import { collection, Firestore, getDocs, query, orderBy } from 'firebase/firestore';
 
-export const getMaintainEnabledEvent = (db: Firestore) => {
-  return getDocs(query(
-    collection(db, 'maintainModeEvent'),
-    where('endDate', '==', null)
-  ))
+export const getMaintainEnabledEvent = async (db: Firestore) => {
+  const docs = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('date', 'desc')));
+  return docs.docs[0].data().typeOperation === 'resume'
 }
 
-export const getAllMaintainEvents = (db: Firestore) => {
-  return getDocs(query(
-    collection(db, 'maintainModeEvent')
-  ))
-}
 
 export const parseDateSecondsToHours = (seconds: number) => {
   const hours = Math.floor(seconds / 3600)

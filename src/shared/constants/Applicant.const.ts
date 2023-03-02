@@ -235,3 +235,17 @@ export const tattoosStatusList = computed(() => [{
   label: t('tattoos.yes'),
   value: 'yes'
 },])
+
+export const applicantClassification = computed(() => {
+  return [{
+    label: t('applicant.list.info.classification.introduction'),
+    value: 'introduction'
+  },{
+    label: t('applicant.list.info.classification.dispatch'),
+    value: 'dispatch'
+  },{
+    label: t('applicant.list.info.classification.TTP'),
+    value: 'TTP'
+  }]
+})
+
