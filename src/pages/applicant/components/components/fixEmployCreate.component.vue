@@ -1,7 +1,7 @@
 <template>
   <q-scroll-area class="fit text-left">
     <q-card class="no-shadow">
-      <q-card-section class="text-white bg-primary rounded-borders" >
+      <q-card-section class="text-white bg-primary " >
         <div class="row">
           <div class="col-1 flex flex-end items-end">
             <q-btn dense flat icon="close" @click="$emit('close')" class="q-mr-md"/>
@@ -575,7 +575,7 @@ export default {
           delete retData['created_at']
           if (props.fixData.id) {
             await updateDoc(
-              doc(db, 'applicants/' + props.applicant.id + '/contacts/'+ props.fixData.id),
+              doc(db, 'applicants/' + props.applicant.id + '/fix/'+ props.fixData.id),
               retData
             );
             context.emit('updateList')
@@ -586,7 +586,7 @@ export default {
           retData['deleted'] = false;
           retData['created_by'] = auth.currentUser?.uid;
           await addDoc(
-            collection(db, 'applicants/' + props.applicant.id + '/contacts'),
+            collection(db, 'applicants/' + props.applicant.id + '/fix'),
             retData
           )
           context.emit('updateList')
