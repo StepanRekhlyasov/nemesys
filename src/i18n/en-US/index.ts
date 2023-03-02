@@ -140,6 +140,7 @@ export default {
         invoiceRequest: 'Invoice request',
         organizationsSearh: 'Organizations Searh'
       },
+      operationHistory: 'Operational history',
     }
   },
   settings: {
@@ -1064,6 +1065,22 @@ export default {
       continiousStopTime: 'Continuous stop time',
       maxStopTime: 'Maximum continuous stop time',
       totalStoppedTime: 'Total stopped time'
+    },
+    modal: {
+      temporaryOperation: 'Temporary system operation',
+      emit: 'emit',
+      note: 'note',
+      cancel: 'cancel'
+    }
+  },
+  operationHistory: {
+    stop: 'stop',
+    resume: 'resume',
+    table: {
+      operation: 'Resume / suspension',
+      executionDate: 'Execution date',
+      performer: 'performer',
+      note: 'note'
     }
   }
 };
