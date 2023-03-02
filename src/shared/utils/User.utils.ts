@@ -42,8 +42,8 @@ export const getRoles = (db: Firestore) => {
   return getDocs(collection(db, 'roles'))
 }
 
-export const getAllUsers = (db: Firestore, active_organization_id: string, queryText?: string) => {
-  return getDocs(query(
+export const getAllUsers = async (db: Firestore, active_organization_id: string, queryText?: string) => {
+  const usersData = await getDocs(query(
     collection(db, 'users'),
     where('deleted', '==', false),
     where('organization_ids', 'array-contains', active_organization_id),
@@ -51,6 +51,16 @@ export const getAllUsers = (db: Firestore, active_organization_id: string, query
     startAt(queryText || ''),
     endAt(queryText + '\uf8ff'),
   ))
+
+  const users: User[] = []
+
+  usersData.forEach((user) => {
+    if (user.exists()) {
+      users.push(user.data() as User)
+    }
+  })
+
+  return users
 }
 export const mapToSelectOptions = (values: Record<string, { name: string }>) => {
   const list: selectOptions[] = []
