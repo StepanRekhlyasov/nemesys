@@ -58,7 +58,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-change',
     title: 'menu.admin.operationChange',
-    component: () => import('src/pages/admin/operationChange/OperationСhange.vue'),
+    component: () => import('src/pages/admin/operationChange/OperationChange.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]
