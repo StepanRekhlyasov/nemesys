@@ -5,8 +5,8 @@ import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
 import { mapSearchConfig } from 'src/shared/constants/MapSearchAPI';
 
-const props = defineProps(['theme'])
-const emit = defineEmits(['getClients'])
+const props = defineProps<{theme: string}>()
+const emit = defineEmits<{(e: 'getClients', clients)}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
 const radius = ref<number>(500);
@@ -63,12 +63,15 @@ const searchClients = async () => {
   if (user == null) {
     return false
   }
-  let token = await user.getIdToken();
+  const token = await user.getIdToken();
+
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`
   };
+
   let data = { ...center.value, 'radiusInM': radius.value }
+
   api.post(
     mapSearchConfig.getOfficeDataURL,
     data,
@@ -80,7 +83,7 @@ const searchClients = async () => {
     .then((response) => {
       if (response.status === 200) {
         officeData.value = response.data
-        emit('getClients', response.data)
+        emit('getClients', [response.data])
       } else {
         console.error(response.statusText)
       }

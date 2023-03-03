@@ -24,7 +24,6 @@ export interface TableRow {
         officeMaster: string,
         clientMaster: string,
         basicInfo: string,
-        classes: string
 }
 
 export interface OfficeMenuItem {

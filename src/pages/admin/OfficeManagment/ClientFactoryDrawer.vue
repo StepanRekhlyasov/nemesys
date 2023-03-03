@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
+import { TableRow } from './types';
 
-const props = defineProps(['isDrawer', 'selectedItem'])
-const emit = defineEmits(['hideDrawer'])
+const props = defineProps<{
+    isDrawer: boolean,
+    selectedItem: TableRow
+}>()
+const emit = defineEmits<{
+    (e: 'hideDrawer')
+}>()
 
 const hideDrawer = () => {
     emit('hideDrawer')

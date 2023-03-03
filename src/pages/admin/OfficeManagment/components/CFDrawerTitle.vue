@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import { defineProps, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { TableRow } from '../types';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps(['selectedItem']);
+const props = defineProps<{
+    selectedItem: TableRow
+}>();
 
 const dropDownValue = ref([
     t('client.add.nurse'),
     t('client.add.nursing')
 ])
-const selectedDropDown = ref(dropDownValue.value[0])
+const selectedDropDown = ref<string>(dropDownValue.value[0])
 
 const dropDownHandler = (item: string) => {
     selectedDropDown.value = item

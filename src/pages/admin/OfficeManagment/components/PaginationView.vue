@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 import {defineProps, defineEmits} from 'vue';
+import { TableRow } from '../types';
 
-const emit = defineEmits(['update:pagination'])
-const props = defineProps(['rows', 'pagination'])
+const emit = defineEmits<{
+    (e: 'update:pagination', value: number)
+}>()
+const props = defineProps<{
+    rows: TableRow[],
+    pagination
+}>()
 
 </script>
 

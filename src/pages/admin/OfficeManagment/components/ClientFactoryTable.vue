@@ -4,8 +4,14 @@ import { useI18n } from 'vue-i18n';
 import consts from '../consts';
 import { TableColumn, TableRow } from '../types';
 
-const props = defineProps(['rows', 'pagination'])
-const emit = defineEmits(['selectItem', 'update:pagination'])
+const props = defineProps<{
+    rows: TableRow[],
+    pagination
+}>()
+const emit = defineEmits<{
+    (e: 'selectItem', item: TableRow),
+    (e: 'update:pagination', value)
+}>()
 
 const { t } = useI18n({ useScope: 'global' });
 const columns = computed(() => {
