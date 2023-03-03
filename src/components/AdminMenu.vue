@@ -81,7 +81,7 @@ import { defineComponent, Ref, ref } from 'vue';
 import { getFirestore, doc, getDoc, DocumentSnapshot, DocumentData} from '@firebase/firestore';
 import { Role, User, UserPermissionNames } from 'src/shared/model/Account.model';
 import { Organization } from 'src/shared/model/Organization.model';
-import { MenuItem, MenuParent } from 'src/shared/model/Menu.molel'
+import { MenuItem, MenuParent } from 'src/shared/model/Menu.model'
 import { RouterToMenu, adminMenuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
 import routes from 'src/router/routes';

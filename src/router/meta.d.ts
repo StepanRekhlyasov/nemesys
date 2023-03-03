@@ -1,6 +1,6 @@
 export { }
 
-import { Meta } from 'src/shared/model/Menu.molel';
+import { Meta } from 'src/shared/model/Menu.model';
 import 'vue-router'
 
 declare module 'vue-router' {

@@ -1,5 +1,5 @@
 import { UserPermissionNames } from 'src/shared/model/Account.model';
-import { MenuRouter, MenuParent} from 'src/shared/model/Menu.molel';
+import { MenuRouter, MenuParent} from 'src/shared/model/Menu.model';
 
 const system_router: MenuRouter[] = [
   {

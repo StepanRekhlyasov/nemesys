@@ -1,4 +1,4 @@
-import { MenuRouter, MenuParent} from 'src/shared/model/Menu.molel';
+import { MenuRouter, MenuParent} from 'src/shared/model/Menu.model';
 
 const applicant_router: MenuRouter[] = [
   {
