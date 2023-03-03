@@ -1,4 +1,6 @@
 import { collection, endAt, Firestore, getDocs, orderBy, query, startAt, Timestamp, where, } from 'firebase/firestore';
+import { is } from 'quasar';
+import { toRaw } from 'vue';
 
 export interface dataObject{
   date: string,
@@ -8,6 +10,14 @@ export const pick = (obj: object, keys: string[]) => keys.reduce((acc, n) => (ob
 
 export const sortDate = (a:dataObject, b:dataObject)=>{
   return a.date.localeCompare(b.date)
+}
+
+export function cloneToRaw<T>(obj: T) {
+  return structuredClone(toRaw(obj))
+}
+
+export function deepEqualClone<T>(obj1: T, obj2: unknown) {
+  return is.deepEqual(cloneToRaw(obj1), cloneToRaw(obj2))
 }
 
 export const toDate = (timestamp: Timestamp):string => {

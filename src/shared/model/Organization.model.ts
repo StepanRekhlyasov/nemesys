@@ -13,7 +13,9 @@ export interface Organization {
   invoiceRequest: InvoiceRequest;
 }
 
-type InvoiceRequest = 'electronic'
+type InvoiceRequest = typeof invoiceRequests[number]
+
+export const invoiceRequests = ['electronic'] as const
 
 export enum Prefectures {
   '北海道',
