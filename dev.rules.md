@@ -37,3 +37,47 @@ pages/
 The project uses view3, there are 2 options: `traditional` and `composition API`.
 
 The priority is the second option (composition API), so it is recommended to write all new components and code in this style. For a better understanding, you can read the documentation [Composition API](https://vuejs.org/guide/extras/composition-api-faq.html)
+
+## Using state managers
+
+We use a simple and convenient pinia state manager in our project.
+You can get acquainted with a short guide how to use `Setup Store` that in [the official docs of pinia](https://pinia.vuejs.org/core-concepts/)
+
+Generally, your store should have the following folder structure and layout based on business entities:
+
+```
+stores/
+  admin/
+    user.ts
+  user/
+    user.ts
+```
+
+**Please, follow these points to separate business logic from components**:
+
+- Try to take out data that can be associated with a business entity in the store like:
+
+  ```
+    const users = await getAllUsersFromFirestore()
+  ```
+
+- Move your functions, which can connect to server or interact with the business entity, to `your store`:
+
+  ```
+  export const useCounterStore = defineStore('counter', () => {
+    const users = ref<User>([])
+
+    // getters
+    const getPieceOfUsers = computed(() => users.slice(0, 10))
+
+    function getUsers() {
+      // getting users
+    }
+
+    function deleteUser(id) {
+      // delitting user
+    }
+
+    return { users, getPieceOfUsers, getUsers, deleteUser }
+  })
+  ```
