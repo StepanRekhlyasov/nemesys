@@ -11,6 +11,8 @@ const emit = defineEmits(['getClients'])
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
 const radius = ref<number>(500);
 const officeData = ref([]);
+const isLoadingProgress = ref(false)
+
 const circleOption = ref({
   center: center,
   radius: radius,
@@ -31,7 +33,7 @@ watch(radius, (newVal) => {
   }
   circleOption.value = {
     center: center,
-    radius: newVal,
+    radius: radius.value,
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -54,6 +56,8 @@ const markerDrag = (event) => {
 }
 
 const searchClients = async () => {
+  isLoadingProgress.value = true
+
   const auth = getAuth();
   const user = auth.currentUser;
   if (user == null) {
@@ -66,7 +70,7 @@ const searchClients = async () => {
   };
   let data = { ...center.value, 'radiusInM': radius.value }
   api.post(
-    mapSearchConfig.getOfficeDataURL, //getOfficeDataURL,
+    mapSearchConfig.getOfficeDataURL,
     data,
     {
       headers: headers,
@@ -80,8 +84,12 @@ const searchClients = async () => {
       } else {
         console.error(response.statusText)
       }
+
+      isLoadingProgress.value = false
     })
     .catch((error) => {
+      isLoadingProgress.value = false
+
       console.error('Failed to create user', error);
     });
   return false;
@@ -94,10 +102,11 @@ const searchClients = async () => {
       <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme" class="no-shadow text-weight-bold" icon="add" />
       <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold" @click="searchClients" />
     </q-card-actions>
-    <q-separator />
+    <q-separator v-if="!isLoadingProgress"/>
+    <q-linear-progress v-if="isLoadingProgress" indeterminate rounded color="accent" />
 
     <q-card-section>
-      <GoogleMap :api-key="mapSearchConfig.apiKey" style="width: 100%; height: 450px" :center="center" :zoom="15">
+      <GoogleMap :api-key="mapSearchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
         <Circles :options="circleOption" />
       </GoogleMap>
@@ -109,7 +118,7 @@ const searchClients = async () => {
           {{ $t('client.list.distanceFromOrigin') }}
         </div>
         <div class="col-2">
-          <q-input outlined dense type="number" v-model="radius">
+          <q-input outlined dense type="number" v-model.number="radius">
             <template v-slot:after>
               m
             </template>

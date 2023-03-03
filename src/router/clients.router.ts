@@ -1,4 +1,4 @@
-import { MenuParent } from 'src/shared/model/Menu.molel';
+import { MenuParent } from 'src/shared/model/Menu.model';
 
 const clientRouters = [
   {

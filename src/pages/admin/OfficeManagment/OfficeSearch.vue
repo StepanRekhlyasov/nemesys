@@ -116,7 +116,7 @@ const onMenuItem = (item: OfficeMenuItem) => {
     color: $main-purple;
 }
 .active-link {
-    
+    color: $main-purple;
 }
 .wrapper_animate_left_border::after, .active-link::after {
     width: 2.5%;

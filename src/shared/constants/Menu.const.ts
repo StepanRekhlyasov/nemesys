@@ -1,6 +1,6 @@
 
 import { RouteRecordRaw } from 'vue-router';
-import { MenuItem, MenuParent, MenuParentType, MenuRouter } from '../model/Menu.molel';
+import { MenuItem, MenuParent, MenuParentType, MenuRouter } from '../model/Menu.model';
 
 export const MenuToRouter = (routers: MenuRouter[]): RouteRecordRaw[] => routers.map((route: MenuRouter): RouteRecordRaw  => {
   return {
