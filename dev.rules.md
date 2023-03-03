@@ -41,7 +41,7 @@ The priority is the second option (composition API), so it is recommended to wri
 ## Using state managers
 
 We use a simple and convenient pinia state manager in our project.
-You can get acquainted with a short guide how to use that in [the official docs of pinia](https://pinia.vuejs.org/core-concepts/)
+You can get acquainted with a short guide how to use `Setup Store` that in [the official docs of pinia](https://pinia.vuejs.org/core-concepts/)
 
 Generally, your store should have the following folder structure and layout based on business entities:
 
@@ -61,22 +61,23 @@ stores/
     const users = await getAllUsersFromFirestore()
   ```
 
-- Move your functions, which can connect to server or interact with the business entity, to `actions` section
+- Move your functions, which can connect to server or interact with the business entity, to `your store`:
 
   ```
-  export const useAdminClientFactory = defineStore('admin-client-factory', {
-    state: () => ({
-      clients: [...]
-    }),
+  export const useCounterStore = defineStore('counter', () => {
+    const users = ref<User>([])
 
-    actions: {
-      getClients() {
-          // getting clients
-      },
+    // getters
+    const getPieceOfUsers = computed(() => users.slice(0, 10))
 
-      deleteClient(id) {
-          // delitting client
-      }
+    function getUsers() {
+      // getting users
     }
-  });
+
+    function deleteUser(id) {
+      // delitting user
+    }
+
+    return { users, getPieceOfUsers, getUsers, deleteUser }
+  })
   ```
