@@ -397,7 +397,7 @@
 </template>
 
 <script lang="ts">
-import { Ref, ref, SetupContext } from 'vue';
+import { ref, SetupContext } from 'vue';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -437,11 +437,11 @@ export default {
     const data = ref(props.fixData);
     const loading = ref(false);
     const disableLevel = ref(0);
-    const edit: Ref<string[]> = ref([]);
-    const show: Ref<string[]> = ref([]);
-    const usersListOption: Ref<selectOptions[]> = ref([]);
+    const edit = ref<string[]>([])
+    const show = ref<string[]>([])
+    const usersListOption = ref<selectOptions[]>([]);
     const clientOptions = applicantStore.state.clientList;
-    const officeOptions: Ref<selectOptions[]> = ref([]);
+    const officeOptions = ref<selectOptions[]> ([]);
 
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
@@ -556,7 +556,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>
