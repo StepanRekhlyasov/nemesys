@@ -3,8 +3,12 @@ import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MapSearchVue from 'src/components/MapSearch.vue';
 
-const props = defineProps(['isDrawer'])
-const emit = defineEmits(['hideDrawer'])
+const props = defineProps<{
+    isDrawer: boolean
+}>()
+const emit = defineEmits<{
+    (e: 'hideDrawer')
+}>()
 
 const { t } = useI18n({ useScope: 'global' });
 

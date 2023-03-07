@@ -1,10 +1,10 @@
 <template>
-  <div class="text-subtitle1">
+  <div v-if="isTitle" class="text-subtitle1">
     {{ t('common.searchKeyword') }} / {{ t('common.searchCondition') }}
   </div>
   <q-card class="row q-pt-sm items-center justify-between">
     <q-card-section class="row q-px-none items-center">
-      <q-input v-model:model-value="value" v-bind="$attrs" borderless input-style="height: 28px;" class="input"
+      <q-input v-model:model-value="value" v-bind="$attrs" borderless input-style="height: 36px;" class="input"
         :placeholder="t('form.searchPlaceholder')" />
       <DefaultButton label-key="common.search" @click="onClickSearch" :color="searchButtonColor" />
       <DefaultButton label-key="common.clear" @click="onClickClear" clear :text-color="clearButtonTextColor" />
@@ -35,12 +35,14 @@ interface SearchFieldProps extends QInputProps {
   onClickSearch: QBtnProps['onClick']
   onClickClear: QBtnProps['onClick']
   color?: string
+  isTitle?: boolean
   searchButtonColor?: string
   clearButtonTextColor?: string
 }
 
 const props = withDefaults(defineProps<SearchFieldProps>(), {
-  searchButtonColor: 'accent'
+  searchButtonColor: 'accent',
+  isTitle: true
 })
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string | number | null | undefined): void }>();
@@ -77,7 +79,8 @@ button {
   border-radius: 3px;
   max-height: 28px;
   width: 350px;
-  height: 28px;
+  max-height: 36px;
+  height: 100%;
   padding-left: 10px;
 }
 </style>

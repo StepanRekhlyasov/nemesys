@@ -3,12 +3,16 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import MapDrawer from './MapDrawer.vue';
+import AreaSearchDrawer from './AreaSearchDrawer.vue';
 import {OfficeMenuItem} from './types'
 
 const { t } = useI18n({ useScope: 'global' });
 
 const router = useRouter()
-const isDrawer = ref(false)
+const isDrawer = ref({
+    mapSearchDrawer: false,
+    areaSearchDrawer: false
+})
 const activeItem = ref<null | OfficeMenuItem>(null)
 
 
@@ -18,14 +22,14 @@ const menu = computed(() => {
             name: t('menu.mapSearch'),
             right: require('assets/admin-office-managment/map-search-image.png'),
             click() {
-                isDrawer.value = true
+                isDrawer.value.mapSearchDrawer = true
             },
         },
         {
             name: t('menu.areaSearch'),
             right: require('assets/admin-office-managment/area-search-image.png'),
             click() {
-                router.push('client-factory')
+                isDrawer.value.areaSearchDrawer = true
             },
         },
         {
@@ -37,14 +41,14 @@ const menu = computed(() => {
         },
         {
             name: t('menu.addOffice'),
-            center: 'menu.addOfficeHint',
+            center: t('menu.addOfficeHint'),
             click() {
                 router.push('client-factory')
             },
         },
         {
             name: t('menu.addClient'),
-            center: 'menu.addNewClient',
+            center: t('menu.addNewClient'),
             click() {
                 router.push('client-factory')
             },
@@ -52,11 +56,20 @@ const menu = computed(() => {
     ]
 })
 
-const hideDrawer = () => {
-    isDrawer.value = false
+const hideMapDrawer = () => {
+    isDrawer.value.mapSearchDrawer = false
+}
+
+const hideAreaDrawer = () => {
+    isDrawer.value.areaSearchDrawer = false
 }
 
 const onMenuItem = (item: OfficeMenuItem) => {
+    isDrawer.value = {
+        mapSearchDrawer: false,
+        areaSearchDrawer: false
+    }
+
     activeItem.value = item
     item.click()
 }
@@ -99,8 +112,11 @@ const onMenuItem = (item: OfficeMenuItem) => {
         </q-card>
 
         <MapDrawer
-        @hide-drawer="hideDrawer" 
-        :isDrawer="isDrawer"/>
+        @hide-drawer="hideMapDrawer" 
+        :isDrawer="isDrawer.mapSearchDrawer"/>
+        <AreaSearchDrawer
+        @hide-drawer="hideAreaDrawer"
+        :isDrawer="isDrawer.areaSearchDrawer"/>
     </div>
 </template>
 
