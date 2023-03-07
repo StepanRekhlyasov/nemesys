@@ -21,7 +21,15 @@
 
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
-          {{ props.value }}
+          <span class="row">{{ 
+            clientOptions?.
+            find(client => client.id == props.row.client)?.name 
+          }}</span>
+          <span class="row">{{ 
+            clientOptions?.
+            find(client => client.id == props.row.client)?.office?.
+            find(office => office.id == props.row.office)?.name 
+          }}</span>
         </q-td>
       </template>
       <template v-slot:body-cell-fixDate="props">
@@ -96,13 +104,15 @@
 </q-drawer>
 </template>
 
-<script>
+<script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount } from 'vue';
+import { ref, computed, onBeforeUnmount, Ref } from 'vue';
 import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
 import FixEmployCreate from './components/fixEmployCreate.component.vue'
+import { useApplicant } from 'src/stores/application';
+import { Accaunt, ApplicantFix, Client } from 'src/shared/model';
 
 export default {
   name: 'contactInfo',
@@ -119,14 +129,20 @@ export default {
 
   setup(props) {
     const { t } = useI18n({ useScope: 'global' });
-    const contactListData = ref([])
+    
+    const applicantStore = useApplicant();
+    const db = getFirestore();
+    const $q = useQuasar();
+
+    const contactListData: Ref<ApplicantFix[]> = ref([]);
     const deleteItemId = ref('');
+    const users:Ref<Accaunt[]> = ref([]);
     const drawerRight = ref(false);
+    const clientOptions: Client[] = applicantStore.state.clientList;
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
     ]
-    const fixData = ref({})
-
+    const fixData = ref({} as ApplicantFix)
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -190,9 +206,6 @@ export default {
     const showAddForm = ref(false)
     const contactData = ref({
     });
-
-    const db = getFirestore();
-    const $q = useQuasar();
     const unsubscribe = ref();
     const unsubscribeUsers = ref();
 
@@ -200,11 +213,11 @@ export default {
     function loadContactData() {
       const q = query(collection(db, 'applicants/' + props.applicant.id + '/fix'), where('deleted', '==', false), orderBy('created_at', 'desc'));
       unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-        let contData = [];
+        let contData: ApplicantFix[] = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           data['id'] = doc.id;
-          contData.push({ ...data, id: doc.id, created_at: toDate(data.created_at) });
+          contData.push({ ...data, id: doc.id, created_at: toDate(data.created_at) } as ApplicantFix);
         });
         contactListData.value = contData;
       },
@@ -214,15 +227,13 @@ export default {
         });
     }
 
-
-    const users = ref([]);
     loadUsers()
     function loadUsers() {
       const q = query(collection(db, 'users/'), where('deleted', '==', false));
       unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
-        let userList = [];
+        let userList: Accaunt[] = [];
         querySnapshot.forEach((doc) => {
-          userList.push({ id: doc.id, name: doc.data().name });
+          userList.push({ id: doc.id, ...doc.data() } as Accaunt);
         });
         users.value = userList;
       });
@@ -243,11 +254,12 @@ export default {
       loading,
       drawerRight,
       fixData,
+      clientOptions,
 
       options,
       loadContactData,
       async updateData(data){
-        if (fixData.value.id){
+        if (fixData.value?.id){
           data['updated_at'] = serverTimestamp();
           await updateDoc(
             doc(db, 'applicants/' + props.applicant.id + '/fix/'+ fixData.value.id),
@@ -261,10 +273,13 @@ export default {
           return false;
         }
         const user = $q.localStorage.getItem('user');
+        if (!user) {
+          return;
+        }
 
         let updateData = {}
         updateData['deleted'] = true;
-        updateData['deleted_by'] = user.uid;
+        updateData['deleted_by'] = user['uid']
         updateData['deleted_at'] = serverTimestamp();
 
         await updateDoc(
@@ -294,15 +309,17 @@ export default {
         $q.dialog({
           title: t('common.delete'),
           message: t('common.deleteInfo'),
-          cancel: true,
           persistent: true,
           cancel: t('common.cancel'),
         }).onOk(async () => {
           const user = $q.localStorage.getItem('user');
+          if (!user) {
+            return ;
+          }
 
           let updateData = {}
           updateData['deleted'] = true;
-          updateData['deleted_by'] = user.uid;
+          updateData['deleted_by'] = user['uid'];
           updateData['deleted_at'] = serverTimestamp();
 
           await updateDoc(
