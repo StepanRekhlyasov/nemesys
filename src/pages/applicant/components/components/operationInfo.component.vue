@@ -89,14 +89,12 @@ function loadOperationInfo() {
     loading.value = true;
     const operationSnapshot = getFixList(db, props.applicant.id, {operationFilter: true})
     operationSnapshot.then((querySnapshot) => {
-      console.log(querySnapshot)
       let operationData: ApplicantFix[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         data['id'] = doc.id;
         operationData.push({ ...data, id: doc.id, created_at: toDate(data.created_at) });
       });
-      console.log(operationData)
       list.value = operationData;
       loading.value = false;
     }) 

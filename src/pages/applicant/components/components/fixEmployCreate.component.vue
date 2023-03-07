@@ -20,16 +20,21 @@
         <q-card-section>
           <q-select
             v-model="data.client"
-            @update:model-value="loadClientOffice(); data['office']=null"
+            @update:model-value="data['office']=null"
             :loading="loading"
             :options="clientOptions"
+            option-value="id"
+            option-label="name"
             emit-value map-options
             :label="$t('applicant.list.fixEmployment.client')"  />
           <q-select
             v-model="data.office"
             :loading="loading"
             emit-value map-options
-            :options="officeOptions" :label="$t('applicant.list.fixEmployment.office')" />
+            option-value="id"
+            option-label="name"
+            :options="clientOptions.find(client => client.id === data['client'])?.office" 
+            :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
         <q-card-section>
@@ -392,9 +397,8 @@
 </template>
 
 <script lang="ts">
-import { Ref, ref, SetupContext } from 'vue';
+import { ref, SetupContext } from 'vue';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
-import { getClientList, getClientOfficeList } from 'src/shared/utils/Applicant.utils';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import editViewComponent from 'src/components/editView.component.vue';
@@ -402,6 +406,7 @@ import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
+import { useApplicant } from 'src/stores/application';
 export default {
   name: 'FixEmployCreate',
   props: {
@@ -427,69 +432,20 @@ export default {
     const db = getFirestore();
     const auth = getAuth();
     const organization = useOrganization();
+    const applicantStore = useApplicant();
 
     const data = ref(props.fixData);
     const loading = ref(false);
-    const disableLevel = ref(0)
-    const edit: Ref<string[]> = ref([])
-    const show: Ref<string[]> = ref([])
-    const usersListOption: Ref<selectOptions[]> = ref([])
-    const clientOptions: Ref<selectOptions[]> = ref([]);
-    const officeOptions: Ref<selectOptions[]> = ref([]);
+    const disableLevel = ref(0);
+    const edit = ref<string[]>([])
+    const show = ref<string[]>([])
+    const usersListOption = ref<selectOptions[]>([]);
+    const clientOptions = applicantStore.state.clientList;
+    const officeOptions = ref<selectOptions[]> ([]);
 
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
     ];
-
-
-    loadClientData();
-    function loadClientData() {
-      loading.value= true;
-      const clientsSnapshot = getClientList(db)
-
-      clientsSnapshot.then(clients => {
-        let list: selectOptions[] = [];
-        clients?.forEach((doc) => {
-          const data = doc.data();
-          list.push({
-            label: data.name,
-            value: doc.id
-          });
-        });
-        clientOptions.value = list;
-        loading.value = false;
-        if (data.value['client']) {
-          loadClientOffice()
-        }
-        disableChange();
-        loadUser();
-      })
-    }
-
-    function loadClientOffice() {
-      if (!data.value['client']) {
-        return
-      }
-      try{
-        loading.value= true;
-        const officeSnapshot = getClientOfficeList(db, data.value['client'])
-        officeSnapshot.then(office => {
-          let list: selectOptions[] = [];
-          office?.forEach((doc) => {
-            const data = doc.data();
-            list.push({
-              label: data.name,
-              value: doc.id
-            });
-          });
-          officeOptions.value = list;
-          loading.value = false;
-        })
-      } catch (e) {
-          console.log(e)
-          loading.value = false;
-      }
-    }
 
     function disableChange() {
       let level = 0;
@@ -520,6 +476,7 @@ export default {
         usersListOption.value = list;
       })
     }
+    loadUser();
 
     return {
       data,
@@ -533,7 +490,6 @@ export default {
       disableLevel,
       disableChange,
 
-      loadClientOffice,
       save(type: string) {
         let retData = {};
         switch(type){
@@ -600,7 +556,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>
