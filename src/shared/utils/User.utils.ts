@@ -1,10 +1,10 @@
-import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QuerySnapshot, QueryStartAtConstraint, startAt, where } from 'firebase/firestore';
+import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, orderBy, query, QuerySnapshot, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Account.model';
 import { Branch, branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
-import { branchCollection, itemCollection } from './utils';
+import { branchCollection, ConstraintsType, itemCollection } from './utils';
 
 export interface BranchesSearch {
   queryText?: string;
@@ -71,8 +71,6 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
   if (!roleIds.length) {
     return;
   }
-
-  type ConstraintsType = Array<QueryStartAtConstraint | QueryFieldFilterConstraint | QueryEndAtConstraint | QueryOrderByConstraint>
 
   const constraints: ConstraintsType = [where('deleted', '==', false), where('role', 'in', roleIds), orderBy('displayName')]
 

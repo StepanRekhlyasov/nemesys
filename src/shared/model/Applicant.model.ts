@@ -18,6 +18,79 @@ export enum EmploymentStatus {
   'notWorking'
 }
 
+export interface Applicant {
+  id: string;
+  name: string;
+  kanaName: string;
+  postCode?: string;
+  prefecture?: string;
+  municipalities?: string;
+  street: string;
+  apartment: string;
+  phone: string;
+  email: string;
+  status?: ApplicantStatus;  //
+  branchIncharge?: string; //
+  sex?: ApplicantSex;
+  dob?: string;
+  occupation?: ApplicantOccupation;
+  qualification?: ApplicantQualification[];
+  applicationDate?: string;
+  
+  created_at: string;
+  deleted: false;
+}
+
+export enum ApplicantSex{
+  MALE = 'male',
+  FEMALE = 'female'
+}
+
+export enum ApplicantOccupation {
+  NURSE = 'nurse',
+  NURSING_CARE = 'nursingCare',
+  LIFECOUNSELOR = 'lifeCounselor',
+  CAREMANAGER = 'careManager', 
+  OTHERS = 'others'
+}
+
+export enum ApplicantQualification {
+  REGISTEREDNURSE = 'registeredNurse',
+  ASSISTANTNURSE = 'assistantNurse',
+  NEWCOMER = 'newcomer',
+  CAREWORKER = 'careWorker'
+}
+
+export enum ApplicantStatus {
+  NOTCOMPATIBLE = 'notCompatible',
+  EXCLUDEDAPPLICANT = 'excludedApplicant',
+  WAITINGCONTACT = 'waitingContact',
+  CONTACTNG = 'contactNG',
+  CONTACTEDWI = 'contactedWI',
+  INVITATIONNG = 'invitationNG',
+  INVITEDWAITING = 'invitedWaiting',
+  INVITEDNOCONTACT = 'invitedNoContact',
+  ATTENDEDNG = 'attendedNG',
+  ATTENDEDWAITINGFIX = 'attendedWaitingFix',
+  FIXNG = 'fixNG',
+  FIXEDWAITING = 'fixedWaiting',
+  VISITINGNG = 'visitingNG',
+  VISITEDWAITINGOFFER = 'visitedWaitingOffer',
+  OFFERNG = 'offerNG',
+  OFFEREDWAITINGENTRY = 'OfferedWaitingEntry',
+  ENTRYNG = 'entryNG',
+  ENTERED = 'entered',
+  EXPIRYNG = 'expiryNG',
+  END = 'end',
+  UPDATE = 'update',
+  FUTURETALENT = 'futureTalent',
+}
+
+export interface ApplicantFix { 
+  id: string;
+  created_user?: string;
+  created_at: string;
+}
 
 export interface ApplicantMemo {
   id?: string;

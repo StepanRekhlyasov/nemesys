@@ -1,4 +1,4 @@
-import { collection, endAt, Firestore, getDocs, orderBy, query, startAt, Timestamp, where, } from 'firebase/firestore';
+import { collection, endAt, Firestore, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QueryStartAtConstraint, startAt, Timestamp, where, } from 'firebase/firestore';
 import { is } from 'quasar';
 import { toRaw } from 'vue';
 
@@ -6,6 +6,9 @@ export interface dataObject{
   date: string,
   time: string
 }
+
+export type ConstraintsType = Array<QueryStartAtConstraint | QueryFieldFilterConstraint | QueryEndAtConstraint | QueryOrderByConstraint>
+
 export const pick = (obj: object, keys: string[]) => keys.reduce((acc, n) => (obj.hasOwnProperty(n) && (acc[n] = obj[n]), acc), {});
 
 export const sortDate = (a:dataObject, b:dataObject)=>{
