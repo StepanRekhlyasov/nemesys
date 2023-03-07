@@ -10,11 +10,17 @@ export const getApplicantContactsList = (db: Firestore, applicant_id: string) =>
 }
 
 
-export const getClientList = (db: Firestore) => {
+export const getClientList = (db: Firestore, options?: {
+  active_organization_id?: string;
+}) => {
+
+  const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('name')]
+  if (options && options.active_organization_id) {
+    constraints.push(where('organization', '==', options.active_organization_id))
+  }
   return getDocs(query(
     collection(db, 'clients'),
-    where('deleted', '==', false),
-    orderBy('name')
+    ...constraints
   ))
 }
 
