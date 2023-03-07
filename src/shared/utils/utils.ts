@@ -16,7 +16,7 @@ export const sortDate = (a:dataObject, b:dataObject)=>{
 }
 
 export function cloneToRaw<T>(obj: T) {
-  return structuredClone(toRaw(obj))
+  return JSON.parse(JSON.stringify(toRaw(obj)))
 }
 
 export function deepEqualClone<T>(obj1: T, obj2: unknown) {
