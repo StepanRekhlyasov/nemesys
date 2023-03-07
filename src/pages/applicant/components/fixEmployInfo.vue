@@ -22,11 +22,11 @@
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
           <span class="row">{{ 
-            clientOptions?.
+            applicantStore.state.clientList?.
             find(client => client.id == props.row.client)?.name 
           }}</span>
           <span class="row">{{ 
-            clientOptions?.
+            applicantStore.state.clientList?.
             find(client => client.id == props.row.client)?.office?.
             find(office => office.id == props.row.office)?.name 
           }}</span>
@@ -107,12 +107,11 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, Ref } from 'vue';
-import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
+import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
-import { toDate } from 'src/shared/utils/utils';
 import FixEmployCreate from './components/fixEmployCreate.component.vue'
-import { useApplicant } from 'src/stores/application';
-import { Accaunt, ApplicantFix, Client } from 'src/shared/model';
+import { useApplicant } from 'src/stores/applicant';
+import { Accaunt, ApplicantFix } from 'src/shared/model';
 
 export default {
   name: 'contactInfo',
@@ -138,7 +137,6 @@ export default {
     const deleteItemId = ref('');
     const users:Ref<Accaunt[]> = ref([]);
     const drawerRight = ref(false);
-    const clientOptions: Client[] = applicantStore.state.clientList;
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
     ]
@@ -206,25 +204,11 @@ export default {
     const showAddForm = ref(false)
     const contactData = ref({
     });
-    const unsubscribe = ref();
     const unsubscribeUsers = ref();
 
     loadContactData()
-    function loadContactData() {
-      const q = query(collection(db, 'applicants/' + props.applicant.id + '/fix'), where('deleted', '==', false), orderBy('created_at', 'desc'));
-      unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-        let contData: ApplicantFix[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          data['id'] = doc.id;
-          contData.push({ ...data, id: doc.id, created_at: toDate(data.created_at) } as ApplicantFix);
-        });
-        contactListData.value = contData;
-      },
-        (error) => {
-          console.log(error)
-          // ...
-        });
+    async function loadContactData() {
+      contactListData.value  = await applicantStore.getFixData(props.applicant.id)
     }
 
     loadUsers()
@@ -240,7 +224,6 @@ export default {
     }
 
     onBeforeUnmount(() => {
-      unsubscribe.value();
       unsubscribeUsers.value();
     });
 
@@ -254,7 +237,7 @@ export default {
       loading,
       drawerRight,
       fixData,
-      clientOptions,
+      applicantStore,
 
       options,
       loadContactData,

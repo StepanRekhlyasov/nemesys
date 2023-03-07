@@ -22,7 +22,7 @@
             v-model="data.client"
             @update:model-value="data['office']=null"
             :loading="loading"
-            :options="clientOptions"
+            :options="applicantStore.state.clientList"
             option-value="id"
             option-label="name"
             emit-value map-options
@@ -33,7 +33,7 @@
             emit-value map-options
             option-value="id"
             option-label="name"
-            :options="clientOptions.find(client => client.id === data['client'])?.office" 
+            :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office" 
             :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
@@ -365,7 +365,7 @@
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.admission.chargeOfAdmission') }}
               </div>
-              <div class="col-9 q-pl-md blue ">                
+              <div class="col-3 q-pl-md blue ">                
                 <span v-if="!edit.includes('employmentInfo')" class="text_dots">{{ 
                   usersListOption
                   .filter(user => user.value === data['chargeOfAdmission'])
@@ -376,6 +376,25 @@
                   :disable="loading || disableLevel < 3"
                   emit-value map-options dense outlined
                   :options="usersListOption" :label="$t('common.pleaseSelect')" />
+              </div>
+              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+                {{ $t('applicant.attendant.endDate') }}
+              </div>
+              <div class="col-3 q-pl-md blue ">
+                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.endDate" />
+                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white" v-model="data['endDate']" :disable="loading">
+                  <template v-slot:prepend>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="data['endDate']" mask="YYYY/MM/DD">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
             </div>
 
@@ -406,7 +425,7 @@ import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
-import { useApplicant } from 'src/stores/application';
+import { useApplicant } from 'src/stores/applicant';
 export default {
   name: 'FixEmployCreate',
   props: {
@@ -474,6 +493,7 @@ export default {
           });
         });
         usersListOption.value = list;
+        disableChange();
       })
     }
     loadUser();
@@ -488,6 +508,7 @@ export default {
       officeOptions,
       usersListOption,
       disableLevel,
+      applicantStore,
       disableChange,
 
       save(type: string) {
@@ -514,7 +535,7 @@ export default {
           case 'employmentInfo': {
             retData = pick(
               data.value,
-              ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo'])
+              ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
             break;
           }
           default: {
