@@ -40,6 +40,7 @@
       <q-tab-panel name="operationInfo">
         <operationInfoComponent :applicant="applicant"/>
       </q-tab-panel>
+      
       <q-tab-panel name="memo">
         <applicantMemo :applicant="applicant" :updateApplicant="updateApplicant"/>
       </q-tab-panel>

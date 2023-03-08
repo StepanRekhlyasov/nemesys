@@ -850,6 +850,8 @@ export default {
       workExperience: 'Work Experience',
       personal: 'Personal Status',
       assignedEvaluation: 'Assigned Evaluation',
+      sameDay: 'Same Day',
+      firstPayment: 'First Payment',
 
       specialDays: {
         gw: 'GW',

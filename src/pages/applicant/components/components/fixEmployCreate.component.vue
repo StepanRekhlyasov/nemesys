@@ -20,16 +20,21 @@
         <q-card-section>
           <q-select
             v-model="data.client"
-            @update:model-value="loadClientOffice(); data['office']=null"
+            @update:model-value="data['office']=null"
             :loading="loading"
-            :options="clientOptions"
+            :options="applicantStore.state.clientList"
+            option-value="id"
+            option-label="name"
             emit-value map-options
             :label="$t('applicant.list.fixEmployment.client')"  />
           <q-select
             v-model="data.office"
             :loading="loading"
             emit-value map-options
-            :options="officeOptions" :label="$t('applicant.list.fixEmployment.office')" />
+            option-value="id"
+            option-label="name"
+            :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office" 
+            :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
         <q-card-section>
@@ -360,7 +365,7 @@
               <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
                 {{ $t('applicant.list.fixEmployment.admission.chargeOfAdmission') }}
               </div>
-              <div class="col-9 q-pl-md blue ">                
+              <div class="col-3 q-pl-md blue ">                
                 <span v-if="!edit.includes('employmentInfo')" class="text_dots">{{ 
                   usersListOption
                   .filter(user => user.value === data['chargeOfAdmission'])
@@ -371,6 +376,25 @@
                   :disable="loading || disableLevel < 3"
                   emit-value map-options dense outlined
                   :options="usersListOption" :label="$t('common.pleaseSelect')" />
+              </div>
+              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+                {{ $t('applicant.attendant.endDate') }}
+              </div>
+              <div class="col-3 q-pl-md blue ">
+                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.endDate" />
+                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white" v-model="data['endDate']" :disable="loading">
+                  <template v-slot:prepend>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="data['endDate']" mask="YYYY/MM/DD">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
             </div>
 
@@ -392,9 +416,8 @@
 </template>
 
 <script lang="ts">
-import { Ref, ref, SetupContext } from 'vue';
+import { ref, SetupContext } from 'vue';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
-import { getClientList, getClientOfficeList } from 'src/shared/utils/Applicant.utils';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import editViewComponent from 'src/components/editView.component.vue';
@@ -402,6 +425,7 @@ import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
+import { useApplicant } from 'src/stores/applicant';
 export default {
   name: 'FixEmployCreate',
   props: {
@@ -427,69 +451,20 @@ export default {
     const db = getFirestore();
     const auth = getAuth();
     const organization = useOrganization();
+    const applicantStore = useApplicant();
 
     const data = ref(props.fixData);
     const loading = ref(false);
-    const disableLevel = ref(0)
-    const edit: Ref<string[]> = ref([])
-    const show: Ref<string[]> = ref([])
-    const usersListOption: Ref<selectOptions[]> = ref([])
-    const clientOptions: Ref<selectOptions[]> = ref([]);
-    const officeOptions: Ref<selectOptions[]> = ref([]);
+    const disableLevel = ref(0);
+    const edit = ref<string[]>([])
+    const show = ref<string[]>([])
+    const usersListOption = ref<selectOptions[]>([]);
+    const clientOptions = applicantStore.state.clientList;
+    const officeOptions = ref<selectOptions[]> ([]);
 
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
     ];
-
-
-    loadClientData();
-    function loadClientData() {
-      loading.value= true;
-      const clientsSnapshot = getClientList(db)
-
-      clientsSnapshot.then(clients => {
-        let list: selectOptions[] = [];
-        clients?.forEach((doc) => {
-          const data = doc.data();
-          list.push({
-            label: data.name,
-            value: doc.id
-          });
-        });
-        clientOptions.value = list;
-        loading.value = false;
-        if (data.value['client']) {
-          loadClientOffice()
-        }
-        disableChange();
-        loadUser();
-      })
-    }
-
-    function loadClientOffice() {
-      if (!data.value['client']) {
-        return
-      }
-      try{
-        loading.value= true;
-        const officeSnapshot = getClientOfficeList(db, data.value['client'])
-        officeSnapshot.then(office => {
-          let list: selectOptions[] = [];
-          office?.forEach((doc) => {
-            const data = doc.data();
-            list.push({
-              label: data.name,
-              value: doc.id
-            });
-          });
-          officeOptions.value = list;
-          loading.value = false;
-        })
-      } catch (e) {
-          console.log(e)
-          loading.value = false;
-      }
-    }
 
     function disableChange() {
       let level = 0;
@@ -518,8 +493,10 @@ export default {
           });
         });
         usersListOption.value = list;
+        disableChange();
       })
     }
+    loadUser();
 
     return {
       data,
@@ -531,9 +508,9 @@ export default {
       officeOptions,
       usersListOption,
       disableLevel,
+      applicantStore,
       disableChange,
 
-      loadClientOffice,
       save(type: string) {
         let retData = {};
         switch(type){
@@ -558,7 +535,7 @@ export default {
           case 'employmentInfo': {
             retData = pick(
               data.value,
-              ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo'])
+              ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
             break;
           }
           default: {
@@ -600,7 +577,3 @@ export default {
 
 }
 </script>
-
-<style>
-
-</style>
