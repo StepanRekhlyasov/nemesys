@@ -147,7 +147,7 @@
               <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
               <span class="col-3 q-pl-md">{{ selectedApplicant.totalYear || '' }}</span>
               <div class="col-3 text-right" >
-                <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary"/>
+                <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px"/>
               </div>
             </div>
           </div>

@@ -90,8 +90,8 @@
           {{ $t('applicant.attendant.totalYearsExperience') }}
         </div>
         <div class="col-4 q-pl-md blue self-center">
-          <span v-if="!edit">{{ applicant.totalYear || ''}}</span>
-          <q-input v-if="edit" dense outlined bg-color="white"
+          <span v-if="!edit">{{ applicant.totalYear? applicant.totalYear + $t('common.year') : ''}}</span>
+          <q-input v-if="edit" dense outlined bg-color="white" type="number"
             v-model="data['totalYear']" :disable="loading" />
         </div>
       </div>

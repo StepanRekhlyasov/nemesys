@@ -848,6 +848,8 @@ export default {
       workExperience: '職務経験',
       personal: '本人状況',
       assignedEvaluation: '担当評価',
+      sameDay: '即日',
+      firstPayment: '先付け',
 
       specialDays: {
         gw: 'GW',
