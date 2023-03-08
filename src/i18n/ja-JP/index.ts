@@ -901,7 +901,7 @@ export default {
       // Operation Info Component
       placeOperation: '稼働先',
       startDate: '開始日',
-      endDate: '終了日',
+      endDate: '契約終了日',
       companyInCharge: '稼働担当社',
       operationMemo: 'メモ',
       operatingSites: '稼働先事業所',
