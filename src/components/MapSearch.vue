@@ -97,8 +97,10 @@ const searchClients = async () => {
       <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme" class="no-shadow text-weight-bold" icon="add" />
       <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold" @click="searchClients" />
     </q-card-actions>
-    <q-separator v-if="!isLoadingProgress"/>
-    <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
+    <div style="height: 5px;">
+        <q-separator v-if="!isLoadingProgress"/>
+        <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
+    </div>
 
     <q-card-section>
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">

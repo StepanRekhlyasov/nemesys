@@ -3,7 +3,6 @@ import { ref, defineProps, defineEmits, watch, onMounted } from 'vue';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
-import { useI18n } from 'vue-i18n';
 import SearchField from './SearchField.vue';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 
@@ -13,7 +12,6 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'getClients', clients) }>()
 const db = getFirestore();
 
-const { t } = useI18n({ useScope: 'global' })
 const searchInput = ref('')
 const officeData = ref([])
 const regionList = ref([])
@@ -37,8 +35,8 @@ onMounted(async () => {
 watch(
     () => (wards.value),
     (newVal, oldVal) => {
-        let addedItem = newVal.filter(item => oldVal.indexOf(item) < 0)
-        let removedItem = oldVal.filter(item => newVal.indexOf(item) < 0)
+        const addedItem = newVal.filter(item => oldVal.indexOf(item) < 0)
+        const removedItem = oldVal.filter(item => newVal.indexOf(item) < 0)
         for (let i = 0; i < addedItem.length; i++) {
             const index = selectedWards.value.indexOf(addedItem[i]);
             if (index == -1) {
@@ -57,9 +55,10 @@ watch(
 watch(
     () => (prefectures.value),
     (newVal, oldVal) => {
-        let addedItem = newVal.filter(item => oldVal.indexOf(item) < 0)
-        let removedItem = oldVal.filter(item => newVal.indexOf(item) < 0)
-        let regList = Object.keys(regionList.value);
+        const addedItem = newVal.filter(item => oldVal.indexOf(item) < 0)
+        const removedItem = oldVal.filter(item => newVal.indexOf(item) < 0)
+        const regList = Object.keys(regionList.value);
+
         for (let i = 0; i < regList.length; i++) {
             let prefecture = regionList.value[regList[i]];
 
@@ -164,8 +163,10 @@ const OnInputClear = () => {
             class="text-weight-bold"
             @click="searchClients" />
         </q-card-actions>
-        <q-separator v-if="!isLoadingProgress"/>
-        <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
+        <div style="height: 5px;">
+            <q-separator v-if="!isLoadingProgress"/>
+            <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
+        </div>
 
         <q-card class="no-shadow q-pl-md">
             <SearchField
