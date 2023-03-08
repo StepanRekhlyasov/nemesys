@@ -12,24 +12,28 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ applicant.timeToWork }}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="desiredData['timeToWork']"  :disable="loading">
-          <template v-slot:prepend>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="desiredData['timeToWork']" mask="YYYY/MM/DD">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
+        <template v-if="desiredEdit">
+          <q-checkbox v-model="desiredData['timeAvailable']" 
+          :label="desiredData['timeAvailable']? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')"/>
+          <q-input v-if="desiredData['timeAvailable']" dense outlined bg-color="white" v-model="desiredData['timeToWork']"  :disable="loading">
+            <template v-slot:prepend>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="desiredData['timeToWork']" mask="YYYY/MM/DD">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.daysToWork') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-md blue self-center">
         <span v-if="!desiredEdit">{{ applicant.daysToWork?applicant.daysToWork+' '+$t('applicant.attendant.days'):''}}</span>
         <q-input v-if="desiredEdit" dense outlined bg-color="white" min="1" max="7"
           v-model="desiredData['daysToWork']" :disable="loading" type="number" />
@@ -257,6 +261,7 @@ export default {
       timeToWork: props.applicant['timeToWork'] || '',
       daysToWork: props.applicant['daysToWork'] || '',
       daysPerWeek: props.applicant['daysPerWeek'] || [],
+      timeAvailable: props.applicant['timeAvailable'] || false,
       specialDay: props.applicant['specialDay'] || [],
       shiftRemarks: props.applicant['shiftRemarks'] || '',
       meansCommuting: props.applicant['meansCommuting'] || '',
