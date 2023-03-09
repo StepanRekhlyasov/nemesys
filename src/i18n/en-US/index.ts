@@ -1084,5 +1084,40 @@ export default {
       performer: 'performer',
       note: 'note'
     }
+  },
+  releaseNotes: {
+    delivered: 'delivered',
+    'not delivered': 'not delivered',
+    form: {
+      name: 'Notification Creation Form',
+      category: 'category',
+      options: {
+        op1: 'category 1',
+        op2: 'category 2'
+      },
+      subject: 'subject',
+      content: 'content',
+      date: 'Delivery date',
+      send: 'Immediate delivery',
+      delay: '+ Add New',
+      cancel: 'cancel'
+    },
+    table: {
+      status: 'status',
+      author: 'author',
+      creationDate: 'creation date',
+      deliveryDate: 'delivery date',
+      deletedInfo: 'All data related to this template will be deleted.',
+    }
+  },
+  inquiry: {
+    table: {
+      status: 'status',
+      category: 'category',
+      subject: 'subject',
+      companyID: 'companyID<br/>company name',
+      issuedDate: 'date issued',
+      responseDate: 'response date'
+    }
   }
 };
