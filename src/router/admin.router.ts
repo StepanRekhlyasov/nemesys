@@ -58,7 +58,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-change',
     title: 'menu.admin.operationChange',
-    component: () => import('src/pages/admin/OperationChange/OperationChange.vue'),
+    component: () => import('src/pages/admin/OperationChanges/OperationChange.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]
@@ -79,7 +79,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'operation-history',
     title: 'menu.admin.operationHistory',
-    component: () => import('src/pages/admin/OperationHistory/OperationHistory.vue'),
+    component: () => import('src/pages/admin/OperationHistoryTable/OperationHistory.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]
