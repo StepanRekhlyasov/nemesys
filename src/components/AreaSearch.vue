@@ -101,11 +101,11 @@ watch(
 
 const searchClients = async () => {
     isLoadingProgress.value = true
+    try {
     const auth = getAuth();
     const user = auth.currentUser;
     if (user == null) {
-        console.log('invalid user')
-        return false
+        throw new Error('invalid user')
     }
 
     const token = await user.getIdToken();
@@ -116,7 +116,7 @@ const searchClients = async () => {
         data['wards'].push(searchInput.value);
     }
 
-    try {
+    
         const response = await api.post(
             searchConfig.getOfficeDataURL,
             data,
@@ -135,12 +135,12 @@ const searchClients = async () => {
     } catch(error) {
         isLoadingProgress.value = false
 
-        console.error('Failed to create user', error);
+        throw new Error('Failed to create user')
     }
 };
 
 const onInputSubmit = () => {
-    console.log()
+    //
 }
 const OnInputClear = () => {
     searchInput.value = ''
