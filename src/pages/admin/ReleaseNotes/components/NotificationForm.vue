@@ -108,11 +108,13 @@
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
-  import { publishNotificationData } from 'src/shared/utils/ReleaseNotes/ReleaseNotes.utils'
+import { useReleaseNotes } from 'src/stores/admin/releaseNotes';
 
   const $q = useQuasar();
 
   const { t } = useI18n({ useScope: 'global' });
+
+  const store = useReleaseNotes()
 
   const user :User | null = $q.localStorage.getItem('userData');
 
@@ -137,14 +139,14 @@
     const publishNotification = async () => {
       if (user) {
         try {
-          const res = await publishNotificationData({
+          const res = await store.publishNotificationData({
           author: user.id,
           category: category.value,
           dateCreation: serverTimestamp(),
           dateDelivery: serverTimestamp(),
           subject: subject.value,
           content: content.value,
-          status: DELIVERY_STATUS[1],
+          status: DELIVERY_STATUS[0],
         })
 
           if (res.id) {
@@ -162,7 +164,7 @@
   const delayedPublish = async () => {
     if (user) {
       try {
-        const res = await publishNotificationData({
+        const res = await store.publishNotificationData({
           author: user.id,
           dateCreation: serverTimestamp(),
           dateDelivery: new Date(`${date.value} ${time.value}`),

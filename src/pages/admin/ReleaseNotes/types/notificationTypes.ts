@@ -1,16 +1,13 @@
+import { NotificationData } from 'src/shared/model'
+
 export enum DELIVERY_STATUS {
   'not delivered',
   'delivered'
  }
 
-export type NotificationDataRow = {
+export type NotificationDataRow = Omit<NotificationData, 'dateCreation' | 'dateDelivery'> & {
   number: number
   id: string
-  status: string
-  category: string
-  subject: string
-  content: string
-  author: string
   creationDate: string
   deliveryDate: string
 }

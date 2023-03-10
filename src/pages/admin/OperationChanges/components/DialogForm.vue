@@ -45,22 +45,21 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
 
-  const props = defineProps({
+  const props = defineProps<{
+    dialogMode: string,
+  }>()
 
-    dialogMode: {
-      type: String,
-      required: true
-    },
-  })
-
-  const emit = defineEmits(['stopOperation', 'resumeOperation'])
+  const emit = defineEmits<{
+  (e: 'stopOperation', note: string): void
+  (e: 'resumeOperation', note: string): void
+}>()
 
   const note = ref('')
 
   const emitOperation = () => {
     if (props.dialogMode === 'stop') {
-      emit('stopOperation', note);
-    } else emit('resumeOperation', note);
+      emit('stopOperation', note.value);
+    } else emit('resumeOperation', note.value);
   }
 
 </script>
