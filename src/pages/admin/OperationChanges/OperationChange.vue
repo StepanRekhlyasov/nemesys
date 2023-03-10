@@ -33,11 +33,14 @@
           <q-list dense>
             <q-item  v-for="(value, name, index) in information" :key="index">
                 <q-item-section>
-                  <q-item-label class="text-right q-mr-md text-accent"> {{  $t(`operationChange.information.${[name]}`) }}</q-item-label>
+                  <q-item-label class="text-right q-mr-md text-accent">
+                    {{  $t(`operationChange.information.${[name]}`) }}
+                  </q-item-label>
                 </q-item-section>
                 <q-item-section >
-                  <q-item-label caption> {{ value }}
-                </q-item-label>
+                  <q-item-label caption>
+                    {{ value }}
+                  </q-item-label>
                 </q-item-section>
             </q-item>
 
