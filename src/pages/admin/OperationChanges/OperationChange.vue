@@ -1,8 +1,8 @@
 <template>
   <div class="no-shadow full-width operation-change ">
-    <div class="operation-change__header q-py-sm q-px-md">
-      <div class="text-h6 text-accent">{{ $t('menu.admin.operationChange') }}</div>
-    </div>
+    <PageHader>
+      {{ $t('menu.admin.operationChange') }}
+    </PageHader>
     <div class="operation-change__content q-pa-md">
       <div class="text-h5 text-weight-bold text-accent">{{ isDevMode ? $t('operationChange.disabled') : $t('operationChange.active') }}</div>
       <div class="row q-mt-md q-gutter-md">
@@ -33,11 +33,14 @@
           <q-list dense>
             <q-item  v-for="(value, name, index) in information" :key="index">
                 <q-item-section>
-                  <q-item-label class="text-right q-mr-md text-accent"> {{  $t(`operationChange.information.${[name]}`) }}</q-item-label>
+                  <q-item-label class="text-right q-mr-md text-accent">
+                    {{  $t(`operationChange.information.${[name]}`) }}
+                  </q-item-label>
                 </q-item-section>
                 <q-item-section >
-                  <q-item-label caption> {{ value }}
-                </q-item-label>
+                  <q-item-label caption>
+                    {{ value }}
+                  </q-item-label>
                 </q-item-section>
             </q-item>
 
@@ -57,29 +60,31 @@
 </template>
 
 <script lang="ts" setup>
-  import {computed, ref, Ref, onMounted } from 'vue';
+  import {computed, ref, onMounted } from 'vue';
   import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
-  import {  parseDateSecondsToHours } from 'src/shared/utils/Admin.utils';
-  import { getFirestore, addDoc, collection, query, where, getDocs, QueryDocumentSnapshot, DocumentData, orderBy } from '@firebase/firestore';
+  import { parseDateSecondsToHours } from 'src/shared/utils/Admin.utils';
+  import { QueryDocumentSnapshot, DocumentData, serverTimestamp } from '@firebase/firestore';
   import { useQuasar, date } from 'quasar';
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
   import DialogFormOperationChange from './components/DialogForm.vue'
+  import PageHader from 'src/components/PageHeader.vue'
+  import { useOperationChange } from 'src/stores/admin/operationChange';
 
 
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
-  const db = getFirestore();
   const store = useMaintainModeStore()
+  const operationStore = useOperationChange()
   const isDevMode = computed(() => store.maintainMode);
-  const wholeOperationDocs: Ref<QueryDocumentSnapshot<DocumentData>[]> = ref([])
+  const wholeOperationDocs = ref<QueryDocumentSnapshot<DocumentData>[]>([])
   const user :User | null = $q.localStorage.getItem('userData');
 
   const openDialog = ref(false);
   const dialogMode = ref('')
-  const arrayOfStopOperationTime: Ref<number[]> = ref([])
-  const arrayOfWorkOperationTime: Ref<number[]>  = ref([])
+  const arrayOfStopOperationTime = ref<number[]>([])
+  const arrayOfWorkOperationTime = ref<number[]>([])
 
   const information =  ref({
       continiousOperatingTime: '',
@@ -92,37 +97,35 @@
 
 
   onMounted(async () => {
-    const docWholeSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('date', 'desc')));
-    const docStoppedSnap = await getDocs(query(collection(db, 'maintainModeEvent'), where('typeOperation', '==', 'stop'), orderBy('date', 'desc')));
-    const docWorkingSnap = await getDocs(query(collection(db, 'maintainModeEvent'), where('typeOperation', '==', 'resume'), orderBy('date', 'desc')));
+    await operationStore.getOperationDocs()
 
-    if (!docWholeSnap.empty) {
-      wholeOperationDocs.value = docWholeSnap.docs
+    if (!Array.isArray(operationStore.state.operationStoppedDocs)) {
+      wholeOperationDocs.value = operationStore.state.operationStoppedDocs.docs
     }
 
-    if (!docWorkingSnap.empty) {
-      const amountOfOperatingTime = date.getDateDiff(new Date(), docWorkingSnap.docs[0].data().date.toDate(), 'seconds')
+    if (!Array.isArray(operationStore.state.operationWorkingDocs)) {
+      const amountOfOperatingTime = date.getDateDiff(new Date(), operationStore.state.operationWorkingDocs.docs[0].data().date.toDate(), 'seconds')
       information.value.continiousOperatingTime = isDevMode.value ? t('operationChange.stopped') : parseDateSecondsToHours(amountOfOperatingTime)
 
       if (!isDevMode.value) {
         arrayOfWorkOperationTime.value = [...arrayOfWorkOperationTime.value, amountOfOperatingTime ]
       }
 
-      docWorkingSnap.docs.map(item => {
+      operationStore.state.operationWorkingDocs.docs.forEach(item => {
         arrayOfStopOperationTime.value = [...arrayOfStopOperationTime.value, item.data().timeFromPreviousOperation]
       })
 
     }
 
-    if (!docStoppedSnap.empty) {
-      const amountOfStoppedTime = date.getDateDiff(new Date(), docStoppedSnap.docs[0].data().date.toDate(), 'seconds')
+    if (!Array.isArray(operationStore.state.operationStoppedDocs)) {
+      const amountOfStoppedTime = date.getDateDiff(new Date(), operationStore.state.operationStoppedDocs.docs[0].data().date.toDate(), 'seconds')
       information.value.continiousStopTime = isDevMode.value ?  parseDateSecondsToHours(amountOfStoppedTime) : t('operationChange.working')
 
       if (isDevMode.value) {
         arrayOfStopOperationTime.value = [...arrayOfStopOperationTime.value, amountOfStoppedTime ]
       }
 
-      docStoppedSnap.docs.forEach(item => {
+      operationStore.state.operationStoppedDocs.docs.forEach(item => {
         arrayOfWorkOperationTime.value = [...arrayOfWorkOperationTime.value, item.data().timeFromPreviousOperation]
       })
     }
@@ -150,16 +153,14 @@
 
   });
 
-
-
-  const stopOperation = async (note: Ref<string>) => {
+  const stopOperation = async (note: string) => {
     if (user) {
       try {
-        const res = await addDoc(collection(db, 'maintainModeEvent'), {
+        const res = await operationStore.addOperation({
           typeOperation: 'stop' ,
-          date: new Date(),
+          date: serverTimestamp(),
           executor: user.id,
-          note: note.value,
+          note,
           timeFromPreviousOperation: date.getDateDiff(new Date(), wholeOperationDocs.value[0].data().date.toDate(), 'seconds')
         })
 
@@ -175,14 +176,14 @@
 
   }
 
-  const resumeOperation = async (note: Ref<string>) => {
+  const resumeOperation = async (note: string) => {
       if (user) {
         try {
-          const res = await addDoc(collection(db, 'maintainModeEvent'), {
+          const res = await operationStore.addOperation({
             typeOperation: 'resume' ,
-            date: new Date(),
+            date: serverTimestamp(),
             executor: user.id,
-            note: note.value,
+            note,
             timeFromPreviousOperation: date.getDateDiff(new Date(), wholeOperationDocs.value[0].data().date.toDate(), 'seconds')
           })
 

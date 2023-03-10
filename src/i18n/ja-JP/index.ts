@@ -1079,5 +1079,40 @@ export default {
       performer: '実行者',
       note: 'メモ'
     }
+  },
+  releaseNotes: {
+    delivered: '配信',
+    'not delivered': '未配信',
+    form: {
+      name: '通知作成フォームを閉じる',
+      category: 'カテゴリ',
+      options: {
+        op1: 'カテゴリ 1',
+        op2: 'カテゴリ 2'
+      },
+      subject: '件名',
+      content: '内容',
+      date: '配信日時',
+      send: '即時配信',
+      delay: '+ 新規追加',
+      cancel: 'キャンセル'
+    },
+    table: {
+      status: 'ステータス',
+      author: '作成者',
+      creationDate: '作成日',
+      deliveryDate: '配信日',
+      deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
+    }
+  },
+  inquiry: {
+    table: {
+      status: 'ステータス',
+      category: 'カテゴリ',
+      subject: '件名',
+      companyID: '企業ID<br/>企業名',
+      issuedDate: '受信日',
+      responseDate: '返信日'
+    }
   }
 };

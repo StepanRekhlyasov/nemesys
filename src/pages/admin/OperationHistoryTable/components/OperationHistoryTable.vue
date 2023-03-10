@@ -24,11 +24,13 @@
  import { date, QTableProps } from 'quasar';
  import { ref, onMounted, Ref, computed } from 'vue';
  import { useI18n } from 'vue-i18n';
- import { query, doc, collection, getDocs, getFirestore, orderBy, getDoc } from '@firebase/firestore';
+import { useOperationChange } from 'src/stores/admin/operationChange';
+import { useUserStore } from 'src/stores/user';
 
 
   const { t } = useI18n({ useScope: 'global' });
-  const db = getFirestore();
+  const operationStore = useOperationChange()
+  const userStore = useUserStore()
   const historyTableRows: Ref<unknown[]> = ref([])
   const loading = ref(true)
   const historyTableColumns = computed<QTableProps['columns']>(() => [
@@ -74,18 +76,20 @@
   });
 
   onMounted(async () => {
-    const docWholeSnap = await getDocs(query(collection(db, 'maintainModeEvent'), orderBy('date', 'desc')));
+    await operationStore.getOperationDocs()
 
-    if (!docWholeSnap.empty) {
-      docWholeSnap.docs.forEach( async (item, index) => {
-        const executor = await getDoc(doc(db, 'users/', item.data().executor))
+    const docWholeSnap = computed(() => operationStore.state.wholeOperationDocs);
 
-        if (executor.id) {
+    if (!Array.isArray(docWholeSnap.value)) {
+      docWholeSnap.value.docs.forEach( async (item, index) => {
+        const executor = await userStore.getUserById(item.data().executor)
+
+        if (executor?.id) {
           historyTableRows.value = [...historyTableRows.value, {
             number: index + 1,
             typeOperation: t('operationHistory.' + [item.data().typeOperation]),
             date: date.formatDate(item.data().date.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-            executor:  executor?.data()?.name,
+            executor:  executor?.name,
             note: item.data().note,
           }]
         }
