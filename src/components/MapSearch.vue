@@ -3,7 +3,7 @@ import { watch, ref, defineProps, defineEmits } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
-import { mapSearchConfig } from 'src/shared/constants/MapSearchAPI';
+import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 
 const props = defineProps<{theme: string}>()
 const emit = defineEmits<{(e: 'getClients', clients)}>()
@@ -65,37 +65,29 @@ const searchClients = async () => {
   }
   const token = await user.getIdToken();
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  };
-
   let data = { ...center.value, 'radiusInM': radius.value }
 
-  api.post(
-    mapSearchConfig.getOfficeDataURL,
-    data,
-    {
-      headers: headers,
-      timeout: 30000,
-    }
-  )
-    .then((response) => {
-      if (response.status === 200) {
-        officeData.value = response.data
-        emit('getClients', [response.data])
-      } else {
-        console.error(response.statusText)
+  try {
+    const response = await api.post(
+      searchConfig.getOfficeDataURL,
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        timeout: 30000,
       }
+    )
 
-      isLoadingProgress.value = false
-    })
-    .catch((error) => {
-      isLoadingProgress.value = false
+    officeData.value = response.data
+    isLoadingProgress.value = false
+    emit('getClients', response.data)
+  } catch(error) {
+    isLoadingProgress.value = false
 
-      console.error('Failed to create user', error);
-    });
-  return false;
+    console.error('Failed to create user', error);
+  }
 };
 </script>
 
@@ -105,11 +97,13 @@ const searchClients = async () => {
       <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme" class="no-shadow text-weight-bold" icon="add" />
       <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold" @click="searchClients" />
     </q-card-actions>
-    <q-separator v-if="!isLoadingProgress"/>
-    <q-linear-progress v-if="isLoadingProgress" indeterminate rounded color="accent" />
+    <div style="height: 5px;">
+        <q-separator v-if="!isLoadingProgress"/>
+        <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
+    </div>
 
     <q-card-section>
-      <GoogleMap :api-key="mapSearchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
+      <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
         <Circles :options="circleOption" />
       </GoogleMap>

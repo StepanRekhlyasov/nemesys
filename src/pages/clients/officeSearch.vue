@@ -55,7 +55,7 @@
           <q-separator />
           <q-card-section class="bg-grey-1 q-pa-none">
             <MapSearch v-if="link == 'mapSearch'" theme="primary"/>
-            <areaSearch v-else-if="link == 'areaSearch'" />
+            <AreaSearch theme="primary" v-else-if="link == 'areaSearch'" />
             <advanceSearch v-else-if="link == 'advancedSearch'" />
             <addClient v-else-if="link == 'addClient'" ref="clientRef" @updateData="updateData"/>
             <addOffice v-else-if="link == 'addOffice'" ref="addOfficeRef" @updateData="updateData"/>
@@ -80,7 +80,7 @@ import { useI18n } from 'vue-i18n';
 // } from 'firebase/firestore';
 import { ref, computed } from 'vue';
 import MapSearch from 'src/components/MapSearch.vue';
-import areaSearch from './components/areaSearch.vue';
+import AreaSearch from 'src/components/AreaSearch.vue';
 import advanceSearch from './components/advanceSearch.vue';
 import addClient from './components/addClient.vue';
 import addOffice from './components/addOffice.vue';
@@ -94,7 +94,7 @@ export default {
   name: 'officeSearch',
   components: {
     MapSearch,
-    areaSearch,
+    AreaSearch,
     advanceSearch,
     addClient,
     addOffice,

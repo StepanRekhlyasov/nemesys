@@ -1,7 +1,7 @@
 <template>
-  <q-btn v-if="props.clear" size="sm" class="button clear text-weight-bold" :label="t(labelKey)" :no-wrap="true"
+  <q-btn v-if="props.clear" size="md" class="button clear text-weight-bold" :label="t(labelKey)" :no-wrap="true"
     unelevated v-bind="$attrs" />
-  <q-btn v-else size="sm" class="button text-weight-bold" :label="t(labelKey)" :no-wrap="true" unelevated v-bind="$attrs"
+  <q-btn v-else size="md" class="button text-weight-bold" :label="t(labelKey)" :no-wrap="true" unelevated v-bind="$attrs"
     :color="defaultColor" />
 </template>
 
@@ -28,7 +28,6 @@ const defaultColor = props.color ?? 'accent'
 
 .button {
   margin-left: 10px;
-  height: 28px;
   border-radius: 4px;
 }
 
