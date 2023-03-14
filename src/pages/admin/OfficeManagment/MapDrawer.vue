@@ -2,6 +2,7 @@
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MapSearchVue from 'src/components/MapSearch.vue';
+import { Client } from 'src/shared/model';
 
 const props = defineProps<{
     isDrawer: boolean
@@ -16,7 +17,7 @@ const hideDrawer = () => {
     emit('hideDrawer')
 }
 
-const getClients = (clients) => {
+const getClients = (clients: Client[]) => {
     console.log(clients)
 }
 

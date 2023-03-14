@@ -2,6 +2,7 @@
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AreaSearch from 'src/components/AreaSearch.vue';
+import { Client } from 'src/shared/model';
 
 const props = defineProps<{
     isDrawer: boolean
@@ -15,8 +16,8 @@ const { t } = useI18n({ useScope: 'global' });
 const hideDrawer = () => {
     emit('hideDrawer')
 }
-const onGetGlients = (glients) => {
-    console.log(glients)
+const onGetGlients = (clients: Client[]) => {
+    console.log(clients)
 }
 </script>
 

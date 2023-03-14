@@ -1,16 +1,20 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAdminClientFactory } from 'src/stores/admin/clientFactory';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import ClientFactoryTable from './components/ClientFactoryTable.vue';
 import Pagination from './components/PaginationView.vue';
-import {TableRow} from './types'
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { TableRow } from './types';
+import { clientFactoriesToTableRows } from './handlers/clientFactory'
 
 const { t } = useI18n({ useScope: 'global' });
 const adminClientFactory = useAdminClientFactory()
 
-const activeClientFactoryItem = ref<TableRow | null>(null)
+const activeClientFactoryItem = ref<ClientFactory | null>(null)
+const tableRows = ref<TableRow[]>([])
+const fetchData = ref(false)
 const isClientFactoryDrawer = ref(false)
 const pagination = ref({
     sortBy: 'desc',
@@ -21,7 +25,7 @@ const pagination = ref({
 });
 
 const clientFactoryDrawerHandler = (item: TableRow) => {
-    activeClientFactoryItem.value = item
+    activeClientFactoryItem.value = adminClientFactory.clientFactories.find((factory) => factory.id === item.id) as ClientFactory
 
     isClientFactoryDrawer.value = true
 }
@@ -29,6 +33,16 @@ const clientFactoryDrawerHandler = (item: TableRow) => {
 const hideDrawer = () => {
     isClientFactoryDrawer.value = false
 }
+
+onMounted(() => {
+    fetchData.value = true
+    adminClientFactory.getClientFactories()
+        .then((factoriesData) => {
+            const rows = clientFactoriesToTableRows(factoriesData)
+            tableRows.value = rows
+            fetchData.value = false
+        })
+})
 </script>
 
 <template>
@@ -64,11 +78,12 @@ const hideDrawer = () => {
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
-                :rows="adminClientFactory.clients"
+                :isFetching="fetchData"
+                :rows="tableRows"
                 v-model:pagination="pagination"
                 />
                 <Pagination
-                :rows="adminClientFactory.clients"
+                :rows="tableRows"
                 v-model:pagination="pagination"/>
             </q-card-section>
         </q-card>

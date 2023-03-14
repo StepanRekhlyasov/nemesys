@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
-import { TableRow } from './types';
 
 const props = defineProps<{
     isDrawer: boolean,
-    selectedItem: TableRow
+    selectedItem: ClientFactory
 }>()
 const emit = defineEmits<{
     (e: 'hideDrawer')

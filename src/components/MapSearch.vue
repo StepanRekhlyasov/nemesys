@@ -7,7 +7,7 @@ import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { Client } from 'src/shared/model';
 
 const props = defineProps<{theme: string}>()
-const emit = defineEmits<{(e: 'getClients', clients)}>()
+const emit = defineEmits<{(e: 'getClients', clients: Client[])}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
 const radius = ref<number>(500);
