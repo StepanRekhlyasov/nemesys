@@ -19,3 +19,4 @@ export * from './TeleAppoint.model';
 export * from './Template.model';
 export * from './Applicant.model';
 export * from './ReleaseNotes.model';
+export * from './Business.model';

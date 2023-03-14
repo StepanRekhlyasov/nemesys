@@ -5,11 +5,15 @@ export interface Branch {
   name: string;
   prefectures: string;
   phone?: string;
-  flug: string;
+  flag: branchFlags;
   hidden: boolean;
   created_at: dataObject;
   updated_at?: dataObject;
-  deletedAt?: Date;
+  deletedAt?: dataObject;
+  deleted: boolean;
+  created_user: string;
+  working: boolean
+  businessId: string;
 }
 
 export enum branchFlags {

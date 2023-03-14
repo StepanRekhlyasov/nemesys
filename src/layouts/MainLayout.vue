@@ -246,7 +246,6 @@ export default defineComponent({
             }, [] as Promise<DocumentSnapshot<DocumentData>>[])
             Promise.all(ss).then(result => {
               let organizations: Organization[]  = result.map(organization => organization.data() as Organization);
-              organization.state.activeOrganization = 0;
               if (organizations.length) {
                 organization.state.organizations = organizations;
               }

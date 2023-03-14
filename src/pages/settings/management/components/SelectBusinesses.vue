@@ -1,0 +1,46 @@
+<template>
+  <q-select outlined dense :model-value="model" :options="businesses" option-label='name' emit-value map-options
+    @update:model-value="(value: BusinessType) => { model = value; emit('onBusinessChange', value.id) }"
+    :rules="[(val: BusinessType) => val?.name && val?.name?.length > 0 || '']" :loading="loading" />
+</template>
+
+<script setup lang="ts">
+import { getFirestore } from '@firebase/firestore';
+import { Business } from 'src/shared/model';
+import { useOrganization } from 'src/stores/organization';
+import { onMounted, ref } from 'vue';
+
+type BusinessType = Business & { id: string }
+
+const businesses = ref<BusinessType[]>([])
+const organization = useOrganization()
+const db = getFirestore();
+const model = ref<BusinessType>()
+const loading = ref(true)
+function toBusinessType(b: { [id: string]: Business }): BusinessType[] {
+  let businessTypeArr: BusinessType[] = []
+  for (let key in b) {
+    let businessType = JSON.parse(JSON.stringify(b[key]))
+    businessType.id = key
+    businessTypeArr.push(businessType)
+  }
+
+  return businessTypeArr
+}
+
+const emit = defineEmits<{ (e: 'onBusinessChange', id: string) }>()
+
+onMounted(async () => {
+  const businessesArr = toBusinessType(await organization.getAllBusinesses(db, organization.currentOrganizationId))
+  if (!businessesArr || !businessesArr.length) {
+    return
+  }
+  businesses.value = businessesArr
+
+  model.value = businesses.value[0]
+  loading.value = false
+})
+
+</script>
+
+

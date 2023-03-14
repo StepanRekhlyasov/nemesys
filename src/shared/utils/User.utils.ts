@@ -1,10 +1,10 @@
-import { collection, doc, DocumentData, endAt, Firestore, getDoc, getDocs, orderBy, query, QuerySnapshot, startAt, where } from 'firebase/firestore';
+import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Account.model';
-import { Branch, branchFlags } from '../model/Branch.model';
+import { branchFlags } from '../model/Branch.model';
 import { itemFlags } from '../model/system';
-import { branchCollection, ConstraintsType, itemCollection } from './utils';
+import { ConstraintsType, itemCollection } from './utils';
 
 export interface BranchesSearch {
   queryText?: string;
@@ -87,43 +87,6 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
     ...constraints,
   ))
 
-}
-
-export const getAllBranches = async (db: Firestore, search?: BranchesSearch) => {
-  const organizationsQuery = query(collection(db, 'organization/'));
-  const querySnapshot = await getDocs(organizationsQuery);
-  const organizationsIds: string[] = []
-  querySnapshot.forEach((doc) => {
-    if (doc.exists()) {
-      organizationsIds.push(doc.id)
-    }
-  })
-  const branches: Promise<QuerySnapshot<DocumentData>>[] = []
-  organizationsIds.forEach((id) => {
-    branches.push(getBranches(db, id, search))
-  })
-
-  const list: { [id: string]: Branch } = {}
-
-  const branchesData = await Promise.all(branches)
-  branchesData.forEach((branch) => {
-    branch.forEach((doc) => {
-      list[doc.id] = doc.data() as Branch
-    })
-  })
-
-  return list
-}
-
-export const getBranches = (db: Firestore, active_organization_id: string, search?: BranchesSearch) => {
-  return getDocs(query(
-    branchCollection(db, active_organization_id),
-    where('deleted', '==', false),
-    orderBy('name'),
-    search?.flag !== branchFlags.All && search?.flag ? where('flag', 'array-contains', search.flag) : where('flag', 'in', ['valid', '']),
-    startAt(search?.queryText || ''),
-    endAt(search?.queryText + '\uf8ff')
-  ))
 }
 
 export const getItem = (db: Firestore, active_organization_id: string, search?: ItemsSearch) => {
