@@ -102,12 +102,19 @@
           <div class="row">
             <div class="col-2 flex items-start">
               <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
-              <q-img
-                v-if="selectedApplicant.imageURL"
-                :src="selectedApplicant.imageURL"
-                spinner-color="white"
-                style="height: 90px; max-width: 90px"
-              />
+              <div style="height: 90px; max-width: 90px" class="relative-position">
+                <q-img
+                  v-if="selectedApplicant.imageURL"
+                  :src="selectedApplicant.imageURL"
+                  spinner-color="white"
+                  style="height: 90px; width: 90px" 
+                />
+                <q-btn icon="edit" class="absolute-center" flat @click="chooseFiles"/>
+                <q-file ref="fileUploadRef" class="hidden" name="applicant_image" v-model="applicantImage" 
+                  use-chips borderless multiple
+                  bg-color="white" @update:model-value="onFileChange" accept=".jpg, image/*">
+                </q-file>
+              </div>
             </div>
             <div class="col-10">
               <div class="row">
@@ -196,6 +203,7 @@ import {
 } from 'firebase/firestore';
 import { statusList } from '../../shared/constants/Applicant.const';
 import detailComponent from './components/detail.vue';
+import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default {
   name: 'applicantList',
@@ -214,6 +222,8 @@ export default {
     const selected = ref([])
     const drawerRight = ref(false);
     const selectedApplicant = ref(null)
+    const applicantImage = ref([]);
+    const fileUploadRef = ref({})
 
     //const selectedRows = ref([]);
 
@@ -273,7 +283,12 @@ export default {
         applicantData.value = data;
       });
     };
-
+    
+    async function updateApplicant(applicant) {
+      const applicantRef = doc(db, 'applicants/'+selectedApplicant.value.id);
+      await updateDoc(applicantRef, applicant)
+      selectedApplicant.value = {...selectedApplicant.value, ...applicant}
+    };
 
     return {
       columns,
@@ -283,6 +298,9 @@ export default {
       selected,
       drawerRight,
       selectedApplicant,
+      fileUploadRef,
+      applicantImage,
+      updateApplicant,
 
       async openDrawer(data){
         if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
@@ -297,12 +315,31 @@ export default {
           return item.label;
         }
       },
-      async updateApplicant(applicant) {
-        const applicantRef = doc(db, 'applicants/'+selectedApplicant.value.id);
-        await updateDoc(applicantRef, applicant)
-        selectedApplicant.value = {...selectedApplicant.value, ...applicant}
-      }
+      async onFileChange() {
+        if (applicantImage.value && applicantImage.value.length > 0) {
+          const file = applicantImage.value[0];
+          const storage = getStorage();
+          const storageRef = refStorage(storage, 'applicants/' + selectedApplicant.value.id + '/image/' + file['name']);
 
+          uploadBytes(storageRef, file).then(async (snapshot) => {
+            const ret = {}
+            ret['imagePath'] = snapshot.ref.fullPath;
+            ret['imageURL'] = await getDownloadURL(storageRef)
+            await updateApplicant(ret)            
+          }).catch((error) => {
+            console.log(error);
+            $q.notify({
+              color: 'red-5',
+              textColor: 'white',
+              icon: 'warning',
+              message: t('failed'),
+            });
+          });
+        }
+      },
+      chooseFiles() {
+        fileUploadRef.value.pickFiles()
+      },
     };
   },
 };
