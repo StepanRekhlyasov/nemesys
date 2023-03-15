@@ -138,7 +138,10 @@ export default {
         fax: 'FAX number',
         email: 'Email',
         invoiceRequest: 'Invoice request',
-        organizationsSearh: 'Organizations Searh'
+        organizationsSearh: 'Organizations Searh',
+        businessName: 'Business Name',
+        branchName: 'Branch name',
+        working: 'Working',
       },
       operationHistory: 'Operational history',
     }
@@ -169,7 +172,9 @@ export default {
       flags: {
         all: 'All',
         valid: 'Valid'
-      }
+      },
+      business:'Business',
+      branchFlag: 'Branch flag'
     },
     template: {
       addNew: 'New mail template added',

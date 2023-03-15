@@ -18,7 +18,7 @@
   <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
     <q-card-section class="q-pa-none">
       <q-table :columns="columns" :rows="usersListData" row-key="id" v-model:pagination="pagination" hide-pagination
-        class="no-shadow" :loading="loading">
+        class="no-shadow" :loading="loading" :visible-columns="visibleColumns">
 
         <template v-slot:body-cell-edit="props">
           <EditButton :props="props" :color="color"
@@ -111,11 +111,11 @@
 
 <script lang="ts">
 import { doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
-import { computed, Ref, ref, watch } from 'vue';
+import { computed, onMounted, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Accaunt, Role, UserPermissionNames } from 'src/shared/model/Account.model';
 import { toDateObject, sortDate } from 'src/shared/utils/utils';
-import { getAllBranches, getRoles, getUsersByPermission, mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { getRoles, getUsersByPermission, mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { QTableProps, useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import ResponsibleCreateForm from './components/ResponsibleCreate.form.vue';
@@ -125,6 +125,7 @@ import EditButton from 'components/EditButton.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import SearchField from 'src/components/SearchField.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
+import { getAllBranches, getVisibleColumns } from './handlers/ResponsibleMaster';
 
 export default {
   name: 'responcibleMasterManagement',
@@ -144,6 +145,7 @@ export default {
     const roles = ref({})
     const branches = ref({})
     const loading = ref(false)
+    const organization = useOrganization()
     const usersListData: Ref<Accaunt[]> = ref([]);
     const copyUsersListData: Ref<Accaunt[]> = ref([]);
     const isAdmin = route.meta.isAdmin
@@ -190,7 +192,6 @@ export default {
         sortable: true,
       }, {
         name: 'branch',
-        required: true,
         label: t('settings.users.branch_name'),
         field: 'branch',
         align: 'left',
@@ -223,7 +224,11 @@ export default {
         field: ''
       }
     ])
-    const organization = useOrganization()
+
+    const visibleColumns = ref<string[]>()
+    onMounted(() => {
+      visibleColumns.value =  getVisibleColumns(columns.value, isAdmin)
+    })
 
     watch(() => organization.currentOrganizationId, () => {
       loadUsersList()
@@ -256,9 +261,7 @@ export default {
             })
             roles.value = list;
           })
-
           branches.value = await getAllBranches(db)
-
           Promise.all([usersSnapshot, rolesSnapshot]).then(() => {
             loading.value = false;
           })
@@ -308,8 +311,8 @@ export default {
 
     }
 
-
     return {
+      visibleColumns,
       textColor,
       isAdmin,
       editableRow,

@@ -9,62 +9,76 @@
 
   <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
 
-    <template v-slot:body-cell-edit="props">
-      <EditButton :props="props" color="accent" :on-edit="() => { editableRow = cloneToRaw(props.row); }" :on-save="async () => {
-        isEqual = deepEqualClone(editableRow, props.row)
-        if (!isEqual) {
-          await editOrganization(editableRow, props.rowIndex)
-        }
-      }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row" />
-    </template>
-
     <template v-slot:header-cell-organizationIdAndName="props">
       <q-th :props="props" class="no-breaks items-center row">
         {{ props.col.label }}
       </q-th>
     </template>
 
-    <template v-slot:body-cell-organizationIdAndName="props">
-      <q-td :props="props">
-        <template v-if="!isRowSelected(props.rowIndex)">
-          {{ props.row.organizationIdAndName }}
-        </template>
-        <q-input v-else v-model:model-value="editableRow!.name" color="accent" />
-      </q-td>
-    </template>
-
-    <template v-slot:body-cell-operatorName="props">
-      <q-td :props="props">
-        <template v-if="!isRowSelected(props.rowIndex)">
-          {{ props.row.operatorName }}
-        </template>
-        <SelectOrganization v-else :model-value="editableRow!.operatorName" :organization-id="props.row.id"
-          @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName }" />
-      </q-td>
-    </template>
-
-    <template v-slot:body-cell-tel="props">
-      <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
-        @update:model-value="(v) => editableRow!.tel = v" />
-    </template>
-
-
-    <template v-slot:body-cell-fax="props">
-      <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
-        @update:model-value="(v) => editableRow!.fax = v" />
-    </template>
-
-    <template v-slot:body-cell-invoiceRequest="props">
-      <q-td :props="props">
-        <template v-if="!isRowSelected(props.rowIndex)">
-          {{ props.row.invoiceRequest }}
-        </template>
-        <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequests" color="accent" />
-      </q-td>
-    </template>
-
     <template v-slot:loading>
       <q-inner-loading showing color="accent" />
+    </template>
+
+    <template v-slot:body="props">
+
+      <q-tr :props="props">
+
+        <EditButton color="accent" :on-edit="() => { editableRow = cloneToRaw(props.row); }" :on-save="async () => {
+          isEqual = deepEqualClone(editableRow, props.row)
+          if (!isEqual) {
+            await editOrganization(editableRow, props.rowIndex)
+          }
+        }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row"
+          :row-index="props.rowIndex" :props="props" />
+
+        <q-td>
+          {{ props.row.number }}
+        </q-td>
+
+        <q-td>
+          <template v-if="!isRowSelected(props.rowIndex)">
+            {{ props.row.organizationIdAndName }}
+          </template>
+          <q-input v-else v-model:model-value="editableRow!.name" color="accent" />
+        </q-td>
+
+        <q-td>
+          <template v-if="!isRowSelected(props.rowIndex)">
+            {{ props.row.operatorName }}
+          </template>
+          <SelectOrganization v-else :model-value="editableRow!.operatorName" :organization-id="props.row.id"
+            @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName }" />
+        </q-td>
+
+        <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
+          @update:model-value="(v) => editableRow!.tel = v" />
+
+        <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
+          @update:model-value="(v) => editableRow!.fax = v" />
+
+        <q-td>
+          {{ props.row.mailaddress }}
+        </q-td>
+
+        <q-td>
+          <template v-if="!isRowSelected(props.rowIndex)">
+            {{ props.row.invoiceRequest }}
+          </template>
+          <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequests" color="accent" />
+        </q-td>
+
+        <q-td auto-width>
+          <q-btn unelevated dense @click="props.expand = !props.expand" size="1px">
+            <q-icon v-if="props.expand" name="mdi-menu-down" size="xl" color="accent" />
+            <q-icon v-else name="mdi-menu-up" size="xl" color="accent" />
+          </q-btn>
+        </q-td>
+      </q-tr>
+
+      <q-tr v-show="props.expand" :props="props">
+        <ExpandedTable :props="props" />
+      </q-tr>
+
     </template>
 
   </q-table>
@@ -87,6 +101,7 @@ import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
 import { mapOrganizationsToRow } from './handlers/handlers';
 import { Row, Rows } from './types/types'
 import { rowToOrganization } from './handlers/handlers'
+import ExpandedTable from './ExpandedTable.vue';
 const editableRowNumber = ref(-1);
 
 const db = getFirestore();

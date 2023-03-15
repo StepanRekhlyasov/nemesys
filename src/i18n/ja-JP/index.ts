@@ -139,6 +139,9 @@ export default {
         email: 'メールアドレス',
         invoiceRequest: '請求書希望',
         organizationsSearh: '企業検索',
+        businessName: '事業名',
+        branchName: '支店名',
+        working: '稼働',
       },
       operationHistory: '稼働履歴',
     }
@@ -169,7 +172,9 @@ export default {
       flags: {
         all: 'すべて',
         valid: '有効'
-      }
+      },
+      business:'事業',
+      branchFlag: '支店フラグ',
     },
     template: {
       addNew: 'メールテンプレート新規追加',
@@ -722,7 +727,7 @@ export default {
         jobSearchInfo: '■ 職見情報',
         jobOffersInfo: '■内定情報',
         employmentInfo: '■入職情報',
-        inspectionStatus :'職見ステータス',
+        inspectionStatus: '職見ステータス',
         inspectionDate: '職見日',
         inspectionRecord: '職見記録',
         reasonNG: '職見NG理由',
@@ -732,7 +737,7 @@ export default {
         comments: '感想（A-E）',
         notesInspection: '職見メモ',
         inspection: {
-          status :'職見ステータス',
+          status: '職見ステータス',
           date: '職見日',
           record: '職見記録',
           reasonNG: '職見NG理由',
@@ -742,7 +747,7 @@ export default {
           comments: '感想（A-E）',
           notes: '職見メモ',
         },
-        offer:{
+        offer: {
           status: '内定ステータス',
           date: '内定日',
           reasonNG: '内定NG理由',
@@ -787,7 +792,7 @@ export default {
         working: '就業中',
         notWorking: '未就業',
         classification: {
-          introduction : '紹介',
+          introduction: '紹介',
           dispatch: '派遣',
           TTP: 'TTP'
         }
