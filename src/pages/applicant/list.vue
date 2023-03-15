@@ -102,7 +102,7 @@
           <div class="row">
             <div class="col-2 flex items-start">
               <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md"/>
-              <div style="height: 90px; max-width: 90px" class="relative-position">
+              <div style="height: 90px; max-width: 90px; width: 90px" class="relative-position">
                 <q-img
                   v-if="selectedApplicant.imageURL"
                   :src="selectedApplicant.imageURL"
