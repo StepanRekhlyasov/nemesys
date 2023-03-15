@@ -1,64 +1,38 @@
 import { defineStore } from 'pinia';
-import { TableRow } from 'src/pages/admin/OfficeManagment/types';
+import { getFirestore, query, where, collection, getDocs, DocumentData } from 'firebase/firestore';
 import { ref } from 'vue';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 export const useAdminClientFactory = defineStore('admin-client-factory', () => {
-    const clients = ref<TableRow[]>([
-        {
-            id: 1,
-            office: {
-                name: 'いろは事業所',
-                kind: 'ooooooooooooooooo株式会社'
-            },
-            distance: '100.0m',
-            location: {
-                area: '大阪府 大阪市中央区',
-                address: '町名番地1111-1111-1111',
-                building: 'ビル名'
-            },
-            telephone: '03-0000-0000',
-            fax: '03-0000-0000',
-            officeMaster: '✓（事業所）',
-            clientMaster: '✓（クライアント',
-            basicInfo: '✓（基本情報変更済）',
-        },
-        {
-            id: 2,
-            office: {
-                name: 'いろは事業所',
-                kind: 'ooooooooooooooooo株式会社'
-            },
-            distance: '100.0m',
-            location: {
-                area: '大阪府 大阪市中央区',
-                address: '町名番地1111-1111-1111',
-                building: 'ビル名'
-            },
-            telephone: '03-0000-0000',
-            fax: '03-0000-0000',
-            officeMaster: '✓（事業所）',
-            clientMaster: '✓（クライアント',
-            basicInfo: '✓（基本情報変更済）'
-        },
-        {
-            id: 3,
-            office: {
-                name: 'いろは事業所',
-                kind: 'ooooooooooooooooo株式会社'
-            },
-            distance: '100.0m',
-            location: {
-                area: '大阪府 大阪市中央区',
-                address: '町名番地1111-1111-1111',
-                building: 'ビル名'
-            },
-            telephone: '03-0000-0000',
-            fax: '03-0000-0000',
-            officeMaster: '✓（事業所）',
-            clientMaster: '✓（クライアント',
-            basicInfo: '✓（基本情報変更済）'
-        }
-    ])
+    const db = getFirestore();
 
-    return {clients}
+    // state
+    const clientFactories = ref<ClientFactory[]>([])
+
+
+    //  methdods
+    const getClientFactories = async () => {
+        const clients: DocumentData[] = []
+        const clientsQuerySnapshot = await getDocs(query(collection(db, 'clients'), where('deleted', '==', false)))
+
+        clientsQuerySnapshot.forEach((doc) => {
+            clients.push({clientId: doc.id, ...doc.data()})
+        })
+
+        const clientFactoriesSnapshot = await getDocs((collection(db, 'clients', clients[0]['clientId'], 'client-factory')))
+
+        const clientFactoriesData: ClientFactory[] = []
+        clientFactoriesSnapshot.forEach((doc) => {
+            clientFactoriesData.push(doc.data() as ClientFactory)
+        })
+
+        clientFactories.value = clientFactoriesData
+
+        return clientFactoriesData
+    }
+
+    return {
+        clientFactories,
+        getClientFactories
+    }
 })

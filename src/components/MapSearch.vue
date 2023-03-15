@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { watch, ref, defineProps, defineEmits } from 'vue';
-import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
+import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
+import { Client } from 'src/shared/model';
 
 const props = defineProps<{theme: string}>()
-const emit = defineEmits<{(e: 'getClients', clients)}>()
+const emit = defineEmits<{(e: 'getClients', clients: Client[])}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
 const radius = ref<number>(500);
-const officeData = ref([]);
+const officeData = ref<Client[]>([]);
 const isLoadingProgress = ref(false)
 
 const circleOption = ref({
@@ -105,6 +106,18 @@ const searchClients = async () => {
     <q-card-section>
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
+        <CustomMarker 
+          :key="office.geohash"
+          :options="{
+            position: {
+              lat: office.lat,
+              lng: office.lon,
+              anchorPoint: 'BOTTOM_CENTER'
+            },
+          }"
+          v-for="office in officeData">
+            <q-icon :color="theme" size="lg" name="place"/>
+        </CustomMarker>
         <Circles :options="circleOption" />
       </GoogleMap>
     </q-card-section>

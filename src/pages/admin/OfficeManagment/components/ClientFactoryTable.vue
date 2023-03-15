@@ -6,6 +6,7 @@ import { TableColumn, TableRow } from '../types';
 
 const props = defineProps<{
     rows: TableRow[],
+    isFetching: boolean,
     pagination
 }>()
 const emit = defineEmits<{
@@ -38,6 +39,7 @@ const selectItem = (item: TableRow) => {
     row-key="id"
     color="accent"
     dense
+    :loading="isFetching"
     :bordered="false"
     :selected-rows-label="getSelectedString"
     selection="multiple"
@@ -60,20 +62,14 @@ const selectItem = (item: TableRow) => {
                     <q-checkbox @click="!props.selected" v-model="props.selected" color="accent"/>
                 </q-td>
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                    <span v-if="typeof col.value === 'string' || col.value instanceof String">
+                    <div v-if="col.name === 'name'">
+                        <span class="name" @click="selectItem(props.row)">
+                            {{ col.value.name }}
+                        </span>
+                    </div>
+                    <span v-else>
                         {{ col.value }}
                     </span>
-                        <div v-else :key="field" v-for="field in Object.keys(col.value)">
-                            <span
-                            v-if="field === 'name'"
-                            :class="field"
-                            @click="selectItem(props.row)">
-                                {{ col.value[field] }}
-                            </span>
-                            <span :class="field" v-else>
-                                {{ col.value[field] }} 
-                            </span> 
-                        </div>
                 </q-td>
             </q-tr>
         </template>
@@ -91,7 +87,7 @@ const selectItem = (item: TableRow) => {
     .name {
         text-decoration: underline;
         color: $main_purple;
-        font-size: 1rem;
+        font-size: 1.2rem;
         cursor: pointer;
     }
 }

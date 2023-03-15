@@ -2,7 +2,7 @@ import { TableColumn } from '../types'
 
 export const tableColumnsClientFactory: TableColumn[] = [
     {
-        name: 'office name',
+        name: 'name',
         required: true,
         align: 'left',
         field: 'office',
@@ -16,10 +16,10 @@ export const tableColumnsClientFactory: TableColumn[] = [
         sortable: false,
     },
     {
-        name: 'location',
+        name: 'address',
         required: true,
         align: 'left',
-        field: 'location',
+        field: 'address',
         sortable: false,
     },
     {

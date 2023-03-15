@@ -8,17 +8,13 @@ export interface TableColumn {
 }
 
 export interface TableRow {
-        id: number,
+        id: string,
         office: {
             name: string,
-            kind: string
+            kind?: string
         },
         distance: string,
-        location: {
-            area: string,
-            address: string,
-            building: string
-        },
+        address: string,
         telephone: string,
         fax: string,
         officeMaster: string,

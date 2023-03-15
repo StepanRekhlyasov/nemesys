@@ -1,11 +1,11 @@
 <script lang="ts" setup>
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineProps, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { TableRow } from '../types';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
-    selectedItem: TableRow
+    selectedItem: ClientFactory
 }>();
 
 const dropDownValue = ref([
@@ -21,9 +21,11 @@ const dropDownHandler = (item: string) => {
 
 <template>
     <div class="wrapper row items-end justify-around">
-        <div class="">
+        <div class="row">
+            <div class="text-h5 text-weight-bolder q-mr-md">
+                {{ props.selectedItem.name }}
+            </div>
             <div>
-                {{  props.selectedItem.office.kind }}
                 <q-btn-dropdown
                 rounded
                 unelevated
@@ -50,14 +52,11 @@ const dropDownHandler = (item: string) => {
                     </q-list>
                 </q-btn-dropdown>
             </div>
-            <div class="text-h5 text-weight-bolder">
-                {{ props.selectedItem.office.name }}
-            </div>
         </div>
         <div>
             <div>
                 {{ t('client.list.phone') }}
-                <span> {{ props.selectedItem.telephone }}</span>
+                <span> {{ props.selectedItem.tel }}</span>
             </div>
             <div>
                 {{ t('client.list.fax') }}
@@ -66,13 +65,10 @@ const dropDownHandler = (item: string) => {
         </div>
         <div>
             <div class="text-bold">
-                {{ props.selectedItem.location.area }}
-            </div>
-            <div class="text-bold">
-                {{ props.selectedItem.location.address.slice(0, 12) + '...' }}
+                {{ props.selectedItem.address.slice(0, 12) + '...' }}
             </div>
             <div>
-                {{ props.selectedItem.basicInfo }}
+                {{ props.selectedItem.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）' }}
                 <span>
                     {{ props.selectedItem.distance }}
                 </span>
