@@ -321,12 +321,14 @@ export default {
           const storage = getStorage();
           const storageRef = refStorage(storage, 'applicants/' + selectedApplicant.value.id + '/image/' + file['name']);
 
-          uploadBytes(storageRef, file).then(async (snapshot) => {
+          try {
             const ret = {}
+            const snapshot = await uploadBytes(storageRef, file)
             ret['imagePath'] = snapshot.ref.fullPath;
             ret['imageURL'] = await getDownloadURL(storageRef)
             await updateApplicant(ret)            
-          }).catch((error) => {
+          } 
+          catch (error) {
             console.log(error);
             $q.notify({
               color: 'red-5',
@@ -334,7 +336,7 @@ export default {
               icon: 'warning',
               message: t('failed'),
             });
-          });
+          }
         }
       },
       chooseFiles() {
