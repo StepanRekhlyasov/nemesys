@@ -1111,13 +1111,26 @@ export default {
     }
   },
   inquiry: {
+    unanswered: '未返信',
+    answered: '返信済',
     table: {
       status: 'ステータス',
       category: 'カテゴリ',
       subject: '件名',
-      companyID: '企業ID<br/>企業名',
-      issuedDate: '受信日',
+      companyID: '企業ID 企業名',
+      recievedDate: '受信日',
       responseDate: '返信日'
+    },
+    detail: {
+      inquiryTitle: '問い合わせ内容',
+      responseTitle: '返答フォーム',
+      category: 'カテゴリ',
+      recievedDate: '受信日',
+      subject: '件名',
+      content: '内容',
+      metro: '東京都',
+      adress: '町名番地',
+      replyContent: '返答内容'
     }
   }
 };

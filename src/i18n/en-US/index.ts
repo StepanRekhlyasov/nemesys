@@ -1116,13 +1116,26 @@ export default {
     }
   },
   inquiry: {
+    unanswered: 'unanswered',
+    answered: 'answered',
     table: {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID<br/>company name',
-      issuedDate: 'date issued',
+      companyID: 'companyID company name',
+      recievedDate: 'date issued',
       responseDate: 'response date'
+    },
+    detail: {
+      inquiryTitle: 'Inquiry details',
+      responseTitle: 'Response',
+      category: 'Category',
+      recievedDate: 'Date recieved',
+      subject: 'Subject',
+      content: 'Content',
+      metro: 'Tokyo Metropolitan area',
+      adress: 'Town Address',
+      replyContent: 'Contents of reply'
     }
   }
 };
