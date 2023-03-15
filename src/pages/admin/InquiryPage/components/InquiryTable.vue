@@ -159,7 +159,7 @@ import { InquiryDataRow } from 'src/shared/model';
   const deleteInquiry = (inquiryId: string) => {
     $q.dialog({
         title: t('common.delete'),
-        message: t('inquiry.table.deletedInfo'),
+        message: t('releaseNotes.table.deletedInfo'),
         ok: {
             label: t('common.delete'),
             color: 'negative',
