@@ -152,7 +152,7 @@
             </div>
             <div class="col-6 row">
               <span class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.experience')}}</span>
-              <span class="col-3 q-pl-md">{{ selectedApplicant.totalYear || '' }}</span>
+              <span class="col-3 q-pl-md">{{ selectedApplicant.totalYear? selectedApplicant.totalYear + $t('common.year') : '' }}</span>
               <div class="col-3 text-right" >
                 <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px"/>
               </div>
