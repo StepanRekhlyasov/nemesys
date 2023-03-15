@@ -9,7 +9,10 @@
     <q-table :columns="columns" :rows="contactListData" row-key="id" v-model:pagination="pagination" hide-pagination>
 
       <template v-slot:body-cell-contactMethod="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <div v-if="props.value == 'phone'">
             {{ $t('applicant.list.contacts.phone') }}
           </div>
@@ -20,7 +23,10 @@
       </template>
 
       <template v-slot:body-cell-created_at="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <span class="row">{{ 
             applicantStore.state.clientList?.
             find(client => client.id == props.row.client)?.name 
@@ -32,8 +38,21 @@
           }}</span>
         </q-td>
       </template>
+
+      <template v-slot:body-cell="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
+          {{props.value}}
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-fixDate="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <template v-if="props.row.status">
             <span class="row">{{ props.row.data }}</span>
             <span class="row text-uppercase">{{ props.row.status }}</span>
@@ -43,7 +62,10 @@
       </template>
 
       <template v-slot:body-cell-workDay="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <template v-if="props.row.inspectionStatus">
             <span class="row">{{ props.row.inspectionDate }}</span>
             <span class="row text-uppercase">{{ props.row.inspectionStatus }}</span>
@@ -53,7 +75,10 @@
       </template>
 
       <template v-slot:body-cell-informalOfferDate="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <template v-if="props.row.offerStatus">
             <span class="row">{{ props.row.offerDate }}</span>
             <span class="row text-uppercase">{{ props.row.offerStatus }}</span>
@@ -63,7 +88,10 @@
       </template>
 
       <template v-slot:body-cell-hiringDate="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <template v-if="props.row.admissionStatus">
             <span class="row">{{ props.row.admissionDate }}</span>
             <span class="row text-uppercase">{{ props.row.admissionStatus }}</span>
@@ -73,14 +101,20 @@
       </template>
 
       <template v-slot:body-cell-edit="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat
             @click="showEditDialog(props.row)" />
         </q-td>
       </template>
 
       <template v-slot:body-cell-delete="props">
-        <q-td :props="props">
+        <q-td
+          :props="props"
+          :class="rowColor(props.row)"
+        >
           <q-btn style="color: #222222" icon="delete" size="sm" round flat @click="showDeleteDialog(props.row)" />
         </q-td>
       </template>
@@ -287,6 +321,12 @@ export default {
       showEditDialog(data) {
         fixData.value = data;
         drawerRight.value = true;
+      },
+      rowColor(row) {
+        if (row.status == 'ok' || row.inspectionStatus == 'ng' || row.offerStatus == 'ng' || row.admissionStatus == 'ng' ) {
+          return ''
+        }
+        return 'bg-light-blue-1'
       },
       showDeleteDialog(data) {
         $q.dialog({
