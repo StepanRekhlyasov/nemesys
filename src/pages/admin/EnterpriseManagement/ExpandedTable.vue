@@ -56,7 +56,7 @@ import { getFirestore } from '@firebase/firestore';
 import { QTableProps, QTableSlots } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Row } from './types/types';
+import { Buisneses, Row, Table } from './types/types';
 import type { Overwrite } from 'src/shared/types/Overwrite'
 import { Business, Branch } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
@@ -65,21 +65,6 @@ type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
 
 interface ExpandedTableProps {
   props: Props
-}
-
-interface Table {
-  organization: {
-    totalBranches: number,
-    organizationIdAndName: string,
-    working: boolean,
-    buisneses: Buisneses[]
-  }[]
-}
-
-type Buisneses = {
-  working: boolean,
-  name: string,
-  branches: Branch[]
 }
 
 const organization = useOrganization()

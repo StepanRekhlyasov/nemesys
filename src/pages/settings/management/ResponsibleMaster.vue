@@ -125,7 +125,7 @@ import EditButton from 'components/EditButton.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import SearchField from 'src/components/SearchField.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
-import { Branch } from 'src/shared/model';
+import { getAllBranches, getVisibleColumns } from './handlers/ResponsibleMaster';
 
 export default {
   name: 'responcibleMasterManagement',
@@ -227,13 +227,7 @@ export default {
 
     const visibleColumns = ref<string[]>()
     onMounted(() => {
-      visibleColumns.value = columns.value?.reduce((prev, curr) => {
-        if (curr.name === 'branch' && isAdmin) {
-          return prev
-        }
-        prev.push(curr.name)
-        return prev
-      }, [] as string[])
+      visibleColumns.value =  getVisibleColumns(columns.value, isAdmin)
     })
 
     watch(() => organization.currentOrganizationId, () => {
@@ -267,7 +261,7 @@ export default {
             })
             roles.value = list;
           })
-          branches.value = await getAllBranches()
+          branches.value = await getAllBranches(db)
           Promise.all([usersSnapshot, rolesSnapshot]).then(() => {
             loading.value = false;
           })
@@ -315,17 +309,6 @@ export default {
         loading.value = false;
       }
 
-    }
-
-    async function getAllBranches() {
-      let branchesArr = await organization.getAllBranches(db)
-      let branchesObj: { [id: string]: Branch } = {}
-
-      branchesArr.forEach((branch) => {
-        branchesObj[branch.id] = branch
-      })
-
-      return branchesObj
     }
 
     return {
