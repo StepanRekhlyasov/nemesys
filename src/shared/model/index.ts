@@ -20,3 +20,4 @@ export * from './Template.model';
 export * from './Applicant.model';
 export * from './ReleaseNotes.model';
 export * from './Business.model';
+export * from './Inquiry.model';
