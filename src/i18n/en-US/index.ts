@@ -729,7 +729,7 @@ export default {
         info: '■FIX Information',
         jobSearchInfo: '■Job-search Information',
         jobOffersInfo: '■Information on job offers',
-        employmentInfo: 'Employment Information',
+        employmentInfo: '■Employment Information',
         inspectionStatus :'job inspection status',
         inspectionDate: 'Date of inspection',
         inspectionRecord: 'Job inspection record',

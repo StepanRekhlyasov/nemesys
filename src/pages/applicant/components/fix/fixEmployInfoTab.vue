@@ -143,7 +143,7 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, Ref } from 'vue';
 import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
-import FixEmployCreate from './components/fixEmployCreate.component.vue'
+import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { Accaunt, ApplicantFix } from 'src/shared/model';
 
