@@ -11,7 +11,7 @@
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ desiredData['timeAvailable'] ? applicant.timeToWork : '' }}</span>
+        <span v-if="!desiredEdit">{{ desiredData['timeAvailable'] ? applicant.timeToWork : applicant.attendingDate }}</span>
         <template v-if="desiredEdit">
           <q-checkbox v-model="desiredData['timeAvailable']" 
           :label="desiredData['timeAvailable']? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')"/>
