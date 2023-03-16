@@ -54,8 +54,8 @@
 import { ref } from 'vue';
 import fixEmployInfo from './fix/fixEmployInfoTab.vue';
 import contactInfo from './contactInfoTab.vue';
-import applicationInfo from './applicant/applicationInfoTab.vue';
-import attendanceInfo from './attendance/attendanceTab.vue';
+import applicationInfo from './applicantTab/applicationInfoTab.vue';
+import attendanceInfo from './attendanceTab/attendanceTab.vue';
 import operationInfoComponent from './operationInfoTab.vue';
 import applicantMemo from './memoTab.vue';
 
