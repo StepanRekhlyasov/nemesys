@@ -44,6 +44,7 @@
   import { useInquiry } from 'src/stores/admin/inquiry';
 import { cloneToRaw } from 'src/shared/utils/utils';
 import { InquiryDataRow } from 'src/shared/model';
+import { INQUIRY_MESSAGE_TYPE } from '../types/inquiryTypes';
 
 
   const { t } = useI18n({ useScope: 'global' });
@@ -53,7 +54,7 @@ import { InquiryDataRow } from 'src/shared/model';
 
   const loading = ref(true)
 
-  const inquiresTableRows = ref < InquiryDataRow[] > ([])
+  const inquiresTableRows = ref <InquiryDataRow[] > ([])
   const inquiresTableColumns = computed < QTableProps['columns'] > (() => [{
       name: 'edit',
       label: '',
@@ -124,6 +125,8 @@ import { InquiryDataRow } from 'src/shared/model';
           docWholeSnap.docs.forEach(async (item, index) => {
               const organisation = await inquiryStore.getOrganisationById(item.data().organization)
               if (organisation?.id) {
+                let recievedMessageDate: Date[] = [item.data().recievedDate.toDate()]
+                let answeredMessageDate: Date[] = []
                 inquiresTableRows.value = [...inquiresTableRows.value, {
                     number: index + 1,
                     id: item.id,
@@ -132,10 +135,22 @@ import { InquiryDataRow } from 'src/shared/model';
                     subject: item.data().subject,
                     organisation,
                     inquiryContent: item.data().inquiryContent,
-                    responseContent: item.data().replyContent,
+                    messages: item.data().messages.map((item) => {
+                      if (item.type === INQUIRY_MESSAGE_TYPE[0]) {
+                        recievedMessageDate.push(item.date.toDate())
+                      } else {
+                        answeredMessageDate.push(item.date.toDate())
+                      }
+                      console.log(recievedMessageDate, answeredMessageDate)
+                     return {
+                        messageDate: date.formatDate(item.date.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        content: item.content,
+                        type: item.type
+                      }
+                    }),
                     companyID: `${organisation.code} ${organisation.name}`,
-                    issueDate: date.formatDate(item.data().recievedDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                    answerDate: item.data().replyDate ? date.formatDate(item.data().replyDate.toDate(), 'YYYY-MM-DD HH:mm:ss') : '',
+                    issueDate: findTheLastDate(recievedMessageDate),
+                    answerDate: findTheLastDate(answeredMessageDate),
                 }]
               }
           })
@@ -152,6 +167,13 @@ import { InquiryDataRow } from 'src/shared/model';
     inquiryStore.setCurrentOrganisationInfo(row.organisation)
     inquiryStore.setCurrentRowData(cloneToRaw(row))
     inquiryStore.openDrawer(true)
+
+  }
+
+  const findTheLastDate = (dates: Date[]) => {
+    // @ts-expect-error https://quasar.dev/quasar-utils/date-utils#minimum-maximum
+    const maxDate =  date.getMaxDate(...dates)
+    return date.formatDate(maxDate, 'YYYY-MM-DD HH:mm:ss')
 
   }
 

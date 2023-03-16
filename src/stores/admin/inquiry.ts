@@ -1,5 +1,6 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
+import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData, InquiryDataRow, Organization } from 'src/shared/model';
 import { ref } from 'vue';
 
@@ -21,10 +22,6 @@ export const useInquiry = defineStore('inquiry', () => {
 
   const setCurrentRowData = (newRow: InquiryDataRow) => {
     state.value.currentRowData = newRow
-  }
-
-  const setCurrentRowResponse = (response: string) => {
-    state.value.currentRowData.responseContent = response
   }
 
   const setCurrentOrganisationInfo = (newInfo: Organization) => {
@@ -65,9 +62,11 @@ export const useInquiry = defineStore('inquiry', () => {
     }
   }
 
-  const replyOnInquiry = async(inquiryId: string, data) => {
+  const replyOnInquiry = async(inquiryId: string, data: InquiryMessage) => {
     const inquiryRef = doc(db, 'inquires/' + inquiryId);
-    await updateDoc(inquiryRef, data);
+    await updateDoc(inquiryRef, {
+      messages: arrayUnion(data)
+    });
   }
 
   const deleteInquiryData = async(inquiryId: string) => {
@@ -79,7 +78,6 @@ export const useInquiry = defineStore('inquiry', () => {
     state,
     setCurrentRowData,
     setCurrentOrganisationInfo,
-    setCurrentRowResponse,
     openDrawer,
     addInquiry,
     getAllInquires,

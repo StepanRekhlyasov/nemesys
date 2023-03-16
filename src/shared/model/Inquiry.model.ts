@@ -1,4 +1,5 @@
 import { FieldValue } from 'firebase/firestore'
+import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
 import { Organization } from './Organization.model'
 
 export interface InquiryData {
@@ -9,13 +10,7 @@ export interface InquiryData {
   organization: string
   recievedDate:  FieldValue | Date
   subject: string
-  responseDate?: FieldValue | Date
-  responseContent?: string
-}
-
-export interface InquiryResponseData {
-  replyDate:  FieldValue | Date
-  replyContent: string
+  messages: InquiryMessage[] | never[]
 }
 
 export type InquiryDataRow = Partial<InquiryData> & {

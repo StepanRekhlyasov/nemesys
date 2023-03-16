@@ -51,6 +51,7 @@
           <InquiryDetails />
         </q-card-section>
         <q-separator />
+        <InquiryMessages />
         <q-card-section class="bg-grey-3 q-ma-md shadow-2">
           <InquiryForm />
         </q-card-section>
@@ -65,6 +66,7 @@
   import InquiryDetails from './InquiryDetails.vue'
   import { Organization } from 'src/shared/model';
   import { useInquiry } from 'src/stores/admin/inquiry';
+import InquiryMessages from './InquiryMessages.vue';
 
 
   const drawerRight = ref(false);
