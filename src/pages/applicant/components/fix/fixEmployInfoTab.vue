@@ -323,7 +323,8 @@ export default {
         drawerRight.value = true;
       },
       rowColor(row) {
-        if (row.status == 'ok' || row.inspectionStatus == 'ng' || row.offerStatus == 'ng' || row.admissionStatus == 'ng' ) {
+        if ((row.status == 'ok' && row.inspectionStatus == 'ok' && row.offerStatus == 'ok' && row.admissionStatus == 'ok') 
+          || row.status == 'ng'|| row.inspectionStatus == 'ng'|| row.offerStatus == 'ng'|| row.admissionStatus == 'ng' ) {
           return ''
         }
         return 'bg-light-blue-1'
