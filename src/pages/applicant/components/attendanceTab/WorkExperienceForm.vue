@@ -2,9 +2,6 @@
   <q-card style="width: 800px; max-width: 80vw">
     <q-card-section>
       <q-form @submit="addExperience">
-        <div class="row items-center justify-strat">
-          <q-btn v-close-popup icon="close" color="primary" flat />
-        </div>
         <div class="row q-pb-sm">
           <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
             {{ $t('applicant.attendant.experience') }}
@@ -109,6 +106,7 @@
         <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
           <q-btn v-if="!editExperience?.id" :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
           <q-btn v-if="editExperience?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="save"/>
+          <q-btn v-close-popup :label="$t('common.close')" color="primary" flat  />
         </q-card-actions>
       </q-form>
     </q-card-section>
