@@ -3,7 +3,7 @@
     v-model="drawerRight"
     show
     class="bg-grey-3"
-    :width="1000"
+    :width="780"
     :breakpoint="500"
     side="right"
     overlay elevated
