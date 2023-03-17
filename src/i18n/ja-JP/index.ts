@@ -907,7 +907,7 @@ export default {
       placeOperation: '稼働先',
       startDate: '開始日',
       endDate: '契約終了日',
-      companyInCharge: '稼働担当社',
+      companyInCharge: '稼働担当者',
       operationMemo: 'メモ',
       operatingSites: '稼働先事業所',
 
