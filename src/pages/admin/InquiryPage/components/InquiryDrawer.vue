@@ -16,7 +16,7 @@
         <q-card-section class="text-white bg-accent" >
           <div class="row q-gutter-sm items-end">
               <q-btn dense flat icon="close" @click="() => inquiryStore.openDrawer(false)" />
-            <div class="col-5 text-h5">
+            <div class="col-4 text-h5">
               {{ organisation?.name }}
               <br/>
               <span class="text-bold">{{ organisation?.code }}</span>
