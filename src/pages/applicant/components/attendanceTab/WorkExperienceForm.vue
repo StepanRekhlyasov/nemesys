@@ -2,6 +2,9 @@
   <q-card style="width: 800px; max-width: 80vw">
     <q-card-section>
       <q-form @submit="addExperience">
+        <div class="row items-center justify-strat">
+          <q-btn v-close-popup icon="close" color="primary" flat />
+        </div>
         <div class="row q-pb-sm">
           <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
             {{ $t('applicant.attendant.experience') }}
