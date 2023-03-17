@@ -38,7 +38,7 @@ export const useApplicant = defineStore('applicant', () => {
         return list
     }
 
-    async function getFixData(applicant_id: string, operationFilter?: boolean) {
+    async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
         const fixData = await getFixList(db, applicant_id, {operationFilter})
         const list: ApplicantFix[] = [];
 
