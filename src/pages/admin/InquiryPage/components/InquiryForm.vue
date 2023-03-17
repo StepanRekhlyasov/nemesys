@@ -12,6 +12,7 @@
           <div class="col-8 text-right">
             <q-input
             type="textarea"
+            :disable="loading"
             dense  v-model="responseContent" borderless input-style="height: 150px;" input-class="inquiry-form__field" />
           </div>
         </div>
@@ -24,7 +25,8 @@
               class="q-py-none text-weight-bold text-caption "
               size="sm"
               @click.once="sendResponse"
-              :disable="!responseContent"
+
+              :disable="!responseContent || loading"
               style="margin-left: 2px;"
             >
               {{ $t('releaseNotes.form.send') }}
@@ -37,6 +39,7 @@
               color="accent"
               no-caps
               :unelevated="false"
+              :disable="loading"
               @click.once="clearAllValues"
               >
               {{ $t('releaseNotes.form.cancel') }}
@@ -50,13 +53,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { serverTimestamp } from '@firebase/firestore';
   import { useQuasar } from 'quasar';
   import { ref, computed } from 'vue'
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
   import { useInquiry } from 'src/stores/admin/inquiry';
-  import { INQUIRY_MESSAGE_TYPE } from '../types/inquiryTypes'
+  import { INQUIRY_MESSAGE_TYPE, INQUIRY_STATUS } from '../types/inquiryTypes'
 
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
@@ -65,20 +67,38 @@
   const inquiryStore = useInquiry()
 
   const responseContent = ref('')
+  const loading = ref(false);
   const inquiryId =  computed(() => inquiryStore.state.currentRowData.id);
 
 
   const sendResponse = async () => {
     if (responseContent.value && inquiryId.value) {
+      loading.value = true;
       try {
-        await inquiryStore.replyOnInquiry(inquiryId.value, {
-          date: serverTimestamp(),
-          content: responseContent.value,
-          type: INQUIRY_MESSAGE_TYPE.response
+        await inquiryStore.replyOnInquiry({
+          inquiryId: inquiryId.value,
+          message: {
+            date: new Date(),
+            content: responseContent.value,
+            type: INQUIRY_MESSAGE_TYPE.response
+          },
+         data: {status: INQUIRY_STATUS.answered}
         })
         Alert.success($q, t)
+        await inquiryStore.getAllInquires()
+        inquiryStore.updateCurrentRowData({message: {
+            date: new Date(),
+            content: responseContent.value,
+            type: INQUIRY_MESSAGE_TYPE.response
+          },
+         data: {status: INQUIRY_STATUS.answered}})
+
+         responseContent.value = ''
+        loading.value = false;
       } catch {
         Alert.warning($q, t)
+
+        loading.value = false;
       }
     }
   }

@@ -61,16 +61,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch } from 'vue';
+  import { ref, watch, computed } from 'vue';
   import InquiryForm from './InquiryForm.vue'
   import InquiryDetails from './InquiryDetails.vue'
-  import { Organization } from 'src/shared/model';
   import { useInquiry } from 'src/stores/admin/inquiry';
 import InquiryMessages from './InquiryMessages.vue';
 
 
   const drawerRight = ref(false);
-  const organisation = ref<Partial<Organization>>({})
+  const organisation = computed(() => inquiryStore.state.currentOrganisationInfo);
 
   const inquiryStore = useInquiry()
 
@@ -78,9 +77,6 @@ import InquiryMessages from './InquiryMessages.vue';
     drawerRight.value = newVal
   })
 
-  watch(() =>inquiryStore.state.currentOrganisationInfo, (newVal)=>{
-    organisation.value = newVal
-  })
 
 
 
