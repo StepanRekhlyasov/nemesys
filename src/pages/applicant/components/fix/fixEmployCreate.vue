@@ -50,7 +50,7 @@
                 {{ $t('applicant.list.fixEmployment.status') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('info')">{{ fixData.status }}</span>
+                <span class="text-uppercase" v-if="!edit.includes('info')">{{ fixData.status }}</span>
                 <template v-if="edit.includes('info')">
                   <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';disableChange ()"/>
                   <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" />
@@ -134,7 +134,7 @@
                 {{ $t('applicant.list.fixEmployment.inspection.status') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobSearchInfo')">{{ fixData.inspectionStatus }}</span>
+                <span class="text-uppercase" v-if="!edit.includes('jobSearchInfo')">{{ fixData.inspectionStatus }}</span>
                 <template v-if="edit.includes('jobSearchInfo')">
                   <q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';disableChange()" :disable="disableLevel < 1"/>
                   <q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 1"/>
@@ -241,7 +241,7 @@
                 {{ $t('applicant.list.fixEmployment.offer.status') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobOffersInfo')">{{ fixData.offerStatus }}</span>
+                <span class="text-uppercase" v-if="!edit.includes('jobOffersInfo')">{{ fixData.offerStatus }}</span>
                 <template v-if="edit.includes('jobOffersInfo')">
                   <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';disableChange()" :disable="disableLevel < 2"/>
                   <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 2"/>
@@ -323,7 +323,7 @@
                 {{ $t('applicant.list.fixEmployment.admission.status') }}
               </div>
               <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('employmentInfo')">{{ fixData.admissionStatus }}</span>
+                <span class="text-uppercase" v-if="!edit.includes('employmentInfo')">{{ fixData.admissionStatus }}</span>
                 <template v-if="edit.includes('employmentInfo')">
                   <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
                   <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
