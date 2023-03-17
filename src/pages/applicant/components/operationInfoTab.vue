@@ -105,7 +105,8 @@ async function loadOperationInfo() {
 
     let fixList = await applicantStore.getFixData(props.applicant.id, true);
     fixList = fixList.filter(fix => {
-      return (fix.endDate ? new Date(fix.endDate) > new Date() : true) && (fix.admissionDate ? new Date(fix.admissionDate) <= new Date(): true)
+      return  (fix.endDate ? new Date(fix.endDate) > new Date() : true) && 
+              (fix.admissionDate ? new Date(fix.admissionDate) <= new Date(): true)
     })
 
     list.value = fixList
