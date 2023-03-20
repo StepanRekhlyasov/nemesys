@@ -2,6 +2,7 @@
   <q-layout view="hHh Lpr lFf" class="admin-layout">
     <q-header class="shadow-1">
       <q-toolbar class="bg-white text-black">
+        <q-img :src="require('assets/logo_view.png')" style="height: 50px; width: 100px;"/>
         <q-toolbar-title class="text-h4 text-weight-bolder header"> 管理者ページ </q-toolbar-title>
         <ToolbarLanguage :admin="true"/>
 
