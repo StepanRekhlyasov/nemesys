@@ -21,3 +21,5 @@ export type Buisneses = {
   name: string,
   branches: Branch[]
 }
+
+export type DialogType = 'Organization' | 'Branch' | 'Business'

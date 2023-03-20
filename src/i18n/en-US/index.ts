@@ -142,6 +142,11 @@ export default {
         businessName: 'Business Name',
         branchName: 'Branch name',
         working: 'Working',
+        addBusiness: 'Add business',
+        addBranch: 'Add branch',
+        addOrganization: 'Add organization',
+        organizationCode: 'Code',
+        staffName: 'Staff name'
       },
       operationHistory: 'Operational history',
     }

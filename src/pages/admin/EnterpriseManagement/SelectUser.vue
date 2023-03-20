@@ -1,7 +1,8 @@
 <template>
   <q-select color="accent" :options="options" option-label='displayName' :model-value="props.modelValue"
     @filter="(_, doneFn) => filterFn(doneFn, organizationId)"
-    @update:model-value="(user: User) => { emit('onUserChange', user); }" />
+    @update:model-value="(user: User) => { emit('onUserChange', user); }" outlined dense
+    :rules="[(val: User) => val?.name && val?.name?.length > 0 || '']" />
 </template>
 
 <script setup lang="ts">
@@ -12,7 +13,7 @@ import { useUserStore } from 'src/stores/user';
 import { ref } from 'vue';
 
 interface SelectOrganozationProps extends QSelectProps {
-  organizationId: string;
+  organizationId?: string;
 }
 const props = defineProps<SelectOrganozationProps>()
 const options = ref<User[]>();
@@ -20,22 +21,22 @@ const emit = defineEmits<{ (e: 'onUserChange', id: User) }>()
 
 const userStore = useUserStore()
 
-async function getAllUsersInOrganization(id: string) {
+async function getUsers(id?: string) {
   const users = await userStore.getAllUsers(id)
   if (!users || !users.length) {
     return
   }
-  return users.map((user) => user)
+  return users
 }
 
-async function filterFn(update, id) {
+async function filterFn(update, id?: string) {
 
   if (options.value) {
     update()
     return
   }
 
-  const users = await getAllUsersInOrganization(id)
+  const users = await getUsers(id)
   if (!users || !users.length) {
     return
   }

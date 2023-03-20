@@ -1,7 +1,6 @@
 <template>
   <q-td auto-width colspan="100%" class="container">
     <q-table flat :columns="columns" square :rows="[{}]" hide-pagination :loading="loading">
-
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props" class="header">
@@ -11,7 +10,7 @@
       </template>
 
       <template v-slot:loading>
-        <q-inner-loading showing color="accent" />
+        <q-inner-loading showing size="sm" color="accent" />
       </template>
 
       <template v-slot:body>
@@ -35,12 +34,14 @@
                 </div>
               </q-td>
 
-              <q-td>
+              <q-td v-if="Object.keys(branchItem).length">
                 <div class="column items-start">
                   {{ branchItem.name }}
                   <q-toggle v-model="branchItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
                     color="accent" disable />
                 </div>
+              </q-td>
+              <q-td v-else class="emptyCell">
               </q-td>
 
             </q-tr>
@@ -84,7 +85,7 @@ loadTableData()
 async function loadTableData() {
   loading.value = true
 
-  const businesses = await organization.getAllBusinesses(db, componentProps.props.row.id)
+  const businesses = await organization.getBusinesses(db, componentProps.props.row.id)
   const branches = await organization.getBranches(db, componentProps.props.row.id)
 
   data.value = toTable(businesses, branches)
@@ -100,19 +101,25 @@ function toTable(businesses: { [id: string]: Business }, branches: { [businessId
   let parsedData = {}
 
   parsedData[organizationKey] = [{}]
-  const totalBranches = Object.values(branches).reduce((prev, curr) => {
+  let totalBranches = Object.values(branches).reduce((prev, curr) => {
     return prev += curr.length
   }, 0)
-  parsedData[organizationKey][0]['totalBranches'] = totalBranches
+
   parsedData[organizationKey][0]['organizationIdAndName'] = componentProps.props.row.organizationIdAndName
   parsedData[organizationKey][0]['working'] = componentProps.props.row.working
 
   for (let key in businesses) {
     let objToPush = JSON.parse(JSON.stringify(businesses[key]))
     objToPush.branches = branches[key]
+
+    if (!objToPush.branches) {
+      objToPush.branches = [{}]
+      totalBranches++
+    }
+
     businessesAndbranches.push(objToPush)
   }
-
+  parsedData[organizationKey][0]['totalBranches'] = totalBranches
   parsedData[organizationKey][0]['buisneses'] = businessesAndbranches
 
   return parsedData as Table
@@ -157,5 +164,9 @@ table,
 th,
 td {
   border: 1px solid black;
+}
+
+.emptyCell {
+  background: $grey-4;
 }
 </style>

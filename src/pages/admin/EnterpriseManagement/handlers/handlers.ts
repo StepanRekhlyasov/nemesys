@@ -1,3 +1,4 @@
+import { serverTimestamp } from 'firebase/firestore'
 import { Organization } from 'src/shared/model'
 import { cloneToRaw } from 'src/shared/utils/utils'
 import { useUserStore } from 'src/stores/user'
@@ -24,5 +25,6 @@ export function rowToOrganization(row: Row): Organization {
   delete organization.number
   delete organization.organizationIdAndName
   delete organization.operatorName
+  organization.updatedAt = serverTimestamp()
   return organization
 }
