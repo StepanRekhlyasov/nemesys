@@ -1136,6 +1136,10 @@ export default {
       metro: '東京都',
       adress: '町名番地',
       replyContent: '返答内容'
+    },
+    message: {
+      issueDate: '受信日',
+      responseDate: '送信日'
     }
   }
 };

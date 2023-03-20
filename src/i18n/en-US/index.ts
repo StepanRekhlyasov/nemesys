@@ -1141,6 +1141,10 @@ export default {
       metro: 'Tokyo Metropolitan area',
       adress: 'Town Address',
       replyContent: 'Contents of reply'
+    },
+    message: {
+      issueDate: 'Date of issue',
+      responseDate: 'Date of response'
     }
   }
 };

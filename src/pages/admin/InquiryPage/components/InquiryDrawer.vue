@@ -3,7 +3,7 @@
     v-model="drawerRight"
     show
     class="bg-grey-3"
-    :width="1000"
+    :width="780"
     :breakpoint="500"
     side="right"
     overlay elevated
@@ -16,7 +16,7 @@
         <q-card-section class="text-white bg-accent" >
           <div class="row q-gutter-sm items-end">
               <q-btn dense flat icon="close" @click="() => inquiryStore.openDrawer(false)" />
-            <div class="col-5 text-h5">
+            <div class="col-4 text-h5">
               {{ organisation?.name }}
               <br/>
               <span class="text-bold">{{ organisation?.code }}</span>
@@ -51,6 +51,7 @@
           <InquiryDetails />
         </q-card-section>
         <q-separator />
+        <InquiryMessages />
         <q-card-section class="bg-grey-3 q-ma-md shadow-2">
           <InquiryForm />
         </q-card-section>
@@ -60,15 +61,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch } from 'vue';
+  import { ref, watch, computed } from 'vue';
   import InquiryForm from './InquiryForm.vue'
   import InquiryDetails from './InquiryDetails.vue'
-  import { Organization } from 'src/shared/model';
   import { useInquiry } from 'src/stores/admin/inquiry';
+import InquiryMessages from './InquiryMessages.vue';
 
 
   const drawerRight = ref(false);
-  const organisation = ref<Partial<Organization>>({})
+  const organisation = computed(() => inquiryStore.state.currentOrganisationInfo);
 
   const inquiryStore = useInquiry()
 
@@ -76,9 +77,6 @@
     drawerRight.value = newVal
   })
 
-  watch(() =>inquiryStore.state.currentOrganisationInfo, (newVal)=>{
-    organisation.value = newVal
-  })
 
 
 
