@@ -142,6 +142,11 @@ export default {
         businessName: '事業名',
         branchName: '支店名',
         working: '稼働',
+        addBusiness: '事業追加',
+        addBranch: '支店追加',
+        addOrganization: '企業新規追加',
+        organizationCode: '企業コード',
+        staffName: 'スタッフ名',
       },
       operationHistory: '稼働履歴',
     }
@@ -173,7 +178,7 @@ export default {
         all: 'すべて',
         valid: '有効'
       },
-      business:'事業',
+      business: '事業',
       branchFlag: '支店フラグ',
     },
     template: {

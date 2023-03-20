@@ -14,10 +14,10 @@
 <script setup lang="ts">
 import { LocalizationKeys } from 'src/shared/types/LocalizationKeys';
 
-interface BranchItemContainerProps {
+interface DialogItemContainerProps {
   nameKey: LocalizationKeys
 }
 
-defineProps<BranchItemContainerProps>()
+defineProps<DialogItemContainerProps>()
 
 </script>

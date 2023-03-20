@@ -12,6 +12,7 @@ export interface Organization {
   operatorUser: string; //担当者
   invoiceRequest: InvoiceRequest;
   working: boolean
+  deleted: boolean
 }
 
 type InvoiceRequest = typeof invoiceRequests[number]

@@ -1,4 +1,4 @@
-import { collection, endAt, Firestore, getDocs, orderBy, query, startAt, where } from 'firebase/firestore';
+import { collection, doc, endAt, Firestore, getDocs, orderBy, query, serverTimestamp, setDoc, startAt, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -35,8 +35,7 @@ export const useOrganization = defineStore('organization', () => {
     { deep: true }
   )
 
-
-  async function getAllBusinesses(db: Firestore, organization_id: string) {
+  async function getBusinesses(db: Firestore, organization_id: string) {
     const businessesQuery = query(collection(db, `/organization/${organization_id}/businesses/`))
     const businesses = await getDocs(businessesQuery)
     const businessList: { [id: string]: Business } = {}
@@ -47,9 +46,20 @@ export const useOrganization = defineStore('organization', () => {
     return businessList
   }
 
+  async function getAllBusinesses(db: Firestore) {
+    const organizationsIds = await getAllOrganizationsIds(db)
+    const businessList: { [id: string]: Business } = {}
+    for (let i = 0; i < organizationsIds.length; i++) {
+      const id = organizationsIds[i]
+      const businesses = await getBusinesses(db, id)
+      Object.assign(businessList, businesses)
+    }
+    console.log(businessList)
+    return businessList
+  }
 
-  async function getAllBranches(db: Firestore, search?: BranchesSearch) {
-    const organizationsQuery = query(collection(db, 'organization/'));
+  async function getAllOrganizationsIds(db: Firestore) {
+    const organizationsQuery = query(collection(db, 'organization/'), where('deleted', '==', false));
     const querySnapshot = await getDocs(organizationsQuery);
     const organizationsIds: string[] = []
     querySnapshot.forEach((doc) => {
@@ -57,6 +67,14 @@ export const useOrganization = defineStore('organization', () => {
         organizationsIds.push(doc.id)
       }
     })
+
+    return organizationsIds
+  }
+
+
+  async function getAllBranches(db: Firestore, search?: BranchesSearch) {
+
+    const organizationsIds = await getAllOrganizationsIds(db)
 
     const branches: Branch[] = []
     for (let i = 0; i < organizationsIds.length; i++) {
@@ -75,8 +93,26 @@ export const useOrganization = defineStore('organization', () => {
 
   }
 
+  async function addBusiness(db: Firestore, business: Business, organizationId: string) {
+    const businessRef = collection(db, `organization/${organizationId}/businesses/`)
+    const docRef = doc(businessRef)
+    await setDoc(docRef, business)
+  }
+
+  async function addOrganization(db: Firestore, organization: Organization) {
+    const organizationRef = collection(db, 'organization/')
+    const docRef = doc(organizationRef)
+    organization.id = docRef.id
+    organization.deleted = false
+    await setDoc(docRef, {
+      ...organization,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    })
+  }
+
   async function getBranches(db: Firestore, organization_id: string, search?: BranchesSearch) {
-    const businesses = await getAllBusinesses(db, organization_id)
+    const businesses = await getBusinesses(db, organization_id)
     const businessesIds = Object.keys(businesses)
     const branchesObj: { [businessId: string]: Branch[] } = {}
 
@@ -114,5 +150,5 @@ export const useOrganization = defineStore('organization', () => {
 
 
 
-  return { state, currentOrganizationId, getBranches, getAllBusinesses, getAllBranches }
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization }
 })
