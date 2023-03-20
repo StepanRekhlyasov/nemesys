@@ -86,7 +86,7 @@
         })
         Alert.success($q, t)
         await inquiryStore.getAllInquires()
-        inquiryStore.updateCurrentRowData({message: {
+        inquiryStore.updateCurrentRowDataMessages({message: {
             date: new Date(),
             content: responseContent.value,
             type: INQUIRY_MESSAGE_TYPE.response

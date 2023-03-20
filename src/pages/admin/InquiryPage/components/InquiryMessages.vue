@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useInquiry } from 'src/stores/admin/inquiry';
-import { computed } from 'vue';
-import { INQUIRY_MESSAGE_TYPE } from '../types/inquiryTypes';
+  import { useInquiry } from 'src/stores/admin/inquiry';
+  import { computed } from 'vue';
+  import { INQUIRY_MESSAGE_TYPE } from '../types/inquiryTypes';
 
 
   const inquiryStore = useInquiry()

@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, deleteDoc, doc, DocumentData, DocumentSnapshot, getDoc, getDocs, getFirestore, orderBy, query, QueryDocumentSnapshot, updateDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { date } from 'quasar';
 import { InquiryMessage, INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
@@ -49,39 +49,44 @@ export const useInquiry = defineStore('inquiry', () => {
     const docWholeSnap =  await getDocs(query(collection(db, 'inquires'), orderBy('recievedDate', 'desc')));
 
     if (!docWholeSnap.empty) {
-      docWholeSnap.docs.forEach(async (item, index) => {
-          const organisation = await getOrganisationById(item.data().organization)
-          if (organisation?.id) {
-            const recievedMessageDate: Date[] = [item.data().recievedDate.toDate()]
-            const answeredMessageDate: Date[] = []
-            state.value.wholeInquiresData = [...state.value.wholeInquiresData, {
-                number: index + 1,
-                id: item.id,
-                status: item.data().status,
-                category: item.data().category,
-                subject: item.data().subject,
-                organisation,
-                inquiryContent: item.data().inquiryContent,
-                messages: item.data().messages.map((item) => {
-                  if (item.type === INQUIRY_MESSAGE_TYPE.issue) {
-                    recievedMessageDate.push(item.date.toDate())
-                  } else {
-                    answeredMessageDate.push(item.date.toDate())
-                  }
-                 return {
-                    messageDate: date.formatDate(item.date.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                    content: item.content,
-                    type: item.type
-                  }
-                }),
-                companyID: `${organisation.code} ${organisation.name}`,
-                issueDate: findTheLastDate(recievedMessageDate),
-                answerDate: findTheLastDate(answeredMessageDate),
-            }]
-          }
-      })
+      setCurrentInquiresData(docWholeSnap.docs)
+    }
 
+    return docWholeSnap
   }
+
+  const setCurrentInquiresData = (docs: QueryDocumentSnapshot<DocumentData>[]) => {
+    docs.forEach(async (item, index) => {
+      const organisation = await getOrganisationById(item.data().organization)
+      if (organisation?.id) {
+        const recievedMessageDate: Date[] = [item.data().recievedDate.toDate()]
+        const answeredMessageDate: Date[] = []
+        state.value.wholeInquiresData = [...state.value.wholeInquiresData, {
+            number: index + 1,
+            id: item.id,
+            status: item.data().status,
+            category: item.data().category,
+            subject: item.data().subject,
+            organisation,
+            inquiryContent: item.data().inquiryContent,
+            messages: item.data().messages.map((item) => {
+              if (item.type === INQUIRY_MESSAGE_TYPE.issue) {
+                recievedMessageDate.push(item.date.toDate())
+              } else {
+                answeredMessageDate.push(item.date.toDate())
+              }
+             return {
+                messageDate: date.formatDate(item.date.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                content: item.content,
+                type: item.type
+              }
+            }),
+            companyID: `${organisation.code} ${organisation.name}`,
+            issueDate: findTheLastDate(recievedMessageDate),
+            answerDate: findTheLastDate(answeredMessageDate),
+        }]
+      }
+  })
   }
 
   const getCurrentInquiry = async (id: string) => {
@@ -94,7 +99,7 @@ export const useInquiry = defineStore('inquiry', () => {
     }
   }
 
-  const updateCurrentRowData = async ({message, data}: {message: InquiryMessage,  data: Partial<InquiryData>}) => {
+  const updateCurrentRowDataMessages = async ({message, data}: {message: InquiryMessage,  data: Partial<InquiryData>}) => {
     // @ts-expect-error some problem with an existence check, idk how to solve it
     state.value.currentRowData = {
       ...state.value.currentRowData,
@@ -143,7 +148,7 @@ export const useInquiry = defineStore('inquiry', () => {
     getOrganisationById,
     replyOnInquiry,
     getCurrentInquiry,
-    updateCurrentRowData,
+    updateCurrentRowDataMessages,
     deleteInquiryData
   }
 
