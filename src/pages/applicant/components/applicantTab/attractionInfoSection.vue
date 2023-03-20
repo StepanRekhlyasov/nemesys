@@ -111,7 +111,7 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.memo') }}
       </div>
-      <div class="col-9 q-pa-sm blue relative-position">
+      <div class="col-9 q-pl-md blue relative-position">
         <hidden-text v-if="!edit" :value="applicant.addres" />
         <q-input v-if="edit" outlined dense v-model="data['memo']" bg-color="white" />
       </div>
