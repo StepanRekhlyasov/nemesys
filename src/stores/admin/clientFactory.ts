@@ -23,7 +23,7 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
 
         const clientFactoriesData: ClientFactory[] = []
         clientFactoriesSnapshot.forEach((doc) => {
-            clientFactoriesData.push(doc.data() as ClientFactory)
+            clientFactoriesData.push({...doc.data(), id: doc.id} as ClientFactory)
         })
 
         clientFactories.value = clientFactoriesData

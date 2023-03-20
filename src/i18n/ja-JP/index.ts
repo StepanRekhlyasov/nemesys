@@ -16,6 +16,8 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    reflect: '反映',
+    capture: '取込',
     numberOfSelections: '選択数',
     detailedConditions: '詳細条件',
     aroundTokio: '東京都全域',
@@ -1109,6 +1111,19 @@ export default {
       deliveryDate: '配信日',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
     }
+  },
+  clientFactory: {
+    numberEmployees: '従業員数',
+    facilityType: '施設形態',
+    homePage: 'ホームページ',
+    conclusionDispatchContract: '派遣契約締結',
+    conclusionReferralContract: '紹介契約締結',
+    namePersonInCharge: '担当者名',
+    personInChargeTitle: '担当者役職',
+    masterData: 'マスタデータ',
+    lastReflected: '最終反映日時',
+    changeBasicInformation: '基本情報変更',
+    lastCaptured: '最終取り込み日時'
   },
   inquiry: {
     table: {

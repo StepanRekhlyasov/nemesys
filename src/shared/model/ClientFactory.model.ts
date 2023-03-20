@@ -22,4 +22,11 @@ export interface ClientFactory {
     numberEmployees: number
     clientFlag: boolean
     basicInfoChangingFlag: boolean
+    mail: string
+    isSignedDispatchContract: boolean;
+    isSignedReferralContract: boolean;
+    nameContact: string;
+    telContact: string;
+    positionContact: string;
+    mailContact: string
 }
