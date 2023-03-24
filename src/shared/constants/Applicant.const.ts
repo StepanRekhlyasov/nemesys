@@ -1,100 +1,67 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
+import { ApplicantStatus } from '../model';
 
 const { t } = i18n.global
 
 export const statusList = computed(() => {
   return [
     {
-      label: t('applicant.statusOption.notCompatible'),
-      value: 'notCompatible',
+        label: t('applicant.statusOption.unsupported'),
+        value: ApplicantStatus.UNSUPPORTED,
     },
     {
-      label: t('applicant.statusOption.excludedApplicant'),
-      value: 'excludedApplicant',
+        label: t('applicant.statusOption.waitingContact'),
+        value: ApplicantStatus.WAIT_CONTACT,
     },
     {
-      label: t('applicant.statusOption.waitingContact'),
-      value: 'waitingContact',
+        label: t('applicant.statusOption.excluded'),
+        value: ApplicantStatus.EXCLUDED,
     },
     {
-      label: t('applicant.statusOption.contactNG'),
-      value: 'contactNG',
+        label: t('applicant.statusOption.anotherCompany'),
+        value: ApplicantStatus.ANOTHER_COMPANY,
     },
     {
-      label: t('applicant.statusOption.contactedWI'),
-      value: 'contactedWI',
+        label: t('applicant.statusOption.breakContact'),
+        value: ApplicantStatus.BREAK_CONTACT,
     },
     {
-      label: t('applicant.statusOption.invitationNG'),
-      value: 'invitationNG',
+        label: t('applicant.statusOption.decline'),
+        value: ApplicantStatus.DECLINE,
     },
     {
-      label: t('applicant.statusOption.invitedWaiting'),
-      value: 'invitedWaiting',
+        label: t('applicant.statusOption.wait_attend'),
+        value: ApplicantStatus.WAIT_ATTEND,
     },
     {
-      label: t('applicant.statusOption.invitedNoContact'),
-      value: 'invitedNoContact',
+        label: t('applicant.statusOption.wait_FIX'),
+        value: ApplicantStatus.WAIT_FIX,
     },
     {
-      label: t('applicant.statusOption.attendedNG'),
-      value: 'attendedNG',
-    },
-    {
-      label: t('applicant.statusOption.attendedWaitingFix'),
-      value: 'attendedWaitingFix',
-    },
-    {
-      label: t('applicant.statusOption.fixNG'),
-      value: 'fixNG',
-    },
-    {
-      label: t('applicant.statusOption.fixedWaiting'),
-      value: 'fixedWaiting',
-    },
-    {
-      label: t('applicant.statusOption.visitingNG'),
-      value: 'visitingNG',
-    },
-    {
-      label: t('applicant.statusOption.visitedWaitingOffer'),
-      value: 'visitedWaitingOffer',
-    },
-    {
-      label: t('applicant.statusOption.offerNG'),
-      value: 'offerNG',
-    },
-    {
-      label: t('applicant.statusOption.OfferedWaitingEntry'),
-      value: 'OfferedWaitingEntry',
-    },
-    {
-      label: t('applicant.statusOption.entryNG'),
-      value: 'entryNG',
-    },
-    {
-      label: t('applicant.statusOption.entered'),
-      value: 'entered',
-    },
-    {
-      label: t('applicant.statusOption.expiryNG'),
-      value: 'expiryNG',
-    },
-    {
-      label: t('applicant.statusOption.end'),
-      value: 'end',
-    },
-    {
-      label: t('applicant.statusOption.update'),
-      value: 'update',
-    },
-    {
-      label: t('applicant.statusOption.futureTalent'),
-      value: 'futureTalent',
-    },
-
-
+        label:t( 'applicant.statusOption.wait_visit'),
+        value :ApplicantStatus.WAIT_VISIT
+     },
+     {
+         label:t( 'applicant.statusOption.wait_entry'),
+         value :ApplicantStatus.WAIT_ENTRY
+     },
+     {
+         label:t( 'applicant.statusOption.working'),
+         value :ApplicantStatus.WORKING
+     },
+     {
+         label:t( 'applicant.statusOption.wait_termination'),
+         value :ApplicantStatus.WAIT_TERMINATION
+     },
+     {
+         label:t( 'applicant.statusOption.wait_retire'),
+         value :ApplicantStatus.WAIT_RETIRE
+     },
+     {
+         label:t( 'applicant.statusOption.retired'),
+         value :ApplicantStatus.RETIRED
+     }
   ];
 });
 

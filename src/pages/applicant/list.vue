@@ -120,6 +120,10 @@
               <div class="row">
                 <div class="col-9 flex items-center">
                   <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex)}}
+                  <div class="q-pl-md">
+                    <q-select :options="statusOption" v-model="selectedApplicant.status" color="black" label-color="black"
+                      rounded standout bg-color="white" dense @update:model-value="changeApplicantStatus" emit-value map-options/>
+                  </div>
                 </div>
                 <div class="col-3">
                   <span class="row">{{  selectedApplicant.municipalities }} {{ selectedApplicant.street }}</span>
@@ -223,7 +227,9 @@ export default {
     const drawerRight = ref(false);
     const selectedApplicant = ref(null)
     const applicantImage = ref([]);
-    const fileUploadRef = ref({})
+    const fileUploadRef = ref({});
+    
+    const statusOption = ref(statusList);
 
     //const selectedRows = ref([]);
 
@@ -300,6 +306,7 @@ export default {
       selectedApplicant,
       fileUploadRef,
       applicantImage,
+      statusOption,
       updateApplicant,
 
       async openDrawer(data){
@@ -314,6 +321,9 @@ export default {
         if (item){
           return item.label;
         }
+      },
+      changeApplicantStatus() {
+        updateApplicant({status: selectedApplicant.value.status})
       },
       async onFileChange() {
         if (applicantImage.value && applicantImage.value.length > 0) {

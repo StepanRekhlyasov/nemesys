@@ -58,6 +58,10 @@ export const useApplicant = defineStore('applicant', () => {
         })
     })
 
-    return { state, getClients, getClientOffice, getFixData}
+    async function getApplicantStatus(lastFixApplicant: ApplicantFix) {
+        console.log(lastFixApplicant)
+    }
+
+    return { state, getClients, getClientOffice, getFixData, getApplicantStatus}
 })
   

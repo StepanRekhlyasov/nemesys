@@ -265,6 +265,7 @@ import { getStorage, ref as refStorage, uploadBytes, getDownloadURL} from 'fireb
 
 import { prefectureList } from '../../shared/constants/Prefecture.const';
 import { statusList } from '../../shared/constants/Applicant.const';
+import { ApplicantStatus } from 'src/shared/model';
 
 export default {
   name: 'applicantAdd',
@@ -275,7 +276,8 @@ export default {
     const $q = useQuasar();
     const db = getFirestore();
     const applicantDataSample = {
-      qualification: []
+      qualification: [],
+      status: ApplicantStatus.UNSUPPORTED,
     };
     const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
     const prefectureOption = ref(prefectureList);

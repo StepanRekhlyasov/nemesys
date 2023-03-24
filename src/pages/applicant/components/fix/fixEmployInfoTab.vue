@@ -146,6 +146,7 @@ import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { Accaunt, ApplicantFix } from 'src/shared/model';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'contactInfo',
@@ -303,13 +304,7 @@ export default {
           doc(db, 'applicants/' + props.applicant.id + '/fix/' + deleteItemId.value),
           updateData
         );
-
-        $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-        });
+        Alert.success($q, t)
       },
       getUserName(uid) {
         const value = users.value.find(x => x['id'] === uid)
@@ -351,12 +346,7 @@ export default {
             updateData
           );
 
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
+          Alert.success($q, t)
         })
       }
 
