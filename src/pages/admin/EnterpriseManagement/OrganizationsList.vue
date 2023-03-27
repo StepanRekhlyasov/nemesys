@@ -4,11 +4,25 @@
   </PageHader>
   <q-card flat class="q-pt-sm q-px-lg">
     <SearchField :on-click-search="async () => { await searchOrganizations(search) }"
-      :on-click-clear="() => { requestOrganizations() }" v-model:model-value="search" />
+      :on-click-clear="() => { requestOrganizations() }" v-model:model-value="search">
+      <template #rigthButton>
+        <DefaultButton label-key="menu.admin.organizationsTable.addOrganization" icon="mdi-plus" @click="() => {
+          dialogType = 'Organization'
+          closeDialog = false;
+        }" />
+      </template>
+    </SearchField>
   </q-card>
 
-  <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
 
+  <AddDialog @update:model-value="(v) => closeDialog = !v" :organization="organization!" :open-dialog="!closeDialog"
+    @close-dialog="async (v) => { closeDialog = v; await forceReRender() }" :dialog-type="dialogType"
+    @on-organization-added="async () => {
+      await requestOrganizations();
+      await forceReRender()
+    }" />
+
+  <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
     <template v-slot:header-cell-organizationIdAndName="props">
       <q-th :props="props" class="no-breaks items-center row">
         {{ props.col.label }}
@@ -46,7 +60,7 @@
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.operatorName }}
           </template>
-          <SelectOrganization v-else :model-value="editableRow!.operatorName" :organization-id="props.row.id"
+          <SelectUser v-else :model-value="editableRow!.operatorName" :organization-id="props.row.id"
             @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName }" />
         </q-td>
 
@@ -67,6 +81,13 @@
           <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequests" color="accent" />
         </q-td>
 
+        <q-td>
+          <DefaultButton size="sm" label-key="menu.admin.organizationsTable.addBusiness" clear
+            @click="{ closeDialog=false; organization=props.row; dialogType='Business' }" />
+          <DefaultButton size="sm" label-key="menu.admin.organizationsTable.addBranch" clear
+            @click="{ closeDialog=false; organization=props.row; dialogType='Branch' }" />
+        </q-td>
+
         <q-td auto-width>
           <q-btn unelevated dense @click="props.expand = !props.expand" size="1px">
             <q-icon v-if="props.expand" name="mdi-menu-down" size="xl" color="accent" />
@@ -76,7 +97,7 @@
       </q-tr>
 
       <q-tr v-show="props.expand" :props="props">
-        <ExpandedTable :props="props" />
+        <ExpandedTable :props="props" v-if="renderComponent" />
       </q-tr>
 
     </template>
@@ -85,7 +106,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, nextTick } from 'vue';
 import { QInput, QTableProps, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { invoiceRequests } from 'src/shared/model';
@@ -95,13 +116,22 @@ import SearchField from 'src/components/SearchField.vue';
 import { getAllOrganizations, getOrganizationsByName } from 'src/shared/utils/Organization/Organization.utils';
 import { doc, getFirestore, updateDoc } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import SelectOrganization from './SelectOrganization.vue';
+import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
 import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
 import { mapOrganizationsToRow } from './handlers/handlers';
-import { Row, Rows } from './types/types'
+import { DialogType, Row, Rows } from './types/types'
 import { rowToOrganization } from './handlers/handlers'
 import ExpandedTable from './ExpandedTable.vue';
+import DefaultButton from 'src/components/buttons/DefaultButton.vue';
+import AddDialog from './AddDialog.vue';
+
+const closeDialog = ref(true)
+
+const organization = ref<Row>()
+
+const dialogType = ref<DialogType>('Business')
+
 const editableRowNumber = ref(-1);
 
 const db = getFirestore();
@@ -178,6 +208,12 @@ const columns = computed<QTableProps['columns']>(() => [
     label: '',
     field: '',
     align: 'left',
+  },
+  {
+    name: 'expandButton',
+    label: '',
+    field: '',
+    align: 'left',
   }
 ])
 
@@ -185,6 +221,15 @@ const editableRow = ref<Row>()
 const rows = ref<Rows>([])
 
 const isEqual = ref(false)
+
+const renderComponent = ref(true);
+
+const forceReRender = async () => {
+  renderComponent.value = false;
+  await nextTick();
+  renderComponent.value = true;
+};
+
 
 async function searchOrganizations(name: string) {
   loading.value = true

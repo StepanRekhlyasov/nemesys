@@ -102,7 +102,14 @@ loadOperationInfo()
 async function loadOperationInfo() {
   try {
     loading.value = true;
-    list.value = await applicantStore.getFixData(props.applicant.id, true);
+
+    let fixList = await applicantStore.getFixData(props.applicant.id, true);
+    fixList = fixList.filter(fix => {
+      return  (fix.endDate ? new Date(fix.endDate) > new Date() : true) && 
+              (fix.admissionDate ? new Date(fix.admissionDate) <= new Date(): true)
+    })
+
+    list.value = fixList
     loading.value = false;
   } catch (e) {
     console.log(e)

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import { reactive } from 'vue';
 
 const formData = reactive({
@@ -9,7 +10,7 @@ const formData = reactive({
 </script>
 
 <template>
-<q-card style="width: 1000px; max-width: 40vw" class="no-scroll">
+ <DialogWrapper>
     <q-form class="form">
         <h5>
             {{ $t('common.apply') }}
@@ -56,7 +57,7 @@ const formData = reactive({
             <q-btn :label="$t('common.cancel')" type="reset" class="no-shadow" />
         </q-card-actions>
     </q-form>
-</q-card>
+</DialogWrapper>
 </template>
 
 <style lang="scss" scoped>

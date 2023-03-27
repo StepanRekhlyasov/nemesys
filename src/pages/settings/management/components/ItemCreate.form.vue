@@ -1,5 +1,5 @@
 <template>
-    <q-card style="width: 1000px; max-width: 40vw" class="no-scroll">
+    <DialogWrapper>
       <q-form  @submit="add">
         <q-card-section v-if="!edit?.id">
           {{$t('settings.item.addItem')}}
@@ -85,7 +85,7 @@
           <q-btn v-if="edit?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="save"/>
         </q-card-actions>
       </q-form>
-    </q-card>
+    </DialogWrapper>
   </template>
 
   <script lang="ts">
@@ -97,9 +97,13 @@
   import { getAuth } from '@firebase/auth';
   import { segment } from 'src/shared/constants/Item.const';
   import { useOrganization } from 'src/stores/organization';
+  import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 
   export default {
     name: 'ItemCreateForm',
+    components:{
+      DialogWrapper
+    },
     props: {
       edit: {
         type: Object,

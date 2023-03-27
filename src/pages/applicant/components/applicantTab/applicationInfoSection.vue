@@ -167,7 +167,7 @@
       <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
         {{ $t('applicant.list.info.addres') }}
       </div>
-      <div class="col-9 q-pa-sm">
+      <div class="col-9 q-pl-md">
         <hidden-text v-if="!edit" :value="applicant.addres" />
         <q-input v-if="edit" outlined dense v-model="data['addres']" />
       </div>

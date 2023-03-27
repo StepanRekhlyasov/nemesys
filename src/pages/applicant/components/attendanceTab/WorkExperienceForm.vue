@@ -106,6 +106,7 @@
         <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
           <q-btn v-if="!editExperience?.id" :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
           <q-btn v-if="editExperience?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="save"/>
+          <q-btn v-close-popup :label="$t('common.close')" color="primary" flat  />
         </q-card-actions>
       </q-form>
     </q-card-section>

@@ -15,7 +15,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'inquiry',
     title: 'menu.admin.inquiry',
-    component: () => import('src/pages/admin/inquiry.vue'),
+    component: () => import('src/pages/admin/InquiryPage/InquiryPage.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.AdminPageAccess]

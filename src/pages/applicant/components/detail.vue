@@ -52,12 +52,12 @@
 <script>
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
-import fixEmployInfo from './fixEmployInfo.vue';
-import contactInfo from './components/contactInfo.vue';
-import applicationInfo from './components/applicant/applicationInfo.vue';
-import attendanceInfo from './components/attendance/attendance.vue';
-import operationInfoComponent from './components/operationInfo.component.vue';
-import applicantMemo from './components/memo.vue';
+import fixEmployInfo from './fix/fixEmployInfoTab.vue';
+import contactInfo from './contactInfoTab.vue';
+import applicationInfo from './applicantTab/applicationInfoTab.vue';
+import attendanceInfo from './attendanceTab/attendanceTab.vue';
+import operationInfoComponent from './operationInfoTab.vue';
+import applicantMemo from './memoTab.vue';
 
 export default {
   name: 'clientDetails',

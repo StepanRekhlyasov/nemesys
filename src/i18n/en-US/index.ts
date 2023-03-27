@@ -144,6 +144,11 @@ export default {
         businessName: 'Business Name',
         branchName: 'Branch name',
         working: 'Working',
+        addBusiness: 'Add business',
+        addBranch: 'Add branch',
+        addOrganization: 'Add organization',
+        organizationCode: 'Code',
+        staffName: 'Staff name'
       },
       operationHistory: 'Operational history',
     }
@@ -731,7 +736,7 @@ export default {
         info: '■FIX Information',
         jobSearchInfo: '■Job-search Information',
         jobOffersInfo: '■Information on job offers',
-        employmentInfo: 'Employment Information',
+        employmentInfo: '■Employment Information',
         inspectionStatus :'job inspection status',
         inspectionDate: 'Date of inspection',
         inspectionRecord: 'Job inspection record',
@@ -1131,13 +1136,30 @@ export default {
     lastCaptured: 'Last captured date and time'
   },
   inquiry: {
+    unanswered: 'unanswered',
+    answered: 'answered',
     table: {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID<br/>company name',
-      issuedDate: 'date issued',
+      companyID: 'companyID company name',
+      recievedDate: 'date issued',
       responseDate: 'response date'
+    },
+    detail: {
+      inquiryTitle: 'Inquiry details',
+      responseTitle: 'Response',
+      category: 'Category',
+      recievedDate: 'Date recieved',
+      subject: 'Subject',
+      content: 'Content',
+      metro: 'Tokyo Metropolitan area',
+      adress: 'Town Address',
+      replyContent: 'Contents of reply'
+    },
+    message: {
+      issueDate: 'Date of issue',
+      responseDate: 'Date of response'
     }
   }
 };

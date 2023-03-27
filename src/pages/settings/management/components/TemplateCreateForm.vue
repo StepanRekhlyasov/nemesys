@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 1000px; max-width: 40vw" class="no-scroll">
+  <DialogWrapper>
     <q-form  @submit="addTemplate">
       <q-card-section>
         <span v-if="!editTemplate?.id">
@@ -79,7 +79,7 @@
         <q-btn v-if="editTemplate?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="saveTemplate"/>
       </q-card-actions>
     </q-form>
-  </q-card>
+  </DialogWrapper>
 </template>
 
 <script lang="ts">
@@ -91,9 +91,13 @@ import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import { useOrganization } from 'src/stores/organization';
+import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 
 export default {
   name: 'TemplateCreateForm',
+  components:{
+    DialogWrapper
+  },
   props: {
     editTemplate: {
       type: Object,

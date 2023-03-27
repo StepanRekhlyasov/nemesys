@@ -13,8 +13,8 @@
 </template>
 
 <script lang="ts">
-import applicationInfoComponent from './components/applicationInfo.component.vue';
-import attractionInfoComponent from './components/attractionInfo.component.vue';
+import applicationInfoComponent from './applicationInfoSection.vue';
+import attractionInfoComponent from './attractionInfoSection.vue';
 
 export default {
   name: 'ApplicationInfo',

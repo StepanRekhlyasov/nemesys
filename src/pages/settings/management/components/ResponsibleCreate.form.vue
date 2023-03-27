@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 1000px; max-width: 40vw" class="no-scroll">
+  <DialogWrapper>
     <q-form  @submit="addAccaunt">
       <q-card-section>
         {{$t('settings.branch.addBranch')}}
@@ -100,7 +100,7 @@
         <q-btn :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
       </q-card-actions>
     </q-form>
-  </q-card>
+  </DialogWrapper>
 </template>
 
 <script lang="ts">
@@ -112,9 +112,13 @@ import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
+import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 
 export default {
   name: 'ResponsibleCreateForm',
+  components:{
+    DialogWrapper
+  },
   props: {
     roles: {
       type: Object,

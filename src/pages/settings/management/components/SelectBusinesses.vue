@@ -1,7 +1,7 @@
 <template>
   <q-select outlined dense :model-value="model" :options="businesses" option-label='name' emit-value map-options
     @update:model-value="(value: BusinessType) => { model = value; emit('onBusinessChange', value.id) }"
-    :rules="[(val: BusinessType) => val?.name && val?.name?.length > 0 || '']" :loading="loading" />
+    :rules="[(val: BusinessType) => val?.name && val?.name?.length > 0 || '']" :loading="loading"  />
 </template>
 
 <script setup lang="ts">
@@ -12,11 +12,20 @@ import { onMounted, ref } from 'vue';
 
 type BusinessType = Business & { id: string }
 
+interface SelectBusinessesProps{
+  organizationId?: string
+}
+
+const props = defineProps<SelectBusinessesProps>()
+
 const businesses = ref<BusinessType[]>([])
 const organization = useOrganization()
 const db = getFirestore();
 const model = ref<BusinessType>()
 const loading = ref(true)
+
+const currentOrganizationId = props.organizationId ?? organization.currentOrganizationId
+
 function toBusinessType(b: { [id: string]: Business }): BusinessType[] {
   let businessTypeArr: BusinessType[] = []
   for (let key in b) {
@@ -31,13 +40,14 @@ function toBusinessType(b: { [id: string]: Business }): BusinessType[] {
 const emit = defineEmits<{ (e: 'onBusinessChange', id: string) }>()
 
 onMounted(async () => {
-  const businessesArr = toBusinessType(await organization.getAllBusinesses(db, organization.currentOrganizationId))
+  const businessesArr = toBusinessType(await organization.getBusinesses(db, currentOrganizationId))
   if (!businessesArr || !businessesArr.length) {
     return
   }
   businesses.value = businessesArr
 
   model.value = businesses.value[0]
+  emit('onBusinessChange', model.value.id)
   loading.value = false
 })
 

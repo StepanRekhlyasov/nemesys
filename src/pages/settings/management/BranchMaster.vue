@@ -87,7 +87,9 @@
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog" @hide="editBranch = undefined">
-    <BranchCreateForm @closeDialog="loadBranchesList(); openDialog = false;" :editBranch="editBranch" />
+     <DialogWrapper>
+       <BranchCreateForm @closeDialog="loadBranchesList(); openDialog = false;" :editBranch="editBranch" color="primary"/>
+      </DialogWrapper>
   </q-dialog>
 </template>
 
@@ -98,16 +100,18 @@ import { useI18n } from 'vue-i18n';
 import { Accaunt } from 'src/shared/model/Account.model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
-import BranchCreateForm from './components/BranchCreate.form.vue';
+import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
 import { QTableProps, useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
-import { flagOptions } from './components/handlers/flagOptions';
+import { flagOptions } from 'src/components/handlers/flagOptions';
+import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 export default {
   name: 'branchMaster',
   components: {
-    BranchCreateForm
-  },
+    BranchCreateForm,
+    DialogWrapper
+},
   setup() {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();

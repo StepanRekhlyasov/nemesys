@@ -90,6 +90,8 @@ export interface ApplicantFix {
   id: string;
   created_user?: string;
   created_at: string;
+  endDate: string;
+  admissionDate: string;
 }
 
 export interface ApplicantMemo {

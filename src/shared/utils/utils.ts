@@ -1,5 +1,5 @@
 import { collection, endAt, Firestore, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QueryStartAtConstraint, startAt, Timestamp, where, } from 'firebase/firestore';
-import { is } from 'quasar';
+import { date, is } from 'quasar';
 import { toRaw } from 'vue';
 
 export interface dataObject{
@@ -67,6 +67,13 @@ export const lastMonth = ():string => {
   date.setMonth(date.getMonth()-1);
   return date.toISOString().slice(0, 10);
 };
+
+export const findTheLastDate = (dates: Date[]) => {
+  // @ts-expect-error https://quasar.dev/quasar-utils/date-utils#minimum-maximum
+  const maxDate =  date.getMaxDate(...dates)
+  return date.formatDate(maxDate, 'YYYY-MM-DD HH:mm:ss')
+
+}
 
 // collection
 

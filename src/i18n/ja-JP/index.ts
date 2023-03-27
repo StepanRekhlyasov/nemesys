@@ -144,6 +144,11 @@ export default {
         businessName: '事業名',
         branchName: '支店名',
         working: '稼働',
+        addBusiness: '事業追加',
+        addBranch: '支店追加',
+        addOrganization: '企業新規追加',
+        organizationCode: '企業コード',
+        staffName: 'スタッフ名',
       },
       operationHistory: '稼働履歴',
     }
@@ -175,7 +180,7 @@ export default {
         all: 'すべて',
         valid: '有効'
       },
-      business:'事業',
+      business: '事業',
       branchFlag: '支店フラグ',
     },
     template: {
@@ -909,7 +914,7 @@ export default {
       placeOperation: '稼働先',
       startDate: '開始日',
       endDate: '契約終了日',
-      companyInCharge: '稼働担当社',
+      companyInCharge: '稼働担当者',
       operationMemo: 'メモ',
       operatingSites: '稼働先事業所',
 
@@ -1126,13 +1131,30 @@ export default {
     lastCaptured: '最終取り込み日時'
   },
   inquiry: {
+    unanswered: '未返信',
+    answered: '返信済',
     table: {
       status: 'ステータス',
       category: 'カテゴリ',
       subject: '件名',
-      companyID: '企業ID<br/>企業名',
-      issuedDate: '受信日',
+      companyID: '企業ID 企業名',
+      recievedDate: '受信日',
       responseDate: '返信日'
+    },
+    detail: {
+      inquiryTitle: '問い合わせ内容',
+      responseTitle: '返答フォーム',
+      category: 'カテゴリ',
+      recievedDate: '受信日',
+      subject: '件名',
+      content: '内容',
+      metro: '東京都',
+      adress: '町名番地',
+      replyContent: '返答内容'
+    },
+    message: {
+      issueDate: '受信日',
+      responseDate: '送信日'
     }
   }
 };

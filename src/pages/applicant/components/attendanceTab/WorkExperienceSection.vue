@@ -109,7 +109,7 @@ import { useQuasar } from 'quasar';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { collection, doc, getFirestore, onSnapshot, query, updateDoc, where } from '@firebase/firestore';
-import workExperienceForm from './companents/workExperience.form.vue';
+import workExperienceForm from './WorkExperienceForm.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { differentDateYear } from 'src/shared/utils/utils';
 import { ApplicantExperience } from 'src/shared/model';

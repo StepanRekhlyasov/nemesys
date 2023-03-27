@@ -23,11 +23,11 @@
 </template>
 
 <script lang="ts">
-import attendanceInfoComponent from './components/attendanceInfo.component.vue';
-import desiredConditionsComponent from './components/desired.component.vue';
-import workExperienceComponent from './components/workExperience.component.vue';
-import assignedEvaluationComponent from './components/assignedEvaluation.component.vue';
-import personalStatusComponent from './components/personal.component.vue';
+import attendanceInfoComponent from './AttendanceInfoSection.vue';
+import desiredConditionsComponent from './DesiredSection.vue';
+import workExperienceComponent from './WorkExperienceSection.vue';
+import assignedEvaluationComponent from './AssignedEvaluationSection.vue';
+import personalStatusComponent from './PersonalSection.vue';
 export default {
   name: 'attendanceInfo',
   components: {
