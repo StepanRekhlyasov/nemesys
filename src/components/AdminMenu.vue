@@ -96,7 +96,6 @@ export default defineComponent({
   },
 
   setup() {
-    //const { t, te } = useI18n({ useScope: 'global' });
     const $q = useQuasar();
     const auth = getAuth();
     const router = useRouter();
@@ -166,7 +165,7 @@ export default defineComponent({
         active_menu.value = active;
         if (Object.values(MenuParent).toString().includes(active)) {
           openLeftSlidebar.value = true;
-          // router.push('/')
+          router.push('/admin')
         }
       }
     }
