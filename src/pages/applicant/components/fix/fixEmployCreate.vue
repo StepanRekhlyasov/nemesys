@@ -418,7 +418,7 @@
 <script lang="ts">
 import { ref, SetupContext } from 'vue';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
-import { ApplicantStatus, selectOptions, UserPermissionNames } from 'src/shared/model';
+import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import editViewComponent from 'src/components/editView.component.vue';
 import { getAuth } from 'firebase/auth';
