@@ -418,7 +418,7 @@
 <script lang="ts">
 import { ref, SetupContext } from 'vue';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
-import { selectOptions, UserPermissionNames } from 'src/shared/model';
+import { ApplicantStatus, selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import editViewComponent from 'src/components/editView.component.vue';
 import { getAuth } from 'firebase/auth';
@@ -441,7 +441,8 @@ export default {
   emits: {
     updateList: null,
     close: null,
-    updateDoc: null
+    updateDoc: null,
+    updateStatus: null
   },
   components: {
     hiddenText,
@@ -543,6 +544,7 @@ export default {
           }
         }
         context.emit('updateDoc', retData);
+        context.emit('updateStatus')
         edit.value=edit.value.filter(i => i !== type)
       },
       async saveDoc() {
@@ -556,6 +558,7 @@ export default {
               retData
             );
             context.emit('updateList')
+            context.emit('updateStatus')
             context.emit('close')
             return;
           }
@@ -567,6 +570,7 @@ export default {
             retData
           )
           context.emit('updateList')
+          context.emit('updateStatus', [true])
           context.emit('close')
         } catch (e) {
           console.log(e)

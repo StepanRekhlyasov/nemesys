@@ -291,6 +291,7 @@ export default {
     };
     
     async function updateApplicant(applicant) {
+      console.log(applicant)
       const applicantRef = doc(db, 'applicants/'+selectedApplicant.value.id);
       await updateDoc(applicantRef, applicant)
       selectedApplicant.value = {...selectedApplicant.value, ...applicant}

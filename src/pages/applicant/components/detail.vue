@@ -34,7 +34,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="fixEmployInfo">
-        <fixEmployInfo :applicant="applicant" :key="applicant.id"/>
+        <fixEmployInfo :applicant="applicant" :key="applicant.id" :updateApplicant="updateApplicant"/>
       </q-tab-panel>
 
       <q-tab-panel name="operationInfo">

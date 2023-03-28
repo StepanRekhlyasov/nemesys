@@ -85,6 +85,10 @@ export interface ApplicantFix {
   created_at: string;
   endDate: string;
   admissionDate: string;
+  status: 'ok' | 'ng';
+  inspectionStatus: 'ok' | 'ng';
+  offerStatus: 'ok' | 'ng';
+  admissionStatus: 'ok' | 'ng';
 }
 
 export interface ApplicantMemo {
