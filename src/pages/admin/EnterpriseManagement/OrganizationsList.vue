@@ -114,7 +114,7 @@ import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
 import { getAllOrganizations, getOrganizationsByName } from 'src/shared/utils/Organization/Organization.utils';
-import { doc, getFirestore, updateDoc } from '@firebase/firestore';
+import { getFirestore } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
@@ -125,6 +125,7 @@ import { rowToOrganization } from './handlers/handlers'
 import ExpandedTable from './ExpandedTable.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import AddDialog from './AddDialog.vue';
+import { useOrganization } from 'src/stores/organization';
 
 const closeDialog = ref(true)
 
@@ -217,6 +218,8 @@ const columns = computed<QTableProps['columns']>(() => [
   }
 ])
 
+const organizationStore = useOrganization()
+
 const editableRow = ref<Row>()
 const rows = ref<Rows>([])
 
@@ -261,11 +264,8 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
   rows.value[rowIndex].organizationIdAndName = row.id + ' ' + row.name
 
   try {
-    const ref = doc(db, 'organization/' + row.id)
     const organization = rowToOrganization(row)
-    await updateDoc(ref, {
-      ...organization
-    })
+    await organizationStore.editOrganization(db, organization, row.id)
     await requestOrganizations()
     loading.value = false;
     Alert.success($q, t)

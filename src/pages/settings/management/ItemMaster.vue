@@ -116,7 +116,6 @@
   import { doc, getFirestore, updateDoc} from '@firebase/firestore';
   import { computed, Ref, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { Accaunt } from 'src/shared/model/Account.model';
   import { getItem, ItemsSearch } from 'src/shared/utils/User.utils';
   import { toDateObject } from 'src/shared/utils/utils';
   import { useQuasar } from 'quasar';
@@ -141,7 +140,6 @@ import { useOrganization } from 'src/stores/organization';
         flag: itemFlags.All
       });
       const branches: Ref<Item[]> = ref([])
-      const selected: Ref<Accaunt[]> = ref([])
       const loading = ref(false);
       const edit: Ref<Item | undefined> = ref(undefined)
 
@@ -245,7 +243,6 @@ import { useOrganization } from 'src/stores/organization';
         search,
         columns,
         pagination,
-        selected,
         loading,
         segment,
 

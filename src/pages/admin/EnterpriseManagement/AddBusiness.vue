@@ -53,7 +53,7 @@ const loading = ref(false)
 
 async function addBusiness() {
   loading.value = true;
-  const business: Business = {
+  const business: Omit<Business, 'id'> = {
     name: name.value,
     working: working.value
   }
