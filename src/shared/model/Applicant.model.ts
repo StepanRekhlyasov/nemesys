@@ -62,28 +62,21 @@ export enum ApplicantQualification {
 }
 
 export enum ApplicantStatus {
-  NOTCOMPATIBLE = 'notCompatible',
-  EXCLUDEDAPPLICANT = 'excludedApplicant',
-  WAITINGCONTACT = 'waitingContact',
-  CONTACTNG = 'contactNG',
-  CONTACTEDWI = 'contactedWI',
-  INVITATIONNG = 'invitationNG',
-  INVITEDWAITING = 'invitedWaiting',
-  INVITEDNOCONTACT = 'invitedNoContact',
-  ATTENDEDNG = 'attendedNG',
-  ATTENDEDWAITINGFIX = 'attendedWaitingFix',
-  FIXNG = 'fixNG',
-  FIXEDWAITING = 'fixedWaiting',
-  VISITINGNG = 'visitingNG',
-  VISITEDWAITINGOFFER = 'visitedWaitingOffer',
-  OFFERNG = 'offerNG',
-  OFFEREDWAITINGENTRY = 'OfferedWaitingEntry',
-  ENTRYNG = 'entryNG',
-  ENTERED = 'entered',
-  EXPIRYNG = 'expiryNG',
-  END = 'end',
-  UPDATE = 'update',
-  FUTURETALENT = 'futureTalent',
+  UNSUPPORTED = 'unsupported',
+  WAIT_CONTACT = 'wait_contact',
+  EXCLUDED = 'excluded',
+  ANOTHER_COMPANY = 'anotherCompany',
+  BREAK_CONTACT = 'break_contact',
+  DECLINE = 'decline',
+  WAIT_ATTEND = 'wait_attend',
+  WAIT_FIX = 'wait_FIX',
+  WAIT_VISIT = 'wait_visit',
+  WAIT_OFFER = 'wait_offer',
+  WAIT_ENTRY = 'wait_entry',
+  WORKING = 'working',
+  WAIT_TERMINATION = 'wait_termination',
+  WAIT_RETIRE = 'wait_retire',
+  RETIRED = 'retired'
 }
 
 export interface ApplicantFix { 
@@ -92,6 +85,10 @@ export interface ApplicantFix {
   created_at: string;
   endDate: string;
   admissionDate: string;
+  status: 'ok' | 'ng';
+  inspectionStatus: 'ok' | 'ng';
+  offerStatus: 'ok' | 'ng';
+  admissionStatus: 'ok' | 'ng';
 }
 
 export interface ApplicantMemo {

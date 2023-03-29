@@ -134,6 +134,7 @@
     @close="drawerRight=false"
     :applicant="applicant"
     @updateList="loadContactData"
+    @updateStatus="updateStatus"
     @updateDoc="updateData"/>
 </q-drawer>
 </template>
@@ -145,7 +146,8 @@ import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, up
 import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
-import { Accaunt, ApplicantFix } from 'src/shared/model';
+import { Accaunt, ApplicantFix, ApplicantStatus } from 'src/shared/model';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'contactInfo',
@@ -156,6 +158,10 @@ export default {
   props: {
     applicant: {
       type: Object,
+      required: true
+    },
+    updateApplicant: {
+      type: Function,
       required: true
     }
   },
@@ -303,13 +309,7 @@ export default {
           doc(db, 'applicants/' + props.applicant.id + '/fix/' + deleteItemId.value),
           updateData
         );
-
-        $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-        });
+        Alert.success($q, t)
       },
       getUserName(uid) {
         const value = users.value.find(x => x['id'] === uid)
@@ -351,13 +351,31 @@ export default {
             updateData
           );
 
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
+          Alert.success($q, t)
         })
+      },
+      async updateStatus(newDoc?: boolean){
+        let status = props.applicant.status;
+        const lastFix = contactListData.value[0]
+        if (newDoc) {
+          status = ApplicantStatus.WAIT_CONTACT;
+        }
+        if(props.applicant.attractionsStatus == 'ok') {
+          status = ApplicantStatus.WAIT_FIX;
+        }
+        if (lastFix.status == 'ok') {
+          status = ApplicantStatus.WAIT_VISIT
+        }
+        if (lastFix.inspectionStatus == 'ok') {
+          status = ApplicantStatus.WAIT_OFFER
+        }
+        if (lastFix.offerStatus == 'ok') {
+          status = ApplicantStatus.WAIT_ENTRY
+        }
+        if (lastFix.admissionStatus == 'ok') {
+          status = ApplicantStatus.WORKING
+        }
+        await props.updateApplicant({status: status})
       }
 
     };
