@@ -1,3 +1,6 @@
+import { ReflectLog } from './ReflectLog'
+import { ImportLog } from './ImportLog'
+
 enum Industry {
     Care = 'care',
     Nurse = 'nurse'
@@ -28,5 +31,7 @@ export interface ClientFactory {
     nameContact: string;
     telContact: string;
     positionContact: string;
-    mailContact: string
+    mailContact: string;
+    reflectLog?: ReflectLog;
+    importLog?: ImportLog
 }

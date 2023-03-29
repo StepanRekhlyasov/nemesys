@@ -7,7 +7,7 @@ import ClientFactoryTable from './components/ClientFactoryTable.vue';
 import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { TableRow } from './types';
-import { clientFactoriesToTableRows } from './handlers/clientFactory'
+import { clientFactoriesToTableRows } from './handlers/clientFactory';
 
 const { t } = useI18n({ useScope: 'global' });
 const adminClientFactory = useAdminClientFactory()

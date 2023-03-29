@@ -109,7 +109,11 @@ const props = defineProps<{
                     <span class="text-bold">{{ props.selectedItem.clientFlag ? ': ✓' : ': なし' }}</span>
                 </div>
                 <div class="info-footer__actions-column row justify-between items-center">
-                    <div class="info-container__label">{{ t('clientFactory.lastReflected') }}</div>
+                    <div class="info-container__label">
+                        <span class="q-mx-md">{{ t('clientFactory.lastReflected') }}</span>
+                        <span v-if="props.selectedItem.reflectLog" class="info-container__data">{{ props.selectedItem.reflectLog?.executionDate }}</span>
+                        <q-icon v-else color="black" name="mdi-close"/>
+                    </div>
                     <div class="row justify-between items-center">
                         <div class="circle q-mx-md"></div>
                         <q-btn text-color="accent" dense padding="xs md">
@@ -128,7 +132,8 @@ const props = defineProps<{
                 <div class="info-footer__actions-column row justify-between items-center ">
                     <div class="info-container__label">
                         <span class="q-mx-md">{{ t('clientFactory.lastCaptured') }}</span>
-                        <span>{{}}</span>
+                        <span v-if="props.selectedItem.importLog" class="info-container__data">{{props.selectedItem.importLog?.executionDate}}</span>
+                        <q-icon v-else color="black" name="mdi-close"/>
                     </div>
                     <div class="row justify-between items-center">
                         <div class="circle q-mx-md"></div>
