@@ -21,7 +21,7 @@ import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
 import AddBusiness from './AddBusiness.vue';
 import AddOrganization from './AddOrganization.vue';
-import { DialogType, Row } from './types/types';
+import { DialogType, Row } from './types'
 
 const emit = defineEmits<{ (e: 'closeDialog', value: boolean), (e: 'onOrganizationAdded') }>()
 

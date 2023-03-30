@@ -27,7 +27,7 @@
 import { getFirestore } from '@firebase/firestore';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
 import { useI18n } from 'vue-i18n';
-import { Row } from './types/types';
+import { Row } from './types'
 import { ref } from 'vue'
 import { Business } from 'src/shared/model';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'

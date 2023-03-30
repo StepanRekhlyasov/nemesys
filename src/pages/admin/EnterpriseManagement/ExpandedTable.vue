@@ -1,6 +1,5 @@
 <template>
   <q-td auto-width colspan="100%" class="container">
-    <!-- <q-btn @click="async () => await manageUserAvailability({ enabled: true, branchId: '' })" label="apiTest" /> -->
     <q-table flat :columns="columns" square :rows="[{}]" hide-pagination :loading="loading">
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -62,13 +61,12 @@ import { getFirestore } from '@firebase/firestore';
 import { QTableProps, QTableSlots, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Buisneses, Row, Table, Availability, AvailabilityApi } from './types/types';
+import type { Buisneses, Row, Table } from './types'
 import type { Overwrite } from 'src/shared/types/Overwrite'
 import { Business, Branch } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
-import { api } from 'src/boot/axios';
-import { getAuth } from '@firebase/auth';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { manageUserAvailability } from './handlers/handlers';
 
 type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
 
@@ -76,10 +74,7 @@ interface ExpandedTableProps {
   props: Props
 }
 
-const auth = getAuth();
-
 const $q = useQuasar();
-
 
 const organization = useOrganization()
 
@@ -93,30 +88,7 @@ const { t } = useI18n({ useScope: 'global' });
 
 const data = ref<Table>()
 
-
-
-async function manageUserAvailability(availability: Availability) {
-  const url = 'https://manage-user-availability-planwvepxa-an.a.run.app'
-  const headers = {
-    'Content-Type': 'application/json'
-  };
-
-  const data: AvailabilityApi = {
-    ...availability,
-    userId: auth.currentUser?.uid,
-  }
-
-  await api.post(url, data,
-    {
-      headers: headers,
-      timeout: 30000,
-    }
-  )
-
-}
-
 async function onWorkingChange(working: boolean, ids: { organizationId?: string, businessId?: string, branchId?: string }) {
-
 
   loading.value = true;
   const { businessId, organizationId, branchId } = ids
@@ -183,10 +155,6 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
   loading.value = false
 
 }
-
-
-
-
 
 loadTableData()
 async function loadTableData() {

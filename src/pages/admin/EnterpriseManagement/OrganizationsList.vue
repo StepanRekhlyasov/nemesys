@@ -120,7 +120,7 @@ import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
 import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
 import { mapOrganizationsToRow } from './handlers/handlers';
-import { DialogType, Row, Rows } from './types/types'
+import { DialogType, Row, Rows } from './types'
 import { rowToOrganization } from './handlers/handlers'
 import ExpandedTable from './ExpandedTable.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';

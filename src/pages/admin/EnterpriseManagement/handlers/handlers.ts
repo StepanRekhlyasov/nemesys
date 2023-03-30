@@ -1,10 +1,15 @@
+import { getAuth } from 'firebase/auth'
 import { serverTimestamp } from 'firebase/firestore'
 import { Organization } from 'src/shared/model'
 import { cloneToRaw } from 'src/shared/utils/utils'
 import { useUserStore } from 'src/stores/user'
-import { Row } from '../types/types'
+import { Availability, AvailabilityApi, Row } from '../types'
+import { api } from 'src/boot/axios';
 
 const store = useUserStore()
+
+const auth = getAuth();
+
 
 export async function mapOrganizationsToRow(organizations: Organization[]) {
   return await Promise.all(
@@ -27,4 +32,24 @@ export function rowToOrganization(row: Row): Organization {
   delete organization.operatorName
   organization.updatedAt = serverTimestamp()
   return organization
+}
+
+export async function manageUserAvailability(availability: Availability) {
+  const url = 'https://manage-user-availability-planwvepxa-an.a.run.app'
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+
+  const data: AvailabilityApi = {
+    ...availability,
+    userId: auth.currentUser?.uid,
+  }
+
+  await api.post(url, data,
+    {
+      headers: headers,
+      timeout: 30000,
+    }
+  )
+
 }
