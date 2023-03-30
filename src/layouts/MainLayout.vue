@@ -9,13 +9,13 @@
         <div class="flex">
           <q-btn-dropdown
             v-if="organization.state.organizations && (organization.state.activeOrganization || organization.state.activeOrganization === 0)"
-            :label="organization.state.organizations[organization.state.activeOrganization]?.staff_name"
+            :label="organization.state.organizations[organization.state.activeOrganization]?.name"
             flat color="black"
             >
             <q-list>
               <q-item clickable v-close-popup v-for="item in organization.state.organizations" :key="item.code" @click="switchOrganization(item.id)">
                 <q-item-section>
-                  <q-item-label>{{'staff_name' in item ? item['staff_name'] : ''}}</q-item-label>
+                  <q-item-label>{{'name' in item ? item['name'] : ''}}</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>

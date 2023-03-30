@@ -1,26 +1,20 @@
 import { dataObject } from '../utils/utils';
 
-export interface Accaunt {
-  id: string;
-  email: string;
-  displayName: string;
-  branch_id?: string;
-  manager: boolean;
-  role?: string;
-  hidden: boolean;
-  create_at: dataObject;
-  updated_at: dataObject;
-}
-
-export interface User{
+export interface User {
   id: string;
   name: string;
-  addedAt:  Date;
   deleted: boolean;
-  role?: string;
+  role: string;
   organization_ids: string[];
-  branch_ids: string[];
+  branch_id: string;
   displayName: string;
+  email: string;
+  enabled: boolean;
+  hidden: boolean;
+  color: string;
+  create_at: dataObject;
+  updated_at: dataObject;
+  disableTime?: dataObject;
 }
 
 export interface Role {

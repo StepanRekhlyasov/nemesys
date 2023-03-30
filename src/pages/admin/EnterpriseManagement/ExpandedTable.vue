@@ -22,7 +22,8 @@
                 <div class="column items-start">
                   {{ organizationItem.organizationIdAndName }}
                   <q-toggle v-model="organizationItem.working" :label="t('menu.admin.organizationsTable.working')"
-                    left-label color="accent" disable />
+                    left-label color="accent"
+                    @update:model-value="async (working) => await onWorkingChange(working, { organizationId: organizationItem.id })" />
                 </div>
               </q-td>
 
@@ -30,7 +31,9 @@
                 <div class="column items-start">
                   {{ buisnesesItem.name }}
                   <q-toggle v-model="buisnesesItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
-                    color="accent" disable />
+                    color="accent" @update:model-value="async (working) =>
+                      await onWorkingChange(working, { organizationId: organizationItem.id, businessId: buisnesesItem.id })
+                    " />
                 </div>
               </q-td>
 
@@ -38,7 +41,8 @@
                 <div class="column items-start">
                   {{ branchItem.name }}
                   <q-toggle v-model="branchItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
-                    color="accent" disable />
+                    color="accent"
+                    @update:model-value="async (working) => await onWorkingChange(working, { organizationId: organizationItem.id, businessId: buisnesesItem.id, branchId: branchItem.id })" />
                 </div>
               </q-td>
               <q-td v-else class="emptyCell">
@@ -54,19 +58,23 @@
 
 <script setup lang="ts">
 import { getFirestore } from '@firebase/firestore';
-import { QTableProps, QTableSlots } from 'quasar';
+import { QTableProps, QTableSlots, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Buisneses, Row, Table } from './types/types';
+import type { Buisneses, Row, Table } from './types'
 import type { Overwrite } from 'src/shared/types/Overwrite'
 import { Business, Branch } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { manageUserAvailability } from './handlers/handlers';
 
 type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
 
 interface ExpandedTableProps {
   props: Props
 }
+
+const $q = useQuasar();
 
 const organization = useOrganization()
 
@@ -80,6 +88,73 @@ const { t } = useI18n({ useScope: 'global' });
 
 const data = ref<Table>()
 
+async function onWorkingChange(working: boolean, ids: { organizationId?: string, businessId?: string, branchId?: string }) {
+
+  loading.value = true;
+  const { businessId, organizationId, branchId } = ids
+
+  try {
+
+    if (organizationId && !businessId && !branchId) {
+      await organization.editOrganization(db, { working }, organizationId)
+      await manageUserAvailability({ enabled: working, organizationId })
+    }
+
+    if (organizationId && businessId && !branchId) {
+      await organization.editBusiness(db, { working }, organizationId, businessId)
+    }
+
+    if (organizationId && businessId && branchId) {
+      await organization.editBranch(db, { working }, organizationId, businessId, branchId)
+      await manageUserAvailability({ enabled: working, branchId })
+    }
+
+    if (working) {
+      loading.value = false
+      Alert.success($q, t);
+      return
+    }
+
+    const organizations = data?.value?.organization
+
+    if (!organizations) {
+      loading.value = false
+      Alert.success($q, t);
+      return
+    }
+
+    for (let i = 0; i < organizations.length; i++) {
+      const organizationItem = organizations[i]
+      for (let j = 0; j < organizationItem.buisneses.length; j++) {
+        const businessItem = organizationItem.buisneses[j]
+        if (businessId && businessItem.id !== businessId) {
+          continue
+        }
+
+        if (branchId) {
+          continue
+        }
+        await organization.editBusiness(db, { working }, organizationItem.id, businessItem.id)
+        businessItem.working = working
+        for (let k = 0; k < businessItem.branches.length; k++) {
+          const branchItem = businessItem.branches[k]
+          if (branchId && branchItem.businessId !== branchId) {
+            continue
+          }
+          branchItem.working = working
+          await organization.editBranch(db, { working }, organizationItem.id, businessItem.id, branchItem.id)
+          await manageUserAvailability({ enabled: working, branchId: branchItem.id })
+        }
+      }
+    }
+    Alert.success($q, t);
+  } catch (error) {
+    Alert.warning($q, t);
+  }
+
+  loading.value = false
+
+}
 
 loadTableData()
 async function loadTableData() {
@@ -105,9 +180,7 @@ function toTable(businesses: { [id: string]: Business }, branches: { [businessId
     return prev += curr.length
   }, 0)
 
-  parsedData[organizationKey][0]['organizationIdAndName'] = componentProps.props.row.organizationIdAndName
-  parsedData[organizationKey][0]['working'] = componentProps.props.row.working
-
+  parsedData[organizationKey][0] = componentProps.props.row
   for (let key in businesses) {
     let objToPush = JSON.parse(JSON.stringify(businesses[key]))
     objToPush.branches = branches[key]

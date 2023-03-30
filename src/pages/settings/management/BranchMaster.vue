@@ -97,7 +97,6 @@
 import { doc, getFirestore, updateDoc } from '@firebase/firestore';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Accaunt } from 'src/shared/model/Account.model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
 import { Branch, branchFlags } from 'src/shared/model/Branch.model';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
@@ -122,7 +121,6 @@ export default {
       flag: branchFlags.All,
     });
     const branches: Ref<Branch[]> = ref([])
-    const selected: Ref<Accaunt[]> = ref([])
     const loading = ref(false);
     const editBranch: Ref<Branch | undefined> = ref(undefined)
 
@@ -215,7 +213,6 @@ export default {
       search,
       columns,
       pagination,
-      selected,
       loading,
 
       openDialog,

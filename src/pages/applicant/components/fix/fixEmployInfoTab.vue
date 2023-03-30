@@ -27,14 +27,14 @@
           :props="props"
           :class="rowColor(props.row)"
         >
-          <span class="row">{{ 
+          <span class="row">{{
             applicantStore.state.clientList?.
-            find(client => client.id == props.row.client)?.name 
+            find(client => client.id == props.row.client)?.name
           }}</span>
-          <span class="row">{{ 
+          <span class="row">{{
             applicantStore.state.clientList?.
             find(client => client.id == props.row.client)?.office?.
-            find(office => office.id == props.row.office)?.name 
+            find(office => office.id == props.row.office)?.name
           }}</span>
         </q-td>
       </template>
@@ -146,7 +146,7 @@ import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, up
 import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
-import { Accaunt, ApplicantFix, ApplicantStatus } from 'src/shared/model';
+import { User, ApplicantFix, ApplicantStatus } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
@@ -168,14 +168,14 @@ export default {
 
   setup(props) {
     const { t } = useI18n({ useScope: 'global' });
-    
+
     const applicantStore = useApplicant();
     const db = getFirestore();
     const $q = useQuasar();
 
     const contactListData: Ref<ApplicantFix[]> = ref([]);
     const deleteItemId = ref('');
-    const users:Ref<Accaunt[]> = ref([]);
+    const users:Ref<User[]> = ref([]);
     const drawerRight = ref(false);
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
@@ -187,7 +187,7 @@ export default {
       page: 1,
       rowsPerPage: 10
     });
-    
+
     const columns = computed(() => {
       return [
         {
@@ -255,9 +255,9 @@ export default {
     function loadUsers() {
       const q = query(collection(db, 'users/'), where('deleted', '==', false));
       unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
-        let userList: Accaunt[] = [];
+        let userList: User[] = [];
         querySnapshot.forEach((doc) => {
-          userList.push({ id: doc.id, ...doc.data() } as Accaunt);
+          userList.push({ id: doc.id, ...doc.data() } as User);
         });
         users.value = userList;
       });
@@ -323,7 +323,7 @@ export default {
         drawerRight.value = true;
       },
       rowColor(row) {
-        if ((row.status == 'ok' && row.inspectionStatus == 'ok' && row.offerStatus == 'ok' && row.admissionStatus == 'ok') 
+        if ((row.status == 'ok' && row.inspectionStatus == 'ok' && row.offerStatus == 'ok' && row.admissionStatus == 'ok')
           || row.status == 'ng'|| row.inspectionStatus == 'ng'|| row.offerStatus == 'ng'|| row.admissionStatus == 'ng' ) {
           return ''
         }

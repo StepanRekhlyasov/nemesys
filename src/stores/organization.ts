@@ -1,4 +1,4 @@
-import { collection, doc, endAt, Firestore, getDocs, orderBy, query, serverTimestamp, setDoc, startAt, where } from 'firebase/firestore';
+import { collection, doc, endAt, Firestore, getDocs, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -93,10 +93,13 @@ export const useOrganization = defineStore('organization', () => {
 
   }
 
-  async function addBusiness(db: Firestore, business: Business, organizationId: string) {
+  async function addBusiness(db: Firestore, business: Omit<Business, 'id'>, organizationId: string) {
     const businessRef = collection(db, `organization/${organizationId}/businesses/`)
     const docRef = doc(businessRef)
-    await setDoc(docRef, business)
+    await setDoc(docRef, {
+      ...business,
+      id: docRef.id
+    })
   }
 
   async function addOrganization(db: Firestore, organization: Organization) {
@@ -148,7 +151,27 @@ export const useOrganization = defineStore('organization', () => {
     return branchesObj
   }
 
+  async function editOrganization(db: Firestore, organization: Partial<Organization>, organizationId: string) {
+    const ref = doc(db, 'organization/' + organizationId)
+    await updateDoc(ref, {
+      ...organization
+    })
+  }
+
+  async function editBusiness(db: Firestore, business: Partial<Business>, organizationId: string, businessId: string) {
+    const ref = doc(db, `organization/${organizationId}/businesses/${businessId}`)
+    await updateDoc(ref, {
+      ...business
+    })
+  }
+
+  async function editBranch(db: Firestore, branch: Partial<Branch>, organizationId: string, businessId: string, branchId: string) {
+    const ref = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`)
+    await updateDoc(ref, {
+      ...branch
+    })
+  }
 
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization }
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch }
 })

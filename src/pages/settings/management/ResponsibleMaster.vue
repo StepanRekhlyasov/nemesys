@@ -113,7 +113,7 @@
 import { doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Accaunt, Role, UserPermissionNames } from 'src/shared/model/Account.model';
+import { Role, User, UserPermissionNames } from 'src/shared/model/Account.model';
 import { toDateObject, sortDate } from 'src/shared/utils/utils';
 import { getRoles, getUsersByPermission, mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { QTableProps, useQuasar } from 'quasar';
@@ -146,12 +146,12 @@ export default {
     const branches = ref({})
     const loading = ref(false)
     const organization = useOrganization()
-    const usersListData: Ref<Accaunt[]> = ref([]);
-    const copyUsersListData: Ref<Accaunt[]> = ref([]);
+    const usersListData: Ref<User[]> = ref([]);
+    const copyUsersListData: Ref<User[]> = ref([]);
     const isAdmin = route.meta.isAdmin
     // dialog data
     const openDialog = ref(false)
-    const editableUser: Ref<Accaunt | undefined> = ref(undefined)
+    const editableUser: Ref<User | undefined> = ref(undefined)
     const editableRow = ref(-1);
     const color = isAdmin ? 'accent' : 'primary'
     const textColor = isAdmin ? 'accent' : 'black'
@@ -162,7 +162,7 @@ export default {
       page: 1,
       rowsPerPage: 10
     });
-    const selected: Ref<Accaunt[]> = ref([])
+    const selected: Ref<User[]> = ref([])
 
     const columns = computed<QTableProps['columns']>(() => [
       {
@@ -243,11 +243,11 @@ export default {
           const rolesSnapshot = getRoles(db);
 
           usersSnapshot.then(users => {
-            let list: Accaunt[] = [];
+            let list: User[] = [];
             users?.forEach((doc) => {
               const data = doc.data();
               data['id'] = doc.id;
-              list.push({ ...data as Accaunt, id: doc.id, create_at: toDateObject(data.create_at), updated_at: toDateObject(data.updated_at) });
+              list.push({ ...data as User, id: doc.id, create_at: toDateObject(data.create_at), updated_at: toDateObject(data.updated_at) });
             });
             usersListData.value = list;
             copyUsersListData.value = list
@@ -285,7 +285,7 @@ export default {
       usersListData.value = JSON.parse(JSON.stringify(copyUsersListData.value))
     }
 
-    async function editUser(user: Accaunt) {
+    async function editUser(user: User) {
       const isUserChanged = !(user.displayName == editableUser.value?.displayName && user.role == editableUser.value?.role && user.branch_id == editableUser.value?.branch_id && user.hidden == editableUser.value?.hidden);
       if (!isUserChanged) {
         return;
