@@ -7,7 +7,7 @@ import ClientFactoryTable from './components/ClientFactoryTable.vue';
 import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { TableRow } from './types';
-import { clientFactoriesToTableRows } from './handlers/clientFactory'
+import { clientFactoriesToTableRows } from './handlers/clientFactory';
 
 const { t } = useI18n({ useScope: 'global' });
 const adminClientFactory = useAdminClientFactory()
@@ -25,9 +25,13 @@ const pagination = ref({
 });
 
 const clientFactoryDrawerHandler = (item: TableRow) => {
+    isClientFactoryDrawer.value = false
+
     activeClientFactoryItem.value = adminClientFactory.clientFactories.find((factory) => factory.id === item.id) as ClientFactory
 
-    isClientFactoryDrawer.value = true
+    if(activeClientFactoryItem.value) {
+        isClientFactoryDrawer.value = true
+    }
 }
 
 const hideDrawer = () => {
@@ -89,7 +93,6 @@ onMounted(() => {
         </q-card>
 
         <ClientFactoryDrawer
-        v-if="activeClientFactoryItem"
         v-model:selectedItem="activeClientFactoryItem"
         :isDrawer="isClientFactoryDrawer"
         @hide-drawer="hideDrawer"/>

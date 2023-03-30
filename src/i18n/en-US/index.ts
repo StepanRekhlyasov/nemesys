@@ -16,6 +16,8 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    reflect: 'reflect',
+    capture: 'capture',
     numberOfSelections: 'Number of selections',
     detailedConditions: 'detailed conditions',
     aroundTokio: 'around Tokio',
@@ -1144,6 +1146,19 @@ export default {
       deliveryDate: 'delivery date',
       deletedInfo: 'All data related to this template will be deleted.',
     }
+  },
+  clientFactory: {
+    numberEmployees: 'Number of employees',
+    facilityType: 'Facility type',
+    homePage: 'Home page',
+    conclusionDispatchContract: 'Conclusion of dispatch contract',
+    conclusionReferralContract: 'Conclusion of referral contract',
+    namePersonInCharge: 'Name of person in charge',
+    personInChargeTitle: 'Person in charge title',
+    masterData: 'Master data',
+    lastReflected: 'Last reflected date and time',
+    changeBasicInformation: 'Change basic information',
+    lastCaptured: 'Last captured date and time'
   },
   inquiry: {
     unanswered: 'unanswered',
