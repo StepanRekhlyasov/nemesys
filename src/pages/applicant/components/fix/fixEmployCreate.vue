@@ -17,6 +17,7 @@
       </q-card-section>
       <q-separator />
       <q-form>
+        <!-- Main Information -->
         <q-card-section>
           <q-select
             v-model="data.client"
@@ -37,6 +38,7 @@
             :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
+        <!-- Fix Information -->
         <q-card-section>
           <edit-view-component
             :edit="edit.includes('info')"
@@ -46,21 +48,12 @@
             @onSave="save('info')">
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.status') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span class="text-uppercase" v-if="!edit.includes('info')">{{ fixData.status }}</span>
-                <template v-if="edit.includes('info')">
-                  <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';disableChange ()"/>
-                  <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" />
-                </template>
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.date') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('info')" :value="fixData.data" />
+              <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" :value="fixData.status" valueClass="text-uppercase">
+                <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';disableChange ()"/>
+                <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" />
+              </labelField>
+
+              <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.data">
                 <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['data']" :disable="loading">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
@@ -74,29 +67,46 @@
                     </q-icon>
                   </template>
                 </q-input>
-              </div>
+              </labelField>
             </div>
+            
+            <template v-if="data['status'] == 'ng'">              
+              <div class="row q-pb-sm">  
+                <labelField 
+                  :edit="edit.includes('info') " 
+                  :label="$t('applicant.list.fixEmployment.reason')"
+                  :value="fixData.reason? $t('applicant.list.fixEmployment.'+fixData.reason) : ''"
+                  valueClass="col-9">
+                  <div class="row">
+                    <div class="col-9">
+                      <q-radio v-model="data['reason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" @click="changeStatus" />
+                      <q-radio v-model="data['reason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" @click="changeStatus" />
+                      <q-radio v-model="data['reason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" @click="changeStatus" />
+                      <q-radio v-model="data['reason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" @click="changeStatus" />
+                    </div>
+                    <div class="col-3">
+                      <q-select 
+                        v-if="data['reason']" 
+                        v-model="data['reasonDetal']"
+                        :options="statusOptions"                        
+                        emit-value map-options dense outlined
+                        :label="$t('common.pleaseSelect')" 
+                      />
+                    </div>
+                  </div>
+                </labelField>
+              </div>
+            </template>
 
-            <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.reason') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <span v-if="!edit.includes('info')" class="text_dots">{{ fixData.reason }}</span>
-                <q-input v-if="edit.includes('info')" dense outlined bg-color="white"
-                  v-model="data['reason']" :disable="loading" />
-              </div>
-            </div>
-
-            <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.contactPerson') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <span v-if="!edit.includes('info')" class="text_dots">{{ 
-                  usersListOption
+            <div class="row q-pb-sm">            
+              <labelField 
+                :edit="edit.includes('info')"
+                :value="usersListOption
                   .filter(user => user.value === data['contactPerson'])
-                  .map(user => user.label).join('')  }}</span>
+                  .map(user => user.label).join('')"
+                :label="$t('applicant.list.fixEmployment.contactPerson')"
+                valueClass="col-9">  
+
                 <q-select
                   v-if="edit.includes('info')"
                   v-model="data['contactPerson']"
@@ -104,22 +114,23 @@
                   emit-value map-options dense outlined
                   :options="usersListOption" 
                   :label="$t('common.pleaseSelect')" />
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.memo') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('info')" :value="fixData.memo" />
-                <q-input v-if="edit.includes('info')" dense outlined bg-color="white"
+              <labelField 
+                :edit="edit.includes('info')" 
+                :label="$t('applicant.list.fixEmployment.memo')" 
+                :value="fixData['memo']" valueClass="col-9">
+
+                <q-input dense outlined bg-color="white"
                   v-model="data['memo']" :disable="loading" />
-              </div>
+              </labelField>
             </div>
           </edit-view-component>
         </q-card-section>
 
+        <!-- Job-search Information  -->
         <q-card-section>
           <edit-view-component
             :edit="edit.includes('jobSearchInfo')"
@@ -130,22 +141,13 @@
             :disableButton="disableLevel < 1">
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.status') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span class="text-uppercase" v-if="!edit.includes('jobSearchInfo')">{{ fixData.inspectionStatus }}</span>
-                <template v-if="edit.includes('jobSearchInfo')">
-                  <q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';disableChange()" :disable="disableLevel < 1"/>
-                  <q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 1"/>
-                </template>
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.date') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.inspectionDate" />
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white" v-model="data['inspectionDate']"  :disable="loading || disableLevel < 1">
+              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" :value="fixData.inspectionStatus">
+                <q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';disableChange()" :disable="disableLevel < 1"/>
+                <q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 1"/>
+              </labelField>
+              
+              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.date')" :value="fixData.inspectionDate">                
+                <q-input dense outlined bg-color="white" v-model="data['inspectionDate']"  :disable="loading || disableLevel < 1">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -158,76 +160,74 @@
                     </q-icon>
                   </template>
                 </q-input>
-              </div>
+              </labelField>
+            </div>
+            
+            <div class="row q-pb-sm" v-if="data['inspectionStatus'] == 'ng'">
+              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" :value="fixData.reasonNG" valueClass="col-9">
+                <div class="row">
+                    <div class="col-9">
+                      <q-radio v-model="data['reasonNG']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" @click="changeJobStatus" />
+                      <q-radio v-model="data['reasonNG']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" @click="changeJobStatus" />
+                      <q-radio v-model="data['reasonNG']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" @click="changeJobStatus" />
+                      <q-radio v-model="data['reasonNG']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" @click="changeJobStatus" />
+                    </div>
+                    <div class="col-3">
+                      <q-select 
+                        v-if="data['reasonNG']" 
+                        v-model="data['reasonJobDetal']"
+                        :options="statusJobOptions"                        
+                        emit-value map-options dense outlined
+                        :label="$t('common.pleaseSelect')" 
+                      />
+                    </div>
+                  </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.reasonNG') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.reasonNG" />
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
-                  v-model="data['reasonNG']" :disable="loading || disableLevel < 1" />
-              </div>
-            </div>
-
-            <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.chargeOfFacility') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobSearchInfo')">{{ fixData.chargeOfFacility }}</span>
-                <template v-if="edit.includes('jobSearchInfo')">
-                  <q-input v-if="edit" dense outlined bg-color="white"
-                    v-model="data['chargeOfFacility']" :disable="loading || disableLevel < 1" />
-                </template>
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.jobTitle') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.jobTitle" />
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
+              <labelField :edit="edit.includes('jobSearchInfo')" 
+                :label="$t('applicant.list.fixEmployment.inspection.chargeOfFacility')" 
+                :value="fixData.chargeOfFacility">
+                <q-input v-if="edit" dense outlined bg-color="white"
+                  v-model="data['chargeOfFacility']" :disable="loading || disableLevel < 1" />
+              </labelField>              
+              
+              <labelField :edit="edit.includes('jobSearchInfo')" 
+                :label="$t('applicant.list.fixEmployment.inspection.jobTitle')" 
+                :value="fixData.jobTitle">
+                <q-input dense outlined bg-color="white"
                   v-model="data['jobTitle']" :disable="loading || disableLevel < 1" />
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.contact') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobSearchInfo')" class="text_dots">{{ 
-                  usersListOption
+              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')" 
+                :value="usersListOption
                   .filter(user => user.value === data['contact'])
-                  .map(user => user.label).join('')  }}</span>
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
+                  .map(user => user.label).join('')">
+                <q-input dense outlined bg-color="white"
                   v-model="data['contact']" :disable="loading || disableLevel < 1" />
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.comments') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.comments" />
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
+              </labelField>
+              <labelField
+                :edit="edit.includes('jobSearchInfo')"
+                :label="$t('applicant.list.fixEmployment.inspection.comments')"
+                :value="fixData.comments">
+                <q-input dense outlined bg-color="white"
                   v-model="data['comments']" :disable="loading || disableLevel < 1" />
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.inspection.notes') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobSearchInfo')" :value="fixData.notesInspection" />
-                <q-input v-if="edit.includes('jobSearchInfo')" dense outlined bg-color="white"
+              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')" :value="fixData.notesInspection" valueClass="col-9">
+                <q-input dense outlined bg-color="white"
                   v-model="data['notesInspection']" :disable="loading || disableLevel < 1" />
-              </div>
+              </labelField>
             </div>
           </edit-view-component>
         </q-card-section>
 
+        <!-- Information on job offers -->
         <q-card-section>
           <edit-view-component
             :edit="edit.includes('jobOffersInfo')"
@@ -236,23 +236,15 @@
             @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')"
             @onSave="save('jobOffersInfo')"
             :disableButton="disableLevel < 2">
+
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.offer.status') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span class="text-uppercase" v-if="!edit.includes('jobOffersInfo')">{{ fixData.offerStatus }}</span>
-                <template v-if="edit.includes('jobOffersInfo')">
-                  <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';disableChange()" :disable="disableLevel < 2"/>
-                  <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 2"/>
-                </template>
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.offer.date') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobOffersInfo')" :value="fixData.offerDate" />
-                <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white" v-model="data['offerDate']"  :disable="loading || disableLevel < 2">
+              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" :value="fixData.offerStatus">
+                <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';disableChange()" :disable="disableLevel < 2"/>
+                <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 2"/>
+              </labelField>
+
+              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.date')" :value="fixData.offerDate" >
+                <q-input dense outlined bg-color="white" v-model="data['offerDate']"  :disable="loading || disableLevel < 2">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -265,51 +257,40 @@
                     </q-icon>
                   </template>
                 </q-input>
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.offer.reasonNG') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobOffersInfo')" :value="fixData.offerReasonNG" />
-                <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white"
+              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" :value="fixData.offerReasonNG" valueClass="col-9">                
+                <q-input dense outlined bg-color="white"
                   v-model="data['offerReasonNG']" :disable="loading || disableLevel < 2" />
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.offer.chargeOfOffer') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span v-if="!edit.includes('jobOffersInfo')" class="text_dots">{{ 
-                  usersListOption
+              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.chargeOfOffer')"
+                :value="usersListOption
                   .filter(user => user.value === data['chargeOfOffer'])
-                  .map(user => user.label).join('')  }}</span>
+                  .map(user => user.label).join('')"
+                valueClass="col-9">
                 <q-select
-                  v-if="edit.includes('jobOffersInfo')"
                   v-model="data['chargeOfOffer']"
                   :disable="loading || disableLevel < 2"
                   emit-value map-options dense outlined
                   :options="usersListOption" :label="$t('common.pleaseSelect')" />
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.offer.memo') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('jobOffersInfo')" :value="fixData.offerMemo" />
-                <q-input v-if="edit.includes('jobOffersInfo')" dense outlined bg-color="white"
+              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.memo')" :value="fixData.offerMemo" valueClass="col-9">
+                <q-input  dense outlined bg-color="white"
                   v-model="data['offerMemo']" :disable="loading || disableLevel < 2" />
-              </div>
+              </labelField>
             </div>
           </edit-view-component>
         </q-card-section>
 
+        <!-- Employment Information -->
         <q-card-section>
           <edit-view-component
             :edit="edit.includes('employmentInfo')"
@@ -319,22 +300,14 @@
             @onSave="save('employmentInfo')"
             :disableButton="disableLevel < 3">
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.admission.status') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <span class="text-uppercase" v-if="!edit.includes('employmentInfo')">{{ fixData.admissionStatus }}</span>
-                <template v-if="edit.includes('employmentInfo')">
+
+              <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus">
                   <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
                   <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
-                </template>
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.admission.date') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.admissionDate" />
-                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white" v-model="data['admissionDate']"  :disable="loading || disableLevel < 3">
+              </labelField>
+
+              <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.date')" :value="fixData.admissionDate">
+                <q-input dense outlined bg-color="white" v-model="data['admissionDate']"  :disable="loading || disableLevel < 3">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -347,42 +320,33 @@
                     </q-icon>
                   </template>
                 </q-input>
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.admission.reasonNotJoining') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.reasonNotJoining" />
-                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white"
+              <labelField 
+                :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.reasonNotJoining')" 
+                :value="fixData.reasonNotJoining" valueClass="col-9">
+                <q-input dense outlined bg-color="white"
                   v-model="data['reasonNotJoining']" :disable="loading || disableLevel < 3" />
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.admission.chargeOfAdmission') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">                
-                <span v-if="!edit.includes('employmentInfo')" class="text_dots">{{ 
-                  usersListOption
+              <labelField 
+                :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.chargeOfAdmission')"
+                :value="usersListOption
                   .filter(user => user.value === data['chargeOfAdmission'])
-                  .map(user => user.label).join('')  }}</span>
+                  .map(user => user.label).join('')">
                 <q-select
-                  v-if="edit.includes('employmentInfo')"
                   v-model="data['chargeOfAdmission']"
                   :disable="loading || disableLevel < 3"
                   emit-value map-options dense outlined
                   :options="usersListOption" :label="$t('common.pleaseSelect')" />
-              </div>
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.attendant.endDate') }}
-              </div>
-              <div class="col-3 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.endDate" />
-                <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white" v-model="data['endDate']" :disable="loading">
+              </labelField>
+
+              <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.attendant.endDate')" :value="fixData.endDate">
+                <q-input dense outlined bg-color="white" v-model="data['endDate']" :disable="loading">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -395,18 +359,16 @@
                     </q-icon>
                   </template>
                 </q-input>
-              </div>
+              </labelField>
             </div>
 
             <div class="row q-pb-sm">
-              <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-                {{ $t('applicant.list.fixEmployment.admission.memo') }}
-              </div>
-              <div class="col-9 q-pl-md blue ">
-                <hidden-text v-if="!edit.includes('employmentInfo')" :value="fixData.admissionMemo" />
+              <labelField 
+                :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.memo')" 
+                :value="fixData.admissionMemo" value-class="col-9">
                 <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white"
                   v-model="data['admissionMemo']" :disable="loading || disableLevel < 3" />
-              </div>
+              </labelField>
             </div>
           </edit-view-component>
         </q-card-section>
@@ -426,6 +388,9 @@ import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
+import labelField from 'src/components/form/LabelField.vue';
+import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
+
 export default {
   name: 'FixEmployCreate',
   props: {
@@ -446,7 +411,8 @@ export default {
   },
   components: {
     hiddenText,
-    editViewComponent
+    editViewComponent,
+    labelField
   },
   setup(props, context: SetupContext) {
     const db = getFirestore();
@@ -454,7 +420,7 @@ export default {
     const organization = useOrganization();
     const applicantStore = useApplicant();
 
-    const data = ref(props.fixData);
+    const data = ref({...props.fixData});
     const loading = ref(false);
     const disableLevel = ref(0);
     const edit = ref<string[]>([])
@@ -462,6 +428,8 @@ export default {
     const usersListOption = ref<selectOptions[]>([]);
     const clientOptions = applicantStore.state.clientList;
     const officeOptions = ref<selectOptions[]> ([]);
+    const statusOptions = ref<selectOptions[]> ([]);
+    const statusJobOptions = ref<selectOptions[]> ([])
 
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
@@ -510,8 +478,49 @@ export default {
       usersListOption,
       disableLevel,
       applicantStore,
-      disableChange,
+      statusOptions,
+      statusJobOptions,
 
+      disableChange,
+      changeStatus() {
+        if (data.value['status'] && data.value['status'] == 'ng') {
+          switch(data.value['reason']){
+            case('notApplicable'):
+              statusOptions.value = notApplicableFixList;
+            break;
+            case('decided'):
+              statusOptions.value = decidedFixList;
+            break;
+            case('notCovered'):
+              statusOptions.value = [];
+            break;
+            case('registrationDeclined'):
+              statusOptions.value = registrationDeclinedFixList;
+            break;
+          }
+          data.value['reasonDetal'] = '';
+        }
+      },
+      changeJobStatus() {
+        if (data.value['inspectionStatus'] && data.value['inspectionStatus'] == 'ng') {
+          switch(data.value['reasonNG']){
+            case('notApplicable'):
+              statusJobOptions.value = notApplicableFixList;
+            break;
+            case('decided'):
+              statusJobOptions.value = decidedFixList;
+            break;
+            case('notCovered'):
+              statusJobOptions.value = [];
+            break;
+            case('registrationDeclined'):
+              statusJobOptions.value = registrationDeclinedFixList;
+            break;
+          }
+          data.value['reasonJobDetal'] = '';
+        }
+
+      },
       save(type: string) {
         let retData = {};
         switch(type){
