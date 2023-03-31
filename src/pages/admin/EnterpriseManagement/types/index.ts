@@ -40,4 +40,7 @@ interface BranchAvailability extends UserAvailability {
 
 export type Availability = BranchAvailability | OrganizationAvailability
 
-export type AvailabilityApi = Availability & { userId: string | undefined }
+export type AvailabilityApi = Availability & {
+  userId: string
+  idToken: string
+}
