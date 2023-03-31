@@ -64,7 +64,7 @@ import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import { useOrganization } from 'src/stores/organization';
 import { branchFlags } from 'src/shared/model';
-import SelectBusinesses from '../../pages/settings/management/components/SelectBusinesses.vue'
+import SelectBusinesses from 'src/pages/user/Settings/management/components/SelectBusinesses.vue'
 import { creationRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
 import { flagOptions } from 'src/components/handlers/flagOptions';

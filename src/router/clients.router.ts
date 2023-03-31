@@ -3,14 +3,14 @@ import { MenuParent } from 'src/shared/model/Menu.model';
 const clientRouters = [
   {
     path: 'clients/officeSearch',
-    component: () => import('src/pages/clients/officeSearch.vue'),
+    component: () => import('src/pages/user/Clients/officeSearch.vue'),
     meta: { requiresAuth: true },
     menuParent: MenuParent.ClientMenagment,
     title: 'menu.officeSearch',
   },
   {
     path: 'clients/savedSearchList',
-    component: () => import('src/pages/clients/list.vue'),
+    component: () => import('src/pages/user/Clients/list.vue'),
     meta: { requiresAuth: true },
     menuParent: MenuParent.ClientMenagment,
     title: 'menu.savedSearchList',

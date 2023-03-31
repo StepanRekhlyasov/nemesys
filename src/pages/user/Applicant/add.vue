@@ -263,8 +263,8 @@ import {
 
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL} from 'firebase/storage';
 
-import { prefectureList } from '../../shared/constants/Prefecture.const';
-import { statusList } from '../../shared/constants/Applicant.const';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 
 export default {

@@ -40,7 +40,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import api from '../../../firebaseData/dashboard';
+import api from 'src/firebaseData/dashboard'
 import applicantForm from './applicantForm';
 import groupForm from './groupForm';
 
