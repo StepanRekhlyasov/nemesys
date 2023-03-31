@@ -11,13 +11,9 @@
   </div>
 </template> 
 
-<script lang="ts" >
+<script lang="ts" setup>
 import hiddenText from 'src/components/hiddingText.component.vue';
-export default {
-  components: {
-    hiddenText
-  },
-  props: {
+defineProps({
     label: {
       type: String,
       required: true
@@ -37,6 +33,5 @@ export default {
       type: String,
       default: 'col-3'
     }
-  }
-}
+})
 </script>
