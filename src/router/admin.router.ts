@@ -46,7 +46,7 @@ const admin_router: MenuRouter[] = [
   {
     path: 'users-list',
     title: 'menu.admin.usersList',
-    component: () => import('src/pages/settings/management/ResponsibleMaster.vue'),
+    component: () => import('src/pages/user/Settings/management/ResponsibleMaster.vue'),
     meta: {
       isAdmin: true,
       requiresAuth: true,

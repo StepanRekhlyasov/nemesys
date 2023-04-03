@@ -40,9 +40,17 @@ export async function manageUserAvailability(availability: Availability) {
     'Content-Type': 'application/json'
   };
 
+  const idToken = await auth.currentUser?.getIdToken()
+  const userId = auth.currentUser?.uid
+
+  if (!idToken || !userId) {
+    return
+  }
+
   const data: AvailabilityApi = {
     ...availability,
-    userId: auth.currentUser?.uid,
+    userId,
+    idToken
   }
 
   await api.post(url, data,

@@ -17,7 +17,7 @@ const routes: MenuRouter[] = [{
     },
     {
       path: 'dashboard',
-      component: () => import('src/pages/dashboard/Index.vue'),
+      component: () => import('src/pages/user/Dashboard/Index.vue'),
       meta: { requiresAuth: true },
       title: 'menu.dashboard',
       icon: 'dashboard',

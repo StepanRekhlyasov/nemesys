@@ -205,7 +205,7 @@ import {
   doc,
   updateDoc
 } from 'firebase/firestore';
-import { statusList } from '../../shared/constants/Applicant.const';
+import { statusList } from 'src/shared/constants/Applicant.const';
 import detailComponent from './components/detail.vue';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 

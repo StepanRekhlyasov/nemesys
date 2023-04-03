@@ -134,7 +134,7 @@
 //import { useI18n } from 'vue-i18n';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
-import api from '../../../firebaseData/dashboard';
+import api from 'src/firebaseData/dashboard'
 import Draggable from 'vuedraggable';
 
 import applicantForm from './applicantForm';

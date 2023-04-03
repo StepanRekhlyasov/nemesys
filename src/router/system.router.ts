@@ -5,7 +5,7 @@ const system_router: MenuRouter[] = [
   {
     path: 'system/editProfile',
     title: 'settings.users.editProfile',
-    component: () => import('src/pages/settings/EditProfile.vue'),
+    component: () => import('src/pages/user/Settings/EditProfile.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -13,11 +13,11 @@ const system_router: MenuRouter[] = [
   },{
     path: 'system',
     title: 'menu.system',
-    component: () => import('src/pages/settings/SystemSettings.vue'),
+    component: () => import('src/pages/user/Settings/SystemSettings.vue'),
   },{
     path: 'system/users',
     title: 'menu.users',
-    component: () => import('src/pages/settings/management/ResponsibleMaster.vue'),
+    component: () => import('src/pages/user/Settings/management/ResponsibleMaster.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.UserUpdate]
@@ -26,7 +26,7 @@ const system_router: MenuRouter[] = [
   },{
     path: 'system/branches',
     title: 'menu.branches',
-    component: () => import('src/pages/settings/management/BranchMaster.vue'),
+    component: () => import('src/pages/user/Settings/management/BranchMaster.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.BranchUpdate]
@@ -35,7 +35,7 @@ const system_router: MenuRouter[] = [
   },{
     path: 'system/template',
     title: 'menu.template',
-    component: () => import('src/pages/settings/management/TemplateMaster.vue'),
+    component: () => import('src/pages/user/Settings/management/TemplateMaster.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.BranchUpdate]
@@ -44,7 +44,7 @@ const system_router: MenuRouter[] = [
   },{
     path: 'system/item',
     title: 'menu.item',
-    component: () => import('src/pages/settings/management/ItemMaster.vue'),
+    component: () => import('src/pages/user/Settings/management/ItemMaster.vue'),
     meta: {
       requiresAuth: true,
       permission: [UserPermissionNames.BranchUpdate]
