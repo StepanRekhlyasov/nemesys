@@ -6,14 +6,14 @@ import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import ClientFactoryTable from './components/ClientFactoryTable.vue';
 import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { TableRow } from './types';
+import { ClientFactoryTableRow } from './types';
 import { clientFactoriesToTableRows } from './handlers/clientFactory';
 
 const { t } = useI18n({ useScope: 'global' });
 const adminClientFactory = useAdminClientFactory()
 
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
-const tableRows = ref<TableRow[]>([])
+const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
 const isClientFactoryDrawer = ref(false)
 const pagination = ref({
@@ -24,7 +24,7 @@ const pagination = ref({
     // rowsNumber: xx if getting data from a server
 });
 
-const clientFactoryDrawerHandler = (item: TableRow) => {
+const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
 
     activeClientFactoryItem.value = adminClientFactory.clientFactories.find((factory) => factory.id === item.id) as ClientFactory

@@ -1,6 +1,6 @@
-import { TableColumn } from '../types';
+import { ClientFactoryTableColumn } from '../types';
 
-export const tableColumnsSavedCriteriaList: TableColumn[] = [
+export const tableColumnsSavedCriteriaList: ClientFactoryTableColumn[] = [
     {
         name: 'search condition name',
         required: true,

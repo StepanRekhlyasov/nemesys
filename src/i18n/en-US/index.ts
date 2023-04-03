@@ -1158,7 +1158,12 @@ export default {
     masterData: 'Master data',
     lastReflected: 'Last reflected date and time',
     changeBasicInformation: 'Change basic information',
-    lastCaptured: 'Last captured date and time'
+    lastCaptured: 'Last captured date and time',
+    officeDetails: 'Office Details',
+    companyWideBOHistory: 'Company-wide BO history',
+    headOffice: 'Head Office',
+    reflectionHistory: 'Reflection history',
+    importHistory: 'Import history'
   },
   inquiry: {
     unanswered: 'unanswered',
