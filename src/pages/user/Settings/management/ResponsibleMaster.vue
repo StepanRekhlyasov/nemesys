@@ -126,6 +126,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import SearchField from 'src/components/SearchField.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import { getAllBranches, getVisibleColumns } from './handlers/ResponsibleMaster';
+import { useUserStore } from 'src/stores/user';
 
 export default {
   name: 'responcibleMasterManagement',
@@ -163,6 +164,7 @@ export default {
       rowsPerPage: 10
     });
     const selected: Ref<User[]> = ref([])
+    const userStore = useUserStore()
 
     const columns = computed<QTableProps['columns']>(() => [
       {
@@ -227,7 +229,7 @@ export default {
 
     const visibleColumns = ref<string[]>()
     onMounted(() => {
-      visibleColumns.value =  getVisibleColumns(columns.value, isAdmin)
+      visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
     })
 
     watch(() => organization.currentOrganizationId, () => {
@@ -342,9 +344,10 @@ export default {
         }).onOk(async () => {
           try {
             loading.value = true;
-            const boRef = doc(db, 'users/' + user.uid);
-            await updateDoc(boRef, {
-              deleted: true
+            await userStore.editUser(user.id, {
+              deleted: true,
+              deletedAt: serverTimestamp(),
+              updated_at: serverTimestamp()
             })
             loadUsersList();
             Alert.success($q, t)
