@@ -40,254 +40,41 @@
 
         <!-- Fix Information -->
         <q-card-section>
-          <edit-view-component
-            :edit="edit.includes('info')"
-            :label="$t('applicant.list.fixEmployment.info')"
-            @openEdit="edit.push('info')"
-            @closeEdit="edit=edit.filter(i => i !== 'info')"
-            @onSave="save('info')">
-
-            <div class="row q-pb-sm">
-              <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" :value="fixData.status" valueClass="text-uppercase">
-                <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';disableChange ()"/>
-                <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" />
-              </labelField>
-
-              <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.data">
-                <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['data']" :disable="loading">
-                  <template v-slot:prepend>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="data['data']" mask="YYYY/MM/DD">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </labelField>
-            </div>
-            
-            <template v-if="data['status'] == 'ng'">              
-              <div class="row q-pb-sm">  
-                <labelField 
-                  :edit="edit.includes('info') " 
-                  :label="$t('applicant.list.fixEmployment.reason')"
-                  :value="fixData.reason? $t('applicant.list.fixEmployment.'+fixData.reason) : ''"
-                  valueClass="col-9">
-                  <div class="row">
-                    <div class="col-9">
-                      <q-radio v-model="data['reason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" @click="changeStatus" />
-                      <q-radio v-model="data['reason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" @click="changeStatus" />
-                      <q-radio v-model="data['reason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" @click="changeStatus" />
-                      <q-radio v-model="data['reason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" @click="changeStatus" />
-                    </div>
-                    <div class="col-3">
-                      <q-select 
-                        v-if="data['reason']" 
-                        v-model="data['reasonDetal']"
-                        :options="statusOptions"                        
-                        emit-value map-options dense outlined
-                        :label="$t('common.pleaseSelect')" 
-                      />
-                    </div>
-                  </div>
-                </labelField>
-              </div>
-            </template>
-
-            <div class="row q-pb-sm">            
-              <labelField 
-                :edit="edit.includes('info')"
-                :value="usersListOption
-                  .filter(user => user.value === data['contactPerson'])
-                  .map(user => user.label).join('')"
-                :label="$t('applicant.list.fixEmployment.contactPerson')"
-                valueClass="col-9">  
-
-                <q-select
-                  v-if="edit.includes('info')"
-                  v-model="data['contactPerson']"
-                  :disable="loading"
-                  emit-value map-options dense outlined
-                  :options="usersListOption" 
-                  :label="$t('common.pleaseSelect')" />
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField 
-                :edit="edit.includes('info')" 
-                :label="$t('applicant.list.fixEmployment.memo')" 
-                :value="fixData['memo']" valueClass="col-9">
-
-                <q-input dense outlined bg-color="white"
-                  v-model="data['memo']" :disable="loading" />
-              </labelField>
-            </div>
-          </edit-view-component>
+          <FixInfoSection 
+            :edit="edit" 
+            :loading="loading" 
+            :fix-data="fixData" 
+            :edit-data="data"
+            :users-list-option="usersListOption"
+            @save="save('info')"
+            @close-edit="edit=edit.filter(i => i !== 'info')" 
+            @open-edit="edit.push('info')"/>
         </q-card-section>
 
         <!-- Job-search Information  -->
         <q-card-section>
-          <edit-view-component
-            :edit="edit.includes('jobSearchInfo')"
-            :label="$t('applicant.list.fixEmployment.jobSearchInfo')"
-            @openEdit="edit.push('jobSearchInfo')"
-            @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')"
-            @onSave="save('jobSearchInfo')"
-            :disableButton="disableLevel < 1">
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" :value="fixData.inspectionStatus">
-                <q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';disableChange()" :disable="disableLevel < 1"/>
-                <q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 1"/>
-              </labelField>
-              
-              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.date')" :value="fixData.inspectionDate">                
-                <q-input dense outlined bg-color="white" v-model="data['inspectionDate']"  :disable="loading || disableLevel < 1">
-                  <template v-slot:prepend>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="data['inspectionDate']" mask="YYYY/MM/DD">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </labelField>
-            </div>
-            
-            <div class="row q-pb-sm" v-if="data['inspectionStatus'] == 'ng'">
-              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" :value="fixData.reasonNG" valueClass="col-9">
-                <div class="row">
-                    <div class="col-9">
-                      <q-radio v-model="data['reasonNG']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" @click="changeJobStatus" />
-                      <q-radio v-model="data['reasonNG']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" @click="changeJobStatus" />
-                      <q-radio v-model="data['reasonNG']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" @click="changeJobStatus" />
-                      <q-radio v-model="data['reasonNG']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" @click="changeJobStatus" />
-                    </div>
-                    <div class="col-3">
-                      <q-select 
-                        v-if="data['reasonNG']" 
-                        v-model="data['reasonJobDetal']"
-                        :options="statusJobOptions"                        
-                        emit-value map-options dense outlined
-                        :label="$t('common.pleaseSelect')" 
-                      />
-                    </div>
-                  </div>
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobSearchInfo')" 
-                :label="$t('applicant.list.fixEmployment.inspection.chargeOfFacility')" 
-                :value="fixData.chargeOfFacility">
-                <q-input v-if="edit" dense outlined bg-color="white"
-                  v-model="data['chargeOfFacility']" :disable="loading || disableLevel < 1" />
-              </labelField>              
-              
-              <labelField :edit="edit.includes('jobSearchInfo')" 
-                :label="$t('applicant.list.fixEmployment.inspection.jobTitle')" 
-                :value="fixData.jobTitle">
-                <q-input dense outlined bg-color="white"
-                  v-model="data['jobTitle']" :disable="loading || disableLevel < 1" />
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')" 
-                :value="usersListOption
-                  .filter(user => user.value === data['contact'])
-                  .map(user => user.label).join('')">
-                <q-input dense outlined bg-color="white"
-                  v-model="data['contact']" :disable="loading || disableLevel < 1" />
-              </labelField>
-              <labelField
-                :edit="edit.includes('jobSearchInfo')"
-                :label="$t('applicant.list.fixEmployment.inspection.comments')"
-                :value="fixData.comments">
-                <q-input dense outlined bg-color="white"
-                  v-model="data['comments']" :disable="loading || disableLevel < 1" />
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')" :value="fixData.notesInspection" valueClass="col-9">
-                <q-input dense outlined bg-color="white"
-                  v-model="data['notesInspection']" :disable="loading || disableLevel < 1" />
-              </labelField>
-            </div>
-          </edit-view-component>
+          <JobSearchInfoSection
+            :edit="edit" 
+            :loading="loading" 
+            :fix-data="fixData" 
+            :edit-data="data"
+            :users-list-option="usersListOption"
+            @save="save('jobSearchInfo')"
+            @close-edit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
+            @open-edit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
         </q-card-section>
 
         <!-- Information on job offers -->
         <q-card-section>
-          <edit-view-component
-            :edit="edit.includes('jobOffersInfo')"
-            :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
-            @openEdit="edit.push('jobOffersInfo')"
-            @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')"
-            @onSave="save('jobOffersInfo')"
-            :disableButton="disableLevel < 2">
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" :value="fixData.offerStatus">
-                <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';disableChange()" :disable="disableLevel < 2"/>
-                <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="disableChange" :disable="disableLevel < 2"/>
-              </labelField>
-
-              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.date')" :value="fixData.offerDate" >
-                <q-input dense outlined bg-color="white" v-model="data['offerDate']"  :disable="loading || disableLevel < 2">
-                  <template v-slot:prepend>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="data['offerDate']" mask="YYYY/MM/DD">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" :value="fixData.offerReasonNG" valueClass="col-9">                
-                <q-input dense outlined bg-color="white"
-                  v-model="data['offerReasonNG']" :disable="loading || disableLevel < 2" />
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.chargeOfOffer')"
-                :value="usersListOption
-                  .filter(user => user.value === data['chargeOfOffer'])
-                  .map(user => user.label).join('')"
-                valueClass="col-9">
-                <q-select
-                  v-model="data['chargeOfOffer']"
-                  :disable="loading || disableLevel < 2"
-                  emit-value map-options dense outlined
-                  :options="usersListOption" :label="$t('common.pleaseSelect')" />
-              </labelField>
-            </div>
-
-            <div class="row q-pb-sm">
-              <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.memo')" :value="fixData.offerMemo" valueClass="col-9">
-                <q-input  dense outlined bg-color="white"
-                  v-model="data['offerMemo']" :disable="loading || disableLevel < 2" />
-              </labelField>
-            </div>
-          </edit-view-component>
+          <JobOffersInfoSection
+            :edit="edit" 
+            :loading="loading" 
+            :fix-data="fixData" 
+            :edit-data="data"
+            :users-list-option="usersListOption"
+            @save="save('jobOffersInfo')"
+            @close-edit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
+            @open-edit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
         </q-card-section>
 
         <!-- Employment Information -->
@@ -388,7 +175,9 @@ import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import labelField from 'src/components/form/LabelField.vue';
-import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
+import FixInfoSection from './FixInfoSection.vue';
+import JobSearchInfoSection from './JobSearchInfoSection.vue';
+import JobOffersInfoSection from './JobOffersInfoSection.vue';
 
 export default {
   name: 'FixEmployCreate',
@@ -410,7 +199,10 @@ export default {
   },
   components: {
     editViewComponent,
-    labelField
+    labelField,
+    FixInfoSection,
+    JobSearchInfoSection,
+    JobOffersInfoSection
   },
   setup(props, context: SetupContext) {
     const db = getFirestore();
@@ -425,9 +217,7 @@ export default {
     const show = ref<string[]>([])
     const usersListOption = ref<selectOptions[]>([]);
     const clientOptions = applicantStore.state.clientList;
-    const officeOptions = ref<selectOptions[]> ([]);
-    const statusOptions = ref<selectOptions[]> ([]);
-    const statusJobOptions = ref<selectOptions[]> ([])
+    const officeOptions = ref<selectOptions[]> ([]); 
 
     const options = [
       'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
@@ -460,10 +250,10 @@ export default {
           });
         });
         usersListOption.value = list;
-        disableChange();
       })
     }
     loadUser();
+    disableChange();
 
     return {
       data,
@@ -476,49 +266,8 @@ export default {
       usersListOption,
       disableLevel,
       applicantStore,
-      statusOptions,
-      statusJobOptions,
 
       disableChange,
-      changeStatus() {
-        if (data.value['status'] && data.value['status'] == 'ng') {
-          switch(data.value['reason']){
-            case('notApplicable'):
-              statusOptions.value = notApplicableFixList;
-            break;
-            case('decided'):
-              statusOptions.value = decidedFixList;
-            break;
-            case('notCovered'):
-              statusOptions.value = [];
-            break;
-            case('registrationDeclined'):
-              statusOptions.value = registrationDeclinedFixList;
-            break;
-          }
-          data.value['reasonDetal'] = '';
-        }
-      },
-      changeJobStatus() {
-        if (data.value['inspectionStatus'] && data.value['inspectionStatus'] == 'ng') {
-          switch(data.value['reasonNG']){
-            case('notApplicable'):
-              statusJobOptions.value = notApplicableFixList;
-            break;
-            case('decided'):
-              statusJobOptions.value = decidedFixList;
-            break;
-            case('notCovered'):
-              statusJobOptions.value = [];
-            break;
-            case('registrationDeclined'):
-              statusJobOptions.value = registrationDeclinedFixList;
-            break;
-          }
-          data.value['reasonJobDetal'] = '';
-        }
-
-      },
       save(type: string) {
         let retData = {};
         switch(type){
@@ -553,6 +302,7 @@ export default {
         context.emit('updateDoc', retData);
         context.emit('updateStatus')
         edit.value=edit.value.filter(i => i !== type)
+        disableChange()
       },
       async saveDoc() {
         try {
