@@ -8,7 +8,7 @@
 		:disableButton="disableLevel < 1">
 
 		<div class="row q-pb-sm">
-			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" :value="fixData.inspectionStatus">
+			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" :value="fixData.inspectionStatus" valueClass="text-uppercase">
 				<q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" :disable="disableLevel < 1"/>
 				<q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" :disable="disableLevel < 1"/>
 			</labelField>
