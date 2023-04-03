@@ -1,6 +1,6 @@
-import { TableColumn } from '../types'
+import { ClientFactoryTableColumn } from '../types'
 
-export const tableColumnsClientFactory: TableColumn[] = [
+export const tableColumnsClientFactory: ClientFactoryTableColumn[] = [
     {
         name: 'name',
         required: true,

@@ -3,6 +3,7 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
+import CFDrawerTabs from './components/CFDrawerTabs.vue';
 
 const props = defineProps<{
     isDrawer: boolean,
@@ -36,6 +37,9 @@ const hideDrawer = () => {
                 </q-card-section>
                 <q-card-section class="bg-grey-2 q-pa-none">
                     <CFDrawerBody v-if="selectedItem" :selectedItem="selectedItem"/>
+                </q-card-section>
+                <q-card-section class="bg-grey-3">
+                    <CFDrawerTabs :selectedItem="selectedItem" />
                 </q-card-section>
             </q-card>
         </q-scroll-area>

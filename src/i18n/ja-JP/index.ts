@@ -1141,7 +1141,12 @@ export default {
     masterData: 'マスタデータ',
     lastReflected: '最終反映日時',
     changeBasicInformation: '基本情報変更',
-    lastCaptured: '最終取り込み日時'
+    lastCaptured: '最終取り込み日時',
+    officeDetails: '事業所詳細情報',
+    companyWideBOHistory: '全社BO履歴',
+    headOffice: '本社事業所',
+    reflectionHistory: '反映履歴',
+    importHistory: '取込履歴'
   },
   inquiry: {
     unanswered: '未返信',
