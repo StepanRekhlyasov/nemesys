@@ -52,7 +52,7 @@
 <script>
 //import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
-import fixEmployInfo from './fix/fixEmployInfoTab.vue';
+import fixEmployInfo from './fixEmploymentTab/fixEmployInfoTab.vue';
 import contactInfo from './contactInfoTab.vue';
 import applicationInfo from './applicantTab/applicationInfoTab.vue';
 import attendanceInfo from './attendanceTab/attendanceTab.vue';
