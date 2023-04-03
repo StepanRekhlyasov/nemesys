@@ -1,6 +1,6 @@
 <template>
-  <edit-view-component
-    :edit="edit"
+  <DropDownEditGroup
+    :isEdit="edit"
     :label="$t('applicant.list.info.attraction')"
     @openEdit="edit = true"
     @closeEdit="edit=false"
@@ -116,7 +116,7 @@
         <q-input v-if="edit" outlined dense v-model="data['memo']" bg-color="white" />
       </div>
     </div>
-  </edit-view-component>
+  </DropDownEditGroup>
 </template>
 
 <script lang="ts">
@@ -130,7 +130,7 @@ import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { getFirestore } from '@firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import hiddenText from 'src/components/hiddingText.component.vue';
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 
 export default {
   name: 'attractionInformationComponent',
@@ -146,7 +146,7 @@ export default {
   },
   components: {
     hiddenText,
-    editViewComponent
+    DropDownEditGroup
   },
   setup(props) {
     const db = getFirestore();

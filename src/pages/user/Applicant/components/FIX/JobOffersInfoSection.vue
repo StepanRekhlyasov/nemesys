@@ -1,6 +1,6 @@
 <template>
-    <edit-view-component
-      :edit="edit.includes('jobOffersInfo')"
+    <DropDownEditGroup
+      :isEdit="edit.includes('jobOffersInfo')"
       :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
       @openEdit="emit('openEdit')"
       @closeEdit="emit('closeEdit')"
@@ -57,11 +57,11 @@
             v-model="data['offerMemo']" :disable="loading || disableLevel < 2" />
         </labelField>
       </div>
-    </edit-view-component>  
+    </DropDownEditGroup>  
 </template>
 
 <script lang="ts" setup>
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'

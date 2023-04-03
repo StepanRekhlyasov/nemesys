@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { defineProps, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryDetailTabs } from '../types'
+import { ClientFactoryDetailTabs } from '../../types'
 
-const props = defineProps<{
+defineProps<{
     selectedItem: ClientFactory | null
 }>()
 const { t } = useI18n({ useScope: 'global' });
@@ -29,7 +30,7 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
     </q-tabs>
 
     <q-tab-panel :name="ClientFactoryDetailTabs.OfficeDetails">
-
+        <CFDrawerOfficeDetails />
     </q-tab-panel>
     <q-tab-panel :name="ClientFactoryDetailTabs.CompanyWideBOHistory">
 

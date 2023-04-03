@@ -1,6 +1,6 @@
 <template>  
-  <edit-view-component
-    :edit="edit.includes('info')"
+  <DropDownEditGroup
+    :isEdit="edit.includes('info')"
     :label="$t('applicant.list.fixEmployment.info')"
     @openEdit="emit('openEdit')"
     @closeEdit="emit('closeEdit')"
@@ -85,11 +85,11 @@
           v-model="data['memo']" :disable="loading" />
       </labelField>
     </div>
-  </edit-view-component>
+  </DropDownEditGroup>
 </template>
 
 <script lang="ts" setup>
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';

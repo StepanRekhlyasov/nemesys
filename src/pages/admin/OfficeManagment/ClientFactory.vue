@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAdminClientFactory } from 'src/stores/admin/clientFactory';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
-import ClientFactoryTable from './components/ClientFactoryTable.vue';
+import ClientFactoryTable from './components/ClientFactory/ClientFactoryTable.vue';
 import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTableRow } from './types';

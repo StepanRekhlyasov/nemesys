@@ -1,7 +1,7 @@
 <template>
 
-  <edit-view-component
-    :edit="edit"
+  <DropDownEditGroup
+    :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
     @closeEdit="edit=false"
@@ -172,7 +172,7 @@
         <q-input v-if="edit" outlined dense v-model="data['addres']" />
       </div>
     </div>
-  </edit-view-component>
+  </DropDownEditGroup>
 </template>
 <script lang="ts">
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -181,7 +181,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { applicationMethod, employmentStatus } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 
 export default {
   name: 'ApplicantInformationComponent',
@@ -197,7 +197,7 @@ export default {
   },
   components: {
     hiddenText,
-    editViewComponent
+    DropDownEditGroup
   },
   setup(props) {
     const edit = ref(false);

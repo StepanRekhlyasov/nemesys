@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
-import consts from '../consts';
-import { ClientFactoryTableColumn, ClientFactoryTableRow } from '../types';
+import consts from '../../consts';
+import { ClientFactoryTableColumn, ClientFactoryTableRow } from '../../types';
 
 const props = defineProps<{
     rows: ClientFactoryTableRow[],
