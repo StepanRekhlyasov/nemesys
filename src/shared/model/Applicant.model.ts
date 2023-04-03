@@ -83,12 +83,35 @@ export interface ApplicantFix {
   id: string;
   created_user?: string;
   created_at: string;
-  endDate: string;
-  admissionDate: string;
+  // Fix Info 
   status: 'ok' | 'ng';
+  reason: string;
+  reasonDetal?: string;
+  data: string;
+  contactPerson: string;
+  memo: string;
+  // Job Search Info 
   inspectionStatus: 'ok' | 'ng';
+  inspectionDate: string;
+  reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  reasonJobDetal?: string;
+  chargeOfFacility: string;
+  jobTitle?: string;
+  contact: string;
+  comments: string;
+  notesInspection: string;
+  // Job Offers Info
   offerStatus: 'ok' | 'ng';
+  offerReasonNG: string;
+  chargeOfOffer: string;
+  offerMemo: string;
+  // Employment Info
   admissionStatus: 'ok' | 'ng';
+  admissionDate: string;
+  reasonNotJoining: string;
+  chargeOfAdmission: string;
+  endDate: string;
+  admissionMemo: string;
 }
 
 export interface ApplicantMemo {

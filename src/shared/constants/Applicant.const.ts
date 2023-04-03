@@ -95,6 +95,36 @@ export const attendantStatus = computed(() =>{
   }]
 })
 
+export const notApplicableFixList = [{
+  label: t('applicant.list.fixEmployment.age'),
+  value: 'age'
+}, {
+  label: t('applicant.list.fixEmployment.antiSocial'),
+  value: 'antiSocial'
+}, {
+  label: t('applicant.list.fixEmployment.age'),
+  value: 'introductionsNotAllowed'
+}, {
+  label: t('applicant.list.fixEmployment.employmentUnacceptable'),
+  value: 'employmentUnacceptable'
+}]
+
+export const decidedFixList = [{
+  label: t('applicant.list.fixEmployment.dispatch'),
+  value: 'dispatch'
+}, {
+  label: t('applicant.list.fixEmployment.directHire'),
+  value: 'directHire'
+}]
+
+export const registrationDeclinedFixList = [{
+  label: t('applicant.list.fixEmployment.noDesiredProjects'),
+  value: 'noDesiredProjects'
+}, {
+  label: t('applicant.list.fixEmployment.noDesireWork'),
+  value: 'noDesireWork'
+}]
+
 export const daysList = computed(() => [{
   label: t('weekDay.sunday'),
   value: 'sunday'
