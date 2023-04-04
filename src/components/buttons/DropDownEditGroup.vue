@@ -10,8 +10,10 @@ withDefaults(defineProps<{
     isButton?: boolean
     label?: string
     isDisabledButton?: boolean
+    theme?: string
 }>(), {
-  isButton: true
+  isButton: true,
+  theme: 'primary'
 })
 
 const emit = defineEmits<{
@@ -25,7 +27,7 @@ const emit = defineEmits<{
 <template>
     <div class="row justify-between">
         <div class="flex self-center">
-          <span class="text-primary text-h6">{{ label }}</span>
+          <span :class="`text-${theme} text-h6`">{{ label }}</span>
           <div v-if="isButton">
             <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
               class="text-grey-9" @click="show = false" v-if="show" />
@@ -35,16 +37,16 @@ const emit = defineEmits<{
         </div>
         <div class="col-3 text-right" v-if="show || !isButton">
           <q-btn v-if="!isEdit" 
-            :label="t('common.edit')" color="primary" 
+            :label="t('common.edit')" :color="theme" 
             outline  icon="edit" @click="emit('openDropDown')" 
             class="no-shadow q-ml-lg" size="sm" :disable="isDisabledButton" />
           <q-btn v-if="isEdit" 
-            :label="t('common.save')" color="primary" 
+            :label="t('common.save')" :color="theme" 
             @click="emit('onSave')" size="sm" 
             :disable="isDisabledButton" />
           <q-btn v-if="isEdit" 
             :label="t('common.cancel')" class="q-ml-md" 
-            outline color="primary" @click="emit('closeDropDown')"
+            outline :color="theme" @click="emit('closeDropDown')"
             size="sm" />
         </div>
     </div>
