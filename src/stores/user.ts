@@ -1,4 +1,4 @@
-import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, query, startAt, where } from 'firebase/firestore';
+import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { User } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -50,6 +50,13 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  async function editUser(id: string, user: PartialWithFieldValue<User>) {
+    const userRef = doc(db, 'users/' + id);
+    await updateDoc(userRef, {
+      ...user
+    })
+  }
 
-  return { getAllUsers, getUserById }
+
+  return { getAllUsers, getUserById, editUser }
 })

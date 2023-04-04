@@ -15,6 +15,7 @@ export interface User {
   create_at: dataObject;
   updated_at: dataObject;
   disableTime?: dataObject;
+  deletedAt?: dataObject;
 }
 
 export interface Role {
