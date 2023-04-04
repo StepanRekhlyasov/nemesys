@@ -1,6 +1,6 @@
 <template>
-  <edit-view-component
-		:edit="edit.includes('jobSearchInfo')"
+  <DropDownEditGroup
+		:isEdit="edit.includes('jobSearchInfo')"
 		:label="$t('applicant.list.fixEmployment.jobSearchInfo')"
 		@openEdit="emit('openEdit')"
 		@closeEdit="emit('closeEdit')"
@@ -91,11 +91,11 @@
 					v-model="data['notesInspection']" :disable="loading || disableLevel < 1" />
 			</labelField>
 		</div>
-	</edit-view-component>
+	</DropDownEditGroup>
 </template>
 
 <script lang="ts" setup>
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 

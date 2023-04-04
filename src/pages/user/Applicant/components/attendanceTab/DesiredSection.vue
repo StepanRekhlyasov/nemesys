@@ -1,6 +1,6 @@
 <template>
-  <edit-view-component
-    :edit="desiredEdit"
+  <DropDownEditGroup
+    :isEdit="desiredEdit"
     :label="'1.'+ $t('applicant.attendant.desiredConditions')"
     @openEdit="desiredEdit = true"
     @closeEdit="desiredEdit=false"
@@ -222,7 +222,7 @@
           v-model="desiredData['jobSearchPriorities3']" :disable="loading" />
       </div>
     </div>
-  </edit-view-component>
+  </DropDownEditGroup>
 </template>
 
 <script lang="ts">
@@ -232,13 +232,13 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import hiddenText from 'src/components/hiddingText.component.vue';
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 
 export default {
   name: 'desiredConditions',
   components: {
     hiddenText,
-    editViewComponent
+    DropDownEditGroup
   },
   props: {
     applicant: {

@@ -2,8 +2,8 @@
   <q-form @submit="save">
 
 
-    <edit-view-component
-      :edit="edit"
+    <DropDownEditGroup
+      :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
       @openEdit="edit = true"
       @closeEdit="edit=false"
@@ -143,7 +143,7 @@
             v-model="data['daysVisitAtWork']" :disable="loading" />
         </div>
       </div>
-    </edit-view-component>
+    </DropDownEditGroup>
   </q-form>
 </template>
 
@@ -153,7 +153,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 
 export default {
   name: 'personalStatusComponent',
@@ -168,7 +168,7 @@ export default {
     }
   },
   components: {
-    editViewComponent
+    DropDownEditGroup
   },
   setup(props) {
     const edit = ref(false);
