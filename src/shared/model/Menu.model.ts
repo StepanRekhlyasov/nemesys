@@ -19,6 +19,7 @@ export interface Meta {
 }
 
 export enum MenuParent{
+  DashboardData = 'DASHBOARD_DATA',
   ClientMenagment = 'CLIENT_MENAGMENT',
   SystemSettings = 'SYSTEM_SETTINGS',
   ApplicantManagement = 'APPLICANT_MANAGEMENT',

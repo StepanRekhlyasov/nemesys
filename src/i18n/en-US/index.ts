@@ -103,6 +103,7 @@ export default {
     clientList: 'Client List/Search',
     clientReg: 'Client Registration',
     dashboard: 'Dashboard',
+    applicantProgress: 'Applicant Progress',
     system: 'System Settings',
     totalization: 'Totalization',
     report: 'Report',
@@ -983,6 +984,31 @@ export default {
 
       // Memo Tab
       content: 'Content'
+    },
+    progress: {
+      title: 'Applicant Progress',
+      filters: {
+        branch: 'Branch',
+        userInCharge: 'User in charge',
+        prefecture: 'Prefecture',
+        month: 'Month'
+      },
+      entry: 'Entry',
+      retire: 'Retire',
+      working: 'Working',
+      status: {
+        waitContact: 'Wait-Contact',
+        waitAttent: 'Wait-Attent',
+        waitFix: 'Wait-FIX',
+        waitVisit: 'Wait-Visit',
+        waitOffer: 'Wait-Offer',
+        waitEntry: 'Wait-Entry',
+        waitTermination: 'Wait-Termination',
+      },
+      card: {
+        applicationDate: 'Date of the application',
+        lastCotactDate: 'Date of the last contact',
+      }
     }
   },
   backOrder: {
