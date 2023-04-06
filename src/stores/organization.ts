@@ -1,4 +1,4 @@
-import { collection, doc, endAt, Firestore, getDocs, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, endAt, Firestore, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -13,7 +13,7 @@ interface OrganizationState {
 const organization = 'organization'
 
 export const useOrganization = defineStore('organization', () => {
-
+  const db = getFirestore()
   const state = ref<OrganizationState>({
     organizations: [],
     activeOrganization: 0,
@@ -114,6 +114,13 @@ export const useOrganization = defineStore('organization', () => {
     })
   }
 
+  async function isCodeUnique(code: string) {
+    const organizationRef = collection(db, 'organization/')
+    const organizationQuery = query(organizationRef, where('code', '==', code))
+    const querySnapshot = await getDocs(organizationQuery)
+    return querySnapshot.size === 0
+  }
+
   async function getBranches(db: Firestore, organization_id: string, search?: BranchesSearch) {
     const businesses = await getBusinesses(db, organization_id)
     const businessesIds = Object.keys(businesses)
@@ -173,5 +180,5 @@ export const useOrganization = defineStore('organization', () => {
   }
 
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch }
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique }
 })
