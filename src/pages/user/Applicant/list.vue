@@ -119,7 +119,7 @@
             <div class="col-10">
               <div class="row">
                 <div class="col-9 flex items-center">
-                  <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span> (25) {{selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex)}}
+                  <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span>{{ `(${age})`}} {{ selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex) }}
                   <div class="q-pl-md">
                     <q-select :options="statusOption" v-model="selectedApplicant.status" color="black" label-color="black"
                       rounded standout bg-color="white" dense @update:model-value="changeApplicantStatus" emit-value map-options/>
@@ -208,6 +208,7 @@ import {
 import { statusList } from 'src/shared/constants/Applicant.const';
 import detailComponent from './components/detail.vue';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ageCount, countRank} from 'src/shared/utils/Applicant.utils';
 
 export default {
   name: 'applicantList',
@@ -230,6 +231,7 @@ export default {
     const fileUploadRef = ref({});
     
     const statusOption = ref(statusList);
+    const age = computed(()=>selectedApplicant.value['dob']?ageCount(selectedApplicant.value['dob']):'0')
 
     //const selectedRows = ref([]);
 
@@ -293,10 +295,14 @@ export default {
     async function updateApplicant(applicant) {
       const applicantRef = doc(db, 'applicants/'+selectedApplicant.value.id);
       await updateDoc(applicantRef, applicant)
-      selectedApplicant.value = {...selectedApplicant.value, ...applicant}
+      selectedApplicant.value = {
+        ...selectedApplicant.value,
+        ...applicant,
+        staffRank: countRank(selectedApplicant.value)}
     };
 
     return {
+      age,
       columns,
       filters,
       pagination,

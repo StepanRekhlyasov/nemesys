@@ -100,7 +100,7 @@
         {{ $t('applicant.list.info.birth') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.dob || ''}}</span>
+        <span v-if="!edit">{{ applicant.dob? applicant.dob+` (${age})` :''}}</span>
         <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -176,12 +176,13 @@
 </template>
 <script lang="ts">
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { applicationMethod, employmentStatus } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import editViewComponent from 'src/components/editView.component.vue';
+import { ageCount } from 'src/shared/utils/Applicant.utils';
 
 export default {
   name: 'ApplicantInformationComponent',
@@ -218,6 +219,7 @@ export default {
       lat: props?.applicant['lat'] || '',
       postCode: props?.applicant['postCode'] || '',
     })
+    const age = computed(()=>data.value['dob']?ageCount(data.value['dob']):'')
     const { t } = useI18n({
       useScope: 'global',
     });
@@ -226,6 +228,7 @@ export default {
       edit,
       loading,
       data,
+      age,
       applicationMethodOption,
       employmentStatusOption,
 
