@@ -10,6 +10,7 @@ export default {
     email: 'Email',
     password: 'Password',
     button: 'Sign In',
+    enterValidCode: 'Please enter a valid organization code',
   },
   form: {
     required: 'Field is required',
@@ -64,6 +65,7 @@ export default {
     openArea: 'Open Display Area',
     yen: 'yen',
     year: 'year',
+    userNotFound: 'User not found'
   },
   smoking: {
     no: 'No',
@@ -147,8 +149,11 @@ export default {
         addBusiness: 'Add business',
         addBranch: 'Add branch',
         addOrganization: 'Add organization',
-        organizationCode: 'Code',
-        staffName: 'Staff name'
+        organizationCode: 'Organization code',
+        staffName: 'Staff name',
+        onlyUppercase: 'Only the uppercase alphabet is allowed',
+        codeMustBeUnique: 'Code must be unique',
+        codeNotUnique: 'Found several organizations with the same code. Code must be unique'
       },
       operationHistory: 'Operational history',
     }
@@ -745,7 +750,7 @@ export default {
         jobTitle: 'Job Title',
         contact: 'Contact Person',
         comments: 'Comments (A-E)',
-        notesInspection: 'Notes for job inspection',        
+        notesInspection: 'Notes for job inspection',
         notApplicable: 'Not applicable',
         decided: 'Decided by other companies',
         notCovered: 'Not covered',
@@ -1158,7 +1163,12 @@ export default {
     masterData: 'Master data',
     lastReflected: 'Last reflected date and time',
     changeBasicInformation: 'Change basic information',
-    lastCaptured: 'Last captured date and time'
+    lastCaptured: 'Last captured date and time',
+    officeDetails: 'Office Details',
+    companyWideBOHistory: 'Company-wide BO history',
+    headOffice: 'Head Office',
+    reflectionHistory: 'Reflection history',
+    importHistory: 'Import history'
   },
   inquiry: {
     unanswered: 'unanswered',

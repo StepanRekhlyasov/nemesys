@@ -1,4 +1,4 @@
-export interface TableColumn {
+export interface ClientFactoryTableColumn {
     name?: string,
     required?: boolean,
     align?: string,
@@ -7,7 +7,7 @@ export interface TableColumn {
     label?: string
 }
 
-export interface TableRow {
+export interface ClientFactoryTableRow {
         id: string,
         office: {
             name: string,
@@ -27,4 +27,12 @@ export interface OfficeMenuItem {
     center?: string,
     right?: string,
     click: () => void
+}
+
+export enum ClientFactoryDetailTabs {
+    OfficeDetails = 'officeDetails',
+    CompanyWideBOHistory = 'CompanyWideBOHistory',
+    HeadOffice = 'HeadOffice',
+    ReflectionHistory = 'ReflectionHistory',
+    ImportHistory = 'ImportHistory'
 }

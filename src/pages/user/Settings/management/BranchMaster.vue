@@ -87,14 +87,14 @@
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog" @hide="editBranch = undefined">
-     <DialogWrapper>
-       <BranchCreateForm @closeDialog="loadBranchesList(); openDialog = false;" :editBranch="editBranch" color="primary"/>
-      </DialogWrapper>
+    <DialogWrapper>
+      <BranchCreateForm @closeDialog="loadBranchesList(); openDialog = false;" :editBranch="editBranch" color="primary" />
+    </DialogWrapper>
   </q-dialog>
 </template>
 
 <script lang="ts">
-import { doc, getFirestore, updateDoc } from '@firebase/firestore';
+import { getFirestore, serverTimestamp } from '@firebase/firestore';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -110,7 +110,7 @@ export default {
   components: {
     BranchCreateForm,
     DialogWrapper
-},
+  },
   setup() {
     const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
@@ -231,10 +231,7 @@ export default {
         }).onOk(async () => {
           try {
             loading.value = true;
-            const boRef = doc(db, `organization/${organization.currentOrganizationId}/businesses/${branch.businessId}/branches/${branch.id}`);
-            await updateDoc(boRef, {
-              deleted: true
-            })
+            await organization.editBranch(db, { deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
             loadBranchesList();
             Alert.success($q, t)
           } catch (e) {

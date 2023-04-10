@@ -1,22 +1,22 @@
 <script lang="ts" setup>
 import { computed, ref, defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
-import consts from '../consts';
-import { TableColumn, TableRow } from '../types';
+import consts from '../../consts';
+import { ClientFactoryTableColumn, ClientFactoryTableRow } from '../../types';
 
 const props = defineProps<{
-    rows: TableRow[],
+    rows: ClientFactoryTableRow[],
     isFetching: boolean,
     pagination
 }>()
 const emit = defineEmits<{
-    (e: 'selectItem', item: TableRow),
+    (e: 'selectItem', item: ClientFactoryTableRow),
     (e: 'update:pagination', value)
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
 const columns = computed(() => {
-    return consts.tableColumnsClientFactory.map((column: TableColumn, index: number) => {
+    return consts.tableColumnsClientFactory.map((column: ClientFactoryTableColumn, index: number) => {
         column.label = t(consts.columnLabelsClientFactory[index])
         return column
     })
@@ -27,7 +27,7 @@ const getSelectedString = () => {
     return selected.value.length === 0 ? '' : `${t('common.numberOfSelections')}: ${selected.value.length}`
 }
 
-const selectItem = (item: TableRow) => {
+const selectItem = (item: ClientFactoryTableRow) => {
     emit('selectItem', item)
 }
 </script>

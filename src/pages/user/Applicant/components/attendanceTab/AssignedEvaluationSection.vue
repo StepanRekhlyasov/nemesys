@@ -1,6 +1,6 @@
 <template>
-  <edit-view-component
-  :edit="edit"
+  <DropDownEditGroup
+  :isEdit="edit"
   :label="'4.'+ $t('applicant.attendant.assignedEvaluation')"
   @openEdit="edit = true"
   @closeEdit="edit=false"
@@ -51,7 +51,7 @@
           v-model="data['remarks']" :disable="loading" />
       </div>
     </div>
-  </edit-view-component>
+  </DropDownEditGroup>
 </template>
 
 <script lang="ts">
@@ -60,8 +60,8 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
-import editViewComponent from 'src/components/editView.component.vue';
 import { getRank } from 'src/shared/utils/Applicant.utils';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 
 export default {
   name: 'assignedEvaluationComponent',
@@ -76,7 +76,7 @@ export default {
     }
   },
   components: {
-    editViewComponent
+    DropDownEditGroup
   },
   setup(props) {
     const edit = ref(false);

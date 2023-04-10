@@ -1,1 +1,28 @@
-export const creationRule = val => val && val.length > 0 || ''
+import { useOrganization } from 'src/stores/organization'
+import { i18n } from 'boot/i18n';
+
+const { t } = i18n.global
+
+export const creationRule = (val: string) => val && val.length > 0 || ''
+
+export const organizationCodeRule = async (val: string) => {
+
+  if (!/^[A-Z]+$/.test(val)) {
+    return t('menu.admin.organizationsTable.onlyUppercase')
+  }
+
+  return true
+}
+
+export const isCodeUniqueRule = async (val: string) => {
+  const organizationStore = useOrganization()
+
+  const isCodeUnique = await organizationStore.isCodeUnique(val)
+
+  if (!isCodeUnique) {
+    return t('menu.admin.organizationsTable.codeMustBeUnique')
+  }
+
+  return true
+}
+

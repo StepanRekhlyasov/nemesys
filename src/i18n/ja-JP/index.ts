@@ -10,6 +10,7 @@ export default {
     email: 'メールアドレス',
     password: 'パスワード',
     button: 'サインイン',
+    enterValidCode: '有効な組織のコードを入力してください'
   },
   form: {
     required: 'フィールドは必須です',
@@ -64,6 +65,7 @@ export default {
     openArea: '表示エリアを開く',
     yen: '円',
     year: '年',
+    userNotFound: 'ユーザーが見つかりません。'
   },
   smoking: {
     no: '無',
@@ -149,6 +151,9 @@ export default {
         addOrganization: '企業新規追加',
         organizationCode: '企業コード',
         staffName: 'スタッフ名',
+        onlyUppercase: '大文字のアルファベットのみが許可されています。',
+        codeMustBeUnique: 'コードはユニークである必要があります。',
+        codeNotUnique:'同じコードを持つ組織を複数が見つかりました。コードはユニークである必要があります。'
       },
       operationHistory: '稼働履歴',
     }
@@ -1153,7 +1158,12 @@ export default {
     masterData: 'マスタデータ',
     lastReflected: '最終反映日時',
     changeBasicInformation: '基本情報変更',
-    lastCaptured: '最終取り込み日時'
+    lastCaptured: '最終取り込み日時',
+    officeDetails: '事業所詳細情報',
+    companyWideBOHistory: '全社BO履歴',
+    headOffice: '本社事業所',
+    reflectionHistory: '反映履歴',
+    importHistory: '取込履歴'
   },
   inquiry: {
     unanswered: '未返信',

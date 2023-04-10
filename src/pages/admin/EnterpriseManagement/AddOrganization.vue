@@ -5,7 +5,8 @@
       <q-form @submit="addOrganization">
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.organizationCode">
-          <q-input v-model="organization.code" outlined dense color="accent" :rules="[creationRule]" :disable="loading" />
+          <q-input v-model="organization.code" outlined dense color="accent" :disable="loading"
+            :rules="[organizationCodeRule, isCodeUniqueRule]" debounce="1000" />
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.organizationName">
@@ -60,7 +61,7 @@
 import { useQuasar } from 'quasar';
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationRule, organizationCodeRule, isCodeUniqueRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
 import { invoiceRequests, Organization, User } from 'src/shared/model';
 import { ref } from 'vue';

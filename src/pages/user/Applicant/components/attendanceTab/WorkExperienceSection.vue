@@ -1,6 +1,6 @@
 <template>
-  <edit-view-component
-    :edit="edit"
+  <DropDownEditGroup
+    :isEdit="edit"
     :label="'2.'+ $t('applicant.attendant.workExperience')"
     @openEdit="edit = true"
     @closeEdit="edit=false"
@@ -98,7 +98,7 @@
       <div>
 
       </div>
-  </edit-view-component>
+  </DropDownEditGroup>
   <q-dialog v-model="openDialog">
     <workExperienceForm @closeDialog="load();openDialog=false;" :editExperience="editExperience" :applicantId="applicant.id"/>
   </q-dialog>
@@ -113,7 +113,7 @@ import workExperienceForm from './WorkExperienceForm.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { differentDateYear } from 'src/shared/utils/utils';
 import { ApplicantExperience } from 'src/shared/model';
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 
 export default {
   name: 'workExperienceComponent',
@@ -129,7 +129,7 @@ export default {
   },
   components: {
     workExperienceForm,
-    editViewComponent
+    DropDownEditGroup
   },
   setup(props) {
     const loading = ref(false);

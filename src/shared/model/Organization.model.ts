@@ -8,7 +8,7 @@ export interface Organization {
   createdAt: Date;
   updatedAt?: Date;
   mailaddress: string;
-  code: string;
+  code: string; //must be unique
   operatorUser: string; //担当者
   invoiceRequest: InvoiceRequest;
   working: boolean

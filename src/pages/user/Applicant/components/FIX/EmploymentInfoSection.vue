@@ -1,13 +1,13 @@
 <template>
-  <edit-view-component
-    :edit="edit.includes('employmentInfo')"
+  <DropDownEditGroup
+    :isEdit="edit.includes('employmentInfo')"
     :label="$t('applicant.list.fixEmployment.employmentInfo')"
       @openEdit="emit('openEdit')"
       @closeEdit="emit('closeEdit')"
       @onSave="emit('save')"
     :disableButton="disableLevel < 3">
     <div class="row q-pb-sm">
-      <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus">
+      <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus" valueClass="text-uppercase">
         <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
         <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
       </labelField>
@@ -76,11 +76,11 @@
           v-model="data['admissionMemo']" :disable="loading || disableLevel < 3" />
       </labelField>
     </div>
-  </edit-view-component>
+  </DropDownEditGroup>
 </template>
 
 <script lang="ts" setup>
-import editViewComponent from 'src/components/editView.component.vue';
+import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'

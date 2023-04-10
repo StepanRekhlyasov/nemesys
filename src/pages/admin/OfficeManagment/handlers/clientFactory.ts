@@ -1,9 +1,9 @@
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { TableRow } from '../types';
+import { ClientFactoryTableRow } from '../types';
 
 export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
     return factories.map((factory) => {
-        const row = {} as TableRow
+        const row = {} as ClientFactoryTableRow
 
         row.id = factory.id
         row.distance = `${factory.distance}m`  
