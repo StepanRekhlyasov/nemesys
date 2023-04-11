@@ -32,6 +32,45 @@ export interface ClientFactory {
     telContact: string;
     positionContact: string;
     mailContact: string;
+    officeDetails: OfficeDetails
     reflectLog?: ReflectLog;
     importLog?: ImportLog
+}
+
+interface OfficeDetails {
+    registeredInfo: {
+        prefecture: string
+        officeName: string
+        parentClient: string
+        city: string
+        tel: string
+        townAndStreet: string
+        fax: string
+        others: string
+        latitude: number
+        longitude: number
+    },
+    commonItems: {
+        referralFeePer: number
+        referralFeeFix: number
+        salaryHour: number
+        salaryMonth: number
+        salaryAdditional: string
+        payday: string
+        disabilityTime: string
+        yearFixed: string
+        welfareHealth: string
+        leisureSpecial: string
+        contentWork: string
+        canSmoke: boolean
+        dayOffYear: string
+        dayOffWeek: string
+        workingHourEarly: string
+        workingHourDay: string
+        workingHourLate: string
+        workingHourNight: string 
+    },
+    uniqueItems: {
+        [key: string]: string
+    }
 }

@@ -6,7 +6,7 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryDetailTabs } from '../../types'
 
 defineProps<{
-    selectedItem: ClientFactory | null
+    clientFactory: ClientFactory | null
 }>()
 const { t } = useI18n({ useScope: 'global' });
 
@@ -29,21 +29,23 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
         <q-tab :name="ClientFactoryDetailTabs.ImportHistory" :label="t('clientFactory.importHistory')"/>
     </q-tabs>
 
-    <q-tab-panel :name="ClientFactoryDetailTabs.OfficeDetails">
-        <CFDrawerOfficeDetails />
-    </q-tab-panel>
-    <q-tab-panel :name="ClientFactoryDetailTabs.CompanyWideBOHistory">
+    <q-tab-panels v-model="activeTab" animated>
+        <q-tab-panel :name="ClientFactoryDetailTabs.OfficeDetails">
+            <CFDrawerOfficeDetails :clientFactory="clientFactory"/>
+        </q-tab-panel>
+        <q-tab-panel :name="ClientFactoryDetailTabs.CompanyWideBOHistory">
+       
+        </q-tab-panel>
+        <q-tab-panel :name="ClientFactoryDetailTabs.HeadOffice">
+        
+        </q-tab-panel>
+        <q-tab-panel :name="ClientFactoryDetailTabs.ReflectionHistory">
 
-    </q-tab-panel>
-    <q-tab-panel :name="ClientFactoryDetailTabs.HeadOffice">
+        </q-tab-panel>
+        <q-tab-panel :name="ClientFactoryDetailTabs.ImportHistory">
 
-    </q-tab-panel>
-    <q-tab-panel :name="ClientFactoryDetailTabs.ReflectionHistory">
-
-    </q-tab-panel>
-    <q-tab-panel :name="ClientFactoryDetailTabs.ImportHistory">
-
-    </q-tab-panel>
+        </q-tab-panel>
+    </q-tab-panels>
 </template>
 
 <style lang="scss" scoped>
