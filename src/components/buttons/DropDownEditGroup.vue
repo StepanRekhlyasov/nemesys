@@ -13,6 +13,7 @@ withDefaults(defineProps<{
     theme?: string
 }>(), {
   isButton: true,
+  isDisabledButton: false,
   theme: 'primary'
 })
 

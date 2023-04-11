@@ -1,4 +1,4 @@
-import { collection, Firestore,  getDocs, orderBy, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, Firestore,  getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { ConstraintsType } from './utils';
 
 export const getApplicantContactsList = (db: Firestore, applicant_id: string) => {
@@ -44,7 +44,25 @@ export const getFixList = (db: Firestore, applicant_id: string, option?: FixOpti
   }
 
   return getDocs(query(
-    collection(db, 'applicants/' + applicant_id + '/fix'), 
+    collection(db, '/fix'), 
+    where('applicant_id', '==', applicant_id),
     ...constraints
   ))
+}
+
+export const saveFix = async (db: Firestore, applicant_id: string, data) => {
+  await addDoc(
+    collection(db, '/fix'),
+    {
+      ...data,
+      applicant_id: applicant_id
+    }
+  )
+}
+
+export const updateFix = async (db: Firestore, fix_id: string, data) => {
+  await updateDoc(
+    doc(db, '/fix/'+ fix_id ),
+    data
+  );
 }

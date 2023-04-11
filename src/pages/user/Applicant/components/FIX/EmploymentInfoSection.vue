@@ -1,11 +1,11 @@
 <template>
   <DropDownEditGroup
-    :isEdit="edit.includes('employmentInfo')"
-    :label="$t('applicant.list.fixEmployment.employmentInfo')"
-      @openEdit="emit('openEdit')"
-      @closeEdit="emit('closeEdit')"
+      :isEdit="edit.includes('employmentInfo')"
+      :label="$t('applicant.list.fixEmployment.employmentInfo')"
+      @openDropDown="emit('openEdit')"
+      @closeDropDown="emit('closeEdit')"
       @onSave="emit('save')"
-    :disableButton="disableLevel < 3">
+      :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">
       <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus" valueClass="text-uppercase">
         <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
