@@ -181,8 +181,8 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { applicationMethod, employmentStatus } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
-import { ageCount } from 'src/shared/utils/Applicant.utils';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import { RankCount } from 'src/shared/utils/RankCount.utils';
 
 export default {
   name: 'ApplicantInformationComponent',
@@ -219,7 +219,7 @@ export default {
       lat: props?.applicant['lat'] || '',
       postCode: props?.applicant['postCode'] || '',
     })
-    const age = computed(()=>data.value['dob']?ageCount(data.value['dob']):'')
+    const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'')
     const { t } = useI18n({
       useScope: 'global',
     });

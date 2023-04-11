@@ -60,8 +60,8 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
-import { getRank } from 'src/shared/utils/Applicant.utils';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import { RankCount } from 'src/shared/utils/RankCount.utils';
 
 export default {
   name: 'assignedEvaluationComponent',
@@ -92,7 +92,7 @@ export default {
       useScope: 'global',
     });
     const $q = useQuasar();
-    const staffRank = computed(() => getRank(props.applicant['staffRank']))
+    const staffRank = computed(() => RankCount.getRank(props.applicant['staffRank']))
 
     return {
       edit,

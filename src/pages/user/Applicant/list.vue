@@ -208,7 +208,7 @@ import {
 import { statusList } from 'src/shared/constants/Applicant.const';
 import detailComponent from './components/detail.vue';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { ageCount, countRank} from 'src/shared/utils/Applicant.utils';
+import { RankCount } from 'src/shared/utils/RankCount.utils';
 
 export default {
   name: 'applicantList',
@@ -231,7 +231,7 @@ export default {
     const fileUploadRef = ref({});
     
     const statusOption = ref(statusList);
-    const age = computed(()=>selectedApplicant.value['dob']?ageCount(selectedApplicant.value['dob']):'0')
+    const age = computed(()=>selectedApplicant.value['dob']?RankCount.ageCount(selectedApplicant.value['dob']):'0')
 
     //const selectedRows = ref([]);
 
@@ -298,7 +298,7 @@ export default {
       selectedApplicant.value = {
         ...selectedApplicant.value,
         ...applicant,
-        staffRank: countRank(selectedApplicant.value)}
+        staffRank: RankCount.countRank(selectedApplicant.value)}
     };
 
     return {
