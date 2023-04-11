@@ -249,7 +249,6 @@ export default {
 
     loadContactData()
     async function loadContactData() {
-      console.log(123)
       contactListData.value  = await applicantStore.getFixData(props.applicant.id)
     }
 
