@@ -21,16 +21,16 @@ export class RankCount {
 	static countRank(applicant): number {
 		let count = 0
 		// workable days per week
-		count+= this.countWorkableDay(applicant)
+		count+= this.countDaysPerWeek(applicant)
 		// workable day of the week
 		count+= this.countWorkableDay(applicant)
 		// available shift
 		count+= this.countAvaiableShift(applicant)
 		// commuting Time
 		count+= this.countCommutingTime(applicant)
-
 		// attracting qualification
 		count+= this.countQualification(applicant)
+
 		// total year
 		if (applicant['totalYear'] < 1) {
 			count+= -10
@@ -49,6 +49,7 @@ export class RankCount {
 		return count
 	}
 
+	// Calculation of rank from commuting time 
 	static countCommutingTime(applicant):number {
 		if (applicant['commutingTime'] < 15){
 			return 0;
@@ -65,6 +66,7 @@ export class RankCount {
 		return 10  
 	}
 
+	// Calculation of rank from avaiable shift 
 	static countAvaiableShift(applicant):number {  
 		let count = 0;
 		const arrayAvailableShift = [
@@ -85,6 +87,7 @@ export class RankCount {
 		return count;
 	}
 
+	// Calculation of rank from days available for work
 	static countWorkableDay(applicant):number {
 		let count = 0;
 		if (applicant['daysPerWeek']) {
@@ -109,7 +112,8 @@ export class RankCount {
 		return count;
 	}
 
-	static countDaysPerWeeek(applicant):number {
+	// Calculation of rank from days available for work per week
+	static countDaysPerWeek(applicant):number {
 		if (applicant['daysToWork']) {
 			switch(applicant['daysToWork']){
 				case 3:
@@ -123,6 +127,7 @@ export class RankCount {
 		return 0;
 	}
 
+	// Calculation of rank from applicant age
 	static countAge(applicant):number {
 		if (applicant['dob']) {
 			const age = this.ageCount(applicant['dob']);
@@ -139,6 +144,7 @@ export class RankCount {
 		return 0
 	}
 
+	// Calculation of rank from qualification
 	static countQualification(applicant):number {
 		if (applicant['qualification']) {
 			if (applicant['qualification'] == 'newcomer' || applicant['qualification'] == 'careWorker') {
@@ -148,6 +154,7 @@ export class RankCount {
 		return 0;
 	}
 
+	// Applicant age calculation
 	static ageCount(data: string) {
 		const now = new Date()
 		let diff =(now.getTime() - new Date(data).getTime()) / 1000;
