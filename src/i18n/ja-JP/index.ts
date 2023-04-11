@@ -1162,7 +1162,7 @@ export default {
     drawer: {
       registeredInformation: '登録情報',
       commonItems: '全職種共通項目',
-      uniqueItems: '介護独自項目',
+      uniqueItems: '職種独自項目',
       details: {
         parentClient: '親クライアント',
         officeName: '事業所名',
@@ -1179,7 +1179,7 @@ export default {
         referralFeeFix: '紹介料の規定金額',
         salaryHour: '時給',
         salaryMonth: '月給',
-        salaryAdditional: '貸与・昇給・インセンティブ',
+        salaryAdditional: '賞与・昇給・インセンティブ',
         payday: '給料日',
         disabilityTime: '残業時間',
         yearFixed: '定年',
