@@ -100,6 +100,8 @@ export default {
     clientReg: 'Client Registration',
     dashboard: 'Dashboard',
     system: 'System Settings',
+    totalization: 'Totalization',
+    report: 'Report',
     item: 'Item Master Management',
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',

@@ -100,6 +100,8 @@ export default {
     clientReg: 'クライアント情報登録',
     dashboard: 'ダッシュボード',
     system: 'システム設定',
+    totalization: '集計管理',
+    report: 'レポート',
     item: '項目マスタ管理',
     branches: '支店マスタ管理',
     users: '担当マスタ管理',

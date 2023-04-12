@@ -2,6 +2,7 @@ import { MenuRouter } from 'src/shared/model/Menu.model';
 import systemRouter from './system.router';
 import clientRouters from './clients.router';
 import applicantRouters from './applicant.router';
+import reportRouters from './totalization.router';
 import adminRouters from './admin.router';
 import { routeNames } from './routeNames';
 import { UserPermissionNames } from 'src/shared/model';
@@ -23,9 +24,11 @@ const routes: MenuRouter[] = [{
       icon: 'dashboard',
       single: true,
     },
+
     ...systemRouter,
     ...clientRouters,
-    ...applicantRouters
+    ...applicantRouters,
+    ...reportRouters
 
   ]
 },
