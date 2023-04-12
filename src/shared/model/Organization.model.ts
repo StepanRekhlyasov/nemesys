@@ -1,12 +1,14 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface Organization {
   id: string;
   name: string;
   staff_name: string;
   tel: string;
   fax: string;
-  deletedAt?: Date;
-  createdAt: Date;
-  updatedAt?: Date;
+  deletedAt?: Timestamp;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
   mailaddress: string;
   code: string; //must be unique
   operatorUser: string; //担当者

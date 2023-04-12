@@ -7,6 +7,7 @@ const { t } = useI18n({ useScope: 'global' });
 
 withDefaults(defineProps<{
     isEdit: boolean
+    isLabelSquare: boolean
     isButton?: boolean
     label?: string
     isDisabledButton?: boolean
@@ -14,6 +15,7 @@ withDefaults(defineProps<{
 }>(), {
   isButton: true,
   isDisabledButton: false,
+  isLabelSquare: false,
   theme: 'primary'
 })
 
@@ -27,8 +29,11 @@ const emit = defineEmits<{
 
 <template>
     <div class="row justify-between">
-        <div class="flex self-center">
-          <span :class="`text-${theme} text-h6`">{{ label }}</span>
+        <div class="row items-center">
+          <div class="row items-center">
+            <div v-if="isLabelSquare" :class="`bg-${theme} square`"></div>
+            <span :class="`text-${theme} subtitle`">{{ label }}</span>
+          </div>
           <div v-if="isButton">
             <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
               class="text-grey-9" @click="show = false" v-if="show" />
@@ -57,5 +62,13 @@ const emit = defineEmits<{
 </template>
 
 <style lang="scss" scoped>
+.subtitle {
+  font-size: 1rem;
+  font-weight: bold;
+}
 
+.square {
+  height: 12px;
+  width: 12px;
+}
 </style>

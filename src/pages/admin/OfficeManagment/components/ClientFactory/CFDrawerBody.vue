@@ -18,7 +18,7 @@ const props = defineProps<{
                     <div class="square"></div>
                     {{ t('client.add.officeInfo')}}
                 </div>
-                <q-btn text-color="accent" dense padding="xs md">
+                <q-btn text-color="accent" dense outline padding="xs md" size="sm">
                     <q-icon name="edit" color="accent" size="xs" left/>
                     {{ t('common.edit') }}
                 </q-btn>
@@ -64,7 +64,7 @@ const props = defineProps<{
                     <div class="square"></div>
                     {{ t('client.add.contactInfo') }}
                 </div>
-                <q-btn text-color="accent" dense padding="xs md">
+                <q-btn text-color="accent" dense outline padding="xs md" size="sm">
                     <q-icon name="edit" color="accent" size="xs" left/>
                     {{ t('common.edit') }}
                 </q-btn>
@@ -119,7 +119,7 @@ const props = defineProps<{
 
                         <div class="row justify-between items-center no-wrap">
                             <div class="circle q-mx-md"></div>
-                            <q-btn text-color="accent" dense padding="xs md">
+                            <q-btn text-color="accent" outline dense padding="xs md" size="sm">
                                 <q-icon name="mdi-tray-arrow-up" color="accent" size="xs" left/>
                                     {{ t('common.reflect') }}
                             </q-btn>
@@ -143,7 +143,7 @@ const props = defineProps<{
 
                         <div class="row justify-between items-center no-wrap">
                             <div class="circle q-mx-md"></div>
-                            <q-btn text-color="accent" dense padding="xs md">
+                            <q-btn text-color="accent" outline dense padding="xs md" size="sm">
                                 <q-icon name="mdi-tray-arrow-down" color="accent" size="xs" left/>
                                         {{ t('common.capture') }}
                                 </q-btn>

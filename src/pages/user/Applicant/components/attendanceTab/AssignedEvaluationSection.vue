@@ -33,9 +33,7 @@
         {{ $t('applicant.attendant.staffRank') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant.staffRank || ''}}</span>
-        <q-input v-if="edit" dense outlined bg-color="white"
-          v-model="data['staffRank']" :disable="loading" />
+        <span>{{ staffRank || ''}}</span>
       </div>
     </div>
 
@@ -59,10 +57,11 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import { RankCount } from 'src/shared/utils/RankCount.utils';
 
 export default {
   name: 'assignedEvaluationComponent',
@@ -93,11 +92,13 @@ export default {
       useScope: 'global',
     });
     const $q = useQuasar();
+    const staffRank = computed(() => RankCount.getRank(props.applicant['staffRank']))
 
     return {
       edit,
       data,
       loading,
+      staffRank,
       expertiseLevelOptions,
 
       async save() {

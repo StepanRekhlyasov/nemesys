@@ -88,13 +88,13 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!edit">{{ applicant.qualification? applicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') :''}}</span>
         <template v-if="edit">
-          <q-checkbox v-model="data['qualification']" val="registeredNurse"
+          <q-radio v-model="data['qualification']" val="registeredNurse"
             :label="$t('applicant.add.registeredNurse')" />
-          <q-checkbox v-model="data['qualification']" val="assistantNurse"
+          <q-radio v-model="data['qualification']" val="assistantNurse"
             :label="$t('applicant.add.assistantNurse')" />
-          <q-checkbox v-model="data['qualification']" val="newcomer"
+          <q-radio v-model="data['qualification']" val="newcomer"
             :label="$t('applicant.add.newcomer')" />
-          <q-checkbox v-model="data['qualification']" val="careWorker"
+          <q-radio v-model="data['qualification']" val="careWorker"
             :label="$t('applicant.add.careWorker')" />
         </template>
       </div>
@@ -164,7 +164,7 @@ export default {
       seduser: props?.applicant['seduser'] || '',
       classification: props?.applicant['classification'] || '',
       position: props?.applicant['position'] || [],
-      qualification: props?.applicant['qualification'] || [],
+      qualification: props?.applicant['qualification'] || '',
       period: props?.applicant['period'] || '',
       memo: props?.applicant['memo'] || '',
       nursing: props?.applicant['nursing'] || [],
