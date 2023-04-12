@@ -87,7 +87,7 @@ export interface ApplicantFix {
   status: 'ok' | 'ng';
   reason: string;
   reasonDetal?: string;
-  data: string;
+  date: string;
   contactPerson: string;
   memo: string;
   // Job Search Info 
@@ -102,6 +102,7 @@ export interface ApplicantFix {
   notesInspection: string;
   // Job Offers Info
   offerStatus: 'ok' | 'ng';
+  offerDate: string;
   offerReasonNG: string;
   chargeOfOffer: string;
   offerMemo: string;

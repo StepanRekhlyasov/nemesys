@@ -54,7 +54,7 @@
           :class="rowColor(props.row)"
         >
           <template v-if="props.row.status">
-            <span class="row">{{ props.row.data }}</span>
+            <span class="row">{{ props.row.date }}</span>
             <span class="row text-uppercase">{{ props.row.status }}</span>
           </template>
           <span v-if="!props.row.status">-</span>

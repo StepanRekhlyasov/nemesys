@@ -11,12 +11,12 @@
         <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" />
       </labelField>
 
-      <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.data">
-        <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['data']" :disable="loading">
+      <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.date">
+        <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['date']" :disable="loading">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['data']" mask="YYYY/MM/DD">
+                <q-date v-model="data['date']" mask="YYYY/MM/DD">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>

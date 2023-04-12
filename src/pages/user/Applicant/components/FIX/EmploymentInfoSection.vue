@@ -7,7 +7,7 @@
       @onSave="emit('save')"
     :disableButton="disableLevel < 3">
     <div class="row q-pb-sm">
-      <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus" valueClass="text-uppercase">
+      <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus" valueClass="text-uppercase col-3">
         <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
         <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
       </labelField>
