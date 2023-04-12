@@ -4,7 +4,9 @@ import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
 import { ConstraintsType, toDateObject } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
+import { i18n } from 'boot/i18n';
 
+const { t } = i18n.global
 interface OrganizationState {
   organizations: Organization[],
   activeOrganization: number,
@@ -54,7 +56,6 @@ export const useOrganization = defineStore('organization', () => {
       const businesses = await getBusinesses(db, id)
       Object.assign(businessList, businesses)
     }
-    console.log(businessList)
     return businessList
   }
 
@@ -179,6 +180,22 @@ export const useOrganization = defineStore('organization', () => {
     })
   }
 
+  async function getOrganizationByCode(code: string) {
+    const organizationRef = collection(db, 'organization/')
+    const organizationQuery = query(organizationRef, where('code', '==', code))
+    const querySnapshot = await getDocs(organizationQuery)
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique }
+    if (querySnapshot.size > 1) {
+      throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
+    }
+
+    if (querySnapshot.size == 0) {
+      throw new Error('Organization not found')
+    }
+
+    return querySnapshot.docs[0].data() as Organization
+  }
+
+
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode }
 })
