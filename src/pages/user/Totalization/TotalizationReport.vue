@@ -39,7 +39,6 @@ import {
   collection,
   query,
   where,
-  onSnapshot,
   getFirestore,
   getDocs,
   getCountFromServer
@@ -79,8 +78,8 @@ const series= ref([])
 
 
 const branch_input:Ref<string> = ref('')
-const user_list:Ref<string[]> = ref([])
-const all_user_list:Ref<string[]> = ref([])
+const user_list:Ref<{'id':string,'name':string}[]> = ref([])
+const all_user_list:Ref<{'id':string,'name':string}[]> = ref([])
 const branchs:Ref<string[]> = ref([])
 const model_report:Ref<string> = ref('営業活動個人レポート')
 const report_type:string[] = ['営業活動個人レポート']
@@ -108,7 +107,6 @@ const getReportByDate = async (IdAndNames:{'id':string,'name':string}[], dateRan
   const admission = await query(collectionRef, where('contactPerson', '==', Id), where('admissionDate', '>=', targetDateFrom), where('admissionDate', '<=', targetDateTo),where('admissionStatus', '==', 'ok'));
   const snapshot_admission = await getCountFromServer(admission);
   data = [snapshot_fix.data().count,snapshot_inspect.data().count,snapshot_offer.data().count,snapshot_admission.data().count]
-  console.log(data)
   await series.value.push({
     name: IdAndName.name,
     data: data,
@@ -204,7 +202,7 @@ watch(dateRange, async () => {
 
 <script lang="ts">
 
-import VueApexCharts from "vue3-apexcharts";
+import VueApexCharts from 'vue3-apexcharts';
 
 export default {
     name: 'ChartExample',
@@ -215,7 +213,7 @@ export default {
         return {
             chartOptions: {
                 chart: {
-                    id: "vuechart-example",
+                    id: 'vuechart-example',
                 },
                 xaxis: {
                     // categories loaded here
