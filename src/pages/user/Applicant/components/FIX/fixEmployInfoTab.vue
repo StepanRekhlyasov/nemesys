@@ -148,7 +148,6 @@ import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { User, ApplicantFix, ApplicantStatus } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { updateFix } from 'src/shared/utils/Applicant.utils';
 
 export default {
   name: 'contactInfo',
@@ -285,7 +284,7 @@ export default {
       async updateData(data){
         if (fixData.value?.id){
           data['updated_at'] = serverTimestamp();
-          await updateFix(db, fixData.value.id, data)
+          await applicantStore.updateFix(fixData.value.id, data)
         }
         fixData.value = {...fixData.value, ...data};
       },
@@ -302,7 +301,7 @@ export default {
         updateData['deleted'] = true;
         updateData['deleted_by'] = user['uid']
         updateData['deleted_at'] = serverTimestamp();
-        await updateFix(db, fixData.value.id, updateData)
+        await applicantStore.updateFix(fixData.value.id, updateData)
         Alert.success($q, t)
       },
       getUserName(uid) {
@@ -340,7 +339,7 @@ export default {
           updateData['deleted_by'] = user['uid'];
           updateData['deleted_at'] = serverTimestamp();
 
-          await updateFix(db, data.id, updateData)
+          await applicantStore.updateFix(data.id, updateData)
 
           Alert.success($q, t)
         })

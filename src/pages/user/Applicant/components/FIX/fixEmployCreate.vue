@@ -101,7 +101,6 @@ import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
-import { saveFix, updateFix } from 'src/shared/utils/Applicant.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import FixInfoSection from './FixInfoSection.vue';
@@ -240,7 +239,7 @@ export default {
           retData['updated_at'] = serverTimestamp();
           delete retData['created_at']
           if (props.fixData.id) {
-            updateFix(db, props.fixData.id, retData)
+            applicantStore.updateFix(props.fixData.id, retData)
 
             context.emit('updateList')
             context.emit('updateStatus')
@@ -250,7 +249,7 @@ export default {
           retData['created_at'] = serverTimestamp();
           retData['deleted'] = false;
           retData['created_by'] = auth.currentUser?.uid;
-          await saveFix(db, props.applicant.id, retData)
+          await applicantStore.saveFix(props.applicant.id, retData)
 
           context.emit('updateList')
           context.emit('updateStatus', [true])

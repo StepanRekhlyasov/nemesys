@@ -1,12 +1,17 @@
-import { getFirestore } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFix, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientOfficeList, getFixList } from 'src/shared/utils/Applicant.utils';
+import { getClientList, getClientOfficeList } from 'src/shared/utils/Applicant.utils';
+import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
 
 interface ApplicantState {
     clientList: Client[],
     selectApplicant: number
+}
+
+export interface FixOption {
+    operationFilter?: boolean;
 }
 
 export const useApplicant = defineStore('applicant', () => {
@@ -39,7 +44,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
 
     async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
-        const fixData = await getFixList(db, applicant_id, {operationFilter})
+        const fixData = await getFixList(applicant_id, {operationFilter})
         const list: ApplicantFix[] = [];
 
         fixData.forEach(fix => {
@@ -47,6 +52,37 @@ export const useApplicant = defineStore('applicant', () => {
         })
 
         return list
+    }
+    
+    async function getFixList(applicant_id: string, option?: FixOption) {
+        const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
+      
+        if (option && option.operationFilter) {
+          constraints.push(where('admissionStatus', '==', 'ok'))
+        }
+      
+        return getDocs(query(
+          collection(db, '/fix'), 
+          where('applicant_id', '==', applicant_id),
+          ...constraints
+        ))
+    }
+
+    async function saveFix (applicant_id: string, data) {
+      await addDoc(
+        collection(db, '/fix'),
+        {
+          ...data,
+          applicant_id: applicant_id
+        }
+      )
+    }
+    
+    async function updateFix (fix_id: string, data) {
+      await updateDoc(
+        doc(db, '/fix/'+ fix_id ),
+        data
+      );
     }
 
     getClients().then(clients => {
@@ -58,6 +94,6 @@ export const useApplicant = defineStore('applicant', () => {
         })
     })
 
-    return { state, getClients, getClientOffice, getFixData}
+    return { state, getClients, getClientOffice, getFixData, getFixList, saveFix, updateFix}
 })
   
