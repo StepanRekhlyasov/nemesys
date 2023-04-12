@@ -98,13 +98,12 @@ const getReportByDate = async (IdAndNames:{'id':string,'name':string}[], dateRan
   const Id:string=IdAndName.id
   const fix = await query(collectionRef, where('contactPerson', '==', Id), where('data', '>=', targetDateFrom), where('data', '<=', targetDateTo),where('status', '==', 'ok'));
   const snapshot_fix = await getCountFromServer(fix);
-  const inspect = await query(collectionRef, where('contactPerson', '==', Id), where('inspectionDate', '>=', targetDateFrom), where('inspectionDate', '<=', targetDateTo),where('inspectionStatus', '==', 'ok'));
-  // const inspect = query(collectionRef, where('contactPerson', '==', Id),where('inspectionStatus', '==', 'ok'));
+  const inspect = await query(collectionRef, where('chargeOfInspection', '==', Id), where('inspectionDate', '>=', targetDateFrom), where('inspectionDate', '<=', targetDateTo),where('inspectionStatus', '==', 'ok'));
 
   const snapshot_inspect = await getCountFromServer(inspect);
-  const offer = await query(collectionRef, where('contactPerson', '==', Id), where('offerDate', '>=', targetDateFrom), where('offerDate', '<=', targetDateTo),where('offerStatus', '==', 'ok'));
+  const offer = await query(collectionRef, where('chargeOfOffer', '==', Id), where('offerDate', '>=', targetDateFrom), where('offerDate', '<=', targetDateTo),where('offerStatus', '==', 'ok'));
   const snapshot_offer = await getCountFromServer(offer);
-  const admission = await query(collectionRef, where('contactPerson', '==', Id), where('admissionDate', '>=', targetDateFrom), where('admissionDate', '<=', targetDateTo),where('admissionStatus', '==', 'ok'));
+  const admission = await query(collectionRef, where('chargeOfAdmission', '==', Id), where('admissionDate', '>=', targetDateFrom), where('admissionDate', '<=', targetDateTo),where('admissionStatus', '==', 'ok'));
   const snapshot_admission = await getCountFromServer(admission);
   data = [snapshot_fix.data().count,snapshot_inspect.data().count,snapshot_offer.data().count,snapshot_admission.data().count]
   await series.value.push({
@@ -129,13 +128,13 @@ const getAverageReportByDate = async (IdAndNames:{'id':string,'name':string}[], 
   const Id:string=IdAndName.id
   const fix = await query(collectionRef, where('contactPerson', '==', Id), where('data', '>=', targetDateFrom), where('data', '<=', targetDateTo),where('status', '==', 'ok'));
   const snapshot_fix = await getCountFromServer(fix);
-  const inspect = await query(collectionRef, where('contactPerson', '==', Id), where('inspectionDate', '>=', targetDateFrom), where('inspectionDate', '<=', targetDateTo),where('inspectionStatus', '==', 'ok'));
+  const inspect = await query(collectionRef, where('chargeOfInspection', '==', Id), where('inspectionDate', '>=', targetDateFrom), where('inspectionDate', '<=', targetDateTo),where('inspectionStatus', '==', 'ok'));
   // const inspect = query(collectionRef, where('contactPerson', '==', Id),where('inspectionStatus', '==', 'ok'));
 
   const snapshot_inspect = await getCountFromServer(inspect);
-  const offer = await query(collectionRef, where('contactPerson', '==', Id), where('offerDate', '>=', targetDateFrom), where('offerDate', '<=', targetDateTo),where('offerStatus', '==', 'ok'));
+  const offer = await query(collectionRef, where('chargeOfOffer', '==', Id), where('offerDate', '>=', targetDateFrom), where('offerDate', '<=', targetDateTo),where('offerStatus', '==', 'ok'));
   const snapshot_offer = await getCountFromServer(offer);
-  const admission = await query(collectionRef, where('contactPerson', '==', Id), where('admissionDate', '>=', targetDateFrom), where('admissionDate', '<=', targetDateTo),where('admissionStatus', '==', 'ok'));
+  const admission = await query(collectionRef, where('chargeOfAdmission', '==', Id), where('admissionDate', '>=', targetDateFrom), where('admissionDate', '<=', targetDateTo),where('admissionStatus', '==', 'ok'));
   const snapshot_admission = await getCountFromServer(admission);
   let data = [snapshot_fix.data().count,snapshot_inspect.data().count,snapshot_offer.data().count,snapshot_admission.data().count]
   data_average =listSum(data_average,data,IdAndNames.length)
