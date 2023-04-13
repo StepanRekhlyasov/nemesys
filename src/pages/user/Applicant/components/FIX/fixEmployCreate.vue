@@ -96,7 +96,7 @@
 
 <script lang="ts">
 import { ref, SetupContext } from 'vue';
-import { getFirestore, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
@@ -200,7 +200,10 @@ export default {
         let retData = {};
         switch(type){
           case 'info': {
-            retData = pick(data.value, ['status', 'data', 'reason', 'contactPerson', 'memo'])
+            retData = pick(data.value, ['status', 'date', 'reason', 'contactPerson', 'memo'])
+            if (retData['date']) {
+              retData['date'] = Timestamp.fromDate(new Date(retData['date']))
+            }
             break;
           }
           case 'jobSearchInfo': {
@@ -208,6 +211,9 @@ export default {
               data.value,
               ['inspectionStatus', 'inspectionDate', 'reasonNG', 'chargeOfFacility',
               'jobTitle', 'contact', 'comments', 'notesInspection'])
+            if (retData['inspectionDate']) {
+              retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
+            }
             break;
           }
           case 'jobOffersInfo': {
@@ -215,12 +221,18 @@ export default {
               data.value,
               ['offerStatus', 'offerDate', 'offerReasonNG', 'contactPerson', 'memo',
               'offerReasonNG', 'chargeOfOffer', 'offerMemo'])
+            if (retData['offerDate']) {
+              retData['offerDate'] = Timestamp.fromDate(new Date(retData['data']))
+            }
             break;
           }
           case 'employmentInfo': {
             retData = pick(
               data.value,
               ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
+            if (retData['admissionDate']) {
+              retData['admissionDate'] = Timestamp.fromDate(new Date(retData['data']))
+            }
             break;
           }
           default: {

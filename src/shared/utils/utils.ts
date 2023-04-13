@@ -23,6 +23,14 @@ export function deepEqualClone<T>(obj1: T, obj2: unknown) {
   return is.deepEqual(cloneToRaw(obj1), cloneToRaw(obj2))
 }
 
+export const toDateFormat = (time?: Timestamp):string => {
+	if (!time) {
+		return ''
+	}
+	const dateFormat = new Date(time['seconds']*1000);
+	return date.formatDate(dateFormat, 'YYYY-MM-DD')
+}
+
 export const toDate = (timestamp: Timestamp):string => {
   let data = '';
   if (timestamp) {

@@ -2,6 +2,7 @@ import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, updateD
 import { defineStore } from 'pinia';
 import { ApplicantFix, Client, ClientOffice } from 'src/shared/model';
 import { getClientList, getClientOfficeList } from 'src/shared/utils/Applicant.utils';
+import { toDateFormat } from 'src/shared/utils/utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
 
@@ -48,7 +49,15 @@ export const useApplicant = defineStore('applicant', () => {
         const list: ApplicantFix[] = [];
 
         fixData.forEach(fix => {
-            list.push({id: fix.id, ...fix.data()} as ApplicantFix)
+            const data = fix.data()
+            list.push({
+                ...data,
+                id: fix.id,
+                date: toDateFormat(data['date']),
+                offerDate: toDateFormat(data['offerDate']),
+                admissionDate: toDateFormat(data['admissionDate']),
+                inspectionDate: toDateFormat(data['inspectionDate']),
+            } as ApplicantFix)
         })
 
         return list

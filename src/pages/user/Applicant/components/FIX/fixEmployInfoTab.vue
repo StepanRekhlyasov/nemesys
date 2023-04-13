@@ -54,7 +54,7 @@
           :class="rowColor(props.row)"
         >
           <template v-if="props.row.status">
-            <span class="row">{{ props.row.data }}</span>
+            <span class="row">{{ props.row.date }}</span>
             <span class="row text-uppercase">{{ props.row.status }}</span>
           </template>
           <span v-if="!props.row.status">-</span>
@@ -148,6 +148,7 @@ import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { User, ApplicantFix, ApplicantStatus } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { toDateFormat } from 'src/shared/utils/utils';
 
 export default {
   name: 'contactInfo',
@@ -286,7 +287,14 @@ export default {
           data['updated_at'] = serverTimestamp();
           await applicantStore.updateFix(fixData.value.id, data)
         }
-        fixData.value = {...fixData.value, ...data};
+        fixData.value = {
+          ...fixData.value, 
+          ...data,        
+          date: data['date'] ? toDateFormat(data['date']): data['date'],
+          offerDate: data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate'],
+          admissionDate: data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate'],
+          inspectionDate: data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
+        };
       },
       async deleteItem() {
         if (!deleteItemId.value) {
