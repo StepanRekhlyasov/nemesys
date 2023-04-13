@@ -142,6 +142,8 @@ export default {
         fax: 'FAX number',
         email: 'Email',
         invoiceRequest: 'Invoice request',
+        electronic: 'electronic',
+        mail: 'mail',
         organizationsSearh: 'Organizations Searh',
         businessName: 'Business Name',
         branchName: 'Branch name',
@@ -218,7 +220,8 @@ export default {
       }
     },
     users: {
-      addUser: 'Add new contact person',
+      contactPersonName: 'Add new contact person',
+      addUser: 'Add new user',
       fio: 'FIO',
       email: 'Email',
       password: 'Password',
@@ -1201,7 +1204,7 @@ export default {
         workingHourEarly: 'Early working hour',
         workingHourDay: 'Day working hour',
         workingHourLate: 'Late working hour',
-        workingHourNight: 'Night working hour', 
+        workingHourNight: 'Night working hour',
       }
     }
   },

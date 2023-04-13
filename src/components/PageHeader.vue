@@ -1,27 +1,49 @@
 <template>
   <q-card-section class="container q-px-none">
-    <div class="text-h6  text q-px-lg">
+    <div class="text-h6 q-px-lg"
+      :class="{ accent: color === 'accent', mainBlack: color === 'mainBlack', primary: color === 'primary' }">
       <slot>
       </slot>
     </div>
   </q-card-section>
-  <q-separator color="grey-5" size="1.5px" />
+  <q-separator v-if="separator" size="1.5px" />
 </template>
 
-<script setup>
+<script setup lang="ts">
+type Color = 'accent' | 'mainBlack' | 'primary'
+interface PageHeaderProps {
+  separator?: boolean
+  color?: Color
+}
+
+withDefaults(defineProps<PageHeaderProps>(), {
+  separator: true,
+  color: 'mainBlack'
+})
+
+
 
 </script>
 
 <style lang="scss" scoped>
+
 @import "src/css/imports/colors";
+
+.accent {
+  color: $accent
+}
+
+.mainBlack {
+  color: $main-black;
+}
+
+.primary {
+  color: $primary;
+}
 
 .container {
   height: 46.5px;
   display: flex;
   align-items: center;
-}
-
-.text {
-  color: $main-black;
 }
 </style>

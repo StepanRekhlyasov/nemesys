@@ -1,6 +1,6 @@
 import { Firestore } from 'firebase/firestore'
 import { QTableProps } from 'quasar'
-import { Branch } from 'src/shared/model'
+import { Branch, Role } from 'src/shared/model'
 import { useOrganization } from 'src/stores/organization'
 
 export async function getAllBranches(db: Firestore) {
@@ -23,4 +23,14 @@ export function getVisibleColumns(columns: QTableProps['columns'], isAdmin: bool
     prev.push(curr.name)
     return prev
   }, [] as string[])
+}
+
+export const adminRolesIds = ['bNq7hugK8pePZC0i0noC', 'hLbasZSnKrBrICIwZLtu']
+
+export function filterRoles(roles: Record<string, Role>) {
+  for (const roleId in roles) {
+    if (!adminRolesIds.includes(roleId)) {
+      delete roles[roleId]
+    }
+  }
 }
