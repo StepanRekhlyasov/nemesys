@@ -2,8 +2,8 @@
   <DropDownEditGroup
     :isEdit="edit.includes('info')"
     :label="$t('applicant.list.fixEmployment.info')"
-    @openEdit="emit('openEdit')"
-    @closeEdit="emit('closeEdit')"
+    @openDropDown="emit('openEdit')"
+    @closeDropDown="emit('closeEdit')"
     @onSave="emit('save')">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" :value="fixData.status" valueClass="text-uppercase">

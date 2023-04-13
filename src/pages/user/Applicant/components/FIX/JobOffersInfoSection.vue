@@ -2,10 +2,10 @@
     <DropDownEditGroup
       :isEdit="edit.includes('jobOffersInfo')"
       :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
-      @openEdit="emit('openEdit')"
-      @closeEdit="emit('closeEdit')"
+      @openDropDown="emit('openEdit')"
+      @closeDropDown="emit('closeEdit')"
       @onSave="emit('save')"
-      :disableButton="disableLevel < 2">
+      :isDisabledButton="disableLevel < 2">
 
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" :value="fixData.offerStatus" valueClass="text-uppercase col-3">
