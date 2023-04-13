@@ -142,7 +142,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, Ref } from 'vue';
-import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
@@ -284,12 +284,9 @@ export default {
       async updateData(data){
         if (fixData.value?.id){
           data['updated_at'] = serverTimestamp();
-          await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/fix/'+ fixData.value.id),
-            data
-          );
+          await applicantStore.updateFix(fixData.value.id, data)
         }
-        fixData.value = {...fixData.value, ...data}
+        fixData.value = {...fixData.value, ...data};
       },
       async deleteItem() {
         if (!deleteItemId.value) {
@@ -304,11 +301,7 @@ export default {
         updateData['deleted'] = true;
         updateData['deleted_by'] = user['uid']
         updateData['deleted_at'] = serverTimestamp();
-
-        await updateDoc(
-          doc(db, 'applicants/' + props.applicant.id + '/fix/' + deleteItemId.value),
-          updateData
-        );
+        await applicantStore.updateFix(fixData.value.id, updateData)
         Alert.success($q, t)
       },
       getUserName(uid) {
@@ -346,10 +339,7 @@ export default {
           updateData['deleted_by'] = user['uid'];
           updateData['deleted_at'] = serverTimestamp();
 
-          await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/fix/' + data.id),
-            updateData
-          );
+          await applicantStore.updateFix(data.id, updateData)
 
           Alert.success($q, t)
         })
@@ -363,16 +353,16 @@ export default {
         if(props.applicant.attractionsStatus == 'ok') {
           status = ApplicantStatus.WAIT_FIX;
         }
-        if (lastFix.status == 'ok') {
+        if (lastFix['status'] == 'ok') {
           status = ApplicantStatus.WAIT_VISIT
         }
-        if (lastFix.inspectionStatus == 'ok') {
+        if (lastFix['inspectionStatus'] == 'ok') {
           status = ApplicantStatus.WAIT_OFFER
         }
-        if (lastFix.offerStatus == 'ok') {
+        if (lastFix['offerStatus'] == 'ok') {
           status = ApplicantStatus.WAIT_ENTRY
         }
-        if (lastFix.admissionStatus == 'ok') {
+        if (lastFix['admissionStatus'] == 'ok') {
           status = ApplicantStatus.WORKING
         }
         await props.updateApplicant({status: status})

@@ -31,20 +31,3 @@ export const getClientOfficeList = (db: Firestore, client_id: string) => {
     orderBy('name')
   ))
 }
-
-export interface FixOption {
-  operationFilter?: boolean;
-}
-
-export const getFixList = (db: Firestore, applicant_id: string, option?: FixOption) => {
-  const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
-
-  if (option && option.operationFilter) {
-    constraints.push(where('admissionStatus', '==', 'ok'))
-  }
-
-  return getDocs(query(
-    collection(db, 'applicants/' + applicant_id + '/fix'), 
-    ...constraints
-  ))
-}

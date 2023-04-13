@@ -47,8 +47,8 @@
             :edit-data="data"
             :users-list-option="usersListOption"
             @save="save('info')"
-            @close-edit="edit=edit.filter(i => i !== 'info')" 
-            @open-edit="edit.push('info')"/>
+            @closeEdit="edit=edit.filter(i => i !== 'info')" 
+            @openEdit="edit.push('info')"/>
         </q-card-section>
 
         <!-- Job-search Information  -->
@@ -60,8 +60,8 @@
             :edit-data="data"
             :users-list-option="usersListOption"
             @save="save('jobSearchInfo')"
-            @close-edit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
-            @open-edit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
+            @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
+            @openEdit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
         </q-card-section>
 
         <!-- Information on job offers -->
@@ -73,8 +73,8 @@
             :edit-data="data"
             :users-list-option="usersListOption"
             @save="save('jobOffersInfo')"
-            @close-edit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
-            @open-edit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
+            @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
+            @openEdit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
         </q-card-section>
 
         <!-- Employment Information -->
@@ -86,8 +86,8 @@
             :edit-data="data"
             :users-list-option="usersListOption"
             @save="save('employmentInfo')"
-            @close-edit="edit=edit.filter(i => i !== 'employmentInfo')" 
-            @open-edit="edit.push('employmentInfo')" :disable-level="disableLevel"  />
+            @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')" 
+            @openEdit="edit.push('employmentInfo')" :disable-level="disableLevel"  />
         </q-card-section>
       </q-form>
     </q-card>
@@ -96,7 +96,7 @@
 
 <script lang="ts">
 import { ref, SetupContext } from 'vue';
-import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc} from 'firebase/firestore';
+import { getFirestore, serverTimestamp } from 'firebase/firestore';
 import { selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
@@ -228,6 +228,7 @@ export default {
           }
         }
         context.emit('updateDoc', retData);
+        context.emit('updateList')
         context.emit('updateStatus')
         edit.value=edit.value.filter(i => i !== type)
         disableChange()
@@ -238,10 +239,8 @@ export default {
           retData['updated_at'] = serverTimestamp();
           delete retData['created_at']
           if (props.fixData.id) {
-            await updateDoc(
-              doc(db, 'applicants/' + props.applicant.id + '/fix/'+ props.fixData.id),
-              retData
-            );
+            applicantStore.updateFix(props.fixData.id, retData)
+
             context.emit('updateList')
             context.emit('updateStatus')
             context.emit('close')
@@ -250,10 +249,8 @@ export default {
           retData['created_at'] = serverTimestamp();
           retData['deleted'] = false;
           retData['created_by'] = auth.currentUser?.uid;
-          await addDoc(
-            collection(db, 'applicants/' + props.applicant.id + '/fix'),
-            retData
-          )
+          await applicantStore.saveFix(props.applicant.id, retData)
+
           context.emit('updateList')
           context.emit('updateStatus', [true])
           context.emit('close')
