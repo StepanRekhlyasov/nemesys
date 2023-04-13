@@ -142,7 +142,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, Ref } from 'vue';
-import { collection, serverTimestamp, getFirestore, query, onSnapshot, where, Timestamp } from 'firebase/firestore';
+import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';

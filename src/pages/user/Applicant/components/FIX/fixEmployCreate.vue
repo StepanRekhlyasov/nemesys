@@ -212,7 +212,6 @@ export default {
               ['inspectionStatus', 'inspectionDate', 'reasonNG', 'chargeOfFacility',
               'jobTitle', 'contact', 'comments', 'notesInspection'])
             if (retData['inspectionDate']) {
-              console.log(retData['inspectionDate'])
               retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
             }
             break;
@@ -240,7 +239,6 @@ export default {
             return ;
           }
         }
-        console.log(retData)
         context.emit('updateDoc', retData);
         context.emit('updateList')
         context.emit('updateStatus')
