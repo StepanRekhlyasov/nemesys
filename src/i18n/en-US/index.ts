@@ -1203,7 +1203,7 @@ export default {
         workingHourEarly: 'Early working hour',
         workingHourDay: 'Day working hour',
         workingHourLate: 'Late working hour',
-        workingHourNight: 'Night working hour', 
+        workingHourNight: 'Night working hour',
       }
     }
   },
@@ -1233,5 +1233,8 @@ export default {
       issueDate: 'Date of issue',
       responseDate: 'Date of response'
     }
+  },
+  report:{
+    SalesActivityIndividualReport:'SalesActivityReport'
   }
 };

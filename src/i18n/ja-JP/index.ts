@@ -1181,7 +1181,7 @@ export default {
         latitude: '事業所住所：緯度',
         tel: '事業所TEL',
         fax: '事業所FAX',
-        
+
         referralFeePer: '紹介料の規定％',
         referralFeeFix: '紹介料の規定金額',
         salaryHour: '時給',
@@ -1199,7 +1199,7 @@ export default {
         workingHourEarly: '休日（年間）',
         workingHourDay: '遅番',
         workingHourLate: '休日（週単位）',
-        workingHourNight: '夜勤', 
+        workingHourNight: '夜勤',
       }
     }
   },
@@ -1229,5 +1229,8 @@ export default {
       issueDate: '受信日',
       responseDate: '送信日'
     }
+  },
+  report:{
+    SalesActivityIndividualReport:'営業活動個人レポート'
   }
 };

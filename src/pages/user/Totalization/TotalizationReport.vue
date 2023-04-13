@@ -21,6 +21,12 @@
 <div class="row">
   <div class="col">
   <apexchart :options="chartOptions" :series="series" ></apexchart>
+  <q-table
+      title=""
+      :rows="rows"
+      :columns="columns"
+      row-key="name"
+    />
   </div>
   <div class="col">
 
@@ -33,6 +39,7 @@
 
 <script setup lang="ts">
 import { ref ,Ref ,watch} from 'vue'
+import { useI18n } from 'vue-i18n';
 
 
 import {
@@ -43,6 +50,7 @@ import {
   getDocs,
   getCountFromServer
 } from 'firebase/firestore';
+const { t } = useI18n({ useScope: 'global' });
 const chartOptions= ref({
             chart: {
               height: 800,
@@ -74,18 +82,39 @@ const chartOptions= ref({
               opacity: 1
             },
           })
-const series= ref([])
+const series:Ref<{'name':string,'data':number[],type:string}[]>= ref([])
 
 
 const branch_input:Ref<string> = ref('')
 const user_list:Ref<{'id':string,'name':string}[]> = ref([])
 const all_user_list:Ref<{'id':string,'name':string}[]> = ref([])
 const branchs:Ref<string[]> = ref([])
-const model_report:Ref<string> = ref('営業活動個人レポート')
-const report_type:string[] = ['営業活動個人レポート']
+const model_report:Ref<string> = ref(t('report.SalesActivityIndividualReport'))
+const report_type:string[] = [t('report.SalesActivityIndividualReport')]
 const dateRange = ref({ from: '2021/01/01', to: '2021/07/17' })
 const organization_id = ref('')
 const db = getFirestore();
+const columns=ref([{
+    name: 'name',
+    required: true,
+    label: 'Fix',
+    align: 'left',
+    field: row => row.name,
+    format: val => `${val}`,
+    sortable: true
+  },
+  { name: 'fix', align: 'center', label: 'FIX', field: 'fix', sortable: true },
+  { name: 'inspection', align: 'center', label: '職見', field: 'inspection', sortable: true },
+  { name: 'offer', align: 'center', label: '内定', field: 'offer', sortable: true },
+  { name: 'admission', align: 'center', label: '入職', field: 'admission', sortable: true },
+])
+const rows:Ref<{
+    name: string,
+    fix: number,
+    inspection: number,
+    offer: number,
+    admission: number
+  }[]> = ref([])
 
 //ApplicantsIdと{ from: '2020/07/08', to: '2020/07/17' }のような日付の範囲を入力としてfix collectionからtimestamp型のadmissionDateの範囲を指定し集計クエリを利用して集計する関数
 const getReportByDate = async (IdAndNames:{'id':string,'name':string}[], dateRange:{ from: string; to: string; }) => {
@@ -93,7 +122,7 @@ const getReportByDate = async (IdAndNames:{'id':string,'name':string}[], dateRan
   const targetDateFrom = new Date(dateRange.from);
   const targetDateTo = new Date(dateRange.to);
   const collectionRef = collection(db, 'fix');
-  let data =[]
+  let data:number[] =[]
   for (let IdAndName of IdAndNames){
   const Id:string=IdAndName.id
   const fix = await query(collectionRef, where('contactPerson', '==', Id), where('data', '>=', targetDateFrom), where('data', '<=', targetDateTo),where('status', '==', 'ok'));
@@ -106,6 +135,13 @@ const getReportByDate = async (IdAndNames:{'id':string,'name':string}[], dateRan
   const admission = await query(collectionRef, where('chargeOfAdmission', '==', Id), where('admissionDate', '>=', targetDateFrom), where('admissionDate', '<=', targetDateTo),where('admissionStatus', '==', 'ok'));
   const snapshot_admission = await getCountFromServer(admission);
   data = [snapshot_fix.data().count,snapshot_inspect.data().count,snapshot_offer.data().count,snapshot_admission.data().count]
+  rows.value.push({
+    name: IdAndName.name,
+    fix: data[0],
+    inspection: data[1],
+    offer: data[2],
+    admission: data[3]
+  })
   await series.value.push({
     name: IdAndName.name,
     data: data,
@@ -139,6 +175,13 @@ const getAverageReportByDate = async (IdAndNames:{'id':string,'name':string}[], 
   let data = [snapshot_fix.data().count,snapshot_inspect.data().count,snapshot_offer.data().count,snapshot_admission.data().count]
   data_average =listSum(data_average,data,IdAndNames.length)
 }
+rows.value.push({
+    name: '全社平均',
+    fix: data_average[0],
+    inspection: data_average[1],
+    offer: data_average[2],
+    admission: data_average[3]
+  })
 await series.value.push({
     name: '全社平均',
     data: data_average,
@@ -169,7 +212,7 @@ const getBranchId = async (code:string) => {
 
 // branch_idを入力としてusers collectionからそのbranch_idが一致するものをすべて取得する関数
 const getUser = async (id:string,field='branch_id') => {
-  let user_list = []
+  let user_list:{'id':string,'name':string}[] = []
   const collectionRef = collection(db, 'users');
   const q = query(collectionRef, where(field, '==', id));
   const snapshot = await getDocs(q);
