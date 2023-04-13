@@ -35,6 +35,7 @@ export enum ClientFactoryDetailTabs {
     OfficeDetails = 'officeDetails',
     CompanyWideBOHistory = 'CompanyWideBOHistory',
     HeadOffice = 'HeadOffice',
+    Client = 'Client',
     ReflectionHistory = 'ReflectionHistory',
     ImportHistory = 'ImportHistory'
 }
@@ -43,4 +44,10 @@ export interface RenderOfficeDetails extends Ref {
     registeredInfo: ComputedRef<{ label: string, value: string | number }[]>
     commonItems: ComputedRef<{ label: string, value: string | number }[]>
     uniqueItems: ComputedRef<{ label: string, value: string }[]>   
+}
+
+export interface RenderHeadDetails extends Ref {
+    headOfficeInfo: ComputedRef<{label: string, value: string | number}[]>
+    clientInfo: ComputedRef<{label: string, value: string | number}[]>
+    contractInfo: ComputedRef<{label: string, value: string | number}[]>
 }

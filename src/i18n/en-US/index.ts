@@ -1170,10 +1170,15 @@ export default {
     reflectionHistory: 'Reflection history',
     importHistory: 'Import history',
     drawer: {
+      client: 'Client',
       registeredInformation: 'Registered info',
       commonItems: 'Common items',
       uniqueItems: 'Unique items',
+      headOfficeInfo: 'Head office info',
+      clientInfo: 'Client info',
+      contractInfo: 'Contract info',
       details: {
+        // Office details
         parentClient: 'Parent client',
         officeName: 'Office name',
         prefecture: 'Office Address: Prefecture',
@@ -1202,6 +1207,29 @@ export default {
         workingHourDay: 'Day working hour',
         workingHourLate: 'Late working hour',
         workingHourNight: 'Night working hour', 
+
+        // Head details
+        officeLocation: 'Office: Location',
+        officeTel: 'Office: TEL',
+        officeFax: 'Office: FAX',
+        inChargeTitle: 'Person in charge: Title',
+        inChargeTel: 'Person in charge: TEL',
+        inChargeAddress: 'Person in charge: Address',
+
+        representative: 'Representative',
+        established: 'Established',
+        capital: 'Capital',
+        earnings: 'Earnings',
+        numberOffices: 'Number Of Offices',
+        numberEmployees: 'Number Of Employees',
+        companyProfile: 'Company Profile',
+
+        contractUnit: 'Contract unit',
+        industry: 'Client type',
+        contractTel: 'Contract destination: TEL',
+        contractFax: 'Contract destination: FAX',
+        contractMail: 'Contract destination: MAIL',
+        contractPerson: 'Contractor: Person in charge'
       }
     }
   },

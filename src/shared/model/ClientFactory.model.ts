@@ -1,5 +1,6 @@
 import { ReflectLog } from './ReflectLog'
 import { ImportLog } from './ImportLog'
+import { Client } from './Client.model'
 
 enum Industry {
     Care = 'care',
@@ -33,8 +34,11 @@ export interface ClientFactory {
     positionContact: string;
     mailContact: string;
     officeDetails: OfficeDetails
+    contractInfo?: ContractInfo
     reflectLog?: ReflectLog;
     importLog?: ImportLog
+
+    client?: Client
 }
 
 interface OfficeDetails {
@@ -73,4 +77,13 @@ interface OfficeDetails {
     uniqueItems: {
         [key: string]: string
     }
+}
+
+interface ContractInfo {
+    contractUnit: boolean;
+    industry: 'nursing' | 'care'
+    contractTel: string;
+    contractFax: string;
+    contractMail: string;
+    contractPerson: string;
 }

@@ -93,6 +93,7 @@ onMounted(() => {
         </q-card>
 
         <ClientFactoryDrawer
+        v-if="activeClientFactoryItem"
         v-model:selectedItem="activeClientFactoryItem"
         :isDrawer="isClientFactoryDrawer"
         @hide-drawer="hideDrawer"/>

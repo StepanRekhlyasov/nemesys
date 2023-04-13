@@ -1165,10 +1165,15 @@ export default {
     reflectionHistory: '反映履歴',
     importHistory: '取込履歴',
     drawer: {
+      client: 'クライアント',
       registeredInformation: '登録情報',
       commonItems: '全職種共通項目',
       uniqueItems: '職種独自項目',
+      headOfficeInfo: '本社事業所情報',
+      clientInfo: 'クライアント情報',
+      contractInfo: '契約情報',
       details: {
+        // Office details
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
@@ -1197,7 +1202,30 @@ export default {
         workingHourEarly: '休日（年間）',
         workingHourDay: '遅番',
         workingHourLate: '休日（週単位）',
-        workingHourNight: '夜勤', 
+        workingHourNight: '夜勤',
+
+        // Head details
+        officeLocation: '事業所：所在地',
+        officeTel: '事業所：TEL',
+        officeFax: '事業所：FAX',
+        inChargeTitle: '担当者：役職',
+        inChargeTel: '担当者：TEL',
+        inChargeAddress: '担当者：アドレス',
+
+        representative: '代表者',
+        established: '設立',
+        capital: '資本金',
+        earnings: '売上',
+        numberOffices: '事業所数',
+        numberEmployees: '従業員数',
+        companyProfile: '会社概要',
+
+        contractUnit: '契約単位',
+        industry: 'クライアント種別',
+        contractTel: '契約先：TEL',
+        contractFax: '契約先：FAX',
+        contractMail: '契約先：MAIL',
+        contractPerson: '契約先：担当者'
       }
     }
   },
