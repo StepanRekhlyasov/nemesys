@@ -1235,6 +1235,16 @@ export default {
     }
   },
   report:{
-    SalesActivityIndividualReport:'SalesActivityReport'
+    SalesActivityIndividualReport:'SalesActivityIndividualReport',
+    ApplicantReport:'ApplicantReport',
+    SalesActivityReport:'SalesActivityReport',
+    CompanyWideAverage:'CompanyWideAverage',
+    RecruitmentEffectivenessReport:'RecruitmentEffectivenessReport',
+    categories:{
+      fix:'Fix',
+      inspection:'Inspection',
+      offer:'Offer',
+      admission:'Admission',
+    }
   }
 };

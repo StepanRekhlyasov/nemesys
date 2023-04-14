@@ -1231,6 +1231,16 @@ export default {
     }
   },
   report:{
-    SalesActivityIndividualReport:'営業活動個人レポート'
+    SalesActivityIndividualReport:'営業活動個人レポート',
+    ApplicantReport:'応募者レポート',
+    SalesActivityReport:'営業活動レポート',
+    RecruitmentEffectivenessReport:'採用効果レポート',
+    CompanyWideAverage:'全社平均',
+    categories:{
+      fix:'Fix',
+      inspection:'職見',
+      offer:'内定',
+      admission:'入職',
+    }
   }
 };
