@@ -23,7 +23,7 @@
     }" />
 
   <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
-    <template v-slot:header-cell-organizationIdAndName="props">
+    <template v-slot:header-cell-organizationCodeAndName="props">
       <q-th :props="props" class="no-breaks items-center row">
         {{ props.col.label }}
       </q-th>
@@ -51,7 +51,7 @@
 
         <q-td>
           <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.organizationIdAndName }}
+            {{ props.row.organizationCodeAndName }}
           </template>
           <q-input v-else v-model:model-value="editableRow!.name" color="accent" />
         </q-td>
@@ -158,9 +158,9 @@ const columns = computed<QTableProps['columns']>(() => [
     sortable: true
   },
   {
-    name: 'organizationIdAndName',
+    name: 'organizationCodeAndName',
     label: `${t('menu.admin.organizationsTable.organizationId') + '\n' + t('menu.admin.organizationsTable.organizationName')}  `,
-    field: 'organizationIdAndName',
+    field: 'organizationCodeAndName',
     align: 'left',
     sortable: true,
     sort: (a: string, b: string) => {
@@ -261,7 +261,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
 
   loading.value = true;
   rows.value[rowIndex] = row
-  rows.value[rowIndex].organizationIdAndName = row.id + ' ' + row.name
+  rows.value[rowIndex].organizationCodeAndName = row.code + ' ' + row.name
 
   try {
     const organization = rowToOrganization(row)
