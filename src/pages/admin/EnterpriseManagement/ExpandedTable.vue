@@ -20,7 +20,7 @@
 
               <q-td v-if="buisnesesIndex == 0 && branchInex == 0" v-bind:rowspan="organizationItem.totalBranches">
                 <div class="column items-start">
-                  {{ organizationItem.organizationIdAndName }}
+                  {{ organizationItem.organizationCodeAndName }}
                   <q-toggle v-model="organizationItem.working" :label="t('menu.admin.organizationsTable.working')"
                     left-label color="accent"
                     @update:model-value="async (working) => await onWorkingChange(working, { organizationId: organizationItem.id })" />
