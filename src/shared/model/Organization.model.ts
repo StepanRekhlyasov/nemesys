@@ -3,7 +3,7 @@ import { Timestamp } from 'firebase/firestore';
 export interface Organization {
   id: string;
   name: string;
-  staff_name: string;
+  staff_name?: string;
   tel: string;
   fax: string;
   deletedAt?: Timestamp;
@@ -17,9 +17,9 @@ export interface Organization {
   deleted: boolean
 }
 
-type InvoiceRequest = typeof invoiceRequests[number]
+export type InvoiceRequest = typeof invoiceRequests[number]
 
-export const invoiceRequests = ['electronic'] as const
+export const invoiceRequests = ['electronic', 'mail'] as const
 
 export enum Prefectures {
   '北海道',
