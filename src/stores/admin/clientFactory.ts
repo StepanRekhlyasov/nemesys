@@ -68,7 +68,6 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
             })
 
             client.numberOffices = clientFactoriesSnapshot.size
-            console.log(clientFactoriesSnapshot.size)
         }))
 
         await Promise.all(clientFactoriesData.map(async(clientFactory) => {
