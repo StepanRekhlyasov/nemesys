@@ -7,8 +7,9 @@ import CFDrawerTabs from './components/ClientFactory/CFDrawerTabs.vue';
 
 const props = defineProps<{
     isDrawer: boolean,
-    selectedItem: ClientFactory | null
+    selectedItem: ClientFactory
 }>()
+
 const emit = defineEmits<{
     (e: 'hideDrawer')
 }>()
@@ -39,7 +40,7 @@ const hideDrawer = () => {
                     <CFDrawerBody v-if="selectedItem" :selectedItem="selectedItem"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-3">
-                    <CFDrawerTabs :clientFactory="selectedItem" />
+                    <CFDrawerTabs :clientFactory="selectedItem as ClientFactory" />
                 </q-card-section>
             </q-card>
         </q-scroll-area>

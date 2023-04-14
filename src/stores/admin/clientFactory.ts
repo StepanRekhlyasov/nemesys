@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { getFirestore, query, where, collection, getDocs, DocumentData, orderBy, limit } from 'firebase/firestore';
 import { ref } from 'vue';
+import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
@@ -50,21 +51,24 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
 
     const getClientFactories = async () => {
         const clients: DocumentData[] = []
+        const clientFactoriesData: ClientFactory[] = []
         const clientsQuerySnapshot = await getDocs(query(collection(db, 'clients'), where('deleted', '==', false)))
 
         clientsQuerySnapshot.forEach((doc) => {
-            clients.push({clientId: doc.id, ...doc.data()})
+            clients.push({clientId: doc.id, ...doc.data() as Client})
         })
 
-        const clientFactoriesSnapshot = await getDocs(collection(db, 'clients', clients[0]['clientId'], 'client-factory'))
+        await Promise.all(clients.map(async(client) => {
+            const clientFactoriesSnapshot = await getDocs(collection(db, 'clients', client.clientId, 'client-factory'))
 
-        const clientFactoriesData: ClientFactory[] = []
-
-        clientFactoriesSnapshot.forEach((doc) => {
-            const clientFactory = {...doc.data(), id: doc.id} as ClientFactory
+            clientFactoriesSnapshot.forEach((doc) => {
+                const clientFactory = {...doc.data(), id: doc.id, client: clients[0]} as ClientFactory
             
-            clientFactoriesData.push(clientFactory)
-        })
+                clientFactoriesData.push(clientFactory)
+            })
+
+            client.numberOffices = clientFactoriesSnapshot.size
+        }))
 
         await Promise.all(clientFactoriesData.map(async(clientFactory) => {
             clientFactory.reflectLog = await getLastReflectLogs(clientFactory.clientID, clientFactory.id)
