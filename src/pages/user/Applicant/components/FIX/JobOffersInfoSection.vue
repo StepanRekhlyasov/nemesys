@@ -2,13 +2,13 @@
     <DropDownEditGroup
       :isEdit="edit.includes('jobOffersInfo')"
       :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
-      @openEdit="emit('openEdit')"
-      @closeEdit="emit('closeEdit')"
+      @openDropDown="emit('openEdit')"
+      @closeDropDown="emit('closeEdit')"
       @onSave="emit('save')"
-      :disableButton="disableLevel < 2">
+      :isDisabledButton="disableLevel < 2">
 
       <div class="row q-pb-sm">
-        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" :value="fixData.offerStatus" valueClass="text-uppercase">
+        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" :value="fixData.offerStatus" valueClass="text-uppercase col-3">
           <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';emit('disableChange')" :disable="disableLevel < 2"/>
           <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" :disable="disableLevel < 2"/>
         </labelField>

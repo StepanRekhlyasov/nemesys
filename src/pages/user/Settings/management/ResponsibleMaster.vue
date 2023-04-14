@@ -10,7 +10,7 @@
     <SearchField :clear-button-text-color="textColor" :search-button-color="color" :on-click-search="() => searchUsers()"
       :on-click-clear="() => { search = ''; loadUsersList(); }" v-model:model-value="search">
       <template v-slot:rigthButton>
-        <DefaultButton :color="color" label-key="settings.users.addUser" @click="openDialog = true" />
+        <DefaultButton :color="color" label-key="settings.users.contactPersonName" @click="openDialog = true" />
       </template>
     </SearchField>
   </q-card>
@@ -105,7 +105,7 @@
   </q-card>
 
   <q-dialog v-model="openDialog" @hide="editableUser = undefined">
-    <ResponsibleCreateForm @closeDialog="openDialog = false; loadUsersList()" :roles="roles" :branches="branches" />
+    <ResponsibleCreateForm @closeDialog="openDialog = false; loadUsersList()" :roles="roles" :branches="branches" :is-admin="isAdmin" />
   </q-dialog>
 </template>
 
@@ -125,7 +125,7 @@ import EditButton from 'components/EditButton.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import SearchField from 'src/components/SearchField.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
-import { getAllBranches, getVisibleColumns } from './handlers/ResponsibleMaster';
+import { filterRoles, getAllBranches, getVisibleColumns } from './handlers/ResponsibleMaster';
 import { useUserStore } from 'src/stores/user';
 
 export default {
@@ -262,6 +262,12 @@ export default {
               list[doc.id] = data
             })
             roles.value = list;
+
+
+            if (isAdmin) {
+              filterRoles(roles.value)
+            }
+
           })
           branches.value = await getAllBranches(db)
           Promise.all([usersSnapshot, rolesSnapshot]).then(() => {

@@ -142,6 +142,8 @@ export default {
         fax: 'FAX番号',
         email: 'メールアドレス',
         invoiceRequest: '請求書希望',
+        electronic: '電子',
+        mail: '郵送',
         organizationsSearh: '企業検索',
         businessName: '事業名',
         branchName: '支店名',
@@ -218,7 +220,8 @@ export default {
       }
     },
     users: {
-      addUser: '担当者新規追加',
+      contactPersonName: '担当者新規追加',
+      addUser: 'ユーザー新規追加',
       fio: '氏名',
       email: 'メールアドレス',
       password: 'パスワード',
