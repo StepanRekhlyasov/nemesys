@@ -32,7 +32,10 @@ export interface Client {
   mailaddress?: string;
   municipality?: string;
   name: string;
+  capital: string;
+  established: string;
   numberEmployees?: string;
+  numberOffices?: string;
   prefecture?: string;
   representativeName?: string;
   street?: string;
