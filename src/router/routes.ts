@@ -3,6 +3,7 @@ import systemRouter from './system.router';
 import clientRouters from './clients.router';
 import applicantRouters from './applicant.router';
 import adminRouters from './admin.router';
+import backOrderRouter from './backOrder.router';
 import { routeNames } from './routeNames';
 import { UserPermissionNames } from 'src/shared/model';
 
@@ -25,8 +26,8 @@ const routes: MenuRouter[] = [{
     },
     ...systemRouter,
     ...clientRouters,
-    ...applicantRouters
-
+    ...applicantRouters,
+    ...backOrderRouter
   ]
 },
 {

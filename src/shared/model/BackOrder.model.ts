@@ -15,6 +15,7 @@ export interface BackOrderModel {
   transportationExpenses: string;
   workingDays: string;
   workingDaysWeek: WorkingDaysWeek;
+  transactionType: TransactionType;
 
   workingHoursEarly: string;
   workingHoursDay: string;
@@ -46,6 +47,12 @@ export enum TypeQualifications {
   NewComer = 'newcomer',
   CareWorker = 'careWorker'
 }
+
+export enum TransactionType {
+  Introduction = 'introduction',
+  TTP = 'ttp',
+  GeneralDispatch = 'generalDispatch'
+} 
 
 export enum BackOrderStatus {
   FullTime = 'fullTime',
