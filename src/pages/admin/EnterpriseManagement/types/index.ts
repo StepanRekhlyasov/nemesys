@@ -13,7 +13,7 @@ export interface Table {
 
 interface OrganizationItem extends Organization {
   totalBranches: number,
-  organizationIdAndName: string,
+  organizationCodeAndName: string,
   working: boolean,
   buisneses: Buisneses[]
 }

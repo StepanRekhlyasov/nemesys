@@ -21,7 +21,7 @@ export async function mapOrganizationsToRow(organizations: Organization[]) {
       const user = await store.getUserById(organization.operatorUser)
       return {
         number: index + 1,
-        organizationIdAndName: organization.id + ' ' + organization.name,
+        organizationCodeAndName: organization.code + ' ' + organization.name,
         operatorName: user?.displayName,
         ...organization
       }
@@ -32,7 +32,7 @@ export async function mapOrganizationsToRow(organizations: Organization[]) {
 export function rowToOrganization(row: Row): Organization {
   const organization = cloneToRaw(row)
   delete organization.number
-  delete organization.organizationIdAndName
+  delete organization.organizationCodeAndName
   delete organization.operatorName
   organization.updatedAt = serverTimestamp()
   return organization
