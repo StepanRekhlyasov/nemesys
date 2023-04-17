@@ -1,5 +1,4 @@
 <template>
-  {{ organization_id}}
   <div class="row">
     <div class="col">
       <apexchart :options="chartOptions" :series="series"></apexchart>
@@ -12,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, defineProps ,onMounted} from 'vue';
+import { ref, Ref, watch, defineProps, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import {
@@ -52,22 +51,43 @@ const chartOptions = ref({
       t('report.categories.admission'),
     ],
   },
-  yaxis: {
-    min: 0,
-    title: {
-      text: '人',
+  yaxis: [
+    {
+      min: 0,
+
+      labels: {
+        formatter: function (value) {
+          return value.toFixed(2) + '人'; // 目盛りに単位を付ける
+        },
+      },
     },
-  },
+    {
+      opposite: true,
+      min: 0,
+      max: 100,
+
+      labels: {
+        formatter: function (value) {
+          return value.toFixed(2) + '%'; // 目盛りに単位を付ける
+        },
+      },
+    },
+  ],
   fill: {
     opacity: 1,
   },
 });
+
+// t('report.Applicant'),
+//       t('report.ValidApplicant'),
+//       t('report.CompanyAverage'),
+//       t('report.NumberOfContacts'),
+//       t('report.NumberOfInvitations'),
+//       t('report.NumberOfAttendance'),
 const series: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const all_user_list: Ref<{ id: string; name: string }[]> = ref([]);
-const organization_id = ref('');
 const db = getFirestore();
-const auth = getAuth();
 const rows: Ref<
   {
     name: string;
@@ -78,39 +98,14 @@ const rows: Ref<
   }[]
 > = ref([]);
 //auth.currentUser.uidとcollection usersのidが一致しているものを探す
-const init = async () => {
-  if (auth.currentUser != null) {
-    const user_query = query(
-      collection(db, 'users'),
-      where('id', '==', auth.currentUser.uid)
-    );
-    const user_querySnapshot = await getDocs(user_query);
-    user_querySnapshot.forEach((doc) => {
-      organization_id.value = doc.data().organization_id;
-    });
-  }
-};
 //propsで渡されたbranch_idをbranch_idに代入
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string | undefined; to: string | undefined };
   organization_id: string;
+  branch_user_list: { id: string; name: string }[];
+  all_user_list: { id: string; name: string }[];
 }>();
-//branch_idが渡されている場合はbranch_idをbranch_inputに代入watchでbranch_idが変更されたらbranch_inputを変更
-watch(
-  () => props.branch_id,
-  async (branch_id) => {
-    await draw()
-  }
-);
-
-watch(
-  () => props.dateRangeProps,
-  async (v) => {
-      await draw()
-  }
-);
-
 
 const columns = ref([
   {
@@ -155,9 +150,10 @@ const columns = ref([
 const getReportByDate = async (
   IdAndNames_branch: { id: string; name: string }[],
   IdAndNames: { id: string; name: string }[] | undefined,
-  dateRange: { from: string|undefined; to: string|undefined}
+  dateRange: { from: string | undefined; to: string | undefined }
 ) => {
-  if(dateRange.from == undefined || dateRange.to == undefined) return;
+  if (dateRange.from == undefined || dateRange.to == undefined) return;
+  if (IdAndNames == undefined || IdAndNames.length == 0) return;
   series.value = [];
   rows.value = [];
   // 0のリストをchartOption.xaxis.categories.length分作成する
@@ -204,31 +200,34 @@ const getReportByDate = async (
       })
     );
     data_average = listSum(data_average, data, IdAndNames.length);
-    if (IdAndNames_branch.some((e) => e.id == Id)) {
-      rows.value.push({
-        name: IdAndName.name,
-        fix: data[0],
-        inspection: data[1],
-        offer: data[2],
-        admission: data[3],
-      });
-      series.value.push({
-        name: IdAndName.name,
-        data: data,
-        type: 'bar',
-      });
-    }
   }
+  //data_averageのCVR_平均を求める
+  const data_cvr = data_average.map((num, idx) => {
+    if (idx == 0) return 100;
+    else return (data_average[idx] / data_average[idx - 1]) * 100;
+  });
   rows.value.push({
-    name: t('report.CompanyWideAverage'),
+    name: t('report.CompanyAverage'),
     fix: data_average[0],
     inspection: data_average[1],
     offer: data_average[2],
     admission: data_average[3],
   });
-  await series.value.push({
-    name: t('report.CompanyWideAverage'),
+  rows.value.push({
+    name: t('report.CVR'),
+    fix: data_cvr[0],
+    inspection: data_cvr[1],
+    offer: data_cvr[2],
+    admission: data_cvr[3],
+  });
+  series.value.push({
+    name: t('report.CompanyAverage'),
     data: data_average,
+    type: 'bar',
+  });
+  series.value.push({
+    name: t('report.CVR'),
+    data: data_cvr,
     type: 'line',
   });
   //ここからIdAndNamesでforを回して上と同じことをするただしIdAndNames_branchにあるものは除外する
@@ -239,29 +238,44 @@ const listSum = (list1, list2, ln) => {
   return sum;
 };
 
-// branch_idを入力としてusers collectionからそのbranch_idが一致するものをすべて取得する関数
-const getUser = async (id: string, field = 'branch_id') => {
-  let user_list: { id: string; name: string }[] = [];
-  const collectionRef = collection(db, 'users');
-  const q = query(collectionRef, where(field, '==', id));
-  const snapshot = await getDocs(q);
-  snapshot.forEach((doc) => {
-    user_list.push({ id: doc.id, name: doc.data().displayName });
-  });
-  return user_list;
-};
+watch(
+  () => props.branch_user_list,
+  async () => {
+    if (props.branch_user_list.length != 0) {
+      user_list.value = await props.branch_user_list;
+      all_user_list.value = await props.all_user_list;
+      await getReportByDate(
+        user_list.value,
+        all_user_list.value,
+        props.dateRangeProps
+      );
+    }
+  }
+);
 
-//4cAISPxAq6v8HT0YSFKH
-//branch_inputが変更されたらbranch_inputを入力としてgetUserを実行する
-const draw = async ()=>{
-  user_list.value = await getUser(props.branch_id);
-  all_user_list.value = await getUser(props.organization_id, 'organization_id');
-  await getReportByDate(user_list.value, all_user_list.value, props.dateRangeProps);
-}
+watch(
+  () => props.dateRangeProps,
+  async () => {
+    if (user_list.value.length != 0) {
+      await getReportByDate(
+        user_list.value,
+        all_user_list.value,
+        props.dateRangeProps
+      );
+    }
+  }
+);
 
 //このコンポーネントが読み込まれたらdraw()を実行する
 onMounted(async () => {
-  await draw();
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  user_list.value = props.branch_user_list;
+  all_user_list.value = props.all_user_list;
+  await getReportByDate(
+    user_list.value,
+    all_user_list.value,
+    props.dateRangeProps
+  );
 });
 </script>
 
@@ -272,21 +286,6 @@ export default {
   name: 'ChartExample',
   components: {
     apexchart: VueApexCharts,
-  },
-  data() {
-    return {
-      chartOptions: {
-        chart: {
-          id: 'vuechart-example',
-        },
-        xaxis: {
-          // categories loaded here
-        },
-      },
-      series: [
-        // data loaded here
-      ],
-    };
   },
 };
 </script>
