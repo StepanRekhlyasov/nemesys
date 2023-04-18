@@ -106,6 +106,9 @@ export default {
     organization: 'Organization Master Management',
     template: 'Template Management',
     applicant: 'Applicant Management',
+    backOrder: 'BO Management',
+    backOrderSearch: 'BO Search',
+    savedSearchConditionsList: 'List of Saved Search Conditions',
     officeSearch: 'Office Search',
     savedSearchList: 'Saved Search Item List',
     mapSearch: 'Map Search',
@@ -956,6 +959,24 @@ export default {
       // Memo Tab
       content: 'Content'
     }
+  },
+  backOrder: {
+    changeSearchCriteria: 'Change search criteria',
+    addBO: 'BO new added',
+    personnel: 'BO Personnel',
+    registrationDate: 'BO Registration Date',
+    dealType: 'Deal Type',
+    transactionType: 'Transaction Type',
+    distance: 'Distance from origin',
+    officeName: 'Office Name',
+    clientName: 'Client Name',
+    employmentType: 'Employment Type',
+    hourlyRate: 'Hourly Rate',
+    monthlyWage: 'Monthly Wage',
+    state: 'State/Province',
+    generalDispatch: 'General Dispatch',
+    ttp: 'TTP',
+    introduction: 'Introduction'
   },
   prefectures: {
     hokkaido: 'Hokkaido',
