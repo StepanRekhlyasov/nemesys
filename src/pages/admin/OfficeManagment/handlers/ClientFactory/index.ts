@@ -124,3 +124,12 @@ export const useImportLogLabels = computed(() => {
     t('clientFactory.drawer.details.captured')
   ]
 })
+
+export const useReflectLogLabels = computed(() => {
+  return [
+    t('clientFactory.drawer.details.executionUser'),
+    t('clientFactory.drawer.details.executionDateTime'),
+    t('clientFactory.drawer.details.update_create'),
+    t('clientFactory.drawer.details.captured'),
+  ]
+})

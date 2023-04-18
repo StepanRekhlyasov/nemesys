@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
 import CFDrawerHeadDetailsVue from './CFDrawerHeadDetails.vue';
 import CFDrawerImportDetails from './CFDrawerImportDetails.vue';
+import CFDrawerReflectDetail from './CFDrawerReflectDetail.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryDetailTabs } from '../../types'
 
@@ -52,7 +53,7 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
             <CFDrawerHeadDetailsVue v-if="clientFactory.isHead" :clientFactory="clientFactory"/>
         </q-tab-panel>
         <q-tab-panel :name="ClientFactoryDetailTabs.ReflectionHistory">
-
+            <CFDrawerReflectDetail :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id" />
         </q-tab-panel>
         <q-tab-panel :name="ClientFactoryDetailTabs.ImportHistory" class="q-pa-xs">
             <CFDrawerImportDetails :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id"  />

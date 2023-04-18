@@ -80,6 +80,29 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
         return importLog
     }
 
+    const getAllReflectLogs = async (clientId: string, clientFactoryId: string) => {
+        const importLogs: ReflectLog[] = []
+
+        const importLogsSnapshot = await getDocs(query(
+            collection(db, 'clients', clientId, 'client-factory',clientFactoryId, 'reflectLog'),
+            orderBy('executionDate', 'desc')
+        ))
+
+        importLogsSnapshot.forEach((doc) => {
+            const docData = doc.data()
+
+            importLogs.push(
+                {
+                    ...docData,
+                    executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                    id: doc.id
+                } as ReflectLog
+            )
+        })
+
+        return importLogs
+    }
+
     const getClientFactories = async () => {
         const clients: DocumentData[] = []
         const clientFactoriesData: ClientFactory[] = []
@@ -114,6 +137,7 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
     return {
         clientFactories,
         getClientFactories,
-        getAllImportLogs
+        getAllImportLogs,
+        getAllReflectLogs
     }
 })

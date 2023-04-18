@@ -1230,7 +1230,7 @@ export default {
         contractMail: '契約先：MAIL',
         contractPerson: '契約先：担当者',
 
-        // Import Logs
+        // Import Logs and Reflect Logs
         executionUser: '実行ユーザー',
         executionDateTime: '実行日時',
         sourceCompany: '取込元企業',

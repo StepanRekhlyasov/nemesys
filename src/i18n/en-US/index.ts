@@ -1235,7 +1235,7 @@ export default {
         contractPerson: 'Contractor: Person in charge',
 
 
-        // Import Logs
+        // Import Logs and Reflect Logs
         executionUser: 'Execution User',
         executionDateTime: 'Execution Date and Time',
         sourceCompany: 'Source Company',
