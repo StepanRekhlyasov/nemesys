@@ -106,6 +106,9 @@ export default {
     organization: '組織マスター管理',
     template: 'テンプレート管理',
     applicant: '応募者管理',
+    backOrder: 'BO管理',
+    backOrderSearch: 'BO検索',
+    savedSearchConditionsList: '保存検索条件一覧',
     mapSearch: 'マップ検索',
     officeSearch: '事業所 検索',
     savedSearchList: '保存した検索条件一覧',
@@ -954,6 +957,24 @@ export default {
       // Memo Tab
       content: '内容'
     }
+  },
+  backOrder: {
+    changeSearchCriteria: '検索条件変更',
+    addBO: 'BO新規追加',
+    personnel: 'BO担当者',
+    registrationDate: 'BO登録日',
+    dealType: '案件種別',
+    transactionType: '取引種別',
+    distance: '起点からの距離',
+    officeName: '事業所名',
+    clientName: 'クライアント名',
+    employmentType: '雇用形態',
+    hourlyRate: '時給',
+    monthlyWage: '月給',
+    state: '都道府県',
+    generalDispatch: '一般派遣',
+    ttp: 'TTP',
+    introduction: '紹介'
   },
   prefectures: {
     hokkaido: '北海道',
