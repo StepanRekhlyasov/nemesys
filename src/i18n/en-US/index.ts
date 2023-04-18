@@ -1232,7 +1232,20 @@ export default {
         contractTel: 'Contract destination: TEL',
         contractFax: 'Contract destination: FAX',
         contractMail: 'Contract destination: MAIL',
-        contractPerson: 'Contractor: Person in charge'
+        contractPerson: 'Contractor: Person in charge',
+
+
+        // Import Logs
+        executionUser: 'Execution User',
+        executionDateTime: 'Execution Date and Time',
+        sourceCompany: 'Source Company',
+        update_create: 'Update / Create',
+        captured: 'Captured item',
+
+        update: 'Updated',
+        create: 'Created',
+        basicInfoChanged: 'Changed Basic Info',
+        officeInfoChanged: 'Changed Office Info'
       }
     }
   },
