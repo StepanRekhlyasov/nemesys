@@ -143,7 +143,6 @@ const getReportByDate = async (
   const targetDateTo = new Date(dateRange.to);
   const collectionRef = collection(db, 'fix');
   const query_list: Query<DocumentData>[] = [];
-  if (IdAndNames == undefined) IdAndNames = IdAndNames_branch;
   for (let IdAndName of IdAndNames) {
     const Id: string = IdAndName.id;
     query_list[0] = query(

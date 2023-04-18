@@ -5,7 +5,7 @@
       <q-table title="" :rows="rows" :columns="columns" row-key="name" />
     </div>
     <div class="col">
-      <!-- <apexchart :options="chartOptions" :series="series"></apexchart> -->
+      <apexchart :options="chartOptions2" :series="series2"></apexchart>
     </div>
   </div>
 </template>
@@ -13,13 +13,11 @@
 <script setup lang="ts">
 import { ref, Ref, watch, defineProps, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from '@firebase/auth';
 import {
   collection,
   query,
   where,
   getFirestore,
-  getDocs,
   getCountFromServer,
   Query,
   DocumentData,
@@ -31,7 +29,6 @@ const chartOptions = ref({
   },
   plotOptions: {
     bar: {
-      horizontal: false,
       columnWidth: '25%',
       endingShape: 'rounded',
     },
@@ -78,6 +75,48 @@ const chartOptions = ref({
   },
 });
 
+const chartOptions2 = ref({
+  chart: {
+
+    height: 800,
+  },
+  plotOptions: {
+    bar: {
+      columnWidth: '25%',
+      endingShape: 'rounded',
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    show: true,
+    width: 2,
+  },
+  xaxis: {
+    categories: [
+      t('report.categories.fix')+'-'+t('report.categories.inspection'),
+      t('report.categories.inspection')+'-'+t('report.categories.offer'),
+      t('report.categories.offer')+'-'+t('report.categories.admission'),
+    ],
+  },
+  yaxis: [
+    {
+      min: 0,
+      max: 100,
+
+      labels: {
+        formatter: function (value) {
+          return value.toFixed(2) + '%'; // 目盛りに単位を付ける
+        },
+      },
+    },
+  ],
+  fill: {
+    opacity: 1,
+  },
+});
+
 // t('report.Applicant'),
 //       t('report.ValidApplicant'),
 //       t('report.CompanyAverage'),
@@ -85,6 +124,8 @@ const chartOptions = ref({
 //       t('report.NumberOfInvitations'),
 //       t('report.NumberOfAttendance'),
 const series: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
+const series2: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
+
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const all_user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const db = getFirestore();
@@ -229,6 +270,11 @@ const getReportByDate = async (
     name: t('report.CVR'),
     data: data_cvr,
     type: 'line',
+  });
+  series2.value.push({
+    name: t('report.CompanyAverage'),
+    data: data_average,
+    type: 'bar',
   });
   //ここからIdAndNamesでforを回して上と同じことをするただしIdAndNames_branchにあるものは除外する
 };

@@ -1251,6 +1251,9 @@ export default {
       inspection:'Inspection',
       offer:'Offer',
       admission:'Admission',
+    },
+    chart:{
+      UnitPerson:'UnitPerson',
     }
   }
 };
