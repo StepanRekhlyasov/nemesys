@@ -114,3 +114,13 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
 
   return headDetails
 }
+
+export const useImportLogLabels = computed(() => {
+  return [
+    t('clientFactory.drawer.details.executionUser'),
+    t('clientFactory.drawer.details.executionDateTime'),
+    t('clientFactory.drawer.details.sourceCompany'),
+    t('clientFactory.drawer.details.update_create'),
+    t('clientFactory.drawer.details.captured')
+  ]
+})

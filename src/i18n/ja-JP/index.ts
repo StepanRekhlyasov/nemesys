@@ -1228,7 +1228,19 @@ export default {
         contractTel: '契約先：TEL',
         contractFax: '契約先：FAX',
         contractMail: '契約先：MAIL',
-        contractPerson: '契約先：担当者'
+        contractPerson: '契約先：担当者',
+
+        // Import Logs
+        executionUser: '実行ユーザー',
+        executionDateTime: '実行日時',
+        sourceCompany: '取込元企業',
+        update_create: '更新／作成',
+        captured: '取込項目',
+
+        update: '更新',
+        create: '作成',
+        basicInfoChanged: '基本情報',
+        officeInfoChanged: '事業所詳細情報'
       }
     }
   },
