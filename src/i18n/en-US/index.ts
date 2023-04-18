@@ -976,7 +976,8 @@ export default {
     state: 'State/Province',
     generalDispatch: 'General Dispatch',
     ttp: 'TTP',
-    introduction: 'Introduction'
+    introduction: 'Introduction',
+    basicInfo: 'BO Basic Information',
   },
   prefectures: {
     hokkaido: 'Hokkaido',

@@ -974,7 +974,8 @@ export default {
     state: '都道府県',
     generalDispatch: '一般派遣',
     ttp: 'TTP',
-    introduction: '紹介'
+    introduction: '紹介',
+    basicInfo: 'BO基本情報',
   },
   prefectures: {
     hokkaido: '北海道',
