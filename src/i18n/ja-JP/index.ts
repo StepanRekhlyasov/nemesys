@@ -65,7 +65,11 @@ export default {
     openArea: '表示エリアを開く',
     yen: '円',
     year: '年',
-    userNotFound: 'ユーザーが見つかりません。'
+    userNotFound: 'ユーザーが見つかりません。',
+    age: '年齢',
+    ageShort: '歳',
+    week: '週',
+    month: '月',
   },
   smoking: {
     no: '無',
@@ -715,6 +719,8 @@ export default {
       attendanceInfo: 'アテンド情報',
       fixEmployInfo: 'FIX-入職情報',
       operationInfo: '稼働情報',
+      yearsExperience: '経験年数',
+      availableShift: '勤務可能シフト',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -828,7 +834,23 @@ export default {
         }
       }
 
-
+    },
+    statusList: {
+      unsupported: '未対応',
+      waitContact: '接触待ち',
+      excluded: '対象外',
+      anotherCompany: '他社決定',
+      breakContact: '不通', 
+      decline: '登録辞退',
+      waitAttend: 'アテンド待ち',
+      waitFIX: 'FIX待ち', 
+      waitVisit: '職見待ち',
+      waitOffer: '内定待ち', 
+      waitEntry: '入職待ち',
+      working: '稼働中', 
+      waitTermintion: '終了待ち',
+      waitRetire: '退職待ち',
+      retired: '退職済み',
     },
     statusOption: {
       unsupported: '未対応',

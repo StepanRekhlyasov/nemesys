@@ -65,7 +65,11 @@ export default {
     openArea: 'Open Display Area',
     yen: 'yen',
     year: 'year',
-    userNotFound: 'User not found'
+    userNotFound: 'User not found',
+    age: 'Age',
+    ageShort: 'Age',
+    week: 'Week',
+    month: 'Month',
   },
   smoking: {
     no: 'No',
@@ -719,6 +723,8 @@ export default {
       attendanceInfo: 'Attendance Info',
       fixEmployInfo: 'FIX Employment Info',
       operationInfo: 'Operation Info',
+      yearsExperience: 'Years of Experience',
+      availableShift: 'Available Shift',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -831,6 +837,23 @@ export default {
           TTP: 'TTP'
         }
       }
+    },
+    statusList: {
+      unsupported: 'Unsupported',
+      waitContact: 'Wait Contact',
+      excluded: 'Excluded',
+      anotherCompany: 'Another Company',
+      breakContact: 'Break Contact', 
+      decline: 'Decline',
+      waitAttend: 'Wait Attend',
+      waitFIX: 'Wait FIX', 
+      waitVisit: 'Wait Visit',
+      waitOffer: 'Wait Offer', 
+      waitEntry: 'Wait Entry',
+      working: 'Working', 
+      waitTermintion: 'Wait Termintion',
+      waitRetire: 'Wait Retire',
+      retired: 'Retired',
     },
     statusOption: {
       unsupported: 'Unsupported',
