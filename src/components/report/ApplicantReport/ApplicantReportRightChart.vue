@@ -35,35 +35,13 @@ const chartOptions = ref({
   },
   xaxis: {
     categories: [
-      t('report.categories.fix'),
-      t('report.categories.inspection'),
-      t('report.categories.offer'),
-      t('report.categories.admission'),
+      t('report.categories.fix') + '-' + t('report.categories.inspection'),
+      t('report.categories.inspection') + '-' + t('report.categories.offer'),
+      t('report.categories.offer') + '-' + t('report.categories.admission'),
     ],
   },
   yaxis: [
     {
-      min: 0,
-
-      labels: {
-        formatter: function (value) {
-          return value.toFixed(2) + '人'; // 目盛りに単位を付ける
-        },
-      },
-    },
-    {
-      opposite: true,
-      min: 0,
-      max: 100,
-
-      labels: {
-        formatter: function (value) {
-          return value.toFixed(2) + '%'; // 目盛りに単位を付ける
-        },
-      },
-    },
-    {
-      opposite: true,
       min: 0,
       max: 100,
 
@@ -78,7 +56,6 @@ const chartOptions = ref({
     opacity: 1,
   },
 });
-
 
 // t('report.Applicant'),
 //       t('report.ValidApplicant'),
@@ -160,8 +137,6 @@ const get_fix_off_ins_adm_average_list = async (
   const targetDateTo = new Date(dateRange.to);
   const collectionRef = collection(db, 'fix');
   const query_list: Query<DocumentData>[] = [];
-  const query_list_all: Query<DocumentData>[] = [];
-
   //collection usersの中からorganization_idがmap field organization_idsの中にあるものを取得しそ
   const organization_member_query = query(
     collection(db, 'users'),
@@ -209,7 +184,6 @@ const get_fix_off_ins_adm_average_list = async (
     if (idx == 0) return 100;
     else return (data_average[idx] / data_average[idx - 1]) * 100;
   });
-
   rows.value.push({
     name: t('report.CompanyAverage'),
     fix: data_average[0],
@@ -233,58 +207,6 @@ const get_fix_off_ins_adm_average_list = async (
     name: t('report.CVR'),
     data: data_cvr,
     type: 'line',
-  });
-
-  const organization_member_query_all = query(collection(db, 'users'));
-  const number_of_member_snapshot_all = await getCountFromServer(
-    organization_member_query_all
-  );
-  const number_of_member_all = await number_of_member_snapshot_all.data().count;
-  query_list_all[0] = query(
-    collectionRef,
-    where('data', '>=', targetDateFrom),
-    where('data', '<=', targetDateTo),
-    where('status', '==', 'ok')
-  );
-  query_list_all[1] = query(
-    collectionRef,
-    where('inspectionDate', '>=', targetDateFrom),
-    where('inspectionDate', '<=', targetDateTo),
-    where('inspectionStatus', '==', 'ok')
-  );
-  query_list_all[2] = query(
-    collectionRef,
-    where('offerDate', '>=', targetDateFrom),
-    where('offerDate', '<=', targetDateTo),
-    where('offerStatus', '==', 'ok')
-  );
-  query_list_all[3] = query(
-    collectionRef,
-    where('admissionDate', '>=', targetDateFrom),
-    where('admissionDate', '<=', targetDateTo),
-    where('admissionStatus', '==', 'ok')
-  );
-  const data_average_all = await Promise.all(
-    query_list_all.map(async (query) => {
-      const snapshot = await getCountFromServer(query);
-      return snapshot.data().count / number_of_member_all;
-    })
-  );
-  const data_cvr_all = data_average_all.map((num, idx) => {
-    if (idx == 0) return 100;
-    else return (data_average_all[idx] / data_average_all[idx - 1]) * 100;
-  });
-  series.value.push({
-    name: t('report.AllCVR'),
-    data: data_cvr_all,
-    type: 'line',
-  });
-  rows.value.push({
-    name: t('report.AllCVR'),
-    fix: data_cvr_all[0],
-    inspection: data_cvr_all[1],
-    offer: data_cvr_all[2],
-    admission: data_cvr_all[3],
   });
 };
 

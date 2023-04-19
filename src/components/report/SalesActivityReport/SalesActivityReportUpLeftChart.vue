@@ -1,11 +1,18 @@
 <template>
-  <apexchart :options="chartOptions" :series="series"></apexchart>
-  <q-table title="" :rows="rows" :columns="columns" row-key="name" />
+  <div class="col">
+    <apexchart :options="chartOptions" :series="series"></apexchart>
+    <q-table title="" :rows="rows" :columns="columns" row-key="name" />
+  </div>
+  <div class="col">
+    <apexchart :options="chartOptions" :series="seriesR"></apexchart>
+    <q-table title="" :rows="rowsR" :columns="columns" row-key="name" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Rows } from '../Models';
 import {
   collection,
   query,
@@ -62,8 +69,38 @@ const chartOptions = ref({
         },
       },
     },
+  ],
+  fill: {
+    opacity: 1,
+  },
+});
+
+const chartOptions2 = ref({
+  chart: {
+    height: 800,
+  },
+  plotOptions: {
+    bar: {
+      columnWidth: '25%',
+      endingShape: 'rounded',
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    show: true,
+    width: 2,
+  },
+  xaxis: {
+    categories: [
+      t('report.categories.fix') + '-' + t('report.categories.inspection'),
+      t('report.categories.inspection') + '-' + t('report.categories.offer'),
+      t('report.categories.offer') + '-' + t('report.categories.admission'),
+    ],
+  },
+  yaxis: [
     {
-      opposite: true,
       min: 0,
       max: 100,
 
@@ -79,7 +116,6 @@ const chartOptions = ref({
   },
 });
 
-
 // t('report.Applicant'),
 //       t('report.ValidApplicant'),
 //       t('report.CompanyAverage'),
@@ -87,17 +123,14 @@ const chartOptions = ref({
 //       t('report.NumberOfInvitations'),
 //       t('report.NumberOfAttendance'),
 const series: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
+const seriesR: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
+
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const db = getFirestore();
-const rows: Ref<
-  {
-    name: string;
-    fix: number;
-    inspection: number;
-    offer: number;
-    admission: number;
-  }[]
-> = ref([]);
+const rows: Ref<Rows[]> = ref([]);
+
+const rowsR: Ref<Rows[]>=ref([]);
+
 //auth.currentUser.uidとcollection usersのidが一致しているものを探す
 //propsで渡されたbranch_idをbranch_idに代入
 const props = defineProps<{
@@ -209,8 +242,14 @@ const get_fix_off_ins_adm_average_list = async (
     if (idx == 0) return 100;
     else return (data_average[idx] / data_average[idx - 1]) * 100;
   });
-
   rows.value.push({
+    name: t('report.CompanyAverage'),
+    fix: data_average[0],
+    inspection: data_average[1],
+    offer: data_average[2],
+    admission: data_average[3],
+  });
+  rowsR.value.push({
     name: t('report.CompanyAverage'),
     fix: data_average[0],
     inspection: data_average[1],
@@ -234,7 +273,11 @@ const get_fix_off_ins_adm_average_list = async (
     data: data_cvr,
     type: 'line',
   });
-
+  seriesR.value.push({
+    name: t('report.CompanyAverage'),
+    data: data_average,
+    type: 'bar',
+  });
   const organization_member_query_all = query(collection(db, 'users'));
   const number_of_member_snapshot_all = await getCountFromServer(
     organization_member_query_all
@@ -273,6 +316,18 @@ const get_fix_off_ins_adm_average_list = async (
   const data_cvr_all = data_average_all.map((num, idx) => {
     if (idx == 0) return 100;
     else return (data_average_all[idx] / data_average_all[idx - 1]) * 100;
+  });
+  seriesR.value.push({
+    name: t('report.AllAverage'),
+    data: data_average_all,
+    type: 'bar',
+  });
+  rowsR.value.push({
+    name: t('report.AllAverage'),
+    fix: data_average_all[0],
+    inspection: data_average_all[1],
+    offer: data_average_all[2],
+    admission: data_average_all[3],
   });
   series.value.push({
     name: t('report.AllCVR'),

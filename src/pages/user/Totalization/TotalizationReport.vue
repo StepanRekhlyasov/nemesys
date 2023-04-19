@@ -46,8 +46,8 @@ import {
 } from 'firebase/firestore';
 import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport/SalesActivityIndividualReport.vue';
 import ApplicantReport from '../../../components/report/ApplicantReport/ApplicantReport.vue';
-import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessReport.vue';
-import SalesActivityReport from '../../../components/report/SalesActivityReport.vue';
+import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
+import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 const t = useI18n({ useScope: 'global' }).t;
 const branch_input: Ref<string> = ref('');
 const branchs: Ref<string[]> = ref([]);

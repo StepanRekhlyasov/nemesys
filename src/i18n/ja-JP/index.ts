@@ -1243,6 +1243,7 @@ export default {
     NumberOfInvitations:'誘致数',
     NumberOfAttendance:'アテンド数',
     CVR:'CVR',
+    AllCVR:'全体CVR',
     categories:{
       fix:'Fix',
       inspection:'職見',

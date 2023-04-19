@@ -1247,6 +1247,7 @@ export default {
     NumberOfInvitations:'NumberOfInvitations',
     NumberOfAttendance:'NumberOfAttendance',
     CVR:'CVR',
+    AllCVR:'AllCVR',
     categories:{
       fix:'Fix',
       inspection:'Inspection',
