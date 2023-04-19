@@ -11,7 +11,7 @@
 				<div class="text-subtitle2">検索条件 / エリア：東京都全域,　詳細条件：…</div>
 				<div class="row q-mt-xs justify-between" >
 					<q-btn :label="$t('backOrder.changeSearchCriteria')" color="primary" />
-					<q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus-thick" @click="createBO=true"/>
+					<!-- <q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus-thick" @click="createBO=true"/> -->
 				</div>
 			</q-card-section>
       <q-separator color="white" size="2px" />

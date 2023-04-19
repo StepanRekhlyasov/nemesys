@@ -16,6 +16,9 @@ export interface BackOrderModel {
   workingDays: string;
   workingDaysWeek: WorkingDaysWeek;
   transactionType: TransactionType;
+  daysPerWeekList?: 'one' | 'two' | 'three' | 'four' | 'five';
+  working_days_week: string[];
+  
 
   workingHoursEarly: string;
   workingHoursDay: string;

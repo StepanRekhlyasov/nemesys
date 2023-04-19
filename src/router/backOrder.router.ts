@@ -4,7 +4,7 @@ const backOrder_router: MenuRouter[] = [
 	{
 		path: 'backOrder/search',
 		title: 'menu.backOrderSearch',
-		component: () => import('src/pages/user/BackOrder/list.vue'),
+		component: () => import('src/pages/user/BackOrder/BackOrderList.vue'),
 		meta: {
 			requiresAuth: true,
 		},

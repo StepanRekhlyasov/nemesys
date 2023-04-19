@@ -98,22 +98,30 @@
   </q-table>
 
   <!-- add ot edit BO -->
-  <q-dialog v-model="openDialog">
-    <backOrderForm :client="client" @closeDialog="openDialog = false"/>
-  </q-dialog>
+  <q-drawer 
+    show
+    class="bg-grey-3"
+    :width="1000"
+    :breakpoint="500"
+    side="right"
+    overlay elevated
+    bordered
+    v-model="openDialog">
+    <createBO :client="client" @closeDialog="openDialog = false"/>
+  </q-drawer>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import {  ref, computed, Ref } from 'vue';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
-import backOrderForm from 'src/components/detal/components/BackOrder.form.vue';
+import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { collection, getFirestore, onSnapshot, doc as docDb, query, updateDoc, where } from '@firebase/firestore';
 import { toDate } from 'src/shared/utils/utils';
 export default {
   name: 'BackOrder',
   components: {
-    backOrderForm
+    createBO
   },
   props: {
     client: {

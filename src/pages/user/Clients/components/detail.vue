@@ -26,9 +26,9 @@
         <teleAppointHistory :client="client" />
       </q-tab-panel>
 
-    <q-tab-panel name="officeDetail">
-      <officeDetail :client="client" />
-    </q-tab-panel>
+      <q-tab-panel name="officeDetail">
+        <officeDetail :client="client" />
+      </q-tab-panel>
 
       <q-tab-panel name="listBO" class="q-pa-none">
         <backOrder :client="client" />

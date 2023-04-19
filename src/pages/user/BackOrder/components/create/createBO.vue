@@ -19,10 +19,19 @@
       <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm"/>
       <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold" @click="emits('closeDialog')" size="sm"/>
     </q-card-section>
-    <q-separator color="white" size="2px" />
-    <q-card-section>
+    <q-separator color="grey-3" size="2px" />
+    <q-card-section class="bg-white">
       <q-form >
-        
+        <!-- Introduction Section -->
+        <introduction-section :backOrder="backOrderData" :loading="loading" />
+        <!-- Employment Conditions Section -->
+        <employment-conditions-section :backOrder="backOrderData" :loading="loading" />
+        <!-- Paycheck Section -->
+        <paycheck-section :backOrder="backOrderData" :loading="loading" />
+        <!-- Tasks Section -->
+        <tasks-section :backOrder="backOrderData" :loading="loading" />
+        <!-- In House Information Section -->
+        <in-house-info-section :backOrder="backOrderData" :loading="loading"/>
       </q-form>
     </q-card-section>
   </q-card>
@@ -32,10 +41,22 @@
 <script lang="ts" setup>
 import { BackOrderModel } from 'src/shared/model';
 import { ref } from 'vue';
+import employmentConditionsSection from './employmentConditionsSection.vue';
+import PaycheckSection from './PaycheckSection.vue';
+import TasksSection from './TasksSection.vue';
+import InHouseInfoSection from './InHouseInfoSection.vue';
+import IntroductionSection from './IntroductionSection.vue';
 
 const emits = defineEmits(['closeDialog']);
-const props = defineProps<{
-  backOrder: BackOrderModel
-}>()
-const backOrderData = ref(props.backOrder || {} as BackOrderModel)
+const props = defineProps({
+  client: {
+    type: Object,
+    required: true
+  }
+})
+const loading = ref(false)
+const backOrderData = ref({
+  working_days_week: [] as string[],
+  workingDays: 'shiftSystem'
+} as BackOrderModel)
 </script>
