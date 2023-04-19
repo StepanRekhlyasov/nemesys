@@ -1,4 +1,4 @@
-import { MenuRouter, MenuParent } from 'src/shared/model/Menu.model';
+import { MenuRouter } from 'src/shared/model/Menu.model';
 import systemRouter from './system.router';
 import clientRouters from './clients.router';
 import applicantRouters from './applicant.router';
