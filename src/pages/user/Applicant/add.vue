@@ -247,7 +247,7 @@
 
   </q-card>
 </template>
-
+ 
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
@@ -261,7 +261,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 
-import { getStorage, ref as refStorage, uploadBytes, getDownloadURL} from 'firebase/storage';
+import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { statusList } from 'src/shared/constants/Applicant.const';
@@ -337,6 +337,11 @@ export default {
         data['updated_at'] = serverTimestamp();
         data['deleted'] = false;
         const docRef = doc(collection(db, 'applicants'));
+
+        data['id'] = docRef.id;
+        if (data['dob']){
+         data['dob'] = data['dob'].replaceAll('/', '-') + 'T00:00:00+00:00' 
+        }
 
         if (applicantImage.value && applicantImage.value.length > 0) {
           const file = applicantImage.value[0];
