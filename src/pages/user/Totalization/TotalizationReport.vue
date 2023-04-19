@@ -29,13 +29,12 @@
     :dateRangeProps="dateRange"
     :branch_id="branch_input"
     :branch_user_list="branch_user_list"
-    :all_user_list="all_user_list"
   ></component>
 </keep-alive>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref ,watch} from 'vue';
+import { ref, Ref ,watch,onMounted} from 'vue';
 import { useI18n } from 'vue-i18n';
 // import { getAuth } from '@firebase/auth';
 import {
@@ -45,25 +44,24 @@ import {
   getFirestore,
   getDocs,
 } from 'firebase/firestore';
-import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport.vue';
-import ApplicantReport from '../../../components/report/ApplicantReport.vue';
+import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport/SalesActivityIndividualReport.vue';
+import ApplicantReport from '../../../components/report/ApplicantReport/ApplicantReport.vue';
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport.vue';
 const t = useI18n({ useScope: 'global' }).t;
 const branch_input: Ref<string> = ref('');
 const branchs: Ref<string[]> = ref([]);
 const db = getFirestore();
-const branch_user_list:any = ref();
-const all_user_list:any = ref();
+const branch_user_list:Ref<{ id: string; name: string }[]> = ref([]);
 const model_report: Ref<{label:string,value:number}> = ref(
 {label: t('report.ApplicantReport'), value: 0});
 const report_type: Ref<{label:string,value:number}[]> = ref([
   {label: t('report.ApplicantReport'), value: 0},
-  {label: t('report.SalesActivityIndividualReport'), value: 1},
-  {label: t('report.SalesActivityReport'), value: 2},
+  {label: t('report.SalesActivityReport'), value: 1},
+  {label: t('report.SalesActivityIndividualReport'), value: 2},
   {label: t('report.RecruitmentEffectivenessReport'), value: 3},
 ]);
-const report_componets={0:ApplicantReport,1:SalesActivityIndividualReport,2:SalesActivityReport,3:RecruitmentEffectivenessReport}
+const report_componets={0:ApplicantReport,2:SalesActivityIndividualReport,1:SalesActivityReport,3:RecruitmentEffectivenessReport}
 //今日の日付を取得し2021/01/01のようにフォーマットする,さらに1ヶ月前の日付を取得すして、dateRangeに代入する関数
 const get_date=()=>{
   const today = new Date();
@@ -82,7 +80,7 @@ const get_date=()=>{
   return dateRange;
 }
 // const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
-const dateRange: Ref<{ from: string ; to: string }> =
+const dateRange: Ref<{ from: string ; to: string}> =
   ref({ from: '2021/01/01', to: '2021/07/17' });
 const organization_id: Ref<string> = ref('');
 const getBranchId = async (code: string) => {
@@ -91,8 +89,8 @@ const getBranchId = async (code: string) => {
   const q = query(collectionRef, where('code', '==', code));
   const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {
+
     organization_id.value = doc.id;
-    console.log(doc.id, '=>', doc.data());
     const branchRef = collection(db, 'organization', doc.id, 'branch');
     const branchSnapshot = getDocs(branchRef);
     branchSnapshot.then((branch) => {
@@ -117,8 +115,11 @@ const getUser = async (id: string, field = 'branch_id') => {
 
 // watchでbranch_inputを監視して、branch_inputが変更されたら、getUserを実行する
 watch(branch_input, async () => {
-  all_user_list.value = await getUser(organization_id.value, 'organization_id');
   branch_user_list.value = await getUser(branch_input.value);
 });
-getBranchId('CODEHIN');
+
+//onmount で　getBranchId('CODEHIN')を実行
+onMounted(async() => {
+  await getBranchId('CODEHIN');
+});
 </script>

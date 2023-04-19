@@ -1238,6 +1238,7 @@ export default {
     Applicant:'応募者',
     ValidApplicant:'有効応募者',
     CompanyAverage:'自社平均',
+    AllAverage:'全体平均',
     NumberOfContacts:'接触回数',
     NumberOfInvitations:'誘致数',
     NumberOfAttendance:'アテンド数',

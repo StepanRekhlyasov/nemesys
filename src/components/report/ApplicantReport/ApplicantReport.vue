@@ -1,0 +1,23 @@
+<template>
+  <div class="row">
+    <div class="col">
+      <ApplicantReportLeftChart
+        :organization_id="organization_id"
+        :dateRangeProps="dateRangeProps"
+        :branch_id="branch_id"
+        :branch_user_list="branch_user_list"></ApplicantReportLeftChart>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import ApplicantReportLeftChart from './ApplicantReportLeftChart.vue';
+defineProps<{
+  branch_id: string;
+  dateRangeProps: { from: string; to: string };
+  organization_id: string;
+  branch_user_list: { id: string; name: string }[];
+}>();
+</script>

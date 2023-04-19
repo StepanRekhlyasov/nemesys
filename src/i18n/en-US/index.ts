@@ -1242,6 +1242,7 @@ export default {
     Applicant:'Applicant',
     ValidApplicant:'ValidApplicant',
     CompanyAverage:'CompanyAverage',
+    AllAverage:'AllAverage',
     NumberOfContacts:'NumberOfContact',
     NumberOfInvitations:'NumberOfInvitations',
     NumberOfAttendance:'NumberOfAttendance',

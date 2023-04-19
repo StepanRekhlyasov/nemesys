@@ -1,17 +1,10 @@
 <template>
-  <div class="row">
-    <div class="col">
-      <apexchart :options="chartOptions" :series="series"></apexchart>
-      <q-table title="" :rows="rows" :columns="columns" row-key="name" />
-    </div>
-    <div class="col">
-      <apexchart :options="chartOptions2" :series="series2"></apexchart>
-    </div>
-  </div>
+  <apexchart :options="chartOptions" :series="series"></apexchart>
+  <q-table title="" :rows="rows" :columns="columns" row-key="name" />
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, defineProps, onMounted } from 'vue';
+import { ref, Ref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   collection,
@@ -77,7 +70,6 @@ const chartOptions = ref({
 
 const chartOptions2 = ref({
   chart: {
-
     height: 800,
   },
   plotOptions: {
@@ -95,9 +87,9 @@ const chartOptions2 = ref({
   },
   xaxis: {
     categories: [
-      t('report.categories.fix')+'-'+t('report.categories.inspection'),
-      t('report.categories.inspection')+'-'+t('report.categories.offer'),
-      t('report.categories.offer')+'-'+t('report.categories.admission'),
+      t('report.categories.fix') + '-' + t('report.categories.inspection'),
+      t('report.categories.inspection') + '-' + t('report.categories.offer'),
+      t('report.categories.offer') + '-' + t('report.categories.admission'),
     ],
   },
   yaxis: [
@@ -124,10 +116,7 @@ const chartOptions2 = ref({
 //       t('report.NumberOfInvitations'),
 //       t('report.NumberOfAttendance'),
 const series: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
-const series2: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
-
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
-const all_user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const db = getFirestore();
 const rows: Ref<
   {
@@ -142,10 +131,9 @@ const rows: Ref<
 //propsで渡されたbranch_idをbranch_idに代入
 const props = defineProps<{
   branch_id: string;
-  dateRangeProps: { from: string | undefined; to: string | undefined };
+  dateRangeProps: { from: string; to: string };
   organization_id: string;
   branch_user_list: { id: string; name: string }[];
-  all_user_list: { id: string; name: string }[];
 }>();
 
 const columns = ref([
@@ -188,61 +176,62 @@ const columns = ref([
 ]);
 
 //ApplicantsIdと{ from: '2020/07/08', to: '2020/07/17' }のような日付の範囲を入力としてfix collectionからtimestamp型のadmissionDateの範囲を指定し集計クエリを利用して集計する関数
-const getReportByDate = async (
-  IdAndNames_branch: { id: string; name: string }[],
-  IdAndNames: { id: string; name: string }[] | undefined,
-  dateRange: { from: string | undefined; to: string | undefined }
+
+const get_fix_off_ins_adm_average_list = async (
+  dateRange: { from: string; to: string },
+  organization_id: string
 ) => {
-  if (dateRange.from == undefined || dateRange.to == undefined) return;
-  if (IdAndNames == undefined || IdAndNames.length == 0) return;
+  // 0のリストをchartOption.xaxis.categories.length分作成する
   series.value = [];
   rows.value = [];
-  // 0のリストをchartOption.xaxis.categories.length分作成する
-  let data_average = Array(chartOptions.value.xaxis.categories.length).fill(0);
+  let data_average: number[] = Array(4).fill(0);
   const targetDateFrom = new Date(dateRange.from);
   const targetDateTo = new Date(dateRange.to);
   const collectionRef = collection(db, 'fix');
   const query_list: Query<DocumentData>[] = [];
-  if (IdAndNames == undefined) IdAndNames = IdAndNames_branch;
-  for (let IdAndName of IdAndNames) {
-    const Id: string = IdAndName.id;
-    query_list[0] = query(
-      collectionRef,
-      where('contactPerson', '==', Id),
-      where('data', '>=', targetDateFrom),
-      where('data', '<=', targetDateTo),
-      where('status', '==', 'ok')
-    );
-    query_list[1] = query(
-      collectionRef,
-      where('chargeOfInspection', '==', Id),
-      where('inspectionDate', '>=', targetDateFrom),
-      where('inspectionDate', '<=', targetDateTo),
-      where('inspectionStatus', '==', 'ok')
-    );
-    query_list[2] = query(
-      collectionRef,
-      where('chargeOfOffer', '==', Id),
-      where('offerDate', '>=', targetDateFrom),
-      where('offerDate', '<=', targetDateTo),
-      where('offerStatus', '==', 'ok')
-    );
-    query_list[3] = query(
-      collectionRef,
-      where('chargeOfAdmission', '==', Id),
-      where('admissionDate', '>=', targetDateFrom),
-      where('admissionDate', '<=', targetDateTo),
-      where('admissionStatus', '==', 'ok')
-    );
-    let data = await Promise.all(
-      query_list.map(async (query) => {
-        const snapshot = await getCountFromServer(query);
-        return snapshot.data().count;
-      })
-    );
-    data_average = listSum(data_average, data, IdAndNames.length);
-  }
-  //data_averageのCVR_平均を求める
+  //collection usersの中からorganization_idがmap field organization_idsの中にあるものを取得しそ
+  const organization_member_query = query(
+    collection(db, 'users'),
+    where('organization_ids', 'array-contains', organization_id)
+  );
+  const number_of_member_snapshot = await getCountFromServer(
+    organization_member_query
+  );
+  const number_of_member = await number_of_member_snapshot.data().count;
+  query_list[0] = query(
+    collectionRef,
+    where('organization_id', '==', organization_id),
+    where('data', '>=', targetDateFrom),
+    where('data', '<=', targetDateTo),
+    where('status', '==', 'ok')
+  );
+  query_list[1] = query(
+    collectionRef,
+    where('organization_id', '==', organization_id),
+    where('inspectionDate', '>=', targetDateFrom),
+    where('inspectionDate', '<=', targetDateTo),
+    where('inspectionStatus', '==', 'ok')
+  );
+  query_list[2] = query(
+    collectionRef,
+    where('organization_id', '==', organization_id),
+    where('offerDate', '>=', targetDateFrom),
+    where('offerDate', '<=', targetDateTo),
+    where('offerStatus', '==', 'ok')
+  );
+  query_list[3] = query(
+    collectionRef,
+    where('organization_id', '==', organization_id),
+    where('admissionDate', '>=', targetDateFrom),
+    where('admissionDate', '<=', targetDateTo),
+    where('admissionStatus', '==', 'ok')
+  );
+  data_average = await Promise.all(
+    query_list.map(async (query) => {
+      const snapshot = await getCountFromServer(query);
+      return snapshot.data().count / number_of_member;
+    })
+  );
   const data_cvr = data_average.map((num, idx) => {
     if (idx == 0) return 100;
     else return (data_average[idx] / data_average[idx - 1]) * 100;
@@ -271,56 +260,35 @@ const getReportByDate = async (
     data: data_cvr,
     type: 'line',
   });
-  series2.value.push({
-    name: t('report.CompanyAverage'),
-    data: data_average,
-    type: 'bar',
-  });
-  //ここからIdAndNamesでforを回して上と同じことをするただしIdAndNames_branchにあるものは除外する
-};
-
-const listSum = (list1, list2, ln) => {
-  const sum = list1.map((num, idx) => num + list2[idx] / ln);
-  return sum;
 };
 
 watch(
   () => props.branch_user_list,
   async () => {
-    if (props.branch_user_list.length != 0) {
-      user_list.value = await props.branch_user_list;
-      all_user_list.value = await props.all_user_list;
-      await getReportByDate(
-        user_list.value,
-        all_user_list.value,
-        props.dateRangeProps
-      );
-    }
+    user_list.value = await props.branch_user_list;
+    await get_fix_off_ins_adm_average_list(
+      props.dateRangeProps,
+      props.organization_id
+    );
   }
 );
 
 watch(
   () => props.dateRangeProps,
   async () => {
-    if (user_list.value.length != 0) {
-      await getReportByDate(
-        user_list.value,
-        all_user_list.value,
-        props.dateRangeProps
-      );
-    }
+    await get_fix_off_ins_adm_average_list(
+      props.dateRangeProps,
+      props.organization_id
+    );
   }
 );
 
 //このコンポーネントが読み込まれたらdraw()を実行する
 onMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  user_list.value = props.branch_user_list;
-  all_user_list.value = props.all_user_list;
-  await getReportByDate(
-    user_list.value,
-    all_user_list.value,
-    props.dateRangeProps
+  await get_fix_off_ins_adm_average_list(
+    props.dateRangeProps,
+    props.organization_id
   );
 });
 </script>
