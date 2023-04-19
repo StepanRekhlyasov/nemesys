@@ -247,7 +247,7 @@ export default {
     
     const statusOption = ref(statusList);
     const age = computed(()=>selectedApplicant.value['dob']?RankCount.ageCount(selectedApplicant.value['dob']):'0')
-    const RankCount = ref(false)
+    const isLoadingProgress = ref(true)
     
     //const selectedRows = ref([]);
 
@@ -435,6 +435,7 @@ export default {
       applicantImage,
       updateApplicant,
       isLoadingProgress,
+      statusOption,
 
       async openDrawer(data) {
         if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
