@@ -22,6 +22,20 @@
     <q-separator color="grey-3" size="2px" />
     <q-card-section class="bg-white">
       <q-form >
+
+        <q-card-section>
+          <div class="row text-primary text-h6" >
+            {{'■ '+ $t('backOrder.create.introduction') }}
+          </div>
+          <div class="row ">
+            <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
+              <q-input v-model="backOrderData['dateOfRegistration']" outlined dense :disable="loading"/>
+            </labelField>
+            <labelField :label="$t('backOrder.create.registrant')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
+              <q-input v-model="backOrderData['registrant']" outlined dense :disable="loading"/>
+            </labelField>
+          </div>
+        </q-card-section>
         <!-- Introduction Section -->
         <introduction-section :backOrder="backOrderData" :loading="loading" />
         <!-- Employment Conditions Section -->
