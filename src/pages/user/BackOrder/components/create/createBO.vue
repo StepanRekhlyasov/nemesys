@@ -7,7 +7,7 @@
         </div>
         <div>
           <div class="row text-subtitle2">
-            株式会社キカリ / 特別養護老人ホームキカリ
+            {{ `${client.client_name} / ${client.companyProfile}` }}
           </div>
           <div class="row text-h6 text-weight-bold q-pr-xs">
             バックオーダー新規追加／派遣
@@ -22,20 +22,30 @@
     <q-separator color="grey-3" size="2px" />
     <q-card-section class="bg-white">
       <q-form >
-
+        <basic-info-section :backOrder="backOrderData" :loading="loading" :client="client" />
         <q-card-section>
           <div class="row text-primary text-h6" >
-            {{'■ '+ $t('backOrder.create.introduction') }}
+            {{'■ '+ $t('backOrder.create.workingType') }}
           </div>
           <div class="row ">
-            <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-              <q-input v-model="backOrderData['dateOfRegistration']" outlined dense :disable="loading"/>
-            </labelField>
-            <labelField :label="$t('backOrder.create.registrant')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-              <q-input v-model="backOrderData['registrant']" outlined dense :disable="loading"/>
+            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
+              {{ $t('client.backOrder.introduction') }}
             </labelField>
           </div>
         </q-card-section>
+
+        <q-card-section>
+          <div class="row text-primary text-h6" >
+            {{'■ '+ $t('backOrder.create.BOGenerationRoute') }}
+          </div>
+          <div class="row ">
+            <labelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
+              <q-radio v-model="backOrderData['BOGenerationRoute']" :label="$t('backOrder.create.coldCall')" val="coldCall" :disable="loading"/>
+              <q-radio v-model="backOrderData['BOGenerationRoute']" :label="$t('backOrder.create.fax')" val="fax" :disable="loading"/>
+            </labelField>
+          </div>
+        </q-card-section>
+        
         <!-- Introduction Section -->
         <introduction-section :backOrder="backOrderData" :loading="loading" />
         <!-- Employment Conditions Section -->
@@ -49,7 +59,6 @@
       </q-form>
     </q-card-section>
   </q-card>
-      
 </template>
 
 <script lang="ts" setup>
@@ -58,8 +67,10 @@ import { ref } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
 import TasksSection from './TasksSection.vue';
+import LabelField from 'src/components/form/LabelField.vue';
 import InHouseInfoSection from './InHouseInfoSection.vue';
 import IntroductionSection from './IntroductionSection.vue';
+import BasicInfoSection from './BasicInfoSection.vue';
 
 const emits = defineEmits(['closeDialog']);
 const props = defineProps({
@@ -71,6 +82,7 @@ const props = defineProps({
 const loading = ref(false)
 const backOrderData = ref({
   working_days_week: [] as string[],
-  workingDays: 'shiftSystem'
+  workingDays: 'shiftSystem',
+  client_id: props.client.id  
 } as BackOrderModel)
 </script>
