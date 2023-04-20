@@ -188,6 +188,8 @@ const get_fix_off_ins_adm_average_list = async (
   // 0のリストをchartOption.xaxis.categories.length分作成する
   series.value = [];
   rows.value = [];
+  seriesR.value = [];
+  rowsR.value = [];
   let data_average: number[] = Array(4).fill(0);
   const targetDateFrom = new Date(dateRange.from);
   const targetDateTo = new Date(dateRange.to);

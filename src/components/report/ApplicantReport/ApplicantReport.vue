@@ -8,11 +8,11 @@
         :branch_user_list="branch_user_list"></ApplicantReportLeftChart>
     </div>
     <div class="col">
-      <ApplicantReportRightChart
+      <!-- <ApplicantReportRightChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :branch_user_list="branch_user_list"></ApplicantReportRightChart>
+        :branch_user_list="branch_user_list"></ApplicantReportRightChart> -->
     </div>
   </div>
 </template>
