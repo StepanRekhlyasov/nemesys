@@ -23,7 +23,7 @@
     }" />
 
   <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
-    <template v-slot:header-cell-organizationIdAndName="props">
+    <template v-slot:header-cell-organizationCodeAndName="props">
       <q-th :props="props" class="no-breaks items-center row">
         {{ props.col.label }}
       </q-th>
@@ -51,7 +51,7 @@
 
         <q-td>
           <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.organizationIdAndName }}
+            {{ props.row.organizationCodeAndName }}
           </template>
           <q-input v-else v-model:model-value="editableRow!.name" color="accent" />
         </q-td>
@@ -76,9 +76,10 @@
 
         <q-td>
           <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.invoiceRequest }}
+            {{ t('menu.admin.organizationsTable.' + props.row.invoiceRequest) }}
           </template>
-          <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequests" color="accent" />
+          <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequestOptions"
+            color="accent" emit-value map-options />
         </q-td>
 
         <q-td>
@@ -109,7 +110,6 @@
 import { computed, ref, nextTick } from 'vue';
 import { QInput, QTableProps, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { invoiceRequests } from 'src/shared/model';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
@@ -119,7 +119,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
 import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
-import { mapOrganizationsToRow } from './handlers/handlers';
+import { invoiceRequestOptions, mapOrganizationsToRow } from './handlers/handlers';
 import { DialogType, Row, Rows } from './types'
 import { rowToOrganization } from './handlers/handlers'
 import ExpandedTable from './ExpandedTable.vue';
@@ -158,9 +158,9 @@ const columns = computed<QTableProps['columns']>(() => [
     sortable: true
   },
   {
-    name: 'organizationIdAndName',
+    name: 'organizationCodeAndName',
     label: `${t('menu.admin.organizationsTable.organizationId') + '\n' + t('menu.admin.organizationsTable.organizationName')}  `,
-    field: 'organizationIdAndName',
+    field: 'organizationCodeAndName',
     align: 'left',
     sortable: true,
     sort: (a: string, b: string) => {
@@ -261,7 +261,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
 
   loading.value = true;
   rows.value[rowIndex] = row
-  rows.value[rowIndex].organizationIdAndName = row.id + ' ' + row.name
+  rows.value[rowIndex].organizationCodeAndName = row.code + ' ' + row.name
 
   try {
     const organization = rowToOrganization(row)

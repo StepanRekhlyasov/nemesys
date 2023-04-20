@@ -65,7 +65,11 @@ export default {
     openArea: '表示エリアを開く',
     yen: '円',
     year: '年',
-    userNotFound: 'ユーザーが見つかりません。'
+    userNotFound: 'ユーザーが見つかりません。',
+    age: '年齢',
+    ageShort: '歳',
+    week: '週',
+    month: '月',
   },
   smoking: {
     no: '無',
@@ -108,6 +112,9 @@ export default {
     organization: '組織マスター管理',
     template: 'テンプレート管理',
     applicant: '応募者管理',
+    backOrder: 'BO管理',
+    backOrderSearch: 'BO検索',
+    savedSearchConditionsList: '保存検索条件一覧',
     mapSearch: 'マップ検索',
     officeSearch: '事業所 検索',
     savedSearchList: '保存した検索条件一覧',
@@ -144,6 +151,8 @@ export default {
         fax: 'FAX番号',
         email: 'メールアドレス',
         invoiceRequest: '請求書希望',
+        electronic: '電子',
+        mail: '郵送',
         organizationsSearh: '企業検索',
         businessName: '事業名',
         branchName: '支店名',
@@ -220,7 +229,8 @@ export default {
       }
     },
     users: {
-      addUser: '担当者新規追加',
+      contactPersonName: '担当者新規追加',
+      addUser: 'ユーザー新規追加',
       fio: '氏名',
       email: 'メールアドレス',
       password: 'パスワード',
@@ -711,6 +721,8 @@ export default {
       attendanceInfo: 'アテンド情報',
       fixEmployInfo: 'FIX-入職情報',
       operationInfo: '稼働情報',
+      yearsExperience: '経験年数',
+      availableShift: '勤務可能シフト',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -824,7 +836,23 @@ export default {
         }
       }
 
-
+    },
+    statusList: {
+      unsupported: '未対応',
+      waitContact: '接触待ち',
+      excluded: '対象外',
+      anotherCompany: '他社決定',
+      breakContact: '不通',
+      decline: '登録辞退',
+      waitAttend: 'アテンド待ち',
+      waitFIX: 'FIX待ち',
+      waitVisit: '職見待ち',
+      waitOffer: '内定待ち',
+      waitEntry: '入職待ち',
+      working: '稼働中',
+      waitTermintion: '終了待ち',
+      waitRetire: '退職待ち',
+      retired: '退職済み',
     },
     statusOption: {
       unsupported: '未対応',
@@ -953,6 +981,24 @@ export default {
       // Memo Tab
       content: '内容'
     }
+  },
+  backOrder: {
+    changeSearchCriteria: '検索条件変更',
+    addBO: 'BO新規追加',
+    personnel: 'BO担当者',
+    registrationDate: 'BO登録日',
+    dealType: '案件種別',
+    transactionType: '取引種別',
+    distance: '起点からの距離',
+    officeName: '事業所名',
+    clientName: 'クライアント名',
+    employmentType: '雇用形態',
+    hourlyRate: '時給',
+    monthlyWage: '月給',
+    state: '都道府県',
+    generalDispatch: '一般派遣',
+    ttp: 'TTP',
+    introduction: '紹介'
   },
   prefectures: {
     hokkaido: '北海道',
@@ -1167,10 +1213,15 @@ export default {
     reflectionHistory: '反映履歴',
     importHistory: '取込履歴',
     drawer: {
+      client: 'クライアント',
       registeredInformation: '登録情報',
       commonItems: '全職種共通項目',
       uniqueItems: '職種独自項目',
+      headOfficeInfo: '本社事業所情報',
+      clientInfo: 'クライアント情報',
+      contractInfo: '契約情報',
       details: {
+        // Office details
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
@@ -1200,6 +1251,41 @@ export default {
         workingHourDay: '遅番',
         workingHourLate: '休日（週単位）',
         workingHourNight: '夜勤',
+
+        // Head details
+        officeLocation: '事業所：所在地',
+        officeTel: '事業所：TEL',
+        officeFax: '事業所：FAX',
+        inChargeTitle: '担当者：役職',
+        inChargeTel: '担当者：TEL',
+        inChargeAddress: '担当者：アドレス',
+
+        representative: '代表者',
+        established: '設立',
+        capital: '資本金',
+        earnings: '売上',
+        numberOffices: '事業所数',
+        numberEmployees: '従業員数',
+        companyProfile: '会社概要',
+
+        contractUnit: '契約単位',
+        industry: 'クライアント種別',
+        contractTel: '契約先：TEL',
+        contractFax: '契約先：FAX',
+        contractMail: '契約先：MAIL',
+        contractPerson: '契約先：担当者',
+
+        // Import Logs and Reflect Logs
+        executionUser: '実行ユーザー',
+        executionDateTime: '実行日時',
+        sourceCompany: '取込元企業',
+        update_create: '更新／作成',
+        captured: '取込項目',
+
+        update: '更新',
+        create: '作成',
+        basicInfoChanged: '基本情報',
+        officeInfoChanged: '事業所詳細情報'
       }
     }
   },

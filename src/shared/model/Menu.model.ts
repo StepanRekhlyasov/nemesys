@@ -23,6 +23,7 @@ export enum MenuParent{
   SystemSettings = 'SYSTEM_SETTINGS',
   ApplicantManagement = 'APPLICANT_MANAGEMENT',
   TotalizationManagement = 'TOTALIZATION_MANAGEMENT',
+  BackOrder = 'BACK_ORDER',
   AdminOfficeManagement = 'SYSTEMS_OFFICE_MANAGEMENT',
   AdminEnterpriseManagement = 'ENTERPRISE_MANAGEMENT',
   AdminAggregationData = 'ADMIN_AGGREGATION_DATA',

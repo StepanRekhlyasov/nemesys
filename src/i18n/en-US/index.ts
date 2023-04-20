@@ -65,7 +65,11 @@ export default {
     openArea: 'Open Display Area',
     yen: 'yen',
     year: 'year',
-    userNotFound: 'User not found'
+    userNotFound: 'User not found',
+    age: 'Age',
+    ageShort: 'Age',
+    week: 'Week',
+    month: 'Month',
   },
   smoking: {
     no: 'No',
@@ -108,6 +112,9 @@ export default {
     organization: 'Organization Master Management',
     template: 'Template Management',
     applicant: 'Applicant Management',
+    backOrder: 'BO Management',
+    backOrderSearch: 'BO Search',
+    savedSearchConditionsList: 'List of Saved Search Conditions',
     officeSearch: 'Office Search',
     savedSearchList: 'Saved Search Item List',
     mapSearch: 'Map Search',
@@ -144,6 +151,8 @@ export default {
         fax: 'FAX number',
         email: 'Email',
         invoiceRequest: 'Invoice request',
+        electronic: 'electronic',
+        mail: 'mail',
         organizationsSearh: 'Organizations Searh',
         businessName: 'Business Name',
         branchName: 'Branch name',
@@ -220,7 +229,8 @@ export default {
       }
     },
     users: {
-      addUser: 'Add new contact person',
+      contactPersonName: 'Add new contact person',
+      addUser: 'Add new user',
       fio: 'FIO',
       email: 'Email',
       password: 'Password',
@@ -715,6 +725,8 @@ export default {
       attendanceInfo: 'Attendance Info',
       fixEmployInfo: 'FIX Employment Info',
       operationInfo: 'Operation Info',
+      yearsExperience: 'Years of Experience',
+      availableShift: 'Available Shift',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -827,6 +839,23 @@ export default {
           TTP: 'TTP'
         }
       }
+    },
+    statusList: {
+      unsupported: 'Unsupported',
+      waitContact: 'Wait Contact',
+      excluded: 'Excluded',
+      anotherCompany: 'Another Company',
+      breakContact: 'Break Contact',
+      decline: 'Decline',
+      waitAttend: 'Wait Attend',
+      waitFIX: 'Wait FIX',
+      waitVisit: 'Wait Visit',
+      waitOffer: 'Wait Offer',
+      waitEntry: 'Wait Entry',
+      working: 'Working',
+      waitTermintion: 'Wait Termintion',
+      waitRetire: 'Wait Retire',
+      retired: 'Retired',
     },
     statusOption: {
       unsupported: 'Unsupported',
@@ -955,6 +984,24 @@ export default {
       // Memo Tab
       content: 'Content'
     }
+  },
+  backOrder: {
+    changeSearchCriteria: 'Change search criteria',
+    addBO: 'BO new added',
+    personnel: 'BO Personnel',
+    registrationDate: 'BO Registration Date',
+    dealType: 'Deal Type',
+    transactionType: 'Transaction Type',
+    distance: 'Distance from origin',
+    officeName: 'Office Name',
+    clientName: 'Client Name',
+    employmentType: 'Employment Type',
+    hourlyRate: 'Hourly Rate',
+    monthlyWage: 'Monthly Wage',
+    state: 'State/Province',
+    generalDispatch: 'General Dispatch',
+    ttp: 'TTP',
+    introduction: 'Introduction'
   },
   prefectures: {
     hokkaido: 'Hokkaido',
@@ -1172,10 +1219,15 @@ export default {
     reflectionHistory: 'Reflection history',
     importHistory: 'Import history',
     drawer: {
+      client: 'Client',
       registeredInformation: 'Registered info',
       commonItems: 'Common items',
       uniqueItems: 'Unique items',
+      headOfficeInfo: 'Head office info',
+      clientInfo: 'Client info',
+      contractInfo: 'Contract info',
       details: {
+        // Office details
         parentClient: 'Parent client',
         officeName: 'Office name',
         prefecture: 'Office Address: Prefecture',
@@ -1204,6 +1256,42 @@ export default {
         workingHourDay: 'Day working hour',
         workingHourLate: 'Late working hour',
         workingHourNight: 'Night working hour',
+
+        // Head details
+        officeLocation: 'Office: Location',
+        officeTel: 'Office: TEL',
+        officeFax: 'Office: FAX',
+        inChargeTitle: 'Person in charge: Title',
+        inChargeTel: 'Person in charge: TEL',
+        inChargeAddress: 'Person in charge: Address',
+
+        representative: 'Representative',
+        established: 'Established',
+        capital: 'Capital',
+        earnings: 'Earnings',
+        numberOffices: 'Number Of Offices',
+        numberEmployees: 'Number Of Employees',
+        companyProfile: 'Company Profile',
+
+        contractUnit: 'Contract unit',
+        industry: 'Client type',
+        contractTel: 'Contract destination: TEL',
+        contractFax: 'Contract destination: FAX',
+        contractMail: 'Contract destination: MAIL',
+        contractPerson: 'Contractor: Person in charge',
+
+
+        // Import Logs and Reflect Logs
+        executionUser: 'Execution User',
+        executionDateTime: 'Execution Date and Time',
+        sourceCompany: 'Source Company',
+        update_create: 'Update / Create',
+        captured: 'Captured item',
+
+        update: 'Updated',
+        create: 'Created',
+        basicInfoChanged: 'Changed Basic Info',
+        officeInfoChanged: 'Changed Office Info'
       }
     }
   },

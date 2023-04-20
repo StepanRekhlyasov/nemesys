@@ -1,10 +1,14 @@
 import { getAuth } from 'firebase/auth'
 import { serverTimestamp } from 'firebase/firestore'
-import { Organization } from 'src/shared/model'
+import { InvoiceRequest, Organization } from 'src/shared/model'
 import { cloneToRaw } from 'src/shared/utils/utils'
 import { useUserStore } from 'src/stores/user'
 import { Availability, AvailabilityApi, Row } from '../types'
 import { api } from 'src/boot/axios';
+import { i18n } from 'boot/i18n';
+import { computed, ComputedRef } from 'vue'
+
+const { t } = i18n.global
 
 const store = useUserStore()
 
@@ -17,7 +21,7 @@ export async function mapOrganizationsToRow(organizations: Organization[]) {
       const user = await store.getUserById(organization.operatorUser)
       return {
         number: index + 1,
-        organizationIdAndName: organization.id + ' ' + organization.name,
+        organizationCodeAndName: organization.code + ' ' + organization.name,
         operatorName: user?.displayName,
         ...organization
       }
@@ -28,7 +32,7 @@ export async function mapOrganizationsToRow(organizations: Organization[]) {
 export function rowToOrganization(row: Row): Organization {
   const organization = cloneToRaw(row)
   delete organization.number
-  delete organization.organizationIdAndName
+  delete organization.organizationCodeAndName
   delete organization.operatorName
   organization.updatedAt = serverTimestamp()
   return organization
@@ -61,3 +65,18 @@ export async function manageUserAvailability(availability: Availability) {
   )
 
 }
+
+
+export const invoiceRequestOptions: ComputedRef<({
+  label: string;
+  value: InvoiceRequest;
+})[]> = computed(() => [
+  {
+    label: t('menu.admin.organizationsTable.electronic'),
+    value: 'electronic'
+  },
+  {
+    label: t('menu.admin.organizationsTable.mail'),
+    value: 'mail'
+  }
+])

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { getFirestore, query, where, collection, getDocs, DocumentData, orderBy, limit } from 'firebase/firestore';
 import { ref } from 'vue';
+import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
@@ -26,9 +27,36 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
 
         lastReflectLogsQuerySnapshot.forEach((doc) => {
             const docData = doc.data()
-            reflectLog = {...docData, executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss')} as ReflectLog
+            reflectLog = {
+                ...docData,
+                executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                id: doc.id
+            } as ReflectLog
         })
         return reflectLog
+    }
+
+    const getAllImportLogs = async(clientId: string, clientFactoryId: string) => {
+        const importLogs: ImportLog[] = []
+
+        const importLogsSnapshot = await getDocs(query(
+            collection(db, 'clients', clientId, 'client-factory',clientFactoryId, 'importLog'),
+            orderBy('executionDate', 'desc')
+        ))
+
+        importLogsSnapshot.forEach((doc) => {
+            const docData = doc.data()
+
+            importLogs.push(
+                {
+                    ...docData,
+                    executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                    id: doc.id
+                } as ImportLog
+            )
+        })
+
+        return importLogs
     }
 
     const getLastImportLog = async (clientId: string, clientFactoryId: string) => {
@@ -43,28 +71,58 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
 
         lastImportLogQuerySnapshot.forEach((doc) => {
             const docData = doc.data()
-            importLog = {...docData, executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss')} as ImportLog
+            importLog = {
+                ...docData,
+                executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                id: doc.id
+            } as ImportLog
         })
         return importLog
     }
 
+    const getAllReflectLogs = async (clientId: string, clientFactoryId: string) => {
+        const importLogs: ReflectLog[] = []
+
+        const importLogsSnapshot = await getDocs(query(
+            collection(db, 'clients', clientId, 'client-factory',clientFactoryId, 'reflectLog'),
+            orderBy('executionDate', 'desc')
+        ))
+
+        importLogsSnapshot.forEach((doc) => {
+            const docData = doc.data()
+
+            importLogs.push(
+                {
+                    ...docData,
+                    executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                    id: doc.id
+                } as ReflectLog
+            )
+        })
+
+        return importLogs
+    }
+
     const getClientFactories = async () => {
         const clients: DocumentData[] = []
+        const clientFactoriesData: ClientFactory[] = []
         const clientsQuerySnapshot = await getDocs(query(collection(db, 'clients'), where('deleted', '==', false)))
 
         clientsQuerySnapshot.forEach((doc) => {
-            clients.push({clientId: doc.id, ...doc.data()})
+            clients.push({clientId: doc.id, ...doc.data() as Client})
         })
 
-        const clientFactoriesSnapshot = await getDocs(collection(db, 'clients', clients[0]['clientId'], 'client-factory'))
+        await Promise.all(clients.map(async(client) => {
+            const clientFactoriesSnapshot = await getDocs(collection(db, 'clients', client.clientId, 'client-factory'))
 
-        const clientFactoriesData: ClientFactory[] = []
-
-        clientFactoriesSnapshot.forEach((doc) => {
-            const clientFactory = {...doc.data(), id: doc.id} as ClientFactory
+            clientFactoriesSnapshot.forEach((doc) => {
+                const clientFactory = {...doc.data(), id: doc.id, client: client} as ClientFactory
             
-            clientFactoriesData.push(clientFactory)
-        })
+                clientFactoriesData.push(clientFactory)
+            })
+
+            client.numberOffices = clientFactoriesSnapshot.size
+        }))
 
         await Promise.all(clientFactoriesData.map(async(clientFactory) => {
             clientFactory.reflectLog = await getLastReflectLogs(clientFactory.clientID, clientFactory.id)
@@ -78,6 +136,8 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
 
     return {
         clientFactories,
-        getClientFactories
+        getClientFactories,
+        getAllImportLogs,
+        getAllReflectLogs
     }
 })

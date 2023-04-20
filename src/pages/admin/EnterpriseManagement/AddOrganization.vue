@@ -13,11 +13,6 @@
           <q-input v-model="organization.name" outlined dense color="accent" :rules="[creationRule]" :disable="loading" />
         </DialogItemContainer>
 
-        <DialogItemContainer name-key="menu.admin.organizationsTable.staffName">
-          <q-input v-model="organization.staff_name" outlined dense color="accent" :rules="[creationRule]"
-            :disable="loading" />
-        </DialogItemContainer>
-
         <DialogItemContainer name-key="menu.admin.organizationsTable.phoneNumber">
           <q-input v-model="organization.tel" outlined dense color="accent" :rules="[creationRule]" :disable="loading"
             type="tel" mask="phone" />
@@ -28,7 +23,6 @@
             type="tel" mask="phone" />
         </DialogItemContainer>
 
-
         <DialogItemContainer name-key="menu.admin.organizationsTable.email">
           <q-input v-model="organization.mailaddress" outlined dense color="accent" :rules="[creationRule]"
             :disable="loading" type="email" />
@@ -37,16 +31,12 @@
         <DialogItemContainer name-key="menu.admin.organizationsTable.operator">
           <SelectUser :model-value="user"
             @update:model-value="(newUser: User) => { organization.operatorUser = newUser.id; user = newUser }"
-            :disable="loading" />
+            :disable="loading" emit-value  />
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.invoiceRequest">
-          <q-select v-model:model-value="organization.invoiceRequest" :options="invoiceRequests" color="accent" outlined
-            dense :rules="[creationRule]" :disable="loading" />
-        </DialogItemContainer>
-
-        <DialogItemContainer name-key="menu.admin.organizationsTable.working">
-          <q-checkbox v-model="organization.working" color="accent" :disable="loading" />
+          <q-select v-model:model-value="organization.invoiceRequest" :options="invoiceRequestOptions" color="accent" outlined
+            dense :rules="[creationRule]" :disable="loading" emit-value map-options  />
         </DialogItemContainer>
 
         <q-card-actions :align="'center'">
@@ -63,13 +53,17 @@ import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import { creationRule, organizationCodeRule, isCodeUniqueRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
-import { invoiceRequests, Organization, User } from 'src/shared/model';
+import { Organization, User } from 'src/shared/model';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import { getFirestore } from '@firebase/firestore';
 import SelectUser from './SelectUser.vue'
+import { useMail } from 'src/stores/email';
+import { toDate } from 'src/shared/utils/utils';
+
+import { invoiceRequestOptions } from './handlers/handlers';
 const organization = ref<Organization>({ working: true } as Organization)
 const loading = ref(false)
 const emit = defineEmits<{ (e: 'closeDialog'), (e: 'onOrganizationAdded') }>()
@@ -78,12 +72,18 @@ const { t } = useI18n({ useScope: 'global' });
 const organizationStore = useOrganization()
 const db = getFirestore()
 const user = ref<User>()
-
+const email = useMail()
 async function addOrganization() {
 
   loading.value = true
   try {
     await organizationStore.addOrganization(db, organization.value)
+    const createdAt = toDate((await organizationStore.getOrganizationByCode(organization.value.code)).createdAt)
+    const subject = 'Your organization has been started to use Nemesys.'
+    const content = {
+      html: `Organization name: ${organization.value.name} <br/> Organization code: ${organization.value.code} <br/> Created at: ${createdAt}`
+    }
+    await email.send(organization.value.mailaddress, subject, content)
     Alert.success($q, t);
   } catch (error) {
     Alert.warning($q, t);

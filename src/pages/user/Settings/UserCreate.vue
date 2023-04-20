@@ -2,7 +2,7 @@
   <div class="text-caption text-weight-medium">
     <q-card class="q-ma-md">
       <div class="row justify-between q-pt-md q-pl-md q-pr-md">
-        <div v-html="$t('settings.users.addUser')" class="text-h5"></div>
+        <div v-html="$t('settings.users.contactPersonName')" class="text-h5"></div>
       </div>
       <q-form @submit="onSubmit">
         <q-card-section>
