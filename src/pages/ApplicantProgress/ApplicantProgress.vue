@@ -93,7 +93,6 @@
 <script lang="ts" setup>
   import { onMounted, ref } from 'vue';
   import ApplicantColumn from './components/ApplicantColumn.vue';
-  //import { prefectureList } from '../../shared/constants/Prefecture.const';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
   import { useMetadata } from 'src/stores/metadata';
