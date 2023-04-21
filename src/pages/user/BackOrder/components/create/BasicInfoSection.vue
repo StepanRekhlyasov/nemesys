@@ -113,9 +113,8 @@
 <script lang="ts" setup>
 import LabelField from 'src/components/form/LabelField.vue';
 import { BackOrderModel } from 'src/shared/model';
-import { ref } from 'vue';
 
-const props = defineProps<{
+defineProps<{
   backOrder: BackOrderModel,
   loading: boolean,
   client: object
