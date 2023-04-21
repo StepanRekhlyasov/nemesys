@@ -16,7 +16,7 @@
       </div>
     </q-card-section >
     <q-card-section class="bg-white">        
-      <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm"/>
+      <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm" @click="addBackOrder"/>
       <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold" @click="emits('closeDialog')" size="sm"/>
     </q-card-section>
     <q-separator color="grey-3" size="2px" />
@@ -71,18 +71,24 @@ import LabelField from 'src/components/form/LabelField.vue';
 import InHouseInfoSection from './InHouseInfoSection.vue';
 import IntroductionSection from './IntroductionSection.vue';
 import BasicInfoSection from './BasicInfoSection.vue';
+import { useBackOrder } from 'src/stores/backOrder';
 
 const emits = defineEmits(['closeDialog']);
+const backOrderStore = useBackOrder();
 const props = defineProps({
   client: {
     type: Object,
     required: true
   }
 })
-const loading = ref(false)
+const loading = ref(false);
 const backOrderData = ref({
   working_days_week: [] as string[],
-  workingDays: 'shiftSystem',
-  client_id: props.client.id  
-} as BackOrderModel)
+  workingDays: 'shiftSystem'
+} as BackOrderModel);
+
+async function addBackOrder() {
+  await backOrderStore.addBackOrder(backOrderData.value, props.client.id)
+}
+
 </script>

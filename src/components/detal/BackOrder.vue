@@ -116,8 +116,7 @@ import { useI18n } from 'vue-i18n';
 import {  ref, computed, Ref } from 'vue';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
 import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
-import { collection, getFirestore, onSnapshot, doc as docDb, query, updateDoc, where } from '@firebase/firestore';
-import { toDate } from 'src/shared/utils/utils';
+import { useBackOrder } from 'src/stores/backOrder';
 export default {
   name: 'BackOrder',
   components: {
@@ -141,9 +140,7 @@ export default {
       rowsPerPage: 10
     });
 
-
-    const db = getFirestore();
-    const unsubscribe = ref();
+    const backOrderStore = useBackOrder();
 
     const columns = computed(() => {
       return [
@@ -196,17 +193,8 @@ export default {
   });
 
     loanBoListData()
-    function loanBoListData() {
-      const q = query(collection(db, 'clients/' + props.client.clientId + '/backOrder'), where('deleted', '==', false));
-      unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-        let boData: BackOrderModel[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          data['id'] = doc.id;
-          boData.push({ ...data as BackOrderModel, id: doc.id, created_at: toDate(data.created_at)});
-        });
-        backOrderData.value = boData
-      })
+    async function loanBoListData() {
+      backOrderData.value = await backOrderStore.getClientBackOrder(props.client.id)
     }
 
     const showAddBO = () => {
@@ -214,15 +202,11 @@ export default {
     }
 
     const deleteBo = async () => {
-      const ret = selected.value.map( async (bo) => {
-        const boRef = docDb(db, 'clients/'+props.client.clientId+'/backOrder/'+bo.id);
-        await updateDoc(boRef, {
-          deleted: true
-        })
+      await backOrderStore.deleteBackOrder(selected.value).then(async () => {
+        await loanBoListData();
+        selected.value = [];        
+
       })
-      Promise.all(ret)
-      await loanBoListData();
-      selected.value = [];
     }
 
     return {

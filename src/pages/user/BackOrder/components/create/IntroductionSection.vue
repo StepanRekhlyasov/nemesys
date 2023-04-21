@@ -45,7 +45,7 @@
     </div>
 
     <div class="row ">
-      <labelField :label="$t('client.backOrder.reqQualification')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10">
+      <labelField :label="$t('backOrder.create.nameQualification')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10">
         <q-radio
           v-for="key in TypeQualifications"
           v-model="data['qualifications']"
@@ -59,7 +59,7 @@
 
     <div class="row ">
       <labelField :label="$t('client.backOrder.reqQualification')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10 flex">
-        <q-toggle :label="$t('backOrder.create.somethingNotQuestioned')" :modelValue="data['somethingNotQuestioned']" />
+        <q-toggle :label="$t('backOrder.create.somethingNotQuestioned')" v-model="data['somethingNotQuestioned']" />
         <span class="flex-center q-pa-sm q-pl-md">{{ $t('backOrder.create.experienceRemarks') }}</span>
         <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
       </labelField>

@@ -1040,6 +1040,7 @@ export default {
       employees: '従業員',
       levelOfCare: '介護度',
       memo: 'メモ欄',
+      nameQualification: '資格名'
     },
     qualification: {
       registeredNurse: '正看護師',

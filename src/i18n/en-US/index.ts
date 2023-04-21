@@ -1042,6 +1042,7 @@ export default {
       employees: 'Employees',
       levelOfCare: 'Level of care',
       memo: 'Memo',
+      nameQualification: 'Name of Qualification'
     },
     qualification: {
       registeredNurse: 'Registered Nurse',
