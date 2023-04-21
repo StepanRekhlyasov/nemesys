@@ -109,13 +109,11 @@
   const entireApplicants = ref(5);
   const retireApplicants = ref(7);
   const workingApplicants = ref(120);
-  const columns = ref<ApplicantCol[]>(
-    APPLICANT_COLUMNS.map((item) => ({ ...item, label: item.label }))
-  );
+  const columns = ref<ApplicantCol[]>(APPLICANT_COLUMNS);
 
   const applicantStore = useApplicant();
   const metadataStore = useMetadata();
-  onMounted(()=>{
+onMounted( async ()=>{
     applicantStore.getAllApplicants().then(() => {
       columns.value = columns.value.map(item => {
       return {...item,
@@ -123,10 +121,15 @@
       }
       })
     })
-    metadataStore.getPrefectureJP().then((data) => {
-      prefectureOption.value = Object.keys(data).map((item)=>{
+	const applicantData = await applicantStore.getAllApplicants()
+	columns.value = columns.value.map(item => {
+      return {...item,
+        items: applicantData.filter((applicant) => applicant.status === item.status)
+      }
+    })
+	const metadataData = await metadataStore.getPrefectureJP()
+    prefectureOption.value = Object.keys(metadataData).map((item)=>{
         return 'prefectures.' + item
-      })
     })
   })
 

@@ -101,10 +101,13 @@ export const useApplicant = defineStore('applicant', () => {
 		const docWholeSnap =  await getDocs(query(collection(db, 'applicants')));
   
 		if (!docWholeSnap.empty) {
-		  state.value.applicants = docWholeSnap.docs.map(item => item.data() as Applicant)
+			const result = docWholeSnap.docs.map(item => item.data() as Applicant)
+		  state.value.applicants = result
+		  return result
+		} else {
+			return []
 		}
   
-		return docWholeSnap
 	}
 
     getClients().then(clients => {
