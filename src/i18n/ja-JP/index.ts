@@ -104,6 +104,8 @@ export default {
     clientReg: 'クライアント情報登録',
     dashboard: 'ダッシュボード',
     system: 'システム設定',
+    totalization: '集計管理',
+    report: 'レポート',
     item: '項目マスタ管理',
     branches: '支店マスタ管理',
     users: '担当マスタ管理',
@@ -840,14 +842,14 @@ export default {
       waitContact: '接触待ち',
       excluded: '対象外',
       anotherCompany: '他社決定',
-      breakContact: '不通', 
+      breakContact: '不通',
       decline: '登録辞退',
       waitAttend: 'アテンド待ち',
-      waitFIX: 'FIX待ち', 
+      waitFIX: 'FIX待ち',
       waitVisit: '職見待ち',
-      waitOffer: '内定待ち', 
+      waitOffer: '内定待ち',
       waitEntry: '入職待ち',
-      working: '稼働中', 
+      working: '稼働中',
       waitTermintion: '終了待ち',
       waitRetire: '退職待ち',
       retired: '退職済み',
@@ -1230,7 +1232,7 @@ export default {
         latitude: '事業所住所：緯度',
         tel: '事業所TEL',
         fax: '事業所FAX',
-        
+
         referralFeePer: '紹介料の規定％',
         referralFeeFix: '紹介料の規定金額',
         salaryHour: '時給',
@@ -1312,6 +1314,27 @@ export default {
     message: {
       issueDate: '受信日',
       responseDate: '送信日'
+    }
+  },
+  report:{
+    SalesActivityIndividualReport:'営業活動個人レポート',
+    ApplicantReport:'応募者レポート',
+    SalesActivityReport:'営業活動レポート',
+    RecruitmentEffectivenessReport:'採用効果レポート',
+    Applicant:'応募者',
+    ValidApplicant:'有効応募者',
+    CompanyAverage:'自社平均',
+    AllAverage:'全体平均',
+    NumberOfContacts:'接触回数',
+    NumberOfInvitations:'誘致数',
+    NumberOfAttendance:'アテンド数',
+    CVR:'CVR',
+    AllCVR:'全体CVR',
+    categories:{
+      fix:'Fix',
+      inspection:'職見',
+      offer:'内定',
+      admission:'入職',
     }
   }
 };

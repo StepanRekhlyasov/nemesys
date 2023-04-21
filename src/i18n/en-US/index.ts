@@ -104,6 +104,8 @@ export default {
     clientReg: 'Client Registration',
     dashboard: 'Dashboard',
     system: 'System Settings',
+    totalization: 'Totalization',
+    report: 'Report',
     item: 'Item Master Management',
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
@@ -843,14 +845,14 @@ export default {
       waitContact: 'Wait Contact',
       excluded: 'Excluded',
       anotherCompany: 'Another Company',
-      breakContact: 'Break Contact', 
+      breakContact: 'Break Contact',
       decline: 'Decline',
       waitAttend: 'Wait Attend',
-      waitFIX: 'Wait FIX', 
+      waitFIX: 'Wait FIX',
       waitVisit: 'Wait Visit',
-      waitOffer: 'Wait Offer', 
+      waitOffer: 'Wait Offer',
       waitEntry: 'Wait Entry',
-      working: 'Working', 
+      working: 'Working',
       waitTermintion: 'Wait Termintion',
       waitRetire: 'Wait Retire',
       retired: 'Retired',
@@ -1253,7 +1255,7 @@ export default {
         workingHourEarly: 'Early working hour',
         workingHourDay: 'Day working hour',
         workingHourLate: 'Late working hour',
-        workingHourNight: 'Night working hour', 
+        workingHourNight: 'Night working hour',
 
         // Head details
         officeLocation: 'Office: Location',
@@ -1318,6 +1320,30 @@ export default {
     message: {
       issueDate: 'Date of issue',
       responseDate: 'Date of response'
+    }
+  },
+  report:{
+    SalesActivityIndividualReport:'SalesActivityIndividualReport',
+    ApplicantReport:'ApplicantReport',
+    SalesActivityReport:'SalesActivityReport',
+    RecruitmentEffectivenessReport:'RecruitmentEffectivenessReport',
+    Applicant:'Applicant',
+    ValidApplicant:'ValidApplicant',
+    CompanyAverage:'CompanyAverage',
+    AllAverage:'AllAverage',
+    NumberOfContacts:'NumberOfContact',
+    NumberOfInvitations:'NumberOfInvitations',
+    NumberOfAttendance:'NumberOfAttendance',
+    CVR:'CVR',
+    AllCVR:'AllCVR',
+    categories:{
+      fix:'Fix',
+      inspection:'Inspection',
+      offer:'Offer',
+      admission:'Admission',
+    },
+    chart:{
+      UnitPerson:'UnitPerson',
     }
   }
 };

@@ -60,10 +60,13 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
+    console.log('hello')
+
     const organizationRef = collection(db, 'organization/')
     const organizationQuery = query(organizationRef, where('code', '==', organizationCode))
+    console.log('hello')
     const querySnapshot = await getDocs(organizationQuery)
-
+    console.log(querySnapshot)
     if (querySnapshot.size > 1) {
       throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
     }
