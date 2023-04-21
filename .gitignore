@@ -2,6 +2,7 @@
 .thumbs.db
 node_modules
 yarn.lock
+
 # Quasar core related directories
 .quasar
 /dist
@@ -35,7 +36,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-/src/helpers
 
 .quasar.env.json
 
