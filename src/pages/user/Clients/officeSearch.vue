@@ -29,7 +29,7 @@
         <q-card class="no-shadow bg-grey-3">
           <q-card-section class="text-white bg-primary">
             <div v-if="link == 'addOffice'">
-              <div class="q-ml-lg">{{ previewData.client_name }}</div>
+              <div class="q-ml-lg">{{ previewData['client_name'] }}</div>
               <div class="text-h6">
                 <q-btn dense flat icon="close" @click="drawerRight = false" />
                 {{ previewData.name }}

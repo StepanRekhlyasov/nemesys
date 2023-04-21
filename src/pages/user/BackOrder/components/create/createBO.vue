@@ -7,7 +7,7 @@
         </div>
         <div>
           <div class="row text-subtitle2">
-            {{ `${client.client_name} / ${client.companyProfile}` }}
+            {{ `${client['client_name']} / ${client['companyProfile']}` }}
           </div>
           <div class="row text-h6 text-weight-bold q-pr-xs">
             バックオーダー新規追加／派遣

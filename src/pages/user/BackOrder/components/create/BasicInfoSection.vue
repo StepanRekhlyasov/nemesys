@@ -5,7 +5,7 @@
     </div>
     <div class="row ">
       <labelField :label="$t('client.list.client')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        {{ client.client_name }}
+        {{ client['client_name'] }}
       </labelField>
       <labelField :label="$t('backOrder.officeName')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
         {{ $t('client.backOrder.introduction') }}
@@ -120,5 +120,5 @@ const props = defineProps<{
   loading: boolean,
   client: object
 }>()
-const data = ref(props.backOrder)
+
 </script>

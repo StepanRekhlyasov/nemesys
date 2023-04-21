@@ -11,7 +11,6 @@
 				<div class="text-subtitle2">検索条件 / エリア：東京都全域,　詳細条件：…</div>
 				<div class="row q-mt-xs justify-between" >
 					<q-btn :label="$t('backOrder.changeSearchCriteria')" color="primary" />
-					<!-- <q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus-thick" @click="createBO=true"/> -->
 				</div>
 			</q-card-section>
       <q-separator color="white" size="2px" />
@@ -58,22 +57,6 @@
 			</q-card-section>
 		</q-card>
 	</div>
-	
-  <q-drawer
-    v-model="createBO"
-    show
-    class="bg-grey-3"
-    :width="1000"
-    :breakpoint="500"
-    side="right"
-    overlay elevated
-    bordered
-    >
-    <q-scroll-area
-      class="fit text-left">
-			<create @close-dialog="createBO=false"/>			
-    </q-scroll-area>
-  </q-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -81,14 +64,12 @@ import { BackOrderModel } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import create from './components/create/createBO.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const backOrderStore = useBackOrder();
 const state = backOrderStore.state;
 
 const selected = ref<BackOrderModel[]>([])
-const createBO = ref(false)
 const pagination = ref({
 	sortBy: 'desc',
 	descending: false,
