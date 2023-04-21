@@ -3,9 +3,7 @@
     <q-card-section class="bg-grey-3">
       <div class="text-h6 text-primary">{{ $t("applicant.progress.title") }}</div>
     </q-card-section>
-
     <q-separator color="white" size="2px" />
-
     <q-card-section class="bg-grey-3">
       <div class="row q-pt-md q-gutter-sm">
         <div class="col-2">
@@ -39,7 +37,7 @@
           <q-select
             outlined
             dense
-            :options="prefectureOption"
+            :options="prefectureOption.map((item)=>$t(item))"
             v-model="applicantData['prefecture']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
@@ -84,7 +82,6 @@
               v-for="column in columns"
               :key="column.id"
               :column="column"
-              :columns="columns"
             />
           </div>
         </q-scroll-area>
@@ -94,18 +91,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { useI18n } from 'vue-i18n';
-  import { ref } from 'vue';
+  import { onMounted, ref, render } from 'vue';
   import ApplicantColumn from './components/ApplicantColumn.vue';
-  import { prefectureList } from '../../shared/constants/Prefecture.const';
+  //import { prefectureList } from '../../shared/constants/Prefecture.const';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
+  import { useMetadata } from 'src/stores/metadata';
   import { ApplicantCol } from './types/applicant.types';
-
-
-  const { t } = useI18n({ useScope: 'global' });
+  
   const isLoading = ref(false);
-  const prefectureOption = ref(prefectureList);
+  const prefectureOption = ref<string[]>([]);
   const applicantData = ref({
     branch: '',
     userInCharge: '',
@@ -116,15 +111,24 @@
   const retireApplicants = ref(7);
   const workingApplicants = ref(120);
   const columns = ref<ApplicantCol[]>(
-    APPLICANT_COLUMNS.map((item) => ({ ...item, label: t(item.label, 'en') }))
+    APPLICANT_COLUMNS.map((item) => ({ ...item, label: item.label }))
   );
 
   const applicantStore = useApplicant();
-  applicantStore.getAllApplicants().then(() => {
-    columns.value = columns.value.map(item => {
+  const metadataStore = useMetadata();
+  onMounted(()=>{
+    applicantStore.getAllApplicants().then(() => {
+      columns.value = columns.value.map(item => {
       return {...item,
         items: applicantStore.state.applicants.filter(applicant => applicant.status === item.status)
       }
+      })
+    })
+    metadataStore.getPrefectureJP().then((data) => {
+      prefectureOption.value = Object.keys(data).map((item)=>{
+        return 'prefectures.' + item
+      })
     })
   })
+
 </script>
