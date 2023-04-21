@@ -64,6 +64,10 @@ export const menuParent: MenuParentType[] = [
     type: MenuParent.SystemSettings,
     title: 'menu.system',
     icon: 'mdi-cog',
+  },{
+    type: MenuParent.TotalizationManagement,
+    title: 'menu.totalization',
+    icon: 'mdi-cog',
   }
 ]
 

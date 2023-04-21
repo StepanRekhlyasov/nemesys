@@ -4,17 +4,15 @@
 			<q-card-section class="bg-grey-3">
 				<div class="text-h6 text-primary">{{ $t('menu.backOrderSearch') }}</div>
 			</q-card-section>
-
 			<q-separator color="white" size="2px" />
-
 			<q-card-section class="bg-grey-3">
 				<div class="text-subtitle2">検索条件 / エリア：東京都全域,　詳細条件：…</div>
 				<div class="row q-mt-xs justify-between" >
 					<q-btn :label="$t('backOrder.changeSearchCriteria')" color="primary" />
 				</div>
 			</q-card-section>
-      <q-separator color="white" size="2px" />
-      <q-card-section class=" q-pa-none">
+			<q-separator color="white" size="2px" />
+			<q-card-section class=" q-pa-none">
 				<q-table
 					:columns="columns"
 					:rows="state.BOList"

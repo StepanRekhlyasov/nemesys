@@ -79,7 +79,6 @@ export default defineComponent({
       loading.value = true
       try {
         const creds = await signInWithEmailAndPassword(auth, email, password)
-
         const affiliation = await user.checkUserAffiliation(formData.code, creds.user.uid)
 
         if (!affiliation) {

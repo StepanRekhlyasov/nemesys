@@ -65,8 +65,11 @@ export default {
     openArea: '表示エリアを開く',
     yen: '円',
     year: '年',
-    age: '歳',
-    userNotFound: 'ユーザーが見つかりません。'
+    userNotFound: 'ユーザーが見つかりません。',
+    age: '年齢',
+    ageShort: '歳',
+    week: '週',
+    month: '月',
   },
   smoking: {
     no: '無',
@@ -101,6 +104,8 @@ export default {
     clientReg: 'クライアント情報登録',
     dashboard: 'ダッシュボード',
     system: 'システム設定',
+    totalization: '集計管理',
+    report: 'レポート',
     item: '項目マスタ管理',
     branches: '支店マスタ管理',
     users: '担当マスタ管理',
@@ -716,6 +721,8 @@ export default {
       attendanceInfo: 'アテンド情報',
       fixEmployInfo: 'FIX-入職情報',
       operationInfo: '稼働情報',
+      yearsExperience: '経験年数',
+      availableShift: '勤務可能シフト',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -829,7 +836,23 @@ export default {
         }
       }
 
-
+    },
+    statusList: {
+      unsupported: '未対応',
+      waitContact: '接触待ち',
+      excluded: '対象外',
+      anotherCompany: '他社決定',
+      breakContact: '不通',
+      decline: '登録辞退',
+      waitAttend: 'アテンド待ち',
+      waitFIX: 'FIX待ち',
+      waitVisit: '職見待ち',
+      waitOffer: '内定待ち',
+      waitEntry: '入職待ち',
+      working: '稼働中',
+      waitTermintion: '終了待ち',
+      waitRetire: '退職待ち',
+      retired: '退職済み',
     },
     statusOption: {
       unsupported: '未対応',
@@ -1297,7 +1320,7 @@ export default {
         latitude: '事業所住所：緯度',
         tel: '事業所TEL',
         fax: '事業所FAX',
-        
+
         referralFeePer: '紹介料の規定％',
         referralFeeFix: '紹介料の規定金額',
         salaryHour: '時給',
@@ -1338,7 +1361,19 @@ export default {
         contractTel: '契約先：TEL',
         contractFax: '契約先：FAX',
         contractMail: '契約先：MAIL',
-        contractPerson: '契約先：担当者'
+        contractPerson: '契約先：担当者',
+
+        // Import Logs and Reflect Logs
+        executionUser: '実行ユーザー',
+        executionDateTime: '実行日時',
+        sourceCompany: '取込元企業',
+        update_create: '更新／作成',
+        captured: '取込項目',
+
+        update: '更新',
+        create: '作成',
+        basicInfoChanged: '基本情報',
+        officeInfoChanged: '事業所詳細情報'
       }
     }
   },
@@ -1367,6 +1402,27 @@ export default {
     message: {
       issueDate: '受信日',
       responseDate: '送信日'
+    }
+  },
+  report:{
+    SalesActivityIndividualReport:'営業活動個人レポート',
+    ApplicantReport:'応募者レポート',
+    SalesActivityReport:'営業活動レポート',
+    RecruitmentEffectivenessReport:'採用効果レポート',
+    Applicant:'応募者',
+    ValidApplicant:'有効応募者',
+    CompanyAverage:'自社平均',
+    AllAverage:'全体平均',
+    NumberOfContacts:'接触回数',
+    NumberOfInvitations:'誘致数',
+    NumberOfAttendance:'アテンド数',
+    CVR:'CVR',
+    AllCVR:'全体CVR',
+    categories:{
+      fix:'Fix',
+      inspection:'職見',
+      offer:'内定',
+      admission:'入職',
     }
   }
 };

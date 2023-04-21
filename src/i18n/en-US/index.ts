@@ -65,8 +65,11 @@ export default {
     openArea: 'Open Display Area',
     yen: 'yen',
     year: 'year',
+    userNotFound: 'User not found',
     age: 'Age',
-    userNotFound: 'User not found'
+    ageShort: 'Age',
+    week: 'Week',
+    month: 'Month',
   },
   smoking: {
     no: 'No',
@@ -101,6 +104,8 @@ export default {
     clientReg: 'Client Registration',
     dashboard: 'Dashboard',
     system: 'System Settings',
+    totalization: 'Totalization',
+    report: 'Report',
     item: 'Item Master Management',
     branches: 'Branch Master Management',
     users: 'Responsible Master Management',
@@ -720,6 +725,8 @@ export default {
       attendanceInfo: 'Attendance Info',
       fixEmployInfo: 'FIX Employment Info',
       operationInfo: 'Operation Info',
+      yearsExperience: 'Years of Experience',
+      availableShift: 'Available Shift',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -832,6 +839,23 @@ export default {
           TTP: 'TTP'
         }
       }
+    },
+    statusList: {
+      unsupported: 'Unsupported',
+      waitContact: 'Wait Contact',
+      excluded: 'Excluded',
+      anotherCompany: 'Another Company',
+      breakContact: 'Break Contact',
+      decline: 'Decline',
+      waitAttend: 'Wait Attend',
+      waitFIX: 'Wait FIX',
+      waitVisit: 'Wait Visit',
+      waitOffer: 'Wait Offer',
+      waitEntry: 'Wait Entry',
+      working: 'Working',
+      waitTermintion: 'Wait Termintion',
+      waitRetire: 'Wait Retire',
+      retired: 'Retired',
     },
     statusOption: {
       unsupported: 'Unsupported',
@@ -1319,7 +1343,7 @@ export default {
         workingHourEarly: 'Early working hour',
         workingHourDay: 'Day working hour',
         workingHourLate: 'Late working hour',
-        workingHourNight: 'Night working hour', 
+        workingHourNight: 'Night working hour',
 
         // Head details
         officeLocation: 'Office: Location',
@@ -1342,7 +1366,20 @@ export default {
         contractTel: 'Contract destination: TEL',
         contractFax: 'Contract destination: FAX',
         contractMail: 'Contract destination: MAIL',
-        contractPerson: 'Contractor: Person in charge'
+        contractPerson: 'Contractor: Person in charge',
+
+
+        // Import Logs and Reflect Logs
+        executionUser: 'Execution User',
+        executionDateTime: 'Execution Date and Time',
+        sourceCompany: 'Source Company',
+        update_create: 'Update / Create',
+        captured: 'Captured item',
+
+        update: 'Updated',
+        create: 'Created',
+        basicInfoChanged: 'Changed Basic Info',
+        officeInfoChanged: 'Changed Office Info'
       }
     }
   },
@@ -1371,6 +1408,30 @@ export default {
     message: {
       issueDate: 'Date of issue',
       responseDate: 'Date of response'
+    }
+  },
+  report:{
+    SalesActivityIndividualReport:'SalesActivityIndividualReport',
+    ApplicantReport:'ApplicantReport',
+    SalesActivityReport:'SalesActivityReport',
+    RecruitmentEffectivenessReport:'RecruitmentEffectivenessReport',
+    Applicant:'Applicant',
+    ValidApplicant:'ValidApplicant',
+    CompanyAverage:'CompanyAverage',
+    AllAverage:'AllAverage',
+    NumberOfContacts:'NumberOfContact',
+    NumberOfInvitations:'NumberOfInvitations',
+    NumberOfAttendance:'NumberOfAttendance',
+    CVR:'CVR',
+    AllCVR:'AllCVR',
+    categories:{
+      fix:'Fix',
+      inspection:'Inspection',
+      offer:'Offer',
+      admission:'Admission',
+    },
+    chart:{
+      UnitPerson:'UnitPerson',
     }
   }
 };
