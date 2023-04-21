@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { onMounted, ref, render } from 'vue';
+  import { onMounted, ref } from 'vue';
   import ApplicantColumn from './components/ApplicantColumn.vue';
   //import { prefectureList } from '../../shared/constants/Prefecture.const';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
