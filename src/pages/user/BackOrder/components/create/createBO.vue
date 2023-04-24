@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel, Client } from 'src/shared/model';
 import { ref } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
@@ -75,12 +75,9 @@ import { useBackOrder } from 'src/stores/backOrder';
 
 const emits = defineEmits(['closeDialog']);
 const backOrderStore = useBackOrder();
-const props = defineProps({
-  client: {
-    type: Object,
-    required: true
-  }
-})
+const props = defineProps<{
+  client: Client
+}>()
 const loading = ref(false);
 const backOrderData = ref({
   working_days_week: [] as string[],
@@ -88,7 +85,9 @@ const backOrderData = ref({
 } as BackOrderModel);
 
 async function addBackOrder() {
-  await backOrderStore.addBackOrder(backOrderData.value, props.client.id)
+  if (props.client.id){
+    await backOrderStore.addBackOrder(backOrderData.value, props.client.id)
+  }
 }
 
 </script>

@@ -112,12 +112,12 @@
 
 <script lang="ts" setup>
 import LabelField from 'src/components/form/LabelField.vue';
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel, Client } from 'src/shared/model';
 
 defineProps<{
   backOrder: BackOrderModel,
   loading: boolean,
-  client: object
+  client: Client
 }>()
 
 </script>

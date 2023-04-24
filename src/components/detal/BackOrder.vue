@@ -202,11 +202,13 @@ export default {
     }
 
     const deleteBo = async () => {
-      await backOrderStore.deleteBackOrder(selected.value).then(async () => {
+      try{
+        await backOrderStore.deleteBackOrder(selected.value)
         await loanBoListData();
-        selected.value = [];        
-
-      })
+        selected.value = [];     
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     return {
