@@ -94,8 +94,8 @@
   import { onMounted, ref } from 'vue';
   import ApplicantColumn from './components/ApplicantColumn.vue';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
-  import { useApplicant } from 'src/stores/applicant';
-  import { useMetadata } from 'src/stores/metadata';
+  import { useApplicant } from 'src/stores/user/applicant';
+  import { useMetadata } from 'src/stores/user/metadata';
   import { ApplicantCol } from './types/applicant.types';
   
   const isLoading = ref(false);
@@ -113,24 +113,17 @@
 
   const applicantStore = useApplicant();
   const metadataStore = useMetadata();
-onMounted( async ()=>{
-    applicantStore.getAllApplicants().then(() => {
-      columns.value = columns.value.map(item => {
-      return {...item,
-        items: applicantStore.state.applicants.filter(applicant => applicant.status === item.status)
-      }
-      })
-    })
-	const applicantData = await applicantStore.getAllApplicants()
-	columns.value = columns.value.map(item => {
+
+  onMounted( async ()=>{
+    const applicantData = await applicantStore.getAllApplicants()
+    columns.value = columns.value.map(item => {
       return {...item,
         items: applicantData.filter((applicant) => applicant.status === item.status)
       }
     })
-	const metadataData = await metadataStore.getPrefectureJP()
+    const metadataData = await metadataStore.getPrefectureJP()
     prefectureOption.value = Object.keys(metadataData).map((item)=>{
-        return 'prefectures.' + item
+      return 'prefectures.' + item
     })
   })
-
 </script>

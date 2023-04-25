@@ -145,7 +145,7 @@ import { ref, computed, onBeforeUnmount, Ref } from 'vue';
 import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
-import { useApplicant } from 'src/stores/applicant';
+import { useApplicant } from 'src/stores/user/applicant';
 import { User, ApplicantFix, ApplicantStatus } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';

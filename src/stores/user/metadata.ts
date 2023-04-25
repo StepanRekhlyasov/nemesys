@@ -21,9 +21,8 @@ export const useMetadata = defineStore('metadata', () => {
       const result = docSnap.data() as Prefecture[];
       state.value.prefectureJP = result;
       return result;
-    } else {
-      return [];
     }
+    return [];
   }
 
   return { state, getPrefectureJP }
