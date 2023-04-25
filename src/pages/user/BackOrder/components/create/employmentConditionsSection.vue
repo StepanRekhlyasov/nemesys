@@ -30,22 +30,8 @@
         {{ $t('backOrder.create.workingDays') }}
       </div>
       <div class="col-10">
-        <q-checkbox v-model="data['working_days_week']" val="sunday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.sunday')" />
-        <q-checkbox class="q-ml-sm" v-model="data['working_days_week']" val="monday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.monday')" />
-        <q-checkbox  class="q-ml-sm" v-model="data['working_days_week']" val="tuesday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.tuesday')" />
-        <q-checkbox class="q-ml-sm" v-model="data['working_days_week']" val="wednesday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.wednesday')" />
-        <q-checkbox class="q-ml-sm" v-model="data['working_days_week']" val="thursday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.thursday')" />
-        <q-checkbox class="q-ml-sm" v-model="data['working_days_week']" val="friday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.friday')" />
-        <q-checkbox class="q-ml-sm" v-model="data['working_days_week']" val="saturday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.saturday')" />
-        <q-checkbox class="q-ml-sm" v-model="data['working_days_week']" val="holiday" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="$t('weekDay.holiday')" />
+        <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" :val="day.value" :disable="loading || data['workingDays'] == 'shiftSystem'"
+          :label="day.label" :key="day.value" />
       </div>
     </div>
 
@@ -133,6 +119,7 @@
 import { BackOrderModel } from 'src/shared/model';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { ref } from 'vue';
+import { daysList } from 'src/shared/constants/Applicant.const';
 
 const props = defineProps<{
   backOrder: BackOrderModel,

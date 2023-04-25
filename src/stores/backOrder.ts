@@ -62,7 +62,6 @@ export const useBackOrder = defineStore('backPrder', () => {
 				...data,
 			} as BackOrderModel)
 		})
-		console.log(list)
 		return list;
 	}
 
