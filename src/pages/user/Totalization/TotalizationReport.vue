@@ -52,7 +52,6 @@ import SalesActivityReport from '../../../components/report/SalesActivityReport/
 const t = useI18n({ useScope: 'global' }).t;
 const branch_input: Ref<string> = ref('');
 const branchs: Ref<string[]> = ref([]);
-const Code = inject('code') as string;
 const {currentOrganizationId} = useOrganization()
 const db = getFirestore();
 const branch_user_list: Ref<{ id: string; name: string }[]> = ref([]);
