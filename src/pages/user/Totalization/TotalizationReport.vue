@@ -63,22 +63,22 @@ const report_type: Ref<{label:string,value:number}[]> = ref([
 ]);
 const report_componets={0:ApplicantReport,2:SalesActivityIndividualReport,1:SalesActivityReport,3:RecruitmentEffectivenessReport}
 //今日の日付を取得し2021/01/01のようにフォーマットする,さらに1ヶ月前の日付を取得すして、dateRangeに代入する関数
-const get_date=()=>{
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const day = today.getDate();
-  //fromを1ヶ月前にする
-  const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-  const from_year = from.getFullYear();
-  const from_month = from.getMonth() + 1;
-  const from_day = from.getDate();
-  const dateRange = {
-    from: `${from_year}/${from_month}/${from_day}`,
-    to: `${year}/${month}/${day}`,
-  };
-  return dateRange;
-}
+// const get_date=()=>{
+//   const today = new Date();
+//   const year = today.getFullYear();
+//   const month = today.getMonth() + 1;
+//   const day = today.getDate();
+//   //fromを1ヶ月前にする
+//   const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+//   const from_year = from.getFullYear();
+//   const from_month = from.getMonth() + 1;
+//   const from_day = from.getDate();
+//   const dateRange = {
+//     from: `${from_year}/${from_month}/${from_day}`,
+//     to: `${year}/${month}/${day}`,
+//   };
+//   return dateRange;
+// }
 // const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
 const dateRange: Ref<{ from: string ; to: string}> =
   ref({ from: '2021/01/01', to: '2021/07/17' });

@@ -38,7 +38,7 @@ import { getFirestore } from 'firebase/firestore';
 import { ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
-import { useApplicant } from 'src/stores/applicant';
+import { useApplicant } from 'src/stores/user/applicant';
 const props = defineProps({
   applicant: {
     type: Object,

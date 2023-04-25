@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import SalesActivityIndividualReportLeftChart from './SalesActivityIndividualReportLeftChart.vue'
-import SalesActivityIndividualReportRightChart from './SalesActivityIndividualReportRightChart.vue'
+// import SalesActivityIndividualReportRightChart from './SalesActivityIndividualReportRightChart.vue'
 
 
 defineProps<{

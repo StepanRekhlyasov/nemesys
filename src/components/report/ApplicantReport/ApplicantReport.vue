@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import ApplicantReportLeftChart from './ApplicantReportLeftChart.vue';
-import ApplicantReportRightChart from './ApplicantReportRightChart.vue'
+// import ApplicantReportRightChart from './ApplicantReportRightChart.vue'
 defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string };
