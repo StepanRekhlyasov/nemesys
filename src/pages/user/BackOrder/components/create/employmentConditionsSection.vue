@@ -104,7 +104,7 @@
       </div>
     </div>
 
-    <div class="row q-pt-sm">
+    <div class="row q-pt-sm" v-if="type=='referral'">
       <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.existence') }}
       </div>
@@ -116,7 +116,7 @@
       </div>
     </div>
 
-    <div class="row q-pt-sm">
+    <div class="row q-pt-sm" v-if="type=='referral'">
       <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.annualHolidays') }}
       </div>
@@ -136,7 +136,8 @@ import { ref } from 'vue';
 
 const props = defineProps<{
   backOrder: BackOrderModel,
-  loading: boolean
+  loading: boolean,
+  type: 'dispatch' | 'referral'
 }>()
 const data = ref(props.backOrder)
 </script>

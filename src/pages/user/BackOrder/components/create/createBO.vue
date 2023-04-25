@@ -10,7 +10,7 @@
             {{ `${client['client_name']} / ${client['companyProfile']}` }}
           </div>
           <div class="row text-h6 text-weight-bold q-pr-xs">
-            バックオーダー新規追加／派遣
+            バックオーダー新規追加／{{  $t(`backOrder.type.${type}`) }}
           </div>
         </div>
       </div>
@@ -22,7 +22,9 @@
     <q-separator color="grey-3" size="2px" />
     <q-card-section class="bg-white">
       <q-form >
+        <!-- Basic Info Section -->
         <basic-info-section :backOrder="backOrderData" :loading="loading" :client="client" />
+        <!-- Working Type Section -->
         <q-card-section>
           <div class="row text-primary text-h6" >
             {{'■ '+ $t('backOrder.create.workingType') }}
@@ -33,7 +35,7 @@
             </labelField>
           </div>
         </q-card-section>
-
+        <!-- BO Generation Route Section -->
         <q-card-section>
           <div class="row text-primary text-h6" >
             {{'■ '+ $t('backOrder.create.BOGenerationRoute') }}
@@ -45,17 +47,20 @@
             </labelField>
           </div>
         </q-card-section>
-        
         <!-- Introduction Section -->
-        <introduction-section :backOrder="backOrderData" :loading="loading" />
+        <introduction-section :backOrder="backOrderData" :loading="loading" :type="type"/>
         <!-- Employment Conditions Section -->
-        <employment-conditions-section :backOrder="backOrderData" :loading="loading" />
+        <employment-conditions-section :backOrder="backOrderData" :loading="loading"  :type="type"/>
         <!-- Paycheck Section -->
         <paycheck-section :backOrder="backOrderData" :loading="loading" />
         <!-- Tasks Section -->
-        <tasks-section :backOrder="backOrderData" :loading="loading" />
+        <template v-if="type=='referral'">
+          <tasks-section :backOrder="backOrderData" :loading="loading" />
+        </template>
         <!-- In House Information Section -->
-        <in-house-info-section :backOrder="backOrderData" :loading="loading"/>
+        <template v-if="type=='referral'">
+          <in-house-info-section :backOrder="backOrderData" :loading="loading"/>
+        </template>
       </q-form>
     </q-card-section>
   </q-card>
@@ -76,7 +81,8 @@ import { useBackOrder } from 'src/stores/backOrder';
 const emits = defineEmits(['closeDialog']);
 const backOrderStore = useBackOrder();
 const props = defineProps<{
-  client: Client
+  client: Client,
+  type: 'dispatch' | 'referral'
 }>()
 const loading = ref(false);
 const backOrderData = ref({

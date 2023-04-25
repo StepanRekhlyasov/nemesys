@@ -1076,6 +1076,10 @@ export default {
       yesDaily: '有り／日額',
       none:'なし',
     },
+    type: {
+      dispatch: '派遣',
+      referral: '紹介'
+    },
     workingDays: {
       shiftSystem: 'シフト制',
       fixed: '曜日固定'

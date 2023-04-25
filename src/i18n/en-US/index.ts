@@ -1079,6 +1079,10 @@ export default {
       yesDaily: 'Yes/Daily',
       none:'None',
     },
+    type: {
+      dispatch: 'Dispatch',
+      referral: 'Referral'
+    },
     workingDays: {
       shiftSystem: 'shift system',
       fixed: 'Fixed days of the week'

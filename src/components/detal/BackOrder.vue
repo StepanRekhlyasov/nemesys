@@ -83,10 +83,10 @@
 
     <template v-slot:body-cell-workingTime="props">
       <q-td :props="props" >
-        {{props.row.workingHoursEarly}}<br/>
-        {{props.row.workingHoursDay}}<br/>
-        {{props.row.workingHoursLate}}<br/>
-        {{props.row.workingHoursNight}}
+        {{props.row.workingHoursEarly_min}}<br/>
+        {{props.row.workingHoursDay_min}}<br/>
+        {{props.row.workingHoursLate_min}}<br/>
+        {{props.row.workingHoursNight_min}}
       </q-td>
     </template>
 
@@ -107,7 +107,7 @@
     overlay elevated
     bordered
     v-model="openDialog">
-    <createBO :client="client" @closeDialog="openDialog = false"/>
+    <createBO :client="client" @closeDialog="openDialog = false" :type="'dispatch'"/>
   </q-drawer>
 </template>
 

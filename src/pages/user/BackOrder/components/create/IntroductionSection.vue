@@ -25,8 +25,8 @@
       </labelField>
     </div>
 
-    <div class="row ">
-      <labelField :label="$t('client.backOrder.caseType')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10">
+    <div class="row" v-if="type == 'referral'" >
+      <labelField :label="$t('backOrder.employmentType')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10">
         <q-radio
           v-for="key in BackOrderStatus"
           v-model="data['status']"
@@ -74,7 +74,8 @@ import { ref } from 'vue';
 
 const props = defineProps<{
   backOrder: BackOrderModel,
-  loading: boolean
+  loading: boolean,
+  type: 'dispatch' | 'referral'
 }>()
 const data = ref(props.backOrder)
 </script>
