@@ -49,6 +49,10 @@ export const RouterToSingleMenuItem = (routers: MenuRouter[]):MenuItem[] => rout
 
 export const menuParent: MenuParentType[] = [
   {
+    type: MenuParent.DashboardData,
+    title: 'menu.dashboard',
+    icon: 'mdi-view-dashboard-outline'
+  },{
     type: MenuParent.ApplicantManagement,
     title: 'menu.applicant',
     icon: 'mdi-face-man-outline'

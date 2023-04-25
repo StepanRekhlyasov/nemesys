@@ -102,7 +102,7 @@ import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
-import { useApplicant } from 'src/stores/applicant';
+import { useApplicant } from 'src/stores/user/applicant';
 import FixInfoSection from './FixInfoSection.vue';
 import JobSearchInfoSection from './JobSearchInfoSection.vue';
 import JobOffersInfoSection from './JobOffersInfoSection.vue';

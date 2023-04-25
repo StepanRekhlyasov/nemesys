@@ -75,46 +75,46 @@ const chartOptions = ref({
   },
 });
 
-const chartOptions2 = ref({
-  chart: {
-    height: 800,
-  },
-  plotOptions: {
-    bar: {
-      columnWidth: '25%',
-      endingShape: 'rounded',
-    },
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  stroke: {
-    show: true,
-    width: 2,
-  },
-  xaxis: {
-    categories: [
-      t('report.categories.fix') + '-' + t('report.categories.inspection'),
-      t('report.categories.inspection') + '-' + t('report.categories.offer'),
-      t('report.categories.offer') + '-' + t('report.categories.admission'),
-    ],
-  },
-  yaxis: [
-    {
-      min: 0,
-      max: 100,
+// const chartOptions2 = ref({
+//   chart: {
+//     height: 800,
+//   },
+//   plotOptions: {
+//     bar: {
+//       columnWidth: '25%',
+//       endingShape: 'rounded',
+//     },
+//   },
+//   dataLabels: {
+//     enabled: false,
+//   },
+//   stroke: {
+//     show: true,
+//     width: 2,
+//   },
+//   xaxis: {
+//     categories: [
+//       t('report.categories.fix') + '-' + t('report.categories.inspection'),
+//       t('report.categories.inspection') + '-' + t('report.categories.offer'),
+//       t('report.categories.offer') + '-' + t('report.categories.admission'),
+//     ],
+//   },
+//   yaxis: [
+//     {
+//       min: 0,
+//       max: 100,
 
-      labels: {
-        formatter: function (value) {
-          return value.toFixed(2) + '%'; // 目盛りに単位を付ける
-        },
-      },
-    },
-  ],
-  fill: {
-    opacity: 1,
-  },
-});
+//       labels: {
+//         formatter: function (value) {
+//           return value.toFixed(2) + '%'; // 目盛りに単位を付ける
+//         },
+//       },
+//     },
+//   ],
+//   fill: {
+//     opacity: 1,
+//   },
+// });
 
 // t('report.Applicant'),
 //       t('report.ValidApplicant'),

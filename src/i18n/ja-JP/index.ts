@@ -103,6 +103,7 @@ export default {
     clientList: 'クライアント一覧・検索',
     clientReg: 'クライアント情報登録',
     dashboard: 'ダッシュボード',
+    applicantProgress: '応募者進捗',
     system: 'システム設定',
     totalization: '集計管理',
     report: 'レポート',
@@ -980,6 +981,31 @@ export default {
 
       // Memo Tab
       content: '内容'
+    },
+    progress: {
+      title: '応募者進捗',
+      filters: {
+        branch: '支店',
+        userInCharge: '担当',
+        prefecture: '都道府県',
+        month: '対象月'
+      },
+      entry: '入職数',
+      retire: '退職数',
+      working: '稼働数',
+      status: {
+        waitContact: '接触待ち',
+        waitAttent: 'アテンド待ち',
+        waitFix: 'FIX待ち',
+        waitVisit: '職見待ち',
+        waitOffer: '内定待ち',
+        waitEntry: '入職待ち',
+        waitTermination: '更新確認一覧',
+      },
+      card: {
+        applicationDate: '応',
+        lastCotactDate: '接',
+      }
     }
   },
   backOrder: {
