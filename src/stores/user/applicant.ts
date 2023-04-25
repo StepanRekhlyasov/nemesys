@@ -103,7 +103,6 @@ export const useApplicant = defineStore('applicant', () => {
 		if (!docWholeSnap.empty) {
 			const result = docWholeSnap.docs.map(item => item.data() as Applicant)
 		  state.value.applicants = result
-      console.log(JSON.stringify(result))
 		  return result
 		}
 		return []
