@@ -83,10 +83,10 @@
 
     <template v-slot:body-cell-workingTime="props">
       <q-td :props="props" >
-        {{props.row.workingHoursEarly}}<br/>
-        {{props.row.workingHoursDay}}<br/>
-        {{props.row.workingHoursLate}}<br/>
-        {{props.row.workingHoursNight}}
+        {{props.row.workingHoursEarly_min}}<br/>
+        {{props.row.workingHoursDay_min}}<br/>
+        {{props.row.workingHoursLate_min}}<br/>
+        {{props.row.workingHoursNight_min}}
       </q-td>
     </template>
 
@@ -98,22 +98,29 @@
   </q-table>
 
   <!-- add ot edit BO -->
-  <q-dialog v-model="openDialog">
-    <backOrderForm :client="client" @closeDialog="openDialog = false"/>
-  </q-dialog>
+  <q-drawer 
+    show
+    class="bg-grey-3"
+    :width="1000"
+    :breakpoint="500"
+    side="right"
+    overlay elevated
+    bordered
+    v-model="openDialog">
+    <createBO :client="client" @closeDialog="openDialog = false" :type="'dispatch'"/>
+  </q-drawer>
 </template>
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import {  ref, computed, Ref } from 'vue';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
-import backOrderForm from 'src/components/detal/components/BackOrder.form.vue';
-import { collection, getFirestore, onSnapshot, doc as docDb, query, updateDoc, where } from '@firebase/firestore';
-import { toDate } from 'src/shared/utils/utils';
+import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
+import { useBackOrder } from 'src/stores/backOrder';
 export default {
   name: 'BackOrder',
   components: {
-    backOrderForm
+    createBO
   },
   props: {
     client: {
@@ -133,9 +140,7 @@ export default {
       rowsPerPage: 10
     });
 
-
-    const db = getFirestore();
-    const unsubscribe = ref();
+    const backOrderStore = useBackOrder();
 
     const columns = computed(() => {
       return [
@@ -188,17 +193,8 @@ export default {
   });
 
     loanBoListData()
-    function loanBoListData() {
-      const q = query(collection(db, 'clients/' + props.client.clientId + '/backOrder'), where('deleted', '==', false));
-      unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-        let boData: BackOrderModel[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          data['id'] = doc.id;
-          boData.push({ ...data as BackOrderModel, id: doc.id, created_at: toDate(data.created_at)});
-        });
-        backOrderData.value = boData
-      })
+    async function loanBoListData() {
+      backOrderData.value = await backOrderStore.getClientBackOrder(props.client.id)
     }
 
     const showAddBO = () => {
@@ -206,15 +202,13 @@ export default {
     }
 
     const deleteBo = async () => {
-      const ret = selected.value.map( async (bo) => {
-        const boRef = docDb(db, 'clients/'+props.client.clientId+'/backOrder/'+bo.id);
-        await updateDoc(boRef, {
-          deleted: true
-        })
-      })
-      Promise.all(ret)
-      await loanBoListData();
-      selected.value = [];
+      try{
+        await backOrderStore.deleteBackOrder(selected.value)
+        await loanBoListData();
+        selected.value = [];     
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     return {

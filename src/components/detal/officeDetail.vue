@@ -309,8 +309,6 @@ export default {
         parkingLotRemarks: 'あり',
         numberEmployees: '30名',
         numberOfUsers: '未設定',
-
-
       }
     }
 
