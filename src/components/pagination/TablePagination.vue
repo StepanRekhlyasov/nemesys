@@ -4,7 +4,7 @@ import { usePagination } from 'src/stores/pagination';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { Pagination } from './types';
 
-interface PaginationViewProps {
+interface TablePaginationProps {
   pagination: Pagination
   isAdmin: boolean | undefined
 }
@@ -13,7 +13,7 @@ const emit = defineEmits<{
   (e: 'onDataUpdate', newData: unknown[])
   (e: 'onLoadingStateChange', loading: boolean)
 }>()
-const props = defineProps<PaginationViewProps>()
+const props = defineProps<TablePaginationProps>()
 
 const pagination = usePagination()
 
@@ -56,7 +56,7 @@ async function onPageUpdate(newPage: number) {
   }
 
   if (newPage == maxPages.value) {
-    const data = await query.getLast()
+    const data = await query.lastPage()
     emit('onDataUpdate', data)
     emit('onLoadingStateChange', false)
     return

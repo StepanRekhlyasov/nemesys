@@ -18,23 +18,23 @@ export const usePagination = defineStore('pagination', () => {
     }
 
     async function firstPage() {
-      const organizationsQuery = query(collection(db, path), ...constraintsArray, limit(rowsPerPage))
-      return await mapResult(organizationsQuery)
+      const firstPageQuery = query(collection(db, path), ...constraintsArray, limit(rowsPerPage))
+      return await mapResult(firstPageQuery)
     }
 
     async function nextPage() {
-      const nextQuery = query(collection(db, path), ...constraintsArray, startAfter(lastSnapshot.docs[lastSnapshot.docs.length - 1]), limit(rowsPerPage))
-      return await mapResult(nextQuery)
+      const nextPageQuery = query(collection(db, path), ...constraintsArray, startAfter(lastSnapshot.docs[lastSnapshot.docs.length - 1]), limit(rowsPerPage))
+      return await mapResult(nextPageQuery)
     }
 
     async function prevPage() {
-      const prevQuery = query(collection(db, path), ...constraintsArray, endBefore(lastSnapshot.docs[0]), limitToLast(rowsPerPage))
-      return await mapResult(prevQuery)
+      const prevPageQuery = query(collection(db, path), ...constraintsArray, endBefore(lastSnapshot.docs[0]), limitToLast(rowsPerPage))
+      return await mapResult(prevPageQuery)
     }
 
-    async function getLast() {
-      const nextQuery = query(collection(db, path), ...constraintsArray, limitToLast(1))
-      return await mapResult(nextQuery)
+    async function lastPage() {
+      const lastPageQuery = query(collection(db, path), ...constraintsArray, limitToLast(1))
+      return await mapResult(lastPageQuery)
     }
 
     async function refreshPage() {
@@ -45,8 +45,8 @@ export const usePagination = defineStore('pagination', () => {
       const snapshot = await getDocs(query);
       lastSnapshot = snapshot
       lastQuery = query
-      return snapshot?.docs.map((organization) => {
-        return organization.data() as unknown
+      return snapshot?.docs.map((doc) => {
+        return doc.data() as unknown
       })
     }
 
@@ -69,7 +69,7 @@ export const usePagination = defineStore('pagination', () => {
       prevPage,
       firstPage,
       count,
-      getLast,
+      lastPage,
       refreshPage,
       setConstraints,
     }
