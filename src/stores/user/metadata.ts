@@ -20,7 +20,6 @@ export const useMetadata = defineStore('metadata', () => {
     if (docSnap.exists()) {
       const result = docSnap.data() as Prefecture[];
       state.value.prefectureJP = result;
-      console.log(result)
       return result;
     }
     return [];

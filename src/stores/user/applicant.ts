@@ -11,7 +11,6 @@ import { date } from 'quasar';
 interface ApplicantState {
   clientList: Client[],
   selectApplicant: number,
-  // applicants: Applicant[] | [],
   applicantsByColumn: ApplicantsByColumn,
   applicantsByStatusCount: ApplicantsByStatusCount,
   continueFromDoc: ContinueFromDoc
@@ -184,7 +183,6 @@ export const useApplicant = defineStore('applicant', () => {
   async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
       const fixData = await getFixList(applicant_id, {operationFilter})
       const list: ApplicantFix[] = [];
-
       fixData.forEach(fix => {
           const data = fix.data()
           list.push({
@@ -230,19 +228,6 @@ export const useApplicant = defineStore('applicant', () => {
       data
     );
   }
-
-	// const getAllApplicants = async () => {
-	// 	state.value.applicants = []
-	// 	const docWholeSnap =  await getDocs(query(collection(db, 'applicants')));
-  
-	// 	if (!docWholeSnap.empty) {
-	// 		const result = docWholeSnap.docs.map(item => item.data() as Applicant)
-	// 	  state.value.applicants = result
-	// 	  return result
-	// 	}
-	// 	return []
-	// }
-
   
   /** this is test function to update current timestamps but not all dates now exist 04/27 START */
 	const testUpdateDates = async () => {
@@ -264,7 +249,6 @@ export const useApplicant = defineStore('applicant', () => {
 	}
   /** this is test function to update current timestamps but not all dates now exist 04/27 END */
 
-
   getClients().then(clients => {
       state.value.clientList = clients
       state.value.clientList.forEach(async (client) => {
@@ -273,7 +257,6 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
-
 
   return { state, getClients, getClientOffice, getFixData, getFixList, saveFix, updateFix, getApplicantsByStatus, countApplicantsByStatus, testUpdateDates, getMoreApplicantsByStatus }
 })
