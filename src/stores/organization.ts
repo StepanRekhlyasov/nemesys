@@ -1,4 +1,4 @@
-import { collection, doc, endAt, Firestore, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, endAt, Firestore, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -73,25 +73,17 @@ export const useOrganization = defineStore('organization', () => {
   }
 
 
-  async function getAllBranches(db: Firestore, search?: BranchesSearch) {
+  async function getAllBranches() {
 
-    const organizationsIds = await getAllOrganizationsIds(db)
+    const branches: { [id: string]: Branch; } = {}
 
-    const branches: Branch[] = []
-    for (let i = 0; i < organizationsIds.length; i++) {
-      const id = organizationsIds[i]
-
-      const branchPart = Object.values(await getBranches(db, id, search)).reduce((prev, curr) => {
-        return prev.concat(curr)
-      }, [])
-
-      branchPart.forEach((branch) => {
-        branches.push(branch)
-      })
-    }
+    const branchesQuery = query(collectionGroup(db, 'branches'));
+    const querySnapshot = await getDocs(branchesQuery);
+    querySnapshot.forEach((doc) => {
+      branches[doc.id] = doc.data() as Branch
+    });
 
     return branches
-
   }
 
   async function addBusiness(db: Firestore, business: Omit<Business, 'id'>, organizationId: string) {
@@ -197,5 +189,5 @@ export const useOrganization = defineStore('organization', () => {
   }
 
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode }
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds }
 })

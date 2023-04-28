@@ -85,7 +85,18 @@ export const useUserStore = defineStore('user', () => {
 
     return user.organization_ids.includes(organizationId)
 
+  }
+
+  async function searchUsers(searchText: string) {
+    const usersQuery = query(collection(db, 'users'), orderBy('displayName'), startAt(searchText), endAt(searchText + '\uf8ff'))
+
+    const usersDocs = await getDocs(usersQuery);
+
+    return usersDocs.docs.map((organization) => {
+      return organization.data() as User
+    })
+
 
   }
-  return { getAllUsers, getUserById, editUser, checkUserAffiliation }
+  return { getAllUsers, getUserById, editUser, checkUserAffiliation, searchUsers }
 })
