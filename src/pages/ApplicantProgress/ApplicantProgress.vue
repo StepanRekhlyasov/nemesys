@@ -44,7 +44,7 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
-            @update:model-value="getResults(applicantData)"
+            @update:model-value="fetchResults()"
           />
         </div>
         <div class="col-1">
@@ -58,7 +58,7 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
-            @update:model-value="getResults(applicantData)"
+            @update:model-value="fetchResults()"
           />
         </div>
         <div class="col-1">
@@ -73,16 +73,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.working") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.working" />
         </div>
-        <!-- TEST FIELD -->
-        <div class="col-2">
-          <p style="white-space: nowrap; color: red">TEST FIELD - QUERY LIMIT</p>
-          <q-select outlined dense bg-color="white" v-model="perQuery" @update:model-value="getResults(applicantData)"
-            :options="[0,1,2,3,5,10]"
-          />
-        </div>
-        <!-- TEST FIELD -->
       </div>
-
       <div class="q-pt-md">
         <q-scroll-area style="height: 80vh; max-width: 90vw">
           <div class="row no-wrap justify-between">
@@ -91,7 +82,7 @@
               :key="column.id"
               :column="column"
               :loading="columnsLoading[column.status]"
-              @showMore="(status)=>{showMoreHandler(status)}"
+              @showMore="(status)=>{fetchResultsHandler(status, true)}"
             />
           </div>
         </q-scroll-area>
@@ -110,7 +101,7 @@
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'
   
-  const perQuery = ref<number>(1)
+  const perQuery = ref<number>(20)
   const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
   const applicantData = ref<ApplicantFilter>({
     branch: '',
@@ -138,9 +129,9 @@
   const metadataStore = useMetadata();
   const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
 
-  const showMoreHandler = async (status : string) => {
+  const fetchResultsHandler = async (status : string, fetchMore = false) => {
     columnsLoading.value[status] = true
-    await applicantStore.getMoreApplicantsByStatus(status, applicantData.value, perQuery.value)
+    await applicantStore.getApplicantsByStatus(status, applicantData.value, perQuery.value, fetchMore)
     columns.value = columns.value.map(item => {
       if(item.status == status){
         return {...item,
@@ -152,23 +143,12 @@
     columnsLoading.value[status] = false
   }
 
-  const getResults = async (filterData?: ApplicantFilter) => {
-    COLUMN_STATUSES.forEach(async (status)=>{
-      columnsLoading.value[status] = true
-      const ApplicantsByColumn = await applicantStore.getApplicantsByStatus(status, filterData, perQuery.value)
-      columns.value = columns.value.map(item => {
-        if(item.status == status){
-          return {...item,
-            items: ApplicantsByColumn
-          }
-        }
-        return item
-      })
-      columnsLoading.value[status] = false
+  const fetchResults = async () => {
+    COLUMN_STATUSES.map(async (status)=>{
+      fetchResultsHandler(status)
     })
-    COUNT_STATUSES.forEach(async (status)=>{
-      const ApplicantsCountStatuses = await applicantStore.countApplicantsByStatus(status, filterData)
-      countApplicantsStatuses.value[status] = ApplicantsCountStatuses
+    COUNT_STATUSES.map(async (status)=>{
+      countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantData.value)
     })
   }
 
@@ -187,6 +167,6 @@
       value: 0
     })
     
-    getResults()
+    fetchResults()
   })
 </script>

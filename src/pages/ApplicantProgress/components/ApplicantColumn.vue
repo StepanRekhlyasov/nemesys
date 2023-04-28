@@ -46,8 +46,6 @@ import { ApplicantCol } from '../types/applicant.types';
 import { useApplicant } from 'src/stores/user/applicant';
 import { computed } from 'vue';
 
-
-
 const emit = defineEmits<{
   (e: 'showMore', status: string)
 }>()
