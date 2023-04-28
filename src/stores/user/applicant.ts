@@ -2,7 +2,7 @@ import { QueryDocumentSnapshot, addDoc, collection, doc, getCountFromServer, get
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/ApplicantProgress/types/applicant.types';
 import { Applicant, ApplicantFix, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientOfficeList } from 'src/shared/utils/Applicant.utils';
+import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
@@ -142,8 +142,8 @@ export const useApplicant = defineStore('applicant', () => {
     return list;
   }
 
-  async function getClientOffice(client_id: string): Promise<ClientOffice[]>{
-      const officeData = await getClientOfficeList(db, client_id)
+  async function getClientFactories(client_id: string): Promise<ClientOffice[]>{
+      const officeData = await getClientFactoriesList(db, client_id)
       const list: ClientOffice[] = []
 
       officeData.forEach(office => {
@@ -206,11 +206,11 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.clientList = clients
       state.value.clientList.map(async (client) => {
           if (client.id) {
-              client.office = await getClientOffice(client.id)
+              client.office = await getClientFactories(client.id)
           }
       })
   })
 
-  return { state, getClients, getClientOffice, getFixData, getFixList, saveFix, updateFix, getApplicantsByStatus, countApplicantsByStatus }
+  return { state, getClients, getClientFactories, getFixData, getFixList, saveFix, updateFix, getApplicantsByStatus, countApplicantsByStatus }
 })
   
