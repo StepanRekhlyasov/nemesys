@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
 import { useAdminClientFactory } from 'src/stores/admin/clientFactory';
 import CFPageActions from './components/ClientFactory/CFPageActions.vue';
@@ -13,7 +14,8 @@ import { clientFactoriesToTableRows } from './handlers/ClientFactory';
 import { useAdminClient } from 'src/stores/admin/client';
 
 const { t } = useI18n({ useScope: 'global' });
-const { clientFactories,  getClientFactories } = useAdminClientFactory()
+const clientFactoryStore = useAdminClientFactory()
+const {clientFactories} = storeToRefs(clientFactoryStore)
 const { clients } = useAdminClient()
 
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
@@ -33,7 +35,7 @@ const pagination = ref({
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
 
-    activeClientFactoryItem.value = clientFactories.find((factory) => factory.id === item.id) as ClientFactory
+    activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
 
     if(activeClientFactoryItem.value) {
         isClientFactoryDrawer.value = true
@@ -47,21 +49,21 @@ const hideClientFactoryDrawer = () => {
 const hideNewClientDrawer = () => {
     isNewClientDrawer.value = false
 }
+
 const openNewClientDrawer = () => {
     isNewClientDrawer.value = true
 }
 
-const updateTableRows = (factories: ClientFactory[]) => {
-    tableRows.value = []
-    tableRows.value = clientFactoriesToTableRows(factories)
-    fetchData.value = false
-}
-
-watch(clients, async () => {
+watch(clients, () => {
     fetchData.value = true;
-    const fetchedClientFactories = await getClientFactories(clients.value);
-    updateTableRows(fetchedClientFactories);
-}, {immediate: true});
+    clientFactoryStore.getClientFactories(clients.value)
+}, { immediate: true, deep: true });
+
+watch(clientFactories, () => {
+    console.log('update table rows because of factories');
+    tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+    fetchData.value = false;
+}, {deep: true});
 </script>
 
 <template>

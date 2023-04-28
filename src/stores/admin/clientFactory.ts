@@ -133,37 +133,33 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
     }
 
     const getClientFactories = async (clients: Client[]) => {
-        if (unsubscribe.value.length > 0) {
-            unsubscribe.value.forEach(unsub => unsub());
-            unsubscribe.value = [];
-        }
+        unsubscribe.value.forEach(unsub => unsub());
+        unsubscribe.value = [];
 
         const newClientFactories: ClientFactory[] = [];
 
         await Promise.all(clients.map(async (client) => {
             return new Promise<void>((resolve) => {
-            const unsub = onSnapshot(collection(db, 'clients', client.id, 'client-factory'), async (snapshot) => {
-                const clientFactoryPromises = snapshot.docs.map(async (doc) => {
-                    const clientFactory = { ...doc.data(), id: doc.id } as ClientFactory;
-                    clientFactory.client = client;
+                const unsub = onSnapshot(collection(db, 'clients', client.id, 'client-factory'), async (snapshot) => {
+                    const clientFactoryPromises = snapshot.docs.map(async (doc) => {
+                        const clientFactory = { ...doc.data(), id: doc.id, client } as ClientFactory;
+                        clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
+                        clientFactory.importLog = await getLastImportLog(clientFactory.clientID, clientFactory.id);
 
-                    clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
-                    clientFactory.importLog = await getLastImportLog(clientFactory.clientID, clientFactory.id);
+                        newClientFactories.push(clientFactory);
+                    });
 
-                    newClientFactories.push(clientFactory);
+                    await Promise.all(clientFactoryPromises);
+                    resolve();
                 });
-
-                await Promise.all(clientFactoryPromises);
-                resolve();
-            });
 
                 unsubscribe.value.push(unsub);
             });
         }));
 
-        console.log(newClientFactories)
-        // clientFactories.value = newClientFactories;
-        return newClientFactories;
+        clientFactories.value = newClientFactories;
+
+        console.log('client-factories: ', clientFactories.value)
     };
  
     const addClientFactory = async (clientFactory: ClientFactory) => {
