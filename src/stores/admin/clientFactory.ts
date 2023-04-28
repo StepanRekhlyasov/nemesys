@@ -109,7 +109,7 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
         const clientsQuerySnapshot = await getDocs(query(collection(db, 'clients'), where('deleted', '==', false)))
 
         clientsQuerySnapshot.forEach((doc) => {
-            clients.push({clientId: doc.id, ...doc.data() as Client})
+            clients.push({clientId: doc.id, ...doc.data()} as Client)
         })
 
         await Promise.all(clients.map(async(client) => {

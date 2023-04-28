@@ -73,5 +73,8 @@ export const BackOrderColumns = computed(() => {
 			field: 'state',
 			align: 'left',
 		},
+		{
+			name: 'info',
+		},
 	];
 });

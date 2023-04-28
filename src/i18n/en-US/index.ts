@@ -1014,6 +1014,7 @@ export default {
   backOrder: {
     changeSearchCriteria: 'Change search criteria',
     addBO: 'BO new added',
+    status: 'Status',
     personnel: 'BO Personnel',
     registrationDate: 'BO Registration Date',
     dealType: 'Deal Type',

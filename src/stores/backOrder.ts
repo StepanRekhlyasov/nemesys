@@ -30,6 +30,7 @@ export const useBackOrder = defineStore('backPrder', () => {
 		docs.forEach(fix => {
 			const data = fix.data()
 			list.push({
+				id: data.id,
 				...data,
 			} as BackOrderModel)
 		})

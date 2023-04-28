@@ -1011,6 +1011,7 @@ export default {
   backOrder: {
     changeSearchCriteria: '検索条件変更',
     addBO: 'BO新規追加',
+    status: 'ステータス',
     personnel: 'BO担当者',
     registrationDate: 'BO登録日',
     dealType: '案件種別',
