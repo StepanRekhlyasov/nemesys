@@ -1,4 +1,4 @@
-import { collection, collectionGroup, doc, endAt, Firestore, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -83,6 +83,18 @@ export const useOrganization = defineStore('organization', () => {
       branches[doc.id] = doc.data() as Branch
     });
 
+    return branches
+  }
+
+  async function getBranchesInOrganization(organizationId: string) {
+    const organizationRef = doc(db, `/organization/${organizationId}/`)
+    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()), startAt(organizationRef.path), endAt(organizationRef.path + '\uf8ff'));
+    const querySnapshot = await getDocs(branchesQuery);
+    const branches: { [id: string]: Branch; } = {}
+
+    querySnapshot.forEach((doc) => {
+      branches[doc.id] = doc.data() as Branch
+    })
     return branches
   }
 
@@ -189,5 +201,5 @@ export const useOrganization = defineStore('organization', () => {
   }
 
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds }
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization }
 })

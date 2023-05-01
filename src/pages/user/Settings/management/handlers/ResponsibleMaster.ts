@@ -1,5 +1,6 @@
 import { orderBy, where } from 'firebase/firestore'
 import { QTableProps } from 'quasar'
+import { adminRolesIds } from 'src/components/handlers/consts'
 import { Role } from 'src/shared/model'
 
 export function getVisibleColumns(columns: QTableProps['columns'], isAdmin: boolean | undefined) {
@@ -12,7 +13,6 @@ export function getVisibleColumns(columns: QTableProps['columns'], isAdmin: bool
   }, [] as string[])
 }
 
-export const adminRolesIds = ['bNq7hugK8pePZC0i0noC', 'hLbasZSnKrBrICIwZLtu']
 const userRole = ['KLQYPMOoYxTBLFURjCTy']
 
 export function filterRoles(roles: Record<string, Role>) {

@@ -1,5 +1,6 @@
 import { useOrganization } from 'src/stores/organization'
 import { i18n } from 'boot/i18n';
+import { ADMIN_ORGANIZATION_CODE } from './consts';
 
 const { t } = i18n.global
 
@@ -15,6 +16,11 @@ export const organizationCodeRule = async (val: string) => {
 }
 
 export const isCodeUniqueRule = async (val: string) => {
+
+  if (val == ADMIN_ORGANIZATION_CODE) {
+    return t('menu.admin.organizationsTable.codeMustBeUnique')
+  }
+
   const organizationStore = useOrganization()
 
   const isCodeUnique = await organizationStore.isCodeUnique(val)

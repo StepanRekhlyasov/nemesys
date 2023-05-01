@@ -6,7 +6,7 @@ export interface User {
   name: string;
   deleted: boolean;
   role: string;
-  organization_ids: string[];
+  organization_ids?: string[];
   branch_id?: string;
   displayName: string;
   email: string;

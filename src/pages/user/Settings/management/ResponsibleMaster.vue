@@ -176,7 +176,7 @@ export default {
       visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
       rolesData.value = await getRoles(db)
       if (!isAdmin) {
-        branches.value = await organization.getAllBranches()
+        branches.value = await organization.getBranchesInOrganization(organization.currentOrganizationId)
       }
     })
 
