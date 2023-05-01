@@ -16,9 +16,7 @@
           </div>
         </div>
       </q-card-section>
-      <q-card-section class="bg-white">
-        <detailInfoBOVue :selectedBo="selectedBo" :client="client" />
-      </q-card-section>
+      <detailInfoBO :selectedBo="selectedBo" :client="client"/>
     </q-card>
   </q-scroll-area>
   
@@ -29,7 +27,7 @@ import { getFirestore } from 'firebase/firestore';
 import { BackOrderModel, Client } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { ref } from 'vue';
-import detailInfoBOVue from './detailInfoBO.vue';
+import detailInfoBO from './detailInfoBO.vue';
 
 const props = defineProps<{
   selectedBo: BackOrderModel

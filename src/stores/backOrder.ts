@@ -66,6 +66,19 @@ export const useBackOrder = defineStore('backPrder', () => {
 		return list;
 	}
 
+	async function updateBackOrder(backOrder: BackOrderModel) {
+		const boRef = doc(db, '/BO/'+backOrder.id);
+		await updateDoc(boRef, {backOrder});
+
+		state.value.BOList = state.value.BOList.map(bo => {
+			if (bo.id === backOrder.id) {
+				return backOrder
+			}
+			return bo
+		})
+
+	}
+
 	const deleteBackOrder = async (boList) => {
 		const ret = boList.map( async (bo) => {
 			const boRef = doc(db, '/BO/'+bo.id);
@@ -76,6 +89,6 @@ export const useBackOrder = defineStore('backPrder', () => {
 		Promise.all(ret)
 	}
 	
-	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder}
+	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder}
 })
   
