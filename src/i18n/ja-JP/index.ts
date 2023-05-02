@@ -70,6 +70,7 @@ export default {
     ageShort: '歳',
     week: '週',
     month: '月',
+    reputation: '名',
   },
   smoking: {
     no: '無',
@@ -1037,6 +1038,8 @@ export default {
     candidateStaff: '候補スタッフ',
     assignedStaff: 'アサインスタッフ',
     registeredDate: '登録日時',
+    medicalExamination: '入職前健康診断',
+    numberEmployees: '従業員数',
     create: {
       employmentConditions: '■就業条件',
       numberWorkingDays: '就業日数',

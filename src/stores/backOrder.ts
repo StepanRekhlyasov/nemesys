@@ -68,7 +68,7 @@ export const useBackOrder = defineStore('backPrder', () => {
 
 	async function updateBackOrder(backOrder: BackOrderModel) {
 		const boRef = doc(db, '/BO/'+backOrder.id);
-		await updateDoc(boRef, {backOrder});
+		await updateDoc(boRef, {...backOrder});
 
 		state.value.BOList = state.value.BOList.map(bo => {
 			if (bo.id === backOrder.id) {

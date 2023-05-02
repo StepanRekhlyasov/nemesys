@@ -70,6 +70,7 @@ export default {
     ageShort: 'Age',
     week: 'Week',
     month: 'Month',
+    reputation: 'Reputation',
   },
   smoking: {
     no: 'No',
@@ -1040,6 +1041,8 @@ export default {
     candidateStaff: 'Candidate Staff',
     assignedStaff: 'Assigned Staff',
     registeredDate: 'Registered date',
+    medicalExamination: 'Pre-employment medical examination',
+    numberEmployees: 'Number of employees',
     create: {
       employmentConditions: '■ Employment Conditions',
       numberWorkingDays: 'Number of working days',
