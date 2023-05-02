@@ -1040,6 +1040,11 @@ export default {
     registeredDate: '登録日時',
     medicalExamination: '入職前健康診断',
     numberEmployees: '従業員数',
+    searchByMap: 'マップから検索する',
+    name: '名前',
+    distanceBusiness: '事業所との距離',
+    matchDegree: 'マッチ度',
+    statusThisTime: '現時点での状況',
     create: {
       employmentConditions: '■就業条件',
       numberWorkingDays: '就業日数',

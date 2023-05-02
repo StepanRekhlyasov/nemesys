@@ -78,3 +78,37 @@ export const BackOrderColumns = computed(() => {
 		},
 	];
 });
+
+
+export const BackOrderStaff = computed(() => {
+	const { t } = i18n.global
+	return [
+		{
+			name: 'name',
+			required: true,
+			label: t('backOrder.name') ,
+			field: 'name',
+			align: 'left',
+		},
+		{
+			name: 'distanceBusiness',
+			required: true,
+			label: t('backOrder.distanceBusiness') ,
+			field: 'distanceBusiness',
+			align: 'left',
+		},
+		{
+			name: 'matchDegree',
+			required: true,
+			label: t('backOrder.matchDegree') ,
+			field: 'matchDegree',
+			align: 'left',
+		},
+		{
+			name: 'statusThisTime',
+			required: true,
+			label: t('backOrder.statusThisTime') ,
+			field: 'statusThisTime',
+			align: 'left',
+		},]
+})

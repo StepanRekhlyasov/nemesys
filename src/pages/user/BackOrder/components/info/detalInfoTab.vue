@@ -21,9 +21,11 @@
       </q-tab-panel>
 
       <q-tab-panel name="candidateStaff">
+        <CandidateStaffBoSection :bo="bo"/>
       </q-tab-panel>
 
       <q-tab-panel name="assignedStaff">
+        <AssignedStaffBoSection :bo="bo" />
       </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -32,6 +34,10 @@
 import { BackOrderModel } from 'src/shared/model';
 import { ref } from 'vue';
 import boCommonInfoSections from './boCommonInfoSections.vue';
+import CandidateStaffBoSection from './candidateStaffBoSection.vue';
+import AssignedStaffBoSection from './assignedStaffBoSection.vue';
+
+
 defineProps<{
   bo: BackOrderModel
 }>();

@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.status')" :edit="edit" 
         :value="selectedBo['status']?$t(`client.backOrder.${selectedBo['status']}`) : '' ">
         <q-radio
@@ -19,6 +19,7 @@
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
           :val="key"
           :key="key"
+          :disable="loading"
           class="q-pr-md"/>
       </LabelField>
       <LabelField :label="$t('backOrder.create.customerRepresentative')" 
@@ -27,7 +28,7 @@
       </LabelField>
     </div>
 
-    <div class="row">
+    <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" 
         :value="selectedBo['qualifications']?$t(`backOrder.qualification.${selectedBo['qualifications']}`) : '' ">
         <q-radio
@@ -46,21 +47,22 @@
       </LabelField>
     </div>
 
-    <div class="row">
+    <div class="row q-pb-sm">
       <LabelField :label="$t('client.backOrder.experienceReq')" :edit="edit" :value="selectedBo['experience_req']">
         <q-input v-model="data['experience_req']" outlined dense :disable="loading"/>
       </LabelField>
       <LabelField :label="$t('backOrder.transactionType')" :edit="edit" 
         :value="selectedBo['transactionType']?$t(`backOrder.${selectedBo['transactionType']}`) : ''">
         <q-checkbox size="xs" class="q-mr-sm" v-model="data['transaction_type']" val="introduction"
-          :label="$t('client.backOrder.introduction')" />
-        <q-checkbox size="xs" class="q-mr-sm" v-model="data['transaction_type']" val="ttp" label="TTP" />
+          :label="$t('client.backOrder.introduction')" :disable="loading" />
+        <q-checkbox size="xs" class="q-mr-sm" v-model="data['transaction_type']" val="ttp" 
+          label="TTP" :disable="loading" />
         <q-checkbox size="xs" v-model="data['transaction_type']" val="dispatch"
-          :label="$t('client.backOrder.dispatch')" />
+          :label="$t('client.backOrder.dispatch')" :disable="loading" />
       </LabelField>
     </div>
 
-    <div class="row">
+    <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.experienceRemarks')" 
         :edit="edit" :value="selectedBo['experienceRemarks']">
           <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
@@ -69,7 +71,7 @@
         :value="selectedBo['caseType']?$t(`applicant.add.${selectedBo['caseType']}`) : ''">
           <q-radio
             v-for="key in TypeOfCase"
-            v-model="data['typeCase']"
+            v-model="data['caseType']"
             :label="$t('applicant.add.'+key)"
             :val="key"
             :key="key"
@@ -77,19 +79,27 @@
             class="q-pr-md"/>
       </LabelField>
     </div>
-
-    <div class="row">
-      <LabelField :label="$t('backOrder.request')" :edit="edit" :value="selectedBo['request']">
-          <q-input v-model="data['request']"  outlined dense :disable="loading" />
-      </LabelField>
-      <LabelField :label="$t('backOrder.ageLimit')" :edit="edit" :value="selectedBo['ageLimit']?`${selectedBo['ageLimit']}` : '' ">
-          <q-input v-model="data['ageLimit']"  outlined dense :disable="loading" />
+    
+    <div class="row q-pb-sm">
+      <LabelField :label="$t('backOrder.create.experienceRemarks')" 
+        :edit="edit" :value="selectedBo['experienceRemarks']">
+          <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
       </LabelField>
     </div>
 
-    <div class="row q-mt-sm">
-      <LabelField :label="$t('backOrder.payment')" :edit="edit" :value="selectedBo['payment']">
-          <q-input v-model="data['payment']"  outlined dense :disable="loading" />
+    <div class="row q-pb-sm">
+      <LabelField :label="$t('backOrder.request')" :edit="edit" :value="selectedBo['request']">
+          <q-input v-model="data['request']"  outlined dense :disable="loading" />
+      </LabelField>
+      <LabelField :label="$t('backOrder.ageLimit')" :edit="edit" :value="selectedBo['ageLimit']?`${selectedBo['ageLimit']} ${$t('common.ageShort')}` : '' ">
+          <q-input v-model="data['ageLimit']"  outlined dense :disable="loading" type="number" />
+      </LabelField>
+    </div>
+
+    <div class="row q-pb-sm">
+      <LabelField :label="$t('backOrder.payment')" :edit="edit" 
+        :value="selectedBo['payment'] ? `${selectedBo['payment']} ${$t('common.reputation')}` : ''">
+        <q-input v-model="data['payment']"  outlined dense :disable="loading"  type="number"/>
       </LabelField>
       <LabelField :label="$t('backOrder.transportationExpenses')" :edit="edit" 
         :value="selectedBo['transportationExpenses']?`${selectedBo['transportationExpenses']}` : '' ">
@@ -97,7 +107,7 @@
       </LabelField>
     </div>
 
-    <div class="row">
+    <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.numberWorkingDays')" :edit="edit" :value="selectedBo['numberWorkingDays'] ? selectedBo['numberWorkingDays'].join('') : ''">
         <q-radio v-for="day in DaysPerWeekList" :key="day.value" :disable="loading"
           :label="day.label" :val="day.value" v-model="data['daysPerWeekList']" />
@@ -107,8 +117,8 @@
       </LabelField>
     </div>
 
-    <div class="row">
-      <LabelField :label="$t('backOrder.create.workingDays')" :edit="edit" :value="selectedBo['workingDays']">
+    <div class="row q-pb-sm">
+      <LabelField :label="$t('backOrder.create.workingDays')" :edit="edit" :value="selectedBo['workingDays'] ? $t(`backOrder.workingDays.${selectedBo['workingDays']}`) : ''">
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" 
           val="shiftSystem" v-model="data['workingDays']" />
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')" 
@@ -119,20 +129,20 @@
       </LabelField>
     </div>
 
-    <div class="row">
+    <div class="row q-pb-sm">
 
       <LabelField :label="$t('backOrder.create.shiftRemarks')" :edit="edit" :value="selectedBo['shiftRemarks']">
           <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" />
       </LabelField>
       <div class="col-6">
-        <div class="row">
+        <div class="row q-pb-sm">
           <LabelField :label="`${$t('office.workingHours')} : ${$t('office.lateShift')}`" 
             :edit="edit" :value="selectedBo['lateShift'] ? selectedBo['lateShift'] : '-'"
             label-class="col-6 q-pl-md text-right">
 
           </LabelField>
         </div>
-        <div class="row">
+        <div class="row q-pb-sm">
           <LabelField :label="`${$t('office.workingHours')} : ${$t('office.nightShift')}`" 
             :edit="edit" :value="selectedBo['nightShift'] ? selectedBo['nightShift'] : '-'"
             label-class="col-6 q-pl-md text-right">
@@ -142,18 +152,18 @@
       </div>   
     </div> 
 
-    <div class="row q-mt-sm">
+    <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.tasks')" :edit="edit" :value="selectedBo['tasks']">
         <q-input v-model="data['tasks']" outlined dense :disable="loading"/>
       </LabelField>
-      <LabelField :label="$t('backOrder.create.onCallSupport')" :edit="edit" :value="selectedBo['onCallSupport']">
+      <LabelField :label="$t('backOrder.create.onCallSupport')" :edit="edit" :value="selectedBo['onCallSupport'] ? $t('common.yes') : $t('common.no')">
         <q-toggle v-model="data['onCallSupport']"  :disable="loading"/>
         <span class="q-ma-sm flex-center q-pr-md q-mr-md">{{ data['onCallSupport']?$t('common.yes'):$t('common.no') }}</span>
       </LabelField>
     </div>    
 
-    <div class="row">
-      <LabelField :label="$t('backOrder.create.pickDrop')" :edit="edit" :value="selectedBo['pickDrop']">
+    <div class="row q-pb-sm">
+      <LabelField :label="$t('backOrder.create.pickDrop')" :edit="edit" :value="selectedBo['pickDrop'] ? $t('common.yes') : $t('common.no')">
         <q-toggle v-model="data['pickDrop']" :disable="loading"/>
         <span class="q-ma-sm flex-center">{{ data['pickDrop']?$t('common.yes'):$t('common.no') }}</span>
       </LabelField>

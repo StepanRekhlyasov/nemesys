@@ -1043,6 +1043,11 @@ export default {
     registeredDate: 'Registered date',
     medicalExamination: 'Pre-employment medical examination',
     numberEmployees: 'Number of employees',
+    searchByMap: 'Search by Map',
+    name: 'Name',
+    distanceBusiness: 'Distance from Business',
+    matchDegree: 'Match degree',
+    statusThisTime: 'Status at this time',
     create: {
       employmentConditions: '■ Employment Conditions',
       numberWorkingDays: 'Number of working days',
