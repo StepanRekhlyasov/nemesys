@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { User } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { i18n } from 'boot/i18n';
+import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
 
 const { t } = i18n.global
 
@@ -50,6 +51,9 @@ export const useUserStore = defineStore('user', () => {
     if (userSnap.exists()) {
       return userSnap.data() as User
     }
+
+    throw new Error(t('common.userNotFound'))
+
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
@@ -60,13 +64,20 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
-    console.log('hello')
+    const user = await getUserById(userId)
+
+    if (adminRolesIds.includes(user.role)) {
+      if (organizationCode == ADMIN_ORGANIZATION_CODE) {
+        return true
+      }
+      return false
+    }
 
     const organizationRef = collection(db, 'organization/')
     const organizationQuery = query(organizationRef, where('code', '==', organizationCode))
-    console.log('hello')
+
     const querySnapshot = await getDocs(organizationQuery)
-    console.log(querySnapshot)
+
     if (querySnapshot.size > 1) {
       throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
     }
@@ -77,15 +88,24 @@ export const useUserStore = defineStore('user', () => {
 
     const organizationId = querySnapshot.docs[0].data().id
 
-    const user = await getUserById(userId)
-
-    if (!user) {
-      throw new Error(t('common.userNotFound'))
+    if (!user.organization_ids) {
+      return false
     }
 
     return user.organization_ids.includes(organizationId)
 
+  }
+
+  async function searchUsers(searchText: string) {
+    const usersQuery = query(collection(db, 'users'), orderBy('displayName'), startAt(searchText), endAt(searchText + '\uf8ff'))
+
+    const usersDocs = await getDocs(usersQuery);
+
+    return usersDocs.docs.map((organization) => {
+      return organization.data() as User
+    })
+
 
   }
-  return { getAllUsers, getUserById, editUser, checkUserAffiliation }
+  return { getAllUsers, getUserById, editUser, checkUserAffiliation, searchUsers }
 })

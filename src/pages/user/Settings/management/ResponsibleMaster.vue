@@ -8,7 +8,7 @@
 
   <q-card flat class="q-pt-sm q-px-lg">
     <SearchField :clear-button-text-color="textColor" :search-button-color="color" :on-click-search="() => searchUsers()"
-      :on-click-clear="() => { search = ''; loadUsersList(); }" v-model:model-value="search">
+      :on-click-clear="() => { search = ''; refresh(); }" v-model:model-value="search">
       <template v-slot:rigthButton>
         <DefaultButton :color="color" label-key="settings.users.contactPersonName" @click="openDialog = true" />
       </template>
@@ -17,7 +17,7 @@
 
   <q-card class="bg-white no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
     <q-card-section class="q-pa-none">
-      <q-table :columns="columns" :rows="usersListData" row-key="id" v-model:pagination="pagination" hide-pagination
+      <q-table :columns="columns" :rows="usersListData" row-key="id" :rows-per-page-options="[0]" hide-pagination
         class="no-shadow" :loading="loading" :visible-columns="visibleColumns">
 
         <template v-slot:body-cell-edit="props">
@@ -77,13 +77,13 @@
 
         <template v-slot:body-cell-create_at="props">
           <q-td :props="props">
-            {{ props.row.create_at.date }}
+            {{ props.row.create_at?.date }}
           </q-td>
         </template>
 
         <template v-slot:body-cell-updated_at="props">
           <q-td :props="props">
-            {{ props.row.updated_at.date }}
+            {{ props.row?.updated_at?.date }}
           </q-td>
         </template>
 
@@ -97,26 +97,26 @@
         </template>
       </q-table>
       <div class="row justify-start q-mt-md q-mb-md pagination">
-        <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-          :max="(usersListData.length / pagination.rowsPerPage) >= 1 ? usersListData.length / pagination.rowsPerPage : 1"
-          direction-links outline />
+        <TablePagination :isAdmin="isAdmin" ref="paginationRef" :pagination="pagination"
+          @on-data-update="(user) => onDataUpdate(user as User[])" @on-loading-state-change="(v) => loading = v" />
       </div>
     </q-card-section>
   </q-card>
 
   <q-dialog v-model="openDialog" @hide="editableUser = undefined">
-    <ResponsibleCreateForm @closeDialog="openDialog = false; loadUsersList()" :roles="roles" :branches="branches" :is-admin="isAdmin" />
+    <ResponsibleCreateForm @closeDialog="openDialog = false; refresh()" :roles="roles" :branches="branches"
+      :is-admin="isAdmin" />
   </q-dialog>
 </template>
 
 <script lang="ts">
-import { doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
-import { computed, onMounted, Ref, ref, watch } from 'vue';
+import { doc, getFirestore, orderBy, serverTimestamp, Timestamp, updateDoc } from '@firebase/firestore';
+import { onBeforeMount, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Role, User, UserPermissionNames } from 'src/shared/model/Account.model';
+import { Role, User } from 'src/shared/model/Account.model';
 import { toDateObject, sortDate } from 'src/shared/utils/utils';
-import { getRoles, getUsersByPermission, mapToSelectOptions } from 'src/shared/utils/User.utils';
-import { QTableProps, useQuasar } from 'quasar';
+import { getRoles, mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import ResponsibleCreateForm from './components/ResponsibleCreate.form.vue';
 import { useRoute } from 'vue-router'
@@ -125,9 +125,11 @@ import EditButton from 'components/EditButton.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import SearchField from 'src/components/SearchField.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
-import { filterRoles, getAllBranches, getVisibleColumns } from './handlers/ResponsibleMaster';
+import { filterRoles, getConstraints, getVisibleColumns } from './handlers/ResponsibleMaster';
 import { useUserStore } from 'src/stores/user';
-
+import TablePagination from 'src/components/pagination/TablePagination.vue'
+import { PaginationExposedMethods } from 'src/components/pagination/types';
+import { ResponsibleMasterColumns as columns } from './consts/consts'
 export default {
   name: 'responcibleMasterManagement',
   components: {
@@ -135,7 +137,8 @@ export default {
     EditButton,
     PageHeader,
     SearchField,
-    DefaultButton
+    DefaultButton,
+    TablePagination,
   },
   setup() {
     const { t } = useI18n({ useScope: 'global' });
@@ -156,133 +159,65 @@ export default {
     const editableRow = ref(-1);
     const color = isAdmin ? 'accent' : 'primary'
     const textColor = isAdmin ? 'accent' : 'black'
-    // Table data
+
     const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
+      rowsPerPage: 100,
+      path: 'users',
+      order: orderBy('name', 'asc'),
+      constraints: getConstraints(isAdmin, organization.currentOrganizationId)
     });
+
     const selected: Ref<User[]> = ref([])
     const userStore = useUserStore()
-
-    const columns = computed<QTableProps['columns']>(() => [
-      {
-        name: 'edit',
-        label: '',
-        field: ''
-      }, {
-        name: 'email',
-        required: true,
-        label: t('settings.users.email'),
-        field: 'email',
-        align: 'left',
-        sortable: true,
-      }, {
-        name: 'name',
-        required: true,
-        label: t('settings.users.person_name'),
-        field: 'displayName',
-        align: 'left',
-        sortable: true,
-      }, {
-        name: 'role',
-        required: true,
-        label: t('settings.users.role'),
-        field: 'role_name',
-        align: 'left',
-        sortable: true,
-      }, {
-        name: 'branch',
-        label: t('settings.users.branch_name'),
-        field: 'branch',
-        align: 'left',
-        sortable: true,
-      }, {
-        name: 'hidden',
-        required: true,
-        label: t('settings.users.hidden'),
-        field: 'hidden',
-        align: 'left',
-        sortable: true,
-      }, {
-        name: 'create_at',
-        required: true,
-        label: t('settings.users.create_at'),
-        field: 'create_at',
-        align: 'left',
-        sortable: true,
-        sort: sortDate
-      }, {
-        name: 'updated_at',
-        label: t('settings.users.last_update'),
-        field: 'updated_at',
-        align: 'left',
-        sortable: true,
-        sort: sortDate
-      }, {
-        name: 'delete',
-        label: '',
-        field: ''
-      }
-    ])
+    const rolesData = ref<Role[]>([])
 
     const visibleColumns = ref<string[]>()
-    onMounted(() => {
+    onBeforeMount(async () => {
       visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
-    })
-
-    watch(() => organization.currentOrganizationId, () => {
-      loadUsersList()
-    })
-
-    loadUsersList()
-    async function loadUsersList() {
-      loading.value = true;
-      try {
-        if (organization.currentOrganizationId) {
-          const usersSnapshot = isAdmin ? getUsersByPermission(db, UserPermissionNames.UserUpdate, search.value) : getUsersByPermission(db, UserPermissionNames.ContentsRead, search.value, organization.currentOrganizationId);
-          const rolesSnapshot = getRoles(db);
-
-          usersSnapshot.then(users => {
-            let list: User[] = [];
-            users?.forEach((doc) => {
-              const data = doc.data();
-              data['id'] = doc.id;
-              list.push({ ...data as User, id: doc.id, create_at: toDateObject(data.create_at), updated_at: toDateObject(data.updated_at) });
-            });
-            usersListData.value = list;
-            copyUsersListData.value = list
-          })
-
-          rolesSnapshot.then(role => {
-            const list = {}
-            role.forEach((doc) => {
-              const data = doc.data() as Role
-              list[doc.id] = data
-            })
-            roles.value = list;
-
-
-            if (isAdmin) {
-              filterRoles(roles.value)
-            }
-
-          })
-          branches.value = await getAllBranches(db)
-          Promise.all([usersSnapshot, rolesSnapshot]).then(() => {
-            loading.value = false;
-          })
-        }
-      } catch (e) {
-        console.log(e)
-        loading.value = false;
-        Alert.warning($q, t)
+      rolesData.value = await getRoles(db)
+      if (!isAdmin) {
+        branches.value = await organization.getBranchesInOrganization(organization.currentOrganizationId)
       }
+    })
+
+    const paginationRef = ref<PaginationExposedMethods | null>(null)
+
+    watch(() => organization.currentOrganizationId, async () => {
+      const newConstraints = getConstraints(isAdmin, organization.currentOrganizationId)
+      paginationRef.value?.setConstraints(newConstraints)
+      paginationRef.value?.queryFirstPage()
+    })
+
+    function setUsers(users: User[]) {
+      let userList: User[] = [];
+      users?.forEach((doc) => {
+        userList.push({ ...doc as User, id: doc.id, create_at: toDateObject(doc.create_at as Timestamp), updated_at: toDateObject(doc.updated_at as Timestamp) });
+      });
+      usersListData.value = userList;
+      copyUsersListData.value = userList
     }
 
-    function searchUsers() {
-      loadUsersList()
+    function onDataUpdate(users: User[]) {
+      setUsers(users)
+      const list = {}
+      rolesData.value?.forEach((doc) => {
+        list[doc?.id] = doc
+      })
+      if (isAdmin) {
+        filterRoles(list)
+      }
+      roles.value = list;
+    }
+
+    async function refresh() {
+      await paginationRef.value?.refreshPage()
+    }
+
+    async function searchUsers() {
+      loading.value = true
+      const users = await userStore.searchUsers(search.value)
+      setUsers(users)
+      loading.value = false
     }
 
     function isRowSelected(row: number) {
@@ -308,7 +243,7 @@ export default {
           role: user.role,
           branch_id: user.branch_id,
         });
-        await loadUsersList();
+        await refresh();
         loading.value = false
         Alert.success($q, t);
       } catch (error) {
@@ -336,7 +271,7 @@ export default {
       roles,
       usersListData,
       branches,
-      loadUsersList,
+      refresh,
       deleteAccaunt(user) {
         $q.dialog({
           title: t('common.delete'),
@@ -355,7 +290,7 @@ export default {
               deletedAt: serverTimestamp(),
               updated_at: serverTimestamp()
             })
-            loadUsersList();
+            refresh();
             Alert.success($q, t)
           } catch (e) {
             console.log(e)
@@ -370,10 +305,9 @@ export default {
       editUser,
       mapToSelectOptions,
       discardChanges,
+      onDataUpdate,
+      paginationRef
     }
   }
 }
 </script>
-
-<style lang="scss"></style>
-
