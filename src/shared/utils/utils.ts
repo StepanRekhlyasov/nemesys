@@ -88,6 +88,16 @@ export const findTheLastDate = (dates: Date[]) => {
 
 }
 
+export const dayMonthFromDate = (myDate?: string) => {
+  if(!myDate)return;
+  const timeStamp = Date.parse(myDate)
+  return date.formatDate(timeStamp, 'DD/MM')
+}
+export const applicationDateFormat = (myDate : string) => {
+  const timeStamp = Date.parse(myDate)
+  return date.formatDate(timeStamp, 'YYYY.MM.DD')
+}
+
 // collection
 
 export const templateCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/template');

@@ -26,6 +26,7 @@ export default {
     searchCondition: '検索条件',
     searchKeyword: '検索キーワード',
     add: '追加',
+    all: 'すべて',
     apply: '以下の変更点の反映を実行します。',
     cancel: 'キャンセル',
     description: '説明',
@@ -70,6 +71,20 @@ export default {
     ageShort: '歳',
     week: '週',
     month: '月',
+    months: {
+      '1' : '1月',
+      '2' : '2月',
+      '3' : '3月',
+      '4' : '4月',
+      '5' : '5月',
+      '6' : '6月',
+      '7' : '7月',
+      '8' : '8月',
+      '9' : '9月',
+      '10' : '10月',
+      '11' : '11月',
+      '12' : '12月',
+    }
   },
   smoking: {
     no: '無',
@@ -1005,6 +1020,28 @@ export default {
       card: {
         applicationDate: '応',
         lastCotactDate: '接',
+      },
+      table: {
+        'fullName': '氏名',
+        'applicationDate': '応募日',
+        'nearestStation': '最寄り',
+        'qualificationsExperience': '資格経験',
+        'availableStartDate': '就業可能日',
+        'numberOfDays': '日数',
+        'earlyShift': '早番',
+        'dayShift': '日勤',
+        'lateShift': '遅番',
+        'nightShift': '夜勤',
+        'remarks': '備考',
+        'mon': '月',
+        'tue': '火',
+        'wed': '水',
+        'thu': '木',
+        'fri': '金',
+        'sat': '土',
+        'sun': '日',
+        'holiday': '祝',
+        'memo': 'メモ'
       }
     }
   },
