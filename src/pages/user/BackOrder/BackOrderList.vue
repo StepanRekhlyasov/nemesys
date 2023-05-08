@@ -78,7 +78,3 @@ const pagination = ref({
 backOrderStore.loadBackOrder()
 
 </script>
-
-<style>
-
-</style>
