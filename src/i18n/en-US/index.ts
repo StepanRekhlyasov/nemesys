@@ -85,6 +85,7 @@ export default {
       '11' : 'November',
       '12' : 'December',
     },
+    more: 'More'
   },
   smoking: {
     no: 'No',
