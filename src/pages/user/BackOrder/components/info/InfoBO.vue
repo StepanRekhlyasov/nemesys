@@ -26,7 +26,7 @@
 import { getFirestore } from 'firebase/firestore';
 import { BackOrderModel, Client } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import detailInfoBO from './detailInfoBO.vue';
 
 const props = defineProps<{
@@ -34,12 +34,15 @@ const props = defineProps<{
 }>()
 const db = getFirestore();  
 const emits = defineEmits(['closeDialog'])
-const client = ref<Client>();
+const client = ref<Client | undefined>(undefined);
 
-
-if (props.selectedBo['clientId']){
-  client.value = await getClient(db, props.selectedBo['clientId'])
-}
+ onMounted(async () => {
+  if (props.selectedBo['clientId']){
+    console.log(props.selectedBo)
+    client.value = await getClient(db, props.selectedBo['clientId'])
+    console.log(client.value)
+  }  
+})
 
 </script>
 

@@ -63,11 +63,11 @@
 		</q-card>
 	</div>
 	
-  <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
+  <q-drawer
+		v-model="drawerRight" 
+		v-if="selectedBo" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
     bordered>
-		<Suspense v-if="selectedBo">
-			<InfoBO :selectedBo="selectedBo" @closeDialog="drawerRight=false"/>
-		</Suspense>
+		<InfoBO :selectedBo="selectedBo" @closeDialog="drawerRight=false;selectedBo=undefined"/>
 	</q-drawer>
 </template>
 
@@ -83,7 +83,7 @@ const state = backOrderStore.state;
 
 const selected = ref<BackOrderModel[]>([])
 const drawerRight = ref(false);
-const selectedBo = ref<BackOrderModel>()
+const selectedBo = ref<BackOrderModel | undefined>()
 const pagination = ref({
 	sortBy: 'desc',
 	descending: false,

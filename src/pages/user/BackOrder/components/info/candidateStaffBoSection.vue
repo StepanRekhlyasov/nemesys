@@ -31,7 +31,7 @@ const pagination = ref({
 	rowsPerPage: 10
 	// rowsNumber: xx if getting data from a server
 });
-const props = defineProps<{
+defineProps<{
   bo: BackOrderModel
 }>();
 const StaffList = ref([]);

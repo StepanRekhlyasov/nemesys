@@ -30,8 +30,8 @@ export const useBackOrder = defineStore('backPrder', () => {
 		docs.forEach(fix => {
 			const data = fix.data()
 			list.push({
-				id: data.id,
 				...data,
+				id: fix.id
 			} as BackOrderModel)
 		})
 		state.value.BOList = list 
