@@ -15,6 +15,9 @@ export const useMetadata = defineStore('metadata', () => {
   })
 
 	async function getPrefectureJP(): Promise<Prefecture[]> {
+    if(state.value.prefectureJP.length){
+      return state.value.prefectureJP
+    }
 		const docRef = doc(db, 'metadata', 'prefectureJP');
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
