@@ -38,8 +38,11 @@ export const getUserOrganizationList = (db: Firestore, organizationIds: string[]
   return organizationIds.map(id => getUserOrganization(db, id))
 }
 
-export const getRoles = (db: Firestore) => {
-  return getDocs(collection(db, 'roles'))
+export const getRoles = async (db: Firestore) => {
+  const roles = await getDocs(collection(db, 'roles'))
+  return roles.docs.map((doc) => {
+    return doc.data() as Role
+  })
 }
 
 export const mapToSelectOptions = (values: Record<string, { name: string }>) => {
@@ -60,11 +63,8 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
   const roleIds: string[] = [];
 
   roles.forEach((role) => {
-    if (role.exists()) {
-      const roleData = role.data() as Role
-      if (roleData.permission?.includes(permission)) {
-        roleIds.push(role.id);
-      }
+    if (role.permission?.includes(permission)) {
+      roleIds.push(role.id);
     }
   })
 

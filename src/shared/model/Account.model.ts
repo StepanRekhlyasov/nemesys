@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { dataObject } from '../utils/utils';
 
 export interface User {
@@ -5,17 +6,17 @@ export interface User {
   name: string;
   deleted: boolean;
   role: string;
-  organization_ids: string[];
+  organization_ids?: string[];
   branch_id?: string;
   displayName: string;
   email: string;
   enabled: boolean;
   hidden: boolean;
   color: string;
-  create_at: dataObject;
-  updated_at: dataObject;
-  disableTime?: dataObject;
-  deletedAt?: dataObject;
+  create_at: Timestamp | dataObject;
+  updated_at: Timestamp | dataObject;
+  disableTime?: Timestamp | dataObject;
+  deletedAt?: Timestamp | dataObject;
 }
 
 export interface Role {
@@ -24,6 +25,7 @@ export interface Role {
   displayName: string;
   permission: UserPermissionNames[];
   updatedAt?: Date;
+  id: string;
 }
 
 export enum UserPermissionNames {

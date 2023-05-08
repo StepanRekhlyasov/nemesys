@@ -1,19 +1,7 @@
-import { Firestore } from 'firebase/firestore'
+import { orderBy, where } from 'firebase/firestore'
 import { QTableProps } from 'quasar'
-import { Branch, Role } from 'src/shared/model'
-import { useOrganization } from 'src/stores/organization'
-
-export async function getAllBranches(db: Firestore) {
-  const organization = useOrganization()
-  const branchesArr = await organization.getAllBranches(db)
-  const branchesObj: { [id: string]: Branch } = {}
-
-  branchesArr.forEach((branch) => {
-    branchesObj[branch.id] = branch
-  })
-
-  return branchesObj
-}
+import { adminRolesIds } from 'src/components/handlers/consts'
+import { Role } from 'src/shared/model'
 
 export function getVisibleColumns(columns: QTableProps['columns'], isAdmin: boolean | undefined) {
   return columns?.reduce((prev, curr) => {
@@ -25,7 +13,7 @@ export function getVisibleColumns(columns: QTableProps['columns'], isAdmin: bool
   }, [] as string[])
 }
 
-export const adminRolesIds = ['bNq7hugK8pePZC0i0noC', 'hLbasZSnKrBrICIwZLtu']
+const userRole = ['KLQYPMOoYxTBLFURjCTy']
 
 export function filterRoles(roles: Record<string, Role>) {
   for (const roleId in roles) {
@@ -34,3 +22,14 @@ export function filterRoles(roles: Record<string, Role>) {
     }
   }
 }
+
+export function getConstraints(isAdmin: boolean | undefined, currentOrganizationId?: string) {
+
+  if (isAdmin) {
+    return [where('deleted', '==', false), where('role', 'in', adminRolesIds), orderBy('displayName')]
+  }
+
+  return [where('deleted', '==', false), where('role', 'in', userRole), where('organization_ids', 'array-contains', currentOrganizationId)]
+}
+
+

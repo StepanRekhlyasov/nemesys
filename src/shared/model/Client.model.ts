@@ -19,20 +19,25 @@ export interface Client {
   conclusionContract?: boolean;
   conclusionDispatchContract?: boolean;
   conclusionReferralContract?: boolean;
+  personInCharge?: string
+  personInChargeTel?: string
+  personInChargeFax?: string
+  personInChargeMail?: string
   contractUnit?: string;
   created_at: string;
   deleted: boolean;
   earnings?: string;
   facilityType?: string[];
   fax?: string;
-  flg_faxng?: boolean;
+  isFaxNG?: boolean;
   geohash?: string;
   homePage?: string;
   lat?: number;
   lon?: number;
-  mailaddress?: string;
+  mail?: string;
   municipality?: string;
   name: string;
+  headName: string
   capital: string;
   established: string;
   numberEmployees?: string;
@@ -42,11 +47,18 @@ export interface Client {
   street?: string;
   tel?: string;
   updated_at: string;
-  nursing: string[];
+  nursing: string;
   headquarter: string;
+
+
+
+
+  // for deleting  (not actual)
   office?: ClientOffice[];
 }
 
+
+// for deleting (not actual)
 export interface ClientOffice {
   id?: string;
   updated_at: string;
