@@ -3,8 +3,8 @@
   <DropDownEditGroup
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
-    @openEdit="edit = true"
-    @closeEdit="edit=false"
+    @openDropDown="edit = true"
+    @closeDropDown="edit=false"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">

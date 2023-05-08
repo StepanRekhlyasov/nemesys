@@ -336,7 +336,6 @@ export default {
         //contactData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
         contactData.value = {};
-        showAddForm.value = false;
       },
       async onUpdate(index) {       
         try {
