@@ -1,10 +1,8 @@
-import { QueryDocumentSnapshot, addDoc, collection, doc, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { ApplicantFilter } from 'src/pages/ApplicantProgress/types/applicant.types';
-import { Applicant, ApplicantFix, Client, ClientOffice } from 'src/shared/model';
+import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
+import { Applicant, Client, ClientOffice } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
-import { toDateFormat } from 'src/shared/utils/utils';
-import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
 
 interface ApplicantState {
@@ -12,7 +10,10 @@ interface ApplicantState {
   selectApplicant: number,
   applicantsByColumn: ApplicantsByColumn,
   applicantsByStatusCount: ApplicantsByStatusCount,
-  continueFromDoc: ContinueFromDoc
+  continueFromDoc: ContinueFromDoc,
+  applicantFilter: ApplicantFilter,
+  reFilterOnReturn: boolean,
+  prefectureList: {label: string, value: string | number}[]
 }
 
 type ContinueFromDoc = {
@@ -41,10 +42,6 @@ type ApplicantsByColumn = {
   'wait_termination': Applicant[] | [];
 };
 
-export interface FixOption {
-    operationFilter?: boolean;
-}
-
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();  
   const state = ref<ApplicantState>({
@@ -72,7 +69,15 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_offer': null,
       'wait_entry': null,
       'wait_termination': null,
-    }
+    },
+    applicantFilter: {
+      branch: '',
+      userInCharge: '',
+      prefecture: '',
+      currentStatusMonth: ''
+    },
+    reFilterOnReturn: false,
+    prefectureList: []
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
@@ -152,55 +157,6 @@ export const useApplicant = defineStore('applicant', () => {
 
       return list
   }
-
-  async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
-      const fixData = await getFixList(applicant_id, {operationFilter})
-      const list: ApplicantFix[] = [];
-      fixData.forEach(fix => {
-          const data = fix.data()
-          list.push({
-              ...data,
-              id: fix.id,
-              date: toDateFormat(data['date']),
-              offerDate: toDateFormat(data['offerDate']),
-              admissionDate: toDateFormat(data['admissionDate']),
-              inspectionDate: toDateFormat(data['inspectionDate']),
-          } as ApplicantFix)
-      })
-
-      return list
-  }
-  
-  async function getFixList(applicant_id: string, option?: FixOption) {
-      const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
-    
-      if (option && option.operationFilter) {
-        constraints.push(where('admissionStatus', '==', 'ok'))
-      }
-    
-      return getDocs(query(
-        collection(db, '/fix'), 
-        where('applicant_id', '==', applicant_id),
-        ...constraints
-      ))
-  }
-
-  async function saveFix (applicant_id: string, data) {
-    await addDoc(
-      collection(db, '/fix'),
-      {
-        ...data,
-        applicant_id: applicant_id
-      }
-    )
-  }
-  
-  async function updateFix (fix_id: string, data) {
-    await updateDoc(
-      doc(db, '/fix/'+ fix_id ),
-      data
-    );
-  }
   
   getClients().then(clients => {
       state.value.clientList = clients
@@ -211,6 +167,6 @@ export const useApplicant = defineStore('applicant', () => {
       })
   })
 
-  return { state, getClients, getClientFactories, getFixData, getFixList, saveFix, updateFix, getApplicantsByStatus, countApplicantsByStatus }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus }
 })
   

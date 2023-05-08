@@ -1023,6 +1023,28 @@ export default {
       card: {
         applicationDate: 'Date of the application',
         lastCotactDate: 'Date of the last contact',
+      },
+      table: {
+        'fullName': 'Name',
+        'applicationDate': 'Application Date',
+        'nearestStation': 'Nearest Station',
+        'qualificationsExperience': 'Qualifications and Experience',
+        'availableStartDate': 'Available Start Date',
+        'numberOfDays': 'Number of Days',
+        'earlyShift': 'Early Shift',
+        'dayShift': 'Day Shift',
+        'lateShift': 'Late Shift',
+        'nightShift': 'Night Shift',
+        'remarks': 'Remarks',
+        'mon': 'Mon',
+        'tue': 'Tue',
+        'wed': 'Wed',
+        'thu': 'Thu',
+        'fri': 'Fri',
+        'sat': 'Sat',
+        'sun': 'Sun',
+        'holiday': 'Holiday',
+        'memo': 'Memo'
       }
     }
   },

@@ -12,7 +12,7 @@
             outlined
             dense
             :options="[]"
-            v-model="applicantData['branch']"
+            v-model="applicantStore.state.applicantFilter['branch']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
@@ -25,7 +25,7 @@
             outlined
             dense
             :options="[]"
-            v-model="applicantData['userInCharge']"
+            v-model="applicantStore.state.applicantFilter['userInCharge']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
@@ -39,7 +39,7 @@
             dense
             :options="prefectureOptions.map((item)=>{return{label:$t(item.label),value:item.value}})"
             :disable="!prefectureOptions.length"
-            v-model="applicantData['prefecture']"
+            v-model="applicantStore.state.applicantFilter['prefecture']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
@@ -53,7 +53,7 @@
             outlined
             dense
             :options="[{label: $t('common.all'),value: 0}].concat(monthsList)"
-            v-model="applicantData['currentStatusMonth']"
+            v-model="applicantStore.state.applicantFilter['currentStatusMonth']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
@@ -97,18 +97,14 @@
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/user/applicant';
   import { useMetadata } from 'src/stores/user/metadata';
-  import { ApplicantCol, ApplicantFilter } from './types/applicant.types';
+  import { ApplicantCol } from './types/applicant.types';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'
+  import { limitQuery } from './const/applicantColumns';
   
-  const perQuery = ref<number>(20)
+  /** consts */
+  const perQuery = ref<number>(limitQuery)
   const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
-  const applicantData = ref<ApplicantFilter>({
-    branch: '',
-    userInCharge: '',
-    prefecture: '',
-    currentStatusMonth: ''
-  });
   const countApplicantsStatuses = ref({
     entry: 0,
     retired: 0,
@@ -116,22 +112,26 @@
   })
   const columns = ref<ApplicantCol[]>(APPLICANT_COLUMNS);
   const columnsLoading = ref({
-    'wait_contact': true,
-    'wait_attend': true,
-    'wait_FIX': true,
-    'wait_visit': true,
-    'wait_offer': true,
-    'wait_entry': true,
-    'wait_termination': true,
+    'wait_contact': false,
+    'wait_attend': false,
+    'wait_FIX': false,
+    'wait_visit': false,
+    'wait_offer': false,
+    'wait_entry': false,
+    'wait_termination': false,
   })
 
+  /** stores */
   const applicantStore = useApplicant();
   const metadataStore = useMetadata();
+
+  /** getters */
   const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
 
+  /** fetchers */
   const fetchResultsHandler = async (status : string, fetchMore = false) => {
     columnsLoading.value[status] = true
-    await applicantStore.getApplicantsByStatus(status, applicantData.value, perQuery.value, fetchMore)
+    await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantFilter, perQuery.value, fetchMore)
     columns.value = columns.value.map(item => {
       if(item.status == status){
         return {...item,
@@ -142,31 +142,34 @@
     })
     columnsLoading.value[status] = false
   }
-
   const fetchResults = async () => {
     COLUMN_STATUSES.map(async (status)=>{
-      fetchResultsHandler(status)
+      fetchResultsHandler(status, false)
     })
     COUNT_STATUSES.map(async (status)=>{
-      countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantData.value)
+      countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantFilter)
     })
   }
 
   onMounted( async ()=>{
-    const metadataData = await metadataStore.getPrefectureJP()
-    const prefKeys = Object.keys(metadataData)
-    prefKeys.sort()
-    prefectureOptions.value = prefKeys.map((item)=>{
-      return {
-        label: 'prefectures.' + item,
-        value: item
-      }
-    })
-    prefectureOptions.value.unshift({
-      label: 'common.all',
-      value: 0
-    })
-    
+    if(applicantStore.state.prefectureList.length){
+      prefectureOptions.value = applicantStore.state.prefectureList
+    } else {
+      const metadataData = await metadataStore.getPrefectureJP()
+      const prefKeys = Object.keys(metadataData)
+      prefKeys.sort()
+      prefectureOptions.value = prefKeys.map((item)=>{
+        return {
+          label: 'prefectures.' + item,
+          value: item
+        }
+      })
+      prefectureOptions.value.unshift({
+        label: 'common.all',
+        value: 0
+      })
+      applicantStore.state.prefectureList = prefectureOptions.value
+    }
     fetchResults()
   })
 </script>
