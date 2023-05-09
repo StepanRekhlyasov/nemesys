@@ -48,7 +48,7 @@
               :options="mapToSelectOptions(roles)" bg-color="white" :label="$t('common.pleaseSelect')" emit-value
               map-options :color="color" :disable="loading" />
             <template v-if="!isRowSelected(props.rowIndex)">
-              {{ props.row.role }}
+              {{ roles && roles[props.row.role]?.displayName }}
             </template>
           </q-td>
         </template>
@@ -130,7 +130,6 @@ import { useUserStore } from 'src/stores/user';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { PaginationExposedMethods } from 'src/components/pagination/types';
 import { ResponsibleMasterColumns as columns } from './consts/consts'
-
 export default {
   name: 'responcibleMasterManagement',
   components: {
@@ -192,22 +191,22 @@ export default {
     function setUsers(users: User[]) {
       let userList: User[] = [];
       users?.forEach((doc) => {
-        userList.push({ ...doc as User, role: roles.value[doc.role].displayName, id: doc.id, create_at: toDateObject(doc.create_at as Timestamp), updated_at: toDateObject(doc.updated_at as Timestamp) });
+        userList.push({ ...doc as User, id: doc.id, create_at: toDateObject(doc.create_at as Timestamp), updated_at: toDateObject(doc.updated_at as Timestamp) });
       });
       usersListData.value = userList;
       copyUsersListData.value = userList
     }
 
     function onDataUpdate(users: User[]) {
-      const rolesList = {}
+      setUsers(users)
+      const list = {}
       rolesData.value?.forEach((doc) => {
-        rolesList[doc?.id] = doc
+        list[doc?.id] = doc
       })
       if (isAdmin) {
-        filterRoles(rolesList)
+        filterRoles(list)
       }
-      roles.value = rolesList;
-      setUsers(users)
+      roles.value = list;
     }
 
     async function refresh() {

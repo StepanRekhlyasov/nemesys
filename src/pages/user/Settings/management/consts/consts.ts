@@ -28,7 +28,7 @@ export const ResponsibleMasterColumns = computed<QTableProps['columns']>(() => [
     name: 'role',
     required: true,
     label: t('settings.users.role'),
-    field: 'role',
+    field: 'role_name',
     align: 'left',
     sortable: true,
   }, {
@@ -65,4 +65,3 @@ export const ResponsibleMasterColumns = computed<QTableProps['columns']>(() => [
     field: ''
   }
 ])
-
