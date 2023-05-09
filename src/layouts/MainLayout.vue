@@ -123,6 +123,7 @@
               v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true)"
               class="menu_slidebar_item q-pl-xl text-justify flex justify-between"
               :to="link.link"
+              :class="{'menu_slidebar_item_hide':link.hideInMenu}"
               exact
               v-ripple
               clickable
@@ -367,6 +368,9 @@ export default defineComponent({
         align-items: center;
         &.menu_slidebar_class{
           background-color: white;
+        }
+        &_hide{
+          display: none;
         }
       }
     }

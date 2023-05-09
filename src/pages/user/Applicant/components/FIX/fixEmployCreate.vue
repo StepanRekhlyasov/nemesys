@@ -107,6 +107,7 @@ import FixInfoSection from './FixInfoSection.vue';
 import JobSearchInfoSection from './JobSearchInfoSection.vue';
 import JobOffersInfoSection from './JobOffersInfoSection.vue';
 import EmploymentInfoSection from './EmploymentInfoSection.vue';
+import { useFix } from 'src/stores/user/fix';
 
 export default {
   name: 'FixEmployCreate',
@@ -137,6 +138,7 @@ export default {
     const auth = getAuth();
     const organization = useOrganization();
     const applicantStore = useApplicant();
+    const fixStore = useFix();
 
     const data = ref({...props.fixData});
     const loading = ref(false);
@@ -251,7 +253,7 @@ export default {
           retData['updated_at'] = serverTimestamp();
           delete retData['created_at']
           if (props.fixData.id) {
-            applicantStore.updateFix(props.fixData.id, retData)
+            fixStore.updateFix(props.fixData.id, retData)
 
             context.emit('updateList')
             context.emit('updateStatus')
@@ -261,7 +263,7 @@ export default {
           retData['created_at'] = serverTimestamp();
           retData['deleted'] = false;
           retData['created_by'] = auth.currentUser?.uid;
-          await applicantStore.saveFix(props.applicant.id, retData)
+          await fixStore.saveFix(props.applicant.id, retData)
 
           context.emit('updateList')
           context.emit('updateStatus', [true])
