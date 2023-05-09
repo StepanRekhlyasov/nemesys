@@ -45,11 +45,12 @@ export const getRoles = async (db: Firestore) => {
   })
 }
 
-export const mapToSelectOptions = (values: Record<string, { name: string }>) => {
+export const mapToSelectOptions = (values: Record<string, { name: string, displayName?: string }>) => {
   const list: selectOptions[] = []
   Object.keys(values).map(key => {
+    const displayName = values[key]?.displayName
     const data = {
-      label: values[key]?.name || '',
+      label: (displayName ? displayName : values[key]?.name) || '',
       value: key
     }
     list.push(data)
