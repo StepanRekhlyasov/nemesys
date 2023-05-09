@@ -39,6 +39,7 @@ import { ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/mod
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/user/applicant';
+import { useFix } from 'src/stores/user/fix';
 const props = defineProps({
   applicant: {
     type: Object,
@@ -49,6 +50,7 @@ const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
 const organization = useOrganization();
 const applicantStore = useApplicant();
+const fixStore = useFix();
 
 const list: Ref<ApplicantFix[]> = ref([])
 const usersListOption: Ref<selectOptions[]> = ref([])
@@ -103,7 +105,7 @@ async function loadOperationInfo() {
   try {
     loading.value = true;
 
-    let fixList = await applicantStore.getFixData(props.applicant.id, true);
+    let fixList = await fixStore.getFixData(props.applicant.id, true);
     fixList = fixList.filter(fix => {
       return  (fix.endDate ? new Date(fix.endDate) > new Date() : true) && 
               (fix.admissionDate ? new Date(fix.admissionDate) <= new Date(): true)

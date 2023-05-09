@@ -1,5 +1,20 @@
 import { ApplicantCol } from '../types/applicant.types';
 
+export const COLUMN_STATUSES = [
+  'wait_contact',
+  'wait_attend',
+  'wait_FIX',
+  'wait_visit',
+  'wait_offer',
+  'wait_entry',
+  'wait_termination',
+]
+export const COUNT_STATUSES = [
+  'entry',
+  'retired',
+  'working'
+]
+export const limitQuery = 20
 export const APPLICANT_COLUMNS: ApplicantCol[] = [
   {
     id: 0,

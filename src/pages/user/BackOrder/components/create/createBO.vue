@@ -87,7 +87,8 @@ const props = defineProps<{
 const loading = ref(false);
 const backOrderData = ref({
   working_days_week: [] as string[],
-  workingDays: 'shiftSystem'
+  workingDays: 'shiftSystem',
+  type: props.type
 } as BackOrderModel);
 
 async function addBackOrder() {

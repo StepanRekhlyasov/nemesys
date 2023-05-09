@@ -12,7 +12,9 @@ export interface ClientMemo {
 }
 
 export interface Client {
-  id: string;
+  id?: string;
+  clientId: string;
+  client_name?: string;
   companyProfile?: string;
   conclusionContract?: boolean;
   conclusionDispatchContract?: boolean;

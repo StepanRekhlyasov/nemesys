@@ -36,7 +36,8 @@ export interface Applicant {
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
   applicationDate?: string;
-  
+  currentStatusTimestamp?: number,
+  currentStatusMonth?: number,
   created_at: string;
   deleted: false;
 }
