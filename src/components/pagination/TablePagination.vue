@@ -76,6 +76,7 @@ function setConstraints(c: ConstraintsType) {
 }
 
 async function queryFirstPage() {
+  currentPage.value = 1
   emit('onLoadingStateChange', true)
   const data = await query.firstPage()
   emit('onDataUpdate', data)
