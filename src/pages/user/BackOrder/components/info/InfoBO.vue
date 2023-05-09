@@ -38,9 +38,7 @@ const client = ref<Client | undefined>(undefined);
 
  onMounted(async () => {
   if (props.selectedBo['clientId']){
-    console.log(props.selectedBo)
     client.value = await getClient(db, props.selectedBo['clientId'])
-    console.log(client.value)
   }  
 })
 
