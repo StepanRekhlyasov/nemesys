@@ -658,6 +658,10 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
+    },
+    contractUnit: {
+      corporateBulk: 'Corporate Bulk',
+      businessUnit: 'Business Unit'
     }
   },
   detal: {
@@ -1494,6 +1498,10 @@ export default {
       issueDate: 'Date of issue',
       responseDate: 'Date of response'
     }
+  },
+  industry: {
+    nursing: 'Nursing',
+    nurse: 'Nurse'
   },
   report:{
     SalesActivityIndividualReport:'SalesActivityIndividualReport',

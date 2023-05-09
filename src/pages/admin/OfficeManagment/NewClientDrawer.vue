@@ -54,7 +54,6 @@ const onSubmit = async (newClientData: Client | null) => {
                 await addClientFactory({
                     ...newClientData,
                     name: newClientData.headName,
-                    industry: newClientData.nursing,
                     isHead: true,
                     clientID: clientRef.id,
                     distance: 0,
@@ -71,7 +70,7 @@ const onSubmit = async (newClientData: Client | null) => {
                     numberEmployees: newClientData.numberEmployees,
                     contractInfo: {
                         contractUnit: newClientData.contractUnit ? true : false,
-                        industry: newClientData.nursing,
+                        industry: newClientData.industry,
                         contractTel: newClientData.personInChargeTel,
                         contractFax: newClientData.personInChargeFax,
                         contractMail: newClientData.personInChargeMail,

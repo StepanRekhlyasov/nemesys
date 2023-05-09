@@ -8,6 +8,7 @@ import ClientType from './clientForms/ClientType.vue'
 import FacilityType from './clientForms/FacilityType.vue'
 import HeadOfficeInformation from './clientForms/HeadOfficeInformation.vue';
 import ContractInfo from './clientForms/ContractInfo.vue';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { Client } from 'src/shared/model';
 import { QForm } from 'quasar';
 
@@ -29,7 +30,7 @@ const newClient = ref<Client>({} as Client)
 const clientName = ref('')
 const headName = ref('')
 const addressSection = ref<{[key: string]: string | number}>({
-    prefecture: '',
+    prefecture: prefectureList.value[0].value,
     municipality: '',
     street: '',
     building: '',
@@ -54,14 +55,14 @@ const headInfoSection = ref<{ [key: string]: string | number | boolean }>({
 const contractInfo = ref<{ [key: string]: string | number | boolean }>({
     conclusionDispatchContract: false,
     conclusionReferralContract: false,
-    contractUnit: '',
+    contractUnit: 'corporate bulk',
     conclusionContract: false,
     personInChargeTel: '',
     personInchargeFax: '',
     personInchargeMail: '',
     personIncharge: ''
 })
-const clientTypes = ref('nurse')
+const clientTypes = ref<string[]>([])
 const facilityTypes = ref<string[]>([])
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,7 +77,7 @@ const validateAndSubmit = async () => {
             ...clientInfo.value,
             ...headInfoSection.value,
             ...contractInfo.value,
-            nursing: clientTypes.value,
+            industry: clientTypes.value,
             facilityType: facilityTypes.value
         } as Client
 
@@ -100,7 +101,7 @@ defineExpose({
                 <q-list>
                     <ClientName v-model="clientName"/>
                     <OfficeHead v-model="headName"/>
-                    <AddressSection v-model="addressSection"/>
+                    <AddressSection v-model="addressSection" :theme="theme"/>
                     <ClientInformation v-model="clientInfo"/>
                     <ClientType v-model="clientTypes" :theme="theme"/>
                     <FacilityType v-model="facilityTypes" :theme="theme"/>

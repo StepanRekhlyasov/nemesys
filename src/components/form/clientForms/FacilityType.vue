@@ -5,7 +5,7 @@ import { facilityList } from 'src/shared/constants/Organization.const';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    modelValue: Array<string>,
+    modelValue: Array<string>
     theme?: string
 }>(), {
     theme: 'primary'

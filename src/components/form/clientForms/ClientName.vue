@@ -3,9 +3,9 @@ import { useI18n } from 'vue-i18n';
 import { ref, defineEmits, defineProps } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps({
-    modelValue: String,
-})
+const props = defineProps<{
+    modelValue: string
+}>()
 
 const emit = defineEmits(['update:modelValue'])
 

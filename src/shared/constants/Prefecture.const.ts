@@ -7,193 +7,192 @@ export const prefectureList = computed(() => {
   return [
     {
       label: t('prefectures.hokkaido'),
-      value: 'hokkaido',
+      value: '北海道',
     },
     {
       label: t('prefectures.aomori'),
-      value: 'aomori',
+      value: '青森県',
     },
     {
       label: t('prefectures.iwate'),
-      value: 'iwate',
+      value: '岩手県',
     },
     {
       label: t('prefectures.miyagi'),
-      value: 'miyagi',
+      value: '宮城県',
     },
     {
       label: t('prefectures.akita'),
-      value: 'akita',
+      value: '秋田県',
     },
     {
       label: t('prefectures.yamagata'),
-      value: 'yamagata',
+      value: '山形県',
     },
     {
       label: t('prefectures.fukushima'),
-      value: 'fukushima',
+      value: '福島県',
     },
     {
       label: t('prefectures.ibaraki'),
-      value: 'ibaraki',
+      value: '茨城県',
     },
     {
       label: t('prefectures.tochigi'),
-      value: 'tochigi',
+      value: '栃木県',
     },
     {
       label: t('prefectures.gunma'),
-      value: 'gunma',
+      value: '群馬県',
     },
     {
       label: t('prefectures.saitama'),
-      value: 'saitama',
+      value: '埼玉県',
     },
     {
       label: t('prefectures.chiba'),
-      value: 'chiba',
+      value: '千葉県',
     },
     {
       label: t('prefectures.tokyo'),
-      value: 'tokyo',
+      value: '東京都',
     },
     {
       label: t('prefectures.kanagawa'),
-      value: 'kanagawa',
+      value: '神奈川県',
     },
     {
       label: t('prefectures.nigata'),
-      value: 'nigata',
+      value: '新潟県',
     },
     {
       label: t('prefectures.toyama'),
-      value: 'toyama',
+      value: '富山県',
     },
     {
       label: t('prefectures.ishikawa'),
-      value: 'ishikawa',
+      value: '石川県',
     },
     {
       label: t('prefectures.fukui'),
-      value: 'fukui',
+      value: '福井県',
     },
     {
       label: t('prefectures.yamanashi'),
-      value: 'yamanashi',
+      value: '山梨県',
     },
     {
       label: t('prefectures.nagano'),
-      value: 'nagano',
+      value: '長野県',
     },
     {
       label: t('prefectures.gifu'),
-      value: 'gifu',
+      value: '岐阜県',
     },
     {
       label: t('prefectures.shizuoka'),
-      value: 'shizuoka',
+      value: '静岡県',
     },
     {
       label: t('prefectures.aichi'),
-      value: 'aichi',
+      value: '愛知県',
     },
     {
       label: t('prefectures.mie'),
-      value: 'mie',
+      value: '三重県',
     },
     {
       label: t('prefectures.shiga'),
-      value: 'shiga',
+      value: '滋賀県',
     },
     {
       label: t('prefectures.kyoto'),
-      value: 'kyoto',
+      value: '京都府',
     },
     {
       label: t('prefectures.osaka'),
-      value: 'osaka',
+      value: '大阪府',
     },
     {
       label: t('prefectures.hyogo'),
-      value: 'hyogo',
+      value: '兵庫県',
     },
-    {
-      label: t('prefectures.nara'),
-      value: 'nara',
-    },
-    {
-      label: t('prefectures.wakayama'),
-      value: 'wakayama',
-    },
-    {
-      label: t('prefectures.tottori'),
-      value: 'tottori',
-    },
-    {
-      label: t('prefectures.shimane'),
-      value: 'shimane',
-    },
-    {
-      label: t('prefectures.okayama'),
-      value: 'okayama',
-    },
-    {
-      label: t('prefectures.hiroshima'),
-      value: 'hiroshima',
-    },
-    {
-      label: t('prefectures.yamaguchi'),
-      value: 'yamaguchi',
-    },
-    {
-      label: t('prefectures.tokushima'),
-      value: 'tokushima',
-    },
-    {
-      label: t('prefectures.kagawa'),
-      value: 'kagawa',
-    },
-    {
-      label: t('prefectures.ehime'),
-      value: 'ehime',
-    },
-    {
-      label: t('prefectures.kochi'),
-      value: 'kochi',
-    },
-    {
-      label: t('prefectures.fukuoka'),
-      value: 'fukuoka',
-    },
-    {
-      label: t('prefectures.saga'),
-      value: 'saga',
-    },
-    {
-      label: t('prefectures.nagasaki'),
-      value: 'nagasaki',
-    },
-    {
-      label: t('prefectures.kumamoto'),
-      value: 'kumamoto',
-    },
-    {
-      label: t('prefectures.oita'),
-      value: 'oita',
-    },
-    {
-      label: t('prefectures.miyazaki'),
-      value: 'miyazaki',
-    },
-    {
-      label: t('prefectures.kagoshima'),
-      value: 'kagoshima',
-    },
-    {
-      label: t('prefectures.okinawa'),
-      value: 'okinawa',
-    },
-    
-  ];
+  {
+    label: t('prefectures.nara'),
+    value: '奈良県',
+  },
+  {
+    label: t('prefectures.wakayama'),
+    value: '和歌山県',
+  },
+  {
+    label: t('prefectures.tottori'),
+    value: '鳥取県',
+  },
+  {
+    label: t('prefectures.shimane'),
+    value: '島根県',
+  },
+  {
+    label: t('prefectures.okayama'),
+    value: '岡山県',
+  },
+  {
+    label: t('prefectures.hiroshima'),
+    value: '広島県',
+  },
+  {
+    label: t('prefectures.yamaguchi'),
+    value: '山口県',
+  },
+  {
+    label: t('prefectures.tokushima'),
+    value: '徳島県',
+  },
+  {
+    label: t('prefectures.kagawa'),
+    value: '香川県',
+  },
+  {
+    label: t('prefectures.ehime'),
+    value: '愛媛県',
+  },
+  {
+    label: t('prefectures.kochi'),
+    value: '高知県',
+  },
+  {
+    label: t('prefectures.fukuoka'),
+    value: '福岡県',
+  },
+  {
+    label: t('prefectures.saga'),
+    value: '佐賀県',
+  },
+  {
+    label: t('prefectures.nagasaki'),
+    value: '長崎県',
+  },
+  {
+    label: t('prefectures.kumamoto'),
+    value: '熊本県',
+  },
+  {
+    label: t('prefectures.oita'),
+    value: '大分県',
+  },
+  {
+    label: t('prefectures.miyazaki'),
+    value: '宮崎県',
+  },
+  {
+    label: t('prefectures.kagoshima'),
+    value: '鹿児島県',
+  },
+  {
+    label: t('prefectures.okinawa'),
+    value: '沖縄県',
+  },
+ ];
 });
 
