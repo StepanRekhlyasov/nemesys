@@ -45,7 +45,7 @@ export interface Client {
   street?: string;
   tel?: string;
   updated_at: string;
-  nursing: string;
+  industry: string[];
   headquarter: string;
 
 

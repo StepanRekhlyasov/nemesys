@@ -109,7 +109,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
   headDetails.contractInfo = computed(() => {
     return [
       {label: t('clientFactory.drawer.details.contractUnit'), value: `${clientFactory.contractInfo?.contractUnit ?? ''}`},
-      {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry ?? ''},
+      {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry.join(' ') ?? ''},
       {label: t('clientFactory.drawer.details.contractTel'), value: clientFactory.contractInfo?.contractTel ?? ''},
       {label: t('clientFactory.drawer.details.contractFax'), value: clientFactory.contractInfo?.contractFax ?? ''},
       {label: t('clientFactory.drawer.details.contractMail'), value: clientFactory.contractInfo?.contractMail ?? ''},
