@@ -1,5 +1,7 @@
 export interface BackOrderModel {
   id?: string;
+  type: 'dispatch' | 'referral';
+  
   typeCase: TypeOfCase;
   qualifications: TypeQualifications;
   experience: string;

@@ -135,12 +135,11 @@ export const useAdminClientFactory = defineStore('admin-client-factory', () => {
     const getClientFactories = async (clients: Client[]) => {
         unsubscribe.value.forEach(unsub => unsub());
         unsubscribe.value = [];
-
         const newClientFactories: ClientFactory[] = [];
 
         await Promise.all(clients.map(async (client) => {
             return new Promise<void>((resolve) => {
-                const unsub = onSnapshot(collection(db, 'clients', client.id, 'client-factory'), async (snapshot) => {
+                const unsub = onSnapshot(collection(db, `clients/${client.id}/client-factory`), async (snapshot) => {
                     const clientFactoryPromises = snapshot.docs.map(async (doc) => {
                         const clientFactory = { ...doc.data(), id: doc.id, client } as ClientFactory;
                         clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
