@@ -30,33 +30,33 @@
               </div>
             </div>
             <div class="row">
-              <span class="q-pr-md">{{ $t('applicant.add.applicationDate') }}:
-                {{ selectedApplicant.applicationDate }}</span>
+              <span class="q-pr-md">
+                {{ $t('applicant.add.applicationDate') }}: {{ selectedApplicant.applicationDate }}
+              </span>
             </div>
             <div class="row">
-              <span class="col-6 ">{{ $t('applicant.add.applicationMedia') }}: {{
-                selectedApplicant.media ?
-                  selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''
-              }}</span>
+              <span class="col-6 ">
+                {{ $t('applicant.add.applicationMedia') }}: {{selectedApplicant.media?selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}
+              </span>
               <span class="col-3 relative-position"><hidden-text v-if="selectedApplicant.phone"
                   :value="'TEL: ' + selectedApplicant.phone" /></span>
-              <span class="col-3 q-pl-md"><span class="q-mr-md">{{ $t('applicant.add.occupation') }}</span>{{
-                selectedApplicant.occupation &&
-                  $t('applicant.add.' + selectedApplicant.occupation)
-              }}</span>
+              <span class="col-3 q-pl-md">
+                <span class="q-mr-md">{{ $t('applicant.add.occupation') }}</span>
+                {{selectedApplicant.occupation && $t('applicant.add.' + selectedApplicant.occupation) }}
+              </span>
             </div>
             <div class="row">
-              <span class="col-6 q-pr-md">{{ $t('applicant.add.applicationMetod') }}:
-                {{
-                  selectedApplicant.applicationMetod ? $t('applicant.add.' + selectedApplicant.applicationMetod)
-                    : ''
-                }}</span>
+              <span class="col-6 q-pr-md">
+                {{ $t('applicant.add.applicationMetod') }}: {{selectedApplicant.applicationMetod ? $t('applicant.add.' + selectedApplicant.applicationMetod): '' }}
+              </span>
               <span class="col-3 relative-position "><hidden-text v-if="selectedApplicant.email"
                   :value="'MAIL: ' + selectedApplicant.email" /></span>
-              <span class="col-3 q-pl-md"><span class="q-mr-md">{{ $t('applicant.list.category') }}</span>{{
-                selectedApplicant.classification ?
-                  $t('applicant.list.info.classification.' + selectedApplicant.classification) : ''
-              }}</span>
+              <span class="col-3 q-pl-md">
+                <span class="q-mr-md">
+                  {{ $t('applicant.list.category') }}
+                </span>
+                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification) : ''}}
+              </span>
             </div>
           </div>
         </div>
@@ -68,19 +68,17 @@
           <div class="col-6 row">
             <div class="col-6 text-right text-primary text-weight-regular"> {{ $t('applicant.list.qualification') }}
             </div>
-            <div class="col-6 q-pl-md" v-if="selectedApplicant.qualification"> {{
-              selectedApplicant.qualification.map(applic =>
-                $t('applicant.add.' + applic)).join(', ')
-            }} </div>
+            <div class="col-6 q-pl-md" v-if="selectedApplicant.qualification"> 
+              {{ selectedApplicant.qualification.map(applic => $t('applicant.add.' + applic)).join(', ') }} 
+            </div>
           </div>
           <div class="col-6 row">
-            <span class="col-6 text-right text-primary text-weight-regular">{{
-              $t('applicant.list.experience')
-            }}</span>
-            <span class="col-3 q-pl-md">{{
-              selectedApplicant.totalYear ? selectedApplicant.totalYear +
-                $t('common.year') : ''
-            }}</span>
+            <span class="col-6 text-right text-primary text-weight-regular">
+              {{$t('applicant.list.experience')}}
+            </span>
+            <span class="col-3 q-pl-md">
+              {{selectedApplicant.totalYear ? selectedApplicant.totalYear +$t('common.year') : ''}}
+            </span>
             <div class="col-3 text-right">
               <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
             </div>
@@ -89,29 +87,29 @@
         <div class="row">
           <div class="col-6 row">
             <div class="col-6 text-right">
-              <span class="q-pl-md"><span class="text-primary">{{ $t('office.earlyShift') }}</span>: {{
-                selectedApplicant.workingHoursEarly ? '●' : '✕'
-              }}</span>
-              <span class="q-pl-md"><span class="text-primary">{{ $t('office.dayShift') }}</span>: {{
-                selectedApplicant.workingHoursDay ? '●' : '✕'
-              }}</span>
+              <span class="q-pl-md">
+                <span class="text-primary">{{ $t('office.earlyShift') }}</span>: 
+                {{ selectedApplicant.workingHoursEarly ? '●' : '✕' }}
+              </span>
+              <span class="q-pl-md">
+                <span class="text-primary">{{ $t('office.dayShift') }}</span>: 
+                {{selectedApplicant.workingHoursDay ? '●' : '✕'}}
+              </span>
             </div>
             <div class="col-6">
-              <span class="q-pl-md"><span class="text-primary">{{ $t('office.lateShift') }}</span>: {{
-                selectedApplicant.workingHoursLate ? '●' : '✕'
-              }}</span>
-              <span class="q-pl-md"><span class="text-primary">{{ $t('office.nightShift') }}</span>: {{
-                selectedApplicant.workingHoursNight ? '●' : '✕'
-              }}</span>
+              <span class="q-pl-md">
+                <span class="text-primary">{{ $t('office.lateShift') }}</span>: 
+                {{selectedApplicant.workingHoursLate ? '●' : '✕'}}
+              </span>
+              <span class="q-pl-md">
+                <span class="text-primary">{{ $t('office.nightShift') }}</span>: 
+                {{selectedApplicant.workingHoursNight ? '●' : '✕'}}
+              </span>
             </div>
           </div>
           <div class="col-6 row">
-            <span class="col-6 text-right text-primary text-weight-regular">{{
-              $t('applicant.list.availableDays')
-            }}</span>
-            <span class="col-3 q-pl-md">{{
-              selectedApplicant.daysToWork ? selectedApplicant.daysToWork + '' + $t('applicant.attendant.days') : ''
-            }}</span>
+            <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays')}}</span>
+            <span class="col-3 q-pl-md">{{selectedApplicant.daysToWork ? selectedApplicant.daysToWork + '' + $t('applicant.attendant.days') : ''}}</span>
             <div class="col-3 text-right">
               <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary" />
             </div>

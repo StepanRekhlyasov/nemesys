@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
+import { PartialWithFieldValue, QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
 import { Applicant, Client, ClientOffice } from 'src/shared/model';
@@ -163,8 +163,10 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function updateApplicant(applicantData : Partial<unknown>) {
-    if(!state.value.selectedApplicant)return;
+  async function updateApplicant(applicantData : PartialWithFieldValue<unknown>) {
+    if(!state.value.selectedApplicant){
+      return;
+    }
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
       await updateDoc(applicantRef, applicantData)
@@ -212,11 +214,17 @@ export const useApplicant = defineStore('applicant', () => {
   
   /** update and sort columns without fetching data */
   watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
-    if(!newValue || !oldValue)return;
-    if(newValue == oldValue)return;
+    if(!newValue || !oldValue){
+      return;
+    }
+    if(newValue == oldValue){
+      return;
+    }
     if(state.value.applicantsByColumn[newValue]){
       const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
-      if(index>-1)return;
+      if(index>-1){
+        return;
+      }
       state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
     }
