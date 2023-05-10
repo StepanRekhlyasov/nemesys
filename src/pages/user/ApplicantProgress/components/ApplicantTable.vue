@@ -1,89 +1,37 @@
 <template>
   <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;">
     <q-inner-loading showing color="primary" v-if="loading"/>
-    <thead>
-      <tr>
-        <th>▼</th>
-        <th>▼</th>
-        <th>▼</th>
-        <th>{{ $t('applicant.progress.table.fullName') }}</th>
-        <th>{{ $t('applicant.progress.table.applicationDate') }}</th>
-        <th>{{ $t('applicant.progress.table.nearestStation') }}</th>
-        <th>{{ $t('applicant.progress.table.qualificationsExperience') }}</th>
-        <th>{{ $t('applicant.progress.table.availableStartDate') }}</th>
-        <th>{{ $t('applicant.progress.table.numberOfDays') }}</th>
-        <th>{{ $t('applicant.progress.table.earlyShift') }}</th>
-        <th>{{ $t('applicant.progress.table.dayShift') }}</th>
-        <th>{{ $t('applicant.progress.table.lateShift') }}</th>
-        <th>{{ $t('applicant.progress.table.nightShift') }}</th>
-        <th>{{ $t('applicant.progress.table.remarks') }}</th>
-        <th>{{ $t('applicant.progress.table.mon') }}</th>
-        <th>{{ $t('applicant.progress.table.tue') }}</th>
-        <th>{{ $t('applicant.progress.table.wed') }}</th>
-        <th>{{ $t('applicant.progress.table.thu') }}</th>
-        <th>{{ $t('applicant.progress.table.fri') }}</th>
-        <th>{{ $t('applicant.progress.table.sat') }}</th>
-        <th>{{ $t('applicant.progress.table.sun') }}</th>
-        <th>{{ $t('applicant.progress.table.holiday') }}</th>
-        <th>{{ $t('applicant.progress.table.memo') }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="applicant in applicants" :key="applicant.id">
-        <td>S</td>
-        <td>介</td>
-        <td>派</td>
-        <td 
-          @click="()=>{
-            emit('openDrawer', applicant)
-          }"
-          class="applicant-clickable"
-        >{{ applicant.name }}</td>
-        <td>{{dayMonthFromDate(applicant.applicationDate)}}</td>
-        <td>-</td>
-        <td v-if="applicant.qualification?.length"><p v-for="q, index in applicant.qualification" :key="index" style="margin:0;">{{ q }}</p></td>
-        <td v-else>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-    </tbody>
+    <UpdateTableRows v-if="status=='wait_termination'" :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></UpdateTableRows>
+    <ProgressTableRows v-else :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></ProgressTableRows>
   </q-markup-table>
 </template>
 <script setup lang="ts">
 import { Applicant } from 'src/shared/model';
-import { dayMonthFromDate } from 'src/shared/utils/utils';
+import ProgressTableRows from './ProgressTableRows.vue';
+import UpdateTableRows from './UpdateTableRows.vue';
 
 defineProps<{
   applicants: Applicant[],
-  loading: boolean
+  loading: boolean,
+  status: string
 }>()
 const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
 }>()
+
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import "src/css/imports/colors";
 @import "src/css/imports/variables";
 table{
+  thead{
+    background-color: $main-primary;
+  }
   th{
     font-size: 15px;
     background-color: $main-primary;
     color: #fff;
-    border-color: #fff;
+    border-color: #fff!important;
     padding: 0 3px;
     white-space: break-spaces;
   }

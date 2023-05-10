@@ -1,4 +1,4 @@
-import { PartialWithFieldValue, QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
 import { Applicant, Client, ClientOffice } from 'src/shared/model';
@@ -163,10 +163,8 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function updateApplicant(applicantData : PartialWithFieldValue<unknown>) {
-    if(!state.value.selectedApplicant){
-      return;
-    }
+  async function updateApplicant(applicantData : Partial<Applicant>) {
+    if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
       await updateDoc(applicantRef, applicantData)
@@ -178,9 +176,18 @@ export const useApplicant = defineStore('applicant', () => {
       }
     } catch (error) {
       console.log(error)
+      if(state.value.selectedApplicant?.status){
+        state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+      }
       Alert.warning($q, t);
     }
   };
+
+  async function getApplicantByID(id : string){
+    const applicantRef = doc(db, 'applicants/' + id);
+    const result = await getDoc(applicantRef)
+    return result.data() as Applicant
+  }
 
   async function getClients( active_organization_id?: string ): Promise<Client[]> {
     const clientsData = await getClientList(db, {active_organization_id})
@@ -214,21 +221,15 @@ export const useApplicant = defineStore('applicant', () => {
   
   /** update and sort columns without fetching data */
   watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
-    if(!newValue || !oldValue){
-      return;
-    }
-    if(newValue == oldValue){
-      return;
-    }
-    if(state.value.applicantsByColumn[newValue]){
+    if (!newValue || !oldValue) return;
+    if (newValue == oldValue) return;
+    if (state.value.applicantsByColumn[newValue]) {
       const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
-      if(index>-1){
-        return;
-      }
+      if (index>-1) return; 
       state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
     }
-    if(state.value.applicantsByColumn[oldValue]){
+    if (state.value.applicantsByColumn[oldValue]) {
       state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
   }, { immediate: true, deep: true})
