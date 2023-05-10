@@ -51,7 +51,7 @@
   import { NotificationDataRow } from '../types/notificationTypes'
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
-  import { useReleaseNotes } from 'src/stores/admin/releaseNotes';
+  import { useReleaseNotes } from 'src/stores/releaseNotes';
   import { useUserStore } from 'src/stores/user';
 
 

@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
-import { useAdminClientFactory } from 'src/stores/admin/clientFactory';
+import { useAdminClientFactory } from 'src/stores/clientFactory';
 import CFPageActions from './components/ClientFactory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from './NewClientDrawer.vue';
@@ -11,7 +11,7 @@ import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTableRow } from './types';
 import { clientFactoriesToTableRows } from './handlers/ClientFactory';
-import { useAdminClient } from 'src/stores/admin/client';
+import { useAdminClient } from 'src/stores/client';
 
 const { t } = useI18n({ useScope: 'global' });
 const clientFactoryStore = useAdminClientFactory()

@@ -45,7 +45,7 @@
   import { ref, onMounted, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { Alert } from 'src/shared/utils/Alert.utils';
-  import { useInquiry } from 'src/stores/admin/inquiry';
+  import { useInquiry } from 'src/stores/inquiry';
   import { cloneToRaw } from 'src/shared/utils/utils';
   import { InquiryDataRow } from 'src/shared/model';
   import { INQUIRY_STATUS } from '../types/inquiryTypes';

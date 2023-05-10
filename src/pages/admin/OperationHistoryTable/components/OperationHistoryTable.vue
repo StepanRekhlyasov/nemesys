@@ -24,7 +24,7 @@
  import { date, QTableProps } from 'quasar';
  import { ref, onMounted, Ref, computed } from 'vue';
  import { useI18n } from 'vue-i18n';
-import { useOperationChange } from 'src/stores/admin/operationChange';
+import { useOperationChange } from 'src/stores/operationChange';
 import { useUserStore } from 'src/stores/user';
 
 

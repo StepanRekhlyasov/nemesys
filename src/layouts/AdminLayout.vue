@@ -59,7 +59,7 @@ import { defineComponent, ref } from 'vue';
 import { getFirestore, doc, getDoc} from '@firebase/firestore';
 import { Role, User } from 'src/shared/model/Account.model';
 import  AdminMenu  from 'src/components/AdminMenu.vue'
-import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
+import { useMaintainModeStore } from 'src/stores/maintainMode';
 import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils';
 //import { useI18n } from 'vue-i18n';
 
