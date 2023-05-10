@@ -108,9 +108,8 @@
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.branchIncharge') }}
               </div>
-              <div class="col-6 q-pl-sm">
-                <q-select outlined dense v-model="applicantData['branchIncharge']" bg-color="white"
-                  :label="$t('common.pleaseSelect')" emit-value map-options />
+              <div class="col-6 q-ml-sm bg-white">
+                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
               </div>
             </div>
 
@@ -266,9 +265,14 @@ import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'fire
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
+import SelectBranch from '../Settings/management/components/SelectBranch.vue';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'applicantAdd',
+  components: {
+    SelectBranch
+  },
   setup() {
     const { t } = useI18n({
       useScope: 'global',
@@ -279,6 +283,8 @@ export default {
       qualification: [],
       status: ApplicantStatus.UNSUPPORTED,
     };
+    const organizationStore = useOrganization()
+
     const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
     const prefectureOption = ref(prefectureList);
     const statusOption = ref(statusList);
@@ -319,7 +325,6 @@ export default {
       }
     }
 
-
     return {
       applicantData,
       accept,
@@ -329,6 +334,7 @@ export default {
       loading,
       imageURL,
       applicantImage,
+      organizationStore,
 
       async onSubmit() {
         loading.value = true;
