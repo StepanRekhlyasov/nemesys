@@ -8,7 +8,7 @@
   >
     <div class='row q-gutter-sm items-center'>
       <span class='col-1'>S</span>
-      <span class='col applicant-name' @click="emit('selectApplicant', item)">{{ item.name }}</span>
+      <span class='col applicant-clickable' @click="emit('selectApplicant', item)">{{ item.name }}</span>
     </div>
     <div class='row q-gutter-md items-center'>
       <div class='col'>{{ item.occupation }}</div>
@@ -51,7 +51,7 @@ const redAlert = computed(()=>{
 .applicant-card.redAlert{
   border: 1px solid #FF5252; 
 }
-.applicant-name{
+.applicant-clickable{
   color: $primary;
   cursor: pointer;
   &:hover{

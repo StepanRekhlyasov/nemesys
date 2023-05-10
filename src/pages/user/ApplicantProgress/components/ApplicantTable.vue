@@ -1,5 +1,5 @@
 <template>
-  <q-markup-table :separator="'cell'" flat bordered>
+  <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;">
     <q-inner-loading showing color="primary" v-if="loading"/>
     <thead>
       <tr>
@@ -33,7 +33,12 @@
         <td>S</td>
         <td>介</td>
         <td>派</td>
-        <td>{{ applicant.name }}</td>
+        <td 
+          @click="()=>{
+            emit('openDrawer', applicant)
+          }"
+          class="applicant-clickable"
+        >{{ applicant.name }}</td>
         <td>{{dayMonthFromDate(applicant.applicationDate)}}</td>
         <td>-</td>
         <td v-if="applicant.qualification?.length"><p v-for="q, index in applicant.qualification" :key="index" style="margin:0;">{{ q }}</p></td>
@@ -60,13 +65,15 @@
 </template>
 <script setup lang="ts">
 import { Applicant } from 'src/shared/model';
-import { dayMonthFromDate } from 'src/shared/utils/utils'
+import { dayMonthFromDate } from 'src/shared/utils/utils';
 
 defineProps<{
   applicants: Applicant[],
   loading: boolean
 }>()
-
+const emit = defineEmits<{
+  (e: 'openDrawer', applicant: Applicant)
+}>()
 </script>
 <style lang="scss" scoped>
 @import "src/css/imports/colors";
@@ -84,5 +91,11 @@ table{
     text-align: center;
   }
 }
-
+.applicant-clickable{
+  color: $primary;
+  cursor: pointer;
+  &:hover{
+    text-decoration: underline;
+  }
+}
 </style>

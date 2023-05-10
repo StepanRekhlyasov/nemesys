@@ -70,7 +70,7 @@
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
-        <applicant-table :applicants="applicantsByColumn" :loading="loading" />
+        <applicant-table :applicants="applicantsByColumn" :loading="loading" @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" />
         <TablePagination 
           :isAdmin="false" 
           ref="paginationRef" 
@@ -83,6 +83,7 @@
       </q-scroll-area>
     </div>
     </q-card-section>
+    <ApplicantDetails ref="detailsDrawer" />
   </q-page>
 </template>
 <script setup lang="ts">
@@ -97,10 +98,13 @@ import { monthsList } from 'src/shared/constants/Common.const';
 import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
+import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
+import { Applicant } from 'src/shared/model';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
 const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
+const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 
 /** check if status url is correct */
 const route = useRoute()

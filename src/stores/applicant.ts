@@ -6,6 +6,9 @@ import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applican
 import { ref } from 'vue'
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { watch } from 'vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
 
 interface ApplicantState {
   clientList: Client[],
@@ -53,8 +56,11 @@ type ApplicantsByColumn = {
   'wait_termination': Applicant[] | [];
 };
 
+
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();  
+  const $q = useQuasar();
+  const { t } = useI18n({ useScope: 'global' });
   const state = ref<ApplicantState>({
     clientList: [] as Client[],
     applicantsByColumn: {
@@ -160,11 +166,17 @@ export const useApplicant = defineStore('applicant', () => {
   async function updateApplicant(applicantData : Partial<unknown>) {
     if(!state.value.selectedApplicant)return;
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
-    await updateDoc(applicantRef, applicantData)
-    state.value.selectedApplicant = {
-      ...state.value.selectedApplicant,
-      ...applicantData,
-      staffRank: RankCount.countRank(state.value.selectedApplicant)
+    try {
+      await updateDoc(applicantRef, applicantData)
+      Alert.success($q, t);
+      state.value.selectedApplicant = {
+        ...state.value.selectedApplicant,
+        ...applicantData,
+        staffRank: RankCount.countRank(state.value.selectedApplicant)
+      }
+    } catch (error) {
+      console.log(error)
+      Alert.warning($q, t);
     }
   };
 
@@ -202,13 +214,15 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
     if(!newValue || !oldValue)return;
     if(newValue == oldValue)return;
-    if(!state.value.applicantsByColumn[newValue])return;
-    if(!state.value.applicantsByColumn[oldValue])return;
-    const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
-    if(index>-1)return;
-    state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
-    state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
-    state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
+    if(state.value.applicantsByColumn[newValue]){
+      const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
+      if(index>-1)return;
+      state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
+      state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
+    }
+    if(state.value.applicantsByColumn[oldValue]){
+      state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
+    }
   }, { immediate: true, deep: true})
 
   return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant }

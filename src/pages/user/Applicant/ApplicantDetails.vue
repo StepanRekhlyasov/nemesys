@@ -126,7 +126,7 @@
 </q-drawer>
 </template>
 <script setup lang="ts">
-import { useApplicant } from 'src/stores/user/applicant';
+import { useApplicant } from 'src/stores/applicant';
 import { computed, ref } from 'vue';
 import detailComponent from '../Applicant/components/detail.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
