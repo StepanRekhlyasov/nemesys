@@ -1,19 +1,30 @@
-import { QueryDocumentSnapshot, collection, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, doc, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
 import { Applicant, Client, ClientOffice } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
+import { RankCount } from 'src/shared/utils/RankCount.utils';
+import { watch } from 'vue';
 
 interface ApplicantState {
   clientList: Client[],
-  selectApplicant: number,
   applicantsByColumn: ApplicantsByColumn,
   applicantsByStatusCount: ApplicantsByStatusCount,
   continueFromDoc: ContinueFromDoc,
   applicantFilter: ApplicantFilter,
   reFilterOnReturn: boolean,
-  prefectureList: {label: string, value: string | number}[]
+  prefectureList: {label: string, value: string | number}[],
+  selectedApplicant: Applicant | null
+  columnsLoading: {
+    'wait_contact': boolean,
+    'wait_attend': boolean,
+    'wait_FIX': boolean,
+    'wait_visit': boolean,
+    'wait_offer': boolean,
+    'wait_entry': boolean,
+    'wait_termination': boolean,
+  }
 }
 
 type ContinueFromDoc = {
@@ -46,7 +57,6 @@ export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();  
   const state = ref<ApplicantState>({
     clientList: [] as Client[],
-    selectApplicant: 0,
     applicantsByColumn: {
       'wait_contact': [],
       'wait_attend': [],
@@ -77,7 +87,17 @@ export const useApplicant = defineStore('applicant', () => {
       currentStatusMonth: ''
     },
     reFilterOnReturn: false,
-    prefectureList: []
+    prefectureList: [],
+    selectedApplicant: null,
+    columnsLoading: {
+      'wait_contact': false,
+      'wait_attend': false,
+      'wait_FIX': false,
+      'wait_visit': false,
+      'wait_offer': false,
+      'wait_entry': false,
+      'wait_termination': false,
+    }
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
@@ -137,6 +157,17 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
+  async function updateApplicant(applicantData : Partial<unknown>) {
+    if(!state.value.selectedApplicant)return;
+    const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
+    await updateDoc(applicantRef, applicantData)
+    state.value.selectedApplicant = {
+      ...state.value.selectedApplicant,
+      ...applicantData,
+      staffRank: RankCount.countRank(state.value.selectedApplicant)
+    }
+  };
+
   async function getClients( active_organization_id?: string ): Promise<Client[]> {
     const clientsData = await getClientList(db, {active_organization_id})
     const list: Client[] = [] ;
@@ -166,7 +197,20 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
+  
+  /** update and sort columns without fetching data */
+  watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
+    if(!newValue || !oldValue)return;
+    if(newValue == oldValue)return;
+    if(!state.value.applicantsByColumn[newValue])return;
+    if(!state.value.applicantsByColumn[oldValue])return;
+    const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
+    if(index>-1)return;
+    state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
+    state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
+    state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
+  }, { immediate: true, deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant }
 })
   

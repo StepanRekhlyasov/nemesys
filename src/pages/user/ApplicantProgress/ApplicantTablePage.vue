@@ -99,7 +99,8 @@ import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 
 const loading = ref(false)
-const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null)
+const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
+const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
 
 /** check if status url is correct */
 const route = useRoute()
@@ -114,7 +115,6 @@ const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
 /** consts */
-const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
   for (const [key, value] of Object.entries(applicantStore.state.applicantFilter)){

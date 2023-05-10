@@ -36,10 +36,21 @@ export interface Applicant {
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
   applicationDate?: string;
-  currentStatusTimestamp?: number,
-  currentStatusMonth?: number,
+  currentStatusTimestamp: number;
+  currentStatusMonth?: number;
   created_at: string;
   deleted: false;
+  imageURL?: string;
+  media?: string;
+  applicationMetod?: string;
+  classification?: string;
+  totalYear?: string;
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  daysToWork?: string;
+  staffRank?: number
 }
 
 export enum ApplicantSex{
