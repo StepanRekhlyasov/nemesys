@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
-import { useAdminClientFactory } from 'src/stores/clientFactory';
+import { useClientFactory } from 'src/stores/clientFactory';
 import CFPageActions from './components/ClientFactory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from './NewClientDrawer.vue';
@@ -11,12 +11,13 @@ import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTableRow } from './types';
 import { clientFactoriesToTableRows } from './handlers/ClientFactory';
-import { useAdminClient } from 'src/stores/client';
+import { useClient } from 'src/stores/client';
 
 const { t } = useI18n({ useScope: 'global' });
-const clientFactoryStore = useAdminClientFactory()
+const clientFactoryStore = useClientFactory()
 const {clientFactories} = storeToRefs(clientFactoryStore)
-const { clients } = useAdminClient()
+const clientStore = useClient()
+const { clients } = storeToRefs(clientStore)
 
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])

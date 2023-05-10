@@ -7,7 +7,7 @@ import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { date } from 'quasar';
 
-export const useAdminClientFactory = defineStore('admin-client-factory', () => {
+export const useClientFactory = defineStore('client-factory', () => {
 
     // db
     const db = getFirestore();
