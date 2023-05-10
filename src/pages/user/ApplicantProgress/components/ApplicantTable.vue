@@ -1,5 +1,6 @@
 <template>
   <q-markup-table :separator="'cell'" flat bordered>
+    <q-inner-loading showing color="primary" v-if="loading"/>
     <thead>
       <tr>
         <th>▼</th>
@@ -63,6 +64,7 @@ import { dayMonthFromDate } from 'src/shared/utils/utils'
 
 defineProps<{
   applicants: Applicant[],
+  loading: boolean
 }>()
 
 </script>

@@ -85,7 +85,8 @@ export default {
       '10' : '10月',
       '11' : '11月',
       '12' : '12月',
-    }
+    },
+    more: 'もっと'
   },
   smoking: {
     no: '無',
@@ -654,6 +655,10 @@ export default {
       joiningAnotherCompany: '他社入職',
       referralResults: '紹介実績',
       partTimeJob: 'パート・アルバイト',
+    },
+    contractUnit: {
+      corporateBulk: '法人一括',
+      businessUnit: '事業所単位'
     }
   },
   detal: {
@@ -1488,6 +1493,10 @@ export default {
       issueDate: '受信日',
       responseDate: '送信日'
     }
+  },
+  industry: {
+    nursing: '介護',
+    nurse: '看護'
   },
   report:{
     SalesActivityIndividualReport:'営業活動個人レポート',

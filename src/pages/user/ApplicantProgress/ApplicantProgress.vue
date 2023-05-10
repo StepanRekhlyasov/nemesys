@@ -152,6 +152,7 @@
   }
 
   onMounted( async ()=>{
+    fetchResults()
     if(applicantStore.state.prefectureList.length){
       prefectureOptions.value = applicantStore.state.prefectureList
     } else {
@@ -170,6 +171,5 @@
       })
       applicantStore.state.prefectureList = prefectureOptions.value
     }
-    fetchResults()
   })
 </script>

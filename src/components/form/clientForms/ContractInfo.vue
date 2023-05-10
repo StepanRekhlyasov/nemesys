@@ -5,11 +5,16 @@ const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    modelValue: {[key: string]: any } | undefined
+    modelValue: Record<string, any>
     theme?: string
 }>(), {
     theme: 'primary',
 })
+
+const contractUnitOptions = [
+    {label: t('client.contractUnit.corporateBulk'), value: 'corporate bulk'},
+    {label: t('client.contractUnit.businessUnit'), value: 'business unit'}
+]
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -49,7 +54,9 @@ watch(clientData, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.contractUnit') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['contractUnit']" />
+
+                    <q-select outlined dense :options="contractUnitOptions" v-model="clientData['contractUnit']"
+                        bg-color="white" :label="t('common.pleaseSelect')" emit-value map-options :color="theme"/>
                 </div>
                 <div class="col-6 q-pl-sm q-pt-lg">
                     <q-checkbox size="xs" v-model="clientData['conclusionContract']" :color="`${theme}`"

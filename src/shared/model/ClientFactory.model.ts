@@ -1,15 +1,9 @@
 import { ReflectLog } from './ReflectLog'
 import { ImportLog } from './ImportLog'
 import { Client } from './Client.model'
-
-enum Industry {
-    Care = 'care',
-    Nurse = 'nurse'
-}
-
 export interface ClientFactory {
     id: string
-    industry: Industry
+    industry: string[]
     isHead: boolean
     name: string
     clientID: string
@@ -81,7 +75,7 @@ interface OfficeDetails {
 
 interface ContractInfo {
     contractUnit: boolean;
-    industry: 'nursing' | 'care'
+    industry: string[]
     contractTel: string;
     contractFax: string;
     contractMail: string;

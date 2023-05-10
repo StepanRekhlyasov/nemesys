@@ -44,7 +44,10 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
-            @update:model-value="fetchResults(true)"
+            @update:model-value="()=>{
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }"
           />
         </div>
         <div class="col-1">
@@ -58,13 +61,25 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
-            @update:model-value="fetchResults(true)"
+            @update:model-value="()=>{
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }"
           />
         </div>
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
-        <applicant-table :applicants="applicantsByColumn" />
+        <applicant-table :applicants="applicantsByColumn" :loading="loading" />
+        <TablePagination 
+          :isAdmin="false" 
+          ref="paginationRef" 
+          :pagination="pagination" 
+          @on-loading-state-change="(v) => loading = v" 
+          @on-data-update="async (newData) => {
+            applicantStore.state.applicantsByColumn[statusParams.firestore] = newData
+          }"
+        />
       </q-scroll-area>
     </div>
     </q-card-section>
@@ -80,6 +95,12 @@ import { useMetadata } from 'src/stores/metadata';
 import { limitQuery } from './const/applicantColumns';
 import { monthsList } from 'src/shared/constants/Common.const';
 import applicantTable from './components/ApplicantTable.vue'
+import TablePagination from 'src/components/pagination/TablePagination.vue';
+import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
+
+const loading = ref(false)
+const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null)
+
 /** check if status url is correct */
 const route = useRoute()
 const statusParams = statusStringMask[route.params.status as string]
@@ -94,21 +115,24 @@ const applicantStore = useApplicant();
 
 /** consts */
 const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
-const perQuery = ref(limitQuery)
+const paginationConstraints = computed(()=>{
+  let result = <QueryFieldFilterConstraint[]>[]
+  for (const [key, value] of Object.entries(applicantStore.state.applicantFilter)){
+    if(value){
+      result.push(where(key, '==', value))
+    }
+  }
+  return [where('status', '==', statusParams.firestore)].concat(result)
+})
+const pagination = ref({
+  rowsPerPage: limitQuery,
+  path: 'applicants',
+  order: orderBy('currentStatusTimestamp', 'asc'),
+  constraints: paginationConstraints.value
+});
 
 /** getters */
 const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
-
-/** fetchers */
-const fetchResults = async (reFilter = false) => {
-  fetchResultsHandler(false, reFilter)
-}
-const fetchResultsHandler = async (fetchMore = false, reFilter = false) => {
-  if(reFilter || !applicantsByColumn.value.length){
-    applicantStore.state.reFilterOnReturn = true
-    await applicantStore.getApplicantsByStatus(statusParams.firestore, applicantStore.state.applicantFilter, perQuery.value, fetchMore)
-  }
-}
 
 onMounted( async ()=>{
   if(applicantStore.state.prefectureList.length){
@@ -129,7 +153,11 @@ onMounted( async ()=>{
     })
     applicantStore.state.prefectureList = prefectureOptions.value
   }
-  fetchResults()
 })
-
 </script>
+<style scoped>
+.pagination {
+  padding: 0!important;
+  margin-top: 16px;
+}
+</style>

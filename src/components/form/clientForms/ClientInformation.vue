@@ -3,9 +3,10 @@ import { useI18n } from 'vue-i18n';
 import { reactive, watch, defineEmits, defineProps } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps({
-    modelValue: Object
-});
+const props = defineProps<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  modelValue: Record<string, any>
+}>();
 
 const emit = defineEmits(['update:modelValue']);
 
