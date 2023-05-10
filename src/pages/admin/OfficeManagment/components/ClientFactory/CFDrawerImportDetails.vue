@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineProps, onMounted, ref, watch } from 'vue';
-import { useAdminClientFactory } from 'src/stores/clientFactory';
+import { useClientFactory } from 'src/stores/clientFactory';
 import { ImportLog } from 'src/shared/model/ImportLog';
 import {useImportLogLabels} from '../../handlers/ClientFactory'
 
@@ -11,7 +11,7 @@ const props = defineProps<{
     clientId: string
     clientFactoryId: string
 }>()
-const adminClientFactory = useAdminClientFactory()
+const adminClientFactory = useClientFactory()
 
 const importLogs = ref<ImportLog[]>([])
 const isLoading = ref(false)
