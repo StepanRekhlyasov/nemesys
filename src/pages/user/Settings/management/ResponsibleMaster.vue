@@ -129,7 +129,7 @@ import { filterRoles, getConstraints, getVisibleColumns } from './handlers/Respo
 import { useUserStore } from 'src/stores/user';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { PaginationExposedMethods } from 'src/components/pagination/types';
-import { ResponsibleMasterColumns as columns } from './consts/consts'
+import { ResponsibleMasterColumns as columns } from './consts/ResponsibleMasterColumns'
 export default {
   name: 'responcibleMasterManagement',
   components: {
