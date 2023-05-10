@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
   import {computed, ref, onMounted } from 'vue';
-  import { useMaintainModeStore } from 'src/stores/admin/maintainMode';
+  import { useMaintainModeStore } from 'src/stores/maintainMode';
   import { parseDateSecondsToHours } from 'src/shared/utils/Admin.utils';
   import { QueryDocumentSnapshot, DocumentData, serverTimestamp } from '@firebase/firestore';
   import { useQuasar, date } from 'quasar';
@@ -70,7 +70,7 @@
   import { useI18n } from 'vue-i18n';
   import DialogFormOperationChange from './components/DialogForm.vue'
   import PageHader from 'src/components/PageHeader.vue'
-  import { useOperationChange } from 'src/stores/admin/operationChange';
+  import { useOperationChange } from 'src/stores/operationChange';
 
 
   const $q = useQuasar();

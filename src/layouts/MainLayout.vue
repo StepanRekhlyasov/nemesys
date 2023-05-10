@@ -175,7 +175,7 @@ import { MenuItem, MenuParent } from 'src/shared/model/Menu.model'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
 import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils'
-import { useMaintainModeStore } from 'src/stores/admin/maintainMode'
+import { useMaintainModeStore } from 'src/stores/maintainMode'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
 import { useOrganization } from 'src/stores/organization';

@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { ApplicantCol } from '../types/applicant.types';
-import { useApplicant } from 'src/stores/user/applicant';
+import { useApplicant } from 'src/stores/applicant';
 import { computed } from 'vue';
 import ApplicantCard from './ApplicantCard.vue'
 

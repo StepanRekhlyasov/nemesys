@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { withDefaults, ref } from 'vue';
 import NewClientFormGroup from 'src/components/form/NewClientFormGroup.vue';
-import { useAdminClient } from 'src/stores/admin/client';
-import {useAdminClientFactory} from 'src/stores/admin/clientFactory'
+import { useAdminClient } from 'src/stores/client';
+import {useAdminClientFactory} from 'src/stores/clientFactory'
 import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 const { t } = useI18n({ useScope: 'global' });

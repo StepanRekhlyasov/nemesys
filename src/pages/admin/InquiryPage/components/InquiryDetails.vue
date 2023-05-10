@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
   import { InquiryDataRow } from 'src/shared/model';
-  import { useInquiry } from 'src/stores/admin/inquiry';
+  import { useInquiry } from 'src/stores/inquiry';
   import { ref, watch } from 'vue';
 
 

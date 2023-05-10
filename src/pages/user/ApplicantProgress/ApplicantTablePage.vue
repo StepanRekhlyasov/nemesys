@@ -75,8 +75,8 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
-import { useApplicant } from 'src/stores/user/applicant';
-import { useMetadata } from 'src/stores/user/metadata';
+import { useApplicant } from 'src/stores/applicant';
+import { useMetadata } from 'src/stores/metadata';
 import { limitQuery } from './const/applicantColumns';
 import { monthsList } from 'src/shared/constants/Common.const';
 import applicantTable from './components/ApplicantTable.vue'

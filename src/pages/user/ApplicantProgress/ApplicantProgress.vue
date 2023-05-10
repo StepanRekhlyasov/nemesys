@@ -95,8 +95,8 @@
   import { computed, onMounted, ref } from 'vue';
   import ApplicantColumn from './components/ApplicantColumn.vue';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
-  import { useApplicant } from 'src/stores/user/applicant';
-  import { useMetadata } from 'src/stores/user/metadata';
+  import { useApplicant } from 'src/stores/applicant';
+  import { useMetadata } from 'src/stores/metadata';
   import { ApplicantCol } from './types/applicant.types';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'

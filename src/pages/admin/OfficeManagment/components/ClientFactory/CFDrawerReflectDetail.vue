@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, onMounted, ref, watch } from 'vue';
 import { useReflectLogLabels } from '../../handlers/ClientFactory';
 import { ReflectLog } from 'src/shared/model/ReflectLog'
-import { useAdminClientFactory } from 'src/stores/admin/clientFactory';
+import { useAdminClientFactory } from 'src/stores/clientFactory';
 
 const { t } = useI18n({ useScope: 'global' });
 
