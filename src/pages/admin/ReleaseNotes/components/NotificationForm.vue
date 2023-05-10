@@ -108,7 +108,7 @@
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
-import { useReleaseNotes } from 'src/stores/admin/releaseNotes';
+import { useReleaseNotes } from 'src/stores/releaseNotes';
 
   const $q = useQuasar();
 

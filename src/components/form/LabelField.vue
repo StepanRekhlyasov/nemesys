@@ -1,5 +1,5 @@
 <template>  
-  <div :class="['text-blue text-weight-regular self-center', labelClass]">
+  <div :class="['text-blue text-weight-regular', labelClass]">
     {{ label }}
   </div>
   <div :class="[valueClass, 'blue']">
@@ -35,7 +35,7 @@ defineProps({
     },
     labelClass: {
       type: String,
-      default: 'col-3 q-pl-md text-right'
+      default: 'col-3 q-pl-md text-right self-center'
     }
 })
 </script>

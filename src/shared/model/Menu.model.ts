@@ -1,5 +1,5 @@
 import { UserPermissionNames } from './Account.model';
-import { RouteComponent } from 'vue-router';
+import { NavigationGuard, RouteComponent } from 'vue-router';
 
 export interface MenuRouter {
   children?: MenuRouter[];
@@ -10,12 +10,15 @@ export interface MenuRouter {
   path: string;
   menuParent?: MenuParent;
   single?: boolean;
+  name?: string;
+  beforeEnter?: NavigationGuard;
 }
 
 export interface Meta {
   requiresAuth: boolean;
   permission?: UserPermissionNames [];
   isAdmin?: boolean;
+  hideInMenu?: boolean;
 }
 
 export enum MenuParent{
@@ -49,4 +52,5 @@ export interface MenuItem {
   menuParent?: MenuParent;
   permissions?: UserPermissionNames[];
   children?: MenuItem[];
+  hideInMenu?: boolean;
 }

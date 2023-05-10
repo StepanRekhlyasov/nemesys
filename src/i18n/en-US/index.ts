@@ -26,6 +26,7 @@ export default {
     searchCondition: 'Search condition',
     searchKeyword: '検索キーワード',
     add: 'Add',
+    all: 'All',
     apply: 'Apply the following changes',
     cancel: 'Cancel',
     description: 'Description',
@@ -70,6 +71,22 @@ export default {
     ageShort: 'Age',
     week: 'Week',
     month: 'Month',
+    reputation: 'Reputation',
+    months: {
+      '1' : 'January',
+      '2' : 'February',
+      '3' : 'March',
+      '4' : 'April',
+      '5' : 'May',
+      '6' : 'June',
+      '7' : 'July',
+      '8' : 'August',
+      '9' : 'September',
+      '10' : 'October',
+      '11' : 'November',
+      '12' : 'December',
+    },
+    more: 'More'
   },
   smoking: {
     no: 'No',
@@ -642,6 +659,10 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
+    },
+    contractUnit: {
+      corporateBulk: 'Corporate Bulk',
+      businessUnit: 'Business Unit'
     }
   },
   detal: {
@@ -1008,12 +1029,35 @@ export default {
       card: {
         applicationDate: 'Date of the application',
         lastCotactDate: 'Date of the last contact',
+      },
+      table: {
+        'fullName': 'Name',
+        'applicationDate': 'Application Date',
+        'nearestStation': 'Nearest Station',
+        'qualificationsExperience': 'Qualifications and Experience',
+        'availableStartDate': 'Available Start Date',
+        'numberOfDays': 'Number of Days',
+        'earlyShift': 'Early Shift',
+        'dayShift': 'Day Shift',
+        'lateShift': 'Late Shift',
+        'nightShift': 'Night Shift',
+        'remarks': 'Remarks',
+        'mon': 'Mon',
+        'tue': 'Tue',
+        'wed': 'Wed',
+        'thu': 'Thu',
+        'fri': 'Fri',
+        'sat': 'Sat',
+        'sun': 'Sun',
+        'holiday': 'Holiday',
+        'memo': 'Memo'
       }
     }
   },
   backOrder: {
     changeSearchCriteria: 'Change search criteria',
     addBO: 'BO new added',
+    status: 'Status',
     personnel: 'BO Personnel',
     registrationDate: 'BO Registration Date',
     dealType: 'Deal Type',
@@ -1030,6 +1074,22 @@ export default {
     introduction: 'Introduction',
     basicInfo: 'BO Basic Information',
     time: 'time of',
+    request: 'Request',
+    ageLimit: 'Age Limit', 
+    payment: 'Payment',
+    transportationExpenses: 'Transportation Expenses',
+    availabilityOnCallSupport: 'Availability of on-call support',
+    boCommonInformation: 'BO Common Information',
+    candidateStaff: 'Candidate Staff',
+    assignedStaff: 'Assigned Staff',
+    registeredDate: 'Registered date',
+    medicalExamination: 'Pre-employment medical examination',
+    numberEmployees: 'Number of employees',
+    searchByMap: 'Search by Map',
+    name: 'Name',
+    distanceBusiness: 'Distance from Business',
+    matchDegree: 'Match degree',
+    statusThisTime: 'Status at this time',
     create: {
       employmentConditions: '■ Employment Conditions',
       numberWorkingDays: 'Number of working days',
@@ -1439,6 +1499,10 @@ export default {
       issueDate: 'Date of issue',
       responseDate: 'Date of response'
     }
+  },
+  industry: {
+    nursing: 'Nursing',
+    nurse: 'Nurse'
   },
   report:{
     SalesActivityIndividualReport:'SalesActivityIndividualReport',

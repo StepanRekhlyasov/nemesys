@@ -12,7 +12,9 @@ export interface ClientMemo {
 }
 
 export interface Client {
-  id: string;
+  id?: string;
+  clientId: string;
+  client_name?: string;
   companyProfile?: string;
   conclusionContract?: boolean;
   conclusionDispatchContract?: boolean;
@@ -45,7 +47,7 @@ export interface Client {
   street?: string;
   tel?: string;
   updated_at: string;
-  nursing: string;
+  industry: string[];
   headquarter: string;
 
 

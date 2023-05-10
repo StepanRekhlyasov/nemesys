@@ -33,7 +33,7 @@ export const usePagination = defineStore('pagination', () => {
     }
 
     async function lastPage() {
-      const lastPageQuery = query(collection(db, path), ...constraintsArray, limitToLast(1))
+      const lastPageQuery = query(collection(db, path), ...constraintsArray, limitToLast(rowsPerPage))
       return await mapResult(lastPageQuery)
     }
 
@@ -53,7 +53,7 @@ export const usePagination = defineStore('pagination', () => {
     async function count() {
       let coll: Query<DocumentData> = collection(db, path)
       if (constraints) {
-        coll = query(collection(db, path), ...constraints)
+        coll = query(collection(db, path), ...constraintsArray)
       }
       const snapshot = await getCountFromServer(coll)
       return snapshot.data().count

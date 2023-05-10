@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { withDefaults, ref } from 'vue';
 import NewClientFormGroup from 'src/components/form/NewClientFormGroup.vue';
-import { useAdminClient } from 'src/stores/admin/client';
-import {useAdminClientFactory} from 'src/stores/admin/clientFactory'
+import { useAdminClient } from 'src/stores/client';
+import {useAdminClientFactory} from 'src/stores/clientFactory'
 import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 const { t } = useI18n({ useScope: 'global' });
@@ -54,7 +54,6 @@ const onSubmit = async (newClientData: Client | null) => {
                 await addClientFactory({
                     ...newClientData,
                     name: newClientData.headName,
-                    industry: newClientData.nursing,
                     isHead: true,
                     clientID: clientRef.id,
                     distance: 0,
@@ -71,7 +70,7 @@ const onSubmit = async (newClientData: Client | null) => {
                     numberEmployees: newClientData.numberEmployees,
                     contractInfo: {
                         contractUnit: newClientData.contractUnit ? true : false,
-                        industry: newClientData.nursing,
+                        industry: newClientData.industry,
                         contractTel: newClientData.personInChargeTel,
                         contractFax: newClientData.personInChargeFax,
                         contractMail: newClientData.personInChargeMail,

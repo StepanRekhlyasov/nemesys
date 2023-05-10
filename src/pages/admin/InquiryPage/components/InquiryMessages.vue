@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { useInquiry } from 'src/stores/admin/inquiry';
+  import { useInquiry } from 'src/stores/inquiry';
   import { computed } from 'vue';
   import { INQUIRY_MESSAGE_TYPE } from '../types/inquiryTypes';
 

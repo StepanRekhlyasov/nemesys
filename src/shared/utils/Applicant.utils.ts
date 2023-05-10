@@ -24,7 +24,7 @@ export const getClientList = (db: Firestore, options?: {
   ))
 }
 
-export const getClientOfficeList = (db: Firestore, client_id: string) => {
+export const getClientFactoriesList = (db: Firestore, client_id: string) => {
   return getDocs(query(
     collection(db, 'clients/'+client_id+'/office'),
     where('deleted', '==', false),

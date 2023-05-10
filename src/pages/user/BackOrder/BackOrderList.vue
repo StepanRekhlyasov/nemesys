@@ -51,10 +51,24 @@
 							<div> {{ props.row.status? $t(`client.backOrder.${props.row.status}`): '-'}} </div>
 						</q-td>
 					</template>
+
+					<template v-slot:body-cell-info="props">
+						<q-td :props="props" class="q-pa-none" >
+							<q-btn icon="mdi-information-outline" round style="color: #175680" flat
+								@click="showDialog(props.row)" />
+						</q-td>
+					</template>
 				</q-table>
 			</q-card-section>
 		</q-card>
 	</div>
+	
+  <q-drawer
+		v-model="drawerRight" 
+		v-if="selectedBo" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
+    bordered>
+		<InfoBO :selectedBo="selectedBo" @closeDialog="drawerRight=false;selectedBo=undefined"/>
+	</q-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -62,11 +76,14 @@ import { BackOrderModel } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
 import { ref } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
+import InfoBO from './components/info/InfoBO.vue';
 
 const backOrderStore = useBackOrder();
 const state = backOrderStore.state;
 
 const selected = ref<BackOrderModel[]>([])
+const drawerRight = ref(false);
+const selectedBo = ref<BackOrderModel | undefined>()
 const pagination = ref({
 	sortBy: 'desc',
 	descending: false,
@@ -74,6 +91,11 @@ const pagination = ref({
 	rowsPerPage: 10
 	// rowsNumber: xx if getting data from a server
 });
+
+function showDialog(bo: BackOrderModel){
+	selectedBo.value = bo;
+	drawerRight.value = true;
+}
 
 backOrderStore.loadBackOrder()
 

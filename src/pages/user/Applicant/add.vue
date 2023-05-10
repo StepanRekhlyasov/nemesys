@@ -248,7 +248,7 @@
 </template>
  
 <script lang="ts">
-import { useQuasar } from 'quasar';
+import { useQuasar, date } from 'quasar';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 //import { doc, setDoc, getFirestore, serverTimestamp, getDoc, addDoc } from "firebase/firestore";
@@ -341,6 +341,11 @@ export default {
         let data = applicantData.value;
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
+        if(data['applicationDate']){ 
+          const dateFormatted = date.extractDate(data['applicationDate'], 'YYYY/MM/DD HH:mm');
+          data['currentStatusMonth'] = dateFormatted.getMonth()+1;
+          data['currentStatusTimestamp'] = dateFormatted.getTime()/1000;
+        }
         data['deleted'] = false;
         const docRef = doc(collection(db, 'applicants'));
 

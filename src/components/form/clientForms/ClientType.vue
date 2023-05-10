@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, defineEmits, defineProps, withDefaults } from 'vue';
+import { industries } from 'src/shared/constants/Industry.const';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(
     defineProps<{
-        modelValue: string,
+        modelValue: Array<string>
         theme?: string
     }>(), {
     theme: 'primary'
@@ -14,10 +15,14 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:modelValue'])
 
-const localType = ref(props.modelValue)
+const localType = ref(props.modelValue ?? [])
 
-const updateType = (value: string) => {
-    localType.value = value;
+const updateType = (value: string, isChecked: boolean) => {
+    if (isChecked) {
+        localType.value.push(value);
+    } else {
+        localType.value = localType.value.filter(item => item !== value);
+    }
     emit('update:modelValue', localType.value);
 };
 
@@ -30,10 +35,8 @@ const updateType = (value: string) => {
                 {{ t('client.add.clientType') }}
             </q-item-label>
             <div class="row q-pt-sm">
-                <q-radio size="xs" :model-value="localType" :label="t('client.add.nurse')" val="nurse"
-                    :color="`${theme}`" @update:modelValue="() => updateType('nurse')" />
-                <q-radio size="xs" :model-value="localType" :label="t('client.add.nursing')"
-                    class="q-ml-md" val="nursing" :color="`${theme}`" @update:modelValue="() => updateType('nursing')" />
+            <q-checkbox size="xs" :model-value="localType.includes(option.value)" :val="option.value" :label="option.label" :color="`${theme}`"
+                    v-for="option in industries" :key="option.value" @update:modelValue="(isChecked) => updateType(option.value, isChecked)"/>
             </div>
         </q-item-section>
     </q-item>
