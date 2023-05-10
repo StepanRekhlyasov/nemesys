@@ -101,6 +101,7 @@
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
   import { useMetadata } from 'src/stores/metadata';
+  import { ApplicantCol } from './types/applicant.types';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'
   import { limitQuery } from './const/applicantColumns';
