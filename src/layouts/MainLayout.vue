@@ -323,6 +323,8 @@ export default defineComponent({
 <style lang="scss">
 @import "src/css/imports/colors";
 @import "src/css/imports/variables";
+
+
 .q-layout {
   background-color: $main_bg;
 }

@@ -1,9 +1,9 @@
 <template>
-  <div class="q-pt-lg q-pl-lg">
+  <div class="q-pt-lg q-pl-lg ">
     <div class="q-gutter-md row">
       <q-select outlined v-model="branch_input" :options="branchs" />
       <q-select outlined v-model="model_report" :options="report_type" />
-      <q-input filled :model-value="`${dateRange.from} - ${dateRange.to}`">
+      <q-input filled :model-value="dateRange!==null ? `${dateRange.from} - ${dateRange.to}`:``">
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy
@@ -20,6 +20,8 @@
           </q-icon>
         </template>
       </q-input>
+      <q-radio v-model="graph_type" val="BasedOnFIXDate" :label="$t('report.BasedOnFIXDate')"/>
+      <q-radio v-model="graph_type" val="BasedOnEachItemDate" :label="$t('report.BasedOnEachItemDate')" />
     </div>
   </div>
   <keep-alive>
@@ -29,12 +31,13 @@
       :dateRangeProps="dateRange"
       :branch_id="branch_input"
       :branch_user_list="branch_user_list"
+      :graph_type="graph_type"
     ></component>
   </keep-alive>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, onMounted, inject } from 'vue';
+import { ref, Ref, watch, onMounted} from 'vue';
 import { useI18n } from 'vue-i18n';
 import {useOrganization} from 'src/stores/organization'
 // import { getAuth } from '@firebase/auth';
@@ -50,6 +53,7 @@ import ApplicantReport from '../../../components/report/ApplicantReport/Applican
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 const t = useI18n({ useScope: 'global' }).t;
+const graph_type = ref('BasedOnFIXDate');
 const branch_input: Ref<string> = ref('');
 const branchs: Ref<string[]> = ref([]);
 const {currentOrganizationId} = useOrganization()
@@ -89,9 +93,9 @@ const report_componets = {
 //   return dateRange;
 // }
 // const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
-const dateRange: Ref<{ from: string; to: string }> = ref({
-  from: '2021/01/01',
-  to: '2021/07/17',
+const dateRange: Ref<{ from: string; to: string }|null> = ref({
+  from: '1900/01/01',
+  to: '1900/12/31',
 });
 const organization_id: Ref<string> = ref('');
 const getBranchId = async (Id: string) => {
@@ -133,3 +137,6 @@ onMounted(async () => {
   await getBranchId(currentOrganizationId);
 });
 </script>
+
+
+```
