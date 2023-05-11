@@ -52,8 +52,8 @@ export interface Applicant {
   daysToWork?: string;
   staffRank?: number;
   address?: string;
-  lat?: string;
-  lon?: string;
+  lat?: number;
+  lon?: number;
   attractionsStatus?: string;
   seductionDay?: string;
   employmentStatus?: string;
