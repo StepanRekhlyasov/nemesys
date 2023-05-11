@@ -4,12 +4,12 @@
   </PageHader>
   <q-card flat class="q-pt-sm q-px-lg">
     <SearchField :on-click-search="async () => { await searchOrganizations(search) }"
-      :on-click-clear="() => { requestOrganizations() }" v-model:model-value="search">
+      :on-click-clear="() => { refresh() }" v-model:model-value="search">
       <template #rigthButton>
         <DefaultButton label-key="menu.admin.organizationsTable.addOrganization" icon="mdi-plus" @click="() => {
-          dialogType = 'Organization'
-          closeDialog = false;
-        }" />
+            dialogType = 'Organization'
+            closeDialog = false;
+          }" />
       </template>
     </SearchField>
   </q-card>
@@ -18,11 +18,11 @@
   <AddDialog @update:model-value="(v) => closeDialog = !v" :organization="organization!" :open-dialog="!closeDialog"
     @close-dialog="async (v) => { closeDialog = v; await forceReRender() }" :dialog-type="dialogType"
     @on-organization-added="async () => {
-      await requestOrganizations();
-      await forceReRender()
-    }" />
+        await refresh();
+        await forceReRender()
+      }" />
 
-  <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination>
+  <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination :rows-per-page-options="[0]">
     <template v-slot:header-cell-organizationCodeAndName="props">
       <q-th :props="props" class="no-breaks items-center row">
         {{ props.col.label }}
@@ -38,11 +38,11 @@
       <q-tr :props="props">
 
         <EditButton color="accent" :on-edit="() => { editableRow = cloneToRaw(props.row); }" :on-save="async () => {
-          isEqual = deepEqualClone(editableRow, props.row)
-          if (!isEqual) {
-            await editOrganization(editableRow, props.rowIndex)
-          }
-        }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row"
+            isEqual = deepEqualClone(editableRow, props.row)
+            if (!isEqual) {
+              await editOrganization(editableRow, props.rowIndex)
+            }
+          }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row"
           :row-index="props.rowIndex" :props="props" />
 
         <q-td>
@@ -104,6 +104,13 @@
     </template>
 
   </q-table>
+
+  <div class="row justify-start q-mt-md q-mb-md pagination">
+    <TablePagination :isAdmin="true" ref="paginationRef" :pagination="pagination" @on-data-update="async (newData) => {
+        rows = await mapOrganizationsToRow(newData as Organization[])
+        await forceReRender()
+      }" @on-loading-state-change="(v) => loading = v" />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -113,8 +120,8 @@ import { useI18n } from 'vue-i18n';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
-import { getAllOrganizations, getOrganizationsByName } from 'src/shared/utils/Organization/Organization.utils';
-import { getFirestore } from '@firebase/firestore';
+import { getOrganizationsByName } from 'src/shared/utils/Organization/Organization.utils';
+import { getFirestore, orderBy } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
@@ -126,6 +133,18 @@ import ExpandedTable from './ExpandedTable.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import AddDialog from './AddDialog.vue';
 import { useOrganization } from 'src/stores/organization';
+import TablePagination from 'src/components/pagination/TablePagination.vue'
+import { Organization } from 'src/shared/model';
+
+const pagination = ref({
+  rowsPerPage: 100,
+  path: 'organization',
+  order: orderBy('name', 'asc')
+});
+
+const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null)
+
+
 
 const closeDialog = ref(true)
 
@@ -241,12 +260,8 @@ async function searchOrganizations(name: string) {
   loading.value = false
 }
 
-requestOrganizations()
-async function requestOrganizations() {
-  loading.value = true
-  const organizations = await getAllOrganizations()
-  rows.value = await mapOrganizationsToRow(organizations)
-  loading.value = false
+async function refresh() {
+  await paginationRef.value?.refreshPage()
 }
 
 
@@ -266,7 +281,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
   try {
     const organization = rowToOrganization(row)
     await organizationStore.editOrganization(db, organization, row.id)
-    await requestOrganizations()
+    await refresh()
     loading.value = false;
     Alert.success($q, t)
   } catch (error) {

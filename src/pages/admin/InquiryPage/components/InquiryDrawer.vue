@@ -64,7 +64,7 @@
   import { ref, watch, computed } from 'vue';
   import InquiryForm from './InquiryForm.vue'
   import InquiryDetails from './InquiryDetails.vue'
-  import { useInquiry } from 'src/stores/admin/inquiry';
+  import { useInquiry } from 'src/stores/inquiry';
 import InquiryMessages from './InquiryMessages.vue';
 
 

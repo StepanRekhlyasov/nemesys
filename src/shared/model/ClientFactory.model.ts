@@ -1,15 +1,9 @@
 import { ReflectLog } from './ReflectLog'
 import { ImportLog } from './ImportLog'
 import { Client } from './Client.model'
-
-enum Industry {
-    Care = 'care',
-    Nurse = 'nurse'
-}
-
 export interface ClientFactory {
     id: string
-    industry: Industry
+    industry: string[]
     isHead: boolean
     name: string
     clientID: string
@@ -23,7 +17,7 @@ export interface ClientFactory {
     isFaxNG: boolean
     facilityType: string[]
     existingOfficeFlag: boolean
-    numberEmployees: number
+    numberEmployees: string
     clientFlag: boolean
     basicInfoChangingFlag: boolean
     mail: string
@@ -31,9 +25,9 @@ export interface ClientFactory {
     isSignedReferralContract: boolean;
     nameContact: string;
     telContact: string;
-    positionContact: string;
+    positionContact?: string;
     mailContact: string;
-    officeDetails: OfficeDetails
+    officeDetails?: OfficeDetails
     contractInfo?: ContractInfo
     reflectLog?: ReflectLog;
     importLog?: ImportLog
@@ -81,7 +75,7 @@ interface OfficeDetails {
 
 interface ContractInfo {
     contractUnit: boolean;
-    industry: 'nursing' | 'care'
+    industry: string[]
     contractTel: string;
     contractFax: string;
     contractMail: string;

@@ -38,15 +38,19 @@ export const getUserOrganizationList = (db: Firestore, organizationIds: string[]
   return organizationIds.map(id => getUserOrganization(db, id))
 }
 
-export const getRoles = (db: Firestore) => {
-  return getDocs(collection(db, 'roles'))
+export const getRoles = async (db: Firestore) => {
+  const roles = await getDocs(collection(db, 'roles'))
+  return roles.docs.map((doc) => {
+    return doc.data() as Role
+  })
 }
 
-export const mapToSelectOptions = (values: Record<string, { name: string }>) => {
+export const mapToSelectOptions = (values: Record<string, { name: string, displayName?: string }>) => {
   const list: selectOptions[] = []
   Object.keys(values).map(key => {
+    const displayName = values[key]?.displayName
     const data = {
-      label: values[key]?.name || '',
+      label: (displayName ? displayName : values[key]?.name) || '',
       value: key
     }
     list.push(data)
@@ -60,11 +64,8 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
   const roleIds: string[] = [];
 
   roles.forEach((role) => {
-    if (role.exists()) {
-      const roleData = role.data() as Role
-      if (roleData.permission?.includes(permission)) {
-        roleIds.push(role.id);
-      }
+    if (role.permission?.includes(permission)) {
+      roleIds.push(role.id);
     }
   })
 

@@ -57,7 +57,7 @@
   import { ref, computed } from 'vue'
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
-  import { useInquiry } from 'src/stores/admin/inquiry';
+  import { useInquiry } from 'src/stores/inquiry';
   import { INQUIRY_MESSAGE_TYPE, INQUIRY_STATUS } from '../types/inquiryTypes'
 
   const $q = useQuasar();

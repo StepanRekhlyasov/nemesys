@@ -123,6 +123,7 @@
               v-if="parent.type === link.menuParent && (link.permissions ? permissionMenuItem(link.permissions) : true)"
               class="menu_slidebar_item q-pl-xl text-justify flex justify-between"
               :to="link.link"
+              :class="{'menu_slidebar_item_hide':link.hideInMenu}"
               exact
               v-ripple
               clickable
@@ -174,7 +175,7 @@ import { MenuItem, MenuParent } from 'src/shared/model/Menu.model'
 import { RouterToMenu, menuParent, RouterToSingleMenuItem,} from 'src/shared/constants/Menu.const';
 import { isPermission } from 'src/shared/utils/User.utils'
 import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils'
-import { useMaintainModeStore } from 'src/stores/admin/maintainMode'
+import { useMaintainModeStore } from 'src/stores/maintainMode'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
 import { useOrganization } from 'src/stores/organization';
@@ -369,6 +370,9 @@ export default defineComponent({
         align-items: center;
         &.menu_slidebar_class{
           background-color: white;
+        }
+        &_hide{
+          display: none;
         }
       }
     }

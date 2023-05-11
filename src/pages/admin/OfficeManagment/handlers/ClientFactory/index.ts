@@ -28,45 +28,50 @@ export const useOfficeDetails = (clientFactory: ClientFactory): RenderOfficeDeta
 
   officeDetails.registeredInfo = computed(() => {
     return [
-        {label: t('clientFactory.drawer.details.parentClient'), value: clientFactory.officeDetails.registeredInfo.parentClient},
-        {label: t('clientFactory.drawer.details.prefecture'), value: clientFactory.officeDetails.registeredInfo.prefecture },
-        {label: t('clientFactory.drawer.details.officeName'), value: clientFactory.officeDetails.registeredInfo.officeName},
-        {label: t('clientFactory.drawer.details.city'), value: clientFactory.officeDetails.registeredInfo.city },
-        {label: '事業所TEL', value: clientFactory.officeDetails.registeredInfo.tel},
-        {label: t('clientFactory.drawer.details.townAndStreet'), value: clientFactory.officeDetails.registeredInfo.townAndStreet },
-        {label: '事業所FAX', value: clientFactory.officeDetails.registeredInfo.fax},
-        {label: t('clientFactory.drawer.details.others'), value: clientFactory.officeDetails.registeredInfo.others },
-        {label: t('clientFactory.drawer.details.latitude'), value: clientFactory.officeDetails.registeredInfo.latitude},
-        {label: t('clientFactory.drawer.details.longitude'), value: clientFactory.officeDetails.registeredInfo.longitude}
+        {label: t('clientFactory.drawer.details.parentClient'), value: clientFactory?.officeDetails?.registeredInfo.parentClient ?? ''},
+        {label: t('clientFactory.drawer.details.prefecture'), value: clientFactory?.officeDetails?.registeredInfo.prefecture ?? '' },
+        {label: t('clientFactory.drawer.details.officeName'), value: clientFactory?.officeDetails?.registeredInfo.officeName ?? ''},
+        {label: t('clientFactory.drawer.details.city'), value: clientFactory?.officeDetails?.registeredInfo.city ?? '' },
+        {label: '事業所TEL', value: clientFactory?.officeDetails?.registeredInfo.tel ?? ''},
+        {label: t('clientFactory.drawer.details.townAndStreet'), value: clientFactory?.officeDetails?.registeredInfo.townAndStreet ?? '' },
+        {label: '事業所FAX', value: clientFactory?.officeDetails?.registeredInfo.fax ?? ''},
+        {label: t('clientFactory.drawer.details.others'), value: clientFactory?.officeDetails?.registeredInfo.others ?? ''},
+        {label: t('clientFactory.drawer.details.latitude'), value: clientFactory?.officeDetails?.registeredInfo.latitude ?? 0},
+        {label: t('clientFactory.drawer.details.longitude'), value: clientFactory?.officeDetails?.registeredInfo.longitude ?? 0}
     ]
   });
 
   officeDetails.commonItems = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.referralFeePer'), value: clientFactory.officeDetails.commonItems.referralFeePer},
-      {label: t('clientFactory.drawer.details.referralFeeFix'), value: clientFactory.officeDetails.commonItems.referralFeeFix},
-      {label: t('clientFactory.drawer.details.salaryHour'), value: clientFactory.officeDetails.commonItems.salaryHour},
-      {label: t('clientFactory.drawer.details.salaryMonth'), value: clientFactory.officeDetails.commonItems.salaryMonth},
-      {label: t('clientFactory.drawer.details.salaryAdditional'), value: clientFactory.officeDetails.commonItems.salaryAdditional},
-      {label: t('clientFactory.drawer.details.payday'), value: clientFactory.officeDetails.commonItems.payday},
-      {label: t('clientFactory.drawer.details.disabilityTime'), value: clientFactory.officeDetails.commonItems.disabilityTime},
-      {label: t('clientFactory.drawer.details.yearFixed'), value: clientFactory.officeDetails.commonItems.yearFixed},
-      {label: t('clientFactory.drawer.details.welfareHealth'), value: clientFactory.officeDetails.commonItems.welfareHealth},
-      {label: t('clientFactory.drawer.details.leisureSpecial'), value: clientFactory.officeDetails.commonItems.leisureSpecial},
-      {label: t('clientFactory.drawer.details.contentWork'), value: clientFactory.officeDetails.commonItems.contentWork},
-      {label: t('clientFactory.drawer.details.dayOffYear'), value: clientFactory.officeDetails.commonItems.dayOffYear},
-      {label: t('clientFactory.drawer.details.canSmoke'), value: `${clientFactory.officeDetails.commonItems.canSmoke ?? ''}`},
-      {label: t('clientFactory.drawer.details.dayOffWeek'), value: clientFactory.officeDetails.commonItems.dayOffWeek},
-      {label: t('clientFactory.drawer.details.workingHourEarly'), value: clientFactory.officeDetails.commonItems.workingHourEarly},
-      {label: t('clientFactory.drawer.details.workingHourDay'), value: clientFactory.officeDetails.commonItems.workingHourDay},
-      {label: t('clientFactory.drawer.details.workingHourLate'), value: clientFactory.officeDetails.commonItems.workingHourLate},
-      {label: t('clientFactory.drawer.details.workingHourNight'), value: clientFactory.officeDetails.commonItems.workingHourNight}
+      {label: t('clientFactory.drawer.details.referralFeePer'), value: clientFactory?.officeDetails?.commonItems.referralFeePer ?? 0},
+      {label: t('clientFactory.drawer.details.referralFeeFix'), value: clientFactory?.officeDetails?.commonItems.referralFeeFix ?? 0},
+      {label: t('clientFactory.drawer.details.salaryHour'), value: clientFactory?.officeDetails?.commonItems.salaryHour ?? 0},
+      {label: t('clientFactory.drawer.details.salaryMonth'), value: clientFactory?.officeDetails?.commonItems.salaryMonth ?? 0},
+      {label: t('clientFactory.drawer.details.salaryAdditional'), value: clientFactory?.officeDetails?.commonItems.salaryAdditional ?? ''},
+      {label: t('clientFactory.drawer.details.payday'), value: clientFactory?.officeDetails?.commonItems.payday ?? ''},
+      {label: t('clientFactory.drawer.details.disabilityTime'), value: clientFactory?.officeDetails?.commonItems.disabilityTime ?? ''},
+      {label: t('clientFactory.drawer.details.yearFixed'), value: clientFactory?.officeDetails?.commonItems.yearFixed ?? ''},
+      {label: t('clientFactory.drawer.details.welfareHealth'), value: clientFactory?.officeDetails?.commonItems.welfareHealth ?? ''},
+      {label: t('clientFactory.drawer.details.leisureSpecial'), value: clientFactory?.officeDetails?.commonItems.leisureSpecial ?? ''},
+      {label: t('clientFactory.drawer.details.contentWork'), value: clientFactory?.officeDetails?.commonItems.contentWork ?? ''},
+      {label: t('clientFactory.drawer.details.dayOffYear'), value: clientFactory?.officeDetails?.commonItems.dayOffYear ?? ''},
+      {label: t('clientFactory.drawer.details.canSmoke'), value: `${clientFactory?.officeDetails?.commonItems.canSmoke ?? ''}`},
+      {label: t('clientFactory.drawer.details.dayOffWeek'), value: clientFactory?.officeDetails?.commonItems.dayOffWeek ?? ''},
+      {label: t('clientFactory.drawer.details.workingHourEarly'), value: clientFactory?.officeDetails?.commonItems.workingHourEarly ?? ''},
+      {label: t('clientFactory.drawer.details.workingHourDay'), value: clientFactory?.officeDetails?.commonItems.workingHourDay ?? ''},
+      {label: t('clientFactory.drawer.details.workingHourLate'), value: clientFactory?.officeDetails?.commonItems.workingHourLate ?? ''},
+      {label: t('clientFactory.drawer.details.workingHourNight'), value: clientFactory?.officeDetails?.commonItems.workingHourNight ?? ''}
     ]
   })
 
   officeDetails.uniqueItems = computed(() => {
-    const uniqueItems = Object.keys(clientFactory.officeDetails.uniqueItems).map((key) => {
-      return {label: key, value: clientFactory.officeDetails.uniqueItems[key]}
+
+    const uniqueItems = Object.keys(clientFactory.officeDetails?.uniqueItems ?? {}).map((key) => {
+        if(key && clientFactory.officeDetails?.uniqueItems[key]) {
+          return {label: key, value: clientFactory.officeDetails?.uniqueItems[key]}
+        }
+
+        return {label: '', value: ''}
     })
 
     return uniqueItems
@@ -85,7 +90,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.officeFax'), value: clientFactory.fax},
       {label: t('clientFactory.drawer.details.inChargeTitle'), value: clientFactory.nameContact},
       {label: t('clientFactory.drawer.details.inChargeTel'), value: clientFactory.telContact},
-      {label: t('clientFactory.drawer.details.inChargeAddress'), value: clientFactory.positionContact}
+      {label: t('clientFactory.drawer.details.inChargeAddress'), value: clientFactory.positionContact ?? ''}
     ]
   })
 
@@ -104,7 +109,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
   headDetails.contractInfo = computed(() => {
     return [
       {label: t('clientFactory.drawer.details.contractUnit'), value: `${clientFactory.contractInfo?.contractUnit ?? ''}`},
-      {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry ?? ''},
+      {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry.join(' ') ?? ''},
       {label: t('clientFactory.drawer.details.contractTel'), value: clientFactory.contractInfo?.contractTel ?? ''},
       {label: t('clientFactory.drawer.details.contractFax'), value: clientFactory.contractInfo?.contractFax ?? ''},
       {label: t('clientFactory.drawer.details.contractMail'), value: clientFactory.contractInfo?.contractMail ?? ''},

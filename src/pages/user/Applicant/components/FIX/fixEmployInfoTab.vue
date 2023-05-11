@@ -145,7 +145,8 @@ import { ref, computed, onBeforeUnmount, Ref } from 'vue';
 import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
-import { useApplicant } from 'src/stores/user/applicant';
+import { useApplicant } from 'src/stores/applicant';
+import { useFix } from 'src/stores/fix';
 import { User, ApplicantFix, ApplicantStatus } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
@@ -171,6 +172,7 @@ export default {
     const { t } = useI18n({ useScope: 'global' });
 
     const applicantStore = useApplicant();
+    const fixStore = useFix();
     const db = getFirestore();
     const $q = useQuasar();
 
@@ -249,7 +251,7 @@ export default {
 
     loadContactData()
     async function loadContactData() {
-      contactListData.value  = await applicantStore.getFixData(props.applicant.id)
+      contactListData.value  = await fixStore.getFixData(props.applicant.id)
     }
 
     loadUsers()
@@ -285,7 +287,7 @@ export default {
       async updateData(data){
         if (fixData.value?.id){
           data['updated_at'] = serverTimestamp();
-          await applicantStore.updateFix(fixData.value.id, data)
+          await fixStore.updateFix(fixData.value.id, data)
         }
         fixData.value = {
           ...fixData.value, 
@@ -309,7 +311,7 @@ export default {
         updateData['deleted'] = true;
         updateData['deleted_by'] = user['uid']
         updateData['deleted_at'] = serverTimestamp();
-        await applicantStore.updateFix(fixData.value.id, updateData)
+        await fixStore.updateFix(fixData.value.id, updateData)
         Alert.success($q, t)
       },
       getUserName(uid) {
@@ -347,7 +349,7 @@ export default {
           updateData['deleted_by'] = user['uid'];
           updateData['deleted_at'] = serverTimestamp();
 
-          await applicantStore.updateFix(data.id, updateData)
+          await fixStore.updateFix(data.id, updateData)
 
           Alert.success($q, t)
         })

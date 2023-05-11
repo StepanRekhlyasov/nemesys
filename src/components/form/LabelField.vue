@@ -1,8 +1,8 @@
 <template>  
-  <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+  <div :class="['text-blue text-weight-regular', labelClass]">
     {{ label }}
   </div>
-  <div :class="['q-pl-md blue', valueClass]">
+  <div :class="[valueClass, 'blue']">
     <hidden-text v-if="!edit" class="text_dots" :value="value" />
     <template v-if="edit">
       <slot>
@@ -31,7 +31,11 @@ defineProps({
     },
     valueClass: {
       type: String,
-      default: 'col-3'
+      default: 'col-3 q-pl-md '
+    },
+    labelClass: {
+      type: String,
+      default: 'col-3 q-pl-md text-right self-center'
     }
 })
 </script>

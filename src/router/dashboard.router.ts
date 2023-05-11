@@ -11,12 +11,21 @@ const dashboard_router: MenuRouter[] = [
   {
     path: 'applicant-progress',
     title: 'menu.applicantProgress',
-    component: () => import('src/pages/ApplicantProgress/ApplicantProgress.vue'),
+    component: () => import('src/pages/user/ApplicantProgress/ApplicantProgress.vue'),
     meta: {
       requiresAuth: true,
     },
     menuParent: MenuParent.DashboardData,
-
+  },
+  {
+    path: 'applicant-progress/:status',
+    title: 'menu.applicantProgress',
+    component: () => import('src/pages/user/ApplicantProgress/ApplicantTablePage.vue'),
+    meta: {
+      requiresAuth: true,
+      hideInMenu: true
+    },
+    menuParent: MenuParent.DashboardData,
   }
 ]
 

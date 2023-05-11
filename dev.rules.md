@@ -47,10 +47,8 @@ Generally, your store should have the following folder structure and layout base
 
 ```
 stores/
-  admin/
     user.ts
-  user/
-    user.ts
+    clientFactory.ts
 ```
 
 **Please, follow these points to separate business logic from components**:

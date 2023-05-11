@@ -10,33 +10,36 @@
       <q-card-section>
 
         <InputWrapper :text-key="'settings.users.email'" style=" white-space: nowrap">
-          <q-input v-model="accountData['email']" name="email" :disable="loading" outlined dense :color="color" />
+          <q-input v-model="accountData['email']" name="email" :disable="loading" outlined dense :color="color"
+            :rules="[creationRule]" type="email" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.person_name'">
           <q-input v-model="accountData['displayName']" name="displayName" :disable="loading" outlined dense
-            :color="color" />
+            :color="color" :rules="[creationRule]" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.passworld'">
-          <q-input v-model="accountData['passworld']" name="passworld" :disable="loading" outlined
-            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color"
-            hide-bottom-space />
+          <q-input v-model="accountData['passworld']" name="password" :disable="loading" outlined
+            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color" hide-bottom-space
+            type="password" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.role'">
           <q-select outlined dense v-model="accountData['role']" :options="role" bg-color="white"
-            :label="$t('common.pleaseSelect')" emit-value map-options :disable="loading" :color="color"
-            class="q-pa-none " />
+            :label="$t('common.pleaseSelect')" emit-value map-options :disable="loading" :color="color" class="q-pa-none "
+            :rules="[creationRule]" />
         </InputWrapper>
 
-        <InputWrapper v-if="!isAdmin" :text-key="'settings.users.branch_name'">
-          <q-select outlined dense v-model="accountData['branch_id']" :options="branch" bg-color="white"
-            :disable="loading" :label="$t('common.pleaseSelect')" emit-value map-options :color="color" />
+        <InputWrapper v-if="showBranch()" :text-key="'settings.users.branch_name'">
+          <SelectBranch :color="color" :rules="[creationRule]" :organization-id="organization.currentOrganizationId"
+            bg-color="white" @update:model-value="(id: string) => {
+                accountData['branch_id'] = id
+              }" />
         </InputWrapper>
 
-        <InputWrapper :text-key="'settings.branch.hiddenFlag'" >
-            <q-checkbox   v-model="accountData['hidden']" :label="$t('settings.branch.hide')" :disable="loading"
+        <InputWrapper :text-key="'settings.branch.hiddenFlag'">
+          <q-checkbox v-model="accountData['hidden']" :label="$t('settings.branch.hide')" :disable="loading"
             checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :color="color" dense />
         </InputWrapper>
 
@@ -60,20 +63,20 @@ import { useOrganization } from 'src/stores/organization';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 import PageHeader from 'src/components/PageHeader.vue';
 import InputWrapper from './InputWrapper.vue';
+import SelectBranch from './SelectBranch.vue'
+import { creationRule } from 'src/components/handlers/rules';
+import { adminRolesIds } from 'src/components/handlers/consts';
 
 export default {
   name: 'ResponsibleCreateForm',
   components: {
     DialogWrapper,
     PageHeader,
-    InputWrapper
+    InputWrapper,
+    SelectBranch
   },
   props: {
     roles: {
-      type: Object,
-      required: true
-    },
-    branches: {
       type: Object,
       required: true
     },
@@ -91,19 +94,23 @@ export default {
     const role = computed(() => {
       return mapToSelectOptions(props.roles)
     })
-    const branch = computed(() => {
-      return mapToSelectOptions(props.branches)
-    })
+
     const organization = useOrganization()
     const loading = ref(false)
     const color: 'accent' | 'primary' = props.isAdmin ? 'accent' : 'primary'
+
+    function showBranch() {
+      return !adminRolesIds.includes(accountData.value['role']) && !props.isAdmin
+    }
+
     return {
       color,
       accountData,
       loading,
       role,
-      branch,
-
+      showBranch,
+      creationRule,
+      organization,
       async addAccaunt() {
         const url = 'https://create-user-account-planwvepxa-an.a.run.app'
         const headers = {
@@ -112,6 +119,7 @@ export default {
 
         loading.value = true;
         const data = accountData.value
+        const isAdminRole = () => adminRolesIds.includes(data['role'])
 
         api.post(
           url,
@@ -120,9 +128,9 @@ export default {
             displayName: data['displayName'], // name for new user
             password: data['passworld'], // password for new user
             email: data['email'], // email address for new user
-            branch: data['branch_id'], // optional at present
+            branch: isAdminRole() ? undefined : data['branch_id'], // optional at present
             role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
-            organization_ids: [organization.currentOrganizationId]
+            organization_ids: isAdminRole() ? undefined : [organization.currentOrganizationId]
           },
           {
             headers: headers,
@@ -159,5 +167,4 @@ export default {
 .q-select {
   width: 160px;
 }
-
 </style>
