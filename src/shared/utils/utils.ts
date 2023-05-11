@@ -48,6 +48,9 @@ export const toDate = (timestamp: Timestamp):string => {
   }
   return data;
 };
+export const limitDate = (date : string) => {
+  return date <= new Date().toLocaleDateString('ja-JP')
+}
 
 export const differentDateYear = (date1: string, date2: string):number => {
   const d1 = new Date(date1), d2 = new Date(date2);

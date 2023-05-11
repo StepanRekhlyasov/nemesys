@@ -26,15 +26,15 @@
       </q-tab-panel>
 
       <q-tab-panel name="applicationInfo">
-        <applicationInfo :applicant="applicant" :key="applicant.id" :updateApplicant="updateApplicant" />
+        <applicationInfo :applicant="applicant" :key="applicant.id"/>
       </q-tab-panel>
 
       <q-tab-panel name="attendanceInfo">
-        <attendanceInfo :applicant="applicant" :updateApplicant="updateApplicant" />
+        <attendanceInfo :applicant="applicant" :updateApplicant="applicantStore.updateApplicant" />
       </q-tab-panel>
 
       <q-tab-panel name="fixEmployInfo">
-        <fixEmployInfo :applicant="applicant" :key="applicant.id" :updateApplicant="updateApplicant"/>
+        <fixEmployInfo :applicant="applicant" :key="applicant.id" :updateApplicant="applicantStore.updateApplicant"/>
       </q-tab-panel>
 
       <q-tab-panel name="operationInfo">
@@ -42,15 +42,14 @@
       </q-tab-panel>
       
       <q-tab-panel name="memo">
-        <applicantMemo :applicant="applicant" :updateApplicant="updateApplicant"/>
+        <applicantMemo :applicant="applicant" :updateApplicant="applicantStore.updateApplicant"/>
       </q-tab-panel>
   </q-tab-panels>
 </template>
 
 
 
-<script>
-//import { useI18n } from 'vue-i18n';
+<script lang="ts" setup>
 import { ref } from 'vue';
 import fixEmployInfo from './FIX/fixEmployInfoTab.vue';
 import contactInfo from './contactInfoTab.vue';
@@ -58,38 +57,13 @@ import applicationInfo from './applicantTab/applicationInfoTab.vue';
 import attendanceInfo from './attendanceTab/attendanceTab.vue';
 import operationInfoComponent from './operationInfoTab.vue';
 import applicantMemo from './memoTab.vue';
+import { useApplicant } from 'src/stores/applicant';
+import { Applicant } from 'src/shared/model';
 
-export default {
-  name: 'clientDetails',
-  components: {
-    contactInfo,
-    fixEmployInfo,
-    applicationInfo,
-    attendanceInfo,
-    operationInfoComponent,
-    applicantMemo
-  },
+const applicantStore = useApplicant();
+const tab = ref('contactInfo');
+defineProps<{
+  applicant: Applicant
+}>()
 
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    },
-    updateApplicant: {
-      type: Function,
-      required: true
-    }
-  },
-
-  setup() {
-    //const { t } = useI18n({ useScope: 'global' });
-
-    const tab = ref('contactInfo');
-
-
-    return {
-      tab,
-    };
-  },
-};
 </script>

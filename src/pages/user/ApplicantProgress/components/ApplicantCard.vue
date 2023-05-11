@@ -8,7 +8,7 @@
   >
     <div class='row q-gutter-sm items-center'>
       <span class='col-1'>S</span>
-      <span class='col'>{{ item.name }}</span>
+      <span class='col applicant-clickable' @click="emit('selectApplicant', item)">{{ item.name }}</span>
     </div>
     <div class='row q-gutter-md items-center'>
       <div class='col'>{{ item.occupation }}</div>
@@ -25,9 +25,15 @@ import { Applicant } from 'src/shared/model'
 import { applicationDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
 
+
 const props = defineProps<{
   item: Applicant,
 }>()
+
+const emit = defineEmits<{
+    (e: 'selectApplicant', applicant : Applicant)
+}>()
+
 const daysUntilAlert = 20
 const redAlert = computed(()=>{
   if(!props.item.currentStatusTimestamp){
@@ -37,12 +43,19 @@ const redAlert = computed(()=>{
 })
   
 </script>
-<style scoped>
+<style scoped lang="scss">
 .applicant-card{
   border: 1px solid #333; 
   padding: 8px
 }
 .applicant-card.redAlert{
   border: 1px solid #FF5252; 
+}
+.applicant-clickable{
+  color: $primary;
+  cursor: pointer;
+  &:hover{
+    text-decoration: underline;
+  }
 }
 </style>

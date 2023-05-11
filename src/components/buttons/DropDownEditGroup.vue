@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, withDefaults } from 'vue'
+import { ref, defineEmits, withDefaults } from 'vue'
 const show = ref(false)
 
 const { t } = useI18n({ useScope: 'global' });
 
 withDefaults(defineProps<{
     isEdit: boolean
-    isLabelSquare: boolean
+    isLabelSquare?: boolean
     isButton?: boolean
     label?: string
     isDisabledButton?: boolean
@@ -20,8 +20,8 @@ withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  (e: 'openDropDown'),
-  (e: 'closeDropDown'),
+  (e: 'closeEdit'),
+  (e: 'openEdit'),
   (e: 'onSave')
 }>()
 
@@ -44,7 +44,7 @@ const emit = defineEmits<{
         <div class="col-3 text-right" v-if="show || !isButton">
           <q-btn v-if="!isEdit" 
             :label="t('common.edit')" :color="theme" 
-            outline  icon="edit" @click="emit('openDropDown')" 
+            outline  icon="edit" @click="emit('openEdit')" 
             class="no-shadow q-ml-lg" size="sm" :disable="isDisabledButton" />
           <q-btn v-if="isEdit" 
             :label="t('common.save')" :color="theme" 
@@ -52,7 +52,7 @@ const emit = defineEmits<{
             :disable="isDisabledButton" />
           <q-btn v-if="isEdit" 
             :label="t('common.cancel')" class="q-ml-md" 
-            outline :color="theme" @click="emit('closeDropDown')"
+            outline :color="theme" @click="emit('closeEdit')"
             size="sm" />
         </div>
     </div>
