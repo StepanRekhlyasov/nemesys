@@ -40,12 +40,6 @@ type ContinueFromDoc = {
   'wait_termination': null | QueryDocumentSnapshot,
 }
 
-type ApplicantsByStatusCount = {
-  'entry': number,
-  'retired': number,
-  'working': number,
-}
-
 type ApplicantsByColumn = {
   'wait_contact': Applicant[] | [];
   'wait_attend': Applicant[] | [];
@@ -56,6 +50,11 @@ type ApplicantsByColumn = {
   'wait_termination': Applicant[] | [];
 };
 
+type ApplicantsByStatusCount = {
+  'entry': number,
+  'retired': number,
+  'working': number,
+}
 
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();  
@@ -163,23 +162,26 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function updateApplicant(applicantData : Partial<Applicant>) {
+  async function updateApplicant(applicantData : Partial<Applicant>, showAlert = true) {
     if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
       await updateDoc(applicantRef, applicantData)
-      Alert.success($q, t);
+      if (showAlert){ Alert.success($q, t); }
       state.value.selectedApplicant = {
         ...state.value.selectedApplicant,
         ...applicantData,
         staffRank: RankCount.countRank(state.value.selectedApplicant)
       }
     } catch (error) {
-      console.log(error)
       if(state.value.selectedApplicant?.status){
-        state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+        try {
+          state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+        } catch(error) {
+          if (showAlert){  Alert.warning($q, t); }
+        }
       }
-      Alert.warning($q, t);
+      if (showAlert){  Alert.warning($q, t); }
     }
   };
 

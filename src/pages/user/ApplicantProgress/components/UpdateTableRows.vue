@@ -30,7 +30,6 @@
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <!-- <td>-</td> -->
       </tr>
     </tbody>
 </template>

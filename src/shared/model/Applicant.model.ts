@@ -29,8 +29,8 @@ export interface Applicant {
   apartment: string;
   phone: string;
   email: string;
-  status?: ApplicantStatus;  //
-  branchIncharge?: string; //
+  status?: ApplicantStatus;
+  branchIncharge?: string;
   sex?: ApplicantSex;
   dob?: string;
   occupation?: ApplicantOccupation;
@@ -50,7 +50,16 @@ export interface Applicant {
   workingHoursLate?: string;
   workingHoursNight?: string;
   daysToWork?: string;
-  staffRank?: number
+  staffRank?: number;
+  address?: string;
+  lat?: string;
+  lon?: string;
+  attractionsStatus?: string;
+  seductionDay?: string;
+  employmentStatus?: string;
+  position?: string[];
+  period?: string;
+  memo?: string;
 }
 
 export enum ApplicantSex{

@@ -117,7 +117,7 @@
         </div>
       </q-card-section>
       <q-card-section class="q-pt-none" v-if="drawerRight">
-        <detail-component :applicant="applicantStore.state.selectedApplicant" :updateApplicant="applicantStore.updateApplicant" />
+        <detail-tabs :applicant="applicantStore.state.selectedApplicant"/>
       </q-card-section>
     </q-card>
   </q-scroll-area>
@@ -126,7 +126,7 @@
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
 import { computed, ref } from 'vue';
-import detailComponent from '../Applicant/components/detail.vue';
+import detailTabs from '../Applicant/components/detailTabs.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 import { QFile } from 'quasar';
 import { statusList } from 'src/shared/constants/Applicant.const';

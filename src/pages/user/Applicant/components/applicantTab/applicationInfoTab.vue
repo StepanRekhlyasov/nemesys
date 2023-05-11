@@ -2,37 +2,25 @@
   <q-card class="no-shadow full-width">
 
     <q-card-section class="q-pa-none q-mb-none">
-      <applicationInfoComponent :applicant="applicant" :updateApplicant="updateApplicant"/>
+      <applicationInfoComponent :applicant="applicant"/>
     </q-card-section >
 
     <q-card-section class="q-pa-none q-mb-none">
-      <attractionInfoComponent :applicant="applicant" :updateApplicant="updateApplicant" />
+      <attractionInfoComponent :applicant="applicant" />
     </q-card-section>
   </q-card>
 
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { Applicant } from 'src/shared/model';
 import applicationInfoComponent from './applicationInfoSection.vue';
 import attractionInfoComponent from './attractionInfoSection.vue';
 
-export default {
-  name: 'ApplicationInfo',
-  components: {
-    applicationInfoComponent,
-    attractionInfoComponent
-  },
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    },
-    updateApplicant: {
-      type: Function,
-      required: true
-    }
-  }
-}
+defineProps<{
+  applicant: Applicant
+}>()
+
 </script>
 
 <style lang="scss">
