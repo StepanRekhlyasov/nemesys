@@ -89,7 +89,7 @@
 
         <template v-slot:body-cell-delete="props">
           <q-td :props="props" auto-width>
-            <q-btn icon="delete" flat @click="deleteAccaunt(props.row)" />
+            <q-btn icon="delete" flat @click="deleteAccount(props.row)" />
           </q-td>
         </template>
         <template v-slot:loading>
@@ -110,12 +110,12 @@
   </q-dialog>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { getFirestore, orderBy, serverTimestamp, Timestamp } from '@firebase/firestore';
 import { onBeforeMount, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Role, User } from 'src/shared/model/Account.model';
-import { toDateObject, sortDate } from 'src/shared/utils/utils';
+import { toDateObject } from 'src/shared/utils/utils';
 import { getRoles, mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -131,194 +131,153 @@ import { useUserStore } from 'src/stores/user';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { PaginationExposedMethods } from 'src/components/pagination/types';
 import { ResponsibleMasterColumns as columns, sortable } from './consts/ResponsibleMasterColumns'
-export default {
-  name: 'responcibleMasterManagement',
-  components: {
-    ResponsibleCreateForm,
-    EditButton,
-    PageHeader,
-    SearchField,
-    DefaultButton,
-    TablePagination,
-  },
-  setup() {
-    const { t } = useI18n({ useScope: 'global' });
-    const db = getFirestore();
-    const $q = useQuasar();
-    const route = useRoute()
-    const search = ref('');
-    const roles = ref({})
-    const branches = ref({})
-    const loading = ref(false)
-    const organization = useOrganization()
-    const usersListData: Ref<User[]> = ref([]);
-    const copyUsersListData: Ref<User[]> = ref([]);
-    const isAdmin = route.meta.isAdmin
-    // dialog data
-    const openDialog = ref(false)
-    const editableUser: Ref<User | undefined> = ref(undefined)
-    const editableRow = ref(-1);
-    const color = isAdmin ? 'accent' : 'primary'
-    const textColor = isAdmin ? 'accent' : 'black'
 
-    const pagination = ref({
-      rowsPerPage: 100,
-      path: 'users',
-      order: orderBy('name', 'asc'),
-      constraints: getConstraints(isAdmin, organization.currentOrganizationId)
-    });
+const { t } = useI18n({ useScope: 'global' });
+const db = getFirestore();
+const $q = useQuasar();
+const route = useRoute()
+const search = ref('');
+const roles = ref({})
+const branches = ref({})
+const loading = ref(false)
+const organization = useOrganization()
+const usersListData: Ref<User[]> = ref([]);
+const copyUsersListData: Ref<User[]> = ref([]);
+const isAdmin = route.meta.isAdmin
+// dialog data
+const openDialog = ref(false)
+const editableUser: Ref<User | undefined> = ref(undefined)
+const editableRow = ref(-1);
+const color = isAdmin ? 'accent' : 'primary'
+const textColor = isAdmin ? 'accent' : 'black'
 
-    const selected: Ref<User[]> = ref([])
-    const userStore = useUserStore()
-    const rolesData = ref<Role[]>([])
+const pagination = ref({
+  rowsPerPage: 100,
+  path: 'users',
+  order: orderBy('name', 'asc'),
+  constraints: getConstraints(isAdmin, organization.currentOrganizationId)
+});
 
-    const visibleColumns = ref<string[]>()
-    onBeforeMount(async () => {
-      visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
-      rolesData.value = await getRoles(db)
-      if (!isAdmin) {
-        branches.value = await organization.getBranchesInOrganization(organization.currentOrganizationId)
-      }
-    })
+const userStore = useUserStore()
+const rolesData = ref<Role[]>([])
 
-    const paginationRef = ref<PaginationExposedMethods | null>(null)
-
-    watch(() => organization.currentOrganizationId, async () => {
-      const newConstraints = getConstraints(isAdmin, organization.currentOrganizationId)
-      paginationRef.value?.setConstraints(newConstraints)
-      paginationRef.value?.queryFirstPage()
-    })
-
-    function setUsers(users: User[]) {
-      let userList: User[] = [];
-      users?.forEach((doc) => {
-        userList.push({ ...doc as User, id: doc.id, create_at: toDateObject(doc.create_at as Timestamp), updated_at: toDateObject(doc.updated_at as Timestamp) });
-      });
-      usersListData.value = userList;
-      copyUsersListData.value = userList
-    }
-
-    function onDataUpdate(users: User[]) {
-      setUsers(users)
-      const list = {}
-      rolesData.value?.forEach((doc) => {
-        list[doc?.id] = doc
-      })
-      if (isAdmin) {
-        filterRoles(list)
-      }
-      roles.value = list;
-    }
-
-    async function refresh() {
-      await paginationRef.value?.refreshPage()
-    }
-
-    async function searchUsers() {
-      loading.value = true
-      const users = await userStore.searchUsers(search.value)
-      setUsers(users)
-      loading.value = false
-    }
-
-    function isRowSelected(row: number) {
-      return row == editableRow.value
-    }
-
-    function discardChanges() {
-      usersListData.value = JSON.parse(JSON.stringify(copyUsersListData.value))
-    }
-
-    async function editUser(user: User) {
-      const isUserChanged = !(user.displayName == editableUser.value?.displayName && user.role == editableUser.value?.role && user.branch_id == editableUser.value?.branch_id && user.hidden == editableUser.value?.hidden);
-      if (!isUserChanged) {
-        return;
-      }
-
-      if (!editableUser.value) {
-        return
-      }
-
-      user.displayName = editableUser.value.displayName
-      user.role = editableUser.value.role
-      user.branch_id = editableUser.value.branch_id
-      user.hidden = editableUser.value.hidden
-
-      loading.value = true
-      try {
-        await userStore.editUser(user.id, {
-          displayName: user.displayName,
-          role: user.role,
-          branch_id: user.branch_id,
-          hidden: user.hidden,
-          updated_at: serverTimestamp()
-        })
-        await refresh();
-        loading.value = false
-        Alert.success($q, t);
-      } catch (error) {
-        console.log(error)
-        Alert.warning($q, t);
-        loading.value = false;
-      }
-
-    }
-
-    return {
-      sortable,
-      visibleColumns,
-      textColor,
-      isAdmin,
-      editableRow,
-      search,
-      columns,
-      pagination,
-      selected,
-      loading,
-      color,
-      editableUser,
-      openDialog,
-      route,
-      roles,
-      usersListData,
-      branches,
-      refresh,
-      deleteAccaunt(user) {
-        $q.dialog({
-          title: t('common.delete'),
-          message: t('settings.users.deletedInfo'),
-          ok: {
-            label: t('common.delete'),
-            color: 'negative',
-            class: 'no-shadow',
-            unelevated: true
-          },
-        }).onOk(async () => {
-          try {
-            loading.value = true;
-            await userStore.editUser(user.id, {
-              deleted: true,
-              deletedAt: serverTimestamp(),
-              updated_at: serverTimestamp()
-            })
-            refresh();
-            Alert.success($q, t)
-          } catch (e) {
-            console.log(e)
-            Alert.warning($q, t)
-            loading.value = false;
-          }
-        })
-      },
-      searchUsers,
-      sortDate,
-      isRowSelected,
-      editUser,
-      mapToSelectOptions,
-      discardChanges,
-      onDataUpdate,
-      paginationRef
-    }
+const visibleColumns = ref<string[]>()
+onBeforeMount(async () => {
+  visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
+  rolesData.value = await getRoles(db)
+  if (!isAdmin) {
+    branches.value = await organization.getBranchesInOrganization(organization.currentOrganizationId)
   }
+})
+
+const paginationRef = ref<PaginationExposedMethods | null>(null)
+
+watch(() => organization.currentOrganizationId, async () => {
+  const newConstraints = getConstraints(isAdmin, organization.currentOrganizationId)
+  paginationRef.value?.setConstraints(newConstraints)
+  paginationRef.value?.queryFirstPage()
+})
+
+function setUsers(users: User[]) {
+  let userList: User[] = [];
+  users?.forEach((doc) => {
+    userList.push({ ...doc as User, id: doc.id, create_at: toDateObject(doc.create_at as Timestamp), updated_at: toDateObject(doc.updated_at as Timestamp) });
+  });
+  usersListData.value = userList;
+  copyUsersListData.value = userList
+}
+
+function onDataUpdate(users: User[]) {
+  setUsers(users)
+  const list = {}
+  rolesData.value?.forEach((doc) => {
+    list[doc?.id] = doc
+  })
+  if (isAdmin) {
+    filterRoles(list)
+  }
+  roles.value = list;
+}
+
+async function refresh() {
+  await paginationRef.value?.refreshPage()
+}
+
+async function searchUsers() {
+  loading.value = true
+  const users = await userStore.searchUsers(search.value)
+  setUsers(users)
+  loading.value = false
+}
+
+function isRowSelected(row: number) {
+  return row == editableRow.value
+}
+
+function discardChanges() {
+  usersListData.value = JSON.parse(JSON.stringify(copyUsersListData.value))
+}
+
+async function editUser(user: User) {
+  const isUserChanged = !(user.displayName == editableUser.value?.displayName && user.role == editableUser.value?.role && user.branch_id == editableUser.value?.branch_id && user.hidden == editableUser.value?.hidden);
+  if (!isUserChanged) {
+    return;
+  }
+
+  if (!editableUser.value) {
+    return
+  }
+
+  user.displayName = editableUser.value.displayName
+  user.role = editableUser.value.role
+  user.branch_id = editableUser.value.branch_id
+  user.hidden = editableUser.value.hidden
+
+  loading.value = true
+  try {
+    await userStore.editUser(user.id, {
+      displayName: user.displayName,
+      role: user.role,
+      branch_id: user.branch_id,
+      hidden: user.hidden,
+      updated_at: serverTimestamp()
+    })
+    await refresh();
+    loading.value = false
+    Alert.success($q, t);
+  } catch (error) {
+    console.log(error)
+    Alert.warning($q, t);
+    loading.value = false;
+  }
+
+}
+
+async function deleteAccount(user: User) {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('settings.users.deletedInfo'),
+    ok: {
+      label: t('common.delete'),
+      color: 'negative',
+      class: 'no-shadow',
+      unelevated: true
+    },
+  }).onOk(async () => {
+    try {
+      loading.value = true;
+      await userStore.editUser(user.id, {
+        deleted: true,
+        deletedAt: serverTimestamp(),
+        updated_at: serverTimestamp()
+      })
+      refresh();
+      Alert.success($q, t)
+    } catch (e) {
+      console.log(e)
+      Alert.warning($q, t)
+      loading.value = false;
+    }
+  })
 }
 </script>
