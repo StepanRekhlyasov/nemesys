@@ -1,8 +1,13 @@
 <template>
   <q-select color="accent" :options="options" option-label='displayName' :model-value="props.modelValue"
     @filter="(_, doneFn) => filterFn(doneFn, organizationId)"
-    @update:model-value="(user: User) => { emit('onUserChange', user); }" outlined dense
-    :rules="[(val: User) => val?.name && val?.name?.length > 0 || '']" />
+    @update:model-value="(user: User) => { emit('onUserChange', user); }" outlined dense :rules="[
+        (val: User | string) => {
+          if (typeof val == 'string') {
+            return val.length > 0 || ''
+          }
+          return val?.name && val?.name?.length > 0 || ''
+        }]" />
 </template>
 
 <script setup lang="ts">

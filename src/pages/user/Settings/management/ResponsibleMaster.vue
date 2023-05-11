@@ -22,9 +22,9 @@
 
         <template v-slot:body-cell-edit="props">
           <EditButton :props="props" :color="color"
-            :on-edit="() => { editableUser = JSON.parse(JSON.stringify(props.row)); discardChanges() }"
-            :on-save="() => editUser(props.row)" @onEditableRowChange="(row) => editableRow = row"
-            :editable-row="editableRow" />
+            :on-edit="() => { sortable = false; editableUser = JSON.parse(JSON.stringify(props.row)); discardChanges() }"
+            :on-save="async () => { await editUser(props.row); sortable = true }"
+            @onEditableRowChange="(row) => editableRow = row" :editable-row="editableRow" />
         </template>
 
         <template v-slot:body-cell-email="props">
@@ -35,7 +35,7 @@
 
         <template v-slot:body-cell-name="props">
           <q-td :props="props">
-            <q-input :color="color" v-if="isRowSelected(props.rowIndex)" v-model="props.row.displayName" />
+            <q-input :color="color" v-if="isRowSelected(props.rowIndex)" v-model="editableUser!.displayName" />
             <template v-if="!isRowSelected(props.rowIndex)">
               {{ props.row.displayName }}
             </template>
@@ -44,7 +44,7 @@
 
         <template v-slot:body-cell-role="props">
           <q-td :props="props">
-            <q-select v-if="isRowSelected(props.rowIndex)" outlined dense v-model="props.row.role"
+            <q-select v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableUser!.role"
               :options="mapToSelectOptions(roles)" bg-color="white" :label="$t('common.pleaseSelect')" emit-value
               map-options :color="color" :disable="loading" />
             <template v-if="!isRowSelected(props.rowIndex)">
@@ -55,7 +55,7 @@
 
         <template v-slot:body-cell-branch="props">
           <q-td :props="props">
-            <q-select v-if="isRowSelected(props.rowIndex)" outlined dense v-model="props.row.branch_id"
+            <q-select v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableUser!.branch_id"
               :options="mapToSelectOptions(branches)" bg-color="white" :disable="loading"
               :label="$t('common.pleaseSelect')" emit-value :color="color" map-options />
             <template v-if="!isRowSelected(props.rowIndex)">
@@ -66,7 +66,7 @@
 
         <template v-slot:body-cell-hidden="props">
           <q-td :props="props">
-            <q-checkbox v-if="isRowSelected(props.rowIndex)" v-model="props.row.hidden"
+            <q-checkbox v-if="isRowSelected(props.rowIndex)" v-model="editableUser!.hidden"
               :label="$t('settings.branch.hide')" :disable="loading" :color="color"
               checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" class="q-pr-md" />
             <template v-if="!isRowSelected(props.rowIndex)">
@@ -98,7 +98,8 @@
       </q-table>
       <div class="row justify-start q-mt-md q-mb-md pagination">
         <TablePagination :isAdmin="isAdmin" ref="paginationRef" :pagination="pagination"
-          @on-data-update="(user) => onDataUpdate(user as User[])" @on-loading-state-change="(v) => loading = v" />
+          @on-data-update="(user) => onDataUpdate(user as User[])" @on-loading-state-change="(v) => loading = v"
+          :disable="!sortable" />
       </div>
     </q-card-section>
   </q-card>
@@ -110,7 +111,7 @@
 </template>
 
 <script lang="ts">
-import { doc, getFirestore, orderBy, serverTimestamp, Timestamp, updateDoc } from '@firebase/firestore';
+import { getFirestore, orderBy, serverTimestamp, Timestamp } from '@firebase/firestore';
 import { onBeforeMount, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Role, User } from 'src/shared/model/Account.model';
@@ -129,7 +130,7 @@ import { filterRoles, getConstraints, getVisibleColumns } from './handlers/Respo
 import { useUserStore } from 'src/stores/user';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { PaginationExposedMethods } from 'src/components/pagination/types';
-import { ResponsibleMasterColumns as columns } from './consts/ResponsibleMasterColumns'
+import { ResponsibleMasterColumns as columns, sortable } from './consts/ResponsibleMasterColumns'
 export default {
   name: 'responcibleMasterManagement',
   components: {
@@ -233,16 +234,25 @@ export default {
       if (!isUserChanged) {
         return;
       }
+
+      if (!editableUser.value) {
+        return
+      }
+
+      user.displayName = editableUser.value.displayName
+      user.role = editableUser.value.role
+      user.branch_id = editableUser.value.branch_id
+      user.hidden = editableUser.value.hidden
+
       loading.value = true
       try {
-        const boRef = doc(db, 'users/' + user.id);
-        await updateDoc(boRef, {
-          updated_at: serverTimestamp(),
-          hidden: !!user.hidden,
+        await userStore.editUser(user.id, {
           displayName: user.displayName,
           role: user.role,
           branch_id: user.branch_id,
-        });
+          hidden: user.hidden,
+          updated_at: serverTimestamp()
+        })
         await refresh();
         loading.value = false
         Alert.success($q, t);
@@ -255,6 +265,7 @@ export default {
     }
 
     return {
+      sortable,
       visibleColumns,
       textColor,
       isAdmin,

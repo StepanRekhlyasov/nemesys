@@ -37,11 +37,12 @@
 
       <q-tr :props="props">
 
-        <EditButton color="accent" :on-edit="() => { editableRow = cloneToRaw(props.row); }" :on-save="async () => {
+        <EditButton color="accent" :on-edit="() => { sortable = false; editableRow = cloneToRaw(props.row); }" :on-save="async () => {
             isEqual = deepEqualClone(editableRow, props.row)
             if (!isEqual) {
               await editOrganization(editableRow, props.rowIndex)
             }
+            sortable = true
           }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row"
           :row-index="props.rowIndex" :props="props" />
 
@@ -60,7 +61,7 @@
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.operatorName }}
           </template>
-          <SelectUser v-else :model-value="editableRow!.operatorName" :organization-id="props.row.id"
+          <SelectUser v-else :model-value="editableRow!.operatorName"
             @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName }" />
         </q-td>
 
@@ -109,18 +110,17 @@
     <TablePagination :isAdmin="true" ref="paginationRef" :pagination="pagination" @on-data-update="async (newData) => {
         rows = await mapOrganizationsToRow(newData as Organization[])
         await forceReRender()
-      }" @on-loading-state-change="(v) => loading = v" />
+      }" @on-loading-state-change="(v) => loading = v" :disable="!sortable" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, nextTick } from 'vue';
-import { QInput, QTableProps, useQuasar } from 'quasar';
+import { ref, nextTick } from 'vue';
+import { QInput, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
-import { getOrganizationsByName } from 'src/shared/utils/Organization/Organization.utils';
 import { getFirestore, orderBy } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import SelectUser from './SelectUser.vue';
@@ -135,6 +135,7 @@ import AddDialog from './AddDialog.vue';
 import { useOrganization } from 'src/stores/organization';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { Organization } from 'src/shared/model';
+import { columns, sortable } from './consts/OrganizationsListColumns'
 
 const pagination = ref({
   rowsPerPage: 100,
@@ -143,8 +144,6 @@ const pagination = ref({
 });
 
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null)
-
-
 
 const closeDialog = ref(true)
 
@@ -162,80 +161,6 @@ const $q = useQuasar();
 
 const { t } = useI18n({ useScope: 'global' });
 const loading = ref(true)
-const columns = computed<QTableProps['columns']>(() => [
-  {
-    name: 'edit',
-    label: '',
-    field: '',
-    align: 'left',
-  },
-  {
-    name: 'number',
-    label: t('menu.admin.organizationsTable.number'),
-    field: 'number',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'organizationCodeAndName',
-    label: `${t('menu.admin.organizationsTable.organizationId') + '\n' + t('menu.admin.organizationsTable.organizationName')}  `,
-    field: 'organizationCodeAndName',
-    align: 'left',
-    sortable: true,
-    sort: (a: string, b: string) => {
-      const firstOrganizationName = a.split(' ')[1]
-      const secondOrganizationName = b.split(' ')[1]
-      return firstOrganizationName.localeCompare(secondOrganizationName)
-    }
-  },
-  {
-    name: 'operatorName',
-    label: t('menu.admin.organizationsTable.operator'),
-    field: 'operatorName',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'tel',
-    label: t('menu.admin.organizationsTable.phoneNumber'),
-    field: 'tel',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'fax',
-    label: t('menu.admin.organizationsTable.fax'),
-    field: 'fax',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'mailaddress',
-    label: t('menu.admin.organizationsTable.email'),
-    field: 'mailaddress',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'invoiceRequest',
-    label: t('menu.admin.organizationsTable.invoiceRequest'),
-    field: 'invoiceRequest',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'buttons',
-    label: '',
-    field: '',
-    align: 'left',
-  },
-  {
-    name: 'expandButton',
-    label: '',
-    field: '',
-    align: 'left',
-  }
-])
 
 const organizationStore = useOrganization()
 
@@ -255,7 +180,7 @@ const forceReRender = async () => {
 
 async function searchOrganizations(name: string) {
   loading.value = true
-  const organizations = await getOrganizationsByName(name)
+  const organizations = await organizationStore.getOrganizationsByName(name)
   rows.value = await mapOrganizationsToRow(organizations)
   loading.value = false
 }
