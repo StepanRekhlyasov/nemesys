@@ -12,7 +12,7 @@
     </div>
     <div class='row q-gutter-md items-center'>
       <div class='col'>{{ item.occupation }}</div>
-      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+item.prefecture) }}</div>
+      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }}</div>
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1'>応</div>
@@ -25,7 +25,7 @@ import { Timestamp } from 'firebase/firestore'
 import { Applicant } from 'src/shared/model'
 import { firebaseDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
-
+import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
 
 const props = defineProps<{
   item: Applicant,
@@ -39,9 +39,9 @@ const redAlert = computed(()=>{
   if(!(props.item.currentStatusTimestamp instanceof Timestamp)){
     return false
   }
-  const daysUntilAlert = 3
-  const compareWith = new Date().setTime(new Date().getTime() - (daysUntilAlert * 86400000));
-  return props.item.currentStatusTimestamp.toDate() < new Date(compareWith)
+  const daysUntilAlert = 3 * 86400000 /* days x miliseconds */
+  const compareWithMe = new Date().setTime(new Date().getTime() - daysUntilAlert);
+  return props.item.currentStatusTimestamp.toDate() < new Date(compareWithMe)
 })
   
 </script>

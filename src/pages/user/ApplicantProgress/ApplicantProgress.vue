@@ -17,6 +17,7 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
+            clearable
           />
         </div>
         <div class="col-2">
@@ -30,6 +31,7 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
+            clearable
           />
         </div>
         <div class="col-1">
@@ -37,14 +39,14 @@
           <q-select
             outlined
             dense
-            :options="prefectureOptions.map((item)=>{return{label:$t(item.label),value:item.value}})"
-            :disable="!prefectureOptions.length"
+            :options="prefectureList"
             v-model="applicantStore.state.applicantFilter['prefecture']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
             @update:model-value="fetchResults()"
+            clearable
           />
         </div>
         <div class="col-1">
@@ -59,6 +61,7 @@
             emit-value
             map-options
             @update:model-value="fetchResults()"
+            clearable
           />
         </div>
         <div class="col-1">
@@ -109,7 +112,6 @@
   /** consts */
   const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
   const perQuery = ref<number>(limitQuery)
-  const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
   const countApplicantsStatuses = ref({
     entry: 0,
     retired: 0,
@@ -142,18 +144,7 @@
       countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantFilter)
     })
   }
-
   onMounted( async ()=>{
     fetchResults()
-    prefectureOptions.value = prefectureList.value.map((item)=>{
-      return {
-        label: 'prefectures.'+item.label,
-        value: item.value
-      }
-    })
-    prefectureOptions.value.unshift({
-      label: 'common.all',
-      value: 0
-    })
   })
 </script>

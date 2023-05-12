@@ -1,6 +1,5 @@
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
-import { PrefectureListModel } from './Metadata.model';
 
 export interface ApplicantExperience {
   id: string;
@@ -50,7 +49,7 @@ export interface Applicant {
   phone: string;
   position?: string[];
   postCode?: string;
-  prefecture?: PrefectureListModel;
+  prefecture?: string;
   qualification?: ApplicantQualification[];
   seductionDay?: string;
   sex?: ApplicantSex;
