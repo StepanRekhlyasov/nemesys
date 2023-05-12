@@ -258,7 +258,7 @@ import {
   getFirestore,
   serverTimestamp,
 } from 'firebase/firestore';
-
+import { limitDate } from 'src/shared/utils/utils'
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
@@ -334,6 +334,7 @@ export default {
       imageURL,
       applicantImage,
       organizationStore,
+      limitDate,
 
       async onSubmit() {
         loading.value = true;
@@ -377,15 +378,11 @@ export default {
         }
       },
 
-
       onReset() {
         applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
       },
 
-      limitDate(date) {
-        return date <= new Date().toLocaleDateString('ja-JP')
-      },
       onFileChange(files) {
         imageURL.value = '';
         if (files && files.length > 0) {

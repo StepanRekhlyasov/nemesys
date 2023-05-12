@@ -1,9 +1,10 @@
+import { defineStore } from 'pinia';
 import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
 
-export const useAdminClient = () => {
+export const useClient = defineStore('client', () => {
     // db
     const db = getFirestore();
 
@@ -52,4 +53,4 @@ export const useAdminClient = () => {
         clients,
         addNewClient
     }
-}
+})

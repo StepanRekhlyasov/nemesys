@@ -29,17 +29,37 @@ export interface Applicant {
   apartment: string;
   phone: string;
   email: string;
-  status?: ApplicantStatus;  //
-  branchIncharge?: string; //
+  status?: ApplicantStatus;
+  branchIncharge?: string;
   sex?: ApplicantSex;
   dob?: string;
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
   applicationDate?: string;
-  currentStatusTimestamp?: number,
-  currentStatusMonth?: number,
+  currentStatusTimestamp: number;
+  currentStatusMonth?: number;
   created_at: string;
   deleted: false;
+  imageURL?: string;
+  media?: string;
+  applicationMetod?: string;
+  classification?: string;
+  totalYear?: string;
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  daysToWork?: string;
+  staffRank?: number;
+  address?: string;
+  lat?: number;
+  lon?: number;
+  attractionsStatus?: string;
+  seductionDay?: string;
+  employmentStatus?: string;
+  position?: string[];
+  period?: string;
+  memo?: string;
 }
 
 export enum ApplicantSex{

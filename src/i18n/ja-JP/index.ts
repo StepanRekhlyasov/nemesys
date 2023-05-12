@@ -1047,7 +1047,16 @@ export default {
         'sat': '土',
         'sun': '日',
         'holiday': '祝',
-        'memo': 'メモ'
+        'memo': 'メモ',
+        'staffName': 'スタッフ名',
+        'jobType': '職種',
+        'employmentLocation': '就業先',
+        'contactPerson': '担当者',
+        'startDate': '開始日',
+        'endDate': '終了日',
+        'remainingDays': '残日数',
+        'invoice': '請求',
+        'payment': '支払'
       }
     }
   },

@@ -83,11 +83,15 @@
               :column="column"
               :loading="columnsLoading[column.status]"
               @showMore="(status)=>{fetchResultsHandler(status, true)}"
+              @select-applicant="(applicant)=>{
+                detailsDrawer?.openDrawer(applicant)
+              }"
             />
           </div>
         </q-scroll-area>
       </div>
     </q-card-section>
+    <ApplicantDetails ref="detailsDrawer" />
   </q-page>
 </template>
 
@@ -97,12 +101,13 @@
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
   import { useMetadata } from 'src/stores/metadata';
-  import { ApplicantCol } from './types/applicant.types';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'
   import { limitQuery } from './const/applicantColumns';
+  import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
   
   /** consts */
+  const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
   const perQuery = ref<number>(limitQuery)
   const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
   const countApplicantsStatuses = ref({
@@ -110,16 +115,12 @@
     retired: 0,
     working: 0
   })
-  const columns = ref<ApplicantCol[]>(APPLICANT_COLUMNS);
-  const columnsLoading = ref({
-    'wait_contact': false,
-    'wait_attend': false,
-    'wait_FIX': false,
-    'wait_visit': false,
-    'wait_offer': false,
-    'wait_entry': false,
-    'wait_termination': false,
-  })
+  const columns = computed(()=>APPLICANT_COLUMNS.map(item => {
+    return {...item,
+      items: applicantsByColumn.value[item.status]
+    }
+  }))
+  const columnsLoading = computed(() => applicantStore.state.columnsLoading);
 
   /** stores */
   const applicantStore = useApplicant();
@@ -132,14 +133,6 @@
   const fetchResultsHandler = async (status : string, fetchMore = false) => {
     columnsLoading.value[status] = true
     await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantFilter, perQuery.value, fetchMore)
-    columns.value = columns.value.map(item => {
-      if(item.status == status){
-        return {...item,
-          items: applicantsByColumn.value[item.status]
-        }
-      }
-      return item
-    })
     columnsLoading.value[status] = false
   }
   const fetchResults = async () => {
