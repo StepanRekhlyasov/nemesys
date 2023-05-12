@@ -64,7 +64,6 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
-
     const user = await getUserById(userId)
 
     if (adminRolesIds.includes(user.role)) {
