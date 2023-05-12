@@ -23,6 +23,12 @@ const chartOptions = ref({
   chart: {
     height: 800,
   },
+  title:{
+    text:t('report.title.Leadtime'),
+    style:{
+      color:'gray'
+    }
+  },
   plotOptions: {
     bar: {
       columnWidth: '25%',
@@ -63,12 +69,6 @@ const chartOptions = ref({
   },
 });
 
-// t('report.Applicant'),
-//       t('report.ValidApplicant'),
-//       t('report.CompanyAverage'),
-//       t('report.NumberOfContacts'),
-//       t('report.NumberOfInvitations'),
-//       t('report.NumberOfAttendance'),
 const series: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const db = getFirestore();
@@ -85,7 +85,7 @@ const rows: Ref<
 //propsで渡されたbranch_idをbranch_idに代入
 const props = defineProps<{
   branch_id: string;
-  dateRangeProps: { from: string; to: string }|null;
+  dateRangeProps: { from: string; to: string } | null;
   organization_id: string;
   branch_user_list: { id: string; name: string }[];
   graph_type: string;
@@ -236,7 +236,7 @@ const get_fix_off_ins_adm_average_list = async (
 watch(
   () => props.branch_user_list,
   async () => {
-    if(props.dateRangeProps==undefined)return;
+    if (props.dateRangeProps == undefined) return;
 
     user_list.value = await props.branch_user_list;
     await get_fix_off_ins_adm_average_list(
@@ -249,7 +249,7 @@ watch(
 watch(
   () => props.dateRangeProps,
   async () => {
-    if(props.dateRangeProps==undefined)return;
+    if (props.dateRangeProps == undefined) return;
 
     await get_fix_off_ins_adm_average_list(
       props.dateRangeProps,
@@ -261,7 +261,7 @@ watch(
 //このコンポーネントが読み込まれたらdraw()を実行する
 onMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  if(props.dateRangeProps==undefined)return;
+  if (props.dateRangeProps == undefined) return;
 
   await get_fix_off_ins_adm_average_list(
     props.dateRangeProps,

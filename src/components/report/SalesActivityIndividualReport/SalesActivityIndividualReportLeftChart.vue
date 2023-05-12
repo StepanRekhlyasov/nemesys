@@ -18,6 +18,12 @@ import {
 const { t } = useI18n({ useScope: 'global' });
 const chartOptions = {
   chart: {},
+  title:{
+    text:t('report.title.IndividualPerformanceStatus'),
+    style:{
+      color:'gray'
+    }
+  },
   plotOptions: {
     bar: {
       horizontal: false,

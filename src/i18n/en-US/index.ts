@@ -1075,7 +1075,7 @@ export default {
     basicInfo: 'BO Basic Information',
     time: 'time of',
     request: 'Request',
-    ageLimit: 'Age Limit', 
+    ageLimit: 'Age Limit',
     payment: 'Payment',
     transportationExpenses: 'Transportation Expenses',
     availabilityOnCallSupport: 'Availability of on-call support',
@@ -1536,7 +1536,14 @@ export default {
       BO_total:'BO total',
       BO_New:'BO New',
       BO_Existing:'BO Exisiting',
-
+    },
+    title:{
+      Leadtime:'Leadtime',
+      ApplicationToAddmission:'Application→Addmission',
+      FIXAndInspection:'FIX and Inspection',
+      SalseProductivity:'Salse Productivity',
+      IndividualPerformanceStatus:'Individual Performance Status',
+      BOAcquisitionStatus:'BO Acquisition Status',
     }
   }
 };

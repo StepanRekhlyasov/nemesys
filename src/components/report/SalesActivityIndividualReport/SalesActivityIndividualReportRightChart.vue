@@ -19,6 +19,12 @@ import { Rows } from '../Models';
 const { t } = useI18n({ useScope: 'global' });
 const chartOptions = {
   chart: {},
+  title:{
+    text:t('report.title.BOAcquisitionStatus'),
+    style:{
+      color:'gray'
+    }
+  },
   plotOptions: {
     bar: {
       horizontal: false,

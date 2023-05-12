@@ -20,6 +20,12 @@ const chartOptions = {
   chart: {
     height: 800,
   },
+  title:{
+    text:t('report.title.ApplicationToAddmission'),
+    style:{
+      color:'gray'
+    }
+  },
   plotOptions: {
     bar: {
       columnWidth: '25%',
@@ -80,10 +86,10 @@ const db = getFirestore();
 const rows: Ref<
   {
     name: string;
-    fix: number;
-    inspection: number;
-    offer: number;
-    admission: number;
+    fix: number|string;
+    inspection: number|string;
+    offer: number|string;
+    admission: number|string;
   }[]
 > = ref([]);
 //auth.currentUser.uidとcollection usersのidが一致しているものを探す

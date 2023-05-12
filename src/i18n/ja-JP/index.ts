@@ -1530,6 +1530,15 @@ export default {
       BO_total:'BO合計',
       BO_New:'BO新規',
       BO_Existing:'BO既存',
+    },
+    title:{
+      Leadtime:'リードタイム',
+      ApplicationToAddmission:'応募→入職',
+      FIXAndInspection:'FIX と 職見',
+      SalseProductivity:'営業生産性',
+      IndividualPerformanceStatus:'個人実績状況',
+      BOAcquisitionStatus:'BO獲得状況',
+
     }
   }
 };

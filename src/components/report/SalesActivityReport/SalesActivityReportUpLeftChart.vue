@@ -26,6 +26,12 @@ const chartOptions = {
   chart: {
     height: 800,
   },
+  title:{
+    text:t('report.title.FIXAndInspection'),
+    style:{
+      color:'gray'
+    }
+  },
   plotOptions: {
     bar: {
       columnWidth: '25%',
@@ -79,6 +85,12 @@ const chartOptions = {
 const chartOptionsR = {
   chart: {
     height: 800,
+  },
+  title:{
+    text:t('report.title.SalseProductivity'),
+    style:{
+      color:'gray'
+    }
   },
   plotOptions: {
     bar: {
