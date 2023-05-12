@@ -3,7 +3,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.attraction')"
     @openEdit="edit = true"
-    @closeEdit="edit=false"
+    @closeEdit="edit=false; onReset();"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -137,18 +137,23 @@ const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
 const usersListOption: Ref<selectOptions []> = ref([])
 const applicantStore = useApplicant();
-const data = ref({
-  attractionsStatus: props?.applicant['attractionsStatus'] || '',
-  seductionDay: props?.applicant['seductionDay'] || '',
-  employmentStatus: props?.applicant['employmentStatus'] || '',
-  seduser: props?.applicant['seduser'] || '',
-  classification: props?.applicant['classification'] || '',
-  position: props?.applicant['position'] || [],
-  qualification: props?.applicant['qualification'] || [],
-  period: props?.applicant['period'] || '',
-  memo: props?.applicant['memo'] || '',
-  nursing: props?.applicant['nursing'] || [],
-})
+const data = ref({})
+
+function onReset() {
+  data.value = {
+    attractionsStatus: props?.applicant['attractionsStatus'] || '',
+    seductionDay: props?.applicant['seductionDay'] || '',
+    employmentStatus: props?.applicant['employmentStatus'] || '',
+    seduser: props?.applicant['seduser'] || '',
+    classification: props?.applicant['classification'] || '',
+    position: props?.applicant['position'] || [],
+    qualification: props?.applicant['qualification'] || [],
+    period: props?.applicant['period'] || '',
+    memo: props?.applicant['memo'] || '',
+    nursing: props?.applicant['nursing'] || [],
+  }
+}
+onReset();
 async function save() {
   loading.value = true
   try {

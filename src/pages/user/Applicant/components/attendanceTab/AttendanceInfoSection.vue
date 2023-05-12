@@ -4,7 +4,7 @@
     <div class="col-3 text-right">
       <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="infoEdit = true" class="no-shadow q-ml-lg" size="sm"/>
       <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveInfo" size="sm"/>
-      <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false" size="sm" />
+      <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false; onReset();" size="sm" />
     </div>
   </div>
 
@@ -15,18 +15,18 @@
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit" class="text-uppercase">{{ applicant.attendingStatus }}</span>
       <q-select v-if="infoEdit" outlined dense :options="attendantStatusOption"
-      emit-value map-options v-model="indoData['attendingStatus']" :disable="loading"/>
+      emit-value map-options v-model="data['attendingStatus']" :disable="loading"/>
     </div>
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
       {{ $t('applicant.attendant.day') }}
     </div>
     <div class="col-2 q-pl-md  blue ">
       <span v-if="!infoEdit">{{ applicant.attendingDate }}</span>
-      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="indoData['attendingDate']"  :disable="loading">
+      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendingDate']"  :disable="loading">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="indoData['attendingDate']" mask="YYYY/MM/DD">
+              <q-date v-model="data['attendingDate']" mask="YYYY/MM/DD">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -42,10 +42,10 @@
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit">{{
           usersListOption
-            .filter(user => user.value === indoData['attendee'])
+            .filter(user => user.value === data['attendee'])
             .map(user => user.label).join('')
       }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="indoData['attendee']"
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendee']"
         bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
@@ -56,12 +56,12 @@
     </div>
     <div class="col-10 q-pl-md blue ">
       <hidden-text v-if="!infoEdit" :value="applicant.memo" />
-      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="indoData['memo']" :disable="loading"/>
+      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['memo']" :disable="loading"/>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { attendantStatus } from 'src/shared/constants/Applicant.const';
 import { Ref, ref } from 'vue';
@@ -70,88 +70,67 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
 import { getFirestore } from '@firebase/firestore';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
-import { selectOptions, UserPermissionNames } from 'src/shared/model';
+import { Applicant, selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
+import { useApplicant } from 'src/stores/applicant';
 
-export default {
-  name: 'attendanceInfoComponent',
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    },
-    updateApplicant: {
-      type: Function,
-      required: true
-    }
-  },
-  components: {
-    hiddenText
-  },
-  setup(props) {
-    const db = getFirestore();
-    const organization = useOrganization()
-    const infoEdit = ref(false);
-    const loading = ref(false);
-    const attendantStatusOption = ref(attendantStatus);
-    const usersListOption: Ref<selectOptions[]> = ref([])
-    const indoData = ref({
-      attendingStatus: props?.applicant['attendingStatus'] || '',
-      attendingDate: props?.applicant['attendingDate'] || '',
-      attendee: props?.applicant['attendee'] || '',
-      memo: props?.applicant['memo'] || '',
-    })
+const props = defineProps<{
+  applicant: Applicant
+}>()
 
-    if (organization.currentOrganizationId){
-      loadUser()
-    }
+const db = getFirestore();
+const applicantStore = useApplicant();
+const organization = useOrganization();
+const infoEdit = ref(false);
+const loading = ref(false);
+const attendantStatusOption = ref(attendantStatus);
+const usersListOption: Ref<selectOptions[]> = ref([]);
+const data = ref({});
 
-    function loadUser() {
-      const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+if (organization.currentOrganizationId){
+  loadUser()
+}
 
-      usersSnapshot.then(users => {
-        let list: selectOptions[] = [];
-        users?.forEach((doc) => {
-          const data = doc.data();
-          list.push({
-            label: data.displayName,
-            value: doc.id
-          });
-        });
-        usersListOption.value = list;
-      })
-    }
-
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-
-    return {
-      infoEdit,
-      indoData,
-      attendantStatusOption,
-      loading,
-      usersListOption,
-
-      async saveInfo() {
-        loading.value = true
-        try {
-          await props.updateApplicant(indoData.value);
-          Alert.success($q, t);
-          infoEdit.value = false;
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          Alert.warning($q, t);
-        }
-        loading.value = false
-      }
-    }
+function onReset() {
+  data.value = {
+    attendingStatus: props?.applicant['attendingStatus'] || '',
+    attendingDate: props?.applicant['attendingDate'] || '',
+    attendee: props?.applicant['attendee'] || '',
+    memo: props?.applicant['memo'] || '',
   }
 }
+
+async function saveInfo() {
+  loading.value = true
+  try {
+    await applicantStore.updateApplicant(data.value);
+    Alert.success($q, t);
+    infoEdit.value = false;
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    Alert.warning($q, t);
+  }
+  loading.value = false
+}
+function loadUser() {
+  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+
+  usersSnapshot.then(users => {
+    let list: selectOptions[] = [];
+    users?.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        label: data.displayName,
+        value: doc.id
+      });
+    });
+    usersListOption.value = list;
+  })
+}
+
+const { t } = useI18n({
+  useScope: 'global',
+});
+const $q = useQuasar();
 </script>
-
-<style>
-
-</style>

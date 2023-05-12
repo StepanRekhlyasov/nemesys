@@ -18,7 +18,7 @@ export enum EmploymentStatus {
   'notWorking'
 }
 
-export interface Applicant {
+export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEvaluation {
   id: string;
   name: string;
   kanaName: string;
@@ -45,12 +45,6 @@ export interface Applicant {
   applicationMetod?: string;
   classification?: string;
   totalYear?: string;
-  workingHoursEarly?: string;
-  workingHoursDay?: string;
-  workingHoursLate?: string;
-  workingHoursNight?: string;
-  daysToWork?: string;
-  staffRank?: number;
   address?: string;
   lat?: number;
   lon?: number;
@@ -59,12 +53,109 @@ export interface Applicant {
   employmentStatus?: string;
   position?: string[];
   period?: string;
+
+  // Attendance Info 
+  attendingStatus?: 'ok' | 'ng';
+  attendingDate?: string;
+  attendee?: string;
   memo?: string;
+}
+
+export interface DesiredConditions {
+  timeAvailable?: string;
+  timeToWork?: string;
+  daysToWork?: number;
+  daysPerWeek?: Days[];
+  specialDay?: SpecialDay[];
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  shiftRemarks?: string;
+  meansCommuting?: string;
+  nearestStation?: string;
+  commutingTime?: string;
+  route?: string;
+  commutingTimeRemarks?: string;
+  facilityDesired?: string;
+  ngFacilityType?: string;
+  hourlyRate?: string;
+  transportationServices?: 'possible' | 'no';
+  jobSearchPriorities1?: string;
+  jobSearchPriorities2?: string;
+  jobSearchPriorities3?: string;
+}
+
+export interface PersonalStatus  {
+  smoking?: SmokingStatus;
+  tattoos?: TattoosStatus;
+  marriedStatus?: MarriedStatus;
+  liveTogether?: TattoosStatus;
+  cohabitation?: string;
+  children?: string;
+  medicalHistory?: string;
+  vaccinationStatus?: string;
+  startCaring?: string;
+  interviewsWaitingList?: string;
+  temporaryCompaniesRegistered?: string;
+  startedInCaregiving?: string;
+  daysVisitAtWork?: string;
+}
+
+export interface AssignedEvaluation {
+  language?: Level;
+  comprehension?: Level;
+  staffRank?: number;
+  remarks?: string;
 }
 
 export enum ApplicantSex{
   MALE = 'male',
   FEMALE = 'female'
+}
+
+export enum MarriedStatus {
+  MARRIED = 'married',
+  UNMARRIED = 'unmarried'
+}
+
+export enum Days {
+  SUNDAY = 'sunday',
+  MONDAY = 'monday',
+  TUESDAY = 'tuesday',
+  WEDNESDAY = 'wednesday',
+  FRIDAY = 'friday',
+  SATURDAY = 'saturday',
+  HOLIDAY = 'holiday',
+}
+
+export enum Level {
+  PERFORMANCE = 'performance',
+  EXCELLENT = 'excellent',
+  GOOD = 'good',
+  POSSIBLE = 'possible',
+  NO = 'no',
+}
+
+export enum SpecialDay {
+  GW = 'gw',
+  FESTIVAL = 'festival',
+  CHRISTMAS = 'christmas'
+}
+
+export enum SmokingStatus {
+  NO = 'no',
+  YES = 'yes',
+  PAPER = 'paper',
+  ELECTRONIC = 'electronic',
+  NOWHILEWORKING = 'noWhileWorking',
+  ACCEPTABLE = 'acceptable',
+  NOTPOSSIBLE = 'notPossible',
+}
+
+export enum TattoosStatus {
+  NIL = 'nil',
+  YES = 'yes'
 }
 
 export enum ApplicantOccupation {

@@ -3,7 +3,7 @@
   :isEdit="edit"
   :label="'4.'+ $t('applicant.attendant.assignedEvaluation')"
   @openEdit="edit = true"
-  @closeEdit="edit=false"
+  @closeEdit="edit=false; onReset();"
   @onSave="save">
     <div class="row q-pa-sm ">
       <span class="col-3 text-blue text-weight-regular self-center text-subtitle1">[{{ $t('applicant.attendant.attendeeEvaluation') }}]</span>
@@ -54,71 +54,55 @@
   </DropDownEditGroup>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { computed, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
+import { useApplicant } from 'src/stores/applicant';
+import { Applicant, AssignedEvaluation } from 'src/shared/model';
 
-export default {
-  name: 'assignedEvaluationComponent',
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    },
-    updateApplicant: {
-      type: Function,
-      required: true
-    }
-  },
-  components: {
-    DropDownEditGroup
-  },
-  setup(props) {
-    const edit = ref(false);
-    const expertiseLevelOptions = ref(expertiseLevelList)
-    const loading = ref(false);
-    const data =  ref({
-      language: props?.applicant['language'] || '',
-      attendingDate: props?.applicant['attendingDate'] || '',
-      staffRank: props?.applicant['staffRank'] || '',
-    })
 
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-    const staffRank = computed(() => RankCount.getRank(props.applicant['staffRank']))
 
-    return {
-      edit,
-      data,
-      loading,
-      staffRank,
-      expertiseLevelOptions,
+const props = defineProps<{
+  applicant: Applicant
+}>();
+const applicantStore = useApplicant();
+const { t } = useI18n({
+  useScope: 'global',
+});
+const $q = useQuasar();
+const staffRank = computed(() => props.applicant['staffRank'] && RankCount.getRank(props.applicant['staffRank']))
+const edit = ref(false);
+const expertiseLevelOptions = ref(expertiseLevelList)
+const loading = ref(false);
+const data: Ref<AssignedEvaluation> =  ref({});
 
-      async save() {
-        loading.value = true
-        try {
-          await props.updateApplicant(data.value);
-          Alert.success($q, t);
-          edit.value = false;
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          Alert.warning($q, t);
-        }
-        loading.value = false
-      }
-    }
+function onReset() {
+  data.value = {
+    language: props?.applicant['language'] || '',
+    attendingDate: props?.applicant['attendingDate'] || '',
+    staffRank: props?.applicant['staffRank'] || '',
+    remarks: props?.applicant['remarks'] || ''
+  } as AssignedEvaluation;
+}
+onReset();
+
+
+async function save() {
+  loading.value = true
+  try {
+    await applicantStore.updateApplicant(data.value);
+    Alert.success($q, t);
+    edit.value = false;
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    Alert.warning($q, t);
   }
+  loading.value = false
 }
 </script>
-
-<style>
-
-</style>
