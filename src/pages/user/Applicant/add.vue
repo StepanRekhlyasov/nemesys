@@ -16,7 +16,8 @@
                 {{ $t('applicant.add.name') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['name']" bg-color="white" hide-bottom-space />
+                <q-input outlined dense v-model="applicantData['name']" bg-color="white"
+                  :rules="[(val) => !!val || '']" hide-bottom-space />
               </div>
             </div>
 
@@ -247,8 +248,8 @@
 </template>
  
 <script lang="ts">
-import { useQuasar, date } from 'quasar';
-import { ref } from 'vue';
+import { useQuasar, date, QForm } from 'quasar';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 //import { doc, setDoc, getFirestore, serverTimestamp, getDoc, addDoc } from "firebase/firestore";
 import {
@@ -289,7 +290,7 @@ export default {
     const statusOption = ref(statusList);
 
     const accept = ref(false);
-    const applicantForm = ref(null);
+    const applicantForm: Ref<QForm|null> = ref(null);
     const loading = ref(false);
     const imageURL = ref('');
     const applicantImage = ref([]);
@@ -310,8 +311,7 @@ export default {
           icon: 'cloud_done',
           message: t('success'),
         });
-        applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-        //applicantForm.value.resetValidation();
+        applicantForm.value?.reset();
       } catch (error) {
         console.log(error);
         loading.value = false;
@@ -323,6 +323,13 @@ export default {
         });
       }
     }
+    
+    function onReset() {
+      applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
+      if (applicantForm.value) {
+        applicantForm.value.resetValidation();
+      }
+    }
 
     return {
       applicantData,
@@ -331,6 +338,7 @@ export default {
       prefectureOption,
       statusOption,
       loading,
+      onReset,
       imageURL,
       applicantImage,
       organizationStore,
@@ -376,11 +384,6 @@ export default {
         else {
           saveApplicantData(docRef, data);
         }
-      },
-
-      onReset() {
-        applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-        //applicantForm.value.resetValidation();
       },
 
       onFileChange(files) {
