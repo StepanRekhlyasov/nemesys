@@ -16,8 +16,7 @@
                 {{ $t('applicant.add.name') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['name']" bg-color="white" lazy-rules
-                  :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+                <q-input outlined dense v-model="applicantData['name']" bg-color="white" hide-bottom-space />
               </div>
             </div>
 
