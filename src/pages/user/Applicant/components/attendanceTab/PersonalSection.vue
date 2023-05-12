@@ -1,10 +1,12 @@
 <template>
   <q-form @submit="save">
+
+
     <DropDownEditGroup
       :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
-      @openDropDown="edit = true"
-      @closeDropDown="edit=false"
+      @openEdit="edit = true"
+      @closeEdit="edit=false"
       @onSave="save">
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">

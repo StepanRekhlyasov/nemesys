@@ -2,8 +2,8 @@
   <DropDownEditGroup
     :isEdit="desiredEdit"
     :label="'1.'+ $t('applicant.attendant.desiredConditions')"
-    @openDropDown="desiredEdit = true"
-    @closeDropDown="desiredEdit=false"
+    @openEdit="desiredEdit = true"
+    @closeEdit="desiredEdit=false"
     @onSave="saveDesired">
 
     <div class="row q-pb-sm">
