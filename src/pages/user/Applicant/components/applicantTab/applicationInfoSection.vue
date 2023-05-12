@@ -4,7 +4,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
-    @closeEdit="edit=false"
+    @closeEdit="edit = false"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -62,8 +62,8 @@
         {{ $t('applicant.list.info.kana') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.name || ''}}</span>
-        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['kana']" />
+        <span v-if="!edit">{{ applicant.kanaName || ''}}</span>
+        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['kanaName']" />
       </div>
     </div>
 
@@ -168,92 +168,52 @@
         {{ $t('applicant.list.info.addres') }}
       </div>
       <div class="col-9 q-pl-md">
-        <hidden-text v-if="!edit" :value="applicant.addres" />
+        <hidden-text v-if="!edit" :value="applicant.address" />
         <q-input v-if="edit" outlined dense v-model="data['addres']" />
       </div>
     </div>
   </DropDownEditGroup>
 </template>
-<script lang="ts">
-import { Alert } from 'src/shared/utils/Alert.utils';
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
-import { applicationMethod, employmentStatus } from 'src/shared/constants/Applicant.const';
+import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
+import { Applicant } from 'src/shared/model';
+import { useApplicant } from 'src/stores/applicant';
+import { limitDate } from 'src/shared/utils/utils'
 
-export default {
-  name: 'ApplicantInformationComponent',
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    },
-    updateApplicant: {
-      type: Function,
-      required: true
-    }
-  },
-  components: {
-    hiddenText,
-    DropDownEditGroup
-  },
-  setup(props) {
-    const edit = ref(false);
-    const loading = ref(false);
-    const applicationMethodOption = ref(applicationMethod)
-    const employmentStatusOption = ref(employmentStatus)
-    const data = ref( {
-      applicationDate: props?.applicant['applicationDate'] || '',
-      name: props?.applicant['name'] || '',
-      media: props?.applicant['media'] || '',
-      kana: props?.applicant['kana'] || '',
-      applicationMetod: props?.applicant['applicationMetod'] || '',
-      sex: props?.applicant['sex'] || '',
-      dob: props?.applicant['dob'] || '',
-      phone: props?.applicant['phone'] || '',
-      email: props?.applicant['email'] || '',
-      lon: props?.applicant['lon'] || '',
-      lat: props?.applicant['lat'] || '',
-      postCode: props?.applicant['postCode'] || '',
-    })
-    const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'')
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-    return {
-      edit,
-      loading,
-      data,
-      age,
-      applicationMethodOption,
-      employmentStatusOption,
-
-      async save() {
-        loading.value = true
-        try {
-          await props.updateApplicant(data.value);
-          Alert.success($q, t);
-          edit.value = false;
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          Alert.warning($q, t);
-        }
-        loading.value = false
-      },
-      limitDate(date) {
-        return date <= new Date().toLocaleDateString('ja-JP')
-      },
-    }
+const props = defineProps<{
+  applicant: Applicant
+}>()
+const edit = ref(false);
+const loading = ref(false);
+const applicationMethodOption = ref(applicationMethod)
+const applicantStore = useApplicant();
+const data = ref( {
+  applicationDate: props?.applicant['applicationDate'] || '',
+  name: props?.applicant['name'] || '',
+  media: props?.applicant['media'] || '',
+  kanaName: props?.applicant['kanaName'] || '',
+  applicationMetod: props?.applicant['applicationMetod'] || '',
+  sex: props?.applicant['sex'],
+  dob: props?.applicant['dob'] || '',
+  phone: props?.applicant['phone'] || '',
+  email: props?.applicant['email'] || '',
+  lon: props?.applicant['lon'] || '',
+  lat: props?.applicant['lat'] || '',
+  postCode: props?.applicant['postCode'] || '',
+})
+const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'')
+async function save() {
+  loading.value = true
+  try {
+    await applicantStore.updateApplicant(data.value);
+    edit.value = false;
+  } catch (error) {
+    loading.value = false;
   }
-
+  loading.value = false
 }
 </script>
-
-<style>
-
-</style>

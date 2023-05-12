@@ -1,19 +1,33 @@
-import { QueryDocumentSnapshot, collection, getCountFromServer, getDocs, getFirestore, limit, orderBy, query, startAt, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
 import { Applicant, Client, ClientOffice } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
+import { RankCount } from 'src/shared/utils/RankCount.utils';
+import { watch } from 'vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
 
 interface ApplicantState {
   clientList: Client[],
-  selectApplicant: number,
   applicantsByColumn: ApplicantsByColumn,
   applicantsByStatusCount: ApplicantsByStatusCount,
   continueFromDoc: ContinueFromDoc,
   applicantFilter: ApplicantFilter,
   reFilterOnReturn: boolean,
-  prefectureList: {label: string, value: string | number}[]
+  prefectureList: {label: string, value: string | number}[],
+  selectedApplicant: Applicant | null
+  columnsLoading: {
+    'wait_contact': boolean,
+    'wait_attend': boolean,
+    'wait_FIX': boolean,
+    'wait_visit': boolean,
+    'wait_offer': boolean,
+    'wait_entry': boolean,
+    'wait_termination': boolean,
+  }
 }
 
 type ContinueFromDoc = {
@@ -26,12 +40,6 @@ type ContinueFromDoc = {
   'wait_termination': null | QueryDocumentSnapshot,
 }
 
-type ApplicantsByStatusCount = {
-  'entry': number,
-  'retired': number,
-  'working': number,
-}
-
 type ApplicantsByColumn = {
   'wait_contact': Applicant[] | [];
   'wait_attend': Applicant[] | [];
@@ -42,11 +50,18 @@ type ApplicantsByColumn = {
   'wait_termination': Applicant[] | [];
 };
 
+type ApplicantsByStatusCount = {
+  'entry': number,
+  'retired': number,
+  'working': number,
+}
+
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();  
+  const $q = useQuasar();
+  const { t } = useI18n({ useScope: 'global' });
   const state = ref<ApplicantState>({
     clientList: [] as Client[],
-    selectApplicant: 0,
     applicantsByColumn: {
       'wait_contact': [],
       'wait_attend': [],
@@ -77,7 +92,17 @@ export const useApplicant = defineStore('applicant', () => {
       currentStatusMonth: ''
     },
     reFilterOnReturn: false,
-    prefectureList: []
+    prefectureList: [],
+    selectedApplicant: null,
+    columnsLoading: {
+      'wait_contact': false,
+      'wait_attend': false,
+      'wait_FIX': false,
+      'wait_visit': false,
+      'wait_offer': false,
+      'wait_entry': false,
+      'wait_termination': false,
+    }
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
@@ -137,6 +162,35 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
+  async function updateApplicant(applicantData : Partial<Applicant>, showAlert = true) {
+    if (!state.value.selectedApplicant) return; 
+    const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
+    try {
+      await updateDoc(applicantRef, applicantData)
+      if (showAlert){ Alert.success($q, t); }
+      state.value.selectedApplicant = {
+        ...state.value.selectedApplicant,
+        ...applicantData,
+        staffRank: RankCount.countRank(state.value.selectedApplicant)
+      }
+    } catch (error) {
+      if(state.value.selectedApplicant?.status){
+        try {
+          state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+        } catch(error) {
+          if (showAlert){  Alert.warning($q, t); }
+        }
+      }
+      if (showAlert){  Alert.warning($q, t); }
+    }
+  };
+
+  async function getApplicantByID(id : string){
+    const applicantRef = doc(db, 'applicants/' + id);
+    const result = await getDoc(applicantRef)
+    return result.data() as Applicant
+  }
+
   async function getClients( active_organization_id?: string ): Promise<Client[]> {
     const clientsData = await getClientList(db, {active_organization_id})
     const list: Client[] = [] ;
@@ -166,7 +220,22 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
+  
+  /** update and sort columns without fetching data */
+  watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
+    if (!newValue || !oldValue) return;
+    if (newValue == oldValue) return;
+    if (state.value.applicantsByColumn[newValue]) {
+      const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
+      if (index>-1) return; 
+      state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
+      state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
+    }
+    if (state.value.applicantsByColumn[oldValue]) {
+      state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
+    }
+  }, { immediate: true, deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant }
 })
   

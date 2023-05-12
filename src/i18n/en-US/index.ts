@@ -1050,7 +1050,16 @@ export default {
         'sat': 'Sat',
         'sun': 'Sun',
         'holiday': 'Holiday',
-        'memo': 'Memo'
+        'memo': 'Memo',
+        'staffName': 'Staff Name',
+        'jobType': 'Job Type',
+        'employmentLocation': 'Employment Location',
+        'contactPerson': 'Contact Person',
+        'startDate': 'Start Date',
+        'endDate': 'End Date',
+        'remainingDays': 'Remaining Days',
+        'invoice': 'Invoice',
+        'payment': 'Payment'
       }
     }
   },

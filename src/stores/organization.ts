@@ -200,6 +200,15 @@ export const useOrganization = defineStore('organization', () => {
     return querySnapshot.docs[0].data() as Organization
   }
 
+  async function getOrganizationsByName(name: string) {
+    const organizationsQuery = query(collection(db, 'organization'), orderBy('name'), startAt(name), endAt(name + '\uf8ff'),)
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization }
+    const organizationsData = await getDocs(organizationsQuery);
+
+    return organizationsData.docs.map((organization) => {
+      return organization.data() as Organization
+    })
+  }
+
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization, getOrganizationsByName }
 })

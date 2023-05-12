@@ -3,8 +3,9 @@ import { defineProps, defineEmits, onMounted, ref } from 'vue';
 import { usePagination } from 'src/stores/pagination';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { Pagination } from './types';
+import { QPaginationProps } from 'quasar';
 
-interface TablePaginationProps {
+interface TablePaginationProps extends Omit<QPaginationProps, 'modelValue' | 'max'> {
   pagination: Pagination
   isAdmin: boolean | undefined
 }
@@ -92,7 +93,7 @@ async function queryFirstPage() {
     <q-pagination :model-value="currentPage"
       @update:model-value="async (newPage) => { await onPageUpdate(newPage); currentPage = newPage }" gutter="md"
       size="18px" color="white" text-color="black" active-text-color="white" :active-color="color" :max="maxPages"
-      :max-pages="1" outline direction-links :ellipses="false" :boundary-numbers="true" />
+      :max-pages="1" outline direction-links :ellipses="false" :boundary-numbers="true" v-bind="$attrs" />
   </div>
 </template>
 
