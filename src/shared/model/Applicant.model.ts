@@ -1,4 +1,6 @@
 import { User } from 'firebase/auth';
+import { Timestamp } from 'firebase/firestore';
+import { PrefectureListModel } from './Metadata.model';
 
 export interface ApplicantExperience {
   id: string;
@@ -20,46 +22,47 @@ export enum EmploymentStatus {
 
 export interface Applicant {
   id: string;
-  name: string;
-  kanaName: string;
-  postCode?: string;
-  prefecture?: string;
-  municipalities?: string;
-  street: string;
-  apartment: string;
-  phone: string;
-  email: string;
-  status?: ApplicantStatus;
-  branchIncharge?: string;
-  sex?: ApplicantSex;
-  dob?: string;
-  occupation?: ApplicantOccupation;
-  qualification?: ApplicantQualification[];
-  applicationDate?: string;
-  currentStatusTimestamp: number;
-  currentStatusMonth?: number;
-  created_at: string;
-  deleted: false;
-  imageURL?: string;
-  media?: string;
-  applicationMetod?: string;
-  classification?: string;
-  totalYear?: string;
-  workingHoursEarly?: string;
-  workingHoursDay?: string;
-  workingHoursLate?: string;
-  workingHoursNight?: string;
-  daysToWork?: string;
-  staffRank?: number;
   address?: string;
+  applicationDate?: string;
+  applicationMetod?: string;
+  apartment: string;
+  attractionsStatus?: string;
+  branchIncharge?: string;
+  classification?: string;
+  created_at: Timestamp;
+  currentStatusMonth?: number;
+  currentStatusTimestamp: Timestamp;
+  deleted: false;
+  dob?: string;
+  daysToWork?: string;
+  email: string;
+  employmentStatus?: string;
+  imageURL?: string;
+  kanaName: string;
   lat?: number;
   lon?: number;
-  attractionsStatus?: string;
-  seductionDay?: string;
-  employmentStatus?: string;
-  position?: string[];
-  period?: string;
+  media?: string;
   memo?: string;
+  municipalities?: string;
+  name: string;
+  occupation?: ApplicantOccupation;
+  period?: string;
+  phone: string;
+  position?: string[];
+  postCode?: string;
+  prefecture?: PrefectureListModel;
+  qualification?: ApplicantQualification[];
+  seductionDay?: string;
+  sex?: ApplicantSex;
+  status?: ApplicantStatus;
+  statusChangeTimestamp?: {[key: string] : Timestamp}[]
+  street: string;
+  staffRank?: number;
+  totalYear?: string;
+  workingHoursDay?: string;
+  workingHoursEarly?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
 }
 
 export enum ApplicantSex{

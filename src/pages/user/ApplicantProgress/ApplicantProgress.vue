@@ -100,11 +100,11 @@
   import ApplicantColumn from './components/ApplicantColumn.vue';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
-  import { useMetadata } from 'src/stores/metadata';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'
   import { limitQuery } from './const/applicantColumns';
   import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
+  import { prefectureList } from 'src/shared/constants/Prefecture.const';
   
   /** consts */
   const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
@@ -124,7 +124,6 @@
 
   /** stores */
   const applicantStore = useApplicant();
-  const metadataStore = useMetadata();
 
   /** getters */
   const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
@@ -146,23 +145,15 @@
 
   onMounted( async ()=>{
     fetchResults()
-    if(applicantStore.state.prefectureList.length){
-      prefectureOptions.value = applicantStore.state.prefectureList
-    } else {
-      const metadataData = await metadataStore.getPrefectureJP()
-      const prefKeys = Object.keys(metadataData)
-      prefKeys.sort()
-      prefectureOptions.value = prefKeys.map((item)=>{
-        return {
-          label: 'prefectures.' + item,
-          value: item
-        }
-      })
-      prefectureOptions.value.unshift({
-        label: 'common.all',
-        value: 0
-      })
-      applicantStore.state.prefectureList = prefectureOptions.value
-    }
+    prefectureOptions.value = prefectureList.value.map((item)=>{
+      return {
+        label: 'prefectures.'+item.label,
+        value: item.value
+      }
+    })
+    prefectureOptions.value.unshift({
+      label: 'common.all',
+      value: 0
+    })
   })
 </script>
