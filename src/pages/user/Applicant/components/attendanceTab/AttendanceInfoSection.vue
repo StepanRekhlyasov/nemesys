@@ -90,6 +90,7 @@ const data = ref({});
 if (organization.currentOrganizationId){
   loadUser()
 }
+resetData();
 
 function resetData() {
   data.value = {
