@@ -6,6 +6,7 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import CFPageActions from './components/ClientFactory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from './NewClientDrawer.vue';
+import NewClientFactoryDrawer from './NewClientFactoryDrawer.vue';
 import ClientFactoryTable from './components/ClientFactory/ClientFactoryTable.vue';
 import Pagination from './components/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -22,8 +23,11 @@ const { clients } = storeToRefs(clientStore)
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
+
+// drawers
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
+const isNewClientFactoryDrawer = ref(false)
 
 const pagination = ref({
     sortBy: 'desc',
@@ -43,9 +47,23 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     }
 }
 
+watch(clients, () => {
+    fetchData.value = true;
+    clientFactoryStore.getClientFactories(clients.value)
+}, { immediate: true, deep: true });
+
+watch(clientFactories, () => {
+    tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+    fetchData.value = false;
+}, { deep: true });
+
+// client-factory drawer
+
 const hideClientFactoryDrawer = () => {
     isClientFactoryDrawer.value = false
 }
+
+// new client drawer
 
 const hideNewClientDrawer = () => {
     isNewClientDrawer.value = false
@@ -55,16 +73,16 @@ const openNewClientDrawer = () => {
     isNewClientDrawer.value = true
 }
 
-watch(clients, () => {
-    fetchData.value = true;
-    clientFactoryStore.getClientFactories(clients.value)
-}, { immediate: true, deep: true });
+// new client-factory drawer
 
-watch(clientFactories, () => {
-    console.log('update table rows because of factories');
-    tableRows.value = clientFactoriesToTableRows(clientFactories.value)
-    fetchData.value = false;
-}, {deep: true});
+const hideNewClientFactoryDrawer = () => {
+    isNewClientFactoryDrawer.value = false
+}
+
+const openNewClientFactoryDrawer = () => {
+    isNewClientFactoryDrawer.value = true
+}
+
 </script>
 
 <template>
@@ -74,7 +92,7 @@ watch(clientFactories, () => {
                 <div class="title text-h6 text-weight-bold">{{ t('menu.admin.masterSearch') }}</div>
             </q-card-section>
             <q-separator color="grey-4" size="2px" />
-            <CFPageActions @open-drawer="openNewClientDrawer"/>
+            <CFPageActions @open-client-drawer="openNewClientDrawer" @open-client-factory-drawer="openNewClientFactoryDrawer"/>
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
@@ -97,7 +115,12 @@ watch(clientFactories, () => {
         <NewClientDrawer
         @hide-drawer="hideNewClientDrawer"
         theme="accent"
-        :isDrawer="isNewClientDrawer" />
+        :is-drawer="isNewClientDrawer" />
+
+        <NewClientFactoryDrawer 
+        @hide-drawer="hideNewClientFactoryDrawer"
+        theme="accent"
+        :is-drawer="isNewClientFactoryDrawer"/>
     </div>
 </template>
 
