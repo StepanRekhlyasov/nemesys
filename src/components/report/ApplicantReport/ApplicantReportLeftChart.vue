@@ -441,7 +441,6 @@ onMounted(async () => {
 
 <script lang="ts">
 import VueApexCharts from 'vue3-apexcharts';
-import { async } from '@firebase/util';
 
 export default {
   name: 'ChartExample',

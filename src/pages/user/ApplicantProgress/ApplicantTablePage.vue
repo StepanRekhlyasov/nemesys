@@ -71,11 +71,11 @@
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
         <applicant-table :status="statusParams.firestore" :applicants="applicantsByColumn" :loading="loading" @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" />
-        <TablePagination 
-          :isAdmin="false" 
-          ref="paginationRef" 
-          :pagination="pagination" 
-          @on-loading-state-change="(v) => loading = v" 
+        <TablePagination
+          :isAdmin="false"
+          ref="paginationRef"
+          :pagination="pagination"
+          @on-loading-state-change="(v) => loading = v"
           @on-data-update="async (newData) => {
             applicantStore.state.applicantsByColumn[statusParams.firestore] = newData
           }"
@@ -99,7 +99,6 @@ import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
-import { Applicant } from 'src/shared/model';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);

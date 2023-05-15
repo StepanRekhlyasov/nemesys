@@ -15,7 +15,6 @@ import {
   Query,
   DocumentData,
 } from 'firebase/firestore';
-import { Rows } from '../Models';
 const { t } = useI18n({ useScope: 'global' });
 const chartOptions = {
   chart: {},
@@ -64,7 +63,7 @@ const series: Ref<{ name: string; data: number[]; type: string }[]> = ref([]);
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const organization_id = ref('');
 const db = getFirestore();
-const rows: Ref<any[]> = ref([]);
+const rows= ref([]);
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string }|undefined;
