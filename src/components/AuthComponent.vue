@@ -39,8 +39,7 @@ import { useI18n } from 'vue-i18n';
 import { FirebaseError } from '@firebase/util';
 import { useUserStore } from 'src/stores/user';
 import { organizationCodeRule } from './handlers/rules';
-import { createApp } from 'vue'
-import App from '../App.vue'
+
 export default defineComponent({
   name: 'AuthComponent',
   components: {},
@@ -62,7 +61,6 @@ export default defineComponent({
     const router = useRouter();
     const user = useUserStore()
     const loading = ref(false)
-    const app = createApp(App)
     const submitForm = () => {
       signInExistingUser(formData.email, formData.password);
     };
@@ -79,15 +77,14 @@ export default defineComponent({
     const signInExistingUser = async (email = '', password = '') => {
       const auth = getAuth();
       loading.value = true
-      app.provide('code', formData.code)
       try {
         const creds = await signInWithEmailAndPassword(auth, email, password)
         const affiliation = await user.checkUserAffiliation(formData.code, creds.user.uid)
+
         if (!affiliation) {
           await auth.signOut()
           throw new Error(t('login.enterValidCode'))
         }
-        // Vue.prototype.$code = formData.code
 
         router.push('/');
       } catch (error) {
