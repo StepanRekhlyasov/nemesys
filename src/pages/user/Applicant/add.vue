@@ -251,13 +251,13 @@
 import { useQuasar, date, QForm } from 'quasar';
 import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-//import { doc, setDoc, getFirestore, serverTimestamp, getDoc, addDoc } from "firebase/firestore";
 import {
   collection,
   setDoc,
   doc,
   getFirestore,
   serverTimestamp,
+Timestamp,
 } from 'firebase/firestore';
 import { limitDate } from 'src/shared/utils/utils'
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -343,17 +343,14 @@ export default {
       applicantImage,
       organizationStore,
       limitDate,
-
       async onSubmit() {
         loading.value = true;
         let data = applicantData.value;
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
-        if(data['applicationDate']){ 
-          const dateFormatted = date.extractDate(data['applicationDate'], 'YYYY/MM/DD HH:mm');
-          data['currentStatusMonth'] = dateFormatted.getMonth()+1;
-          data['currentStatusTimestamp'] = dateFormatted.getTime()/1000;
-        }
+        data['currentStatusMonth'] = Timestamp.now().toDate().getMonth()+1;
+        data['currentStatusTimestamp'] = serverTimestamp();
+        data['statusChangeTimestamp'] = { [data['status']] : serverTimestamp() }
         data['deleted'] = false;
         const docRef = doc(collection(db, 'applicants'));
 

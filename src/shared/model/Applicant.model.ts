@@ -1,4 +1,5 @@
 import { User } from 'firebase/auth';
+import { Timestamp } from 'firebase/firestore';
 
 export interface ApplicantExperience {
   id: string;
@@ -29,29 +30,27 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   apartment: string;
   phone: string;
   email: string;
-  status?: ApplicantStatus;
   branchIncharge?: string;
   sex?: ApplicantSex;
   dob?: string;
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
   applicationDate?: string;
-  currentStatusTimestamp: number;
-  currentStatusMonth?: number;
-  created_at: string;
-  deleted: false;
-  imageURL?: string;
   media?: string;
   applicationMetod?: string;
-  classification?: string;
   totalYear?: string;
   address?: string;
+  classification?: string;
+  created_at: Timestamp;
+  currentStatusMonth?: number;
+  currentStatusTimestamp: Timestamp;
+  deleted: false;
+  daysToWork?: string;
+  imageURL?: string;
   lat?: number;
   lon?: number;
   attractionsStatus?: string;
-  seductionDay?: string;
   employmentStatus?: string;
-  position?: string[];
   period?: string;
   rank: number;
 
@@ -60,6 +59,15 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   attendingDate?: string;
   attendee?: string;
   memo?: string;
+  position?: string[];
+  seductionDay?: string;
+  status?: ApplicantStatus;
+  statusChangeTimestamp?: {[key: string] : Timestamp}[]
+  staffRank?: number;
+  workingHoursDay?: string;
+  workingHoursEarly?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
 }
 
 export interface DesiredConditions {
