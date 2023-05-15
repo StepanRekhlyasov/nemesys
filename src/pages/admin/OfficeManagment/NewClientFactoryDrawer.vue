@@ -2,6 +2,7 @@
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { withDefaults, defineEmits, defineProps, ref } from 'vue';
+import { useClientFactory } from 'src/stores/clientFactory'
 import NewClientFactoryFormGroup from 'src/components/form/NewClientFactoryFormGroup.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 const { t } = useI18n({ useScope: 'global' });
@@ -15,7 +16,8 @@ withDefaults(
     }
 )
 
-const $q = useQuasar();
+const $q = useQuasar()
+const { addClientFactory } = useClientFactory()
 
 const childFormRef = ref<{
     validateAndSubmit: () => void
@@ -42,6 +44,8 @@ const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) 
     if(newClientFactoryData) {
 
         try {
+
+            await addClientFactory(newClientFactoryData as ClientFactory)
 
             $q.notify({
                 color: 'green-4',

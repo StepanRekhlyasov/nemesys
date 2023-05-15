@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineEmits, defineProps } from 'vue';
+import { ref, defineEmits, defineProps, watch } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
@@ -10,9 +10,9 @@ const props = defineProps<{
 const emit = defineEmits(['update:modelValue'])
 const localName = ref(props.modelValue)
 
-const updateClientFactoryName = (newVal: string) => {
+watch(localName, (newVal) => {
     emit('update:modelValue', newVal)
-};
+});
 
 </script>
 
@@ -23,8 +23,7 @@ const updateClientFactoryName = (newVal: string) => {
                 {{ t('client.add.officeName') }}
                 <span class="text-red-5">*</span>
             </q-item-label>
-            <q-input outlined dense v-model="localName" :placeholder="t('client.add.clientLabel')"
-                    @input="updateClientFactoryName" lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+            <q-input outlined dense v-model="localName" :placeholder="t('client.add.clientLabel')" lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
         </q-item-section>
     </q-item>
 </template>

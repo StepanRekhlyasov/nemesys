@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineEmits, defineProps } from 'vue';
+import { ref, defineEmits, defineProps, watch } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
@@ -11,9 +11,9 @@ const emit = defineEmits(['update:modelValue'])
 
 const localName = ref(props.modelValue)
 
-const updateClientName = (newVal: string) => {
+watch(localName, (newVal) => {
     emit('update:modelValue', newVal)
-};
+});
 </script>
 
 <template>
@@ -27,7 +27,6 @@ const updateClientName = (newVal: string) => {
                 outlined
                 dense
                 v-model="localName"
-                @input="updateClientName"
                 :placeholder="t('client.add.clientLabel')"
                 lazy-rules
                 :rules="[(val) => (val && val.length > 0) || '']"

@@ -47,7 +47,7 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     }
 }
 
-watch(clients, () => {
+watch([clients, clientFactories], () => {
     fetchData.value = true;
     clientFactoryStore.getClientFactories(clients.value)
 }, { immediate: true, deep: true });

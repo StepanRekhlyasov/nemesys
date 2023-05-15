@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
@@ -11,9 +11,9 @@ const emit = defineEmits(['update:modelValue']);
 
 const localHead = ref(props.modelValue);
 
-const updateOfficeHead = (newVal: string | number | null) => {
-    emit('update:modelValue', newVal);
-};
+watch(localHead, (newVal) => {
+    emit('update:modelValue', newVal)
+});
 </script>
 
 <template>
@@ -24,7 +24,7 @@ const updateOfficeHead = (newVal: string | number | null) => {
                 <span class="text-red-5">*</span>
             </q-item-label>
             <q-input outlined dense v-model="localHead" :placeholder="t('client.add.clientLabel')" lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space @update:modelValue="updateOfficeHead" />
+                :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
         </q-item-section>
     </q-item>
 </template>
