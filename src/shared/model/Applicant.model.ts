@@ -29,7 +29,10 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   street: string;
   apartment: string;
   phone: string;
-  email: string;
+  email: string;  
+  status?: ApplicantStatus;
+  statusChangeTimestamp?: {[key: string] : Timestamp}[]
+  staffRank?: number;
   branchIncharge?: string;
   sex?: ApplicantSex;
   dob?: string;
@@ -45,14 +48,12 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   currentStatusMonth?: number;
   currentStatusTimestamp: Timestamp;
   deleted: false;
-  daysToWork?: string;
   imageURL?: string;
   lat?: number;
   lon?: number;
   attractionsStatus?: string;
   employmentStatus?: string;
   period?: string;
-  rank: number;
 
   // Attendance Info 
   attendingStatus?: 'ok' | 'ng';
@@ -61,13 +62,6 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   memo?: string;
   position?: string[];
   seductionDay?: string;
-  status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp}[]
-  staffRank?: number;
-  workingHoursDay?: string;
-  workingHoursEarly?: string;
-  workingHoursLate?: string;
-  workingHoursNight?: string;
 }
 
 export interface DesiredConditions {

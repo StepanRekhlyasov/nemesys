@@ -2,7 +2,7 @@
   <DropDownEditGroup
     :isEdit="edit.includes('info')"
     :label="$t('applicant.list.fixEmployment.info')"
-    @openEdit="emit('openEdit')"
+    @openEdit="emit('openEdit'); onReset();"
     @closeEdit="emit('closeEdit'); onReset();"
     @onSave="emit('save', 'info', data)">
     <div class="row q-pb-sm">

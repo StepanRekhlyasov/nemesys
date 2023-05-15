@@ -59,7 +59,7 @@
             :fix-data="fixData" 
             :edit-data="data"
             :users-list-option="usersListOption"
-            @save="save('jobSearchInfo')"
+            @save="save"
             @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
             @openEdit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
         </q-card-section>
@@ -72,7 +72,7 @@
             :fix-data="fixData" 
             :edit-data="data"
             :users-list-option="usersListOption"
-            @save="save('jobOffersInfo')"
+            @save="save"
             @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
             @openEdit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
         </q-card-section>
@@ -85,7 +85,7 @@
             :fix-data="fixData" 
             :edit-data="data"
             :users-list-option="usersListOption"
-            @save="save('employmentInfo')"
+            @save="save"
             @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')" 
             @openEdit="edit.push('employmentInfo')" :disable-level="disableLevel"  />
         </q-card-section>
@@ -171,7 +171,7 @@ function save(type: string, dataR) {
     }
     case 'jobSearchInfo': {
       retData = pick(
-        data.value,
+        dataR,
         ['inspectionStatus', 'inspectionDate', 'reasonNG', 'chargeOfFacility',
         'jobTitle', 'contact', 'comments', 'notesInspection'])
       if (retData['inspectionDate']) {
@@ -181,20 +181,20 @@ function save(type: string, dataR) {
     }
     case 'jobOffersInfo': {
       retData = pick(
-        data.value,
+        dataR,
         ['offerStatus', 'offerDate', 'offerReasonNG', 'contactPerson', 'memo',
         'offerReasonNG', 'chargeOfOffer', 'offerMemo'])
       if (retData['offerDate']) {
-        retData['offerDate'] = Timestamp.fromDate(new Date(retData['data']))
+        retData['offerDate'] = Timestamp.fromDate(new Date(retData['offerDate']))
       }
       break;
     }
     case 'employmentInfo': {
       retData = pick(
-        data.value,
+        dataR,
         ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
       if (retData['admissionDate']) {
-        retData['admissionDate'] = Timestamp.fromDate(new Date(retData['data']))
+        retData['admissionDate'] = Timestamp.fromDate(new Date(retData['admissionDate']))
       }
       break;
     }

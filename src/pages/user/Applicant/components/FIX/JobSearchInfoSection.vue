@@ -2,9 +2,9 @@
   <DropDownEditGroup
 		:isEdit="edit.includes('jobSearchInfo')"
 		:label="$t('applicant.list.fixEmployment.jobSearchInfo')"
-		@openEdit="emit('openEdit')"
+		@openEdit="emit('openEdit');onReset();"
 		@closeEdit="emit('closeEdit');onReset();"
-		@onSave="emit('save')"
+		@onSave="emit('save', 'jobSearchInfo', data)"
 		:isDisabledButton="disableLevel < 1">
 
 		<div class="row q-pb-sm">

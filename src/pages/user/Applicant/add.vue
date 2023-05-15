@@ -248,7 +248,7 @@
 </template>
  
 <script lang="ts">
-import { useQuasar, date, QForm } from 'quasar';
+import { useQuasar, QForm } from 'quasar';
 import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {

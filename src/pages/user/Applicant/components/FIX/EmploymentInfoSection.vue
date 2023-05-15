@@ -2,12 +2,13 @@
   <DropDownEditGroup
       :isEdit="edit.includes('employmentInfo')"
       :label="$t('applicant.list.fixEmployment.employmentInfo')"
-      @openEdit="emit('openEdit')"
-      @closeEdit="emit('closeEdit')"
+      @openEdit="emit('openEdit'); onReset();"
+      @closeEdit="emit('closeEdit'); onReset();"
       @onSave="emit('save')"
       :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">
-      <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" :value="fixData.admissionStatus" valueClass="text-uppercase col-3">
+      <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" 
+        :value="fixData.admissionStatus" valueClass="text-uppercase col-3 q-pl-md">
         <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
         <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
       </labelField>
@@ -32,7 +33,7 @@
     <div class="row q-pb-sm">
       <labelField 
         :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.reasonNotJoining')" 
-        :value="fixData.reasonNotJoining" valueClass="col-9">
+        :value="fixData.reasonNotJoining" valueClass="col-9 q-pl-md">
         <q-input dense outlined bg-color="white"
           v-model="data['reasonNotJoining']" :disable="loading || disableLevel < 3" />
       </labelField>
@@ -71,7 +72,7 @@
     <div class="row q-pb-sm">
       <labelField 
         :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.memo')" 
-        :value="fixData.admissionMemo" value-class="col-9">
+        :value="fixData.admissionMemo" value-class="col-9 q-pl-md">
         <q-input v-if="edit.includes('employmentInfo')" dense outlined bg-color="white"
           v-model="data['admissionMemo']" :disable="loading || disableLevel < 3" />
       </labelField>
@@ -96,7 +97,19 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
-const data = ref(props.editData)
+const data = ref({})
+onReset();
+
+function onReset() {
+  data.value = {
+    admissionStatus: props.editData['admissionStatus'] || '',
+    admissionDate: props.editData['admissionDate'] || '',
+    reasonNotJoining: props.editData['reasonNotJoining'] || '',
+    chargeOfAdmission: props.editData['chargeOfAdmission'] || '',
+    endDate: props.editData['endDate'] || '',
+    admissionMemo: props.editData['admissionMemo'] || '',
+  }
+}
 </script>
 
 <style>
