@@ -60,191 +60,171 @@
   </q-card>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { computed, Ref, ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { ApplicantMemo } from 'src/shared/model';
+import { Applicant, ApplicantMemo } from 'src/shared/model';
 import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { getAuth, User } from '@firebase/auth';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 
-export default {
-  name: 'ApplicantMemo',
-  props: {
-    applicant: {
-      type: Object,
-      required: true
+const props = defineProps<{
+  applicant: Applicant
+}>()
+
+
+const db = getFirestore();
+const auth = getAuth();
+
+const data = ref({});
+const { t } = useI18n({
+  useScope: 'global',
+});
+const $q = useQuasar();
+
+const editableRow = ref(-1)
+const editableContect = ref({})
+const memoListData: Ref<ApplicantMemo[]> = ref([])
+const selectedMemo: Ref<ApplicantMemo[]> = ref([])
+const loadData = ref(false)
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+});
+
+const columns = computed(() => {
+  return [
+  {
+      name: 'created_user',
+      required: true,
+      label: t('detal.memo.registredUser'),
+      align: 'left',
+      field: 'created_user',
+      sortable: false,
+    },{
+      name: 'content',
+      label: t('detal.memo.contents') ,
+      field: 'content',
+      align: 'left',
+    },{
+      name: 'created_date',
+      label: t('detal.memo.creationDay') ,
+      field: 'created_date',
+      align: 'left',
+    },{
+      name: 'updated_date',
+      label: t('detal.memo.updateDate') ,
+      field: 'updated_date',
+      align: 'left',
+    },{
+      name: 'edit',
+      align: 'left',
     }
-  },
-  components: {
-    EditButton
-  },
-  setup(props) {
-    const db = getFirestore();
-    const auth = getAuth();
+  ];
+});
 
-    const data = ref({});
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-    
-    const editableRow = ref(-1)
-    const editableContect = ref({})
-    const memoListData: Ref<ApplicantMemo[]> = ref([])
-    const selectedMemo: Ref<ApplicantMemo[]> = ref([])
-    const loadData = ref(false)
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
-    });
-
-    const columns = computed(() => {
-      return [
-      {
-          name: 'created_user',
-          required: true,
-          label: t('detal.memo.registredUser'),
-          align: 'left',
-          field: 'created_user',
-          sortable: false,
-        },{
-          name: 'content',
-          label: t('detal.memo.contents') ,
-          field: 'content',
-          align: 'left',
-        },{
-          name: 'created_date',
-          label: t('detal.memo.creationDay') ,
-          field: 'created_date',
-          align: 'left',
-        },{
-          name: 'updated_date',
-          label: t('detal.memo.updateDate') ,
-          field: 'updated_date',
-          align: 'left',
-        },{
-          name: 'edit',
-          align: 'left',
-        }
-      ];
-    });
-
-    const loading = ref(false);
+const loading = ref(false);
 
 
-    const loadMemoData = async () =>{
-      loadData.value = true
-      const q = query(collection(db, 'applicants/' + props.applicant.id + '/memo'), where('deleted', '==', false));
-      try{
-        const memo = await getDocs(q)
-        const data = memo.docs.map(async (doc) => {
-          let content = doc.data();
-          const user = (await getDoc(docDb(db, 'users/' + content.created_user))).data();
-          return {
-            ...content,
-            id: doc.id,
-            user: user,
-            created_date: toDate(content.created_date),
-            updated_date: toDate(content.updated_date),
-          } as ApplicantMemo
-        })
-        Promise.all(data).then(ret => memoListData.value=ret)
-        loadData.value = false
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
-    loadMemoData()
-
-    return {
-      data,
-      loading,
-      columns,
-      memoListData,
-      selectedMemo,
-      pagination,
-      loadData,
-      editableRow,
-      editableContect,
-
-      async onSubmit() {
-        loading.value = true;
-        let returnData = data.value;
-        try {
-          returnData['content'] = data.value['content'];
-          returnData['created_date'] = serverTimestamp();
-          returnData['updated_date'] = serverTimestamp();
-          returnData['deleted'] = false;
-          returnData['created_user'] = auth.currentUser?.uid;
-          await addDoc(
-            collection(db, 'applicants/' + props.applicant.id + '/memo'),
-            returnData
-          )
-
-          loading.value = false;
-          data.value = {};
-          await loadMemoData();
-          Alert.success($q, t);
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          Alert.warning($q, t)
-        }
-      },
-      async onUpdate(index) {       
-        try {
-          if (!editableContect.value) {
-            return;
-          }
-          loading.value = true;
-          let updateData = {}
-          updateData['updated_at'] = serverTimestamp();
-          updateData['updated_by'] = auth.currentUser?.uid;
-          updateData['content'] = editableContect.value['content']  || '';
-
-          await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/memo/' + editableContect.value['id']),
-            updateData
-          );
-          memoListData.value[index] = editableContect.value as ApplicantMemo;
-          loading.value = false;
-        } catch (e) {
-          console.log(e) 
-          loading.value = false;
-        }
-      },
-      async deleteItem() {
-        if (!selectedMemo.value) {
-          return false;
-        }
-        const user = $q.localStorage.getItem('user') as User;
-
-        let updateData = {}
-        updateData['deleted'] = true;
-        updateData['deleted_by'] = user.uid;
-        updateData['deleted_at'] = serverTimestamp();
-        const ret = selectedMemo.value.map(async (memo) => {
-            await updateDoc(
-            docDb(db, 'applicants/' + props.applicant.id + '/memo/' + memo.id),
-            updateData
-          );
-        })
-        Promise.all(ret)
-        await loadMemoData();
-        selectedMemo.value = [];
-      },
-      isRowSelected(row ) {
-        return row == editableRow.value
-      },
-    }
+const loadMemoData = async () =>{
+  loadData.value = true
+  const q = query(collection(db, 'applicants/' + props.applicant.id + '/memo'), where('deleted', '==', false));
+  try{
+    const memo = await getDocs(q)
+    const data = memo.docs.map(async (doc) => {
+      let content = doc.data();
+      const user = (await getDoc(docDb(db, 'users/' + content.created_user))).data();
+      return {
+        ...content,
+        id: doc.id,
+        user: user,
+        created_date: toDate(content.created_date),
+        updated_date: toDate(content.updated_date),
+      } as ApplicantMemo
+    })
+    Promise.all(data).then(ret => memoListData.value=ret)
+    loadData.value = false
+  } catch (e) {
+    console.log(e)
   }
+}
+
+loadMemoData()
+
+
+async function onSubmit() {
+  loading.value = true;
+  let returnData = data.value;
+  try {
+    returnData['content'] = data.value['content'];
+    returnData['created_date'] = serverTimestamp();
+    returnData['updated_date'] = serverTimestamp();
+    returnData['deleted'] = false;
+    returnData['created_user'] = auth.currentUser?.uid;
+    await addDoc(
+      collection(db, 'applicants/' + props.applicant.id + '/memo'),
+      returnData
+    )
+
+    loading.value = false;
+    data.value = {};
+    await loadMemoData();
+    Alert.success($q, t);
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    Alert.warning($q, t)
+  }
+}
+async function onUpdate(index) {       
+  try {
+    if (!editableContect.value) {
+      return;
+    }
+    loading.value = true;
+    let updateData = {}
+    updateData['updated_at'] = serverTimestamp();
+    updateData['updated_by'] = auth.currentUser?.uid;
+    updateData['content'] = editableContect.value['content']  || '';
+
+    await updateDoc(
+      doc(db, 'applicants/' + props.applicant.id + '/memo/' + editableContect.value['id']),
+      updateData
+    );
+    memoListData.value[index] = editableContect.value as ApplicantMemo;
+    loading.value = false;
+  } catch (e) {
+    console.log(e) 
+    loading.value = false;
+  }
+}
+async function deleteItem() {
+  if (!selectedMemo.value) {
+    return false;
+  }
+  const user = $q.localStorage.getItem('user') as User;
+
+  let updateData = {}
+  updateData['deleted'] = true;
+  updateData['deleted_by'] = user.uid;
+  updateData['deleted_at'] = serverTimestamp();
+  const ret = selectedMemo.value.map(async (memo) => {
+      await updateDoc(
+      docDb(db, 'applicants/' + props.applicant.id + '/memo/' + memo.id),
+      updateData
+    );
+  })
+  Promise.all(ret)
+  await loadMemoData();
+  selectedMemo.value = [];
+}
+function isRowSelected(row) {
+  return row == editableRow.value
 }
 </script>
 

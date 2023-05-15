@@ -53,6 +53,7 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   employmentStatus?: string;
   position?: string[];
   period?: string;
+  rank: number;
 
   // Attendance Info 
   attendingStatus?: 'ok' | 'ng';

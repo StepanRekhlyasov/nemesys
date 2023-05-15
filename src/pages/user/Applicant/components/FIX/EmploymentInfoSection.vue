@@ -2,8 +2,8 @@
   <DropDownEditGroup
       :isEdit="edit.includes('employmentInfo')"
       :label="$t('applicant.list.fixEmployment.employmentInfo')"
-      @openDropDown="emit('openEdit')"
-      @closeDropDown="emit('closeEdit')"
+      @openEdit="emit('openEdit')"
+      @closeEdit="emit('closeEdit')"
       @onSave="emit('save')"
       :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">

@@ -2,13 +2,14 @@
   <DropDownEditGroup
 		:isEdit="edit.includes('jobSearchInfo')"
 		:label="$t('applicant.list.fixEmployment.jobSearchInfo')"
-		@openDropDown="emit('openEdit')"
-		@closeDropDown="emit('closeEdit')"
+		@openEdit="emit('openEdit')"
+		@closeEdit="emit('closeEdit');onReset();"
 		@onSave="emit('save')"
 		:isDisabledButton="disableLevel < 1">
 
 		<div class="row q-pb-sm">
-			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" :value="fixData.inspectionStatus" valueClass="text-uppercase col-3">
+			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" 
+				:value="fixData.inspectionStatus" valueClass="text-uppercase col-3 q-pl-md">
 				<q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" :disable="disableLevel < 1"/>
 				<q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" :disable="disableLevel < 1"/>
 			</labelField>
@@ -86,7 +87,8 @@
 		</div>
 
 		<div class="row q-pb-sm">
-			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')" :value="fixData.notesInspection" valueClass="col-9">
+			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')" 
+				:value="fixData.notesInspection" valueClass="col-9 q-pl-md">
 				<q-input dense outlined bg-color="white"
 					v-model="data['notesInspection']" :disable="loading || disableLevel < 1" />
 			</labelField>
@@ -114,9 +116,23 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
-const data = ref(props.editData)
-const statusJobOptions = ref<selectOptions[]> ()
+const data = ref({});
+const statusJobOptions = ref<selectOptions[]> ();
 
+onReset();
+
+function onReset() {
+	data.value = {
+		inspectionStatus: props.editData['inspectionStatus'] || '',
+		inspectionDate: props.editData['inspectionDate'] || '',
+		reasonNG: props.editData['reasonNG'] || '',
+		reasonJobDetal: props.editData['reasonJobDetal'] || '',
+		chargeOfFacility: props.editData['chargeOfFacility'] || '',
+		jobTitle: props.editData['jobTitle'] || '',
+		comments: props.editData['comments'] || '',
+		notesInspection: props.editData['notesInspection'] || '',
+	}
+}
 
 function changeJobStatus() {
 	if (data.value['inspectionStatus'] && data.value['inspectionStatus'] == 'ng') {

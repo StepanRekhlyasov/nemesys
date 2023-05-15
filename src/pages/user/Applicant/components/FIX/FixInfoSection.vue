@@ -2,11 +2,12 @@
   <DropDownEditGroup
     :isEdit="edit.includes('info')"
     :label="$t('applicant.list.fixEmployment.info')"
-    @openDropDown="emit('openEdit')"
-    @closeDropDown="emit('closeEdit')"
-    @onSave="emit('save')">
+    @openEdit="emit('openEdit')"
+    @closeEdit="emit('closeEdit'); onReset();"
+    @onSave="emit('save', 'info', data)">
     <div class="row q-pb-sm">
-      <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" :value="fixData.status" valueClass="text-uppercase">
+      <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
+        :value="fixData.status" valueClass="text-uppercase col-3 q-pl-md">
         <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';emit('disableChange')"/>
         <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" />
       </labelField>
@@ -55,7 +56,6 @@
         </labelField>
       </div>
     </template>
-
     <div class="row q-pb-sm">
       <labelField 
         :edit="edit.includes('info')"
@@ -63,7 +63,7 @@
           .filter(user => user.value === data['contactPerson'])
           .map(user => user.label).join('')"
         :label="$t('applicant.list.fixEmployment.contactPerson')"
-        valueClass="col-9">  
+        valueClass="col-9 q-pl-md">  
 
         <q-select
           v-if="edit.includes('info')"
@@ -79,7 +79,7 @@
       <labelField 
         :edit="edit.includes('info')" 
         :label="$t('applicant.list.fixEmployment.memo')" 
-        :value="fixData['memo']" valueClass="col-9">
+        :value="fixData['memo']" valueClass="col-9 q-pl-md">
 
         <q-input dense outlined bg-color="white"
           v-model="data['memo']" :disable="loading" />
@@ -106,9 +106,9 @@ const props = defineProps<{
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
 
-const data = ref(props.editData)
+const data = ref();
 const statusOptions = ref<selectOptions[]> ([]);
-
+onReset();
 
 function changeStatus() {
   if (data.value['status'] && data.value['status'] == 'ng') {
@@ -129,6 +129,18 @@ function changeStatus() {
     data.value['reasonDetal'] = '';
   }
 }
+
+function onReset() {
+  data.value = {
+    status: props.editData['status'] || '',
+    date: props.editData['date'] || '',
+    reason: props.editData['reason'] || '',
+    reasonDetal: props.editData['reasonDetal'] || '',
+    contactPerson: props.editData['contactPerson'] || '',
+    memo: props.editData['memo'] || '',
+  };
+}
+
 </script>
 
 <style>

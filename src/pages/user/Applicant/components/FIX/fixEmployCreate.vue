@@ -46,7 +46,7 @@
             :fix-data="fixData" 
             :edit-data="data"
             :users-list-option="usersListOption"
-            @save="save('info')"
+            @save="save"
             @closeEdit="edit=edit.filter(i => i !== 'info')" 
             @openEdit="edit.push('info')"/>
         </q-card-section>
@@ -94,10 +94,10 @@
   </q-scroll-area>
 </template>
 
-<script lang="ts">
-import { ref, SetupContext } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import { getFirestore, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { selectOptions, UserPermissionNames } from 'src/shared/model';
+import { Applicant, ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
@@ -109,171 +109,128 @@ import JobOffersInfoSection from './JobOffersInfoSection.vue';
 import EmploymentInfoSection from './EmploymentInfoSection.vue';
 import { useFix } from 'src/stores/fix';
 
-export default {
-  name: 'FixEmployCreate',
-  props: {
-    fixData: {
-      type: Object,
-      required: true
-    },
-    applicant: {
-      type: Object,
-      required: true
+const props = defineProps<{
+  fixData: ApplicantFix,
+  applicant: Applicant
+}>()
+const emits = defineEmits(['updateList', 'close', 'updateDoc', 'updateStatus'])
+
+const db = getFirestore();
+const auth = getAuth();
+const organization = useOrganization();
+const applicantStore = useApplicant();
+const fixStore = useFix();
+
+const data = ref({...props.fixData});
+const loading = ref(false);
+const disableLevel = ref(0);
+const edit = ref<string[]>([])
+const usersListOption = ref<selectOptions[]>([]);
+
+function disableChange() {
+  let level = 0;
+  if (data.value['status'] == 'ok') {
+    level = 1
+  }
+  if (data.value['inspectionStatus'] == 'ok') {
+    level = 2
+  }
+  if (data.value['offerStatus'] == 'ok') {
+    level = 3
+  }
+  disableLevel.value = level
+}
+
+function loadUser() {
+  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+
+  usersSnapshot.then(users => {
+    let list: selectOptions[] = [];
+    users?.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        label: data.displayName,
+        value: doc.id
+      });
+    });
+    usersListOption.value = list;
+  })
+}
+loadUser();
+disableChange();
+
+function save(type: string, dataR) {
+  let retData = {};
+  switch(type){
+    case 'info': {
+      retData = pick(dataR, ['status', 'date', 'reason', 'contactPerson', 'memo'])
+      if (retData['date']) {
+        retData['date'] = Timestamp.fromDate(new Date(retData['date']))
+      }
+      break;
     }
-  },
-  emits: {
-    updateList: null,
-    close: null,
-    updateDoc: null,
-    updateStatus: null
-  },
-  components: {
-    FixInfoSection,
-    JobSearchInfoSection,
-    JobOffersInfoSection,
-    EmploymentInfoSection
-  },
-  setup(props, context: SetupContext) {
-    const db = getFirestore();
-    const auth = getAuth();
-    const organization = useOrganization();
-    const applicantStore = useApplicant();
-    const fixStore = useFix();
-
-    const data = ref({...props.fixData});
-    const loading = ref(false);
-    const disableLevel = ref(0);
-    const edit = ref<string[]>([])
-    const show = ref<string[]>([])
-    const usersListOption = ref<selectOptions[]>([]);
-    const clientOptions = applicantStore.state.clientList;
-    const officeOptions = ref<selectOptions[]> ([]); 
-
-    const options = [
-      'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-    ];
-
-    function disableChange() {
-      let level = 0;
-      if (data.value['status'] == 'ok') {
-        level = 1
+    case 'jobSearchInfo': {
+      retData = pick(
+        data.value,
+        ['inspectionStatus', 'inspectionDate', 'reasonNG', 'chargeOfFacility',
+        'jobTitle', 'contact', 'comments', 'notesInspection'])
+      if (retData['inspectionDate']) {
+        retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
       }
-      if (data.value['inspectionStatus'] == 'ok') {
-        level = 2
-      }
-      if (data.value['offerStatus'] == 'ok') {
-        level = 3
-      }
-      disableLevel.value = level
+      break;
     }
-
-    function loadUser() {
-      const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
-
-      usersSnapshot.then(users => {
-        let list: selectOptions[] = [];
-        users?.forEach((doc) => {
-          const data = doc.data();
-          list.push({
-            label: data.displayName,
-            value: doc.id
-          });
-        });
-        usersListOption.value = list;
-      })
-    }
-    loadUser();
-    disableChange();
-
-    return {
-      data,
-      edit,
-      show,
-      options,
-      loading,
-      clientOptions,
-      officeOptions,
-      usersListOption,
-      disableLevel,
-      applicantStore,
-
-      disableChange,
-      save(type: string) {
-        let retData = {};
-        switch(type){
-          case 'info': {
-            retData = pick(data.value, ['status', 'date', 'reason', 'contactPerson', 'memo'])
-            if (retData['date']) {
-              retData['date'] = Timestamp.fromDate(new Date(retData['date']))
-            }
-            break;
-          }
-          case 'jobSearchInfo': {
-            retData = pick(
-              data.value,
-              ['inspectionStatus', 'inspectionDate', 'reasonNG', 'chargeOfFacility',
-              'jobTitle', 'contact', 'comments', 'notesInspection'])
-            if (retData['inspectionDate']) {
-              retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
-            }
-            break;
-          }
-          case 'jobOffersInfo': {
-            retData = pick(
-              data.value,
-              ['offerStatus', 'offerDate', 'offerReasonNG', 'contactPerson', 'memo',
-              'offerReasonNG', 'chargeOfOffer', 'offerMemo'])
-            if (retData['offerDate']) {
-              retData['offerDate'] = Timestamp.fromDate(new Date(retData['data']))
-            }
-            break;
-          }
-          case 'employmentInfo': {
-            retData = pick(
-              data.value,
-              ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
-            if (retData['admissionDate']) {
-              retData['admissionDate'] = Timestamp.fromDate(new Date(retData['data']))
-            }
-            break;
-          }
-          default: {
-            return ;
-          }
-        }
-        context.emit('updateDoc', retData);
-        context.emit('updateList')
-        context.emit('updateStatus')
-        edit.value=edit.value.filter(i => i !== type)
-        disableChange()
-      },
-      async saveDoc() {
-        try {
-          const retData = {...data.value}
-          retData['updated_at'] = serverTimestamp();
-          delete retData['created_at']
-          if (props.fixData.id) {
-            fixStore.updateFix(props.fixData.id, retData)
-
-            context.emit('updateList')
-            context.emit('updateStatus')
-            context.emit('close')
-            return;
-          }
-          retData['created_at'] = serverTimestamp();
-          retData['deleted'] = false;
-          retData['created_by'] = auth.currentUser?.uid;
-          await fixStore.saveFix(props.applicant.id, retData)
-
-          context.emit('updateList')
-          context.emit('updateStatus', [true])
-          context.emit('close')
-        } catch (e) {
-          console.log(e)
-        }
+    case 'jobOffersInfo': {
+      retData = pick(
+        data.value,
+        ['offerStatus', 'offerDate', 'offerReasonNG', 'contactPerson', 'memo',
+        'offerReasonNG', 'chargeOfOffer', 'offerMemo'])
+      if (retData['offerDate']) {
+        retData['offerDate'] = Timestamp.fromDate(new Date(retData['data']))
       }
+      break;
+    }
+    case 'employmentInfo': {
+      retData = pick(
+        data.value,
+        ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
+      if (retData['admissionDate']) {
+        retData['admissionDate'] = Timestamp.fromDate(new Date(retData['data']))
+      }
+      break;
+    }
+    default: {
+      return ;
     }
   }
+  emits('updateDoc', retData);
+  emits('updateList')
+  emits('updateStatus')
+  edit.value=edit.value.filter(i => i !== type)
+  disableChange()
+}
+async function  saveDoc() {
+  try {
+    const retData = data.value
+    retData['updated_at'] = serverTimestamp();
+    delete retData['created_at']
+    if (props.fixData.id) {
+      fixStore.updateFix(props.fixData.id, retData)
 
+      emits('updateList')
+      emits('updateStatus')
+      emits('close')
+      return;
+    }
+    retData['created_at'] = serverTimestamp();
+    retData['deleted'] = false;
+    retData['created_by'] = auth.currentUser?.uid;
+    await fixStore.saveFix(props.applicant.id, retData)
+
+    emits('updateList')
+    emits('updateStatus', [true])
+    emits('close')
+  } catch (e) {
+    console.log(e)
+  }
 }
 </script>
