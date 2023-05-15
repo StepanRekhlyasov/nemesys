@@ -82,9 +82,9 @@ const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
 const data = ref({})
 
-onReset();
+resetData();
 
-function onReset(){
+function resetData(){
   data.value = {
     offerStatus: props.editData['offerStatus'] || '',
     offerDate: props.editData['offerDate'] || '',

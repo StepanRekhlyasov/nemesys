@@ -8,7 +8,7 @@
 
     <q-card-section class="bg-grey-3">
 
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
         <div class="row">
           <div class="col-6">
             <div class="row">
@@ -324,7 +324,7 @@ export default {
       }
     }
     
-    function onReset() {
+    function resetData() {
       applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
       if (applicantForm.value) {
         applicantForm.value.resetValidation();
@@ -338,7 +338,7 @@ export default {
       prefectureOption,
       statusOption,
       loading,
-      onReset,
+      resetData,
       imageURL,
       applicantImage,
       organizationStore,

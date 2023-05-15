@@ -3,7 +3,7 @@
     :isEdit="edit"
     :label="'2.'+ $t('applicant.attendant.workExperience')"
     @openEdit="edit = true"
-    @closeEdit="edit=false; onReset()"
+    @closeEdit="edit=false; resetData()"
     @onSave="save">
       <div class="row ">
         <div class="text-blue text-weight-regular self-center text-subtitle1 ">
@@ -187,9 +187,9 @@ const $q = useQuasar();
 const db = getFirestore();
 
 load();
-onReset();
+resetData();
 
-function onReset() {
+function resetData() {
   data.value = {
     totalYear: props.applicant['totalYear']
   }

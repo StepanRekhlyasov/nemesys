@@ -4,7 +4,7 @@
     <div class="col-3 text-right">
       <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="infoEdit = true" class="no-shadow q-ml-lg" size="sm"/>
       <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveInfo" size="sm"/>
-      <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false; onReset();" size="sm" />
+      <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false; resetData();" size="sm" />
     </div>
   </div>
 
@@ -91,7 +91,7 @@ if (organization.currentOrganizationId){
   loadUser()
 }
 
-function onReset() {
+function resetData() {
   data.value = {
     attendingStatus: props?.applicant['attendingStatus'] || '',
     attendingDate: props?.applicant['attendingDate'] || '',
@@ -113,20 +113,20 @@ async function saveInfo() {
   }
   loading.value = false
 }
-function loadUser() {
+async function loadUser() {
   const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
 
-  usersSnapshot.then(users => {
-    let list: selectOptions[] = [];
+  const users = await usersSnapshot
+  
+  let list: selectOptions[] = [];
     users?.forEach((doc) => {
       const data = doc.data();
       list.push({
         label: data.displayName,
         value: doc.id
       });
-    });
-    usersListOption.value = list;
-  })
+  });
+  usersListOption.value = list;
 }
 
 const { t } = useI18n({

@@ -2,8 +2,8 @@
   <DropDownEditGroup
 		:isEdit="edit.includes('jobSearchInfo')"
 		:label="$t('applicant.list.fixEmployment.jobSearchInfo')"
-		@openEdit="emit('openEdit');onReset();"
-		@closeEdit="emit('closeEdit');onReset();"
+		@openEdit="emit('openEdit');resetData();"
+		@closeEdit="emit('closeEdit');resetData();"
 		@onSave="emit('save', 'jobSearchInfo', data)"
 		:isDisabledButton="disableLevel < 1">
 
@@ -119,9 +119,9 @@ const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 const data = ref({});
 const statusJobOptions = ref<selectOptions[]> ();
 
-onReset();
+resetData();
 
-function onReset() {
+function resetData() {
 	data.value = {
 		inspectionStatus: props.editData['inspectionStatus'] || '',
 		inspectionDate: props.editData['inspectionDate'] || '',

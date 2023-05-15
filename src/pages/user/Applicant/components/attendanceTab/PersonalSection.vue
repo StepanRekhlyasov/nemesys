@@ -4,7 +4,7 @@
       :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
       @openEdit="edit = true"
-      @closeEdit="edit=false; onReset();"
+      @closeEdit="edit=false; resetData();"
       @onSave="save">
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -171,7 +171,7 @@ const tattoosOptions = ref(tattoosStatusList)
 
 const data = ref({})
 
-function onReset() {
+function resetData() {
   data.value = {
     smoking: props?.applicant['smoking'] || '',
     tattoos: props?.applicant['tattoos'] || '',
@@ -188,7 +188,7 @@ function onReset() {
     daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
   }
 }
-onReset();
+resetData();
 
 
 async function save() {

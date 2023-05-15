@@ -3,7 +3,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.attraction')"
     @openEdit="edit = true"
-    @closeEdit="edit=false; onReset();"
+    @closeEdit="edit=false; resetData();"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -139,7 +139,7 @@ const usersListOption: Ref<selectOptions []> = ref([])
 const applicantStore = useApplicant();
 const data = ref({})
 
-function onReset() {
+function resetData() {
   data.value = {
     attractionsStatus: props?.applicant['attractionsStatus'] || '',
     seductionDay: props?.applicant['seductionDay'] || '',
@@ -153,7 +153,7 @@ function onReset() {
     nursing: props?.applicant['nursing'] || [],
   }
 }
-onReset();
+resetData();
 async function save() {
   loading.value = true
   try {

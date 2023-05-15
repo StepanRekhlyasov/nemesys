@@ -2,8 +2,8 @@
   <DropDownEditGroup
     :isEdit="edit.includes('info')"
     :label="$t('applicant.list.fixEmployment.info')"
-    @openEdit="emit('openEdit'); onReset();"
-    @closeEdit="emit('closeEdit'); onReset();"
+    @openEdit="emit('openEdit'); resetData();"
+    @closeEdit="emit('closeEdit'); resetData();"
     @onSave="emit('save', 'info', data)">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
@@ -108,7 +108,7 @@ const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
 const data = ref();
 const statusOptions = ref<selectOptions[]> ([]);
-onReset();
+resetData();
 
 function changeStatus() {
   if (data.value['status'] && data.value['status'] == 'ng') {
@@ -130,7 +130,7 @@ function changeStatus() {
   }
 }
 
-function onReset() {
+function resetData() {
   data.value = {
     status: props.editData['status'] || '',
     date: props.editData['date'] || '',

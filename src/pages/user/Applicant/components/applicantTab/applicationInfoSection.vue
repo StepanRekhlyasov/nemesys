@@ -4,7 +4,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
-    @closeEdit="onReset();edit = false;"
+    @closeEdit="resetData();edit = false;"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -193,7 +193,7 @@ const applicationMethodOption = ref(applicationMethod)
 const applicantStore = useApplicant();
 const data = ref({})
 
-function onReset(){
+function resetData(){
   data.value = {
     applicationDate: props?.applicant['applicationDate'] || '',
     name: props?.applicant['name'] || '',
@@ -210,7 +210,7 @@ function onReset(){
   }
 }
 
-onReset();
+resetData();
 const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'');
 
 async function save() {

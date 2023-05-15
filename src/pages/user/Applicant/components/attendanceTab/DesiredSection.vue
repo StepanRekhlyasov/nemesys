@@ -3,7 +3,7 @@
     :isEdit="desiredEdit"
     :label="'1.'+ $t('applicant.attendant.desiredConditions')"
     @openEdit="desiredEdit = true"
-    @closeEdit="desiredEdit=false; onReset();"
+    @closeEdit="desiredEdit=false; resetData();"
     @onSave="saveDesired">
 
     <div class="row q-pb-sm">
@@ -252,7 +252,7 @@ const { t } = useI18n({
 });
 const $q = useQuasar();
 
-function onReset(){
+function resetData(){
   data.value = {
     timeToWork: props.applicant['timeToWork'] || '',
     daysToWork: props.applicant['daysToWork'] || '',
@@ -271,8 +271,7 @@ function onReset(){
     jobSearchPriorities: props.applicant['jobSearchPriorities'] || [],
   }
 }
-
-onReset();
+resetData();
 
 async function saveDesired(){
   loading.value = true

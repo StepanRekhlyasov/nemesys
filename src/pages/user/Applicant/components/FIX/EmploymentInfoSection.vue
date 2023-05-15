@@ -2,8 +2,8 @@
   <DropDownEditGroup
       :isEdit="edit.includes('employmentInfo')"
       :label="$t('applicant.list.fixEmployment.employmentInfo')"
-      @openEdit="emit('openEdit'); onReset();"
-      @closeEdit="emit('closeEdit'); onReset();"
+      @openEdit="emit('openEdit'); resetData();"
+      @closeEdit="emit('closeEdit'); resetData();"
       @onSave="emit('save')"
       :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">
@@ -98,9 +98,9 @@ const props = defineProps<{
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
 const data = ref({})
-onReset();
+resetData();
 
-function onReset() {
+function resetData() {
   data.value = {
     admissionStatus: props.editData['admissionStatus'] || '',
     admissionDate: props.editData['admissionDate'] || '',

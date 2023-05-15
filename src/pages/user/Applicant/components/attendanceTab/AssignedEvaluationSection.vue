@@ -3,7 +3,7 @@
   :isEdit="edit"
   :label="'4.'+ $t('applicant.attendant.assignedEvaluation')"
   @openEdit="edit = true"
-  @closeEdit="edit=false; onReset();"
+  @closeEdit="edit=false; resetData();"
   @onSave="save">
     <div class="row q-pa-sm ">
       <span class="col-3 text-blue text-weight-regular self-center text-subtitle1">[{{ $t('applicant.attendant.attendeeEvaluation') }}]</span>
@@ -81,7 +81,7 @@ const expertiseLevelOptions = ref(expertiseLevelList)
 const loading = ref(false);
 const data: Ref<AssignedEvaluation> =  ref({});
 
-function onReset() {
+function resetData() {
   data.value = {
     language: props?.applicant['language'] || '',
     attendingDate: props?.applicant['attendingDate'] || '',
@@ -89,7 +89,7 @@ function onReset() {
     remarks: props?.applicant['remarks'] || ''
   } as AssignedEvaluation;
 }
-onReset();
+resetData();
 
 
 async function save() {

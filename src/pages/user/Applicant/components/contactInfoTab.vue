@@ -3,13 +3,13 @@
 
     <q-card-section class="bg-grey-2 q-pa-xs q-mb-none">
       <q-btn :label="$t('applicant.list.contacts.closeContactForm')" :icon="'arrow_drop_up'" flat size="md"
-        class="text-grey-9" @click="onReset" v-if="showAddForm" />
+        class="text-grey-9" @click="resetData" v-if="showAddForm" />
       <q-btn :label="$t('applicant.list.contacts.openContactForm')" :icon="'arrow_drop_down'" flat size="md"
         class="text-grey-9" @click="showAddForm = true" v-else />
     </q-card-section>
 
     <q-card-section class="q-pa-sm bg-grey-2 q-mt-none" v-if="showAddForm">
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
         <div class="row">
           <div class="col-2 text-right self-center q-pr-sm">
             {{ $t('applicant.list.contacts.contactMethod') }}
@@ -332,7 +332,7 @@ export default {
           message: t('success'),
         });
       },
-      onReset() {
+      resetData() {
         //contactData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
         contactData.value = {};
