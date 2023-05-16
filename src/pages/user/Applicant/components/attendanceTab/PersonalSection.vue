@@ -148,11 +148,11 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import { Applicant } from 'src/shared/model';
+import { Applicant, PersonalStatus } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 
 const props = defineProps<{
@@ -169,14 +169,14 @@ const smokingStatusOptions = ref(smokingStatusList)
 const marriedOptions = ref(marriedStatusList)
 const tattoosOptions = ref(tattoosStatusList)
 
-const data = ref({})
+const data:Ref<PersonalStatus> = ref({})
 
 function resetData() {
   data.value = {
-    smoking: props?.applicant['smoking'] || '',
-    tattoos: props?.applicant['tattoos'] || '',
-    marriedStatus: props?.applicant['marriedStatus'] || '',
-    liveTogether: props?.applicant['marriedStatus'] || '',
+    smoking: props?.applicant['smoking'] || undefined,
+    tattoos: props?.applicant['tattoos'] || undefined,
+    marriedStatus: props?.applicant['marriedStatus'] || undefined,
+    liveTogether: props?.applicant['marriedStatus'] || undefined,
     cohabitation: props?.applicant['cohabitation'] || '',
     children: props?.applicant['children'] || '',
     medicalHistory: props?.applicant['medicalHistory'] || '',

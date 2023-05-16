@@ -19,28 +19,18 @@ export enum EmploymentStatus {
   'notWorking'
 }
 
-export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEvaluation {
+export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo{
   id: string;
-  name: string;
-  kanaName: string;
-  postCode?: string;
   prefecture?: string;
   municipalities?: string;
   street: string;
   apartment: string;
-  phone: string;
-  email: string;  
   status?: ApplicantStatus;
   statusChangeTimestamp?: {[key: string] : Timestamp}[]
   staffRank?: number;
   branchIncharge?: string;
-  sex?: ApplicantSex;
-  dob?: string;
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
-  applicationDate?: string;
-  media?: string;
-  applicationMetod?: string;
   totalYear?: string;
   address?: string;
   classification?: string;
@@ -49,19 +39,26 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   currentStatusTimestamp: Timestamp;
   deleted: false;
   imageURL?: string;
-  lat?: number;
-  lon?: number;
   attractionsStatus?: string;
   employmentStatus?: string;
   period?: string;
-
-  // Attendance Info 
-  attendingStatus?: 'ok' | 'ng';
-  attendingDate?: string;
-  attendee?: string;
-  memo?: string;
   position?: string[];
   seductionDay?: string;
+}
+
+export interface ApplicantInfo {
+  applicationDate?: Timestamp | string;
+  name?: string;
+  media?: string;
+  kanaName?: string;
+  applicationMetod?: string;
+  sex?: ApplicantSex;
+  dob?: string;
+  phone?: string;
+  email?: string;
+  lat?: number;
+  lon?: number;
+  postCode?: string;
 }
 
 export interface DesiredConditions {
@@ -87,6 +84,13 @@ export interface DesiredConditions {
   jobSearchPriorities1?: string;
   jobSearchPriorities2?: string;
   jobSearchPriorities3?: string;
+}
+
+export interface Attendance { 
+  attendingStatus?: 'ok' | 'ng';
+  attendingDate?: Timestamp | string;
+  attendee?: string;
+  memo?: string;
 }
 
 export interface PersonalStatus  {

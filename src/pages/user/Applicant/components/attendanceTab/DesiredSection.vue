@@ -228,12 +228,12 @@
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import { Applicant } from 'src/shared/model';
+import { Applicant, DesiredConditions } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 
 const props = defineProps<{
@@ -246,7 +246,7 @@ const days = ref(daysList);
 const specialDays = ref(specialDaysList);
 const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
-const data = ref({});
+const data: Ref<DesiredConditions> = ref({});
 const { t } = useI18n({
   useScope: 'global',
 });
@@ -255,9 +255,9 @@ const $q = useQuasar();
 function resetData(){
   data.value = {
     timeToWork: props.applicant['timeToWork'] || '',
-    daysToWork: props.applicant['daysToWork'] || '',
+    daysToWork: props.applicant['daysToWork'] || undefined,
     daysPerWeek: props.applicant['daysPerWeek'] || [],
-    timeAvailable: props.applicant['timeAvailable'] || false,
+    timeAvailable: props.applicant['timeAvailable'] || '',
     specialDay: props.applicant['specialDay'] || [],
     shiftRemarks: props.applicant['shiftRemarks'] || '',
     meansCommuting: props.applicant['meansCommuting'] || '',
@@ -267,8 +267,10 @@ function resetData(){
     facilityDesired: props.applicant['facilityDesired'] || '',
     ngFacilityType: props.applicant['ngFacilityType'] || '',
     hourlyRate: props.applicant['hourlyRate'] || '',
-    transportationServices: props.applicant['transportationServices'] || '',
-    jobSearchPriorities: props.applicant['jobSearchPriorities'] || [],
+    transportationServices: props.applicant['transportationServices'] || undefined,
+    jobSearchPriorities1: props.applicant['jobSearchPriorities1'] || '',
+    jobSearchPriorities2: props.applicant['jobSearchPriorities2'] || '',
+    jobSearchPriorities3: props.applicant['jobSearchPriorities3'] || '',
   }
 }
 resetData();

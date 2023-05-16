@@ -175,12 +175,12 @@
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantInfo } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { limitDate } from 'src/shared/utils/utils'
 
@@ -191,7 +191,7 @@ const edit = ref(false);
 const loading = ref(false);
 const applicationMethodOption = ref(applicationMethod)
 const applicantStore = useApplicant();
-const data = ref({})
+const data: Ref<ApplicantInfo> = ref({})
 
 function resetData(){
   data.value = {
@@ -204,8 +204,8 @@ function resetData(){
     dob: props?.applicant['dob'] || '',
     phone: props?.applicant['phone'] || '',
     email: props?.applicant['email'] || '',
-    lon: props?.applicant['lon'] || '',
-    lat: props?.applicant['lat'] || '',
+    lon: props?.applicant['lon'] || undefined,
+    lat: props?.applicant['lat'] || undefined,
     postCode: props?.applicant['postCode'] || '',
   }
 }

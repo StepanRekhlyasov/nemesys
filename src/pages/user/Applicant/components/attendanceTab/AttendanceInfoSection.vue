@@ -70,7 +70,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
 import { getFirestore } from '@firebase/firestore';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
-import { Applicant, selectOptions, UserPermissionNames } from 'src/shared/model';
+import { Applicant, Attendance, selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
 
@@ -85,7 +85,7 @@ const infoEdit = ref(false);
 const loading = ref(false);
 const attendantStatusOption = ref(attendantStatus);
 const usersListOption: Ref<selectOptions[]> = ref([]);
-const data = ref({});
+const data: Ref<Attendance>  = ref({});
 
 if (organization.currentOrganizationId){
   loadUser()
@@ -94,7 +94,7 @@ resetData();
 
 function resetData() {
   data.value = {
-    attendingStatus: props?.applicant['attendingStatus'] || '',
+    attendingStatus: props?.applicant['attendingStatus'] || undefined,
     attendingDate: props?.applicant['attendingDate'] || '',
     attendee: props?.applicant['attendee'] || '',
     memo: props?.applicant['memo'] || '',
