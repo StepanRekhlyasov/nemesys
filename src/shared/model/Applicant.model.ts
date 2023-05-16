@@ -19,54 +19,150 @@ export enum EmploymentStatus {
   'notWorking'
 }
 
-export interface Applicant {
+export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo{
   id: string;
-  address?: string;
-  applicationDate?: string;
-  applicationMetod?: string;
+  prefecture?: string;
+  municipalities?: string;
+  street: string;
   apartment: string;
-  attractionsStatus?: string;
+  status?: ApplicantStatus;
+  statusChangeTimestamp?: {[key: string] : Timestamp}[]
+  staffRank?: number;
   branchIncharge?: string;
+  occupation?: ApplicantOccupation;
+  qualification?: ApplicantQualification[];
+  totalYear?: string;
+  address?: string;
   classification?: string;
   created_at: Timestamp;
   currentStatusMonth?: number;
   currentStatusTimestamp: Timestamp;
   deleted: false;
-  dob?: string;
-  daysToWork?: string;
-  email: string;
-  employmentStatus?: string;
   imageURL?: string;
-  kanaName: string;
+  attractionsStatus?: string;
+  employmentStatus?: string;
+  period?: string;
+  position?: string[];
+  seductionDay?: string;
+}
+
+export interface ApplicantInfo {
+  applicationDate?: Timestamp | string;
+  name?: string;
+  media?: string;
+  kanaName?: string;
+  applicationMetod?: string;
+  sex?: ApplicantSex;
+  dob?: string;
+  phone?: string;
+  email?: string;
   lat?: number;
   lon?: number;
-  media?: string;
-  memo?: string;
-  municipalities?: string;
-  name: string;
-  occupation?: ApplicantOccupation;
-  period?: string;
-  phone: string;
-  position?: string[];
   postCode?: string;
-  prefecture?: string;
-  qualification?: ApplicantQualification[];
-  seductionDay?: string;
-  sex?: ApplicantSex;
-  status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp}[]
-  street: string;
-  staffRank?: number;
-  totalYear?: string;
-  workingHoursDay?: string;
+}
+
+export interface DesiredConditions {
+  timeAvailable?: string;
+  timeToWork?: string;
+  daysToWork?: number;
+  daysPerWeek?: Days[];
+  specialDay?: SpecialDay[];
   workingHoursEarly?: string;
+  workingHoursDay?: string;
   workingHoursLate?: string;
   workingHoursNight?: string;
+  shiftRemarks?: string;
+  meansCommuting?: string;
+  nearestStation?: string;
+  commutingTime?: string;
+  route?: string;
+  commutingTimeRemarks?: string;
+  facilityDesired?: string;
+  ngFacilityType?: string;
+  hourlyRate?: string;
+  transportationServices?: 'possible' | 'no';
+  jobSearchPriorities1?: string;
+  jobSearchPriorities2?: string;
+  jobSearchPriorities3?: string;
+}
+
+export interface Attendance { 
+  attendingStatus?: 'ok' | 'ng';
+  attendingDate?: Timestamp | string;
+  attendee?: string;
+  memo?: string;
+}
+
+export interface PersonalStatus  {
+  smoking?: SmokingStatus;
+  tattoos?: TattoosStatus;
+  marriedStatus?: MarriedStatus;
+  liveTogether?: TattoosStatus;
+  cohabitation?: string;
+  children?: string;
+  medicalHistory?: string;
+  vaccinationStatus?: string;
+  startCaring?: string;
+  interviewsWaitingList?: string;
+  temporaryCompaniesRegistered?: string;
+  startedInCaregiving?: string;
+  daysVisitAtWork?: string;
+}
+
+export interface AssignedEvaluation {
+  language?: Level;
+  comprehension?: Level;
+  staffRank?: number;
+  remarks?: string;
 }
 
 export enum ApplicantSex{
   MALE = 'male',
   FEMALE = 'female'
+}
+
+export enum MarriedStatus {
+  MARRIED = 'married',
+  UNMARRIED = 'unmarried'
+}
+
+export enum Days {
+  SUNDAY = 'sunday',
+  MONDAY = 'monday',
+  TUESDAY = 'tuesday',
+  WEDNESDAY = 'wednesday',
+  FRIDAY = 'friday',
+  SATURDAY = 'saturday',
+  HOLIDAY = 'holiday',
+}
+
+export enum Level {
+  PERFORMANCE = 'performance',
+  EXCELLENT = 'excellent',
+  GOOD = 'good',
+  POSSIBLE = 'possible',
+  NO = 'no',
+}
+
+export enum SpecialDay {
+  GW = 'gw',
+  FESTIVAL = 'festival',
+  CHRISTMAS = 'christmas'
+}
+
+export enum SmokingStatus {
+  NO = 'no',
+  YES = 'yes',
+  PAPER = 'paper',
+  ELECTRONIC = 'electronic',
+  NOWHILEWORKING = 'noWhileWorking',
+  ACCEPTABLE = 'acceptable',
+  NOTPOSSIBLE = 'notPossible',
+}
+
+export enum TattoosStatus {
+  NIL = 'nil',
+  YES = 'yes'
 }
 
 export enum ApplicantOccupation {

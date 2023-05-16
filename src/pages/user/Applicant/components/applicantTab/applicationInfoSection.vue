@@ -4,7 +4,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
-    @closeEdit="edit = false"
+    @closeEdit="resetData();edit = false;"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -175,12 +175,12 @@
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantInfo } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { limitDate } from 'src/shared/utils/utils'
 
@@ -191,21 +191,28 @@ const edit = ref(false);
 const loading = ref(false);
 const applicationMethodOption = ref(applicationMethod)
 const applicantStore = useApplicant();
-const data = ref( {
-  applicationDate: props?.applicant['applicationDate'] || '',
-  name: props?.applicant['name'] || '',
-  media: props?.applicant['media'] || '',
-  kanaName: props?.applicant['kanaName'] || '',
-  applicationMetod: props?.applicant['applicationMetod'] || '',
-  sex: props?.applicant['sex'],
-  dob: props?.applicant['dob'] || '',
-  phone: props?.applicant['phone'] || '',
-  email: props?.applicant['email'] || '',
-  lon: props?.applicant['lon'] || '',
-  lat: props?.applicant['lat'] || '',
-  postCode: props?.applicant['postCode'] || '',
-})
-const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'')
+const data: Ref<ApplicantInfo> = ref({})
+
+function resetData(){
+  data.value = {
+    applicationDate: props?.applicant['applicationDate'] || '',
+    name: props?.applicant['name'] || '',
+    media: props?.applicant['media'] || '',
+    kanaName: props?.applicant['kanaName'] || '',
+    applicationMetod: props?.applicant['applicationMetod'] || '',
+    sex: props?.applicant['sex'],
+    dob: props?.applicant['dob'] || '',
+    phone: props?.applicant['phone'] || '',
+    email: props?.applicant['email'] || '',
+    lon: props?.applicant['lon'] || undefined,
+    lat: props?.applicant['lat'] || undefined,
+    postCode: props?.applicant['postCode'] || '',
+  }
+}
+
+resetData();
+const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'');
+
 async function save() {
   loading.value = true
   try {
