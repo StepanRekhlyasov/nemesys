@@ -16,7 +16,7 @@ export const useClientFactory = defineStore('client-factory', () => {
     const clientFactories = ref<ClientFactory[]>([])
 
     // unsubscribe
-    const unsubscribe = ref<(() => void)[]>([]);
+    const unsubscribe = ref<{ [clientId: string]: (() => void) }>({});
 
     //  methdods
     const getLastReflectLog = async (clientId: string, clientFactoryId: string) => {
@@ -133,33 +133,40 @@ export const useClientFactory = defineStore('client-factory', () => {
     }
 
     const getClientFactories = async (clients: Client[]) => {
-        unsubscribe.value.forEach(unsub => unsub());
-        unsubscribe.value = [];
-        const newClientFactories: ClientFactory[] = [];
 
-        await Promise.all(clients.map(async (client) => {
-            return new Promise<void>((resolve) => {
-                const unsub = onSnapshot(collection(db, `clients/${client.id}/client-factory`), async (snapshot) => {
-                    const clientFactoryPromises = snapshot.docs.map(async (doc) => {
-                        const clientFactory = { ...doc.data(), id: doc.id, client } as ClientFactory;
-                        clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
-                        clientFactory.importLog = await getLastImportLog(clientFactory.clientID, clientFactory.id);
+    // Unsubscribe from removed clients
+    for (const clientId in unsubscribe.value) {
+        if (!clients.some(client => client.id === clientId)) {
+            unsubscribe.value[clientId]();
+            delete unsubscribe.value[clientId];
+        }
+    }
 
-                        newClientFactories.push(clientFactory);
-                    });
+    const clientFactoriesMap = ref<{ [clientId: string]: ClientFactory[] }>({});
 
-                    await Promise.all(clientFactoryPromises);
-                    resolve();
+    await Promise.all(clients.map(async (client) => {
+        if (!unsubscribe.value[client.id as string]) {
+            unsubscribe.value[client.id as string] = onSnapshot(collection(db, `clients/${client.id}/client-factory`), async (snapshot) => {
+                const newClientFactories: ClientFactory[] = [];
+
+                const clientFactoryPromises = snapshot.docs.map(async (doc) => {
+                    const clientFactory = { ...doc.data(), id: doc.id, client } as ClientFactory;
+                    clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
+                    clientFactory.importLog = await getLastImportLog(clientFactory.clientID, clientFactory.id);
+
+                    newClientFactories.push(clientFactory);
                 });
 
-                unsubscribe.value.push(unsub);
+                await Promise.all(clientFactoryPromises);
+
+                clientFactoriesMap.value[client.id as string] = newClientFactories;
+                clientFactories.value = Object.values(clientFactoriesMap.value).flat();
+
+                console.log('client-factories: ', clientFactories.value)
             });
-        }));
-
-        clientFactories.value = newClientFactories;
-
-        console.log('client-factories: ', clientFactories.value)
-    };
+        }
+    }));
+};
  
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {

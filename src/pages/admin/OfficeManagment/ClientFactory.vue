@@ -47,13 +47,22 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     }
 }
 
-watch([clients, clientFactories], () => {
+watch([clients], () => {
     fetchData.value = true;
-    clientFactoryStore.getClientFactories(clients.value).then(() => {
-        tableRows.value = clientFactoriesToTableRows(clientFactories.value)
-        fetchData.value = false
-    })
+    clientFactoryStore.getClientFactories(clients.value)
+
+    console.log( 'clients: ', clients.value.length)
 }, { deep: true });
+
+watch([clientFactories], () => {
+    fetchData.value = true;
+
+    tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+    fetchData.value = false
+
+    console.log('client-factories: ', clientFactories.value.length)
+
+}, {deep: true})
 
 // client-factory drawer
 
