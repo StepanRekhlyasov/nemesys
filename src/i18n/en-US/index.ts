@@ -1237,8 +1237,7 @@ export default {
     oita: 'Oita',
     miyazaki: 'Miyazaki',
     kagoshima: 'Kagoshima',
-    okinawa: 'Okinawa',
-
+    okinawa: 'Okinawa'
   },
   office: {
     searchConditionName: 'Search condition name',

@@ -8,7 +8,7 @@
 
     <q-card-section class="bg-grey-3">
 
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
         <div class="row">
           <div class="col-6">
             <div class="row">
@@ -16,8 +16,8 @@
                 {{ $t('applicant.add.name') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['name']" bg-color="white" lazy-rules
-                  :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+                <q-input outlined dense v-model="applicantData['name']" bg-color="white"
+                  :rules="[(val) => !!val || '']" hide-bottom-space />
               </div>
             </div>
 
@@ -108,9 +108,8 @@
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.branchIncharge') }}
               </div>
-              <div class="col-6 q-pl-sm">
-                <q-select outlined dense v-model="applicantData['branchIncharge']" bg-color="white"
-                  :label="$t('common.pleaseSelect')" emit-value map-options />
+              <div class="col-6 q-ml-sm bg-white">
+                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
               </div>
             </div>
 
@@ -249,16 +248,16 @@
 </template>
  
 <script lang="ts">
-import { useQuasar, date } from 'quasar';
-import { ref } from 'vue';
+import { useQuasar, QForm } from 'quasar';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-//import { doc, setDoc, getFirestore, serverTimestamp, getDoc, addDoc } from "firebase/firestore";
 import {
   collection,
   setDoc,
   doc,
   getFirestore,
   serverTimestamp,
+Timestamp,
 } from 'firebase/firestore';
 import { limitDate } from 'src/shared/utils/utils'
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -266,9 +265,14 @@ import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'fire
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
+import SelectBranch from '../Settings/management/components/SelectBranch.vue';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'applicantAdd',
+  components: {
+    SelectBranch
+  },
   setup() {
     const { t } = useI18n({
       useScope: 'global',
@@ -279,12 +283,14 @@ export default {
       qualification: [],
       status: ApplicantStatus.UNSUPPORTED,
     };
+    const organizationStore = useOrganization()
+
     const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
     const prefectureOption = ref(prefectureList);
     const statusOption = ref(statusList);
 
     const accept = ref(false);
-    const applicantForm = ref(null);
+    const applicantForm: Ref<QForm|null> = ref(null);
     const loading = ref(false);
     const imageURL = ref('');
     const applicantImage = ref([]);
@@ -305,8 +311,7 @@ export default {
           icon: 'cloud_done',
           message: t('success'),
         });
-        applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-        //applicantForm.value.resetValidation();
+        applicantForm.value?.reset();
       } catch (error) {
         console.log(error);
         loading.value = false;
@@ -318,7 +323,13 @@ export default {
         });
       }
     }
-
+    
+    function resetData() {
+      applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
+      if (applicantForm.value) {
+        applicantForm.value.resetValidation();
+      }
+    }
 
     return {
       applicantData,
@@ -327,20 +338,19 @@ export default {
       prefectureOption,
       statusOption,
       loading,
+      resetData,
       imageURL,
       applicantImage,
+      organizationStore,
       limitDate,
-
       async onSubmit() {
         loading.value = true;
         let data = applicantData.value;
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
-        if(data['applicationDate']){ 
-          const dateFormatted = date.extractDate(data['applicationDate'], 'YYYY/MM/DD HH:mm');
-          data['currentStatusMonth'] = dateFormatted.getMonth()+1;
-          data['currentStatusTimestamp'] = dateFormatted.getTime()/1000;
-        }
+        data['currentStatusMonth'] = Timestamp.now().toDate().getMonth()+1;
+        data['currentStatusTimestamp'] = serverTimestamp();
+        data['statusChangeTimestamp'] = { [data['status']] : serverTimestamp() }
         data['deleted'] = false;
         const docRef = doc(collection(db, 'applicants'));
 
@@ -371,11 +381,6 @@ export default {
         else {
           saveApplicantData(docRef, data);
         }
-      },
-
-      onReset() {
-        applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-        //applicantForm.value.resetValidation();
       },
 
       onFileChange(files) {

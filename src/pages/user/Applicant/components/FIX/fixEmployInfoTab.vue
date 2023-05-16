@@ -139,7 +139,7 @@
 </q-drawer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, Ref } from 'vue';
 import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
@@ -147,240 +147,177 @@ import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
-import { User, ApplicantFix, ApplicantStatus } from 'src/shared/model';
+import { User, ApplicantFix, ApplicantStatus, Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 
-export default {
-  name: 'contactInfo',
-  components: {
-    FixEmployCreate
-  },
+const props = defineProps<{
+  applicant: Applicant
+}>()
 
-  props: {
-    applicant: {
-      type: Object,
-      required: true
+const { t } = useI18n({ useScope: 'global' });
+
+const applicantStore = useApplicant();
+const fixStore = useFix();
+const db = getFirestore();
+const $q = useQuasar();
+
+const contactListData: Ref<ApplicantFix[]> = ref([]);
+const users:Ref<User[]> = ref([]);
+const drawerRight = ref(false);
+const fixData = ref({} as ApplicantFix)
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+});
+
+const columns = computed(() => {
+  return [
+    {
+      name: 'edit',
+      align: 'left',
     },
-    updateApplicant: {
-      type: Function,
-      required: true
+    {
+      name: 'created_at',
+      required: true,
+      label: t('applicant.list.fixEmployment.fixedDestination'),
+      field: 'created_at',
+      align: 'left',
+    },
+    {
+      name: 'fixDate',
+      required: true,
+      label: t('applicant.list.fixEmployment.fixDate'),
+      field: 'fixDate',
+      align: 'left',
+    },
+    {
+      name: 'workDay',
+      required: true,
+      label: t('applicant.list.fixEmployment.workDay'),
+      field: 'workDay',
+      align: 'left',
+    },
+    {
+      name: 'informalOfferDate',
+      label: t('applicant.list.fixEmployment.informalOfferDate'),
+      field: 'informalOfferDate',
+      align: 'left',
+    },
+    {
+      name: 'hiringDate',
+      label: t('applicant.list.fixEmployment.hiringDate'),
+      field: 'hiringDate',
+      align: 'left',
+    },
+    {
+      name: 'memo',
+      label: t('applicant.list.fixEmployment.memo'),
+      field: 'memo',
+      align: 'left',
+    },
+    {
+      name: 'delete',
+      align: 'left',
     }
-  },
+  ];
+});
+const unsubscribeUsers = ref();
 
-  setup(props) {
-    const { t } = useI18n({ useScope: 'global' });
+loadContactData()
+async function loadContactData() {
+  contactListData.value  = await fixStore.getFixData(props.applicant.id)
+}
 
-    const applicantStore = useApplicant();
-    const fixStore = useFix();
-    const db = getFirestore();
-    const $q = useQuasar();
-
-    const contactListData: Ref<ApplicantFix[]> = ref([]);
-    const deleteItemId = ref('');
-    const users:Ref<User[]> = ref([]);
-    const drawerRight = ref(false);
-    const options = [
-      'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-    ]
-    const fixData = ref({} as ApplicantFix)
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
+loadUsers()
+function loadUsers() {
+  const q = query(collection(db, 'users/'), where('deleted', '==', false));
+  unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
+    let userList: User[] = [];
+    querySnapshot.forEach((doc) => {
+      userList.push({ id: doc.id, ...doc.data() } as User);
     });
+    users.value = userList;
+  });
+}
 
-    const columns = computed(() => {
-      return [
-        {
-          name: 'edit',
-          align: 'left',
-        },
-        {
-          name: 'created_at',
-          required: true,
-          label: t('applicant.list.fixEmployment.fixedDestination'),
-          field: 'created_at',
-          align: 'left',
-        },
-        {
-          name: 'fixDate',
-          required: true,
-          label: t('applicant.list.fixEmployment.fixDate'),
-          field: 'fixDate',
-          align: 'left',
-        },
-        {
-          name: 'workDay',
-          required: true,
-          label: t('applicant.list.fixEmployment.workDay'),
-          field: 'workDay',
-          align: 'left',
-        },
-        {
-          name: 'informalOfferDate',
-          label: t('applicant.list.fixEmployment.informalOfferDate'),
-          field: 'informalOfferDate',
-          align: 'left',
-        },
-        {
-          name: 'hiringDate',
-          label: t('applicant.list.fixEmployment.hiringDate'),
-          field: 'hiringDate',
-          align: 'left',
-        },
-        {
-          name: 'memo',
-          label: t('applicant.list.fixEmployment.memo'),
-          field: 'memo',
-          align: 'left',
-        },
-        {
-          name: 'delete',
-          align: 'left',
-        }
-      ];
-    });
+onBeforeUnmount(() => {
+  unsubscribeUsers.value();
+});
 
-    const loading = ref(false);
-    const showAddForm = ref(false)
-    const contactData = ref({
-    });
-    const unsubscribeUsers = ref();
 
-    loadContactData()
-    async function loadContactData() {
-      contactListData.value  = await fixStore.getFixData(props.applicant.id)
+async function updateData(data){
+  if (fixData.value?.id){
+    data['updated_at'] = serverTimestamp();
+    await fixStore.updateFix(fixData.value.id, data)
+  }
+  fixData.value = {
+    ...fixData.value, 
+    ...data,        
+    date: data['date'] ? toDateFormat(data['date']): data['date'],
+    offerDate: data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate'],
+    admissionDate: data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate'],
+    inspectionDate: data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
+  };
+}
+function showEditDialog(data) {
+  fixData.value = data;
+  drawerRight.value = true;
+}
+function rowColor(row) {
+  if ((row.status == 'ok' && row.inspectionStatus == 'ok' && row.offerStatus == 'ok' && row.admissionStatus == 'ok')
+    || row.status == 'ng'|| row.inspectionStatus == 'ng'|| row.offerStatus == 'ng'|| row.admissionStatus == 'ng' ) {
+    return ''
+  }
+  return 'bg-light-blue-1'
+}
+function showDeleteDialog(data) {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('common.deleteInfo'),
+    persistent: true,
+    cancel: t('common.cancel'),
+  }).onOk(async () => {
+    const user = $q.localStorage.getItem('user');
+    if (!user) {
+      return ;
     }
 
-    loadUsers()
-    function loadUsers() {
-      const q = query(collection(db, 'users/'), where('deleted', '==', false));
-      unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
-        let userList: User[] = [];
-        querySnapshot.forEach((doc) => {
-          userList.push({ id: doc.id, ...doc.data() } as User);
-        });
-        users.value = userList;
-      });
-    }
+    let updateData = {}
+    updateData['deleted'] = true;
+    updateData['deleted_by'] = user['uid'];
+    updateData['deleted_at'] = serverTimestamp();
 
-    onBeforeUnmount(() => {
-      unsubscribeUsers.value();
-    });
+    await fixStore.updateFix(data.id, updateData)
 
-    return {
-      columns,
-      contactListData,
-      pagination,
-
-      contactData,
-      showAddForm,
-      loading,
-      drawerRight,
-      fixData,
-      applicantStore,
-
-      options,
-      loadContactData,
-      async updateData(data){
-        if (fixData.value?.id){
-          data['updated_at'] = serverTimestamp();
-          await fixStore.updateFix(fixData.value.id, data)
-        }
-        fixData.value = {
-          ...fixData.value, 
-          ...data,        
-          date: data['date'] ? toDateFormat(data['date']): data['date'],
-          offerDate: data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate'],
-          admissionDate: data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate'],
-          inspectionDate: data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
-        };
-      },
-      async deleteItem() {
-        if (!deleteItemId.value) {
-          return false;
-        }
-        const user = $q.localStorage.getItem('user');
-        if (!user) {
-          return;
-        }
-
-        let updateData = {}
-        updateData['deleted'] = true;
-        updateData['deleted_by'] = user['uid']
-        updateData['deleted_at'] = serverTimestamp();
-        await fixStore.updateFix(fixData.value.id, updateData)
-        Alert.success($q, t)
-      },
-      getUserName(uid) {
-        const value = users.value.find(x => x['id'] === uid)
-        if (value) {
-          return value['name'];
-        }
-        return '';
-      },
-      showEditDialog(data) {
-        fixData.value = data;
-        drawerRight.value = true;
-      },
-      rowColor(row) {
-        if ((row.status == 'ok' && row.inspectionStatus == 'ok' && row.offerStatus == 'ok' && row.admissionStatus == 'ok')
-          || row.status == 'ng'|| row.inspectionStatus == 'ng'|| row.offerStatus == 'ng'|| row.admissionStatus == 'ng' ) {
-          return ''
-        }
-        return 'bg-light-blue-1'
-      },
-      showDeleteDialog(data) {
-        $q.dialog({
-          title: t('common.delete'),
-          message: t('common.deleteInfo'),
-          persistent: true,
-          cancel: t('common.cancel'),
-        }).onOk(async () => {
-          const user = $q.localStorage.getItem('user');
-          if (!user) {
-            return ;
-          }
-
-          let updateData = {}
-          updateData['deleted'] = true;
-          updateData['deleted_by'] = user['uid'];
-          updateData['deleted_at'] = serverTimestamp();
-
-          await fixStore.updateFix(data.id, updateData)
-
-          Alert.success($q, t)
-        })
-      },
-      async updateStatus(newDoc?: boolean){
-        let status = props.applicant.status;
-        const lastFix = contactListData.value[0]
-        if (newDoc) {
-          status = ApplicantStatus.WAIT_CONTACT;
-        }
-        if(props.applicant.attractionsStatus == 'ok') {
-          status = ApplicantStatus.WAIT_FIX;
-        }
-        if (lastFix['status'] == 'ok') {
-          status = ApplicantStatus.WAIT_VISIT
-        }
-        if (lastFix['inspectionStatus'] == 'ok') {
-          status = ApplicantStatus.WAIT_OFFER
-        }
-        if (lastFix['offerStatus'] == 'ok') {
-          status = ApplicantStatus.WAIT_ENTRY
-        }
-        if (lastFix['admissionStatus'] == 'ok') {
-          status = ApplicantStatus.WORKING
-        }
-        await props.updateApplicant({status: status})
-      }
-
-    };
-  },
-};
+    Alert.success($q, t)
+  })
+}
+async function  updateStatus(newDoc?: boolean){
+  let status = props.applicant.status;
+  const lastFix = contactListData.value[0]
+  if (newDoc) {
+    status = ApplicantStatus.WAIT_CONTACT;
+  }
+  if(props.applicant.attractionsStatus == 'ok') {
+    status = ApplicantStatus.WAIT_FIX;
+  }
+  if (lastFix['status'] == 'ok') {
+    status = ApplicantStatus.WAIT_VISIT
+  }
+  if (lastFix['inspectionStatus'] == 'ok') {
+    status = ApplicantStatus.WAIT_OFFER
+  }
+  if (lastFix['offerStatus'] == 'ok') {
+    status = ApplicantStatus.WAIT_ENTRY
+  }
+  if (lastFix['admissionStatus'] == 'ok') {
+    status = ApplicantStatus.WORKING
+  }
+  await applicantStore.updateApplicant({status: status})
+}
 </script>
 
 <style>

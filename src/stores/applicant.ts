@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
 import { Applicant, Client, ClientOffice } from 'src/shared/model';
@@ -221,20 +221,34 @@ export const useApplicant = defineStore('applicant', () => {
       })
   })
   
-  /** update and sort columns without fetching data */
+  /** update timestamps and sort columns */
   watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
+    if (!state.value.selectedApplicant) return;
     if (!newValue || !oldValue) return;
     if (newValue == oldValue) return;
+    const timeData = {
+      currentStatusMonth : Timestamp.now().toDate().getMonth()+1,
+      currentStatusTimestamp : serverTimestamp() as Timestamp,
+      ['statusChangeTimestamp.'+newValue] : serverTimestamp() as Timestamp
+    }
+    await updateApplicant(timeData, false);
+    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant.id)
     if (state.value.applicantsByColumn[newValue]) {
       const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
       if (index>-1) return; 
       state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
-      state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => a.currentStatusTimestamp - b.currentStatusTimestamp)
+      state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => {
+        try{
+          return a.currentStatusTimestamp.toDate() > b.currentStatusTimestamp.toDate()
+        } catch (error){
+          console.log(error)
+        }
+      })
     }
     if (state.value.applicantsByColumn[oldValue]) {
       state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
-  }, { immediate: true, deep: true})
+  }, { deep: true})
 
   return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant }
 })
