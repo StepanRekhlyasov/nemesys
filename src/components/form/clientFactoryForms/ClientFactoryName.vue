@@ -8,29 +8,26 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['update:modelValue'])
-
 const localName = ref(props.modelValue)
 
 watch(localName, (newVal) => {
     emit('update:modelValue', newVal)
 });
+
 </script>
 
 <template>
     <q-item>
         <q-item-section>
-            <q-item-label class="q-pb-xs">
-                {{ t('client.add.clientName') }}
+            <q-item-label>
+                {{ t('client.add.officeName') }}
                 <span class="text-red-5">*</span>
             </q-item-label>
-            <q-input
-                outlined
-                dense
-                v-model="localName"
-                :placeholder="t('client.add.clientLabel')"
-                lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']"
-                hide-bottom-space />
+            <q-input outlined dense v-model="localName" :placeholder="t('client.add.clientLabel')" lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
         </q-item-section>
     </q-item>
 </template>
+
+<style lang="scss" scoped>
+
+</style>
