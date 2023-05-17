@@ -16,7 +16,6 @@
           ref="monthPicker" 
           transition-show="scale" 
           transition-hide="scale"
-          @before-hide="()=>emit('input', selectedMonth)"
         >
           <q-date
             minimal
@@ -34,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
 import { QDateProps, QPopupProxy } from 'quasar';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -47,17 +47,19 @@ const checkValue = (reason : Parameters<NonNullable<QDateProps['onUpdate:modelVa
     monthPicker.value?.hide()
   }
 }
-const emit = defineEmits<{
-  (e: 'input', selectedMonth: string)
-}>()
+const emit = defineEmits(['update:modelValue'])
 withDefaults(defineProps<{
   width?: string,
   height?: string,
   fontSize?: string,
+  modelValue: string,
 }>(), {
   width: '175px',
   height: '30px',
   fontSize: '12px'
+})
+watch(selectedMonth, (newVal)=>{
+  emit('update:modelValue', newVal);
 })
 </script>
 <style lang="scss">
