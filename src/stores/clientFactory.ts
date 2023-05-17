@@ -144,6 +144,8 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const clientFactoriesMap = ref<{ [clientId: string]: ClientFactory[] }>({});
 
+    Object.assign(clientFactoriesMap.value, clientFactories.value);
+
     await Promise.all(clients.map(async (client) => {
         if (!unsubscribe.value[client.id as string]) {
             unsubscribe.value[client.id as string] = onSnapshot(collection(db, `clients/${client.id}/client-factory`), async (snapshot) => {
