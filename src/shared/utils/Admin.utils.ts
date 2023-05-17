@@ -16,7 +16,7 @@ export const parseDateSecondsToHours = (seconds: number) => {
   return `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${sec < 10 ? '0' + sec : sec}`
 }
 
-export const isAdmin = () => {
+export const isInAdminSite = () => {
   const route = useRoute()
   return route.fullPath.indexOf(routeNames.admin)===0
 }
