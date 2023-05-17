@@ -52,7 +52,7 @@ watch([clients], () => {
     clientFactoryStore.getClientFactories(clients.value)
 
     console.log( 'clients: ', clients.value.length)
-}, { deep: true });
+}, { deep: true, immediate: true });
 
 watch([clientFactories], () => {
     fetchData.value = true;
@@ -62,7 +62,7 @@ watch([clientFactories], () => {
 
     console.log('client-factories: ', clientFactories.value.length)
 
-}, {deep: true})
+}, {deep: true, immediate: true})
 
 // client-factory drawer
 
