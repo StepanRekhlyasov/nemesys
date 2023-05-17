@@ -36,10 +36,7 @@
 import { watch } from 'vue';
 import { QDateProps, QPopupProxy } from 'quasar';
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
 
-const route = useRoute()
-const isAdmin = route.meta.isAdmin
 const monthPicker = ref<InstanceType<typeof QPopupProxy> | null>(null)
 const selectedMonth = ref('')
 const checkValue = (reason : Parameters<NonNullable<QDateProps['onUpdate:modelValue']>>[1]) => {
@@ -52,11 +49,13 @@ withDefaults(defineProps<{
   width?: string,
   height?: string,
   fontSize?: string,
+  isAdmin?: boolean,
   modelValue: string,
 }>(), {
   width: '175px',
   height: '30px',
-  fontSize: '12px'
+  fontSize: '12px',
+  isAdmin: false
 })
 watch(selectedMonth, (newVal)=>{
   emit('update:modelValue', newVal);
