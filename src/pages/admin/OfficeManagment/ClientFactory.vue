@@ -50,8 +50,7 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
 watch([clients], () => {
     fetchData.value = true;
     clientFactoryStore.getClientFactories(clients.value)
-
-    console.log( 'clients: ', clients.value.length)
+    
 }, { deep: true, immediate: true });
 
 watch([clientFactories], () => {
@@ -59,8 +58,6 @@ watch([clientFactories], () => {
 
     tableRows.value = clientFactoriesToTableRows(clientFactories.value)
     fetchData.value = false
-
-    console.log('client-factories: ', clientFactories.value.length)
 
 }, {deep: true, immediate: true})
 

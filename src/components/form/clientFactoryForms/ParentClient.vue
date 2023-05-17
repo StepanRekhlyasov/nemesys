@@ -17,8 +17,7 @@ const clientList = computed(() => clients.value.map(client => ({ label: client.n
 
 const selectedClient = ref(props.modelValue)
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const filterFn = (val: string, update: (cb: () => any[]) => void) => {
+const filterFn = (val: string, update: (cb: () => {label: string, value: string | undefined}[]) => void) => {
     update(() => {
         const needle = val.toLowerCase();
         return clientList.value.filter(v => v.label.toLowerCase().indexOf(needle) > -1);
@@ -28,6 +27,7 @@ const filterFn = (val: string, update: (cb: () => any[]) => void) => {
 watch(selectedClient, (newVal) => {
     emit('update:modelValue', newVal);
 });
+
 </script>
 
 <template>         
