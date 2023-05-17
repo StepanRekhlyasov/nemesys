@@ -25,6 +25,7 @@
             mask="YYYY-MM"
             v-model="selectedMonth"
             @update:model-value="(_, reason)=>checkValue(reason)"
+            :color="isAdmin()?'accent':'primary'"
           />
         </q-popup-proxy>
       </q-icon>
@@ -35,6 +36,8 @@
 <script setup lang="ts">
 import { QPopupProxy } from 'quasar';
 import { ref } from 'vue';
+import { isAdmin } from 'src/shared/utils/Admin.utils'
+
 const monthPicker = ref<InstanceType<typeof QPopupProxy> | null>(null)
 const selectedMonth = ref('')
 const checkValue = (reason : 'mask' | 'add-day' | 'remove-day' | 'add-range' | 'remove-range' | 'locale' | 'year' | 'month') => {
@@ -56,9 +59,11 @@ withDefaults(defineProps<{
 })
 </script>
 <style lang="scss">
+@import "src/css/imports/colors";
+
 .input--monthYearOnly{
   background: #FFFFFF;
-  border: 1px solid #333333;
+  border: 1px solid $input-border;
   border-radius: 3px;
   width: v-bind(width);
   height: v-bind(height);
@@ -74,7 +79,7 @@ withDefaults(defineProps<{
     height: v-bind(height);
     &:before{
       border-bottom: 0;
-      opacity: 0!important;
+      opacity: 0;
     }
   }
 }
