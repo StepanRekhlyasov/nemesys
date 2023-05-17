@@ -8,7 +8,8 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/ReleaseNotes/ReleaseNotes.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permission: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
     },
     menuParent: MenuParent.AdminReleaseNotes
   },
@@ -18,7 +19,8 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/InquiryPage/InquiryPage.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permission: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
     },
     menuParent: MenuParent.AdminReleaseNotes,
 
@@ -26,7 +28,10 @@ const admin_router: MenuRouter[] = [
   {
     path: 'officeSearch',
     component: () => import('src/pages/admin/OfficeManagment/OfficeSearch.vue'),
-    meta: { requiresAuth: true },
+    meta: { 
+      requiresAuth: true,
+      isAdmin: true
+    },
     menuParent: MenuParent.AdminOfficeManagement,
     title: 'menu.officeSearch',
   },
@@ -34,12 +39,18 @@ const admin_router: MenuRouter[] = [
     title: 'menu.client-factory',
     path: 'client-factory',
     component: () => import('src/pages/admin/OfficeManagment/ClientFactory.vue'),
-    meta: { requiresAuth: true },
+    meta: { 
+      requiresAuth: true,
+      isAdmin: true
+    },
   },
   {
     path: 'savedSearchList',
     component: () => import('src/pages/admin/OfficeManagment/SavedSearchList.vue'),
-    meta: { requiresAuth: true },
+    meta: { 
+      requiresAuth: true,
+      isAdmin: true
+    },
     menuParent: MenuParent.AdminOfficeManagement,
     title: 'menu.savedSearchList',
   },
@@ -61,6 +72,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/OperationChanges/OperationChange.vue'),
     meta: {
       requiresAuth: true,
+      isAdmin: true,
       permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
@@ -73,6 +85,7 @@ const admin_router: MenuRouter[] = [
     meta:{
       permission: [UserPermissionNames.AdminPageAccess],
       requiresAuth: true,
+      isAdmin: true
     },
     menuParent: MenuParent.AdminEnterpriseManagement
   },
@@ -82,9 +95,32 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/OperationHistoryTable/OperationHistory.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permission: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
+  },
+  {
+    path: 'various-fee-aggregates',
+    title: 'menu.admin.variousFeeAggregates',
+    component: () => import('src/pages/admin/BillingManagement/VariousFeeAggregatesPage.vue'),
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
+    },
+    menuParent: MenuParent.AdminBillingInformation,
+  },
+  {
+    path: 'billing-history',
+    title: 'menu.admin.billingHistory',
+    component: () => import('src/pages/admin/BillingManagement/BillingHistoryPage.vue'),
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
+    },
+    menuParent: MenuParent.AdminBillingInformation,
   }
 ]
 

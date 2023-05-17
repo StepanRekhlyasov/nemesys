@@ -25,7 +25,7 @@
             mask="YYYY-MM"
             v-model="selectedMonth"
             @update:model-value="(_, reason)=>checkValue(reason)"
-            :color="isAdmin()?'accent':'primary'"
+            :color="isAdmin?'accent':'primary'"
           />
         </q-popup-proxy>
       </q-icon>
@@ -34,13 +34,15 @@
 </template>
 
 <script setup lang="ts">
-import { QPopupProxy } from 'quasar';
+import { QDateProps, QPopupProxy } from 'quasar';
 import { ref } from 'vue';
-import { isAdmin } from 'src/shared/utils/Admin.utils'
+import { useRoute } from 'vue-router';
 
+const route = useRoute()
+const isAdmin = route.meta.isAdmin
 const monthPicker = ref<InstanceType<typeof QPopupProxy> | null>(null)
 const selectedMonth = ref('')
-const checkValue = (reason : 'mask' | 'add-day' | 'remove-day' | 'add-range' | 'remove-range' | 'locale' | 'year' | 'month') => {
+const checkValue = (reason : Parameters<NonNullable<QDateProps['onUpdate:modelValue']>>[1]) => {
   if (reason === 'month') {
     monthPicker.value?.hide()
   }
