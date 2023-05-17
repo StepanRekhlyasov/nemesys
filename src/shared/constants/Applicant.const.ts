@@ -207,7 +207,7 @@ export const smokingStatusList = computed(() => [{
   value: 'electronic'
 },{
   label: t('smoking.noWhileWworking'),
-  value: 'noWhileWworking'
+  value: 'noWhileWorking'
 },{
   label: t('smoking.acceptable'),
   value: 'acceptable'

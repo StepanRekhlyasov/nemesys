@@ -1,12 +1,10 @@
 <template>
   <q-form @submit="save">
-
-
     <DropDownEditGroup
       :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
       @openEdit="edit = true"
-      @closeEdit="edit=false"
+      @closeEdit="edit=false; resetData();"
       @onSave="save">
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -147,84 +145,63 @@
   </q-form>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import { Applicant, PersonalStatus } from 'src/shared/model';
+import { useApplicant } from 'src/stores/applicant';
 
-export default {
-  name: 'personalStatusComponent',
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    },
-    updateApplicant: {
-      type: Function,
-      required: true
-    }
-  },
-  components: {
-    DropDownEditGroup
-  },
-  setup(props) {
-    const edit = ref(false);
-    const loading = ref(false);
-    const smokingStatusOptions = ref(smokingStatusList)
-    const marriedOptions = ref(marriedStatusList)
-    const tattoosOptions = ref(tattoosStatusList)
+const props = defineProps<{
+  applicant: Applicant
+}>();
+const applicantStore = useApplicant();
+const { t } = useI18n({
+  useScope: 'global',
+});
+const $q = useQuasar();
+const edit = ref(false);
+const loading = ref(false);
+const smokingStatusOptions = ref(smokingStatusList)
+const marriedOptions = ref(marriedStatusList)
+const tattoosOptions = ref(tattoosStatusList)
 
-    const data = ref( {
-      smoking: props?.applicant['smoking'] || '',
-      tattoos: props?.applicant['tattoos'] || '',
-      marriedStatus: props?.applicant['marriedStatus'] || '',
-      liveTogether: props?.applicant['marriedStatus'] || '',
-      cohabitation: props?.applicant['cohabitation'] || '',
-      children: props?.applicant['children'] || '',
-      medicalHistory: props?.applicant['medicalHistory'] || '',
-      vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
-      startCaring: props?.applicant['startCaring'] || '',
-      interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
-      temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
-      startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
-      daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
-    })
+const data:Ref<PersonalStatus> = ref({})
 
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-
-    return {
-      edit,
-      data,
-      loading,
-
-      smokingStatusOptions,
-      marriedOptions,
-      tattoosOptions,
-
-      async save() {
-        loading.value = true
-        try {
-          await props.updateApplicant(data.value);
-          Alert.success($q, t);
-          edit.value = false;
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          Alert.warning($q, t);
-        }
-        loading.value = false
-      }
-    }
+function resetData() {
+  data.value = {
+    smoking: props?.applicant['smoking'] || undefined,
+    tattoos: props?.applicant['tattoos'] || undefined,
+    marriedStatus: props?.applicant['marriedStatus'] || undefined,
+    liveTogether: props?.applicant['marriedStatus'] || undefined,
+    cohabitation: props?.applicant['cohabitation'] || '',
+    children: props?.applicant['children'] || '',
+    medicalHistory: props?.applicant['medicalHistory'] || '',
+    vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
+    startCaring: props?.applicant['startCaring'] || '',
+    interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
+    temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
+    startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
+    daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
   }
 }
+resetData();
+
+
+async function save() {
+  loading.value = true
+  try {
+    await applicantStore.updateApplicant(data.value);
+    Alert.success($q, t);
+    edit.value = false;
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    Alert.warning($q, t);
+  }
+  loading.value = false
+}
 </script>
-
-<style>
-
-</style>

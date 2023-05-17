@@ -3,7 +3,7 @@
     :isEdit="edit"
     :label="'2.'+ $t('applicant.attendant.workExperience')"
     @openEdit="edit = true"
-    @closeEdit="edit=false"
+    @closeEdit="edit=false; resetData()"
     @onSave="save">
       <div class="row ">
         <div class="text-blue text-weight-regular self-center text-subtitle1 ">
@@ -104,7 +104,7 @@
   </q-dialog>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { computed, Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -112,162 +112,140 @@ import { collection, doc, getFirestore, onSnapshot, query, updateDoc, where } fr
 import workExperienceForm from './WorkExperienceForm.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { differentDateYear } from 'src/shared/utils/utils';
-import { ApplicantExperience } from 'src/shared/model';
+import { Applicant, ApplicantExperience } from 'src/shared/model';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import { useApplicant } from 'src/stores/applicant';
 
-export default {
-  name: 'workExperienceComponent',
-  props: {
-    applicant: {
-      type: Object,
-      required: true
+
+const props = defineProps<{
+  applicant: Applicant
+}>();
+const applicantStore = useApplicant();
+
+const loading = ref(false);
+const openDialog = ref(false);
+const edit = ref(false);
+const data = ref({})
+const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
+const experienceData: Ref<ApplicantExperience[]> = ref([]);
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+});
+const columns = computed(() => {
+  return [
+    {
+      name: 'edit',
+      align: 'left',
+      headerStyle: 'width: 24px'
     },
-    updateApplicant: {
-      type: Function,
-      required: true
+    {
+      name: 'experience',
+      required: true,
+      align: 'left',
+      field: 'experience',
+      sortable: false,
+    },{
+      name: 'month',
+      required: true,
+      field: 'month',
+      align: 'left',
+    },{
+      name: 'years',
+      required: true,
+      label: t('applicant.attendant.years') ,
+      field: 'years',
+      align: 'left',
+    },{
+      name: 'establishment',
+      field: 'establishment',
+      align: 'left',
+    },{
+      name: 'reasonResignation',
+      label: t('applicant.attendant.reasonResignation') ,
+      field: 'reasonResignation',
+      align: 'left',
+    },{
+      name: 'pastInterviews',
+      label: t('applicant.attendant.pastInterviews') ,
+      field: 'pastInterviews',
+      align: 'left',
+    },
+    {
+      name: 'delete',
+      align: 'left',
     }
-  },
-  components: {
-    workExperienceForm,
-    DropDownEditGroup
-  },
-  setup(props) {
-    const loading = ref(false);
-    const openDialog = ref(false);
-    const edit = ref(false);
-    const data = ref({
-      totalYear: props.applicant['totalYear']
-    })
-    const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
-    const experienceData: Ref<ApplicantExperience[]> = ref([]);
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
-    });
+  ];
+});
 
-    const columns = computed(() => {
-      return [
-        {
-          name: 'edit',
-          align: 'left',
-          headerStyle: 'width: 24px'
-        },
-        {
-          name: 'experience',
-          required: true,
-          align: 'left',
-          field: 'experience',
-          sortable: false,
-        },{
-          name: 'month',
-          required: true,
-          field: 'month',
-          align: 'left',
-        },{
-          name: 'years',
-          required: true,
-          label: t('applicant.attendant.years') ,
-          field: 'years',
-          align: 'left',
-        },{
-          name: 'establishment',
-          field: 'establishment',
-          align: 'left',
-        },{
-          name: 'reasonResignation',
-          label: t('applicant.attendant.reasonResignation') ,
-          field: 'reasonResignation',
-          align: 'left',
-        },{
-          name: 'pastInterviews',
-          label: t('applicant.attendant.pastInterviews') ,
-          field: 'pastInterviews',
-          align: 'left',
-        },
-        {
-          name: 'delete',
-          align: 'left',
-        }
-      ];
-    });
+const { t } = useI18n({
+  useScope: 'global',
+});
+const $q = useQuasar();
+const db = getFirestore();
 
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-    const db = getFirestore();
+load();
+resetData();
 
-
-    load();
-    function load() {
-      editExperience.value=undefined;
-      const q = query(collection(db, 'applicants/'+props.applicant.id+'/experience/'), where('deleted', '==', false));
-      onSnapshot(q, (querySnapshot) => {
-        let list: ApplicantExperience[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = {...doc.data() as ApplicantExperience};
-          data['id'] = doc.id;
-          list.push(data);
-        });
-        experienceData.value = list;
-      });
-    }
-
-    return {
-      edit,
-      data,
-      loading,
-      columns,
-      pagination,
-      experienceData,
-      openDialog,
-      editExperience,
-
-      differentDateYear,
-      load,
-      deleteExperience(experience) {
-        $q.dialog({
-          title: t('common.delete'),
-          message: t('applicant.attendant.deletedInfo'),
-          ok:{
-            label: t('common.delete'),
-            color: 'negative',
-            class: 'no-shadow',
-            unelevated: true
-          },
-        }).onOk(async () => {
-          try{
-            loading.value = true;
-            const boRef = doc(db, 'applicants/'+props.applicant.id+'/experience/'+experience.id);
-            await updateDoc(boRef, {
-              deleted: true
-            })
-            load();
-            Alert.success($q, t)
-          } catch (e) {
-            console.log(e)
-            Alert.warning($q, t)
-            loading.value = false;
-          }
-        })
-      },
-      async save() {
-        loading.value = true
-        try {
-          await props.updateApplicant(data.value);
-          Alert.success($q, t);
-          edit.value = false;
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          Alert.warning($q, t);
-        }
-        loading.value = false
-      }
-    }
+function resetData() {
+  data.value = {
+    totalYear: props.applicant['totalYear']
   }
+}
+
+function deleteExperience(experience) {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('applicant.attendant.deletedInfo'),
+    ok:{
+      label: t('common.delete'),
+      color: 'negative',
+      class: 'no-shadow',
+      unelevated: true
+    },
+  }).onOk(async () => {
+    try{
+      loading.value = true;
+      const boRef = doc(db, 'applicants/'+props.applicant.id+'/experience/'+experience.id);
+      await updateDoc(boRef, {
+        deleted: true
+      })
+      load();
+      Alert.success($q, t)
+    } catch (e) {
+      console.log(e)
+      Alert.warning($q, t)
+      loading.value = false;
+    }
+  })
+}
+async function save() {
+  loading.value = true
+  try {
+    await applicantStore.updateApplicant(data.value);
+    Alert.success($q, t);
+    edit.value = false;
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    Alert.warning($q, t);
+  }
+  loading.value = false
+}
+function load() {
+  editExperience.value=undefined;
+  const q = query(collection(db, 'applicants/'+props.applicant.id+'/experience/'), where('deleted', '==', false));
+  onSnapshot(q, (querySnapshot) => {
+    let list: ApplicantExperience[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = {...doc.data() as ApplicantExperience};
+      data['id'] = doc.id;
+      list.push(data);
+    });
+    experienceData.value = list;
+  });
 }
 </script>
 

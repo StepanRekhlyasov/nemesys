@@ -100,7 +100,3 @@ function showDialog(bo: BackOrderModel){
 backOrderStore.loadBackOrder()
 
 </script>
-
-<style>
-
-</style>

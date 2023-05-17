@@ -17,6 +17,7 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
+            clearable
           />
         </div>
         <div class="col-2">
@@ -30,6 +31,7 @@
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
+            clearable
           />
         </div>
         <div class="col-1">
@@ -37,14 +39,14 @@
           <q-select
             outlined
             dense
-            :options="prefectureOptions.map((item)=>{return{label:$t(item.label),value:item.value}})"
-            :disable="!prefectureOptions.length"
+            :options="prefectureList"
             v-model="applicantStore.state.applicantFilter['prefecture']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
             map-options
             @update:model-value="fetchResults()"
+            clearable
           />
         </div>
         <div class="col-1">
@@ -59,6 +61,7 @@
             emit-value
             map-options
             @update:model-value="fetchResults()"
+            clearable
           />
         </div>
         <div class="col-1">
@@ -100,16 +103,15 @@
   import ApplicantColumn from './components/ApplicantColumn.vue';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
-  import { useMetadata } from 'src/stores/metadata';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
   import { monthsList } from 'src/shared/constants/Common.const'
   import { limitQuery } from './const/applicantColumns';
   import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
+  import { prefectureList } from 'src/shared/constants/Prefecture.const';
   
   /** consts */
   const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
   const perQuery = ref<number>(limitQuery)
-  const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
   const countApplicantsStatuses = ref({
     entry: 0,
     retired: 0,
@@ -124,7 +126,6 @@
 
   /** stores */
   const applicantStore = useApplicant();
-  const metadataStore = useMetadata();
 
   /** getters */
   const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
@@ -143,26 +144,7 @@
       countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantFilter)
     })
   }
-
   onMounted( async ()=>{
     fetchResults()
-    if(applicantStore.state.prefectureList.length){
-      prefectureOptions.value = applicantStore.state.prefectureList
-    } else {
-      const metadataData = await metadataStore.getPrefectureJP()
-      const prefKeys = Object.keys(metadataData)
-      prefKeys.sort()
-      prefectureOptions.value = prefKeys.map((item)=>{
-        return {
-          label: 'prefectures.' + item,
-          value: item
-        }
-      })
-      prefectureOptions.value.unshift({
-        label: 'common.all',
-        value: 0
-      })
-      applicantStore.state.prefectureList = prefectureOptions.value
-    }
   })
 </script>

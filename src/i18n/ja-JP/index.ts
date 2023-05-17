@@ -1234,8 +1234,7 @@ export default {
     oita: '大分県',
     miyazaki: '宮崎県',
     kagoshima: '鹿児島県',
-    okinawa: '沖縄県',
-
+    okinawa: '沖縄県'
   },
   office: {
     searchConditionName: '検索条件名',
