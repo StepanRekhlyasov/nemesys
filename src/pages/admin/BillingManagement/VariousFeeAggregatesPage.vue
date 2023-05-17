@@ -1,11 +1,8 @@
 <template>
-  <PageHader>
+  <PageHeader>
     {{ $t('menu.admin.variousFeeAggregates') }} ({{ $t('billing.feeAggregates.byMonth') }}・{{ $t('billing.feeAggregates.byCompany') }})
-  </PageHader>
-  <PageHader>
-    <!-- remove after development ready -->
-    <div style="color:red;">Dummy data on this page / このページのダミーデータ</div>
-  </PageHader>
+  </PageHeader>
+  <DevWarning />
   <q-card flat class="q-pt-md q-pb-md q-px-lg">
     <div class="monthPicker">
       {{ $t('billing.feeAggregates.monthOfIssue') }}
@@ -24,7 +21,7 @@
   />
 </template>
 <script setup lang="ts">
-import PageHader from 'src/components/PageHeader.vue'
+import PageHeader from 'src/components/PageHeader.vue'
 import { ref, watch } from 'vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
@@ -33,6 +30,7 @@ import { orderBy } from 'firebase/firestore';
 import { feeAggregatesColumns as columns } from './consts/BillingManagment'
 import { AggregatesDummyData } from './types/billing.types'; // dummy model
 import { aggregatesDummyData } from './consts/BillingManagment'; // dummy model
+import DevWarning from 'src/components/DevWarning.vue';
 
 const loading = ref(true)
 const selectedDate = ref('')

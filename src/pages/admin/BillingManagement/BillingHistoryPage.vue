@@ -2,10 +2,7 @@
   <PageHader>
     {{ $t('menu.admin.billingHistory') }}
   </PageHader>
-  <PageHader>
-    <!-- remove after development ready -->
-    <div style="color:red;">Fake data (Applicant) on this page / このページのダミーデータ</div>
-  </PageHader>
+  <DevWarning />
   <q-card flat class="q-pt-md q-pb-md q-px-lg headInputsWrapper">
     {{ $t('billing.feeAggregates.monthOfIssue') }}
     <YearMonthPicker v-model="selectedDate" :isAdmin="true" :height="'36px'"/>
@@ -35,6 +32,7 @@ import { Applicant } from 'src/shared/model';
 import SearchField from 'src/components/SearchField.vue';
 import BillingHistoryTable from './components/BillingHistoryTable.vue'
 import { billingHistoryColumns as columns } from './consts/BillingManagment'
+import DevWarning from 'src/components/DevWarning.vue';
 
 const selectedDate = ref('')
 const search = ref('')
