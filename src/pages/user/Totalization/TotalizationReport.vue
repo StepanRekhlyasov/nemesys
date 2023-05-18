@@ -77,7 +77,6 @@ const report_componets = {
 //   const year = today.getFullYear();
 //   const month = today.getMonth() + 1;
 //   const day = today.getDate();
-//   //fromを1ヶ月前にする
 //   const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
 //   const from_year = from.getFullYear();
 //   const from_month = from.getMonth() + 1;
@@ -104,5 +103,3 @@ onMounted(async () => {
 });
 </script>
 
-
-```

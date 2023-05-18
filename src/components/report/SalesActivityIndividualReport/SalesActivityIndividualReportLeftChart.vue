@@ -14,41 +14,31 @@ import {
   computed,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns ,data_names } from './const';
+import { chartOptions, columns, data_names } from './const';
 import { getIndividualReport } from 'src/stores/individualReport';
 import { Totalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../report_util';
-import {graphType} from '../Models';
+import { graphType } from '../Models';
 
+type ROWS = {
+  name: string;
+  fix: number | string;
+  inspection: number | string;
+  offer: number | string;
+  admission: number | string;
+  inspection_rate: number | string;
+  offer_rate: number | string;
+  admission_rate: number | string;
+}[];
 
 const { t } = useI18n({ useScope: 'global' });
 const dataToShow: Ref<(number | string)[][]> = ref([]);
 const dataToShowCVR: Ref<(number | string)[][]> = ref([]);
-const rows_: Ref<
-  {
-    name: string;
-    fix: number | string;
-    inspection: number | string;
-    offer: number | string;
-    admission: number | string;
-    inspection_rate: string;
-    offer_rate: string;
-    admission_rate: string;
-  }[]
+const rows_: Ref<ROWS> = ref([]);
+const series_: Ref<
+  { name: string; data: (number | string)[]; type: string }[]
 > = ref([]);
-const series_: Ref<{ name: string; data: (number | string)[]; type: string }[]> = ref([]);
-const rows: ComputedRef<
-  {
-    name: string;
-    fix: number | string;
-    inspection: number | string;
-    offer: number | string;
-    admission: number | string;
-    inspection_rate: number|string;
-    offer_rate: number|string;
-    admission_rate: number|string;
-  }[]
-> = computed(() => {
+const rows: ComputedRef<ROWS> = computed(() => {
   return dataToShow.value
     .map((row_data, index) => {
       return {
@@ -64,7 +54,6 @@ const rows: ComputedRef<
     })
     .concat(rows_.value);
 });
-
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
@@ -80,14 +69,12 @@ const series: ComputedRef<
 });
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const organization_id = ref('');
-
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
   branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
-
 }>();
 
 const showIndividualReport = async (
