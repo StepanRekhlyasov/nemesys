@@ -1524,8 +1524,9 @@ export default {
     Total:'Total',
     CVR:'CVR',
     AllCVR:'AllCVR',
-    BasedOnFIXDate:'BasedOnFIXDATE',
+    BasedOnLeftMostItemDate:'basedonLeftMostItemDate',
     BasedOnEachItemDate:'BasedOnEachItemDate',
+    day:' day',
     categories:{
       ValidApplicant:'ValidApplicant',
       NumberOfContacts:'NumberOfContacts',
@@ -1548,7 +1549,7 @@ export default {
     },
     title:{
       Leadtime:'Leadtime',
-      ApplicationToAddmission:'Application→Addmission',
+      ApplicationToadmission:'Application→admission',
       FIXAndInspection:'FIX and Inspection',
       SalseProductivity:'Salse Productivity',
       IndividualPerformanceStatus:'Individual Performance Status',

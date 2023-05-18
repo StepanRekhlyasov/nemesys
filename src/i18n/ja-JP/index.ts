@@ -1518,8 +1518,9 @@ export default {
     Total:'全体合計',
     CVR:'CVR',
     AllCVR:'全体CVR',
-    BasedOnFIXDate:'FIX日付ベース',
+    BasedOnLeftMostItemDate:'最左項日付ベース',
     BasedOnEachItemDate:'項目別日付ベース',
+    day:'日',
     categories:{
       ValidApplicant:'有効応募者',
       NumberOfContacts:'接触数',
@@ -1542,7 +1543,7 @@ export default {
     },
     title:{
       Leadtime:'リードタイム',
-      ApplicationToAddmission:'応募→入職',
+      ApplicationToadmission:'応募→入職',
       FIXAndInspection:'FIX と 職見',
       SalseProductivity:'営業生産性',
       IndividualPerformanceStatus:'個人実績状況',
