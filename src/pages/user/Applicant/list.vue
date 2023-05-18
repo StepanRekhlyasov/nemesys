@@ -14,7 +14,7 @@
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
         <q-table :columns="columns" :rows="applicantData" row-key="id" selection="multiple" class="no-shadow"
-          v-model:selected="selected" v-model:pagination="pagination" hide-pagination :loading="isLoadingProgress">
+          v-model:selected="selected" v-model:pagination="paginationTable" hide-pagination :loading="isLoadingProgress">
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.name') }} </div>
@@ -50,7 +50,7 @@
         </q-table>
         <div class="row justify-start q-mt-md pagination">
           <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-            :max="(applicantData.length / pagination.rowsPerPage) >= 1 ? applicantData.length / pagination.rowsPerPage : 1"
+            :max="metaData.total_pages"
             direction-links outline />
         </div>
       </q-card-section>
@@ -62,7 +62,7 @@
 
 <script>
 import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import {
   getFirestore,
   doc,
@@ -103,6 +103,7 @@ export default {
     const isLoadingProgress = ref(true)
     const detailsDrawer = ref(null)
     //const selectedRows = ref([]);
+    const metaData = ref({})
 
     const pagination = ref({
       sortBy: 'desc',
@@ -112,6 +113,11 @@ export default {
       // rowsNumber: xx if getting data from a server
     });
 
+    const paginationTable = ref({
+      sortBy: 'desc',
+      descending: false,
+      rowsPerPage: 10
+    });
     const columns = computed(() => {
       return [
         {
@@ -211,7 +217,7 @@ export default {
         process.env.elasticSearchStaffURL,
         {
           'query': queryString,
-          // "page": { "size": tableOptions.itemsPerPage, "current": tableOptions.page },
+          'page': { 'size': pagination.value.rowsPerPage, 'current': pagination.value.page },
           // "sort": sort,
           'filters': filters,
         },
@@ -221,10 +227,11 @@ export default {
       ).then((response) => {
         if (response.status == 200) {
           let responseData = response.data.results;
+          metaData.value = response.data.meta.page;
+          console.log(response.data)
           for (var i = 0; i < responseData.length; i++) {
             currentIds.value.push(responseData[i]['id']['raw'])
           }
-          //applicantData.value = data;
           loadFirestoreApplicantData()
         }
       }).catch((error) => {
@@ -234,6 +241,7 @@ export default {
     };
     const unsubscribeList = ref([]);
     async function loadFirestoreApplicantData() {
+      applicantData.value = [];
       for (var i = 0; i < unsubscribeList.value; i++) {
         unsubscribeList.value[i]();
       }
@@ -274,6 +282,13 @@ export default {
         ...applicant,
         staffRank: RankCount.countRank(selectedApplicant.value)}
     };
+    watch(
+      () => (pagination.value.page),
+      (newVal) => {
+        console.log('aaa:' + newVal)
+      loadApplicantData();
+      },
+    )
 
     return {
       age,
@@ -290,6 +305,8 @@ export default {
       isLoadingProgress,
       statusOption,
       detailsDrawer,
+      metaData,
+      paginationTable,
 
       async openDrawer(data) {
         detailsDrawer.value?.openDrawer(data)
