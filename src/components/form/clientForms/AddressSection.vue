@@ -64,9 +64,7 @@ watch(prefecture, async () => {
                 :options="municipalities"
                 v-model="clientData['municipality']"  
                 :placeholder="t('client.add.municipalitieLabel')"/>
-              <!-- <q-input outlined dense v-model="clientData['municipality']"
-                :placeholder="t('client.add.municipalitieLabel')" lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space /> -->
+
             </div>
           </div>
           <div class="row q-pt-sm">
