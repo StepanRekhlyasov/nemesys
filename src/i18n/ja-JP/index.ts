@@ -185,6 +185,8 @@ export default {
         codeNotUnique:'同じコードを持つ組織を複数が見つかりました。コードはユニークである必要があります。'
       },
       operationHistory: '稼働履歴',
+      variousFeeAggregates: '各種料金集計',
+      billingHistory: '請求履歴'
     }
   },
   settings: {
@@ -1234,8 +1236,7 @@ export default {
     oita: '大分県',
     miyazaki: '宮崎県',
     kagoshima: '鹿児島県',
-    okinawa: '沖縄県',
-
+    okinawa: '沖縄県'
   },
   office: {
     searchConditionName: '検索条件名',
@@ -1549,6 +1550,31 @@ export default {
       IndividualPerformanceStatus:'個人実績状況',
       BOAcquisitionStatus:'BO獲得状況',
 
+    }
+  }, 
+  billing: {
+    feeAggregates: {
+      byMonth: '月別',
+      byCompany: '企業別',
+      monthOfIssue: '発行月',
+      companyId: '企業ID',
+      companyName: '企業名',
+      totalAmountExcludingTax: '税抜\n請求額合計',
+      consumptionTax: '消費税',
+      totalAmountIncludingTax: '税込\n請求額合計',
+      paymentStatus: '決済状況',
+      createInvoice: '請求書作成',
+      createSmsUsageDetails: 'SMS利用明細作成',
+      createFaxUsageDetails: 'FAX利用明細作成',
+      viewDetails: '詳細情報表示',
+      details: '詳細',
+      utilizationSystem: '利用中\nシステム',
+      license: 'ライセンス',
+      businessName: '事業名',
+      branchName: '支店名',
+      usageCount: '利用数',
+      unitPrice: '単価',
+      billingAmount: '請求額'
     }
   }
 };

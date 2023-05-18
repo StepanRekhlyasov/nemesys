@@ -30,11 +30,11 @@
       </q-tab-panel>
 
       <q-tab-panel name="attendanceInfo">
-        <attendanceInfo :applicant="applicant" :updateApplicant="applicantStore.updateApplicant" />
+        <attendanceInfo :applicant="applicant" />
       </q-tab-panel>
 
       <q-tab-panel name="fixEmployInfo">
-        <fixEmployInfo :applicant="applicant" :key="applicant.id" :updateApplicant="applicantStore.updateApplicant"/>
+        <fixEmployInfo :applicant="applicant" :key="applicant.id" />
       </q-tab-panel>
 
       <q-tab-panel name="operationInfo">
@@ -42,7 +42,7 @@
       </q-tab-panel>
       
       <q-tab-panel name="memo">
-        <applicantMemo :applicant="applicant" :updateApplicant="applicantStore.updateApplicant"/>
+        <applicantMemo :applicant="applicant"/>
       </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -57,10 +57,8 @@ import applicationInfo from './applicantTab/applicationInfoTab.vue';
 import attendanceInfo from './attendanceTab/attendanceTab.vue';
 import operationInfoComponent from './operationInfoTab.vue';
 import applicantMemo from './memoTab.vue';
-import { useApplicant } from 'src/stores/applicant';
 import { Applicant } from 'src/shared/model';
 
-const applicantStore = useApplicant();
 const tab = ref('contactInfo');
 defineProps<{
   applicant: Applicant

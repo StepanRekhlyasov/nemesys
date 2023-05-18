@@ -185,6 +185,8 @@ export default {
         codeNotUnique: 'Found several organizations with the same code. Code must be unique'
       },
       operationHistory: 'Operational history',
+      variousFeeAggregates: 'Various fee aggregates',
+      billingHistory: 'Billing history'
     }
   },
   settings: {
@@ -1237,8 +1239,7 @@ export default {
     oita: 'Oita',
     miyazaki: 'Miyazaki',
     kagoshima: 'Kagoshima',
-    okinawa: 'Okinawa',
-
+    okinawa: 'Okinawa'
   },
   office: {
     searchConditionName: 'Search condition name',
@@ -1554,6 +1555,34 @@ export default {
       SalseProductivity:'Salse Productivity',
       IndividualPerformanceStatus:'Individual Performance Status',
       BOAcquisitionStatus:'BO Acquisition Status',
+    chart:{
+      UnitPerson:'UnitPerson',
+    },
+  }
+},
+  billing: {
+    feeAggregates: {
+      byMonth: 'by month',
+      byCompany: 'by company',
+      monthOfIssue: 'Month of issue',
+      companyId: 'Company ID',
+      companyName: 'Company Name',
+      totalAmountExcludingTax: 'Total Amount (Excluding Tax)',
+      consumptionTax: 'Consumption Tax',
+      totalAmountIncludingTax: 'Total Amount (Including Tax)',
+      paymentStatus: 'Payment Status',
+      createInvoice: 'Create Invoice',
+      createSmsUsageDetails: 'Create SMS Usage Details',
+      createFaxUsageDetails: 'Create Fax Usage Details',
+      viewDetails: 'View Details',
+      details: 'Details',
+      utilizationSystem: 'Utilization System',
+      license: 'License',
+      businessName: 'Business Name',
+      branchName: 'Branch Name',
+      usageCount: 'Usage Count',
+      unitPrice: 'Unit Price',
+      billingAmount: 'Billing Amount'
     }
   }
-};
+}

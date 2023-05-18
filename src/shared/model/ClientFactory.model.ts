@@ -16,7 +16,7 @@ export interface ClientFactory {
     homepageUrl: string
     isFaxNG: boolean
     facilityType: string[]
-    existingOfficeFlag: boolean
+    existingOfficeFlag?: boolean
     numberEmployees: string
     clientFlag: boolean
     basicInfoChangingFlag: boolean

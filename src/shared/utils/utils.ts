@@ -96,9 +96,9 @@ export const dayMonthFromDate = (myDate?: string) => {
   const timeStamp = Date.parse(myDate)
   return date.formatDate(timeStamp, 'DD/MM')
 }
-export const applicationDateFormat = (myDate : string) => {
-  const timeStamp = Date.parse(myDate)
-  return date.formatDate(timeStamp, 'YYYY.MM.DD')
+
+export const firebaseDateFormat = (myDate : Date, mask : string) => {
+  return date.formatDate(myDate, mask);
 }
 
 // collection

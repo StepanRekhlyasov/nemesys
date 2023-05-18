@@ -2,13 +2,14 @@
     <DropDownEditGroup
       :isEdit="edit.includes('jobOffersInfo')"
       :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
-      @openDropDown="emit('openEdit')"
-      @closeDropDown="emit('closeEdit')"
-      @onSave="emit('save')"
+      @openEdit="emit('openEdit')"
+      @closeEdit="emit('closeEdit')"
+      @onSave="emit('save', 'jobOffersInfo', data)"
       :isDisabledButton="disableLevel < 2">
 
       <div class="row q-pb-sm">
-        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" :value="fixData.offerStatus" valueClass="text-uppercase col-3">
+        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" 
+          :value="fixData.offerStatus" valueClass="text-uppercase col-3  q-pl-md">
           <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';emit('disableChange')" :disable="disableLevel < 2"/>
           <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" :disable="disableLevel < 2"/>
         </labelField>
@@ -31,7 +32,8 @@
       </div>
 
       <div class="row q-pb-sm">
-        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" :value="fixData.offerReasonNG" valueClass="col-9">                
+        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" 
+        :value="fixData.offerReasonNG" valueClass="col-9 q-pl-md">                
           <q-input dense outlined bg-color="white"
             v-model="data['offerReasonNG']" :disable="loading || disableLevel < 2" />
         </labelField>
@@ -42,7 +44,7 @@
           :value="usersListOption
             .filter(user => user.value === data['chargeOfOffer'])
             .map(user => user.label).join('')"
-          valueClass="col-9">
+          valueClass="col-9 q-pl-md">
           <q-select
             v-model="data['chargeOfOffer']"
             :disable="loading || disableLevel < 2"
@@ -52,7 +54,8 @@
       </div>
 
       <div class="row q-pb-sm">
-        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.memo')" :value="fixData.offerMemo" valueClass="col-9">
+        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.memo')" 
+          :value="fixData.offerMemo" valueClass="col-9 q-pl-md">
           <q-input  dense outlined bg-color="white"
             v-model="data['offerMemo']" :disable="loading || disableLevel < 2" />
         </labelField>
@@ -77,7 +80,19 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
-const data = ref(props.editData)
+const data = ref({})
+
+resetData();
+
+function resetData(){
+  data.value = {
+    offerStatus: props.editData['offerStatus'] || '',
+    offerDate: props.editData['offerDate'] || '',
+    offerReasonNG: props.editData['offerReasonNG'] || '',
+    chargeOfOffer: props.editData['chargeOfOffer'] || '',
+    offerMemo: props.editData['offerMemo'] || '',
+  }
+}
 </script>
 
 <style>

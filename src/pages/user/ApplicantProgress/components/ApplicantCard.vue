@@ -12,19 +12,20 @@
     </div>
     <div class='row q-gutter-md items-center'>
       <div class='col'>{{ item.occupation }}</div>
-      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+item.prefecture) }}</div>
+      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }}</div>
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1'>応</div>
-      <div class='col' v-if="item.applicationDate">{{ applicationDateFormat(item.applicationDate) }}</div>
+      <div class='col' v-if="(item.currentStatusTimestamp instanceof Timestamp)">{{ firebaseDateFormat(item.currentStatusTimestamp.toDate(), 'YYYY.MM.DD') }}</div>
     </div>
   </q-card>
 </template>
 <script lang="ts" setup>
+import { Timestamp } from 'firebase/firestore'
 import { Applicant } from 'src/shared/model'
-import { applicationDateFormat } from 'src/shared/utils/utils'
+import { firebaseDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
-
+import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
 
 const props = defineProps<{
   item: Applicant,
@@ -34,12 +35,13 @@ const emit = defineEmits<{
     (e: 'selectApplicant', applicant : Applicant)
 }>()
 
-const daysUntilAlert = 20
 const redAlert = computed(()=>{
-  if(!props.item.currentStatusTimestamp){
+  if(!(props.item.currentStatusTimestamp instanceof Timestamp)){
     return false
   }
-  return props.item.currentStatusTimestamp < Math.round(Date.now()/1000 - 86400*daysUntilAlert)
+  const daysUntilAlert = 3 * 86400000 /* days x miliseconds */
+  const compareWithMe = new Date().setTime(new Date().getTime() - daysUntilAlert);
+  return props.item.currentStatusTimestamp.toDate() < new Date(compareWithMe)
 })
   
 </script>
