@@ -62,28 +62,33 @@
 			</q-card-section>
 		</q-card>
 	</div>
-	
   <q-drawer
 		v-model="drawerRight" 
 		v-if="selectedBo" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
     bordered>
-		<InfoBO :selectedBo="selectedBo" @closeDialog="drawerRight=false;selectedBo=undefined"/>
+		<InfoBO :selectedBo="selectedBo" @closeDialog="drawerRight=false;selectedBo=undefined;showSearchByMap=false" @openSearchByMap="showSearchByMap=true" @passClientToMapSearch="(clientValue)=>{
+      selectedClient = clientValue
+    }"/>
 	</q-drawer>
+  <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="showSearchByMap=false"></SearchByMapDrawer>
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
 import { ref } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
+import SearchByMapDrawer from './components/info/searchByMapDrawer.vue'
 
 const backOrderStore = useBackOrder();
 const state = backOrderStore.state;
 
+const showSearchByMap = ref(false)
 const selected = ref<BackOrderModel[]>([])
 const drawerRight = ref(false);
 const selectedBo = ref<BackOrderModel | undefined>()
+const selectedClient = ref<Client | undefined>(undefined);
 const pagination = ref({
 	sortBy: 'desc',
 	descending: false,
