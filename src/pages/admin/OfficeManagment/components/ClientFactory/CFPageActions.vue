@@ -4,11 +4,16 @@ import { defineEmits } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const emit = defineEmits<{
-    (e: 'openDrawer')
+    (e: 'openClientDrawer'),
+    (e: 'openClientFactoryDrawer')
 }>()
 
 const openNewClientDrawer = () => {
-    emit('openDrawer', )
+    emit('openClientDrawer')
+}
+
+const openNewClientFactoryDrawer = () => {
+    emit('openClientFactoryDrawer')
 }
 
 </script>
@@ -33,7 +38,7 @@ const openNewClientDrawer = () => {
             <q-btn class="action_btn">
                 {{ t('actions.searchConditionChange') }}
             </q-btn>
-            <q-btn icon="add" class="action_btn">
+            <q-btn icon="add" class="action_btn" @click="openNewClientFactoryDrawer">
                 {{ t('menu.addOffice') }}
             </q-btn>
         </div>
