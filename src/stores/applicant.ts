@@ -9,6 +9,7 @@ import { watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
+import { toMonthYear } from 'src/shared/utils/utils';
 
 interface ApplicantState {
   clientList: Client[],
@@ -126,6 +127,7 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   const getApplicantsByStatus = async (status : string, filterData?: ApplicantFilter, perQuery = 20, showMore = false) => {
+    console.log(filterData)
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
@@ -163,6 +165,7 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   async function updateApplicant(applicantData : Partial<Applicant>, showAlert = true) {
+    console.log(applicantData)
     if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
@@ -220,14 +223,14 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
-  
+
   /** update timestamps and sort columns */
   watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
     if (!state.value.selectedApplicant) return;
     if (!newValue || !oldValue) return;
     if (newValue == oldValue) return;
     const timeData = {
-      currentStatusMonth : Timestamp.now().toDate().getMonth()+1,
+      currentStatusMonth : toMonthYear(),
       currentStatusTimestamp : serverTimestamp() as Timestamp,
       ['statusChangeTimestamp.'+newValue] : serverTimestamp() as Timestamp
     }

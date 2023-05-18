@@ -5,11 +5,16 @@
     input-class="cursor-pointer"
     v-model="selectedMonth"
     @click="monthPicker?.show()"
-    mask="####-##"
     fill-mask=""
     filled 
     dense
   >
+  <template v-slot:append>
+    <q-icon v-if="selectedMonth&&selectedMonth!=='____-__'" name="cancel" @click="()=>{
+      selectedMonth = '';
+      monthPicker?.hide()
+    }" class="cursor-pointer" />
+  </template>
     <template v-slot:prepend>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy 
@@ -66,7 +71,8 @@ watch(selectedMonth, (newVal)=>{
 
 .input--monthYearOnly{
   background: #FFFFFF;
-  border: 1px solid $input-border;
+  box-sizing: border-box;
+  
   border-radius: 3px;
   width: v-bind(width);
   height: v-bind(height);
@@ -81,9 +87,14 @@ watch(selectedMonth, (newVal)=>{
     background: transparent;
     height: v-bind(height);
     &:before{
-      border-bottom: 0;
-      opacity: 0;
+      border: 1px solid rgba(0, 0, 0, 0.24);
+      border-radius: 4px;
+      border-bottom-style: solid!important;
+    }
+    &:hover:before{
+      border: 1px solid $input-border;
     }
   }
+  
 }
 </style>

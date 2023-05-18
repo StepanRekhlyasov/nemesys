@@ -31,6 +31,15 @@ export const toDateFormat = (time?: Timestamp):string => {
 	return date.formatDate(dateFormat, 'YYYY-MM-DD')
 }
 
+export const toMonthYear = (time?: Timestamp) => {
+  if(!time){
+    time = Timestamp.now();
+  }
+  const year = time.toDate().getFullYear();
+  const month = time.toDate().getMonth()+1;
+  return year+'-'+(month>=10?month:'0'+month);
+}
+
 export const toDate = (timestamp: Timestamp):string => {
   let data = '';
   if (timestamp) {
