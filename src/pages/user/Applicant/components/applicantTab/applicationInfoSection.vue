@@ -59,7 +59,7 @@
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.kana') }}
+        {{ $t('applicant.add.kanaName') }}
       </div>
       <div class="col-3 q-pl-md blue">
         <span v-if="!edit">{{ applicant.kanaName || ''}}</span>
