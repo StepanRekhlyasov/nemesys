@@ -51,7 +51,12 @@
         </div>
         <div class="col-2">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
-          <YearMonthPicker v-model="applicantStore.state.applicantFilter['currentStatusMonth']" height="40px" width="100%" />
+          <YearMonthPicker 
+            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
+            height="40px" 
+            width="100%" 
+            :disable="loading"
+          />
         </div>
         <div class="col-1">
           <p class="q-ml-md">{{ $t("applicant.progress.entry") }}</p>
@@ -112,6 +117,14 @@
     }
   }))
   const columnsLoading = computed(() => applicantStore.state.columnsLoading);
+  const loading = computed(()=>{
+    for (const value of Object.values(columnsLoading.value)){
+      if(!value){
+        return false
+      }
+    }
+    return true
+  })
 
   /** stores */
   const applicantStore = useApplicant();
@@ -134,9 +147,9 @@
     })
   }
   onMounted( async ()=>{
-    fetchResults()
+    await fetchResults()
   })
-  watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], ()=>{
-    fetchResults()
+  watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
+    if(newVal!=oldVal) fetchResults()
   })
 </script>

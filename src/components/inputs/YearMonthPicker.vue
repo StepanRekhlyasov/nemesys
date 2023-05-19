@@ -12,7 +12,8 @@
   <template v-slot:append>
     <q-icon v-if="selectedMonth" name="cancel" @click="()=>{
       selectedMonth = '';
-      monthPicker?.hide()
+      monthPicker?.hide();
+      emit('cleared');
     }" class="cursor-pointer" />
   </template>
     <template v-slot:prepend>
@@ -21,6 +22,7 @@
           ref="monthPicker" 
           transition-show="scale" 
           transition-hide="scale"
+          @before-hide="emit('pickerHide', selectedMonth)"
         >
           <q-date
             minimal
@@ -43,14 +45,13 @@ import { QDateProps, QPopupProxy } from 'quasar';
 import { ref } from 'vue';
 
 const monthPicker = ref<InstanceType<typeof QPopupProxy> | null>(null)
-const selectedMonth = ref('')
 const checkValue = (reason : Parameters<NonNullable<QDateProps['onUpdate:modelValue']>>[1]) => {
   if (reason === 'month') {
     monthPicker.value?.hide()
   }
 }
-const emit = defineEmits(['update:modelValue'])
-withDefaults(defineProps<{
+const emit = defineEmits(['update:modelValue', 'pickerHide', 'cleared'])
+const props = withDefaults(defineProps<{
   width?: string,
   height?: string,
   fontSize?: string,
@@ -62,6 +63,7 @@ withDefaults(defineProps<{
   fontSize: '12px',
   isAdmin: false
 })
+const selectedMonth = ref(props.modelValue)
 watch(selectedMonth, (newVal)=>{
   emit('update:modelValue', newVal);
 })

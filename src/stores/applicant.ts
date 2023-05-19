@@ -167,6 +167,11 @@ export const useApplicant = defineStore('applicant', () => {
     if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
+      for(const [key, value] of Object.entries(applicantData)){
+        if(typeof value === 'undefined'){
+          delete applicantData[key]
+        }
+      }
       await updateDoc(applicantRef, applicantData)
       if (showAlert){ Alert.success($q, t); }
       state.value.selectedApplicant = {
@@ -221,6 +226,15 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
+
+  /** update Applicant in tables after details changes */
+  watch(() => state.value.selectedApplicant, (newValue) => {
+    if(!newValue?.status) return;
+    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id==newValue?.id)
+    if(changingApplicantIndex>=0){
+      state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
+    }
+  }, {deep: true})
 
   /** update timestamps and sort columns */
   watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {

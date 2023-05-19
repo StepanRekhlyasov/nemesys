@@ -37,26 +37,25 @@
           }"
           class="applicant-clickable"
         >{{ applicant.name }}</td>
-        <td>{{dayMonthFromDate(applicant.applicationDate)}}</td>
-        <td>-</td>
-        <td v-if="applicant.qualification?.length"><p v-for="q, index in applicant.qualification" :key="index" style="margin:0;">{{ q }}</p></td>
-        <td v-else>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
+        <td>{{dayMonthFromDate(applicant.currentStatusTimestamp)}}</td>
+        <td>{{ applicant.nearestStation }}</td>
+        <td><p v-for="q, index in applicant.qualification" :key="index" style="margin:0;">{{ q }}</p></td>
+        <td>{{ applicant.timeToWork }}</td>
+        <td>{{ applicant.daysToWork }}</td>
+        <td>{{ applicant.workingHoursEarly?'●':'-' }}</td>
+        <td>{{ applicant.workingHoursDay?'●':'-' }}</td>
+        <td>{{ applicant.workingHoursLate?'●':'-' }}</td>
+        <td>{{ applicant.workingHoursNight?'●':'-' }}</td>
+        <td>{{ applicant.shiftRemarks }}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='monday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='tuesday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='wednesday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='thursday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='friday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='saturday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='sunday')?'●':'-'}}</td>
+        <td>{{ applicant.daysPerWeek?.find((row)=>row==='holiday')?'●':'-'}}</td>
+        <td>{{ applicant.memo }}</td>
       </tr>
     </tbody>
 </template>
