@@ -24,12 +24,18 @@
           <q-select
             outlined
             dense
-            :options="[]"
-            v-model="applicantStore.state.applicantFilter['userInCharge']"
+            :options="tantosListOption"
+            v-model="applicantStore.state.applicantFilter['attendee']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
+            @update:model-value="()=>{
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }"
             emit-value
             map-options
+            clearable
+            :disable="loading"
           />
         </div>
         <div class="col-1">
@@ -111,6 +117,14 @@ const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
 /** consts */
+const tantosListOption = computed(()=>{
+  return applicantStore.state.tantoUsers.map((doc) => {
+    return {
+      label: doc.displayName,
+      value: doc.id
+    }
+  });
+});
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
   for (const [key, value] of Object.entries(applicantStore.state.applicantFilter)){
@@ -131,6 +145,7 @@ const pagination = ref({
 const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 
 onMounted( async ()=>{
+  applicantStore.fetchTantoUsers()
   if(applicantStore.state.prefectureList.length){
     prefectureOptions.value = applicantStore.state.prefectureList
   } else {
