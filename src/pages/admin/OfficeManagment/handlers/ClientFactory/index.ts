@@ -84,9 +84,9 @@ export const useOfficeDetails = (clientFactory: ClientFactory): RenderOfficeDeta
       {label: t('clientFactory.drawer.details.dayOffYear'), value: clientFactory?.officeDetails?.commonItems.dayOffYear ?? '', editType: 'text', key: 'officeDetails.commonItems.dayOffYear'},
       {label: t('clientFactory.drawer.details.canSmoke'), value: `${clientFactory?.officeDetails?.commonItems.canSmoke ?? ''}`, editType: 'text', key: 'officeDetails.commonItems.canSmoke'},
       {label: t('clientFactory.drawer.details.dayOffWeek'), value: clientFactory?.officeDetails?.commonItems.dayOffWeek ?? '', editType: 'text', key: 'officeDetails.commonItems.dayOffWeek'},
-      {label: t('clientFactory.drawer.details.workingHourEarly'), value: clientFactory?.officeDetails?.commonItems.workingHourEarly ?? '', editType: 'text', key: 'officeDetails.commonItems.workingHourEarly'},
+      {label: t('clientFactory.drawer.details.workingHourEarly'), value: clientFactory?.officeDetails?.commonItems.workingHourEarly ?? 0, editType: 'number', key: 'officeDetails.commonItems.workingHourEarly'},
       {label: t('clientFactory.drawer.details.workingHourDay'), value: clientFactory?.officeDetails?.commonItems.workingHourDay ?? '', editType: 'text', key: 'officeDetails.commonItems.workingHourDay'},
-      {label: t('clientFactory.drawer.details.workingHourLate'), value: clientFactory?.officeDetails?.commonItems.workingHourLate ?? '', editType: 'text', key: 'officeDetails.commonItems.workingHourLate'},
+      {label: t('clientFactory.drawer.details.workingHourLate'), value: clientFactory?.officeDetails?.commonItems.workingHourLate ?? 0, editType: 'number', key: 'officeDetails.commonItems.workingHourLate'},
       {label: t('clientFactory.drawer.details.workingHourNight'), value: clientFactory?.officeDetails?.commonItems.workingHourNight ?? '', editType: 'text', key: 'officeDetails.commonItems.workingHourNight'}
     ]
   })
