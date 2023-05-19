@@ -91,7 +91,7 @@ const validateAndSubmit = async () => {
                 commonItems: {},
                 uniqueItems: {}
             } as ClientFactory['officeDetails']
-        }
+        } as Partial<ClientFactory>
 
         emit('submit', newClientFactory.value);
     }
@@ -112,7 +112,7 @@ defineExpose({
                 <q-card-section class="q-pa-none q-pt-sm scroll">
                     <q-list>
                         <ClientFactoryName v-model="clientFactoryName"/>
-                        <ParentClient v-model="parentClient"/>
+                        <ParentClient v-model="parentClient" :theme="theme"/>
                         <AddressSection v-model="addressSection" :theme="theme"/>
                         <ClientFactoryInfo v-model="clientFactoryInfo" :theme="theme"/>
                         <ContractInfo v-model="contractInfo" :theme="theme"/>
