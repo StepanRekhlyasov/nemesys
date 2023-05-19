@@ -127,7 +127,6 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   const getApplicantsByStatus = async (status : string, filterData?: ApplicantFilter, perQuery = 20, showMore = false) => {
-    console.log(filterData)
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
@@ -165,7 +164,6 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   async function updateApplicant(applicantData : Partial<Applicant>, showAlert = true) {
-    console.log(applicantData)
     if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {

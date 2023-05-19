@@ -10,7 +10,7 @@
     dense
   >
   <template v-slot:append>
-    <q-icon v-if="selectedMonth&&selectedMonth!=='____-__'" name="cancel" @click="()=>{
+    <q-icon v-if="selectedMonth" name="cancel" @click="()=>{
       selectedMonth = '';
       monthPicker?.hide()
     }" class="cursor-pointer" />
