@@ -47,6 +47,7 @@ import ApplicantReport from '../../../components/report/ApplicantReport/Applican
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 import {graphType} from 'src/components/report/Models'
+
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type:Ref<graphType> = ref('BasedOnLeftMostItemDate');
 const branch_input: Ref<string> = ref('');
@@ -66,10 +67,11 @@ const report_type: Ref<{ label: string; value: number }[]> = ref([
 ]);
 const report_componets = {
   0: ApplicantReport,
-  2: SalesActivityIndividualReport,
   1: SalesActivityReport,
+  2: SalesActivityIndividualReport,
   3: RecruitmentEffectivenessReport,
 };
+
 //defalt dateRnage is { from: Today - 1manth to:Today} but now set { from: 1900/01/01 to:1900/12/31} for dummy data,
 
 // const get_date=()=>{
