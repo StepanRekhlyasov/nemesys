@@ -70,13 +70,19 @@
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.position') }}
+        {{ $t('applicant.add.occupation') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.position? applicant.position.map((applic) => $t('client.add.'+applic)).join(', ') :''}}</span>
+        <span v-if="!edit">{{ applicant.occupation ?$t(`applicant.add.${applicant.occupation}`):''}}</span>
         <div v-if="edit">
-          <q-checkbox v-model="data['position']" :label="$t('client.add.nurse')" val="nurse" />
-          <q-checkbox v-model="data['position']" :label="$t('client.add.nursing')" val="nursing" />
+          <q-radio v-model="data['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
+          <q-radio v-model="data['occupation']" val="nursingCare"
+            :label="$t('applicant.add.nursingCare')" />
+          <q-radio v-model="data['occupation']" val="lifeCounselor"
+            :label="$t('applicant.add.lifeCounselor')" />
+          <q-radio v-model="data['occupation']" val="careManager"
+            :label="$t('applicant.add.careManager')" />
+          <q-radio v-model="data['occupation']" val="others" :label="$t('applicant.add.others')" />
         </div>
       </div>
     </div>
