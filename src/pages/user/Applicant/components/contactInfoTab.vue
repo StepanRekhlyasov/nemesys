@@ -46,8 +46,8 @@
       </q-form>
     </q-card-section>
 
-    <q-table :columns="columns" :rows="contactListData" row-key="id" v-model:pagination="pagination" hide-pagination>
-
+    <q-table :columns="columns" :rows="contactListData" row-key="id" 
+      v-model:pagination="pagination" hide-pagination>
       <template v-slot:body-cell-contactMethod="props">
         <q-td :props="props">
           <template v-if="isRowSelected(props.rowIndex)">            
@@ -333,9 +333,8 @@ export default {
         });
       },
       resetData() {
-        //contactData.value = JSON.parse(JSON.stringify(applicantDataSample));
-        //applicantForm.value.resetValidation();
         contactData.value = {};
+        showAddForm.value = false;
       },
       async onUpdate(index) {       
         try {

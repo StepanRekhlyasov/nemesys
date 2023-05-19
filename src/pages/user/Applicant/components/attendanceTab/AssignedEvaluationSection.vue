@@ -86,6 +86,7 @@ function resetData() {
     language: props?.applicant['language'] || '',
     attendingDate: props?.applicant['attendingDate'] || '',
     staffRank: props?.applicant['staffRank'] || '',
+    comprehension: props?.applicant['comprehension'] || '',
     remarks: props?.applicant['remarks'] || ''
   } as AssignedEvaluation;
 }
