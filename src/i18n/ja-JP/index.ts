@@ -88,6 +88,10 @@ export default {
     },
     more: 'もっと'
   },
+  contractUnit: {
+    corporateBulk: '法人一括',
+    businessUnit: '事業所単位'
+  },
   smoking: {
     no: '無',
     yes: '有',

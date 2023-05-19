@@ -88,6 +88,10 @@ export default {
     },
     more: 'More'
   },
+  contractUnit: {
+    corporateBulk: 'Corporate bulk',
+    businessUnit: 'Business unit'
+  },
   smoking: {
     no: 'No',
     yes: 'Yes',

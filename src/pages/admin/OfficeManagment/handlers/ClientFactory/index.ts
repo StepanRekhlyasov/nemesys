@@ -127,15 +127,15 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.established'), value: clientFactory.client?.established ?? '', editType: 'text', key: 'client.established'},
       {label: t('clientFactory.drawer.details.capital'), value: clientFactory.client?.capital ?? '', editType: 'text', key: 'client.capital'},
       {label: t('clientFactory.drawer.details.earnings'), value: clientFactory.client?.earnings ?? '', editType: 'text', key: 'client.earnings'},
-      {label: t('clientFactory.drawer.details.numberOffices'), value: clientFactory.client?.numberOffices ?? '', editType: 'text', key: 'client.numberOffices'},
-      {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? '', editType: 'text', key: 'client.numberEmployees'},
+      {label: t('clientFactory.drawer.details.numberOffices'), value: clientFactory.client?.numberOffices ?? 0, editType: 'number', key: 'client.numberOffices'},
+      {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? 0, editType: 'number', key: 'client.numberEmployees'},
       {label: t('clientFactory.drawer.details.companyProfile'), value: clientFactory.client?.companyProfile ?? '', editType: 'text', key: 'client.companyProfile'}
     ]
   })
 
   headDetails.contractInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.contractUnit'), value: `${clientFactory.contractInfo?.contractUnit ?? ''}`, editType: 'text', key: 'contractInfo.contractUnit'},
+      {label: t('clientFactory.drawer.details.contractUnit'), value: `${clientFactory.contractInfo?.contractUnit ?? ''}`, editType: 'contract_unit', key: 'contractInfo.contractUnit'},
       {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry.join(' ') ?? '', editType: 'text', key: 'contractInfo.industry'},
       {label: t('clientFactory.drawer.details.contractTel'), value: clientFactory.contractInfo?.contractTel ?? '', editType: 'text', key: 'contractInfo.contractTel'},
       {label: t('clientFactory.drawer.details.contractFax'), value: clientFactory.contractInfo?.contractFax ?? '', editType: 'text', key: 'contractInfo.contractFax'},

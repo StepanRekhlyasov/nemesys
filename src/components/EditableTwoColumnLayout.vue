@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineProps, defineEmits, withDefaults, computed, ref, watch } from 'vue';
 import ParentClient from './form/clientFactoryForms/ParentClient.vue';
+import ContractUnit from './form/ContractUnit.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -9,7 +10,8 @@ enum InputType {
     TEXT = 'text',
     NUMBER = 'number',
     PREFECTURE = 'prefecture',
-    CLIENT = 'client'
+    CLIENT = 'client',
+    CONTRACT_UNIT = 'contract_unit'
 }
 
 export interface Data {
@@ -52,6 +54,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
                 <ParentClient v-else-if="row.editType === InputType.CLIENT" v-model="row.value" :is-lebel="false" :theme="theme"/>
+                <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT" v-model="row.value" :theme="theme"/>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
@@ -66,6 +69,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
                 <ParentClient v-else-if="row.editType === InputType.CLIENT" v-model="row.value" :is-lebel="false" :theme="theme"/>
+                <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT" v-model="row.value" :theme="theme"/>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
