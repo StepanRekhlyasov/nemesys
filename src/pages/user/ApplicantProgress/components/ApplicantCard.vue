@@ -16,7 +16,7 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1'>応</div>
-      <div class='col' v-if="(item.currentStatusTimestamp instanceof Timestamp)">{{ firebaseDateFormat(item.currentStatusTimestamp.toDate(), 'YYYY.MM.DD') }}</div>
+      <div class='col' v-if="(item.currentStatusTimestamp instanceof Timestamp)">{{ firebaseDateFormat(item.currentStatusTimestamp, 'YYYY.MM.DD') }}</div>
     </div>
   </q-card>
 </template>

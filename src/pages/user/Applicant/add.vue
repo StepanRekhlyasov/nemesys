@@ -287,9 +287,8 @@ import {
   doc,
   getFirestore,
   serverTimestamp,
-Timestamp,
 } from 'firebase/firestore';
-import { limitDate } from 'src/shared/utils/utils'
+import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
@@ -378,7 +377,8 @@ export default {
         let data = applicantData.value;
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
-        data['currentStatusMonth'] = Timestamp.now().toDate().getMonth()+1;
+        
+        data['currentStatusMonth'] = toMonthYear();
         data['currentStatusTimestamp'] = serverTimestamp();
         data['statusChangeTimestamp'] = { [data['status']] : serverTimestamp() }
         data['deleted'] = false;
