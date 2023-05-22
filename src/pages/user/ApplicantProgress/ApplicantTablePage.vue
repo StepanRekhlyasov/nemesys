@@ -52,10 +52,10 @@
         </div>
         <div class="col-1">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
-          <YearMonthPicker 
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
-            height="40px" 
-            width="200px" 
+          <YearMonthPicker
+            v-model="applicantStore.state.applicantFilter['currentStatusMonth']"
+            height="40px"
+            width="200px"
             :disable="loading"
           />
         </div>
@@ -90,10 +90,7 @@ import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
-<<<<<<< HEAD
-=======
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
->>>>>>> master
 import { Applicant } from 'src/shared/model';
 
 const loading = ref(false)
