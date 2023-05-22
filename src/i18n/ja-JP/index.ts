@@ -920,7 +920,7 @@ export default {
     attendant: {
       attendantStatus: 'アテンドステータス',
       day: 'アテンド日',
-      attendee: 'アテンド担当者',
+      attendeeUserInCharge: 'アテンド担当者',
       memo: 'アテンドメモ',
       desiredConditions: '希望条件',
       timeToWork: '就業可能時期',
