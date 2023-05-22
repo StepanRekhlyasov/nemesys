@@ -8,46 +8,35 @@
       <div class="row q-pt-md q-gutter-sm">
         <div class="col-2">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
-          <q-select
-            outlined
-            dense
-            :options="[]"
+          <MySelect 
+            @update="()=>{
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }" 
             v-model="applicantStore.state.applicantFilter['branch']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
+            :options="[]"
           />
         </div>
         <div class="col-2">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
-          <q-select
-            outlined
-            dense
+          <MySelect 
+            @update="()=>{
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }" 
+            v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
             :options="usersInChargeOptions"
-            v-model="applicantStore.state.applicantFilter['attendeeResponsiblePerson']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
           />
         </div>
         <div class="col-1">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
-          <q-select
-            outlined
-            dense
-            :options="prefectureOptions.map((item)=>{return{label:$t(item.label),value:item.value}})"
-            :disable="!prefectureOptions.length"
-            v-model="applicantStore.state.applicantFilter['prefecture']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
-            @update:model-value="()=>{
+          <MySelect 
+            @update="()=>{
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
-            }"
+            }" 
+            v-model="applicantStore.state.applicantFilter['prefecture']"
+            :options="prefectureList"
           />
         </div>
         <div class="col-1">
@@ -91,6 +80,8 @@ import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import { Applicant } from 'src/shared/model';
+import MySelect from 'src/components/inputs/MySelect.vue';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
