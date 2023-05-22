@@ -49,19 +49,13 @@
             clearable
           />
         </div>
-        <div class="col-1">
+        <div class="col-2">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
-          <q-select
-            outlined
-            dense
-            :options="[{label: $t('common.all'),value: 0}].concat(monthsList)"
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
-            @update:model-value="fetchResults()"
-            clearable
+          <YearMonthPicker 
+            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
+            height="40px" 
+            width="100%" 
+            :disable="loading"
           />
         </div>
         <div class="col-1">
@@ -99,15 +93,15 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
   import ApplicantColumn from './components/ApplicantColumn.vue';
   import { APPLICANT_COLUMNS } from './const/applicantColumns';
   import { useApplicant } from 'src/stores/applicant';
   import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
-  import { monthsList } from 'src/shared/constants/Common.const'
   import { limitQuery } from './const/applicantColumns';
   import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
   import { prefectureList } from 'src/shared/constants/Prefecture.const';
+  import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
   
   /** consts */
   const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
@@ -123,6 +117,14 @@
     }
   }))
   const columnsLoading = computed(() => applicantStore.state.columnsLoading);
+  const loading = computed(()=>{
+    for (const value of Object.values(columnsLoading.value)){
+      if(!value){
+        return false
+      }
+    }
+    return true
+  })
 
   /** stores */
   const applicantStore = useApplicant();
@@ -145,6 +147,9 @@
     })
   }
   onMounted( async ()=>{
-    fetchResults()
+    await fetchResults()
+  })
+  watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
+    if(newVal!=oldVal) fetchResults()
   })
 </script>

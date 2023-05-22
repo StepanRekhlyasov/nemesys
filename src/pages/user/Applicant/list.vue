@@ -14,7 +14,7 @@
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
         <q-table :columns="columns" :rows="applicantData" row-key="id" selection="multiple" class="no-shadow"
-          v-model:selected="selected" v-model:pagination="pagination" hide-pagination :loading="isLoadingProgress">
+          v-model:selected="selected" v-model:pagination="paginationTable" hide-pagination :loading="isLoadingProgress">
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.name') }} </div>
@@ -28,7 +28,9 @@
               <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.value"
                 class="q-pa-none text-body1" />
               <div>
-                {{ props.row.occupation }} <span v-if="props.row.category">| {{ props.row.category }}</span>
+                <span v-if="props.row.occupation"> {{ getOccupation(props.row.occupation) }}</span>
+                <span v-if="props.row.classification && props.row.occupation"> | </span>
+                <span v-if="props.row.classification"> {{ getClassification(props.row.classification) }}</span>
               </div>
             </q-td>
           </template>
@@ -50,294 +52,326 @@
         </q-table>
         <div class="row justify-start q-mt-md pagination">
           <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-            :max="(applicantData.length / pagination.rowsPerPage) >= 1 ? applicantData.length / pagination.rowsPerPage : 1"
-            direction-links outline />
+            :max="metaData.total_pages" direction-links outline />
         </div>
       </q-card-section>
     </q-card>
   </div>
   <ApplicantDetails ref="detailsDrawer" />
 </template>
-
-
+ 
 <script>
+export default {
+  name: 'ListApplicant'
+}
+</script>
+
+<script setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import {
   getFirestore,
-  doc,
-  updateDoc,
+  // doc,
+  // updateDoc,
   query,
   onSnapshot,
   collection,
   where
 } from 'firebase/firestore';
-import { statusList } from 'src/shared/constants/Applicant.const';
-import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { RankCount } from 'src/shared/utils/RankCount.utils';
+// import { statusList } from 'src/shared/constants/Applicant.const';
+// import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
+// import { RankCount } from 'src/shared/utils/RankCount.utils';
 import searchForm from './components/search/searchForm.vue';
 import { api } from 'src/boot/axios';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
+import { statusList, occupationList, applicantClassification} from 'src/shared/constants/Applicant.const';
+const { t } = useI18n({ useScope: 'global' });
+const db = getFirestore();
 
-export default {
-  name: 'applicantList',
+// const filters = ref(null);
+const applicantData = ref([]);
+// const selected = ref([])
+// const drawerRight = ref(false);
+// const selectedApplicant = ref(null)
+// const applicantImage = ref([]);
+// const fileUploadRef = ref({});
+// const statusOption = ref(statusList);
+//const age = computed(() => selectedApplicant.value['dob'] ? RankCount.ageCount(selectedApplicant.value['dob']) : '0')
+const isLoadingProgress = ref(true)
+const detailsDrawer = ref(null)
+//const selectedRows = ref([]);
+const metaData = ref({})
 
-  components: {
-    searchForm,
-    ApplicantDetails
-  },
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+  // rowsNumber: xx if getting data from a server
+});
 
-  setup() {
-    const { t } = useI18n({ useScope: 'global' });
-    const db = getFirestore();
+const paginationTable = ref({
+  sortBy: 'desc',
+  descending: false,
+  rowsPerPage: 10
+});
+const columns = computed(() => {
+  return [
+    {
+      name: 'name',
+      required: true,
+      label: '',
+      align: 'left',
+      field: 'name',
+      sortable: false,
+    },
+    {
+      name: 'rank',
+      required: true,
+      label: t('applicant.list.rank'),
+      field: 'rank',
+      align: 'left',
+    },
+    {
+      name: 'status',
+      required: true,
+      label: t('applicant.list.status'),
+      field: 'status',
+      align: 'left',
+    },
+    {
+      name: 'qualification',
+      required: true,
+      label: t('applicant.list.qualification'),
+      field: 'qualification',
+      align: 'left',
+    },
 
-    const filters = ref(null);
-    const applicantData = ref([]);
-    const selected = ref([])
-    const drawerRight = ref(false);
-    const selectedApplicant = ref(null)
-    const applicantImage = ref([]);
-    const fileUploadRef = ref({});
-    const statusOption = ref(statusList);
-    const age = computed(()=>selectedApplicant.value['dob']?RankCount.ageCount(selectedApplicant.value['dob']):'0')
-    const isLoadingProgress = ref(true)
-    const detailsDrawer = ref(null)
-    //const selectedRows = ref([]);
+  ];
+});
 
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
-      // rowsNumber: xx if getting data from a server
+
+const currentIds = ref([]);
+
+const getDate = (ageInYears) => {
+  //var calDate = new Date(new Date().getTime() - (ageInYears * 365 * 24 * 60 * 60 * 1000));
+  var calDate = new Date();
+  calDate.setFullYear(calDate.getFullYear() - ageInYears);
+  var year = calDate.toLocaleString('en-US', { year: 'numeric' });
+  var month = calDate.toLocaleString('en-US', { month: '2-digit' });
+  var day = calDate.toLocaleString('en-US', { day: '2-digit' });
+ 
+  return year + '-' + month + '-' + day + 'T00:00:00+00:00';
+}
+ 
+const formatDate = (dt, midNight = false) => {
+  var year = dt.toLocaleString('en-US', { year: 'numeric' });
+  var month = dt.toLocaleString('en-US', { month: '2-digit' });
+  var day = dt.toLocaleString('en-US', { day: '2-digit' });
+  if (midNight) {
+    return year + '-' + month + '-' + day + 'T00:00:00+00:00';
+ 
+  }
+  return year + '-' + month + '-' + day + 'T23:59:59+00:00';
+}
+
+const loadApplicantData = async (searchData = {}) => {
+  isLoadingProgress.value = true
+  applicantData.value = []
+
+  let filters = { 'all': [{ 'deleted': 'false' }] };
+ 
+  let queryString = ''
+  if (searchData['keyword']) {
+    queryString = searchData['keyword']
+  }
+  if (searchData['status']) {
+    filters['all'].push({
+      'status': searchData['status']
     });
-
-    const columns = computed(() => {
-      return [
-        {
-          name: 'name',
-          required: true,
-          label: '',
-          align: 'left',
-          field: 'name',
-          sortable: false,
-        },
-        {
-          name: 'rank',
-          required: true,
-          label: t('applicant.list.rank'),
-          field: 'rank',
-          align: 'left',
-        },
-        {
-          name: 'status',
-          required: true,
-          label: t('applicant.list.status'),
-          field: 'status',
-          align: 'left',
-        },
-        {
-          name: 'qualification',
-          required: true,
-          label: t('applicant.list.qualification'),
-          field: 'qualification',
-          align: 'left',
-        },
-
-      ];
+  }
+  if (searchData.applicationDateMin && searchData.applicationDateMax) {
+    filters['all'].push({
+      'applicationdate': { 'from': formatDate(new Date(searchData.applicationDateMin), true), 'to': formatDate(new Date(searchData.applicationDateMax)) }
     });
-
-
-    const currentIds = ref([]);
-    loadApplicantData();
-    async function loadApplicantData(searchData = {}) {
-      isLoadingProgress.value = true
-      applicantData.value = []
-
-      let filters = { 'all': [{ 'deleted': 'false' }] };
-
-      let queryString = ''
-      if (searchData.keyword) {
-        queryString = searchData.keyword
-      }
-      if (searchData.status) {
-        filters['all'].push({
-          'status': searchData.status
-        });
-      }
-      // if (searchData.applicationDate) {
-      //   filters['all'].push({
-      //     'applicationdate': '2023/03/28 11:11' //searchData.applicationDate.replaceAll('-', '/') + ' *'
-      //   });
-      // }
-      if (searchData.ageMin) {
-        filters['all'].push({
-          'dob': { 'to': getDate(searchData.ageMin) }
-        });
-      }
-      if (searchData.ageMax) {
-        filters['all'].push({
-          'dob': { 'from': getDate(searchData.ageMax) }
-        });
-      }
-      let items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture']
-      for (var i = 0; i < items.length; i++) {
-        if (searchData[items[i]] && searchData[items[i]].length > 0) {
-          let obj = {}
-          obj[items[i]] = searchData[items[i]]
-          filters['all'].push(obj);
-        }
-      }
-      if (searchData.availableShift && searchData.availableShift.length > 0) {
-        for (var i = 0; i < searchData.availableShift.length; i++) {
-          let obj = {}
-          obj[searchData.availableShift[i]] = 'true'
-          filters['all'].push(obj);
-        }
-
-      }
-
-      if (searchData.mapData) {
-        filters['all'].push({
-          'geohash': {
-            'center': `${searchData.mapData.lat}, ${searchData.mapData.lng}`,
-            'distance': searchData.mapData.radiusInM,
-            'unit': 'm'
-          }
-        });
-      }
-
-      await api.post(
-        process.env.elasticSearchStaffURL,
-        {
-          'query': queryString,
-          // "page": { "size": tableOptions.itemsPerPage, "current": tableOptions.page },
-          // "sort": sort,
-          'filters': filters,
-        },
-        {
-          headers: { 'Authorization': process.env.elasticSearchKey, 'Content-Type': 'application/json' },
-        }
-      ).then((response) => {
-        if (response.status == 200) {
-          let responseData = response.data.results;
-          for (var i = 0; i < responseData.length; i++) {
-            currentIds.value.push(responseData[i]['id']['raw'])
-          }
-          //applicantData.value = data;
-          loadFirestoreApplicantData()
-        }
-      }).catch((error) => {
-        console.log(error)
-      });
-
-    };
-    const unsubscribeList = ref([]);
-    async function loadFirestoreApplicantData() {
-      for (var i = 0; i < unsubscribeList.value; i++) {
-        unsubscribeList.value[i]();
-      }
-      unsubscribeList.value = [];
-      while (currentIds.value.length) {
-        const batch = currentIds.value.splice(0, 10);
-        const q = query(collection(db, 'applicants'), where('deleted', '==', false), where('id', 'in', batch));
-        let unsubscribe = onSnapshot(q, (querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data = { id: doc.id, ...doc.data() };
-            let editedIndex = applicantData.value.findIndex((p) => p.id == data['id']);
-            if (editedIndex > -1) {
-              applicantData.value.splice(editedIndex, 1, data);
-            } else {
-              applicantData.value.push(data);
-            }
-          });
-        });
-        unsubscribeList.value.push(unsubscribe)
-      }
-      isLoadingProgress.value = false
-
+  }
+  else if (searchData.applicationDateMin) {
+    filters['all'].push({
+      'applicationdate': { 'from': formatDate(new Date(searchData.applicationDateMin), true) }
+    });
+  }
+  else if (searchData.applicationDateMax) {
+    filters['all'].push({
+      'applicationdate': { 'to': formatDate(new Date(searchData.applicationDateMax)) }
+    });
+  }
+ 
+  if (searchData.ageMin) {
+    filters['all'].push({
+      'dob': { 'to': getDate(searchData.ageMin) }
+    });
+  }
+  if (searchData.ageMax) {
+    filters['all'].push({
+      'dob': { 'from': getDate(searchData.ageMax) }
+    });
+  }
+ 
+  let items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
+  for (var i = 0; i < items.length; i++) {
+    if (searchData[items[i]] && searchData[items[i]].length > 0) {
+      let obj = {}
+      obj[items[i]] = searchData[items[i]]
+      filters['all'].push(obj);
     }
-    function getDate(ageInYears) {
-      var calDate = new Date(new Date().getTime() - (ageInYears * 365 * 24 * 60 * 60 * 1000));
-      var year = calDate.toLocaleString('default', { year: 'numeric' });
-      var month = calDate.toLocaleString('default', { month: '2-digit' });
-      var day = calDate.toLocaleString('default', { day: '2-digit' });
-
-      return year + '-' + month + '-' + day + 'T00:00:00+00:00';
+  }
+  if (searchData.availableShift && searchData.availableShift.length > 0) {
+    for (var i = 0; i < searchData.availableShift.length; i++) {
+      let obj = {}
+      obj[searchData.availableShift[i]] = 'true'
+      filters['all'].push(obj);
     }
-
-    async function updateApplicant(applicant) {
-      const applicantRef = doc(db, 'applicants/' + selectedApplicant.value.id);
-      await updateDoc(applicantRef, applicant)
-      selectedApplicant.value = {
-        ...selectedApplicant.value,
-        ...applicant,
-        staffRank: RankCount.countRank(selectedApplicant.value)}
-    };
-
-    return {
-      age,
-      columns,
-      filters,
-      pagination,
-      applicantData,
-      selected,
-      drawerRight,
-      selectedApplicant,
-      fileUploadRef,
-      applicantImage,
-      updateApplicant,
-      isLoadingProgress,
-      statusOption,
-      detailsDrawer,
-
-      async openDrawer(data) {
-        detailsDrawer.value?.openDrawer(data)
-      },
-      getStatus(status) {
-        let item = statusList.value.find(x => x.value === status);
-        if (item) {
-          return item.label;
-        }
-      },
-      async onFileChange() {
-        if (applicantImage.value && applicantImage.value.length > 0) {
-          const file = applicantImage.value[0];
-          const storage = getStorage();
-          const storageRef = refStorage(storage, 'applicants/' + selectedApplicant.value.id + '/image/' + file['name']);
-
-          try {
-            const ret = {}
-            const snapshot = await uploadBytes(storageRef, file)
-            ret['imagePath'] = snapshot.ref.fullPath;
-            ret['imageURL'] = await getDownloadURL(storageRef)
-            await updateApplicant(ret)
-          }
-          catch (error) {
-            console.log(error);
-            $q.notify({
-              color: 'red-5',
-              textColor: 'white',
-              icon: 'warning',
-              message: t('failed'),
-            });
-          }
-        }
-      },
-      chooseFiles() {
-        fileUploadRef.value.pickFiles()
-      },
-      loadSearchStaff(data) {
-        loadApplicantData(data)
-      },
-      isLoading(flag) {
-        isLoadingProgress.value = flag
+  }
+  if (searchData.workPerWeekMin && searchData.workPerWeekMax) {
+    filters['all'].push({
+      'daystowork': { 'from': parseInt(searchData.workPerWeekMin), 'to': parseInt(searchData.workPerWeekMax) }
+    });
+  } else if (searchData.workPerWeekMin) {
+    filters['all'].push({
+      'daystowork': { 'from': parseInt(searchData.workPerWeekMin) }
+    });
+  } else if (searchData.workPerWeekMax) {
+    filters['all'].push({
+      'daystowork': { 'to': parseInt(searchData.workPerWeekMax) }
+    });
+  }
+ 
+  if (searchData.mapData) {
+    filters['all'].push({
+      'geohash': {
+        'center': `${searchData.mapData.lat}, ${searchData.mapData.lng}`,
+        'distance': searchData.mapData.radiusInM,
+        'unit': 'm'
       }
-    };
-  },
+    });
+  }
+ 
+  if (!queryString && filters.all.length == 1) {
+    var d = new Date();
+    var m = d.getMonth();
+    d.setMonth(d.getMonth() - 1);
+    // If still in same month, set date to last day of 
+    // previous month
+    if (d.getMonth() == m) d.setDate(0);
+ 
+    filters['all'].push({
+      'created_at': { 'from': formatDate(d, true), 'to': formatDate(new Date()) }
+    });
+  }
+
+  await api.post(
+    process.env.elasticSearchStaffURL,
+    {
+      'query': queryString,
+      'page': { 'size': pagination.value.rowsPerPage, 'current': pagination.value.page },
+      // "sort": sort,
+      'filters': filters,
+    },
+    {
+      headers: { 'Authorization': process.env.elasticSearchKey, 'Content-Type': 'application/json' },
+    }
+  ).then((response) => {
+    if (response.status == 200) {
+      let responseData = response.data.results;
+      metaData.value = response.data.meta.page;
+      for (var i = 0; i < responseData.length; i++) {
+        currentIds.value.push(responseData[i]['id']['raw'])
+      }
+      loadFirestoreApplicantData()
+    }
+  }).catch((error) => {
+    console.log(error)
+  });
+
 };
+loadApplicantData();
+const unsubscribeList = ref([]);
+const loadFirestoreApplicantData = async () => {
+  applicantData.value = [];
+  for (var i = 0; i < unsubscribeList.value; i++) {
+    unsubscribeList.value[i]();
+  }
+  unsubscribeList.value = [];
+  while (currentIds.value.length) {
+    const batch = currentIds.value.splice(0, 10);
+    const q = query(collection(db, 'applicants'), where('deleted', '==', false), where('id', 'in', batch));
+    let unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const data = { id: doc.id, ...doc.data() };
+        let editedIndex = applicantData.value.findIndex((p) => p.id == data['id']);
+        if (editedIndex > -1) {
+          applicantData.value.splice(editedIndex, 1, data);
+        } else {
+          applicantData.value.push(data);
+        }
+      });
+    });
+    unsubscribeList.value.push(unsubscribe)
+  }
+  isLoadingProgress.value = false
+
+}
+
+// const updateApplicant = async (applicant) => {
+//   const applicantRef = doc(db, 'applicants/' + selectedApplicant.value.id);
+//   await updateDoc(applicantRef, applicant)
+//   selectedApplicant.value = {
+//     ...selectedApplicant.value,
+//     ...applicant,
+//     staffRank: RankCount.countRank(selectedApplicant.value)
+//   }
+// };
+
+const getStatus = (status) => {
+  let item = statusList.value.find(x => x.value === status);
+  if (item) {
+    return item.label;
+  }
+};
+const getOccupation = (occupation) => {
+  if (!occupation) {
+    return ''
+  }
+  let occupationIndex = occupationList.value.findIndex((p) => p.value == occupation);
+  if (occupationIndex > -1) {
+    return occupationList.value[occupationIndex].label
+  }
+};
+const getClassification = (classification) => {
+  if (!classification) {
+    return ''
+  }
+  let classificationndex = applicantClassification.value.findIndex((p) => p.value == classification);
+  if (classificationndex > -1) {
+    return applicantClassification.value[classificationndex].label
+  }
+};
+
+const openDrawer = (data) => {
+  detailsDrawer.value?.openDrawer(data)
+};
+ 
+const loadSearchStaff = (data) => {
+  loadApplicantData(data)
+};
+
+watch(
+  () => (pagination.value.page),
+  () => {
+    loadApplicantData();
+  },
+)
+
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

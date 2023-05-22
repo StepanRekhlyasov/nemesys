@@ -1,8 +1,8 @@
 <template>
-  <div class="row q-pb-md">
+  <div class="row q-pb-md" v-if="!hideMapButton">
     <div class="col-9"></div>
     <div class="col-3 text-right">
-      <q-btn :label="$t('backOrder.searchByMap')" class="q-ml-md" outline color="primary" />
+      <q-btn :label="$t('backOrder.searchByMap')" class="q-ml-md" outline color="primary" @click="emit('openSearchByMap')" />
     </div>
   </div>
   <q-card-section class=" q-pa-none">
@@ -31,9 +31,15 @@ const pagination = ref({
 	rowsPerPage: 10
 	// rowsNumber: xx if getting data from a server
 });
-defineProps<{
-  bo: BackOrderModel
-}>();
+withDefaults(defineProps<{
+    bo: BackOrderModel,
+    hideMapButton?: boolean
+  }>(), {
+    hideMapButton: false
+  }
+)
+
+const emit = defineEmits(['openSearchByMap']);
 const StaffList = ref([]);
 
 </script>

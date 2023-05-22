@@ -138,6 +138,9 @@ export const daysList = computed(() => [{
   label: t('weekDay.wednesday'),
   value: 'wednesday'
 },{
+  label: t('weekDay.thursday'),
+  value: 'thursday'
+},{
   label: t('weekDay.friday'),
   value: 'friday'
 },{
@@ -168,11 +171,20 @@ export const PossibleTransportationServicesList = computed(() => [{
 }])
 
 export const occupationList = computed(() => [{
-  label: t('client.add.nurse'),
+  label: t('applicant.add.nurse'),
   value: 'nurse'
-},{
-  label: t('client.add.nursing'),
-  value: 'nursing'
+}, {
+  label: t('applicant.add.nursingCare'),
+  value: 'nursingCare'
+}, {
+  label: t('applicant.add.lifeCounselor'),
+  value: 'lifeCounselor'
+}, {
+  label: t('applicant.add.careManager'),
+  value: 'careManager'
+}, {
+  label: t('applicant.add.others'),
+  value: 'others'
 }])
 
 export const expertiseLevelList = computed(() => [{
@@ -244,5 +256,125 @@ export const applicantClassification = computed(() => {
     label: t('applicant.list.info.classification.TTP'),
     value: 'TTP'
   }]
+})
+
+
+export const qualificationList = computed(() => {
+  return [
+    {
+      label: t('applicant.add.registeredNurse'),
+      value: 'registeredNurse'
+    },
+    {
+      label: t('applicant.add.assistantNurse'),
+      value: 'assistantNurse'
+    },
+    {
+      label: t('applicant.add.newcomer'),
+      value: 'newcomer'
+    },
+    {
+      label: t('applicant.add.careWorker'),
+      value: 'careWorker'
+    },
+  ]
+})
+ 
+export const availableShiftList = computed(() => {
+  return [
+    {
+      label: t('office.earlyShift'),
+      value: 'workinghoursearly'
+    },
+    {
+      label: t('office.dayShift'),
+      value: 'workinghoursday'
+    },
+    {
+      label: t('office.lateShift'),
+      value: 'workinghourslate'
+    },
+    {
+      label: t('office.nightShift'),
+      value: 'workinghoursnight'
+    },
+  ]
+})
+ 
+export const sexList = computed(() => {
+  return [
+    {
+      label: t('applicant.add.male'),
+      value: 'male'
+    },
+    {
+      label: t('applicant.add.female'),
+      value: 'female'
+    },
+  ]
+})
+ 
+export const rankList = computed(() => {
+  return [
+    {
+      label: 'S',
+      value: 'S'
+    },
+    {
+      label: 'A',
+      value: 'A'
+    },
+    {
+      label: 'B',
+      value: 'B'
+    },
+    {
+      label: 'C',
+      value: 'C'
+    },
+    {
+      label: 'D',
+      value: 'D'
+    },
+    {
+      label: 'E',
+      value: 'E'
+    },
+  ]
+})
+ 
+export const applicantListColumn = computed(() => {
+  return [
+    {
+      name: 'name',
+      required: true,
+      label: '',
+      align: 'left',
+      field: 'name',
+      sortable: false,
+    },
+    {
+      name: 'rank',
+      required: true,
+      label: t('applicant.list.rank'),
+      field: 'rank',
+      align: 'left',
+    },
+    {
+      name: 'status',
+      required: true,
+      label: t('applicant.list.status'),
+      field: 'status',
+      align: 'left',
+    },
+    {
+      name: 'qualification',
+      required: true,
+      label: t('applicant.list.qualification'),
+      field: 'qualification',
+      align: 'left',
+    },
+ 
+  ];
 })
 

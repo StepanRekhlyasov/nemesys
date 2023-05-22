@@ -26,7 +26,8 @@
                 {{ $t('applicant.add.kanaName') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['kanaName']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['kanaName']" 
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -35,7 +36,8 @@
                 {{ $t('applicant.add.postCode') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['postCode']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['postCode']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -45,7 +47,8 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
-                  bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" 
+                  :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
 
@@ -54,7 +57,8 @@
                 {{ $t('applicant.add.municipalities') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['municipalities']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['municipalities']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -63,7 +67,8 @@
                 {{ $t('applicant.add.street') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['street']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['street']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -72,7 +77,8 @@
                 {{ $t('applicant.add.apartment') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['apartment']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['apartment']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -81,7 +87,8 @@
                 {{ $t('applicant.add.phone') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['phone']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -90,7 +97,8 @@
                 {{ $t('applicant.add.email') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['email']" bg-color="white" />
+                <q-input outlined dense v-model="applicantData['email']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
 
@@ -100,7 +108,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                  :label="$t('common.pleaseSelect')" emit-value map-options />
+                  :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
 
@@ -121,9 +129,16 @@
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.sex') }}
               </div>
-              <div class="col-8 q-pl-sm">
-                <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
-                <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
+              <div class="col-8 q-pl-sm">                
+                <q-field                
+                  ref="toggle" borderless dense
+                  v-model="applicantData['sex']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  <template v-slot:control>      
+                    <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
+                    <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -132,7 +147,8 @@
                 {{ $t('applicant.add.dob') }}
               </div>
               <div class="col-6 q-pl-sm">
-                <q-input dense outlined bg-color="white" v-model="applicantData['dob']">
+                <q-input dense outlined bg-color="white" v-model="applicantData['dob']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -153,14 +169,21 @@
                 {{ $t('applicant.add.occupation') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
-                <q-radio v-model="applicantData['occupation']" val="nursingCare"
-                  :label="$t('applicant.add.nursingCare')" />
-                <q-radio v-model="applicantData['occupation']" val="lifeCounselor"
-                  :label="$t('applicant.add.lifeCounselor')" />
-                <q-radio v-model="applicantData['occupation']" val="careManager"
-                  :label="$t('applicant.add.careManager')" />
-                <q-radio v-model="applicantData['occupation']" val="others" :label="$t('applicant.add.others')" />
+                <q-field                
+                  ref="toggle" borderless dense
+                  v-model="applicantData['occupation']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  <template v-slot:control>                    
+                    <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
+                    <q-radio v-model="applicantData['occupation']" val="nursingCare"
+                      :label="$t('applicant.add.nursingCare')" />
+                    <q-radio v-model="applicantData['occupation']" val="lifeCounselor"
+                      :label="$t('applicant.add.lifeCounselor')" />
+                    <q-radio v-model="applicantData['occupation']" val="careManager"
+                      :label="$t('applicant.add.careManager')" />
+                    <q-radio v-model="applicantData['occupation']" val="others" :label="$t('applicant.add.others')" />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -169,14 +192,21 @@
                 {{ $t('applicant.add.qualification') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
-                  :label="$t('applicant.add.registeredNurse')" />
-                <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
-                  :label="$t('applicant.add.assistantNurse')" />
-                <q-checkbox v-model="applicantData['qualification']" val="newcomer"
-                  :label="$t('applicant.add.newcomer')" />
-                <q-checkbox v-model="applicantData['qualification']" val="careWorker"
-                  :label="$t('applicant.add.careWorker')" />
+                <q-field                
+                  ref="toggle" borderless dense
+                  v-model="applicantData['qualification']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  <template v-slot:control>       
+                    <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
+                      :label="$t('applicant.add.registeredNurse')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
+                      :label="$t('applicant.add.assistantNurse')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="newcomer"
+                      :label="$t('applicant.add.newcomer')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="careWorker"
+                      :label="$t('applicant.add.careWorker')" />
+                  </template>
+                </q-field>
               </div>
             </div>
 
@@ -257,9 +287,8 @@ import {
   doc,
   getFirestore,
   serverTimestamp,
-Timestamp,
 } from 'firebase/firestore';
-import { limitDate } from 'src/shared/utils/utils'
+import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
@@ -348,7 +377,8 @@ export default {
         let data = applicantData.value;
         data['created_at'] = serverTimestamp();
         data['updated_at'] = serverTimestamp();
-        data['currentStatusMonth'] = Timestamp.now().toDate().getMonth()+1;
+        
+        data['currentStatusMonth'] = toMonthYear();
         data['currentStatusTimestamp'] = serverTimestamp();
         data['statusChangeTimestamp'] = { [data['status']] : serverTimestamp() }
         data['deleted'] = false;

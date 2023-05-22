@@ -35,7 +35,7 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   address?: string;
   classification?: string;
   created_at: Timestamp;
-  currentStatusMonth?: number;
+  currentStatusMonth?: string;
   currentStatusTimestamp: Timestamp;
   deleted: false;
   imageURL?: string;
@@ -67,10 +67,10 @@ export interface DesiredConditions {
   daysToWork?: number;
   daysPerWeek?: Days[];
   specialDay?: SpecialDay[];
-  workingHoursEarly?: string;
-  workingHoursDay?: string;
-  workingHoursLate?: string;
-  workingHoursNight?: string;
+  workingHoursEarly?: boolean;
+  workingHoursDay?: boolean;
+  workingHoursLate?: boolean;
+  workingHoursNight?: boolean;
   shiftRemarks?: string;
   meansCommuting?: string;
   nearestStation?: string;
@@ -131,6 +131,7 @@ export enum Days {
   MONDAY = 'monday',
   TUESDAY = 'tuesday',
   WEDNESDAY = 'wednesday',
+  THURSDAY = 'thursday',
   FRIDAY = 'friday',
   SATURDAY = 'saturday',
   HOLIDAY = 'holiday',
