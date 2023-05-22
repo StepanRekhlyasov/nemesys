@@ -40,7 +40,6 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined
         }
 
         return reflectLog
@@ -97,7 +96,6 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined
         }
 
         return importLog
@@ -188,7 +186,6 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined
         }
     }
 
@@ -202,7 +199,6 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined 
         }
     }
 

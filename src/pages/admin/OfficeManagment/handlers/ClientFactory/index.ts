@@ -18,12 +18,12 @@ export const updateClientFactoryHangler = (
         const keys = key.split('.'); 
         let nestedObj = updatedClientFactory;
         for (let i = 0; i < keys.length; i++) {
-            const k = keys[i];
+            const key = keys[i];
             if (i === keys.length - 1) {
-                nestedObj[k] = value;
+                nestedObj[key] = value;
             } else {
-                nestedObj[k] = nestedObj[k] || {}; 
-                nestedObj = nestedObj[k];
+                nestedObj[key] = nestedObj[key] || {}; 
+                nestedObj = nestedObj[key];
             }
         }
     });
