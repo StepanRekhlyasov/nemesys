@@ -93,7 +93,7 @@ export const chartOptionsR = computed(() => {
         t('report.categories.inspection'),
         t('report.categories.offer'),
         t('report.categories.admission'),
-        t('report.categoriesBOTotal'),
+        t('report.categories.BOTotal'),
       ],
     },
     yaxis: [
