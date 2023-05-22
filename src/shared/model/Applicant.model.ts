@@ -35,7 +35,7 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   address?: string;
   classification?: string;
   created_at: Timestamp;
-  currentStatusMonth?: number;
+  currentStatusMonth?: string;
   currentStatusTimestamp: Timestamp;
   deleted: false;
   imageURL?: string;
