@@ -37,15 +37,15 @@
       </q-input>
     </div>
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
-      {{ $t('applicant.attendant.attendee') }}
+      {{ $t('applicant.attendant.attendeeUserInCharge') }}
     </div>
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit">{{
           usersListOption
-            .filter(user => user.value === data['attendee'])
+            .filter(user => user.value === data['attendeeUserInCharge'])
             .map(user => user.label).join('')
       }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendee']"
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendeeUserInCharge']"
         bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
@@ -82,7 +82,7 @@ const infoEdit = ref(false);
 const loading = ref(false);
 const attendantStatusOption = ref(attendantStatus);
 const usersListOption = computed(()=>{
-  return applicantStore.state.tantoUsers.map((doc) => {
+  return applicantStore.state.usersInCharge.map((doc) => {
     return {
       label: doc.displayName,
       value: doc.id
@@ -92,7 +92,7 @@ const usersListOption = computed(()=>{
 const data: Ref<Attendance>  = ref({});
 
 if (organization.currentOrganizationId){
-  applicantStore.fetchTantoUsers()
+  applicantStore.fetchUsersInChrage()
 }
 resetData();
 
@@ -100,7 +100,7 @@ function resetData() {
   data.value = {
     attendingStatus: props?.applicant['attendingStatus'] || undefined,
     attendingDate: props?.applicant['attendingDate'] || '',
-    attendee: props?.applicant['attendee'] || '',
+    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'] || '',
     memo: props?.applicant['memo'] || '',
   }
 }

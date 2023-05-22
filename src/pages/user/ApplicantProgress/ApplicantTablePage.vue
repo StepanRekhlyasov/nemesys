@@ -24,8 +24,8 @@
           <q-select
             outlined
             dense
-            :options="tantosListOption"
-            v-model="applicantStore.state.applicantFilter['attendee']"
+            :options="usersInChargeOptions"
+            v-model="applicantStore.state.applicantFilter['attendeeResponsiblePerson']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             @update:model-value="()=>{
@@ -117,8 +117,8 @@ const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
 /** consts */
-const tantosListOption = computed(()=>{
-  return applicantStore.state.tantoUsers.map((doc) => {
+const usersInChargeOptions = computed(()=>{
+  return applicantStore.state.usersInCharge.map((doc) => {
     return {
       label: doc.displayName,
       value: doc.id
@@ -145,7 +145,7 @@ const pagination = ref({
 const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 
 onMounted( async ()=>{
-  applicantStore.fetchTantoUsers()
+  applicantStore.fetchUsersInChrage()
   if(applicantStore.state.prefectureList.length){
     prefectureOptions.value = applicantStore.state.prefectureList
   } else {

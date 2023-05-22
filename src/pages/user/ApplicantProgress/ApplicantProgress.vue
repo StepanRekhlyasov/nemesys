@@ -25,8 +25,8 @@
           <q-select
             outlined
             dense
-            :options="tantosListOption"
-            v-model="applicantStore.state.applicantFilter['attendee']"
+            :options="usersInChargeOptions"
+            v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             @update:model-value="fetchResults()"
@@ -127,8 +127,8 @@
     }
     return true
   })
-  const tantosListOption = computed(()=>{
-    return applicantStore.state.tantoUsers.map((doc) => {
+  const usersInChargeOptions = computed(()=>{
+    return applicantStore.state.usersInCharge.map((doc) => {
       return {
         label: doc.displayName,
         value: doc.id
@@ -157,7 +157,7 @@
     })
   }
   onMounted( async ()=>{
-    applicantStore.fetchTantoUsers()
+    applicantStore.fetchUsersInChrage()
     await fetchResults()
   })
   watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{

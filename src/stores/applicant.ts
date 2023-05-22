@@ -31,7 +31,7 @@ interface ApplicantState {
     'wait_entry': boolean,
     'wait_termination': boolean,
   },
-  tantoUsers: User[]
+  usersInCharge: User[]
 }
 
 type ContinueFromDoc = {
@@ -107,7 +107,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': false,
       'wait_termination': false,
     },
-    tantoUsers: []
+    usersInCharge: []
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
@@ -231,7 +231,7 @@ export const useApplicant = defineStore('applicant', () => {
       })
   })
   
-  const fetchTantoUsers = async () => {
+  const fetchUsersInChrage = async () => {
     const organization = useOrganization()
     const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
     const users = await usersSnapshot
@@ -239,7 +239,7 @@ export const useApplicant = defineStore('applicant', () => {
       const result = users.docs.map(item => {
         return item.data() as User
       })
-      state.value.tantoUsers = result
+      state.value.usersInCharge = result
     }
   }
 
@@ -281,6 +281,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchTantoUsers }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage }
 })
   
