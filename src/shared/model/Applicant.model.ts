@@ -89,7 +89,7 @@ export interface DesiredConditions {
 export interface Attendance { 
   attendingStatus?: 'ok' | 'ng';
   attendingDate?: Timestamp | string;
-  attendee?: string;
+  attendeeUserInCharge?: string;
   memo?: string;
 }
 
