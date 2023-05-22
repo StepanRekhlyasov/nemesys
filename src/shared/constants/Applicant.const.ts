@@ -138,9 +138,6 @@ export const daysList = computed(() => [{
   label: t('weekDay.wednesday'),
   value: 'wednesday'
 },{
-  label: t('weekDay.thursday'),
-  value: 'thursday'
-},{
   label: t('weekDay.friday'),
   value: 'friday'
 },{

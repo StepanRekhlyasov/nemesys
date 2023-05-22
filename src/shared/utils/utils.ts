@@ -100,20 +100,14 @@ export const findTheLastDate = (dates: Date[]) => {
 
 }
 
-export const dayMonthFromDate = (myDate?: string | undefined | Timestamp) => {
-  if (!myDate) return '-';
-  if(typeof myDate === 'string'){
-    const timeStamp = Date.parse(myDate)
-    return date.formatDate(timeStamp, 'DD/MM')
-  } else if (myDate instanceof Timestamp){
-    return date.formatDate(myDate.toDate(), 'DD/MM');
-  } else {
-    return '-';
-  }
+export const dayMonthFromDate = (myDate?: string) => {
+  if(!myDate)return;
+  const timeStamp = Date.parse(myDate)
+  return date.formatDate(timeStamp, 'DD/MM')
 }
 
-export const firebaseDateFormat = (myDate : Timestamp, mask : string) => {
-  return date.formatDate(myDate.toDate(), mask);
+export const firebaseDateFormat = (myDate : Date, mask : string) => {
+  return date.formatDate(myDate, mask);
 }
 
 // collection

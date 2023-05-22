@@ -271,10 +271,6 @@ function resetData(){
     jobSearchPriorities1: props.applicant['jobSearchPriorities1'] || '',
     jobSearchPriorities2: props.applicant['jobSearchPriorities2'] || '',
     jobSearchPriorities3: props.applicant['jobSearchPriorities3'] || '',
-    workingHoursEarly: props.applicant['workingHoursEarly'] || false,
-    workingHoursDay: props.applicant['workingHoursDay'] || false,
-    workingHoursLate: props.applicant['workingHoursLate'] || false,
-    workingHoursNight: props.applicant['workingHoursNight'] || false,
   }
 }
 resetData();
