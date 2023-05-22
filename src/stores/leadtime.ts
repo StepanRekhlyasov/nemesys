@@ -7,8 +7,10 @@ import {
   doc,
   getDoc,
 } from 'firebase/firestore';
+import { defineStore } from 'pinia';
+export const usecalcLeadtime = defineStore('calcLeadtime', () => {
 const secondperday = 60 * 60 * 24;
-export const calcLeadtime = async (
+const calcLeadtime = async (
   dateRange: { from: string; to: string },
   organization_id: string
 ) => {
@@ -73,3 +75,6 @@ export const calcLeadtime = async (
   data_average[4] /= num_a_o;
   return data_average;
 };
+ return { calcLeadtime };
+}
+)

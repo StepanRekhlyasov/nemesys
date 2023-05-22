@@ -16,9 +16,11 @@ import {
 import { useI18n } from 'vue-i18n';
 import { chartOptions, columns, data_names } from './const';
 import { getIndividualReport } from 'src/stores/individualReport';
-import { Totalizer } from 'src/stores/totalization';
+import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../report_util';
 import { graphType } from '../Models';
+import VueApexCharts from 'vue3-apexcharts';
+
 
 type ROWS = {
   name: string;
@@ -30,7 +32,8 @@ type ROWS = {
   offer_rate: number | string;
   admission_rate: number | string;
 }[];
-
+const apexchart = VueApexCharts
+const Totalizer = useTotalizer();
 const { t } = useI18n({ useScope: 'global' });
 const dataToShow: Ref<(number | string)[][]> = ref([]);
 const dataToShowCVR: Ref<(number | string)[][]> = ref([]);
@@ -94,14 +97,14 @@ const showIndividualReport = async (
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
   }
-  const data_average = await Totalizer(
+  const data_average = await Totalizer.Totalize(
     dateRange,
     ['fix', 'inspection', 'offer', 'admission'],
     true,
     organization_id.value,
     target
   );
-  const all_data_average = await Totalizer(
+  const all_data_average = await Totalizer.Totalize(
     dateRange,
     ['fix', 'inspection', 'offer', 'admission'],
     true,
@@ -132,13 +135,3 @@ onMounted(async () => {
 });
 </script>
 
-<script lang="ts">
-import VueApexCharts from 'vue3-apexcharts';
-
-export default {
-  name: 'ChartExample',
-  components: {
-    apexchart: VueApexCharts,
-  },
-};
-</script>

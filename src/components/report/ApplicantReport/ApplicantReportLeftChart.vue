@@ -7,12 +7,13 @@
 import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptions, columns, item_list ,chartType,row_names} from './const';
-import { Totalizer } from 'src/stores/totalization';
+import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from 'src/components/report/report_util';
 import {graphType} from '../Models';
-
+import VueApexCharts from 'vue3-apexcharts';
+const Totalizer = useTotalizer();
 const { t } = useI18n({ useScope: 'global' });
-
+const apexchart=VueApexCharts
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
@@ -74,7 +75,7 @@ const showData = async (
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'applicants', bo: 'bo' };
   }
-  const data_average = await Totalizer(
+  const data_average = await Totalizer.Totalize(
     dateRange,
     item_list,
     false,
@@ -83,7 +84,7 @@ const showData = async (
     true
   );
   const data_cvr = calculateCVR(data_average);
-  const data_average_all = await Totalizer(
+  const data_average_all = await Totalizer.Totalize(
     dateRange,
     item_list,
     false,
@@ -115,13 +116,3 @@ onMounted(async () => {
 });
 </script>
 
-<script lang="ts">
-import VueApexCharts from 'vue3-apexcharts';
-
-export default {
-  name: 'ChartExample',
-  components: {
-    apexchart: VueApexCharts,
-  },
-};
-</script>

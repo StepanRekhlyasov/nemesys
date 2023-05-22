@@ -6,15 +6,18 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { calcLeadtime } from 'src/stores/leadtime';
+import { usecalcLeadtime } from 'src/stores/leadtime';
 import { chartOptionsLeadtime, columnsLeadtime } from './const';
+import VueApexCharts from 'vue3-apexcharts';
+const  Leadtime  = usecalcLeadtime();
+const apexchart = VueApexCharts;
 const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<{ name: string; data: (number|string)[]; type: string }[]> =
   computed(() => {
-    const series_ = dataToshow.value.map((row_data, index) => {
+    const series_ = dataToshow.value.map((row_data) => {
       return {
-        name: t('report.CompanyAverage'),
+        name: t('report.companyAverage'),
         data: row_data,
         type: 'bar',
       };
@@ -33,7 +36,7 @@ const rows: ComputedRef<
 > = computed(() => {
   const rows_ = dataToshow.value.map((row_data, index) => {
     return {
-      name: t('report.CompanyAverage'),
+      name: t('report.companyAverage'),
       invitations: row_data[0],
       fix: row_data[1],
       inspection: row_data[2],
@@ -55,7 +58,7 @@ const showLeadtime = async (
   organization_id: string
 ) => {
   if (dateRange == undefined) return;
-  const data_average = await calcLeadtime(dateRange, organization_id);
+  const data_average = await Leadtime.calcLeadtime(dateRange, organization_id);
   dataToshow.value = [data_average];
 };
 
@@ -72,13 +75,3 @@ onMounted(async () => {
 });
 </script>
 
-<script lang="ts">
-import VueApexCharts from 'vue3-apexcharts';
-
-export default {
-  name: 'ChartExample',
-  components: {
-    apexchart: VueApexCharts,
-  },
-};
-</script>

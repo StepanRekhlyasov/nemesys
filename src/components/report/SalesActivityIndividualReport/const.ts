@@ -1,12 +1,12 @@
 import { i18n } from 'boot/i18n';
 import { computed } from 'vue';
 const { t } = i18n.global;
-export const data_names = ['report.CompanyAverage', 'report.AllAverage'];
+export const data_names = ['report.companyAverage', 'report.allAverage'];
 export const chartOptions = computed(() => {
   return {
     chart: {},
     title: {
-      text: t('report.title.IndividualPerformanceStatus'),
+      text: t('report.title.individualPerformanceStatus'),
       style: {
         color: 'gray',
       },
@@ -88,21 +88,21 @@ export const columns = computed(() => {
     {
       name: 'inspection_rate',
       align: 'center',
-      label: t('report.categories.inspection_rate'),
+      label: t('report.categories.inspectionRate'),
       field: 'inspection_rate',
       sortable: true,
     },
     {
       name: 'offer_rate',
       align: 'center',
-      label: t('report.categories.offer_rate'),
+      label: t('report.categories.offerRate'),
       field: 'offer_rate',
       sortable: true,
     },
     {
       name: 'admission_rate',
       align: 'center',
-      label: t('report.categories.admission_rate'),
+      label: t('report.categories.admissionRate'),
       field: 'admission_rate',
       sortable: true,
     },
@@ -134,11 +134,11 @@ export const chartOptionsR = computed(() => {
     },
     xaxis: {
       categories: [
-        t('report.categories.number_of_calls_per_day'),
-        t('report.categories.number_of_FAX_per_day'),
-        t('report.categories.BO_total'),
-        t('report.categories.BO_New'),
-        t('report.categories.BO_Existing'),
+        t('report.categories.numberOfCallsPerDay'),
+        t('report.categories.numberOfFAXPerDay'),
+        t('report.categoriesBOTotal'),
+        t('report.categoriesBONew'),
+        t('report.categories.BOExisting'),
       ],
     },
     yaxis: {
@@ -168,35 +168,35 @@ export const columnsR = computed(() => {
     {
       name: 'number_of_calls_per_day',
       align: 'center',
-      label: t('report.categories.number_of_calls_per_day'),
+      label: t('report.categories.numberOfCallsPerDay'),
       field: 'number_of_calls_per_day',
       sortable: true,
     },
     {
       name: 'number_of_FAX_per_day',
       align: 'center',
-      label: t('report.categories.number_of_FAX_per_day'),
+      label: t('report.categories.numberOfFAXPerDay'),
       field: 'number_of_FAX_per_day',
       sortable: true,
     },
     {
       name: 'BO_total',
       align: 'center',
-      label: t('report.categories.BO_total'),
+      label: t('report.categoriesBOTotal'),
       field: 'BO_total',
       sortable: true,
     },
     {
       name: 'BO_New',
       align: 'center',
-      label: t('report.categories.BO_New'),
+      label: t('report.categoriesBONew'),
       field: 'BO_New',
       sortable: true,
     },
     {
       name: 'BO_Existing',
       align: 'center',
-      label: t('report.categories.BO_Existing'),
+      label: t('report.categories.BOExisting'),
       field: 'BO_Existing',
       sortable: true,
     },

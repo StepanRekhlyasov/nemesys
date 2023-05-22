@@ -15,11 +15,13 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptionsR, columnsR ,data_names} from './const';
-import { getBOIndividualReport } from 'src/stores/BOindividualReport';
-import { Totalizer } from 'src/stores/totalization';
+import { useBOIndividualReport } from 'src/stores/BOindividualReport';
+import { useTotalizer } from 'src/stores/totalization';
 import {graphType} from '../Models';
-
-
+import VueApexCharts from 'vue3-apexcharts';
+const apexchart = VueApexCharts;
+const Totalizer = useTotalizer();
+const BOIndividualReport = useBOIndividualReport();
 const t = useI18n({ useScope: 'global' }).t;
 const dataToShow: Ref<(number | string)[][]> = ref([]);
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
@@ -90,7 +92,7 @@ const showIndividualReport = async (
   organization_id: string
 ) => {
   if (dateRange == undefined) return;
-  const { rows: rows__, series: series__ } = await getBOIndividualReport(
+  const { rows: rows__, series: series__ } = await BOIndividualReport.getBOIndividualReport(
     user_list.value,
     dateRange
   );
@@ -101,14 +103,14 @@ const showIndividualReport = async (
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
   }
-  const data_average = await Totalizer(
+  const data_average = await Totalizer.Totalize(
     dateRange,
     ['bo', 'bo_isfirst', 'bo_isnotfirst'],
     true,
     organization_id,
     target
   );
-  const all_data_average = await Totalizer(
+  const all_data_average = await Totalizer.Totalize(
     dateRange,
     ['bo', 'bo_isfirst', 'bo_isnotfirst'],
     true,
@@ -137,15 +139,4 @@ onMounted(async () => {
   user_list.value = props.branch_user_list;
   await showIndividualReport(props.dateRangeProps, props.organization_id);
 });
-</script>
-
-<script lang="ts">
-import VueApexCharts from 'vue3-apexcharts';
-
-export default {
-  name: 'ChartExample',
-  components: {
-    apexchart: VueApexCharts,
-  },
-};
 </script>

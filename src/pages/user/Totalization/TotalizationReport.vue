@@ -20,8 +20,8 @@
           </q-icon>
         </template>
       </q-input>
-      <q-radio v-model="graph_type" val="BasedOnLeftMostItemDate" :label="$t('report.BasedOnLeftMostItemDate')"/>
-      <q-radio v-model="graph_type" val="BasedOnEachItemDate" :label="$t('report.BasedOnEachItemDate')" />
+      <q-radio v-model="graph_type" val="BasedOnLeftMostItemDate" :label="$t('report.basedOnLeftMostItemDate')"/>
+      <q-radio v-model="graph_type" val="BasedOnEachItemDate" :label="$t('report.basedOnEachItemDate')" />
     </div>
   </div>
   <keep-alive>
@@ -41,13 +41,13 @@ import { ref, Ref, watch, onMounted} from 'vue';
 import { useI18n } from 'vue-i18n';
 import {useOrganization}  from 'src/stores/organization'
 import { storeToRefs } from 'pinia';
-import {getUser} from 'src/stores/getBranchUsers'
+import {useUserStore} from 'src/stores/user'
 import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport/SalesActivityIndividualReport.vue';
 import ApplicantReport from '../../../components/report/ApplicantReport/ApplicantReport.vue';
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 import {graphType} from 'src/components/report/Models'
-
+const UserStore = useUserStore();
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type:Ref<graphType> = ref('BasedOnLeftMostItemDate');
 const branch_input: Ref<string> = ref('');
@@ -56,14 +56,14 @@ const organizationStore = useOrganization()
 const {currentOrganizationId} = storeToRefs(organizationStore)
 const branch_user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const model_report: Ref<{ label: string; value: number }> = ref({
-  label: t('report.ApplicantReport'),
+  label: t('report.applicantReport'),
   value: 0,
 });
 const report_type: Ref<{ label: string; value: number }[]> = ref([
-  { label: t('report.ApplicantReport'), value: 0 },
-  { label: t('report.SalesActivityReport'), value: 1 },
-  { label: t('report.SalesActivityIndividualReport'), value: 2 },
-  { label: t('report.RecruitmentEffectivenessReport'), value: 3 },
+  { label: t('report.applicantReport'), value: 0 },
+  { label: t('report.salesActivityReport'), value: 1 },
+  { label: t('report.salesActivityIndividualReport'), value: 2 },
+  { label: t('report.recruitmentEffectivenessReport'), value: 3 },
 ]);
 const report_componets = {
   0: ApplicantReport,
@@ -97,7 +97,7 @@ const dateRange: Ref<{ from: string; to: string }|null> = ref({
 });
 
 watch(branch_input, async () => {
-  branch_user_list.value = await getUser(branch_input.value);
+  branch_user_list.value = await UserStore.getAllUsersInBranch(branch_input.value);
 });
 
 onMounted(async () => {

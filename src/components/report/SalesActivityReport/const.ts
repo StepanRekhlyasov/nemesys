@@ -2,8 +2,8 @@ import { i18n } from 'boot/i18n';
 import { computed } from 'vue';
 const { t } = i18n.global;
 
-export const data_names = ['report.CompanyTotal', 'report.CVR', 'report.AllCVR'];
-export const data_namesR = ['report.CompanyTotal','report.AllCVR'];
+export const data_names = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
+export const data_namesR = ['report.companyTotal','report.allCVR'];
 export const chart_names = ['bar', 'line', 'line'];
 export const chart_namesR = ['bar', 'bar'];
 export const chartOptions = computed(() => {
@@ -69,7 +69,7 @@ export const chartOptionsR = computed(() => {
   return {
     chart: {},
     title: {
-      text: t('report.title.SalseProductivity'),
+      text: t('report.title.salseProductivity'),
       style: {
         color: 'gray',
       },
@@ -93,7 +93,7 @@ export const chartOptionsR = computed(() => {
         t('report.categories.inspection'),
         t('report.categories.offer'),
         t('report.categories.admission'),
-        t('report.categories.BO_total'),
+        t('report.categoriesBOTotal'),
       ],
     },
     yaxis: [
@@ -189,7 +189,7 @@ export const columnsR = computed(() => {
     {
       name: 'BO_total',
       align: 'center',
-      label: t('report.categories.BO_total'),
+      label: t('report.categoriesBOTotal'),
       field: 'BO_total',
       sortable: true,
     },

@@ -5,8 +5,10 @@ import {
   getCountFromServer,
   getFirestore,
 } from 'firebase/firestore';
+import { defineStore } from 'pinia';
+export const useBOIndividualReport = defineStore('BOIndividualReport', () => {
 
-export const getBOIndividualReport = async (
+ const getBOIndividualReport = async (
   IdAndNames_branch: { id: string; name: string }[],
   dateRange: { from: string; to: string }
 ): Promise<{
@@ -86,5 +88,6 @@ export const getBOIndividualReport = async (
     });
   }
   return { rows: rows, series: series };
-
 };
+return { getBOIndividualReport };
+})

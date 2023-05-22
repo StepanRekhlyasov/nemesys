@@ -7,6 +7,7 @@ import {
   DocumentData,
   CollectionReference,
 } from 'firebase/firestore';
+import { defineStore } from 'pinia';
 
 const applicant_db = [
   'applicants',
@@ -48,8 +49,9 @@ const date_dict: { [key: string]: string } = {
   bo_isfirst: 'created_at',
   bo_isnotfirst: 'created_at',
 };
+export const useTotalizer = defineStore('Totalizer', () => {
 
-export const Totalizer = async (
+const Totalize = async (
   dateRange: { from: string; to: string },
   item_list: string[],
   is_average = false,
@@ -110,3 +112,5 @@ export const Totalizer = async (
   }
   return data_average;
 };
+return {Totalize}
+})

@@ -2,7 +2,7 @@ import { i18n } from 'boot/i18n';
 import { computed } from 'vue';
 const { t } = i18n.global;
 
-export const row_names = ['report.CompanyTotal', 'report.CVR', 'report.AllCVR'];
+export const row_names = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
 export const chartType = ['bar', 'line', 'line'];
 export const item_list = [
   'applicants',
@@ -19,7 +19,7 @@ export const chartOptions = computed(() => {
   return {
     chart: {},
     title: {
-      text: t('report.title.ApplicationToadmission'),
+      text: t('report.title.applicationToAdmission'),
       style: {
         color: 'gray',
       },
@@ -39,11 +39,11 @@ export const chartOptions = computed(() => {
     },
     xaxis: {
       categories: [
-        t('report.categories.Applicant'),
-        t('report.categories.ValidApplicant'),
-        t('report.categories.NumberOfContacts'),
-        t('report.categories.NumberOfInvitations'),
-        t('report.categories.NumberOfAttendance'),
+        t('report.categories.applicant'),
+        t('report.categories.validApplicant'),
+        t('report.categories.numberOfContacts'),
+        t('report.categories.numberOfContacts'),
+        t('report.categories.numberOfAttendance'),
         t('report.categories.fix'),
         t('report.categories.inspection'),
         t('report.categories.offer'),
@@ -91,35 +91,35 @@ export const columns = computed(() => {
     {
       name: 'Applicant',
       align: 'center',
-      label: t('report.categories.Applicant'),
+      label: t('report.categories.applicant'),
       field: 'applicants',
       sortable: true,
     },
     {
       name: 'ValidApplicant',
       align: 'center',
-      label: t('report.categories.ValidApplicant'),
+      label: t('report.categories.validApplicant'),
       field: 'valid_applicants',
       sortable: true,
     },
     {
       name: 'NumberOfContacts',
       align: 'center',
-      label: t('report.categories.NumberOfContacts'),
+      label: t('report.categories.numberOfContacts'),
       field: 'contact_applicants',
       sortable: true,
     },
     {
       name: 'NumberOfInvitations',
       align: 'center',
-      label: t('report.categories.NumberOfInvitations'),
+      label: t('report.categories.numberOfContacts'),
       field: 'attraction_applicants',
       sortable: true,
     },
     {
       name: 'NumberOfAttendance',
       align: 'center',
-      label: t('report.categories.NumberOfAttendance'),
+      label: t('report.categories.numberOfAttendance'),
       field: 'attend_applicants',
       sortable: true,
     },
@@ -158,7 +158,7 @@ export const chartOptionsLeadtime = computed(() => {
   return {
     chart: {},
     title: {
-      text: t('report.title.Leadtime'),
+      text: t('report.title.leadtime'),
       style: {
         color: 'gray',
       },
@@ -178,10 +178,10 @@ export const chartOptionsLeadtime = computed(() => {
     },
     xaxis: {
       categories: [
-        t('report.categories.Applicant') +
+        t('report.categories.applicant') +
           '-' +
-          t('report.categories.Invitations'),
-        t('report.categories.Invitations') + '-' + t('report.categories.fix'),
+          t('report.categories.invitations'),
+        t('report.categories.invitations') + '-' + t('report.categories.fix'),
         t('report.categories.fix') + '-' + t('report.categories.inspection'),
         t('report.categories.inspection') + '-' + t('report.categories.offer'),
         t('report.categories.offer') + '-' + t('report.categories.admission'),
@@ -218,9 +218,9 @@ export const columnsLeadtime = computed(() => {
       name: 'invitations',
       align: 'center',
       label:
-        t('report.categories.Applicant') +
+        t('report.categories.applicant') +
         '-' +
-        t('report.categories.Invitations'),
+        t('report.categories.invitations'),
       field: 'invitations',
       sortable: true,
     },
@@ -228,7 +228,7 @@ export const columnsLeadtime = computed(() => {
       name: 'fix',
       align: 'center',
       label:
-        t('report.categories.Invitations') + '-' + t('report.categories.fix'),
+        t('report.categories.invitations') + '-' + t('report.categories.fix'),
       field: 'fix',
       sortable: true,
     },
