@@ -5,17 +5,24 @@
     input-class="cursor-pointer"
     v-model="selectedMonth"
     @click="monthPicker?.show()"
-    mask="####-##"
     fill-mask=""
     filled 
     dense
   >
+  <template v-slot:append>
+    <q-icon v-if="selectedMonth" name="cancel" @click="()=>{
+      selectedMonth = '';
+      monthPicker?.hide();
+      emit('cleared');
+    }" class="cursor-pointer" />
+  </template>
     <template v-slot:prepend>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy 
           ref="monthPicker" 
           transition-show="scale" 
           transition-hide="scale"
+          @before-hide="emit('pickerHide', selectedMonth)"
         >
           <q-date
             minimal
@@ -38,14 +45,13 @@ import { QDateProps, QPopupProxy } from 'quasar';
 import { ref } from 'vue';
 
 const monthPicker = ref<InstanceType<typeof QPopupProxy> | null>(null)
-const selectedMonth = ref('')
 const checkValue = (reason : Parameters<NonNullable<QDateProps['onUpdate:modelValue']>>[1]) => {
   if (reason === 'month') {
     monthPicker.value?.hide()
   }
 }
-const emit = defineEmits(['update:modelValue'])
-withDefaults(defineProps<{
+const emit = defineEmits(['update:modelValue', 'pickerHide', 'cleared'])
+const props = withDefaults(defineProps<{
   width?: string,
   height?: string,
   fontSize?: string,
@@ -57,6 +63,7 @@ withDefaults(defineProps<{
   fontSize: '12px',
   isAdmin: false
 })
+const selectedMonth = ref(props.modelValue)
 watch(selectedMonth, (newVal)=>{
   emit('update:modelValue', newVal);
 })
@@ -66,7 +73,8 @@ watch(selectedMonth, (newVal)=>{
 
 .input--monthYearOnly{
   background: #FFFFFF;
-  border: 1px solid $input-border;
+  box-sizing: border-box;
+  
   border-radius: 3px;
   width: v-bind(width);
   height: v-bind(height);
@@ -81,9 +89,14 @@ watch(selectedMonth, (newVal)=>{
     background: transparent;
     height: v-bind(height);
     &:before{
-      border-bottom: 0;
-      opacity: 0;
+      border: 1px solid rgba(0, 0, 0, 0.24);
+      border-radius: 4px;
+      border-bottom-style: solid!important;
+    }
+    &:hover:before{
+      border: 1px solid $input-border;
     }
   }
+  
 }
 </style>
