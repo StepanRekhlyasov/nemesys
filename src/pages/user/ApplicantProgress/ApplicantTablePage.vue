@@ -52,22 +52,30 @@
         </div>
         <div class="col-1">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
-          <YearMonthPicker
+          <q-select
+            outlined
+            dense
+            :options="[{label: $t('common.all'),value: 0}].concat(monthsList)"
             v-model="applicantStore.state.applicantFilter['currentStatusMonth']"
-            height="40px"
-            width="200px"
-            :disable="loading"
+            bg-color="white"
+            :label="$t('common.pleaseSelect')"
+            emit-value
+            map-options
+            @update:model-value="()=>{
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }"
           />
         </div>
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
         <applicant-table :status="statusParams.firestore" :applicants="applicantsByColumn" :loading="loading" @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" />
-        <TablePagination
-          :isAdmin="false"
-          ref="paginationRef"
-          :pagination="pagination"
-          @on-loading-state-change="(v) => loading = v"
+        <TablePagination 
+          :isAdmin="false" 
+          ref="paginationRef" 
+          :pagination="pagination" 
+          @on-loading-state-change="(v) => loading = v" 
           @on-data-update="async (newData) => {
             applicantStore.state.applicantsByColumn[statusParams.firestore] = newData
           }"
@@ -79,19 +87,18 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { ComputedRef, computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
 import { useApplicant } from 'src/stores/applicant';
 import { useMetadata } from 'src/stores/metadata';
 import { limitQuery } from './const/applicantColumns';
+import { monthsList } from 'src/shared/constants/Common.const';
 import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
-import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
-import { Applicant } from 'src/shared/model';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
@@ -128,7 +135,7 @@ const pagination = ref({
 });
 
 /** getters */
-const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
+const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 
 onMounted( async ()=>{
   if(applicantStore.state.prefectureList.length){
@@ -148,12 +155,6 @@ onMounted( async ()=>{
       value: 0
     })
     applicantStore.state.prefectureList = prefectureOptions.value
-  }
-})
-watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
-  if(newVal!=oldVal) {
-    paginationRef.value?.setConstraints(paginationConstraints.value);
-    paginationRef.value?.queryFirstPage()
   }
 })
 </script>

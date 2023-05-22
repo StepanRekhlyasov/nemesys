@@ -173,7 +173,7 @@
     </div>  
   </q-card-section>  
   <q-card-section>
-    <detalInfoTab :bo="selectedBo" @openSearchByMap="emit('openSearchByMap')" />
+    <detalInfoTab :bo="selectedBo" />
   </q-card-section>
 </template>
 <script lang="ts" setup>
@@ -188,7 +188,6 @@ const props = defineProps<{
   selectedBo: BackOrderModel,
   client?: Client
 }>()
-const emit = defineEmits(['openSearchByMap']);
 
 const edit = ref(false);
 const backOrderStore = useBackOrder();

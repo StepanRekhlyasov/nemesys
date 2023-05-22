@@ -21,15 +21,17 @@ export interface ClientFactory {
     clientFlag: boolean
     basicInfoChangingFlag: boolean
     mail: string
-    isSignedDispatchContract: boolean;
-    isSignedReferralContract: boolean;
-    nameContact: string;
-    telContact: string;
-    positionContact?: string;
-    mailContact: string;
+    isSignedDispatchContract: boolean
+    isSignedReferralContract: boolean
+    nameContact: string
+    telContact: string
+    positionContact?: string
+    mailContact: string
+    created_at: string
+    updated_at: string
     officeDetails?: OfficeDetails
     contractInfo?: ContractInfo
-    reflectLog?: ReflectLog;
+    reflectLog?: ReflectLog
     importLog?: ImportLog
 
     client?: Client

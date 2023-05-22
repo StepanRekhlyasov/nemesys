@@ -21,7 +21,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="candidateStaff">
-        <CandidateStaffBoSection :bo="bo" @openSearchByMap="emit('openSearchByMap')"/>
+        <CandidateStaffBoSection :bo="bo"/>
       </q-tab-panel>
 
       <q-tab-panel name="assignedStaff">
@@ -37,9 +37,13 @@ import boCommonInfoSections from './boCommonInfoSections.vue';
 import CandidateStaffBoSection from './candidateStaffBoSection.vue';
 import AssignedStaffBoSection from './assignedStaffBoSection.vue';
 
+
 defineProps<{
   bo: BackOrderModel
 }>();
-const emit = defineEmits(['openSearchByMap']);
 const tab = ref('boCommonInformation');
 </script>
+
+<style>
+
+</style>
