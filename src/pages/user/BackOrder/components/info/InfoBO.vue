@@ -4,7 +4,7 @@
       <q-card-section class="text-white bg-primary no-border-radius">
         <div class="row">
           <div class="flex items-end ">
-            <q-btn dense flat icon="close" class="q-mr-md " @click="emits('closeDialog')"/>
+            <q-btn dense flat icon="close" class="q-mr-md " @click="emit('closeDialog')"/>
           </div>
           <div>
             <div class="row text-subtitle2" v-if="client">
@@ -16,10 +16,9 @@
           </div>
         </div>
       </q-card-section>
-      <detailInfoBO :selectedBo="selectedBo" :client="client"/>
+      <detailInfoBO :selectedBo="selectedBo" :client="client" @openSearchByMap="emit('openSearchByMap')"/>
     </q-card>
   </q-scroll-area>
-  
 </template>
 
 <script lang="ts" setup>
@@ -33,17 +32,14 @@ const props = defineProps<{
   selectedBo: BackOrderModel
 }>()
 const db = getFirestore();  
-const emits = defineEmits(['closeDialog'])
+const emit = defineEmits(['closeDialog', 'openSearchByMap', 'passClientToMapSearch'])
 const client = ref<Client | undefined>(undefined);
 
- onMounted(async () => {
+onMounted(async () => {
   if (props.selectedBo['clientId']){
     client.value = await getClient(db, props.selectedBo['clientId'])
+    emit('passClientToMapSearch', client.value)
   }  
 })
 
 </script>
-
-<style>
-
-</style>

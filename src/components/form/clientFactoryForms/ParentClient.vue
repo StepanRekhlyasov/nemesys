@@ -1,18 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
-import { computed, defineProps, defineEmits, ref, watch, withDefaults } from 'vue';
+import { computed, defineProps, defineEmits, ref, watch } from 'vue';
 import { useClient } from 'src/stores/client';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = withDefaults(defineProps<{
-    modelValue: string | number
-    isLebel?: boolean
-    theme?: string
-}>(), {
-    isLebel: true,
-    theme: 'primary'
-})
+const props = defineProps<{
+    modelValue: string
+}>()
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -38,13 +33,13 @@ watch(selectedClient, (newVal) => {
 <template>         
     <q-item>
         <q-item-section>
-            <q-item-label v-if="isLebel" class="q-pb-xs">
+            <q-item-label class="q-pb-xs">
                 {{ t('client.add.parentClientName') }}
             <span class="text-red-5">*</span>
             </q-item-label>
             <q-select outlined v-model="selectedClient" :options="clientList" dense emit-value
                 map-options lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space
-                style="max-width:400px" use-input @filter="filterFn" clearable :color="theme"/>
+                style="max-width:400px" use-input @filter="filterFn" clearable />
         </q-item-section>
     </q-item>
 </template>

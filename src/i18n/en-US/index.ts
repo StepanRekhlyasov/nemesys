@@ -88,10 +88,6 @@ export default {
     },
     more: 'More'
   },
-  contractUnit: {
-    corporateBulk: 'Corporate bulk',
-    businessUnit: 'Business unit'
-  },
   smoking: {
     no: 'No',
     yes: 'Yes',
@@ -927,7 +923,7 @@ export default {
     attendant: {
       attendantStatus: 'Attendant Status',
       day: 'Attending Day',
-      attendeeUserInCharge: 'User in charge',
+      attendee: 'Attendee',
       memo: 'Attendance Memo',
       desiredConditions: 'Desired Conditions',
       timeToWork: 'Possible Employment Period',
@@ -1090,7 +1086,7 @@ export default {
     basicInfo: 'BO Basic Information',
     time: 'time of',
     request: 'Request',
-    ageLimit: 'Age Limit', 
+    ageLimit: 'Age Limit',
     payment: 'Payment',
     transportationExpenses: 'Transportation Expenses',
     availabilityOnCallSupport: 'Availability of on-call support',
@@ -1519,29 +1515,48 @@ export default {
     nurse: 'Nurse'
   },
   report:{
-    SalesActivityIndividualReport:'SalesActivityIndividualReport',
-    ApplicantReport:'ApplicantReport',
-    SalesActivityReport:'SalesActivityReport',
-    RecruitmentEffectivenessReport:'RecruitmentEffectivenessReport',
-    Applicant:'Applicant',
-    ValidApplicant:'ValidApplicant',
-    CompanyAverage:'CompanyAverage',
-    AllAverage:'AllAverage',
-    NumberOfContacts:'NumberOfContact',
-    NumberOfInvitations:'NumberOfInvitations',
-    NumberOfAttendance:'NumberOfAttendance',
+    salesActivityIndividualReport:'salesActivityIndividualReport',
+    applicantReport:'ApplicantReport',
+    salesActivityReport:'SalesActivityReport',
+    recruitmentEffectivenessReport:'recruitmentEffectivenessReport',
+    companyAverage:'companyAverage',
+    allAverage:'allAverage',
+    companyTotal:'CompanyTotal',
+    Total:'Total',
     CVR:'CVR',
-    AllCVR:'AllCVR',
+    allCVR:'AllCVR',
+    basedOnLeftMostItemDate:'basedonLeftMostItemDate',
+    basedOnEachItemDate:'BasedOnEachItemDate',
+    day:' day',
     categories:{
+      validApplicant:'ValidApplicant',
+      numberOfContacts:'NumberOfContacts',
+      numberOfInvitations:'NumberOfInvitations',
+      numberOfAttendance:'NumberOfAttendance',
+      invitations:'Invitations',
+      applicant:'Applicant',
       fix:'Fix',
       inspection:'Inspection',
       offer:'Offer',
-      admission:'Admission',
+      admission:'admission',
+      inspectionRate:'Inspection Rate',
+      offerRate:'Offer Rate',
+      admissionRate:'Admission Rate',
+      numberOfCallsPerDay:'Number of calls per day',
+      numberOfFAXPerDay:'Number of FAX per day',
+      BOTotal:'BO total',
+      BONew:'BO New',
+      BOExisting:'BO Exisiting',
     },
-    chart:{
-      UnitPerson:'UnitPerson',
-    },
-  },
+    title:{
+      leadtime:'Leadtime',
+      applicationToAdmission:'Application→Admission',
+      FIXAndInspection:'FIX and Inspection',
+      salseProductivity:'Salse Productivity',
+      individualPerformanceStatus:'Individual Performance Status',
+      BOAcquisitionStatus:'BO Acquisition Status',
+  }
+},
   billing: {
     feeAggregates: {
       byMonth: 'by month',
@@ -1567,4 +1582,4 @@ export default {
       billingAmount: 'Billing Amount'
     }
   }
-};
+}

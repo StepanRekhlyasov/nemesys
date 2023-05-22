@@ -37,15 +37,15 @@
       </q-input>
     </div>
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
-      {{ $t('applicant.attendant.attendeeUserInCharge') }}
+      {{ $t('applicant.attendant.attendee') }}
     </div>
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit">{{
           usersListOption
-            .filter(user => user.value === data['attendeeUserInCharge'])
+            .filter(user => user.value === data['attendee'])
             .map(user => user.label).join('')
       }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendeeUserInCharge']"
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendee']"
         bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
@@ -64,11 +64,13 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { attendantStatus } from 'src/shared/constants/Applicant.const';
-import { Ref, computed, ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
-import { Applicant, Attendance } from 'src/shared/model';
+import { getFirestore } from '@firebase/firestore';
+import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { Applicant, Attendance, selectOptions, UserPermissionNames } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
 
@@ -76,23 +78,17 @@ const props = defineProps<{
   applicant: Applicant
 }>()
 
+const db = getFirestore();
 const applicantStore = useApplicant();
 const organization = useOrganization();
 const infoEdit = ref(false);
 const loading = ref(false);
 const attendantStatusOption = ref(attendantStatus);
-const usersListOption = computed(()=>{
-  return applicantStore.state.usersInCharge.map((doc) => {
-    return {
-      label: doc.displayName,
-      value: doc.id
-    }
-  });
-});
+const usersListOption: Ref<selectOptions[]> = ref([]);
 const data: Ref<Attendance>  = ref({});
 
 if (organization.currentOrganizationId){
-  applicantStore.fetchUsersInChrage()
+  loadUser()
 }
 resetData();
 
@@ -100,7 +96,7 @@ function resetData() {
   data.value = {
     attendingStatus: props?.applicant['attendingStatus'] || undefined,
     attendingDate: props?.applicant['attendingDate'] || '',
-    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'] || '',
+    attendee: props?.applicant['attendee'] || '',
     memo: props?.applicant['memo'] || '',
   }
 }
@@ -117,6 +113,21 @@ async function saveInfo() {
     Alert.warning($q, t);
   }
   loading.value = false
+}
+async function loadUser() {
+  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+
+  const users = await usersSnapshot
+  
+  let list: selectOptions[] = [];
+    users?.forEach((doc) => {
+      const data = doc.data();
+      list.push({
+        label: data.displayName,
+        value: doc.id
+      });
+  });
+  usersListOption.value = list;
 }
 
 const { t } = useI18n({

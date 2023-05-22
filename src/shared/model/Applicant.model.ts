@@ -67,10 +67,10 @@ export interface DesiredConditions {
   daysToWork?: number;
   daysPerWeek?: Days[];
   specialDay?: SpecialDay[];
-  workingHoursEarly?: string;
-  workingHoursDay?: string;
-  workingHoursLate?: string;
-  workingHoursNight?: string;
+  workingHoursEarly?: boolean;
+  workingHoursDay?: boolean;
+  workingHoursLate?: boolean;
+  workingHoursNight?: boolean;
   shiftRemarks?: string;
   meansCommuting?: string;
   nearestStation?: string;
@@ -89,7 +89,7 @@ export interface DesiredConditions {
 export interface Attendance { 
   attendingStatus?: 'ok' | 'ng';
   attendingDate?: Timestamp | string;
-  attendeeUserInCharge?: string;
+  attendee?: string;
   memo?: string;
 }
 
@@ -131,6 +131,7 @@ export enum Days {
   MONDAY = 'monday',
   TUESDAY = 'tuesday',
   WEDNESDAY = 'wednesday',
+  THURSDAY = 'thursday',
   FRIDAY = 'friday',
   SATURDAY = 'saturday',
   HOLIDAY = 'holiday',
