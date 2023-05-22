@@ -52,10 +52,10 @@
         </div>
         <div class="col-1">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
-          <YearMonthPicker 
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
-            height="40px" 
-            width="200px" 
+          <YearMonthPicker
+            v-model="applicantStore.state.applicantFilter['currentStatusMonth']"
+            height="40px"
+            width="200px"
             :disable="loading"
           />
         </div>
@@ -63,11 +63,11 @@
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
         <applicant-table :status="statusParams.firestore" :applicants="applicantsByColumn" :loading="loading" @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" />
-        <TablePagination 
-          :isAdmin="false" 
-          ref="paginationRef" 
-          :pagination="pagination" 
-          @on-loading-state-change="(v) => loading = v" 
+        <TablePagination
+          :isAdmin="false"
+          ref="paginationRef"
+          :pagination="pagination"
+          @on-loading-state-change="(v) => loading = v"
           @on-data-update="async (newData) => {
             applicantStore.state.applicantsByColumn[statusParams.firestore] = newData
           }"
