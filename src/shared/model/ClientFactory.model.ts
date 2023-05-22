@@ -27,10 +27,12 @@ export interface ClientFactory {
     telContact: string;
     positionContact?: string;
     mailContact: string;
-    officeDetails?: OfficeDetails
-    contractInfo?: ContractInfo
+    updated_at: string;
+    created_at: string;
+    officeDetails?: OfficeDetails;
+    contractInfo?: ContractInfo;
     reflectLog?: ReflectLog;
-    importLog?: ImportLog
+    importLog?: ImportLog;
 
     client?: Client
 }
