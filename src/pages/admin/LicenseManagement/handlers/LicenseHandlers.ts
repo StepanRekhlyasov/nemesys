@@ -31,14 +31,14 @@ export async function getOrganizationChildren(requests: LicenseRequest[]) {
 
 
 function mapToObject<T>(arr: Array<T & { id: string }>) {
-  const userObj: { [id: string]: T | undefined } = {}
+  const obj: { [id: string]: T | undefined } = {}
 
   arr.reduce((prev, user) => {
     prev[user.id] = user
     return prev
-  }, userObj)
+  }, obj)
 
-  return userObj
+  return obj
 }
 
 
