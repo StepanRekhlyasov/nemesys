@@ -15,6 +15,12 @@ export const sortDate = (a:dataObject, b:dataObject)=>{
   return a.date.localeCompare(b.date)
 }
 
+export function sortOrganization (a: string, b: string){
+  const firstOrganizationName = a.split(' ')[1]
+  const secondOrganizationName = b.split(' ')[1]
+  return firstOrganizationName.localeCompare(secondOrganizationName)
+}
+
 export function cloneToRaw<T>(obj: T) {
   return JSON.parse(JSON.stringify(toRaw(obj)))
 }
