@@ -1,15 +1,6 @@
 <template>
-  <q-select 
-    outlined 
-    dense 
-    v-model:model-value="modelValue" 
-    :options="branches" 
-    :disable="loading" 
-    :loading="loading"
-    :label="$t('common.pleaseSelect')" 
-    emit-value map-options 
-    :clearable="clearable"
-  />
+  <q-select outlined dense v-model:model-value="modelValue" :options="branches" :disable="loading" :loading="loading"
+    :label="$t('common.pleaseSelect')" emit-value map-options />
 </template>
 
 <script setup lang="ts">
@@ -22,18 +13,18 @@ import { onBeforeMount, ref } from 'vue';
 const organization = useOrganization()
 
 interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
-  organizationId?: string,
+  organizationId: string
 }
 const loading = ref(true)
 const branches = ref<selectOptions[]>([])
 const modelValue = ref('')
-const props = withDefaults(defineProps<SelectBranchProps>(),{
-  clearable: true
-})
-
 onBeforeMount(async () => {
-  const organizationId = props.organizationId ? props.organizationId : organization.currentOrganizationId
-  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(organizationId))
+  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(props.organizationId))
   loading.value = false
 })
+
+const props = defineProps<SelectBranchProps>()
+
 </script>
+
+<style scoped></style>
