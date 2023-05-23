@@ -25,11 +25,13 @@ import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { onMounted, ref } from 'vue';
 
+type optionToFetch = 'usersInCharge' | 'branchIncharge'
+
 const emit = defineEmits(['update', 'update:modelValue'])
 const props = defineProps<{
   modelValue?: string | undefined,
   options?: selectOptions[],
-  optionToFetch?: string
+  optionToFetch?: optionToFetch
 }>()
 const optionsList = ref(props.options)
 const loading = ref(false)
@@ -56,7 +58,7 @@ onMounted(async ()=>{
         loading.value = false
       break;
       default:
-      break;
+        console.log('wrong prop')
     }
   }
 })
