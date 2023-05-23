@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 // import ApplicantReportLeftChart from './ApplicantReportLeftChart.vue';
-import RecruitmentEffecitvenessReportRightDownChart from './RecruitmentEffecitvenessReportRightDownChart.vue';
+// import RecruitmentEffecitvenessReportRightDownChart from './RecruitmentEffecitvenessReportRightDownChart.vue';
 import { graphType } from '../Models';
 
 defineProps<{
