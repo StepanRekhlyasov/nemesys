@@ -5,25 +5,25 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <div class="row q-pt-md q-gutter-sm">
+      <div class="row q-pt-md q-gutter-sm ap--inputWrapper">
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['branch']"
-            :options="[]"
+            v-model="applicantStore.state.applicantFilter['branchIncharge']"
+            :optionToFetch="'branchIncharge'"
           />
         </div>
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="fetchResults()" 
             v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
-            :options="usersInChargeOptions"
+            :optionToFetch="'usersInCharge'"
           />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.prefecture") }}</p>
           <MySelect 
             @update="fetchResults()" 
             v-model="applicantStore.state.applicantFilter['prefecture']"
@@ -31,7 +31,7 @@
           />
         </div>
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.month") }}</p>
           <YearMonthPicker 
             v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
             height="40px" 
@@ -40,15 +40,15 @@
           />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.entry") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.entry") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.entry" />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.retire") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.retire") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.retired" />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.working") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.working") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.working" />
         </div>
       </div>
@@ -107,14 +107,6 @@ const loading = computed(()=>{
   }
   return true
 })
-const usersInChargeOptions = computed(()=>{
-  return applicantStore.state.usersInCharge.map((doc) => {
-    return {
-      label: doc.displayName,
-      value: doc.id
-    }
-  });
-});
 
 /** stores */
 const applicantStore = useApplicant();
@@ -137,10 +129,20 @@ const fetchResults = async () => {
   })
 }
 onMounted( async ()=>{
-  applicantStore.fetchUsersInChrage()
   await fetchResults()
 })
 watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
 })
 </script>
+<style lang="scss">
+.ap--inputWrapper{
+  .q-field__inner{
+    background: #fff;
+  }
+  .inputLabel,
+  .q-field__native {
+    white-space: nowrap;
+  }
+}
+</style>
