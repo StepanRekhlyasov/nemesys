@@ -923,7 +923,7 @@ export default {
     attendant: {
       attendantStatus: 'Attendant Status',
       day: 'Attending Day',
-      attendee: 'Attendee',
+      attendeeUserInCharge: 'User in charge',
       memo: 'Attendance Memo',
       desiredConditions: 'Desired Conditions',
       timeToWork: 'Possible Employment Period',

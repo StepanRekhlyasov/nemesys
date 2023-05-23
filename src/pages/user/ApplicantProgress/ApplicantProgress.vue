@@ -25,8 +25,8 @@
           <q-select
             outlined
             dense
-            :options="[]"
-            v-model="applicantStore.state.applicantFilter['userInCharge']"
+            :options="usersInChargeOptions"
+            v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
@@ -125,6 +125,14 @@
     }
     return true
   })
+  const usersInChargeOptions = computed(()=>{
+    return applicantStore.state.usersInCharge.map((doc) => {
+      return {
+        label: doc.displayName,
+        value: doc.id
+      }
+    });
+  });
 
   /** stores */
   const applicantStore = useApplicant();
@@ -147,6 +155,7 @@
     })
   }
   onMounted( async ()=>{
+    applicantStore.fetchUsersInChrage()
     await fetchResults()
   })
   watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
