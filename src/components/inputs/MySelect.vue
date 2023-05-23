@@ -22,7 +22,6 @@ import { ref } from 'vue';
 const emit = defineEmits(['update', 'update:modelValue'])
 const props = defineProps(['modelValue', 'options'])
 const inputVal = ref(props.modelValue)
-
 </script>
 <style lang="scss" scoped>
 .mySelect{
