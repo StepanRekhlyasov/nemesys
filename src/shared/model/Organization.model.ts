@@ -1,4 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
+import { Branch } from './Branch.model';
+import { Business } from './Business.model';
 
 export interface Organization {
   id: string;
@@ -16,6 +18,13 @@ export interface Organization {
   working: boolean
   deleted: boolean
 }
+
+export type RequestType = 'Branch' | 'Organization' | 'Buissnes'
+export type ReturnedObjectType<T> =
+  T extends 'Branch' ? Branch :
+  T extends 'Organization' ? Organization :
+  T extends 'Buissnes' ? Business :
+  never
 
 export type InvoiceRequest = typeof invoiceRequests[number]
 
