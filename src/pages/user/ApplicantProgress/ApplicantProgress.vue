@@ -5,7 +5,7 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <div class="row q-pt-md q-gutter-sm ap--inputWrapper">
+      <div class="row q-pt-md q-gutter-sm applicant__inputWrapper">
         <div class="col-2">
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
@@ -136,7 +136,7 @@ watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, o
 })
 </script>
 <style lang="scss">
-.ap--inputWrapper{
+.applicant__inputWrapper{
   .q-field__inner{
     background: #fff;
   }

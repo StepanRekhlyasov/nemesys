@@ -23,7 +23,7 @@ import { selectOptions } from 'src/shared/model';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
-import { onBeforeMount, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const emit = defineEmits(['update', 'update:modelValue'])
 const props = defineProps<{
@@ -34,7 +34,7 @@ const props = defineProps<{
 const optionsList = ref(props.options)
 const loading = ref(false)
 const inputVal = ref(props.modelValue)
-onBeforeMount(async ()=>{
+onMounted(async ()=>{
   if(props.optionToFetch){
     switch (props.optionToFetch) {
       case 'usersInCharge':
@@ -54,6 +54,8 @@ onBeforeMount(async ()=>{
         const organization = useOrganization()
         optionsList.value = mapToSelectOptions(await organization.getBranchesInOrganization(organization.currentOrganizationId))
         loading.value = false
+      break;
+      default:
       break;
     }
   }

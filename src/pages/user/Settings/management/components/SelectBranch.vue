@@ -23,7 +23,6 @@ const organization = useOrganization()
 
 interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
   organizationId?: string,
-  clearable?: boolean
 }
 const loading = ref(true)
 const branches = ref<selectOptions[]>([])
@@ -33,7 +32,7 @@ const props = withDefaults(defineProps<SelectBranchProps>(),{
 })
 
 onBeforeMount(async () => {
-  const organizationId = props.organizationId?props.organizationId:organization.currentOrganizationId
+  const organizationId = props.organizationId ? props.organizationId : organization.currentOrganizationId
   branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(organizationId))
   loading.value = false
 })
