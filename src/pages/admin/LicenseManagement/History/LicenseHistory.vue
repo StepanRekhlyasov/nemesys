@@ -3,7 +3,7 @@
     {{ t('menu.admin.licenseManagement.licenseHistory') }}
   </PageHeader>
   <q-card flat class="q-pt-sm q-px-lg">
-    <SearchField :on-click-search="async () => { await searchLicense() }" :on-click-clear="async () => {
+    <SearchField :on-click-search="searchLicense" :on-click-clear="async () => {
         search = ''
         await paginationRef?.refreshPage()
       }" v-model:model-value="search" />
