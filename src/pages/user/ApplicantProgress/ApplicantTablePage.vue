@@ -24,8 +24,8 @@
           <q-select
             outlined
             dense
-            :options="[]"
-            v-model="applicantStore.state.applicantFilter['userInCharge']"
+            :options="usersInChargeOptions"
+            v-model="applicantStore.state.applicantFilter['attendeeResponsiblePerson']"
             bg-color="white"
             :label="$t('common.pleaseSelect')"
             emit-value
@@ -110,6 +110,14 @@ const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
 /** consts */
+const usersInChargeOptions = computed(()=>{
+  return applicantStore.state.usersInCharge.map((doc) => {
+    return {
+      label: doc.displayName,
+      value: doc.id
+    }
+  });
+});
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
   for (const [key, value] of Object.entries(applicantStore.state.applicantFilter)){
@@ -130,6 +138,7 @@ const pagination = ref({
 const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 
 onMounted( async ()=>{
+  applicantStore.fetchUsersInChrage()
   if(applicantStore.state.prefectureList.length){
     prefectureOptions.value = applicantStore.state.prefectureList
   } else {
