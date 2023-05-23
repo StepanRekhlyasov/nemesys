@@ -66,7 +66,7 @@ export const useOfficeDetails = (clientFactory: ClientFactory): RenderOfficeDeta
         {label: t('clientFactory.drawer.details.latitude'), value: clientFactory?.officeDetails?.registeredInfo.latitude ?? 0, editType: 'number', key: 'officeDetails.registeredInfo.latitude'},
         {label: t('clientFactory.drawer.details.longitude'), value: clientFactory?.officeDetails?.registeredInfo.longitude ?? 0, editType: 'number', key: 'officeDetails.registeredInfo.longitude'}
     ]
-  });
+  }).value;
 
   officeDetails.commonItems = computed(() => {
     return [
@@ -89,20 +89,20 @@ export const useOfficeDetails = (clientFactory: ClientFactory): RenderOfficeDeta
       {label: t('clientFactory.drawer.details.workingHourLate'), value: clientFactory?.officeDetails?.commonItems.workingHourLate ?? 0, editType: 'number', key: 'officeDetails.commonItems.workingHourLate'},
       {label: t('clientFactory.drawer.details.workingHourNight'), value: clientFactory?.officeDetails?.commonItems.workingHourNight ?? '', editType: 'text', key: 'officeDetails.commonItems.workingHourNight'}
     ]
-  })
+  }).value
 
   officeDetails.uniqueItems = computed(() => {
 
     const uniqueItems = Object.keys(clientFactory.officeDetails?.uniqueItems ?? {}).map((key) => {
-        if(key && clientFactory.officeDetails?.uniqueItems[key]) {
-          return {label: key, value: clientFactory.officeDetails?.uniqueItems[key], key: `clientFactory.officeDetails.uniqueItems.${key}`}
+        if(key) {
+          return {label: key, value: clientFactory.officeDetails?.uniqueItems[key] ?? '', key: `clientFactory.officeDetails.uniqueItems.${key}`, editType: 'text'}
         }
 
-        return {label: '', value: ''}
+        return {label: '', value: '', editType: '', key: ''}
     })
 
     return uniqueItems
-  })  
+  }).value
 
   return officeDetails
 }
@@ -119,7 +119,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.inChargeTel'), value: clientFactory.telContact ?? '', editType: 'text', key: 'telContact'},
       {label: t('clientFactory.drawer.details.inChargeAddress'), value: clientFactory.positionContact ?? '', editType: 'text', key: 'positionContact'}
     ]
-  })
+  }).value
 
   headDetails.clientInfo = computed(() => {
     return [
@@ -131,7 +131,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? 0, editType: 'number', key: 'client.numberEmployees'},
       {label: t('clientFactory.drawer.details.companyProfile'), value: clientFactory.client?.companyProfile ?? '', editType: 'text', key: 'client.companyProfile'}
     ]
-  })
+  }).value
 
   headDetails.contractInfo = computed(() => {
     return [
@@ -142,7 +142,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.contractMail'), value: clientFactory.contractInfo?.contractMail ?? '', editType: 'text', key: 'contractInfo.contractMail'},
       {label: t('clientFactory.drawer.details.contractPerson'), value: clientFactory.contractInfo?.contractPerson ?? '', editType: 'text', key: 'contractInfo.contractPerson'}
     ]
-  })
+  }).value
 
   return headDetails
 }

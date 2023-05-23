@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
@@ -22,7 +22,6 @@ const isOpedEditDropDown = ref({
 })
 
 const dataForUpdating = ref<Record<string, Data[]>>({
-    headOfficeInfo: headDetails.value.headOfficeInfo,
     clientInfo: headDetails.value.clientInfo,
     contractInfo: headDetails.value.contractInfo
 })
@@ -30,6 +29,10 @@ const dataForUpdating = ref<Record<string, Data[]>>({
 const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
 }
+
+watchEffect(() => {
+    headDetails.value = useHeadDetails(props.clientFactory)
+})
 </script>
 
 <template>

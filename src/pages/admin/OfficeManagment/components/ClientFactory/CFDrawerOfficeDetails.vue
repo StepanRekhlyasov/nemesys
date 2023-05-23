@@ -6,6 +6,7 @@ import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableTwoColumnLayout, { Data } from 'src/components/EditableTwoColumnLayout.vue';
 import { useOfficeDetails, updateClientFactoryHangler } from '../../handlers/ClientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { RenderOfficeDetails } from '../../types';
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -13,7 +14,7 @@ const props = defineProps<{
     clientFactory: ClientFactory
 }>()
 
-const officeDetails = ref(useOfficeDetails(props.clientFactory))
+const officeDetails = ref<RenderOfficeDetails>(useOfficeDetails(props.clientFactory))
 
 const isOpedEditDropDown = ref({
     registeredInfo: false,
@@ -32,7 +33,7 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 }
 
 watchEffect(() => {
-    officeDetails.value = useOfficeDetails(props.clientFactory);
+    officeDetails.value = useOfficeDetails(props.clientFactory)
 });
 
 </script>

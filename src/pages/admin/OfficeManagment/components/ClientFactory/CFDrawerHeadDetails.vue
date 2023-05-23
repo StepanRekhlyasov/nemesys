@@ -4,6 +4,7 @@ import { defineProps, ref, watchEffect } from 'vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableTwoColumnLayout, {Data} from 'src/components/EditableTwoColumnLayout.vue';
+import { useClientFactory } from 'src/stores/clientFactory';
 import { useHeadDetails, updateClientFactoryHangler } from '../../handlers/ClientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from '../../types'
@@ -14,7 +15,10 @@ const props = defineProps<{
     clientId: string
 }>()
 
-// const headDetails = ref<RenderHeadDetails>(useHeadDetails(props.clientFactory))
+const {getHeadClientFactory} = useClientFactory()
+
+const headDetails = ref<RenderHeadDetails>({} as RenderHeadDetails)
+const headClientFactory = ref<ClientFactory>({} as ClientFactory)
 const isLoading = ref(false)
 
 const isOpedEditDropDown = ref({
@@ -23,65 +27,79 @@ const isOpedEditDropDown = ref({
     contractInfo: false
 })
 
-// const dataForUpdating = ref<Record<string, Data[]>>({
-//     headOfficeInfo: headDetails.value.headOfficeInfo,
-//     clientInfo: headDetails.value.clientInfo,
-//     contractInfo: headDetails.value.contractInfo
-// })
+const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>)
 
-// const getNewDataToUpdate = (data: Data[], key: string) => {
-//     dataForUpdating.value[key] = data
-// }
+const getNewDataToUpdate = (data: Data[], key: string) => {
+    dataForUpdating.value[key] = data
+}
 
-// watchEffect(() => {
-//     headDetails.value = useHeadDetails(props.clientFactory);
-// });
+const fetchHeadClientFactory = async () => {
+    isLoading.value = true
+
+    headClientFactory.value = await getHeadClientFactory(props.clientId) as ClientFactory
+
+    isLoading.value = false
+}
+
+watchEffect(() => {
+    fetchHeadClientFactory().then(() => {
+        headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory)
+    })
+})
 
 </script>
 
-<!-- <template>
-    <DropDownEditGroup
-    :label="t('clientFactory.drawer.headOfficeInfo')"
-    :isEdit="isOpedEditDropDown.headOfficeInfo"
-    :isLabelSquare="true"
-    theme="accent"
-    @openEdit="isOpedEditDropDown.headOfficeInfo = true"
-    @closeEdit="isOpedEditDropDown.headOfficeInfo = false"
-    @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, clientFactory)">
-        <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
-            v-if="!isOpedEditDropDown.headOfficeInfo"/>
+<template>
+    <div style="height: 5px;" class="q-my-none q-pa-none">
+        <q-separator v-if="!isLoading"/>
+        <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
+    </div>
 
-        <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
-    </DropDownEditGroup>
+    <div v-if="!isLoading">
+        <DropDownEditGroup
+        :label="t('clientFactory.drawer.headOfficeInfo')"
+        :isEdit="isOpedEditDropDown.headOfficeInfo"
+        :isLabelSquare="true"
+        theme="accent"
+        @openEdit="isOpedEditDropDown.headOfficeInfo = true"
+        @closeEdit="isOpedEditDropDown.headOfficeInfo = false"
+        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory)">
+            <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
+                v-if="!isOpedEditDropDown.headOfficeInfo"/>
 
-    <DropDownEditGroup
-    :label="t('clientFactory.drawer.clientInfo')"
-    :isEdit="isOpedEditDropDown.clientInfo"
-    :isLabelSquare="true"
-    theme="accent"
-    @openEdit="isOpedEditDropDown.clientInfo = true"
-    @closeEdit="isOpedEditDropDown.clientInfo = false"
-    @onSave="isOpedEditDropDown.clientInfo = false; updateClientFactoryHangler(dataForUpdating.clientInfo, clientFactory)">
-        <TwoColumnLayout :data="headDetails.clientInfo" theme="accent"
-            v-if="!isOpedEditDropDown.clientInfo"/>
+            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
+        </DropDownEditGroup>
 
-        <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
-    </DropDownEditGroup>
+        <DropDownEditGroup
+        :label="t('clientFactory.drawer.clientInfo')"
+        :isEdit="isOpedEditDropDown.clientInfo"
+        :isLabelSquare="true"
+        theme="accent"
+        @openEdit="isOpedEditDropDown.clientInfo = true"
+        @closeEdit="isOpedEditDropDown.clientInfo = false"
+        @onSave="isOpedEditDropDown.clientInfo = false; updateClientFactoryHangler(dataForUpdating.clientInfo, headClientFactory)">
+            <TwoColumnLayout :data="headDetails.clientInfo" theme="accent"
+                v-if="!isOpedEditDropDown.clientInfo"/>
 
-    <DropDownEditGroup
-    :label="t('clientFactory.drawer.contractInfo')"
-    :isEdit="isOpedEditDropDown.contractInfo"
-    :isLabelSquare="true"
-    theme="accent"
-    @openEdit="isOpedEditDropDown.contractInfo = true"
-    @closeEdit="isOpedEditDropDown.contractInfo = false"
-    @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, clientFactory)">
-        <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
-            v-if="!isOpedEditDropDown.contractInfo"/>
+            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
+        </DropDownEditGroup>
 
-        <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
-    </DropDownEditGroup>
-</template> -->
+        <DropDownEditGroup
+        :label="t('clientFactory.drawer.contractInfo')"
+        :isEdit="isOpedEditDropDown.contractInfo"
+        :isLabelSquare="true"
+        theme="accent"
+        @openEdit="isOpedEditDropDown.contractInfo = true"
+        @closeEdit="isOpedEditDropDown.contractInfo = false"
+        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory)">
+            <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
+                v-if="!isOpedEditDropDown.contractInfo"/>
+
+            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
+        </DropDownEditGroup>
+
+    </div>
+</template>
 
 <style lang="scss" scoped>
 
