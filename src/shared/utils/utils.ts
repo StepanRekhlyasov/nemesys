@@ -112,8 +112,15 @@ export const dayMonthFromDate = (myDate?: string | undefined | Timestamp) => {
   }
 }
 
-export const firebaseDateFormat = (myDate : Timestamp, mask : string) => {
-  return date.formatDate(myDate.toDate(), mask);
+export const TimestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
+  return date.formatDate(myDate?.toDate?.(), mask);
+}
+export const DateToTimestampFormat = (myDate : Date) => {
+  const result = Timestamp.fromDate?.(myDate)
+  if(isNaN(result.seconds)){
+    return undefined
+  }
+  return Timestamp.fromDate?.(myDate);
 }
 
 // collection

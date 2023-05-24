@@ -20,7 +20,7 @@
         <div class="col-2">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
-          @update="()=>{
+            @update="()=>{
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
