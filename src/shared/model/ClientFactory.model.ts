@@ -76,7 +76,7 @@ interface OfficeDetails {
 }
 
 interface ContractInfo {
-    contractUnit: boolean;
+    contractUnit: string;
     industry: string[]
     contractTel: string;
     contractFax: string;

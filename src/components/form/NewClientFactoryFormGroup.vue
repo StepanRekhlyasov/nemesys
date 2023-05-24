@@ -70,10 +70,10 @@ const validateAndSubmit = async () => {
             ...inChargeInfo.value,
             ...contractInfo.value,
             facilityType: facilityTypes.value,
-            industry: [],
             clientFlag: parentClient.value ? true : false,
             basicInfoChangingFlag: false,
             distance: 0,
+            industry: [],
             address: addressSection.value.prefecture + ' ' +  addressSection.value.municipality + ' ' + addressSection.value.street + ' ' + addressSection.value.building,
             officeDetails: {
                 registeredInfo: {

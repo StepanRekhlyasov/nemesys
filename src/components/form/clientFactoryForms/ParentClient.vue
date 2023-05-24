@@ -7,10 +7,10 @@ const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
     modelValue: string | number
-    isLebel?: boolean
+    isLabel?: boolean
     theme?: string
 }>(), {
-    isLebel: true,
+    isLabel: true,
     theme: 'primary'
 })
 
@@ -38,7 +38,7 @@ watch(selectedClient, (newVal) => {
 <template>         
     <q-item>
         <q-item-section>
-            <q-item-label v-if="isLebel" class="q-pb-xs">
+            <q-item-label v-if="isLabel" class="q-pb-xs">
                 {{ t('client.add.parentClientName') }}
             <span class="text-red-5">*</span>
             </q-item-label>

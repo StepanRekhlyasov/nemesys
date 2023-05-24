@@ -15,11 +15,11 @@ const emit = defineEmits(['update:modelValue'])
 const localType = ref(props.modelValue)
 const unitList = computed(() => [
     {
-        name: t('contractUnit.corporateBulk'),
+        name: t('client.contractUnit.corporateBulk'),
         value: '法人一括'
     },
     {
-        name: t('contractUnit.businessUnit'),
+        name: t('client.contractUnit.businessUnit'),
         value: '事業所単位'
     }
 ])

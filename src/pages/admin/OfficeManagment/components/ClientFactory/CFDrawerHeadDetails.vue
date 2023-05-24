@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, ref, watchEffect } from 'vue';
+import { defineProps, ref, watchEffect, watch } from 'vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableTwoColumnLayout, {Data} from 'src/components/EditableTwoColumnLayout.vue';
@@ -19,6 +19,7 @@ const {getHeadClientFactory} = useClientFactory()
 
 const headDetails = ref<RenderHeadDetails>({} as RenderHeadDetails)
 const headClientFactory = ref<ClientFactory>({} as ClientFactory)
+const localClientId = ref(props.clientId)
 const isLoading = ref(false)
 
 const isOpedEditDropDown = ref({
@@ -42,10 +43,10 @@ const fetchHeadClientFactory = async () => {
 }
 
 watchEffect(() => {
-    fetchHeadClientFactory().then(() => {
-        headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory)
-    })
+    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory)
 })
+
+watch(localClientId, fetchHeadClientFactory, {immediate: true})
 
 </script>
 

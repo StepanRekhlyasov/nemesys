@@ -47,5 +47,5 @@ export interface RenderOfficeDetails {
 export interface RenderHeadDetails {
     headOfficeInfo: {label: string, value: string | number, editType: string, key: string}[]
     clientInfo: {label: string, value: string | number, editType: string, key: string}[]
-    contractInfo: {label: string, value: string | number, editType: string, key: string}[]
+    contractInfo: {label: string, value: string | number | string[], editType: string, key: string}[]
 }

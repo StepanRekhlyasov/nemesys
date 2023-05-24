@@ -9,7 +9,7 @@ const {updateClientFactory} = useClientFactory()
 const { t } = i18n.global
 
 export const updateClientFactoryHangler = (
-  changedData: Array<{ label: string; value: string | number; editType: string; key: string }>,
+  changedData: Array<{ label: string; value: string | number | string[]; editType: string; key: string }>,
   clientFactory: ClientFactory
   ) => {
     const updatedClientFactory = JSON.parse(JSON.stringify(clientFactory));
@@ -135,8 +135,8 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
 
   headDetails.contractInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.contractUnit'), value: `${clientFactory.contractInfo?.contractUnit ?? ''}`, editType: 'contract_unit', key: 'contractInfo.contractUnit'},
-      {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry.join(' ') ?? '', editType: 'text', key: 'contractInfo.industry'},
+      {label: t('clientFactory.drawer.details.contractUnit'), value: clientFactory.contractInfo?.contractUnit ?? '', editType: 'contract_unit', key: 'contractInfo.contractUnit'},
+      {label: t('clientFactory.drawer.details.industry'), value: clientFactory.contractInfo?.industry ? clientFactory.contractInfo?.industry : [], editType: 'industry', key: 'contractInfo.industry'},
       {label: t('clientFactory.drawer.details.contractTel'), value: clientFactory.contractInfo?.contractTel ?? '', editType: 'text', key: 'contractInfo.contractTel'},
       {label: t('clientFactory.drawer.details.contractFax'), value: clientFactory.contractInfo?.contractFax ?? '', editType: 'text', key: 'contractInfo.contractFax'},
       {label: t('clientFactory.drawer.details.contractMail'), value: clientFactory.contractInfo?.contractMail ?? '', editType: 'text', key: 'contractInfo.contractMail'},
