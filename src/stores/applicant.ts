@@ -219,7 +219,6 @@ export const useApplicant = defineStore('applicant', () => {
         return false;
       }
     }
-    console.log(data)
     try {
       await setDoc(
         docRef,
