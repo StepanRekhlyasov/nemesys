@@ -1,6 +1,6 @@
-import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { Branch, branchFlags, Business, Organization } from 'src/shared/model';
+import { Branch, branchFlags, Business, Organization, RequestType, ReturnedObjectType } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
 import { ConstraintsType, toDateObject } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
@@ -210,5 +210,60 @@ export const useOrganization = defineStore('organization', () => {
     })
   }
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization, getOrganizationsByName }
+  async function getDataById<T extends RequestType>(ids: string[], type: T): Promise<ReturnedObjectType<T>[]> {
+    const constraints = [where('working', '==', true)]
+    let collectionId = 'businesses'
+    if (type == 'Branch') {
+      constraints.push(where('deleted', '==', false), where('hidden', '==', false))
+      collectionId = 'branches'
+    }
+
+    if (type == 'Organization') {
+      constraints.push(where('deleted', '==', false))
+      collectionId = 'organization'
+    }
+
+    const organizationsQuery = query(collectionGroup(db, collectionId), ...constraints, where('id', 'in', ids))
+    const organizationData = await getDocs(organizationsQuery)
+    return organizationData.docs.map((organization) => {
+      const data = organization.data()
+      if (type == 'Branch') {
+        return data as ReturnedObjectType<T>
+      }
+      if (type == 'Organization') {
+        return data as ReturnedObjectType<T>
+      }
+      return data as ReturnedObjectType<T>
+    })
+
+  }
+
+  async function countUsersInBranch(id: string) {
+    const q = query(collection(db, 'users'), where('branch_id', '==', id), where('deleted', '==', false))
+    const d = await getDocs(q)
+    return d.docs.length
+  }
+
+  async function getBranch(organizationId: string, businessId: string, branchId: string) {
+    const ref = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`)
+    const branchSnapshot = await getDoc(ref)
+    const branch = branchSnapshot.data() as Branch
+    return branch
+  }
+
+  async function calculateLicenceFee(organizationId: string) {
+    const allBranches = await getBranchesInOrganization(organizationId)
+
+    const allBranchesArr = Object.values(allBranches)
+
+    let licenceFee = 0
+    for (let i = 0; i < allBranchesArr.length; i++) {
+      const branch = allBranchesArr[i]
+      const usersInBranch = await countUsersInBranch(branch.id)
+      licenceFee += usersInBranch * branch.priceForOneUserInYen
+    }
+    return licenceFee
+  }
+
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization, getOrganizationsByName, getDataById, countUsersInBranch, calculateLicenceFee, getBranch }
 })

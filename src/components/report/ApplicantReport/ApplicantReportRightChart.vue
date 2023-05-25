@@ -34,7 +34,7 @@ const rows: ComputedRef<
     admission: string|number;
   }[]
 > = computed(() => {
-  const rows_ = dataToshow.value.map((row_data, index) => {
+  const rows_ = dataToshow.value.map((row_data) => {
     return {
       name: t('report.companyAverage'),
       invitations: row_data[0],

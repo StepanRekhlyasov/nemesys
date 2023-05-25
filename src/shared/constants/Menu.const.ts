@@ -92,7 +92,7 @@ export const adminMenuParent: MenuParentType[] = [
     icon: 'mdi-chart-box-plus-outline',
   },{
     type: MenuParent.AdminLicenseManagement,
-    title: 'menu.admin.licenseManagement',
+    title: 'menu.admin.licenseManagement.licenseManagement',
     icon: 'mdi-license',
   },{
     type: MenuParent.AdminBillingInformation,

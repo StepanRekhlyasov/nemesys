@@ -126,10 +126,11 @@ export default {
           data['flag'] = branchFlag.value
           data['deleted'] = false
           data['businessId'] = businessId.value
+          data['priceForOneUserInYen'] = 10000
+          data['licensesSlots'] = 0
           const clientRef = collection(db, `organization/${currentOrganizationId}/businesses/${businessId.value}/branches`);
           const docRef = doc(clientRef)
           data['id'] = docRef.id
-          console.log(data)
           await setDoc(docRef, data)
           context.emit('closeDialog');
           Alert.success($q, t);

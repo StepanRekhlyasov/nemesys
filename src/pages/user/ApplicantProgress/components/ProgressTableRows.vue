@@ -34,7 +34,7 @@
         <td 
           @click="()=>{
             emit('openDrawer', applicant)
-          }"
+          }" 
           class="applicant-clickable"
         >{{ applicant.name }}</td>
         <td>{{dayMonthFromDate(applicant.currentStatusTimestamp)}}</td>

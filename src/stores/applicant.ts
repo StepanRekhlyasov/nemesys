@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
-import { Applicant, Client, ClientOffice } from 'src/shared/model';
+import { Applicant, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
 import { RankCount } from 'src/shared/utils/RankCount.utils';
@@ -10,6 +10,8 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { toMonthYear } from 'src/shared/utils/utils';
+import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { useOrganization } from './organization';
 
 interface ApplicantState {
   clientList: Client[],
@@ -28,7 +30,8 @@ interface ApplicantState {
     'wait_offer': boolean,
     'wait_entry': boolean,
     'wait_termination': boolean,
-  }
+  },
+  usersInCharge: User[]
 }
 
 type ContinueFromDoc = {
@@ -103,7 +106,8 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_offer': false,
       'wait_entry': false,
       'wait_termination': false,
-    }
+    },
+    usersInCharge: []
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
@@ -226,6 +230,18 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
+  
+  const fetchUsersInChrage = async () => {
+    const organization = useOrganization()
+    const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+    const users = await usersSnapshot
+    if(users){
+      const result = users.docs.map(item => {
+        return item.data() as User
+      })
+      state.value.usersInCharge = result
+    }
+  }
 
   /** update Applicant in tables after details changes */
   watch(() => state.value.selectedApplicant, (newValue) => {
@@ -265,6 +281,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage }
 })
   

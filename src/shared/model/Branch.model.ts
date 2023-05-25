@@ -14,6 +14,8 @@ export interface Branch {
   created_user: string;
   working: boolean
   businessId: string;
+  priceForOneUserInYen: number
+  licensesSlots: number
 }
 
 export enum branchFlags {
