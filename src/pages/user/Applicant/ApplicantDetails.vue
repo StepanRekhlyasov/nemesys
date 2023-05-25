@@ -31,7 +31,7 @@
             </div>
             <div class="row">
               <span class="q-pr-md">
-                {{ $t('applicant.add.applicationDate') }}: {{ TimestampToDateFormat(selectedApplicant.applicationDate, 'YYYY/MM/DD')  }}
+                {{ $t('applicant.add.applicationDate') }}: {{ timestampToDateFormat(selectedApplicant.applicationDate, 'YYYY/MM/DD')  }}
               </span>
             </div>
             <div class="row">
@@ -133,13 +133,13 @@ import { statusList } from 'src/shared/constants/Applicant.const';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
-import { TimestampToDateFormat } from 'src/shared/utils/utils';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
 const statusOption = ref(statusList);
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
-const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(TimestampToDateFormat(selectedApplicant.value['dob'])):'0')
+const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(timestampToDateFormat(selectedApplicant.value['dob'])):'0')
 const openDrawer = async (data : Applicant) => {
   if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
     drawerRight.value = false;
