@@ -112,7 +112,10 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
 
   headDetails.headOfficeInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.officeLocation'), value: clientFactory.address ?? '', editType: 'text', key: 'address'},
+      {label: t('clientFactory.drawer.details.prefecture'), value: clientFactory?.officeDetails?.registeredInfo.prefecture ?? '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture'},
+      {label: t('applicant.add.street'), value: clientFactory?.officeDetails?.registeredInfo.street ?? '', editType: 'text', key: 'officeDetails.registeredInfo.city' },
+      {label: t('client.add.municipalities'), value: clientFactory?.officeDetails?.registeredInfo.municipality ?? '', editType: 'municipality', key: 'officeDetails.registeredInfo.municipality'},
+      {label: t('client.add.addressBuildingName'), value: clientFactory?.officeDetails?.registeredInfo.building ?? '', editType: 'text', key: 'officeDetails.registeredInfo.building'},
       {label: t('clientFactory.drawer.details.officeTel'), value: clientFactory.tel ?? '', editType: 'text', key: 'tel'},
       {label: t('clientFactory.drawer.details.officeFax'), value: clientFactory.fax ?? '', editType: 'text', key: 'fax'},
       {label: t('clientFactory.drawer.details.inChargeTitle'), value: clientFactory.nameContact ?? '', editType: 'text', key: 'nameContact'},

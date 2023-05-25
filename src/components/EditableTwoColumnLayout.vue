@@ -5,12 +5,14 @@ import ParentClient from './form/clientFactoryForms/ParentClient.vue';
 import ContractUnit from './form/ContractUnit.vue';
 import ClientType from './form/clientForms/ClientType.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 const { t } = useI18n({ useScope: 'global' });
 
 enum InputType {
     TEXT = 'text',
     NUMBER = 'number',
     PREFECTURE = 'prefecture',
+    MUNICIPALITY = 'municipality',
     CLIENT = 'client',
     CONTRACT_UNIT = 'contract_unit',
     INDUSTRY = 'industry'
@@ -32,6 +34,9 @@ const props = withDefaults(defineProps<{
 
 const newData = ref(props.data)
 
+const municipalities = ref<string[]>([])
+const fetchMunicipalities = ref(false)
+
 const emit = defineEmits<{
     (e: 'data-changed', newData: Data[] )
 }>()
@@ -39,6 +44,16 @@ const emit = defineEmits<{
 watch(newData, () => {
     emit('data-changed', newData.value)
 }, {deep: true})
+
+watch(() => newData.value.find(item => item.editType === 'prefecture'), async (newVal, oldVal) => {
+    if (newVal !== oldVal && newVal) {
+        fetchMunicipalities.value = false
+        municipalities.value = await getMunicipalities(newVal.value as string)
+        fetchMunicipalities.value = true
+    } else {
+        fetchMunicipalities.value = false
+    }
+}, { immediate: true })
 
 const leftColumn = computed(() => newData.value.filter((_, index) => index % 2 === 0))
 const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 !== 0))
@@ -55,6 +70,12 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <q-input v-else-if="row.editType === InputType.TEXT && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme"/>
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
+                <q-select v-else-if="row.editType === InputType.MUNICIPALITY" outlined dense :disable="!fetchMunicipalities" emit-value
+                    bg-color="white"
+                    :color="theme"
+                    :options="municipalities"
+                    v-model="row.value"  
+                    :placeholder="t('client.add.municipalitieLabel')"/>
                 <ParentClient v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'" v-model="row.value" :is-label="false" :theme="theme"/>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
@@ -71,6 +92,12 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <q-input v-else-if="row.editType === InputType.TEXT && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme"/>
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
+                <q-select v-else-if="row.editType === InputType.MUNICIPALITY" outlined dense :disable="!fetchMunicipalities" emit-value
+                    bg-color="white"
+                    :color="theme"
+                    :options="municipalities"
+                    v-model="row.value"  
+                    :placeholder="t('client.add.municipalitieLabel')"/>
                 <ParentClient v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'" v-model="row.value" :is-label="false" :theme="theme"/>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>

@@ -40,6 +40,9 @@ export interface ClientFactory {
 interface OfficeDetails {
     registeredInfo: {
         prefecture: string
+        municipality: string
+        street: string
+        building: string
         officeName: string
         parentClient: string
         city: string
