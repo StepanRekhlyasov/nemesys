@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ref, defineEmits, defineProps, withDefaults, computed } from 'vue';
-const { t } = useI18n({ useScope: 'global' });
+import { ref, defineEmits, defineProps, withDefaults, watch } from 'vue';
+import { contractUnits } from 'src/shared/constants/ContractUnits.const';
 
 const props = withDefaults(defineProps<{
     modelValue: string | number
@@ -13,28 +12,21 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits(['update:modelValue'])
 
 const localType = ref(props.modelValue)
-const unitList = computed(() => [
-    {
-        name: t('client.contractUnit.corporateBulk'),
-        value: '法人一括'
-    },
-    {
-        name: t('client.contractUnit.businessUnit'),
-        value: '事業所単位'
-    }
-])
+
+watch(() => props.modelValue, (newVal) => {
+    localType.value = newVal
+});
 
 const updateType = (value: string) => {
-    localType.value = value;
-    emit('update:modelValue', localType.value);
+    emit('update:modelValue', value);
 };
 </script>
 
 <template>
     <q-item>
         <div class="q-gutter-sm">
-            <q-radio size="xs" v-model="localType" :val="option.value" :label="option.name" :color="`${theme}`"
-                v-for="option in unitList" :key="option.value" @update:modelValue="updateType" />
+            <q-radio size="xs" v-model="localType" :val="option.value" :label="option.label" :color="`${theme}`"
+                v-for="option in contractUnits" :key="option.value" @change="updateType" />
         </div>
     </q-item>
 </template>
