@@ -1,10 +1,27 @@
-import { computed} from 'vue';
+import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
-export const rowNamesSex = ['report.categories.male', 'report.categories.female'];
+export const rowNamesSex = [
+  'report.categories.male',
+  'report.categories.female',
+];
 export const chartTypeSex: string[] = ['bar', 'bar'];
-export const rowNamesAges = ['report.categories.teens', 'report.categories.twenties', 'report.categories.thirties', 'report.categories.forties', 'report.categories.fifties', 'report.categories.sixties'];
-export const chartTypeAges: string[] = ['bar', 'bar', 'bar', 'bar', 'bar', 'bar'];
+export const rowNamesAges = [
+  'report.categories.teens',
+  'report.categories.twenties',
+  'report.categories.thirties',
+  'report.categories.forties',
+  'report.categories.fifties',
+  'report.categories.sixties',
+];
+export const chartTypeAges: string[] = [
+  'bar',
+  'bar',
+  'bar',
+  'bar',
+  'bar',
+  'bar',
+];
 export const rowNamesDaysToWork = ['1', '2', '3', '4', '5', '6', '7'];
 export const chartTypeDaysToWork: string[] = [
   'bar',
@@ -13,12 +30,12 @@ export const chartTypeDaysToWork: string[] = [
   'bar',
   'bar',
   'bar',
-  'bar'
+  'bar',
 ];
 export const chartOptionsSex = computed(() => {
   return {
-    legend: {position: 'left'},
-    chart: { stacked: true},
+    legend: { position: 'left' },
+    chart: { stacked: true },
     title: {
       text: t('report.title.sex'),
       style: {
@@ -39,7 +56,7 @@ export const chartOptionsSex = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.genderRatio')]
+      categories: [t('report.genderRatio')],
     },
     yaxis: [
       {
@@ -47,7 +64,7 @@ export const chartOptionsSex = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1);
+            return value.toFixed(0)+'%';
           },
         },
       },
@@ -57,8 +74,8 @@ export const chartOptionsSex = computed(() => {
 
 export const chartOptionsAges = computed(() => {
   return {
-    legend: {position: 'left'},
-    chart: { stacked: true},
+    legend: { position: 'left' },
+    chart: { stacked: true },
     title: {
       text: t('report.title.age'),
       style: {
@@ -79,7 +96,7 @@ export const chartOptionsAges = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.ageComposition')]
+      categories: [t('report.ageComposition')],
     },
     yaxis: [
       {
@@ -87,7 +104,7 @@ export const chartOptionsAges = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1);
+            return value.toFixed(0)+'%';
           },
         },
       },
@@ -97,7 +114,7 @@ export const chartOptionsAges = computed(() => {
 
 export const chartOptionsDaysToWork = computed(() => {
   return {
-    legend: {position: 'left'},
+    legend: { position: 'left' },
     chart: { stacked: true },
     title: {
       text: t('report.title.daysToWork'),
@@ -127,9 +144,10 @@ export const chartOptionsDaysToWork = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1);
+            return value.toFixed(0)+'%';
           },
         },
       },
     ],
-  };})
+  };
+});
