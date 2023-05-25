@@ -1,0 +1,140 @@
+<template>
+  <div class="row">
+    <div class="col">
+      <q-responsive :ratio="17 / 30">
+        <apexchart
+          :options="chartOptionsSex"
+          :series="seriesSex"
+          width="100%"
+          height="100%"
+        ></apexchart>
+      </q-responsive>
+    </div>
+    <div class="col">
+      <q-responsive :ratio="17 / 30">
+        <apexchart
+          :options="chartOptionsAges"
+          :series="seriesAges"
+          width="100%"
+          height="100%"
+        ></apexchart>
+      </q-responsive>
+    </div>
+    <div class="col">
+      <q-responsive :ratio="17 / 30">
+        <apexchart
+          :options="chartOptionsDaysToWork"
+          :series="seriesDaysToWork"
+          width="100%"
+          height="100%"
+        ></apexchart>
+      </q-responsive>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useApplicant } from 'stores/applicant';
+import { graphType } from '../Models';
+import { onMounted, Ref, ref, ComputedRef, computed } from 'vue';
+import {
+  chartOptionsSex,
+  chartOptionsAges,
+  chartOptionsDaysToWork,
+  rowNamesAges,
+  rowNamesDaysToWork,
+  rowNamesSex,
+  chartTypeAges,
+  chartTypeDaysToWork,
+  chartTypeSex
+} from './const';
+import VueApexCharts from 'vue3-apexcharts';
+import { i18n } from 'boot/i18n';
+import {convertToPercentage} from '../reportUtil';
+const { t } = i18n.global;
+const apexchart = VueApexCharts;
+const Applicant = useApplicant();
+const {
+  countApplicantsBySex,
+  agesListOfApplicants,
+  countApplicantsdaysToWork,
+} = Applicant;
+
+const dataToshow: Ref<(number | string)[][]> = ref([]);
+const dataToshowAges: Ref<(number | string)[][]> = ref([]);
+const dataToshowDaysToWork: Ref<(number | string)[][]> = ref([]);
+
+const seriesSex: ComputedRef<
+  { name: string; data: (number | string)[]; type: string }[]
+> = computed(() => {
+  const series_ = dataToshow.value.map((row_data, index) => {
+    return {
+      name: t(rowNamesSex[index]),
+      data: row_data,
+      type: chartTypeSex[index],
+    };
+  });
+  return series_;
+});
+const seriesAges: ComputedRef<
+  { name: string; data: (number | string)[]; type: string }[]
+> = computed(() => {
+  const series_ = dataToshowAges.value.map((row_data, index) => {
+    return {
+      name: t(rowNamesAges[index]),
+      data: row_data,
+      type: chartTypeAges[index],
+    };
+  });
+  return series_;
+});
+const seriesDaysToWork: ComputedRef<
+  { name: string; data: (number | string)[]; type: string }[]
+> = computed(() => {
+  const series_ = dataToshowDaysToWork.value.map((row_data, index) => {
+    return {
+      name: rowNamesDaysToWork[index] + t('report.day'),
+      data: row_data,
+      type: chartTypeDaysToWork[index],
+    };
+  });
+  return series_;
+});
+
+const props = defineProps<{
+  branch_id: string;
+  dateRangeProps: { from: string; to: string } | undefined;
+  organization_id: string;
+  branch_user_list: { id: string; name: string }[];
+  graph_type: graphType;
+}>();
+//number[][] を百分率に変換する関数 [[3],[2],[12]]を[[15],[10],[60]]に変換する
+
+onMounted(async () => {
+  if (props.dateRangeProps == undefined) return;
+  const sexData = [
+    [await countApplicantsBySex('male', props.dateRangeProps)],
+    [await countApplicantsBySex('female', props.dateRangeProps)],
+  ];
+  //sexDataを100分率に変換してdataToshowに格納する
+  dataToshow.value = convertToPercentage(sexData);
+
+  const listofages = await agesListOfApplicants(props.dateRangeProps);
+  if (listofages == undefined) return;
+  const agesData = [
+    [listofages.filter((age) => age >= 10 && age < 20).length],
+    [listofages.filter((age) => age >= 20 && age < 30).length],
+    [listofages.filter((age) => age >= 30 && age < 40).length],
+    [listofages.filter((age) => age >= 40 && age < 50).length],
+    [listofages.filter((age) => age >= 50 && age < 60).length],
+    [listofages.filter((age) => age >= 60).length],
+  ];
+ dataToshowAges.value = convertToPercentage(agesData);
+  const daysData = await countApplicantsdaysToWork(
+    props.dateRangeProps
+  );
+  console.log(daysData)
+  dataToshowDaysToWork.value = convertToPercentage(daysData);
+  console.log(dataToshowDaysToWork.value)
+});
+</script>

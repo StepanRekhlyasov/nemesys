@@ -17,7 +17,7 @@ import { useI18n } from 'vue-i18n';
 import { chartOptions, columns, data_names } from './const';
 import { getIndividualReport } from 'src/stores/individualReport';
 import { useTotalizer } from 'src/stores/totalization';
-import { calculateCVR } from '../report_util';
+import { calculateCVR } from '../reportUtil';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 

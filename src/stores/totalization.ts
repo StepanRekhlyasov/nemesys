@@ -72,7 +72,6 @@ const Totalize = async (
     number_of_member = (
       await getCountFromServer(query(collection(db, 'users'), ...filter_))
     ).data().count;
-    console.log(number_of_member)
   }
   for (const [index, item] of Object.entries(item_list)) {
     const filter = [...filters_dict[item]];

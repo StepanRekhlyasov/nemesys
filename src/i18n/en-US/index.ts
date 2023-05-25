@@ -1528,6 +1528,9 @@ export default {
     basedOnLeftMostItemDate:'basedonLeftMostItemDate',
     basedOnEachItemDate:'BasedOnEachItemDate',
     day:' day',
+    genderRatio:'genderratio',
+    ageComposition:'age composition',
+    daysToWork:'days to Work',
     categories:{
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
@@ -1547,6 +1550,14 @@ export default {
       BOTotal:'BO total',
       BONew:'BO New',
       BOExisting:'BO Exisiting',
+      female:'female',
+      male:'male',
+      teens:'10s',
+      twenties:'20s',
+      thirties:'30s',
+      forties:'40s',
+      fifties:'50s',
+      sixties:'over 60s',
     },
     title:{
       leadtime:'Leadtime',
@@ -1555,6 +1566,9 @@ export default {
       salseProductivity:'Salse Productivity',
       individualPerformanceStatus:'Individual Performance Status',
       BOAcquisitionStatus:'BO Acquisition Status',
+      sex:'Sex',
+      age:'Age',
+      daysToWork:'Days to work',
   }
 },
   billing: {

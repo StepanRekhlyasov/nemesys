@@ -8,7 +8,7 @@ import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptions, columns, item_list ,chartType,row_names} from './const';
 import { useTotalizer } from 'src/stores/totalization';
-import { calculateCVR } from 'src/components/report/report_util';
+import { calculateCVR } from 'src/components/report/reportUtil';
 import {graphType} from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 const Totalizer = useTotalizer();
