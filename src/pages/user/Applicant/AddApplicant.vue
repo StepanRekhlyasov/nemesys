@@ -3,11 +3,8 @@
     <q-card-section class="bg-grey-3">
       <div class="text-h6 text-primary">{{ $t('menu.newApplicant') }}</div>
     </q-card-section>
-
     <q-separator color="white" size="2px" />
-
     <q-card-section class="bg-grey-3">
-
       <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
         <div class="row">
           <div class="col-6">
@@ -20,7 +17,6 @@
                   :rules="[(val) => !!val || '']" hide-bottom-space />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.kanaName') }}
@@ -30,7 +26,6 @@
                   :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.postCode') }}
@@ -40,7 +35,6 @@
                   :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.prefecture') }}
@@ -51,7 +45,6 @@
                   :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.municipalities') }}
@@ -61,7 +54,6 @@
                   :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.street') }}
@@ -71,7 +63,6 @@
                 :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.apartment') }}
@@ -81,7 +72,6 @@
                 :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.phone') }}
@@ -91,7 +81,6 @@
                 :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.email') }}
@@ -101,7 +90,6 @@
                 :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.status') }}
@@ -111,7 +99,6 @@
                   :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.branchIncharge') }}
@@ -120,11 +107,8 @@
                 <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
               </div>
             </div>
-
-
           </div>
           <div class="col-6">
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.sex') }}
@@ -141,7 +125,6 @@
                 </q-field>
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.dob') }}
@@ -163,7 +146,6 @@
                 </q-input>
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.occupation') }}
@@ -186,7 +168,6 @@
                 </q-field>
               </div>
             </div>
-
             <div class="row q-pt-md q-pb-sm ">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.qualification') }}
@@ -209,7 +190,6 @@
                 </q-field>
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.applicationDate') }}
@@ -227,7 +207,6 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-
                   <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -243,13 +222,11 @@
 
               </div>
             </div>
-
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.image') }}
               </div>
               <div class="col-9 q-pl-sm">
-
                 <q-file name="applicant_image" v-model="applicantImage" multiple use-chips outlined dense
                   bg-color="white" @update:model-value="onFileChange" accept=".jpg, image/*">
                   <template v-slot:append>
@@ -266,161 +243,77 @@
           </div>
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
-
         <div class="q-pt-sm">
           <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
     </q-card-section>
-
   </q-card>
 </template>
  
-<script lang="ts">
-import { useQuasar, QForm } from 'quasar';
+<script lang="ts" setup>
+import { QForm } from 'quasar';
 import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import {
-  collection,
-  setDoc,
-  doc,
-  getFirestore,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
-import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
-
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
+import { useApplicant } from 'src/stores/applicant';
 
-export default {
-  name: 'applicantAdd',
-  components: {
-    SelectBranch
-  },
-  setup() {
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-    const db = getFirestore();
-    const applicantDataSample = {
-      qualification: [],
-      status: ApplicantStatus.UNSUPPORTED,
-    };
-    const organizationStore = useOrganization()
-
-    const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
-    const prefectureOption = ref(prefectureList);
-    const statusOption = ref(statusList);
-
-    const accept = ref(false);
-    const applicantForm: Ref<QForm|null> = ref(null);
-    const loading = ref(false);
-    const imageURL = ref('');
-    const applicantImage = ref([]);
-
-    async function saveApplicantData(docRef, data) {
-      try {
-        await setDoc(
-          docRef,
-          data
-        );
-        loading.value = false;
-        imageURL.value = '';
-        applicantImage.value = [];
-
-        $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-        });
-        applicantForm.value?.reset();
-      } catch (error) {
-        console.log(error);
-        loading.value = false;
-        $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-        });
-      }
-    }
-    
-    function resetData() {
-      applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-      if (applicantForm.value) {
-        applicantForm.value.resetValidation();
-      }
-    }
-
-    return {
-      applicantData,
-      accept,
-      applicantForm,
-      prefectureOption,
-      statusOption,
-      loading,
-      resetData,
-      imageURL,
-      applicantImage,
-      organizationStore,
-      limitDate,
-      async onSubmit() {
-        loading.value = true;
-        let data = applicantData.value;
-        data['created_at'] = serverTimestamp();
-        data['updated_at'] = serverTimestamp();
-        
-        data['currentStatusMonth'] = toMonthYear();
-        data['currentStatusTimestamp'] = serverTimestamp();
-        data['statusChangeTimestamp'] = { [data['status']] : serverTimestamp() }
-        data['deleted'] = false;
-        const docRef = doc(collection(db, 'applicants'));
-
-        data['id'] = docRef.id;
-        if (data['dob']){
-         data['dob'] = data['dob'].replaceAll('/', '-') + 'T00:00:00+00:00' 
-        }
-
-        if (applicantImage.value && applicantImage.value.length > 0) {
-          const file = applicantImage.value[0];
-          const storage = getStorage();
-          const storageRef = refStorage(storage, 'applicants/' + docRef.id + '/image/' + file['name']);
-
-          uploadBytes(storageRef, file).then(async (snapshot) => {
-            data['imagePath'] = snapshot.ref.fullPath;
-            data['imageURL'] = await getDownloadURL(storageRef)
-            saveApplicantData(docRef, data);
-          }).catch((error) => {
-            console.log(error);
-            $q.notify({
-              color: 'red-5',
-              textColor: 'white',
-              icon: 'warning',
-              message: t('failed'),
-            });
-          });
-        }
-        else {
-          saveApplicantData(docRef, data);
-        }
-      },
-
-      onFileChange(files) {
-        imageURL.value = '';
-        if (files && files.length > 0) {
-          const file = files[0];
-          imageURL.value = URL.createObjectURL(file);
-        }
-      }
-    };
-  },
+const applicantDataSample = {
+  qualification: [],
+  status: ApplicantStatus.UNSUPPORTED,
 };
+const organizationStore = useOrganization()
+const applicantStore = useApplicant()
+
+const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
+const prefectureOption = ref(prefectureList);
+const statusOption = ref(statusList);
+
+const applicantForm: Ref<QForm|null> = ref(null);
+const loading = ref(false);
+const imageURL = ref('');
+const applicantImage = ref<FileList | []>([]);
+
+function resetData() {
+  applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
+  imageURL.value = '';
+  applicantImage.value = [];
+  if (applicantForm.value) {
+    applicantForm.value.resetValidation();
+  }
+}
+function onFileChange(files : FileList) {
+  imageURL.value = '';
+  if (files && files.length > 0) {
+    const file = files[0];
+    imageURL.value = URL.createObjectURL(file);
+  }
+}
+
+async function onSubmit() {
+  loading.value = true;
+  let data = JSON.parse(JSON.stringify(applicantData.value));
+  data['created_at'] = serverTimestamp();
+  data['updated_at'] = serverTimestamp();
+  
+  if(data.applicationDate){
+    data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+    data['currentStatusTimestamp'] = data['applicationDate'] ;
+    data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
+    data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+  }
+  data['dob'] = Timestamp.fromDate(new Date(data.dob));
+  data['deleted'] = false;
+  const success = await applicantStore.createApplicant(data, applicantImage.value)
+  if(success){
+    applicantForm.value?.reset();
+  }
+  loading.value = false;
+}
 </script>

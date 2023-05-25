@@ -1,10 +1,9 @@
-import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
 import { Applicant, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
-import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
@@ -12,6 +11,7 @@ import { useQuasar } from 'quasar';
 import { toMonthYear } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
+import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface ApplicantState {
   clientList: Client[],
@@ -172,17 +172,14 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
       for(const [key, value] of Object.entries(applicantData)){
-        if(typeof value === 'undefined'){
-          delete applicantData[key]
+        if(!value){
+          applicantData[key] = deleteField()
         }
       }
+      applicantData['updated_at'] = serverTimestamp();
       await updateDoc(applicantRef, applicantData)
+      state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant.id)
       if (showAlert){ Alert.success($q, t); }
-      state.value.selectedApplicant = {
-        ...state.value.selectedApplicant,
-        ...applicantData,
-        staffRank: RankCount.countRank(state.value.selectedApplicant)
-      }
     } catch (error) {
       if(state.value.selectedApplicant?.status){
         try {
@@ -199,6 +196,51 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
     return result.data() as Applicant
+  }
+
+  async function createApplicant(data : Applicant, applicantImage? : FileList | []){
+    const docRef = doc(collection(db, 'applicants'));
+    data['id'] = docRef.id;
+    if (applicantImage && applicantImage.length > 0) {
+      const file = applicantImage[0];
+      const storage = getStorage();
+      const storageRef = refStorage(storage, 'applicants/' + docRef.id + '/image/' + file['name']);
+      try {
+        const snapshot = await uploadBytes(storageRef, file)
+        data['imagePath'] = snapshot.ref.fullPath;
+        data['imageURL'] = await getDownloadURL(storageRef)
+      } catch(error){
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: t('failed'),
+        });
+        return false;
+      }
+    }
+    try {
+      await setDoc(
+        docRef,
+        data
+      );
+      $q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: t('success'),
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('failed'),
+      });
+      return false;
+    }
   }
 
   async function getClients( active_organization_id?: string ): Promise<Client[]> {
@@ -281,6 +323,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant }
 })
   

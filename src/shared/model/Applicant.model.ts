@@ -47,13 +47,13 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
 }
 
 export interface ApplicantInfo {
-  applicationDate?: Timestamp | string;
+  applicationDate?: Timestamp;
   name?: string;
   media?: string;
   kanaName?: string;
   applicationMetod?: string;
   sex?: ApplicantSex;
-  dob?: string;
+  dob?: Timestamp;
   phone?: string;
   email?: string;
   lat?: number;

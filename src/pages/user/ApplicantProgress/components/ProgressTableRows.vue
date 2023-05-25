@@ -37,7 +37,7 @@
           }" 
           class="applicant-clickable"
         >{{ applicant.name }}</td>
-        <td>{{dayMonthFromDate(applicant.currentStatusTimestamp)}}</td>
+        <td>{{dayMonthFromDate(applicant.applicationDate)}}</td>
         <td>{{ applicant.nearestStation }}</td>
         <td><p v-for="q, index in applicant.qualification" :key="index" style="margin:0;">{{ q }}</p></td>
         <td>{{ applicant.timeToWork }}</td>
