@@ -112,10 +112,10 @@ export const dayMonthFromDate = (myDate?: string | undefined | Timestamp) => {
   }
 }
 
-export const TimestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
+export const timestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
   return date.formatDate(myDate?.toDate?.(), mask);
 }
-export const DateToTimestampFormat = (myDate : Date) => {
+export const dateToTimestampFormat = (myDate : Date) => {
   const result = Timestamp.fromDate?.(myDate)
   if(isNaN(result.seconds)){
     return undefined

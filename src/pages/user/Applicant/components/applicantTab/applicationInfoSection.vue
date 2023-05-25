@@ -10,7 +10,7 @@
         {{ $t('applicant.list.info.date') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ TimestampToDateFormat(applicant['applicationDate']) || ''}}</span>
+        <span v-if="!edit">{{ timestampToDateFormat(applicant['applicationDate']) || ''}}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
@@ -99,7 +99,7 @@
         {{ $t('applicant.list.info.birth') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{TimestampToDateFormat(applicant['dob'])}} {{age?`(${age})`:''}}</span>
+        <span v-if="!edit">{{timestampToDateFormat(applicant['dob'])}} {{age?`(${age})`:''}}</span>
         <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -181,7 +181,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant, ApplicantInfo } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate, TimestampToDateFormat, DateToTimestampFormat } from 'src/shared/utils/utils'
+import { limitDate, timestampToDateFormat, dateToTimestampFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   applicant: Applicant
@@ -192,13 +192,13 @@ const loading = ref(false);
 const applicationMethodOption = ref(applicationMethod)
 const applicantStore = useApplicant();
 const defaultData = {
-  applicationDate: TimestampToDateFormat(props?.applicant['applicationDate']),
+  applicationDate: timestampToDateFormat(props?.applicant['applicationDate']),
   name: props?.applicant['name'] || '',
   media: props?.applicant['media'] || '',
   kanaName: props?.applicant['kanaName'] || '',
   applicationMetod: props?.applicant['applicationMetod'] || '',
   sex: props?.applicant['sex'],
-  dob: TimestampToDateFormat(props?.applicant['dob']),
+  dob: timestampToDateFormat(props?.applicant['dob']),
   phone: props?.applicant['phone'],
   email: props?.applicant['email'] || '',
   lon: props?.applicant['lon'] || undefined,
@@ -216,8 +216,8 @@ const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob'])
 async function save() {
   loading.value = true
   saveData.value = JSON.parse(JSON.stringify(data.value));
-  saveData.value.applicationDate = DateToTimestampFormat(new Date(data.value.applicationDate));
-  saveData.value.dob = DateToTimestampFormat(new Date(data.value.dob));
+  saveData.value.applicationDate = dateToTimestampFormat(new Date(data.value.applicationDate));
+  saveData.value.dob = dateToTimestampFormat(new Date(data.value.dob));
   try {
     await applicantStore.updateApplicant(saveData.value);
     edit.value = false;

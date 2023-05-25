@@ -16,14 +16,14 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1'>応</div>
-      <div class='col'>{{ TimestampToDateFormat(item.currentStatusTimestamp, 'YYYY.MM.DD') }}</div>
+      <div class='col'>{{ timestampToDateFormat(item.currentStatusTimestamp, 'YYYY.MM.DD') }}</div>
     </div>
   </q-card>
 </template>
 <script lang="ts" setup>
 import { Timestamp } from 'firebase/firestore'
 import { Applicant } from 'src/shared/model'
-import { TimestampToDateFormat } from 'src/shared/utils/utils'
+import { timestampToDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
 
