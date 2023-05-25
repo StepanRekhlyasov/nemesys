@@ -56,10 +56,7 @@ watch([clients], () => {
 }, { deep: true, immediate: true });
 
 watch([clientFactories], () => {
-    fetchData.value = true;
-
     tableRows.value = clientFactoriesToTableRows(clientFactories.value)
-    fetchData.value = false
 
 }, {deep: true, immediate: true})
 

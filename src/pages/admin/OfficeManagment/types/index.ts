@@ -1,5 +1,3 @@
-import { ComputedRef, Ref } from 'vue'
-
 export interface ClientFactoryTableColumn {
     name?: string,
     required?: boolean,
@@ -40,14 +38,14 @@ export enum ClientFactoryDetailTabs {
     ImportHistory = 'ImportHistory'
 }
 
-export interface RenderOfficeDetails extends Ref {
-    registeredInfo: ComputedRef<{ label: string, value: string | number }[]>
-    commonItems: ComputedRef<{ label: string, value: string | number }[]>
-    uniqueItems: ComputedRef<{ label: string, value: string }[]>   
+export interface RenderOfficeDetails {
+    registeredInfo: { label: string, value: string | number, editType: string, key: string }[]
+    commonItems: { label: string, value: string | number, editType: string, key: string }[]
+    uniqueItems: { label: string; value: string; key: string; editType: string; }[]
 }
 
-export interface RenderHeadDetails extends Ref {
-    headOfficeInfo: ComputedRef<{label: string, value: string | number}[]>
-    clientInfo: ComputedRef<{label: string, value: string | number}[]>
-    contractInfo: ComputedRef<{label: string, value: string | number}[]>
+export interface RenderHeadDetails {
+    headOfficeInfo: {label: string, value: string | number, editType: string, key: string}[]
+    clientInfo: {label: string, value: string | number, editType: string, key: string}[]
+    contractInfo: {label: string, value: string | number | string[], editType: string, key: string}[]
 }

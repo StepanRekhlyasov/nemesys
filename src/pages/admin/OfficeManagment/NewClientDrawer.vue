@@ -69,7 +69,7 @@ const onSubmit = async (newClientData: Client | null) => {
                     mailContact: newClientData.mail,
                     numberEmployees: newClientData.numberEmployees,
                     contractInfo: {
-                        contractUnit: newClientData.contractUnit ? true : false,
+                        contractUnit: newClientData.contractUnit,
                         industry: newClientData.industry,
                         contractTel: newClientData.personInChargeTel,
                         contractFax: newClientData.personInChargeFax,
