@@ -1,6 +1,6 @@
 import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
+import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
@@ -18,7 +18,7 @@ interface ApplicantState {
   applicantsByColumn: ApplicantsByColumn,
   applicantsByStatusCount: ApplicantsByStatusCount,
   continueFromDoc: ContinueFromDoc,
-  applicantFilter: ApplicantFilter,
+  applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
   prefectureList: {label: string, value: string | number}[],
   selectedApplicant: Applicant | null
@@ -89,7 +89,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': null,
       'wait_termination': null,
     },
-    applicantFilter: {
+    applicantProgressFilter: {
       branch: '',
       userInCharge: '',
       prefecture: '',
@@ -110,7 +110,7 @@ export const useApplicant = defineStore('applicant', () => {
     usersInCharge: []
   })
 
-  const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
+  const countApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter) => {
     const filters = [
       where('status', '==', status)
     ]
@@ -130,7 +130,7 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const getApplicantsByStatus = async (status : string, filterData?: ApplicantFilter, perQuery = 20, showMore = false) => {
+  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false) => {
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null

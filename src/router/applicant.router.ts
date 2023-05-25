@@ -11,7 +11,7 @@ const applicant_router: MenuRouter[] = [
   {
     path: 'applicant/search',
     title: 'menu.applicantSearch',
-    component: () => import('src/pages/user/Applicant/list.vue'),
+    component: () => import('src/pages/user/Applicant/ApplicantList.vue'),
     meta: {
       requiresAuth: true,
     },
