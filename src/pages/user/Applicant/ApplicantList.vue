@@ -8,8 +8,7 @@
       <q-separator color="white" size="2px" />
 
       <q-card-section class="q-pa-xs">
-        <searchForm @load-search-staff="loadSearchStaff"  />
-        <!-- @is-loading="(isLoading)=>isLoadingProgress=isLoading" -->
+        <searchForm @load-search-staff="loadSearchStaff" />
       </q-card-section>
 
       <q-separator color="white" size="2px" />
@@ -63,14 +62,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, watch, ComputedRef } from 'vue';
-import {
-  getFirestore,
-  query,
-  onSnapshot,
-  collection,
-  where,
-Unsubscribe
-} from 'firebase/firestore';
+import { where } from 'firebase/firestore';
 import searchForm from './components/search/searchForm.vue';
 import { api } from 'src/boot/axios';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
@@ -78,11 +70,12 @@ import { statusList, occupationList, applicantClassification} from 'src/shared/c
 import { QTableProps } from 'quasar';
 import { ApplicantElasticFilter, ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantOccupation } from 'src/shared/model';
+import { useApplicant } from 'src/stores/applicant';
 
 const { t } = useI18n({ useScope: 'global' });
-const db = getFirestore();
 
-const applicantData = ref<{id: string}[]>([]);
+const applicantStore = useApplicant()
+const applicantData = ref<Applicant[]>([]);
 const isLoadingProgress = ref(true)
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 const metaData = ref<{
@@ -147,19 +140,19 @@ const columns : ComputedRef<QTableProps['columns']> = computed(() => {
 const currentIds = ref<number[]>([]);
 
 const getDate = (ageInYears : number) => {
-  var calDate = new Date();
+  const calDate = new Date();
   calDate.setFullYear(calDate.getFullYear() - ageInYears);
-  var year = calDate.toLocaleString('en-US', { year: 'numeric' });
-  var month = calDate.toLocaleString('en-US', { month: '2-digit' });
-  var day = calDate.toLocaleString('en-US', { day: '2-digit' });
+  const year = calDate.toLocaleString('en-US', { year: 'numeric' });
+  const month = calDate.toLocaleString('en-US', { month: '2-digit' });
+  const day = calDate.toLocaleString('en-US', { day: '2-digit' });
  
   return year + '-' + month + '-' + day + 'T00:00:00+00:00';
 }
  
 const formatDate = (dt : Date, midNight = false) => {
-  var year = dt.toLocaleString('en-US', { year: 'numeric' });
-  var month = dt.toLocaleString('en-US', { month: '2-digit' });
-  var day = dt.toLocaleString('en-US', { day: '2-digit' });
+  const year = dt.toLocaleString('en-US', { year: 'numeric' });
+  const month = dt.toLocaleString('en-US', { month: '2-digit' });
+  const day = dt.toLocaleString('en-US', { day: '2-digit' });
   if (midNight) {
     return year + '-' + month + '-' + day + 'T00:00:00+00:00';
  
@@ -172,11 +165,8 @@ const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}) =
   applicantData.value = []
 
   const filters : ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
- 
-  let queryString = ''
-  if (searchData['keyword']) {
-    queryString = searchData['keyword']
-  }
+  const queryString = searchData['keyword'] ? searchData['keyword'] : ''
+
   if (searchData['status']) {
     filters['all'].push({
       'status': searchData['status']
@@ -208,7 +198,7 @@ const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}) =
     });
   }
  
-  let items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
+  const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
   for (var i = 0; i < items.length; i++) {
     if (searchData[items[i]] && searchData[items[i]].length > 0) {
       let obj = {}
@@ -248,17 +238,15 @@ const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}) =
   }
  
   if (!queryString && filters.all.length == 1) {
-    var d = new Date();
-    var m = d.getMonth();
+    const d = new Date();
+    const m = d.getMonth();
     d.setMonth(d.getMonth() - 1);
     /** If still in same month, set date to last day of previous month */
     if (d.getMonth() == m) d.setDate(0);
- 
     filters['all'].push({
       'created_at': { 'from': formatDate(d, true), 'to': formatDate(new Date()) }
     });
   }
-
   await api.post(
     (process.env.elasticSearchStaffURL as string),
     {
@@ -284,35 +272,19 @@ const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}) =
 
 };
 loadApplicantData();
-const unsubscribeList = ref<Unsubscribe[]>([]);
+
 const loadFirestoreApplicantData = async () => {
   isLoadingProgress.value = true
   applicantData.value = [];
-  for (var i = 0; i < unsubscribeList.value.length; i++) {
-    unsubscribeList.value[i]();
-  }
-  unsubscribeList.value = [];
   while (currentIds.value.length) {
     const batch = currentIds.value.splice(0, 10);
-    const q = query(collection(db, 'applicants'), where('deleted', '==', false), where('id', 'in', batch));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach(async (doc) => {
-        const data = { id: doc.id, ...doc.data() };
-        let editedIndex = applicantData.value.findIndex((p) => p.id == data['id']);
-        if (editedIndex > -1) {
-          applicantData.value.splice(editedIndex, 1, data);
-        } else {
-          applicantData.value.push(data);
-        }
-        isLoadingProgress.value = false
-      });
-    });
-    unsubscribeList.value.push(unsubscribe)
+    applicantData.value = await applicantStore.getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch)])
+    isLoadingProgress.value = false
   }
 }
 
 const getStatus = (status : string) => {
-  let item = statusList.value.find(x => x.value === status);
+  const item = statusList.value.find(x => x.value === status);
   if (item) {
     return item.label;
   }
@@ -330,7 +302,7 @@ const getClassification = (classification : string) => {
   if (!classification) {
     return ''
   }
-  let classificationndex = applicantClassification.value.findIndex((p) => p.value == classification);
+  const classificationndex = applicantClassification.value.findIndex((p) => p.value == classification);
   if (classificationndex > -1) {
     return applicantClassification.value[classificationndex].label
   }
@@ -340,14 +312,20 @@ const openDrawer = (data : Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
  
-const loadSearchStaff = (data : ApplicantElasticSearchData) => {
-  loadApplicantData(data)
+const preventWatch = ref(false)
+const loadSearchStaff = async (data : ApplicantElasticSearchData) => {
+  preventWatch.value = true
+  pagination.value.page = 1
+  await loadApplicantData(data)
+  preventWatch.value = false
 };
 
 watch(
   () => (pagination.value.page),
   () => {
-    loadApplicantData();
+    if(!preventWatch.value) {
+      loadApplicantData();
+    }
   },
 )
 </script>

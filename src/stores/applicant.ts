@@ -8,7 +8,7 @@ import { watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { toMonthYear } from 'src/shared/utils/utils';
+import { ConstraintsType, toMonthYear } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -243,6 +243,14 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }
 
+  async function getApplicantsByConstraints(constraints : ConstraintsType){
+    const q = query(collection(db, 'applicants'), ...constraints);
+    const snapshot = await getDocs(q);
+    return snapshot?.docs.map((doc) => {
+      return doc.data() as Applicant
+    })
+  }
+
   async function getClients( active_organization_id?: string ): Promise<Client[]> {
     const clientsData = await getClientList(db, {active_organization_id})
     const list: Client[] = [] ;
@@ -323,6 +331,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints }
 })
   
