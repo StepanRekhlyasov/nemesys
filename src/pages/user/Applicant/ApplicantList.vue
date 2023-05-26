@@ -279,8 +279,8 @@ const loadFirestoreApplicantData = async () => {
   while (currentIds.value.length) {
     const batch = currentIds.value.splice(0, 10);
     applicantData.value = await applicantStore.getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch)])
-    isLoadingProgress.value = false
   }
+  isLoadingProgress.value = false
 }
 
 const getStatus = (status : string) => {
