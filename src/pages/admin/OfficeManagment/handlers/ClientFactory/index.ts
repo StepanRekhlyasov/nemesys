@@ -2,10 +2,12 @@ import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 import { ClientFactoryTableRow, RenderOfficeDetails, RenderHeadDetails } from '../../types';
 import { useClientFactory } from 'src/stores/clientFactory';
+import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { recursivelyRemoveField } from 'src/shared/utils';
 
 const {updateClientFactory} = useClientFactory()
+const {updateClient} = useClient()
 const { t } = i18n.global
 
 export const updateClientFactoryHangler = (
@@ -31,6 +33,31 @@ export const updateClientFactoryHangler = (
     recursivelyRemoveField(updatedClientFactory, 'created_at')
     updateClientFactory(updatedClientFactory);
 };
+
+export const updateClientHandler = (
+  changedData: Array<{ label: string; value: string | number | string[]; editType: string; key: string }>,
+  clientFactory: ClientFactory
+) => {
+  const updatedClient = JSON.parse(JSON.stringify(clientFactory.client))
+
+  changedData.forEach(({key, value}) => {
+        const keys = key.split('.'); 
+        let nestedObj = updatedClient;
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            if (i === keys.length - 1) {
+                nestedObj[key] = value;
+            } else {
+                nestedObj[key] = nestedObj[key] || {}; 
+                nestedObj = nestedObj[key];
+            }
+        }
+  });
+
+  recursivelyRemoveField(updatedClient, 'created_at')
+  console.log(updatedClient)
+  updateClient(clientFactory.clientID, updatedClient)
+}
 
 export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
     return factories.map((factory) => {
@@ -126,13 +153,13 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
 
   headDetails.clientInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.representative'), value: clientFactory.client?.representativeName ?? '', editType: 'text', key: 'client.representativeName'},
-      {label: t('clientFactory.drawer.details.established'), value: clientFactory.client?.established ?? '', editType: 'text', key: 'client.established'},
-      {label: t('clientFactory.drawer.details.capital'), value: clientFactory.client?.capital ?? '', editType: 'text', key: 'client.capital'},
-      {label: t('clientFactory.drawer.details.earnings'), value: clientFactory.client?.earnings ?? '', editType: 'text', key: 'client.earnings'},
-      {label: t('clientFactory.drawer.details.numberOffices'), value: clientFactory.client?.numberOffices ?? 0, editType: 'number', key: 'client.numberOffices'},
-      {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? 0, editType: 'number', key: 'client.numberEmployees'},
-      {label: t('clientFactory.drawer.details.companyProfile'), value: clientFactory.client?.companyProfile ?? '', editType: 'text', key: 'client.companyProfile'}
+      {label: t('clientFactory.drawer.details.representative'), value: clientFactory.client?.representativeName ?? '', editType: 'text', key: 'representativeName'},
+      {label: t('clientFactory.drawer.details.established'), value: clientFactory.client?.established ?? '', editType: 'text', key: 'established'},
+      {label: t('clientFactory.drawer.details.capital'), value: clientFactory.client?.capital ?? '', editType: 'text', key: 'capital'},
+      {label: t('clientFactory.drawer.details.earnings'), value: clientFactory.client?.earnings ?? '', editType: 'text', key: 'earnings'},
+      {label: t('clientFactory.drawer.details.numberOffices'), value: clientFactory.client?.numberOffices ?? 0, editType: 'number', key: 'numberOffices'},
+      {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? 0, editType: 'number', key: 'numberEmployees'},
+      {label: t('clientFactory.drawer.details.companyProfile'), value: clientFactory.client?.companyProfile ?? '', editType: 'text', key: 'companyProfile'}
     ]
   }).value
 
