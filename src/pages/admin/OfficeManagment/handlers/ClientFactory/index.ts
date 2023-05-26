@@ -66,7 +66,7 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
         row.id = factory.id
         row.distance = `${factory.distance}m`  
         row.fax = factory.fax
-        row.office= {name: factory.name}
+        row.office= {name: factory.name, isHead: factory.isHead, clientName: factory.client?.representativeName}
         row.address = factory.address
         row.telephone = factory.tel
         row.basicInfo = factory.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）'

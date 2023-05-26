@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
@@ -33,8 +33,14 @@ const pagination = ref({
     sortBy: 'desc',
     descending: false,
     page: 1,
-    rowsPerPage: 10
-    // rowsNumber: xx if getting data from a server
+    rowsPerPage: 100,
+    rowsNumber: clientFactories.value.length
+});
+
+const paginatedTableRows = computed(() => {
+    const start = (pagination.value.page - 1) * pagination.value.rowsPerPage;
+    const end = start + pagination.value.rowsPerPage;
+    return tableRows.value.slice(start, end);
 });
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
@@ -48,15 +54,17 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
 }
 
 watch([clients], () => {
-    fetchData.value = true;
+    tableRows.value.length ? fetchData.value = false : fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
-        fetchData.value = false
+        tableRows.value.length ? fetchData.value = false : fetchData.value = true
     })
     
 }, { deep: true, immediate: true });
 
 watch([clientFactories], () => {
+    tableRows.value.length ? fetchData.value = false : fetchData.value = true
     tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+    tableRows.value.length ? fetchData.value = false : fetchData.value = true
 
 }, {deep: true, immediate: true})
 
@@ -100,12 +108,12 @@ const openNewClientFactoryDrawer = () => {
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
                 :isFetching="fetchData"
-                :rows="tableRows"
-                v-model:pagination="pagination"
+                :rows="paginatedTableRows"
                 />
                 <Pagination
                 :rows="tableRows"
-                v-model:pagination="pagination"/>
+                @updatePage="pagination.page = $event"
+                v-model:pagination="pagination" />
             </q-card-section>
         </q-card>
 

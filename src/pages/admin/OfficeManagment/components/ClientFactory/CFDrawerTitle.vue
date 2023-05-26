@@ -22,35 +22,40 @@ const dropDownHandler = (item: string) => {
 <template>
     <div class="wrapper row items-end justify-around">
         <div class="row">
-            <div class="text-h5 text-weight-bolder q-mr-md">
-                {{ props.selectedItem.name }}
-            </div>
-            <div>
-                <q-btn-dropdown
-                rounded
-                unelevated
-                dense
-                no-caps
-                push
-                auto-close
-                :label="selectedDropDown"
-                color="white"
-                text-color="accent">
-                    <q-list>
-                        <q-item
-                        class="row justify-center items-center"
-                        clickable
+            <div class="q-mr-md column">
+                <div>
+                    {{ props.selectedItem.client?.representativeName }}
+                    <q-btn-dropdown
+                        rounded
+                        unelevated
                         dense
-                        v-close-popup
-                        :key="item"
-                        @click="dropDownHandler(item)"
-                        v-for="item in dropDownValue.filter(el => el !== selectedDropDown)">
-                            <q-item-label>
-                                {{ item }}
-                            </q-item-label>
-                        </q-item>
-                    </q-list>
-                </q-btn-dropdown>
+                        no-caps
+                        push
+                        auto-close
+                        :label="selectedDropDown"
+                        color="white"
+                        text-color="accent">
+                        <q-list>
+                            <q-item
+                                class="row justify-center items-center"
+                                clickable
+                                dense
+                                v-close-popup
+                                :key="item"
+                                @click="dropDownHandler(item)"
+                                v-for="item in dropDownValue.filter(el => el !== selectedDropDown)">
+                                
+                                <q-item-label>
+                                    {{ item }}
+                                </q-item-label>
+                            </q-item>
+                        </q-list>
+                    </q-btn-dropdown>
+                </div>
+                <span class="text-h5 text-weight-bolder">
+                    <q-icon v-if="selectedItem.isHead" color="white" name="home"/>
+                    {{ props.selectedItem.name }}
+                </span>
             </div>
         </div>
         <div>

@@ -7,11 +7,9 @@ import { ClientFactoryTableColumn, ClientFactoryTableRow } from '../../types';
 const props = defineProps<{
     rows: ClientFactoryTableRow[],
     isFetching: boolean,
-    pagination
 }>()
 const emit = defineEmits<{
-    (e: 'selectItem', item: ClientFactoryTableRow),
-    (e: 'update:pagination', value)
+    (e: 'selectItem', item: ClientFactoryTableRow)
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
@@ -43,11 +41,9 @@ const selectItem = (item: ClientFactoryTableRow) => {
     :bordered="false"
     :selected-rows-label="getSelectedString"
     selection="multiple"
-    :pagination="props.pagination"
-    @update:pagination="(value) => emit('update:pagination', value)"
     v-model:selected="selected"
     hide-pagination>
-                
+
         <template v-slot:header-cell="props">
             <q-th :props="props">
                 <div :key="item" v-for="item in props.col.label.split(' / ')">
@@ -62,9 +58,13 @@ const selectItem = (item: ClientFactoryTableRow) => {
                     <q-checkbox @click="!props.selected" v-model="props.selected" color="accent"/>
                 </q-td>
                 <q-td v-for="col in props.cols" :key="col.name" :props="props">
-                    <div v-if="col.name === 'name'">
+                    <div v-if="col.name === 'name'" class="column">
                         <span class="name" @click="selectItem(props.row)">
+                            <q-icon v-if="col.value.isHead" color="accent" name="home" class="icon"/>
                             {{ col.value.name }}
+                        </span>
+                        <span>
+                            {{ col.value.clientName }}
                         </span>
                     </div>
                     <span v-else>
@@ -85,10 +85,14 @@ const selectItem = (item: ClientFactoryTableRow) => {
     display: flex;
     flex-direction: column;
     .name {
-        text-decoration: underline;
         color: $main_purple;
         font-size: 1.2rem;
         cursor: pointer;
+    }
+
+    .icon {
+       font-size: 1.2rem; 
+       color: $main_purple;
     }
 }
 
