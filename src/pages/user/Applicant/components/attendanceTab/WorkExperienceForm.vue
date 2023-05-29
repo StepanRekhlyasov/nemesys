@@ -29,7 +29,7 @@
             {{ $t('applicant.attendant.startMonth') }}
           </div>
           <div class="col-4 q-pl-md blue self-center">
-            <q-input dense outlined bg-color="white" v-model="data['startMonth']"  :disable="loading">
+            <q-input dense outlined bg-color="white" v-model="data['startMonth']" :disable="loading">
               <template v-slot:prepend>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -102,7 +102,6 @@
             />
           </div>
         </div>
-
         <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
           <q-btn v-if="!editExperience?.id" :label="$t('common.addNew')" color="primary" class="no-shadow" type="submit" :loading="loading"/>
           <q-btn v-if="editExperience?.id" :label="$t('common.edit')" color="primary" class="no-shadow" :loading="loading" @click="save"/>
@@ -113,88 +112,74 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
+<script lang="ts" setup>
+import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
 import { useQuasar } from 'quasar';
 import { employmentStatus } from 'src/shared/constants/Applicant.const';
+import { ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref, SetupContext } from 'vue';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { useApplicant } from 'src/stores/applicant';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export default {
-  name: 'WorkExperienceForm',
-  props: {
-    editExperience: {
-      type: Object,
-      required: false
-    },
-    applicantId: {
-      type: Number,
-      required: false
-    }
-  },
-  setup(props, context: SetupContext) {
-    const data = ref(props.editExperience || {
-      hidden: false
-    });
-    const loading = ref(false);
-    const employmentStatusOption = ref(employmentStatus);
-    const { t } = useI18n({
-      useScope: 'global',
-    });
-    const $q = useQuasar();
-    const db = getFirestore();
-
-    return {
-      data,
-      loading,
-      employmentStatusOption,
-
-      async save() {
-        loading.value = true;
-        const saveData = data.value
-        try {
-            const boRef = doc(db, 'applicants/'+props.applicantId+'/experience/'+props.editExperience?.id);
-            await updateDoc(boRef, {
-              updated_at: serverTimestamp(),
-              ...saveData
-            })
-
-            context.emit('closeDialog');
-            Alert.success($q, t);
-            loading.value = false;
-        } catch (e) {
-          console.log(e)
-          Alert.warning($q, t);
-          loading.value = false;
-        }
-      },
-      async addExperience() {
-        loading.value = true;
-        let newData = JSON.parse(JSON.stringify(data.value));
-        try {
-            newData['created_at'] = serverTimestamp();
-            newData['updated_at'] = serverTimestamp();
-            newData['deleted'] = false;
-
-            const clientRef = collection(db, 'applicants/'+props.applicantId+'/experience/');
-            await addDoc(clientRef, newData);
-
-            context.emit('closeDialog');
-            Alert.success($q, t);
-            loading.value = false;
-        } catch (e) {
-          console.log(e)
-          Alert.warning($q, t);
-          loading.value = false;
-        }
-      }
-    }
+const props = defineProps<{
+  editExperience?: ApplicantExperience,
+  applicantId?: string
+}>()
+const emit = defineEmits(['closeDialog'])
+const data: Ref<Partial<ApplicantExperienceInputs>> = ref({});
+const applicantStore = useApplicant();
+if(props.editExperience){
+  data.value = {
+    id: props.editExperience.id,
+    experience: props.editExperience.experience,
+    facilityType: props.editExperience.facilityType,
+    nameEstablishment: props.editExperience.nameEstablishment,
+    employmentType: props.editExperience.employmentType,
+    reasonResignation: props.editExperience.reasonResignation,
+    pastInterviews: props.editExperience.pastInterviews,
+    startMonth: timestampToDateFormat(props.editExperience.startMonth),
+    endMonth: timestampToDateFormat(props.editExperience.endMonth),
   }
+}
 
+const loading = ref(false);
+const employmentStatusOption = ref(employmentStatus);
+const { t } = useI18n({
+  useScope: 'global',
+});
+const $q = useQuasar();
+const db = getFirestore();
+async function save() {
+  if(!props.applicantId) return;
+  loading.value = true;
+  try {
+      await applicantStore.saveWorkExperience(data.value, props.applicantId)
+  } catch (e) {
+    console.log(e)
+  }
+  loading.value = false;
+  emit('closeDialog');
+}
+async function addExperience() {
+  loading.value = true;
+  let newData = JSON.parse(JSON.stringify(data.value));
+  try {
+      newData['created_at'] = serverTimestamp();
+      newData['updated_at'] = serverTimestamp();
+      newData['deleted'] = false;
+
+      const clientRef = collection(db, 'applicants/'+props.applicantId+'/experience/');
+      await addDoc(clientRef, newData);
+
+      emit('closeDialog');
+      Alert.success($q, t);
+      loading.value = false;
+  } catch (e) {
+    console.log(e)
+    Alert.warning($q, t);
+    loading.value = false;
+  }
 }
 </script>
-
-<style>
-
-</style>

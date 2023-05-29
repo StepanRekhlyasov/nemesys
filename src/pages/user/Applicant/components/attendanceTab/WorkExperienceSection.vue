@@ -9,7 +9,7 @@
         <div class="text-blue text-weight-regular self-center text-subtitle1 ">
           [{{ $t('applicant.attendant.experienceDetails') }}]
         </div>
-        <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
+        <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="editExperience=undefined;openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
       </div>
 
       <div class="row q-pa-sm"></div>
@@ -52,14 +52,16 @@
 
         <template v-slot:body-cell-years="props">
           <q-td :props="props">
-            {{ differentDateYear(props.row.startMonth, props.row.endMonth)+' ' +$t('common.year') }}
+            <template v-if="(props.row.startMonth instanceof Timestamp) && (props.row.endMonth instanceof Timestamp)">
+              {{ differentDateYear(toDate(props.row.startMonth), toDate(props.row.endMonth))+' ' +$t('common.year') }}
+            </template>
           </q-td>
         </template>
 
         <template v-slot:body-cell-month="props">
           <q-td :props="props">
-            {{ props.row.startMonth  }}<br/>
-            {{ props.row.endMonth  }}<br/>
+            {{ timestampToDateFormat(props.row.startMonth)  }}<br/>
+            {{ timestampToDateFormat(props.row.endMonth) }}<br/>
           </q-td>
         </template>
 
@@ -106,16 +108,15 @@
 
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
-import { computed, Ref, ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { collection, doc, getFirestore, onSnapshot, query, updateDoc, where } from '@firebase/firestore';
+import { collection, getFirestore, onSnapshot, query, where, Timestamp } from '@firebase/firestore';
 import workExperienceForm from './WorkExperienceForm.vue';
-import { Alert } from 'src/shared/utils/Alert.utils';
-import { differentDateYear } from 'src/shared/utils/utils';
-import { Applicant, ApplicantExperience } from 'src/shared/model';
+import { differentDateYear, timestampToDateFormat, toDate } from 'src/shared/utils/utils';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useApplicant } from 'src/stores/applicant';
-
+import { workExpColumns as columns } from 'src/shared/constants/Applicant.const';
 
 const props = defineProps<{
   applicant: Applicant
@@ -134,51 +135,6 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 10
 });
-const columns = computed(() => {
-  return [
-    {
-      name: 'edit',
-      align: 'left',
-      headerStyle: 'width: 24px'
-    },
-    {
-      name: 'experience',
-      required: true,
-      align: 'left',
-      field: 'experience',
-      sortable: false,
-    },{
-      name: 'month',
-      required: true,
-      field: 'month',
-      align: 'left',
-    },{
-      name: 'years',
-      required: true,
-      label: t('applicant.attendant.years') ,
-      field: 'years',
-      align: 'left',
-    },{
-      name: 'establishment',
-      field: 'establishment',
-      align: 'left',
-    },{
-      name: 'reasonResignation',
-      label: t('applicant.attendant.reasonResignation') ,
-      field: 'reasonResignation',
-      align: 'left',
-    },{
-      name: 'pastInterviews',
-      label: t('applicant.attendant.pastInterviews') ,
-      field: 'pastInterviews',
-      align: 'left',
-    },
-    {
-      name: 'delete',
-      align: 'left',
-    }
-  ];
-});
 
 const { t } = useI18n({
   useScope: 'global',
@@ -195,7 +151,7 @@ function resetData() {
   }
 }
 
-function deleteExperience(experience) {
+function deleteExperience(experience : Partial<ApplicantExperienceInputs>) {
   $q.dialog({
     title: t('common.delete'),
     message: t('applicant.attendant.deletedInfo'),
@@ -208,15 +164,13 @@ function deleteExperience(experience) {
   }).onOk(async () => {
     try{
       loading.value = true;
-      const boRef = doc(db, 'applicants/'+props.applicant.id+'/experience/'+experience.id);
-      await updateDoc(boRef, {
-        deleted: true
-      })
+      await applicantStore.saveWorkExperience({
+        id : experience.id,
+        deleted: true, 
+      }, props.applicant.id)
       load();
-      Alert.success($q, t)
     } catch (e) {
       console.log(e)
-      Alert.warning($q, t)
       loading.value = false;
     }
   })
@@ -225,12 +179,9 @@ async function save() {
   loading.value = true
   try {
     await applicantStore.updateApplicant(data.value);
-    Alert.success($q, t);
     edit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }
