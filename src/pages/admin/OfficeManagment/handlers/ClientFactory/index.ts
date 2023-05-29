@@ -55,7 +55,6 @@ export const updateClientHandler = (
   });
 
   recursivelyRemoveField(updatedClient, 'created_at')
-  console.log(updatedClient)
   updateClient(clientFactory.clientID, updatedClient)
 }
 
