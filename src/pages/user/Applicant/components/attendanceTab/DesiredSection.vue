@@ -11,7 +11,7 @@
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? applicant.timeToWork : applicant.attendingDate }}</span>
+        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? timestampToDateFormat(applicant.timeToWork) : timestampToDateFormat(applicant.attendingDate) }}</span>
         <template v-if="desiredEdit">
           <q-checkbox v-model="data['timeAvailable']" 
           :label="data['timeAvailable']? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')"/>
@@ -227,14 +227,12 @@
 
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import { Applicant, DesiredConditions } from 'src/shared/model';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
+import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -246,49 +244,50 @@ const days = ref(daysList);
 const specialDays = ref(specialDaysList);
 const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
-const data: Ref<DesiredConditions> = ref({});
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
+const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
+const data: Ref<Partial<ApplicantInputs>> = ref({})
+const saveData: Ref<Partial<Applicant>> = ref({})
 
-function resetData(){
-  data.value = {
-    timeToWork: props.applicant['timeToWork'] || '',
-    daysToWork: props.applicant['daysToWork'] || undefined,
-    daysPerWeek: props.applicant['daysPerWeek'] || [],
-    timeAvailable: props.applicant['timeAvailable'] || '',
-    specialDay: props.applicant['specialDay'] || [],
-    shiftRemarks: props.applicant['shiftRemarks'] || '',
-    meansCommuting: props.applicant['meansCommuting'] || '',
-    nearestStation: props.applicant['nearestStation'] || '',
-    commutingTime: props.applicant['commutingTime'] || '',
-    commutingTimeRemarks: props.applicant['commutingTimeRemarks'] || '',
-    facilityDesired: props.applicant['facilityDesired'] || '',
-    ngFacilityType: props.applicant['ngFacilityType'] || '',
-    hourlyRate: props.applicant['hourlyRate'] || '',
-    transportationServices: props.applicant['transportationServices'] || undefined,
-    jobSearchPriorities1: props.applicant['jobSearchPriorities1'] || '',
-    jobSearchPriorities2: props.applicant['jobSearchPriorities2'] || '',
-    jobSearchPriorities3: props.applicant['jobSearchPriorities3'] || '',
+function resetData() {
+  defaultData.value = {
+    timeToWork: timestampToDateFormat(props.applicant['timeToWork']),
+    daysToWork: props.applicant['daysToWork'],
+    daysPerWeek: props.applicant['daysPerWeek'],
+    timeAvailable: props.applicant['timeAvailable'] || false,
+    specialDay: props.applicant['specialDay'],
+    shiftRemarks: props.applicant['shiftRemarks'],
+    meansCommuting: props.applicant['meansCommuting'],
+    nearestStation: props.applicant['nearestStation'],
+    commutingTime: props.applicant['commutingTime'],
+    commutingTimeRemarks: props.applicant['commutingTimeRemarks'],
+    facilityDesired: props.applicant['facilityDesired'],
+    ngFacilityType: props.applicant['ngFacilityType'],
+    hourlyRate: props.applicant['hourlyRate'],
+    transportationServices: props.applicant['transportationServices'],
+    jobSearchPriorities1: props.applicant['jobSearchPriorities1'],
+    jobSearchPriorities2: props.applicant['jobSearchPriorities2'],
+    jobSearchPriorities3: props.applicant['jobSearchPriorities3'],
     workingHoursEarly: props.applicant['workingHoursEarly'] || false,
     workingHoursDay: props.applicant['workingHoursDay'] || false,
     workingHoursLate: props.applicant['workingHoursLate'] || false,
     workingHoursNight: props.applicant['workingHoursNight'] || false,
   }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
-resetData();
+resetData()
 
 async function saveDesired(){
   loading.value = true
+  saveData.value = JSON.parse(JSON.stringify(data.value));
+  if(data.value.timeToWork){
+    saveData.value.timeToWork = dateToTimestampFormat(new Date(data.value.timeToWork));
+  }
   try {
-    await applicantStore.updateApplicant(data.value);
-    Alert.success($q, t);
+    await applicantStore.updateApplicant(saveData.value);
     desiredEdit.value = false;
   } catch (error) {
     console.log(error);
     loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }

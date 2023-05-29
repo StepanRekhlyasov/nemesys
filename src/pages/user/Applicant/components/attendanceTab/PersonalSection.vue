@@ -49,7 +49,7 @@
           {{ $t('applicant.attendant.cohabitation') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.cohabitation || ''}}</span>
+          <span v-if="!edit">{{ applicant.cohabitation}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['cohabitation']" :disable="loading" />
         </div>
@@ -57,7 +57,7 @@
           {{ $t('applicant.attendant.children') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.children || ''}}</span>
+          <span v-if="!edit">{{ applicant.children}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['children']" :disable="loading" />
         </div>
@@ -70,7 +70,7 @@
           {{ $t('applicant.attendant.medicalHistory') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.medicalHistory || ''}}</span>
+          <span v-if="!edit">{{ applicant.medicalHistory}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['medicalHistory']" :disable="loading" />
         </div>
@@ -78,7 +78,7 @@
           {{ $t('applicant.attendant.vaccinationStatus') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.vaccinationStatus || ''}}</span>
+          <span v-if="!edit">{{ applicant.vaccinationStatus}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['vaccinationStatus']" :disable="loading" />
         </div>
@@ -91,7 +91,7 @@
           {{ $t('applicant.attendant.startCaring') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.startCaring || ''}}</span>
+          <span v-if="!edit">{{ applicant.startCaring}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['startCaring']" :disable="loading" />
         </div>
@@ -123,7 +123,7 @@
           {{ $t('applicant.attendant.startedInCaregiving') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.startedInCaregiving || ''}}</span>
+          <span v-if="!edit">{{ applicant.startedInCaregiving}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['startedInCaregiving']" :disable="loading" />
         </div>
@@ -136,7 +136,7 @@
           {{ $t('applicant.attendant.daysVisitAtWork') }}
         </div>
         <div class="col-9 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.daysVisitAtWork || ''}}</span>
+          <span v-if="!edit">{{ applicant.daysVisitAtWork}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['daysVisitAtWork']" :disable="loading" />
         </div>
@@ -146,61 +146,55 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import { Applicant, PersonalStatus } from 'src/shared/model';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 
 const props = defineProps<{
   applicant: Applicant
 }>();
 const applicantStore = useApplicant();
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 const edit = ref(false);
 const loading = ref(false);
 const smokingStatusOptions = ref(smokingStatusList)
 const marriedOptions = ref(marriedStatusList)
 const tattoosOptions = ref(tattoosStatusList)
 
-const data:Ref<PersonalStatus> = ref({})
+const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
+const data: Ref<Partial<ApplicantInputs>> = ref({})
+const saveData: Ref<Partial<Applicant>> = ref({})
 
 function resetData() {
-  data.value = {
-    smoking: props?.applicant['smoking'] || undefined,
-    tattoos: props?.applicant['tattoos'] || undefined,
-    marriedStatus: props?.applicant['marriedStatus'] || undefined,
-    liveTogether: props?.applicant['marriedStatus'] || undefined,
-    cohabitation: props?.applicant['cohabitation'] || '',
-    children: props?.applicant['children'] || '',
-    medicalHistory: props?.applicant['medicalHistory'] || '',
-    vaccinationStatus: props?.applicant['vaccinationStatus'] || '',
-    startCaring: props?.applicant['startCaring'] || '',
-    interviewsWaitingList: props?.applicant['interviewsWaitingList'] || '',
-    temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'] || '',
-    startedInCaregiving: props?.applicant['startedInCaregiving'] || '',
-    daysVisitAtWork: props?.applicant['daysVisitAtWork'] || '',
+  defaultData.value = {
+    smoking: props?.applicant['smoking'],
+    tattoos: props?.applicant['tattoos'],
+    marriedStatus: props?.applicant['marriedStatus'],
+    liveTogether: props?.applicant['liveTogether'],
+    cohabitation: props?.applicant['cohabitation'],
+    children: props?.applicant['children'],
+    medicalHistory: props?.applicant['medicalHistory'],
+    vaccinationStatus: props?.applicant['vaccinationStatus'],
+    startCaring: props?.applicant['startCaring'],
+    interviewsWaitingList: props?.applicant['interviewsWaitingList'],
+    temporaryCompaniesRegistered: props?.applicant['temporaryCompaniesRegistered'],
+    startedInCaregiving: props?.applicant['startedInCaregiving'],
+    daysVisitAtWork: props?.applicant['daysVisitAtWork'],
   }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
-resetData();
-
+resetData()
 
 async function save() {
   loading.value = true
+  saveData.value = JSON.parse(JSON.stringify(data.value));
   try {
-    await applicantStore.updateApplicant(data.value);
-    Alert.success($q, t);
+    await applicantStore.updateApplicant(saveData.value);
     edit.value = false;
   } catch (error) {
     console.log(error);
     loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }

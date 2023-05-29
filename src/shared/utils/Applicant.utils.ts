@@ -1,4 +1,4 @@
-import { collection, Firestore,  getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, deleteField, Firestore,  getDocs, orderBy, query, where } from 'firebase/firestore';
 import { ConstraintsType } from './utils';
 
 export const getApplicantContactsList = (db: Firestore, applicant_id: string) => {
@@ -9,6 +9,26 @@ export const getApplicantContactsList = (db: Firestore, applicant_id: string) =>
   ))
 }
 
+export const getApplicantCurrentStatusTimestampField = (status : string) => {
+  switch (status){
+    case 'wait_contact':
+      return 'applicationDate';
+    case 'wait_attend':
+      return '';
+    case 'wait_FIX':
+      return '';
+    case 'wait_visit':
+      return '';
+    case 'wait_offer':
+      return '';
+    case 'wait_entry':
+      return '';
+    case 'wait_termination':
+      return '';
+    default:
+      return deleteField()
+  }
+}
 
 export const getClientList = (db: Firestore, options?: {
   active_organization_id?: string;
