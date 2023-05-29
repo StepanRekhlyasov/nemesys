@@ -174,21 +174,20 @@
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, Ref, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate, timestampToDateFormat, dateToTimestampFormat } from 'src/shared/utils/utils'
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   applicant: Applicant
 }>()
-const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
-const data: Ref<Partial<ApplicantInputs>> = ref({})
-const saveData: Ref<Partial<Applicant>> = ref({})
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 const edit = ref(false);
 const loading = ref(false);
 const applicantStore = useApplicant();
@@ -218,11 +217,8 @@ const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob'])
 
 async function save() {
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
-  if(data.value.applicationDate) saveData.value.applicationDate = dateToTimestampFormat(new Date(data.value.applicationDate));
-  if(data.value.dob) saveData.value.dob = dateToTimestampFormat(new Date(data.value.dob));
   try {
-    await applicantStore.updateApplicant(saveData.value);
+    await applicantStore.updateApplicant(data.value);
     edit.value = false;
   } catch (error) {
     loading.value = false;

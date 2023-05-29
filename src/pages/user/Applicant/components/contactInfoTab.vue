@@ -181,6 +181,7 @@ async function onSubmit() {
       icon: 'warning',
       message: t('failed'),
     });
+    loading.value = false;
     return
   }
   try {
