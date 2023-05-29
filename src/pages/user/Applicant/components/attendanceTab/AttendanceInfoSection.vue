@@ -62,15 +62,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
 import { attendantStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
-import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { Alert } from 'src/shared/utils/Alert.utils';
+import { ref } from 'vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -81,9 +78,8 @@ const infoEdit = ref(false);
 const loading = ref(false);
 const attendantStatusOption = ref(attendantStatus);
 const usersListOption = usersInCharge.value
-const data: Ref<Partial<ApplicantInputs>>  = ref({});
-const saveData: Ref<Partial<Applicant>> = ref({})
-const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
+const data = ref<Partial<ApplicantInputs>>({});
+const defaultData = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
   defaultData.value = {
@@ -98,24 +94,12 @@ resetData()
 
 async function saveInfo() {
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
-  if(data.value.attendingDate){
-    saveData.value.attendingDate = dateToTimestampFormat(new Date(data.value.attendingDate));
-  }
   try {
-    await applicantStore.updateApplicant(saveData.value);
-    Alert.success($q, t);
+    await applicantStore.updateApplicant(data.value);
     infoEdit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }
-
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 </script>

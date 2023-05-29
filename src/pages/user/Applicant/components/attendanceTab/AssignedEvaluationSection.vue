@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
@@ -70,9 +70,8 @@ const staffRank = computed(() => props.applicant['staffRank'] && RankCount.getRa
 const edit = ref(false);
 const expertiseLevelOptions = ref(expertiseLevelList)
 const loading = ref(false);
-const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
-const data: Ref<Partial<ApplicantInputs>> = ref({})
-const saveData: Ref<Partial<Applicant>> = ref({})
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
   defaultData.value = {
@@ -87,13 +86,11 @@ resetData()
 
 async function save() {
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
   try {
-    await applicantStore.updateApplicant(saveData.value);
+    await applicantStore.updateApplicant(data.value);
     edit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
   }
   loading.value = false
 }
