@@ -1,13 +1,18 @@
 <script lang="ts" setup>
 import {defineProps, defineEmits} from 'vue';
-import { TableRow } from '../types';
+import { ClientFactoryTableRow, Pagination } from '../types';
 
 const emit = defineEmits<{
-    (e: 'update:pagination', value: number)
+    (e: 'updatePage', value: number)
 }>()
+
+const updatePage = (value: number) => {
+    emit('updatePage', value);
+}
+
 const props = defineProps<{
-    rows: TableRow[],
-    pagination
+    rows: ClientFactoryTableRow[],
+    pagination: Pagination
 }>()
 
 </script>
@@ -16,7 +21,7 @@ const props = defineProps<{
     <div class="pagination">
         <q-pagination
         :model-value="props.pagination.page"
-        @update:model-value="(value) => emit('update:pagination', value)"
+        @update:model-value="updatePage"
         gutter="md"
         size="18px"
         color="white"

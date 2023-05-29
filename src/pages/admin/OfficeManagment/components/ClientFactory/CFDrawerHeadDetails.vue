@@ -5,7 +5,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableTwoColumnLayout, {Data} from 'src/components/EditableTwoColumnLayout.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import { useHeadDetails, updateClientFactoryHangler } from '../../handlers/ClientFactory';
+import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../../handlers/ClientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from '../../types'
 
@@ -78,7 +78,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.clientInfo = true"
         @closeEdit="isOpedEditDropDown.clientInfo = false"
-        @onSave="isOpedEditDropDown.clientInfo = false; updateClientFactoryHangler(dataForUpdating.clientInfo, headClientFactory)">
+        @onSave="isOpedEditDropDown.clientInfo = false; updateClientHandler(dataForUpdating.clientInfo, headClientFactory)">
             <TwoColumnLayout :data="headDetails.clientInfo" theme="accent"
                 v-if="!isOpedEditDropDown.clientInfo"/>
 

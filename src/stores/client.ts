@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
@@ -30,6 +30,19 @@ export const useClient = defineStore('client', () => {
         }
     }
 
+    const updateClient = async( id: string, client: Omit<Client, 'created_at'>) => {
+        try {
+
+            await setDoc(doc(db, 'clients', id), {
+                ...client,
+                updated_at: serverTimestamp()
+            }, {merge: true});
+
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
     // Fetch clients and subscribe to changes
     const fetchClients = async () => {
         const clientsCollection = collection(db, 'clients');
@@ -51,6 +64,7 @@ export const useClient = defineStore('client', () => {
 
     return {
         clients,
-        addNewClient
+        addNewClient,
+        updateClient
     }
 })

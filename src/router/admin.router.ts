@@ -38,7 +38,7 @@ const admin_router: MenuRouter[] = [
   {
     title: 'menu.client-factory',
     path: 'client-factory',
-    component: () => import('src/pages/admin/OfficeManagment/ClientFactory.vue'),
+    component: () => import('src/pages/admin/OfficeManagment/ClientFactories.vue'),
     meta: {
       requiresAuth: true,
       isAdmin: true

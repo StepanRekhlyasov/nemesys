@@ -2,10 +2,12 @@ import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 import { ClientFactoryTableRow, RenderOfficeDetails, RenderHeadDetails } from '../../types';
 import { useClientFactory } from 'src/stores/clientFactory';
+import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { recursivelyRemoveField } from 'src/shared/utils';
 
 const {updateClientFactory} = useClientFactory()
+const {updateClient} = useClient()
 const { t } = i18n.global
 
 export const updateClientFactoryHangler = (
@@ -32,6 +34,30 @@ export const updateClientFactoryHangler = (
     updateClientFactory(updatedClientFactory);
 };
 
+export const updateClientHandler = (
+  changedData: Array<{ label: string; value: string | number | string[]; editType: string; key: string }>,
+  clientFactory: ClientFactory
+) => {
+  const updatedClient = JSON.parse(JSON.stringify(clientFactory.client))
+
+  changedData.forEach(({key, value}) => {
+        const keys = key.split('.'); 
+        let nestedObj = updatedClient;
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            if (i === keys.length - 1) {
+                nestedObj[key] = value;
+            } else {
+                nestedObj[key] = nestedObj[key] || {}; 
+                nestedObj = nestedObj[key];
+            }
+        }
+  });
+
+  recursivelyRemoveField(updatedClient, 'created_at')
+  updateClient(clientFactory.clientID, updatedClient)
+}
+
 export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
     return factories.map((factory) => {
         const row = {} as ClientFactoryTableRow
@@ -39,7 +65,7 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
         row.id = factory.id
         row.distance = `${factory.distance}m`  
         row.fax = factory.fax
-        row.office= {name: factory.name}
+        row.office= {name: factory.name, isHead: factory.isHead, clientName: factory.client?.representativeName}
         row.address = factory.address
         row.telephone = factory.tel
         row.basicInfo = factory.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）'
@@ -112,7 +138,10 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
 
   headDetails.headOfficeInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.officeLocation'), value: clientFactory.address ?? '', editType: 'text', key: 'address'},
+      {label: t('clientFactory.drawer.details.prefecture'), value: clientFactory?.officeDetails?.registeredInfo.prefecture ?? '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture'},
+      {label: t('applicant.add.street'), value: clientFactory?.officeDetails?.registeredInfo.street ?? '', editType: 'text', key: 'officeDetails.registeredInfo.city' },
+      {label: t('client.add.municipalities'), value: clientFactory?.officeDetails?.registeredInfo.municipality ?? '', editType: 'municipality', key: 'officeDetails.registeredInfo.municipality'},
+      {label: t('client.add.addressBuildingName'), value: clientFactory?.officeDetails?.registeredInfo.building ?? '', editType: 'text', key: 'officeDetails.registeredInfo.building'},
       {label: t('clientFactory.drawer.details.officeTel'), value: clientFactory.tel ?? '', editType: 'text', key: 'tel'},
       {label: t('clientFactory.drawer.details.officeFax'), value: clientFactory.fax ?? '', editType: 'text', key: 'fax'},
       {label: t('clientFactory.drawer.details.inChargeTitle'), value: clientFactory.nameContact ?? '', editType: 'text', key: 'nameContact'},
@@ -123,13 +152,13 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
 
   headDetails.clientInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.representative'), value: clientFactory.client?.representativeName ?? '', editType: 'text', key: 'client.representativeName'},
-      {label: t('clientFactory.drawer.details.established'), value: clientFactory.client?.established ?? '', editType: 'text', key: 'client.established'},
-      {label: t('clientFactory.drawer.details.capital'), value: clientFactory.client?.capital ?? '', editType: 'text', key: 'client.capital'},
-      {label: t('clientFactory.drawer.details.earnings'), value: clientFactory.client?.earnings ?? '', editType: 'text', key: 'client.earnings'},
-      {label: t('clientFactory.drawer.details.numberOffices'), value: clientFactory.client?.numberOffices ?? 0, editType: 'number', key: 'client.numberOffices'},
-      {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? 0, editType: 'number', key: 'client.numberEmployees'},
-      {label: t('clientFactory.drawer.details.companyProfile'), value: clientFactory.client?.companyProfile ?? '', editType: 'text', key: 'client.companyProfile'}
+      {label: t('clientFactory.drawer.details.representative'), value: clientFactory.client?.representativeName ?? '', editType: 'text', key: 'representativeName'},
+      {label: t('clientFactory.drawer.details.established'), value: clientFactory.client?.established ?? '', editType: 'text', key: 'established'},
+      {label: t('clientFactory.drawer.details.capital'), value: clientFactory.client?.capital ?? '', editType: 'text', key: 'capital'},
+      {label: t('clientFactory.drawer.details.earnings'), value: clientFactory.client?.earnings ?? '', editType: 'text', key: 'earnings'},
+      {label: t('clientFactory.drawer.details.numberOffices'), value: clientFactory.client?.numberOffices ?? 0, editType: 'number', key: 'numberOffices'},
+      {label: t('clientFactory.drawer.details.numberEmployees'), value: clientFactory.client?.numberEmployees ?? 0, editType: 'number', key: 'numberEmployees'},
+      {label: t('clientFactory.drawer.details.companyProfile'), value: clientFactory.client?.companyProfile ?? '', editType: 'text', key: 'companyProfile'}
     ]
   }).value
 

@@ -83,7 +83,8 @@ const validateAndSubmit = async () => {
                     fax: clientFactoryInfo.value.fax,
                     latitude: addressSection.value.lat,
                     longitude: addressSection.value.lon,
-                    townAndStreet: addressSection.value.street,
+                    street: addressSection.value.street,
+                    building: addressSection.value.building,
                     others: '',
                     city: '',
                     parentClient: parentClient.value
