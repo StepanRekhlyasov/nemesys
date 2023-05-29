@@ -109,6 +109,7 @@ const openNewClientFactoryDrawer = () => {
                 @select-item="clientFactoryDrawerHandler"
                 :isFetching="fetchData"
                 :rows="paginatedTableRows"
+                :pagination="pagination"
                 />
                 <Pagination
                 :rows="tableRows"

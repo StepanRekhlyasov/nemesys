@@ -2,11 +2,12 @@
 import { computed, ref, defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 import consts from '../../consts';
-import { ClientFactoryTableColumn, ClientFactoryTableRow } from '../../types';
+import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from '../../types';
 
 const props = defineProps<{
     rows: ClientFactoryTableRow[],
     isFetching: boolean,
+    pagination: Pagination
 }>()
 const emit = defineEmits<{
     (e: 'selectItem', item: ClientFactoryTableRow)
@@ -34,6 +35,7 @@ const selectItem = (item: ClientFactoryTableRow) => {
     <q-table
     :rows="props.rows"
     :columns="columns"
+    :rows-per-page-options="[pagination.rowsPerPage]"
     row-key="id"
     color="accent"
     dense

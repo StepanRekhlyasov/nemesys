@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {defineProps, defineEmits} from 'vue';
+import {defineProps, defineEmits } from 'vue';
 import { ClientFactoryTableRow, Pagination } from '../types';
 
 const emit = defineEmits<{
@@ -10,7 +10,7 @@ const updatePage = (value: number) => {
     emit('updatePage', value);
 }
 
-const props = defineProps<{
+defineProps<{
     rows: ClientFactoryTableRow[],
     pagination: Pagination
 }>()
@@ -20,7 +20,7 @@ const props = defineProps<{
 <template>
     <div class="pagination">
         <q-pagination
-        :model-value="props.pagination.page"
+        :model-value="pagination.page"
         @update:model-value="updatePage"
         gutter="md"
         size="18px"
@@ -28,7 +28,7 @@ const props = defineProps<{
         text-color="black"
         active-text-color="white"
         active-color="accent"
-        :max="(props.rows.length / pagination.rowsPerPage) >= 1 ? props.rows.length / pagination.rowsPerPage : 1"
+        :max="Math.ceil(rows.length / pagination.rowsPerPage) || 1"
         direction-links
         outline />
     </div>
