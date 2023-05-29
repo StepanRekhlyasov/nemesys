@@ -10,7 +10,7 @@
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['branchIncharge']"
+            v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
             :optionToFetch="'branchIncharge'"
           />
         </div>
@@ -18,7 +18,7 @@
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
+            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
             :optionToFetch="'usersInCharge'"
           />
         </div>
@@ -26,14 +26,14 @@
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.prefecture") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['prefecture']"
+            v-model="applicantStore.state.applicantProgressFilter['prefecture']"
             :options="prefectureList"
           />
         </div>
         <div class="col-2">
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.month") }}</p>
           <YearMonthPicker 
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
+            v-model="applicantStore.state.applicantProgressFilter['currentStatusMonth']" 
             height="40px" 
             width="100%" 
             :disable="loading"
@@ -117,7 +117,7 @@ const applicantsByColumn = computed(() => applicantStore.state.applicantsByColum
 /** fetchers */
 const fetchResultsHandler = async (status : string, fetchMore = false) => {
   columnsLoading.value[status] = true
-  await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantFilter, perQuery.value, fetchMore)
+  await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
   columnsLoading.value[status] = false
 }
 const fetchResults = async () => {
@@ -125,13 +125,13 @@ const fetchResults = async () => {
     fetchResultsHandler(status, false)
   })
   COUNT_STATUSES.map(async (status)=>{
-    countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantFilter)
+    countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
   })
 }
 onMounted( async ()=>{
   await fetchResults()
 })
-watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
+watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
 })
 </script>

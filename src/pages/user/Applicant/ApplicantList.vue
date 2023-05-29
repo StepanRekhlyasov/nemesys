@@ -8,13 +8,12 @@
       <q-separator color="white" size="2px" />
 
       <q-card-section class="q-pa-xs">
-        <searchForm @load-search-staff="loadSearchStaff" @is-loading="isLoading" />
+        <searchForm @load-search-staff="loadSearchStaff" />
       </q-card-section>
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
-        <q-table :columns="columns" :rows="applicantData" row-key="id" selection="multiple" class="no-shadow"
-          v-model:selected="selected" v-model:pagination="paginationTable" hide-pagination :loading="isLoadingProgress">
+        <q-table :columns="columns" :rows="applicantData" row-key="id" selection="multiple" class="no-shadow" v-model:pagination="paginationTable" hide-pagination :loading="isLoadingProgress">
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.name') }} </div>
@@ -60,54 +59,42 @@
   <ApplicantDetails ref="detailsDrawer" />
 </template>
  
-<script>
-export default {
-  name: 'ListApplicant'
-}
-</script>
-
-<script setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { ref, computed, watch } from 'vue';
-import {
-  getFirestore,
-  // doc,
-  // updateDoc,
-  query,
-  onSnapshot,
-  collection,
-  where
-} from 'firebase/firestore';
-// import { statusList } from 'src/shared/constants/Applicant.const';
-// import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
-// import { RankCount } from 'src/shared/utils/RankCount.utils';
+import { ref, computed, watch, ComputedRef } from 'vue';
+import { where } from 'firebase/firestore';
 import searchForm from './components/search/searchForm.vue';
 import { api } from 'src/boot/axios';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { statusList, occupationList, applicantClassification} from 'src/shared/constants/Applicant.const';
-const { t } = useI18n({ useScope: 'global' });
-const db = getFirestore();
+import { QTableProps } from 'quasar';
+import { ApplicantElasticFilter, ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/applicant.types';
+import { Applicant, ApplicantOccupation } from 'src/shared/model';
+import { useApplicant } from 'src/stores/applicant';
 
-// const filters = ref(null);
-const applicantData = ref([]);
-// const selected = ref([])
-// const drawerRight = ref(false);
-// const selectedApplicant = ref(null)
-// const applicantImage = ref([]);
-// const fileUploadRef = ref({});
-// const statusOption = ref(statusList);
-//const age = computed(() => selectedApplicant.value['dob'] ? RankCount.ageCount(selectedApplicant.value['dob']) : '0')
+const { t } = useI18n({ useScope: 'global' });
+
+const applicantStore = useApplicant()
+const applicantData = ref<Applicant[]>([]);
 const isLoadingProgress = ref(true)
-const detailsDrawer = ref(null)
-//const selectedRows = ref([]);
-const metaData = ref({})
+const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
+const metaData = ref<{
+  current: number,
+  size: number,
+  total_pages: number,
+  total_results: number
+}>({
+  current: 0,
+  size: 0,
+  total_pages: 0,
+  total_results: 0
+})
 
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
   rowsPerPage: 10
-  // rowsNumber: xx if getting data from a server
 });
 
 const paginationTable = ref({
@@ -115,59 +102,57 @@ const paginationTable = ref({
   descending: false,
   rowsPerPage: 10
 });
-const columns = computed(() => {
+const columns : ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
-      required: true,
       label: '',
-      align: 'left',
       field: 'name',
+      required: true,
+      align: 'left',
       sortable: false,
     },
     {
       name: 'rank',
-      required: true,
       label: t('applicant.list.rank'),
       field: 'rank',
+      required: true,
       align: 'left',
     },
     {
       name: 'status',
-      required: true,
       label: t('applicant.list.status'),
       field: 'status',
+      required: true,
       align: 'left',
     },
     {
       name: 'qualification',
-      required: true,
       label: t('applicant.list.qualification'),
       field: 'qualification',
+      required: true,
       align: 'left',
     },
-
   ];
 });
 
 
-const currentIds = ref([]);
+const currentIds = ref<number[]>([]);
 
-const getDate = (ageInYears) => {
-  //var calDate = new Date(new Date().getTime() - (ageInYears * 365 * 24 * 60 * 60 * 1000));
-  var calDate = new Date();
+const getDate = (ageInYears : number) => {
+  const calDate = new Date();
   calDate.setFullYear(calDate.getFullYear() - ageInYears);
-  var year = calDate.toLocaleString('en-US', { year: 'numeric' });
-  var month = calDate.toLocaleString('en-US', { month: '2-digit' });
-  var day = calDate.toLocaleString('en-US', { day: '2-digit' });
+  const year = calDate.toLocaleString('en-US', { year: 'numeric' });
+  const month = calDate.toLocaleString('en-US', { month: '2-digit' });
+  const day = calDate.toLocaleString('en-US', { day: '2-digit' });
  
   return year + '-' + month + '-' + day + 'T00:00:00+00:00';
 }
  
-const formatDate = (dt, midNight = false) => {
-  var year = dt.toLocaleString('en-US', { year: 'numeric' });
-  var month = dt.toLocaleString('en-US', { month: '2-digit' });
-  var day = dt.toLocaleString('en-US', { day: '2-digit' });
+const formatDate = (dt : Date, midNight = false) => {
+  const year = dt.toLocaleString('en-US', { year: 'numeric' });
+  const month = dt.toLocaleString('en-US', { month: '2-digit' });
+  const day = dt.toLocaleString('en-US', { day: '2-digit' });
   if (midNight) {
     return year + '-' + month + '-' + day + 'T00:00:00+00:00';
  
@@ -175,16 +160,13 @@ const formatDate = (dt, midNight = false) => {
   return year + '-' + month + '-' + day + 'T23:59:59+00:00';
 }
 
-const loadApplicantData = async (searchData = {}) => {
+const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}) => {
   isLoadingProgress.value = true
   applicantData.value = []
 
-  let filters = { 'all': [{ 'deleted': 'false' }] };
- 
-  let queryString = ''
-  if (searchData['keyword']) {
-    queryString = searchData['keyword']
-  }
+  const filters : ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
+  const queryString = searchData['keyword'] ? searchData['keyword'] : ''
+
   if (searchData['status']) {
     filters['all'].push({
       'status': searchData['status']
@@ -205,19 +187,18 @@ const loadApplicantData = async (searchData = {}) => {
       'applicationdate': { 'to': formatDate(new Date(searchData.applicationDateMax)) }
     });
   }
- 
   if (searchData.ageMin) {
     filters['all'].push({
-      'dob': { 'to': getDate(searchData.ageMin) }
+      'dob': { 'to': getDate(parseInt(searchData.ageMin)) }
     });
   }
   if (searchData.ageMax) {
     filters['all'].push({
-      'dob': { 'from': getDate(searchData.ageMax) }
+      'dob': { 'from': getDate(parseInt(searchData.ageMax)) }
     });
   }
  
-  let items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
+  const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
   for (var i = 0; i < items.length; i++) {
     if (searchData[items[i]] && searchData[items[i]].length > 0) {
       let obj = {}
@@ -257,32 +238,28 @@ const loadApplicantData = async (searchData = {}) => {
   }
  
   if (!queryString && filters.all.length == 1) {
-    var d = new Date();
-    var m = d.getMonth();
+    const d = new Date();
+    const m = d.getMonth();
     d.setMonth(d.getMonth() - 1);
-    // If still in same month, set date to last day of 
-    // previous month
+    /** If still in same month, set date to last day of previous month */
     if (d.getMonth() == m) d.setDate(0);
- 
     filters['all'].push({
       'created_at': { 'from': formatDate(d, true), 'to': formatDate(new Date()) }
     });
   }
-
   await api.post(
-    process.env.elasticSearchStaffURL,
+    (process.env.elasticSearchStaffURL as string),
     {
       'query': queryString,
       'page': { 'size': pagination.value.rowsPerPage, 'current': pagination.value.page },
-      // "sort": sort,
       'filters': filters,
     },
     {
       headers: { 'Authorization': process.env.elasticSearchKey, 'Content-Type': 'application/json' },
     }
-  ).then((response) => {
+  ).then(async (response) => {
     if (response.status == 200) {
-      let responseData = response.data.results;
+      const responseData = ref(response.data.results).value;
       metaData.value = response.data.meta.page;
       for (var i = 0; i < responseData.length; i++) {
         currentIds.value.push(responseData[i]['id']['raw'])
@@ -295,50 +272,24 @@ const loadApplicantData = async (searchData = {}) => {
 
 };
 loadApplicantData();
-const unsubscribeList = ref([]);
+
 const loadFirestoreApplicantData = async () => {
+  isLoadingProgress.value = true
   applicantData.value = [];
-  for (var i = 0; i < unsubscribeList.value; i++) {
-    unsubscribeList.value[i]();
-  }
-  unsubscribeList.value = [];
   while (currentIds.value.length) {
     const batch = currentIds.value.splice(0, 10);
-    const q = query(collection(db, 'applicants'), where('deleted', '==', false), where('id', 'in', batch));
-    let unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const data = { id: doc.id, ...doc.data() };
-        let editedIndex = applicantData.value.findIndex((p) => p.id == data['id']);
-        if (editedIndex > -1) {
-          applicantData.value.splice(editedIndex, 1, data);
-        } else {
-          applicantData.value.push(data);
-        }
-      });
-    });
-    unsubscribeList.value.push(unsubscribe)
+    applicantData.value = await applicantStore.getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch)])
   }
   isLoadingProgress.value = false
-
 }
 
-// const updateApplicant = async (applicant) => {
-//   const applicantRef = doc(db, 'applicants/' + selectedApplicant.value.id);
-//   await updateDoc(applicantRef, applicant)
-//   selectedApplicant.value = {
-//     ...selectedApplicant.value,
-//     ...applicant,
-//     staffRank: RankCount.countRank(selectedApplicant.value)
-//   }
-// };
-
-const getStatus = (status) => {
-  let item = statusList.value.find(x => x.value === status);
+const getStatus = (status : string) => {
+  const item = statusList.value.find(x => x.value === status);
   if (item) {
     return item.label;
   }
 };
-const getOccupation = (occupation) => {
+const getOccupation = (occupation : ApplicantOccupation) => {
   if (!occupation) {
     return ''
   }
@@ -347,31 +298,34 @@ const getOccupation = (occupation) => {
     return occupationList.value[occupationIndex].label
   }
 };
-const getClassification = (classification) => {
+const getClassification = (classification : string) => {
   if (!classification) {
     return ''
   }
-  let classificationndex = applicantClassification.value.findIndex((p) => p.value == classification);
+  const classificationndex = applicantClassification.value.findIndex((p) => p.value == classification);
   if (classificationndex > -1) {
     return applicantClassification.value[classificationndex].label
   }
 };
 
-const openDrawer = (data) => {
+const openDrawer = (data : Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
  
-const loadSearchStaff = (data) => {
-  loadApplicantData(data)
+const preventWatch = ref(false)
+const loadSearchStaff = async (data : ApplicantElasticSearchData) => {
+  preventWatch.value = true
+  pagination.value.page = 1
+  await loadApplicantData(data)
+  preventWatch.value = false
 };
 
 watch(
   () => (pagination.value.page),
   () => {
-    loadApplicantData();
+    if(!preventWatch.value) {
+      loadApplicantData();
+    }
   },
 )
-
 </script>
-
-<style lang="scss"></style>
