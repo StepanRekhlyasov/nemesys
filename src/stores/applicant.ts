@@ -312,7 +312,7 @@ export const useApplicant = defineStore('applicant', () => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
     if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth)) 
     if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth)) 
-    
+
     try {
         const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
         await updateDoc(boRef, {
@@ -340,8 +340,8 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
 
     if (!state.value.selectedApplicant) return;
-    if (!newValue[0] || !oldValue[0]) return;
     if (newValue[0] != oldValue[0]) return;
+    if (!newValue[0] || !oldValue[0]) return;
     if (newValue[1] == oldValue[1]) return;
     if (!newValue[1]) return;
 
