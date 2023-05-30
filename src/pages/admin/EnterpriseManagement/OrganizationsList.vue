@@ -219,8 +219,6 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
 </script>
 
 <style lang="scss" scoped>
-.no-breaks {
-  white-space: pre-line;
-  text-align: left;
-}
+@import 'src/css/no-breaks.scss';
+
 </style>

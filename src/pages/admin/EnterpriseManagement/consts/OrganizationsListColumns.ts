@@ -1,5 +1,6 @@
 import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
+import { sortOrganization } from 'src/shared/utils/utils';
 import { computed, ref } from 'vue';
 const { t } = i18n.global
 
@@ -24,11 +25,7 @@ export const columns = computed<QTableProps['columns']>(() => [
     field: 'organizationCodeAndName',
     align: 'left',
     sortable: sortable.value,
-    sort: (a: string, b: string) => {
-      const firstOrganizationName = a.split(' ')[1]
-      const secondOrganizationName = b.split(' ')[1]
-      return firstOrganizationName.localeCompare(secondOrganizationName)
-    }
+    sort: sortOrganization
   },
   {
     name: 'operatorName',

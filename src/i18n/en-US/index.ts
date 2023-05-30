@@ -205,7 +205,10 @@ export default {
         numberOfSlots: 'Number of slots:',
         execution: 'execution',
         cancel:'cancel',
-        licenseFee: 'License fee:'
+        licenseFee: 'License fee:',
+        licenseHistory: 'License history',
+        executionTime: 'Execution time',
+        executor: 'Executor'
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
