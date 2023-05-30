@@ -55,7 +55,7 @@
         >
           <template v-if="props.row.status">
             <span class="row">{{ props.row.date }}</span>
-            <span class="row text-uppercase">{{ props.row.status }}</span>
+            <span class="row text-uppercase">{{ props.row.status? 'OK' : 'NG' }}</span>
           </template>
           <span v-if="!props.row.status">-</span>
         </q-td>
@@ -68,7 +68,7 @@
         >
           <template v-if="props.row.inspectionStatus">
             <span class="row">{{ props.row.inspectionDate }}</span>
-            <span class="row text-uppercase">{{ props.row.inspectionStatus }}</span>
+            <span class="row text-uppercase">{{ props.row.inspectionStatus? 'OK' : 'NG'  }}</span>
           </template>
           <span v-if="!props.row.inspectionStatus">-</span>
         </q-td>
@@ -81,7 +81,7 @@
         >
           <template v-if="props.row.offerStatus">
             <span class="row">{{ props.row.offerDate }}</span>
-            <span class="row text-uppercase">{{ props.row.offerStatus }}</span>
+            <span class="row text-uppercase">{{ props.row.offerStatus? 'OK' : 'NG'  }}</span>
           </template>
           <span v-if="!props.row.offerStatus">-</span>
         </q-td>
@@ -94,7 +94,7 @@
         >
           <template v-if="props.row.admissionStatus">
             <span class="row">{{ props.row.admissionDate }}</span>
-            <span class="row text-uppercase">{{ props.row.admissionStatus }}</span>
+            <span class="row text-uppercase">{{ props.row.admissionStatus? 'OK' : 'NG'  }}</span>
           </template>
           <span v-if="!props.row.admissionStatus">-</span>
         </q-td>
@@ -133,6 +133,7 @@
     :fixData="fixData"
     @close="drawerRight=false"
     :applicant="applicant"
+    :disableLevel="disableLevel"
     @updateList="loadContactData"
     @updateStatus="updateStatus"
     @updateDoc="updateData"/>
@@ -165,6 +166,7 @@ const $q = useQuasar();
 const contactListData: Ref<ApplicantFix[]> = ref([]);
 const users:Ref<User[]> = ref([]);
 const drawerRight = ref(false);
+const disableLevel = ref(0);
 const fixData = ref({} as ApplicantFix)
 const pagination = ref({
   sortBy: 'desc',
@@ -261,14 +263,32 @@ async function updateData(data){
     admissionDate: data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate'],
     inspectionDate: data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
   };
+  disableChange();
 }
+
+function disableChange() {
+  let level = 0;
+  console.log(fixData.value['status'],fixData.value['inspectionStatus'],fixData.value['offerStatus'])
+  if (fixData.value['status'] == true) {
+    level = 1
+  }
+  if (fixData.value['inspectionStatus'] == true) {
+    level = 2
+  }
+  if (fixData.value['offerStatus'] == true) {
+    level = 3
+  }
+  disableLevel.value = level
+}
+
 function showEditDialog(data) {
   fixData.value = data;
   drawerRight.value = true;
+  disableChange();
 }
 function rowColor(row) {
-  if ((row.status == 'ok' && row.inspectionStatus == 'ok' && row.offerStatus == 'ok' && row.admissionStatus == 'ok')
-    || row.status == 'ng'|| row.inspectionStatus == 'ng'|| row.offerStatus == 'ng'|| row.admissionStatus == 'ng' ) {
+  if ((row.status == true && row.inspectionStatus == true && row.offerStatus == true && row.admissionStatus == true)
+    || row.status == false || row.inspectionStatus == false|| row.offerStatus == false|| row.admissionStatus == false ) {
     return ''
   }
   return 'bg-light-blue-1'
@@ -301,19 +321,19 @@ async function  updateStatus(newDoc?: boolean){
   if (newDoc) {
     status = ApplicantStatus.WAIT_CONTACT;
   }
-  if(props.applicant.attractionsStatus == 'ok') {
+  if(props.applicant.attractionsStatus == true) {
     status = ApplicantStatus.WAIT_FIX;
   }
-  if (lastFix['status'] == 'ok') {
+  if (lastFix['status'] == true) {
     status = ApplicantStatus.WAIT_VISIT
   }
-  if (lastFix['inspectionStatus'] == 'ok') {
+  if (lastFix['inspectionStatus'] == true) {
     status = ApplicantStatus.WAIT_OFFER
   }
-  if (lastFix['offerStatus'] == 'ok') {
+  if (lastFix['offerStatus'] == true) {
     status = ApplicantStatus.WAIT_ENTRY
   }
-  if (lastFix['admissionStatus'] == 'ok') {
+  if (lastFix['admissionStatus'] == true) {
     status = ApplicantStatus.WORKING
   }
   await applicantStore.updateApplicant({status: status})

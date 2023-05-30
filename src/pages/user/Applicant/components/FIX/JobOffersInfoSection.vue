@@ -9,9 +9,11 @@
 
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" 
-          :value="fixData.offerStatus" valueClass="text-uppercase col-3  q-pl-md">
-          <q-radio v-model="data['offerStatus']" val="ok" label="OK" @click="data['offerDate'] = '';emit('disableChange')" :disable="disableLevel < 2"/>
-          <q-radio v-model="data['offerStatus']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" :disable="disableLevel < 2"/>
+          :value="fixData.offerStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3  q-pl-md">
+          <q-checkbox v-model="data['offerStatus']" label="OK" @click="data['offerDate'] = '';emit('disableChange')"
+            checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
+          <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
+            unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
         </labelField>
 
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.date')" :value="fixData.offerDate" >

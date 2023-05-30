@@ -10,10 +10,12 @@
         {{ $t('applicant.list.info.attractionsStatus') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant?.attractionsStatus || ''}}</span>
+        <span v-if="!edit">{{ applicant?.attractionsStatus? 'OK' : 'NG'}}</span>
         <template v-if="edit">
-          <q-radio v-model="data['attractionsStatus']" label="OK " val="ok"/>
-          <q-radio v-model="data['attractionsStatus']" label="NG" val="ng"/>
+          <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+            unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
+          <q-checkbox v-model="data['attractionsStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate" 
+            checked-icon="mdi-checkbox-blank-outline" color="primary"/>
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
