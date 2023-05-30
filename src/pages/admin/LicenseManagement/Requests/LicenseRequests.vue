@@ -9,7 +9,8 @@
     {{ t('menu.admin.licenseManagement.licenseRequest') }}
   </PageHeader>
   <q-card flat class="q-pt-sm q-px-lg">
-    <SearchField :on-click-search="async () => { await searchLicense() }" :on-click-clear="async () => {
+    <SearchField :on-click-search="searchLicense" :on-click-clear="async () => {
+        search = ''
         await paginationRef?.refreshPage()
       }" v-model:model-value="search" />
   </q-card>
@@ -54,22 +55,18 @@ import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import PageHeader from 'src/components/PageHeader.vue';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import SearchField from 'src/components/SearchField.vue';
-import { Branch, Business, Organization } from 'src/shared/model';
 import { toDate } from 'src/shared/utils/utils';
-import { useOrganization } from 'src/stores/organization';
-import { useUserStore } from 'src/stores/user';
 import { useLicense } from 'src/stores/license';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { columns } from '../consts/LicenseRequestColumns'
 import { LicenseRequest } from '../types/LicenseRequest';
 import ManageLicenseDialog from './ManageLicenseDialog.vue';
+import { getOrganizationChildren, geUsersForLicense } from '../handlers/LicenseHandlers';
 
 const { t } = useI18n({ useScope: 'global' });
 const rows = ref<Awaited<ReturnType<typeof getRows>>>([])
 const loading = ref(true)
-const organizationStore = useOrganization()
-const userStore = useUserStore()
 const licenceStore = useLicense()
 const search = ref('')
 
@@ -98,60 +95,36 @@ async function getRows(requests: LicenseRequest[]) {
     return []
   }
   loading.value = true
-  const ids = requests.reduce((prev, curr) => {
-    if (!prev.branchesIds.includes(curr.branchId)) {
-      prev.branchesIds.push(curr.branchId)
-    }
-    if (!prev.organizationsIds.includes(curr.organizationId)) {
-      prev.organizationsIds.push(curr.organizationId)
-    }
 
-    if (!prev.buissnesesIds.includes(curr.businessId)) {
-      prev.buissnesesIds.push(curr.businessId)
-    }
-    return prev
-  }, { branchesIds: [] as string[], organizationsIds: [] as string[], buissnesesIds: [] as string[] })
+  const query = await Promise.all([getOrganizationChildren(requests), geUsersForLicense(requests)])
+  const { organizationObj, buissnesesObj, branchesObj } = query[0]
+  const users = query[1]
 
-  const data = await Promise.all([
-    organizationStore.getDataById(ids.branchesIds, 'Branch'),
-    organizationStore.getDataById(ids.organizationsIds, 'Organization'),
-    organizationStore.getDataById(ids.buissnesesIds, 'Buissnes')
-  ])
-  const branches = data[0]
-  const organizations = data[1]
-  const buissneses = data[2]
-
-  const rows = await Promise.all(requests.map(async (req, index) => {
-    const organization = findDataById(organizations, req.organizationId)
-    const branch = findDataById(branches, req.branchId)
+  const rows = requests.map((req, index) => {
+    const organization = organizationObj[req.organizationId]
+    const branch = branchesObj[req.branchId]
+    const buissneses = buissnesesObj[req.businessId]
     return {
       ...req,
       number: index + 1,
       organizationCodeAndName: organization?.code + ' ' + organization?.name,
       branchName: branch?.name,
-      businessName: findDataById(buissneses, req.businessId)?.name,
-      requestUser: (await userStore.getUserById(req.requestUserId)).displayName,
+      businessName: buissneses?.name,
+      requestUser: users[req.requestUserId]?.displayName,
       requestDate: toDate(req.requestDate),
       priceForOneUserInYen: branch?.priceForOneUserInYen,
       licenseRequest: req,
     }
-  }))
+  })
   loading.value = false
   return rows
 }
 
-function findDataById<T extends Branch | Organization | Business>(arr: (T)[], wantedId: string) {
-  return arr.find((item) => {
-    if (item.id == wantedId) {
-      return item
-    }
-  })
-}
-
 async function searchLicense() {
   loading.value = true
-  const licences = await licenceStore.search(search.value)
+  const licences = await licenceStore.search(search.value, 'licenseRequests')
   if (!licences) {
+    loading.value = false
     rows.value = []
     return
   }
@@ -162,11 +135,7 @@ async function searchLicense() {
 </script>
 
 <style lang="scss" scoped>
-.no-breaks {
-  white-space: pre-line;
-  text-align: left;
-  min-width: 180px;
-}
+@import 'src/css/no-breaks.scss';
 
 button {
   width: 90px;

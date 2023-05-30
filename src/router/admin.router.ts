@@ -130,7 +130,18 @@ const admin_router: MenuRouter[] = [
       permission: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminLicenseManagement,
-    component: () => import('src/pages/admin/LicenseManagement/LicenseRequests/LicenseRequests.vue')
+    component: () => import('src/pages/admin/LicenseManagement/Requests/LicenseRequests.vue')
+  },
+  {
+    path: 'license-history',
+    title: 'menu.admin.licenseManagement.licenseHistory',
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess]
+    },
+    menuParent: MenuParent.AdminLicenseManagement,
+    component: () => import('src/pages/admin/LicenseManagement/History/LicenseHistory.vue')
+
   }
 ]
 
