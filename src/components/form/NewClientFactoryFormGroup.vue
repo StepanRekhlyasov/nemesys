@@ -70,10 +70,10 @@ const validateAndSubmit = async () => {
             ...inChargeInfo.value,
             ...contractInfo.value,
             facilityType: facilityTypes.value,
-            industry: [],
             clientFlag: parentClient.value ? true : false,
             basicInfoChangingFlag: false,
             distance: 0,
+            industry: [],
             address: addressSection.value.prefecture + ' ' +  addressSection.value.municipality + ' ' + addressSection.value.street + ' ' + addressSection.value.building,
             officeDetails: {
                 registeredInfo: {
@@ -83,7 +83,8 @@ const validateAndSubmit = async () => {
                     fax: clientFactoryInfo.value.fax,
                     latitude: addressSection.value.lat,
                     longitude: addressSection.value.lon,
-                    townAndStreet: addressSection.value.street,
+                    street: addressSection.value.street,
+                    building: addressSection.value.building,
                     others: '',
                     city: '',
                     parentClient: parentClient.value
@@ -91,7 +92,7 @@ const validateAndSubmit = async () => {
                 commonItems: {},
                 uniqueItems: {}
             } as ClientFactory['officeDetails']
-        }
+        } as Partial<ClientFactory>
 
         emit('submit', newClientFactory.value);
     }
@@ -112,7 +113,7 @@ defineExpose({
                 <q-card-section class="q-pa-none q-pt-sm scroll">
                     <q-list>
                         <ClientFactoryName v-model="clientFactoryName"/>
-                        <ParentClient v-model="parentClient"/>
+                        <ParentClient v-model="parentClient" :theme="theme"/>
                         <AddressSection v-model="addressSection" :theme="theme"/>
                         <ClientFactoryInfo v-model="clientFactoryInfo" :theme="theme"/>
                         <ContractInfo v-model="contractInfo" :theme="theme"/>

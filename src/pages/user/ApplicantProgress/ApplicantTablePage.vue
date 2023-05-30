@@ -13,8 +13,8 @@
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
-            v-model="applicantStore.state.applicantFilter['branch']"
-            :options="[]"
+            v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
+            :optionToFetch="'branchIncharge'"
           />
         </div>
         <div class="col-2">
@@ -24,8 +24,8 @@
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
-            v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
-            :options="usersInChargeOptions"
+            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
+            :optionToFetch="'usersInCharge'"
           />
         </div>
         <div class="col-1">
@@ -35,14 +35,14 @@
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
-            v-model="applicantStore.state.applicantFilter['prefecture']"
+            v-model="applicantStore.state.applicantProgressFilter['prefecture']"
             :options="prefectureList"
           />
         </div>
         <div class="col-1">
           <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
           <YearMonthPicker 
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
+            v-model="applicantStore.state.applicantProgressFilter['currentStatusMonth']" 
             height="40px" 
             width="200px" 
           />
@@ -100,18 +100,9 @@ if(!statusParams){
 const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
-/** consts */
-const usersInChargeOptions = computed(()=>{
-  return applicantStore.state.usersInCharge.map((doc) => {
-    return {
-      label: doc.displayName,
-      value: doc.id
-    }
-  });
-});
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
-  for (const [key, value] of Object.entries(applicantStore.state.applicantFilter)){
+  for (const [key, value] of Object.entries(applicantStore.state.applicantProgressFilter)){
     if(value){
       result.push(where(key, '==', value))
     }
@@ -149,7 +140,7 @@ onMounted( async ()=>{
     applicantStore.state.prefectureList = prefectureOptions.value
   }
 })
-watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
+watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
     paginationRef.value?.setConstraints(paginationConstraints.value);
     paginationRef.value?.queryFirstPage()

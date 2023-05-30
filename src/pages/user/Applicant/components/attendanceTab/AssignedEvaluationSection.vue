@@ -33,7 +33,7 @@
         {{ $t('applicant.attendant.staffRank') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span>{{ staffRank || ''}}</span>
+        <span>{{ staffRank}}</span>
       </div>
     </div>
 
@@ -46,7 +46,7 @@
         {{ $t('applicant.attendant.remarks') }}
       </div>
       <div class="col-9 q-pl-md blue ">
-        <span v-if="!edit" class="text_dots">{{ applicant.remarks || ''}}</span>
+        <span v-if="!edit" class="text_dots">{{ applicant.remarks}}</span>
         <q-input v-if="edit" dense outlined bg-color="white"
           v-model="data['remarks']" :disable="loading" />
       </div>
@@ -55,54 +55,42 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { Alert } from 'src/shared/utils/Alert.utils';
-import { computed, Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, ref } from 'vue';
 import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { useApplicant } from 'src/stores/applicant';
-import { Applicant, AssignedEvaluation } from 'src/shared/model';
-
-
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 
 const props = defineProps<{
   applicant: Applicant
 }>();
 const applicantStore = useApplicant();
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 const staffRank = computed(() => props.applicant['staffRank'] && RankCount.getRank(props.applicant['staffRank']))
 const edit = ref(false);
 const expertiseLevelOptions = ref(expertiseLevelList)
 const loading = ref(false);
-const data: Ref<AssignedEvaluation> =  ref({});
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
-  data.value = {
-    language: props?.applicant['language'] || '',
-    attendingDate: props?.applicant['attendingDate'] || '',
-    staffRank: props?.applicant['staffRank'] || '',
-    comprehension: props?.applicant['comprehension'] || '',
-    remarks: props?.applicant['remarks'] || ''
-  } as AssignedEvaluation;
+  defaultData.value = {
+    language: props?.applicant['language'],
+    staffRank: props?.applicant['staffRank'],
+    comprehension: props?.applicant['comprehension'],
+    remarks: props?.applicant['remarks']
+  }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
-resetData();
-
+resetData()
 
 async function save() {
   loading.value = true
   try {
     await applicantStore.updateApplicant(data.value);
-    Alert.success($q, t);
     edit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }

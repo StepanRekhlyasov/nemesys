@@ -2,7 +2,7 @@
 import { defineProps, withDefaults, computed } from 'vue';
 
 const props = withDefaults(defineProps<{
-    data: { label: string; value: string | number; }[],
+    data: { label: string; value: string | number | string[] }[],
     theme?: string
 }>(), {
     theme: 'primary'
@@ -19,7 +19,12 @@ const rightColumn = computed(() => props.data.filter((_, index) => index%2 !== 0
                 <span :class="`text-${theme} line__label`">
                     {{ row.label }}
                 </span>
-                <span class="line__value q-pl-sm">
+
+                <span v-if="Array.isArray(row.value)" class="q-pl-sm">
+                    {{ row.value.join(', ') }}
+                </span>
+
+                <span v-else class="line__value q-pl-sm">
                     {{ row.value }}
                 </span>
             </div>
@@ -29,7 +34,12 @@ const rightColumn = computed(() => props.data.filter((_, index) => index%2 !== 0
                 <span :class="`text-${theme} line__label`">
                     {{ row.label }}
                 </span>
-                <span class="line__value q-pl-sm">
+
+                <span v-if="Array.isArray(row.value)" class="q-pl-sm">
+                    {{ row.value.join(', ') }}
+                </span>
+
+                <span v-else class="line__value q-pl-sm">
                     {{ row.value }}
                 </span>
             </div>

@@ -5,50 +5,50 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <div class="row q-pt-md q-gutter-sm">
+      <div class="row q-pt-md q-gutter-sm applicant__inputWrapper">
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['branch']"
-            :options="[]"
+            v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
+            :optionToFetch="'branchIncharge'"
           />
         </div>
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['attendeeUserInCharge']"
-            :options="usersInChargeOptions"
+            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
+            :optionToFetch="'usersInCharge'"
           />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.prefecture") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantFilter['prefecture']"
+            v-model="applicantStore.state.applicantProgressFilter['prefecture']"
             :options="prefectureList"
           />
         </div>
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.month") }}</p>
           <YearMonthPicker 
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
+            v-model="applicantStore.state.applicantProgressFilter['currentStatusMonth']" 
             height="40px" 
             width="100%" 
             :disable="loading"
           />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.entry") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.entry") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.entry" />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.retire") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.retire") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.retired" />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.working") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.working") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.working" />
         </div>
       </div>
@@ -107,14 +107,6 @@ const loading = computed(()=>{
   }
   return true
 })
-const usersInChargeOptions = computed(()=>{
-  return applicantStore.state.usersInCharge.map((doc) => {
-    return {
-      label: doc.displayName,
-      value: doc.id
-    }
-  });
-});
 
 /** stores */
 const applicantStore = useApplicant();
@@ -125,7 +117,7 @@ const applicantsByColumn = computed(() => applicantStore.state.applicantsByColum
 /** fetchers */
 const fetchResultsHandler = async (status : string, fetchMore = false) => {
   columnsLoading.value[status] = true
-  await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantFilter, perQuery.value, fetchMore)
+  await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
   columnsLoading.value[status] = false
 }
 const fetchResults = async () => {
@@ -133,14 +125,24 @@ const fetchResults = async () => {
     fetchResultsHandler(status, false)
   })
   COUNT_STATUSES.map(async (status)=>{
-    countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantFilter)
+    countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
   })
 }
 onMounted( async ()=>{
-  applicantStore.fetchUsersInChrage()
   await fetchResults()
 })
-watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
+watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
 })
 </script>
+<style lang="scss">
+.applicant__inputWrapper{
+  .q-field__inner{
+    background: #fff;
+  }
+  .inputLabel,
+  .q-field__native {
+    white-space: nowrap;
+  }
+}
+</style>

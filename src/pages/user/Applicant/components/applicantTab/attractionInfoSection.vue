@@ -3,7 +3,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.attraction')"
     @openEdit="edit = true"
-    @closeEdit="edit=false; resetData();"
+    @closeEdit="resetData(); edit = false;"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -20,7 +20,7 @@
         {{ $t('applicant.list.info.seductionDay') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant.seductionDay || ''}}</span>
+        <span v-if="!edit">{{ timestampToDateFormat(applicant.seductionDay) }}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['seductionDay']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -127,39 +127,43 @@
 
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
-import { applicantClassification, employmentStatus } from 'src/shared/constants/Applicant.const';
-import { Applicant, selectOptions } from 'src/shared/model';
+import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate } from 'src/shared/utils/utils'
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   applicant: Applicant
 }>()
+const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
+const data: Ref<Partial<ApplicantInputs>> = ref({})
 const edit = ref(false);
 const loading = ref(false);
+const applicantStore = useApplicant();
+
 const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
-const usersListOption: Ref<selectOptions []> = ref([])
-const applicantStore = useApplicant();
-const data = ref({})
+const usersListOption = usersInCharge.value
+
 
 function resetData() {
-  data.value = {
-    attractionsStatus: props?.applicant['attractionsStatus'] || '',
-    seductionDay: props?.applicant['seductionDay'] || '',
-    employmentStatus: props?.applicant['employmentStatus'] || '',
-    seduser: props?.applicant['seduser'] || '',
-    classification: props?.applicant['classification'] || '',
-    position: props?.applicant['position'] || [],
-    qualification: props?.applicant['qualification'] || [],
-    period: props?.applicant['period'] || '',
-    memo: props?.applicant['memo'] || '',
-    nursing: props?.applicant['nursing'] || [],
+  defaultData.value = {
+    attractionsStatus: props?.applicant['attractionsStatus'],
+    seductionDay: timestampToDateFormat(props?.applicant['seductionDay']),
+    employmentStatus: props?.applicant['employmentStatus'],
+    seduser: props?.applicant['seduser'],
+    classification: props?.applicant['classification'],
+    position: props?.applicant['position'],
+    qualification: props?.applicant['qualification'],
+    period: props?.applicant['period'],
+    memo: props?.applicant['memo'],
   }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
-resetData();
+resetData()
+
 async function save() {
   loading.value = true
   try {

@@ -1,6 +1,8 @@
-import { computed } from 'vue';
+import { ComputedRef, computed } from 'vue';
 import { i18n } from 'boot/i18n'
 import { ApplicantStatus } from '../model';
+import { useApplicant } from 'src/stores/applicant';
+import { QTableProps } from 'quasar';
 
 const { t } = i18n.global
 
@@ -378,3 +380,115 @@ export const applicantListColumn = computed(() => {
   ];
 })
 
+export const usersInCharge = computed(()=>{
+  const applicantStore = useApplicant()
+  return applicantStore.state.usersInCharge.map((doc) => {
+    return {
+      label: doc.displayName,
+      value: doc.id
+    }
+  });
+});
+
+export const contactColumns : ComputedRef<QTableProps['columns']> = computed(() => {
+  return [
+    {
+      name: 'edit',
+      align: 'left',
+      label: '',
+      field: '',
+      headerStyle: 'width: 24px'
+    },
+    {
+      name: 'created_at',
+      required: true,
+      label: t('applicant.list.contacts.dateTime'),
+      field: 'created_at',
+      align: 'left',
+    },
+    {
+      name: 'contactMethod',
+      required: true,
+      label: t('applicant.list.contacts.contactMethod'),
+      field: 'contactMethod',
+      align: 'left',
+    },
+    {
+      name: 'created_by',
+      label: t('applicant.list.contacts.userInharge'),
+      field: 'created_by',
+      align: 'left',
+    },
+    {
+      name: 'content',
+      label: t('applicant.list.contacts.content'),
+      field: 'content',
+      align: 'left',
+    },
+    {
+      name: 'note',
+      label: t('applicant.list.contacts.note'),
+      field: 'note',
+      align: 'left',
+    },
+    {
+      name: 'delete',
+      align: 'left',
+      label: '',
+      field: '',
+    }
+  ];
+});
+
+export const workExpColumns : ComputedRef<QTableProps['columns']> = computed(() => {
+  return [
+    {
+      name: 'edit',
+      field: '',
+      label: '',
+      align: 'left',
+      headerStyle: 'width: 24px',
+    },
+    {
+      name: 'experience',
+      required: true,
+      label: '',
+      align: 'left',
+      field: 'experience',
+      sortable: false,
+    },{
+      name: 'month',
+      required: true,
+      label: '',
+      field: 'month',
+      align: 'left',
+    },{
+      name: 'years',
+      required: true,
+      label: t('applicant.attendant.years') ,
+      field: 'years',
+      align: 'left',
+    },{
+      name: 'establishment',
+      field: 'establishment',
+      label: '',
+      align: 'left',
+    },{
+      name: 'reasonResignation',
+      label: t('applicant.attendant.reasonResignation') ,
+      field: 'reasonResignation',
+      align: 'left',
+    },{
+      name: 'pastInterviews',
+      label: t('applicant.attendant.pastInterviews') ,
+      field: 'pastInterviews',
+      align: 'left',
+    },
+    {
+      name: 'delete',
+      label: '',
+      field: '',
+      align: 'left',
+    }
+  ];
+});

@@ -8,9 +8,11 @@ const props = withDefaults(
     defineProps<{
         modelValue: Array<string>
         theme?: string
+        isLabel?: boolean
     }>(), {
-    theme: 'primary'
-}
+        theme: 'primary',
+        isLabel: true
+    }
 )
 
 const emit = defineEmits(['update:modelValue'])
@@ -31,11 +33,11 @@ const updateType = (value: string, isChecked: boolean) => {
 <template>
     <q-item>
         <q-item-section>
-            <q-item-label class="q-pb-xs">
+            <q-item-label v-if="isLabel" class="q-pb-xs">
                 {{ t('client.add.clientType') }}
             </q-item-label>
-            <div class="row q-pt-sm">
-            <q-checkbox size="xs" :model-value="localType.includes(option.value)" :val="option.value" :label="option.label" :color="`${theme}`"
+            <div>
+                <q-checkbox size="xs" :model-value="localType.includes(option.value)" :val="option.value" :label="option.label" :color="`${theme}`"
                     v-for="option in industries" :key="option.value" @update:modelValue="(isChecked) => updateType(option.value, isChecked)"/>
             </div>
         </q-item-section>

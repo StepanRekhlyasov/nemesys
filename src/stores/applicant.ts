@@ -1,24 +1,24 @@
-import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { ApplicantFilter } from 'src/pages/user/ApplicantProgress/types/applicant.types';
-import { Applicant, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
+import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
-import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { toMonthYear } from 'src/shared/utils/utils';
+import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
+import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 interface ApplicantState {
   clientList: Client[],
   applicantsByColumn: ApplicantsByColumn,
   applicantsByStatusCount: ApplicantsByStatusCount,
   continueFromDoc: ContinueFromDoc,
-  applicantFilter: ApplicantFilter,
+  applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
   prefectureList: {label: string, value: string | number}[],
   selectedApplicant: Applicant | null
@@ -31,7 +31,7 @@ interface ApplicantState {
     'wait_entry': boolean,
     'wait_termination': boolean,
   },
-  usersInCharge: User[]
+  usersInCharge: User[],
 }
 
 type ContinueFromDoc = {
@@ -89,7 +89,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': null,
       'wait_termination': null,
     },
-    applicantFilter: {
+    applicantProgressFilter: {
       branch: '',
       userInCharge: '',
       prefecture: '',
@@ -107,10 +107,10 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': false,
       'wait_termination': false,
     },
-    usersInCharge: []
+    usersInCharge: [],
   })
 
-  const countApplicantsByStatus = async (status : string, filterData?: ApplicantFilter) => {
+  const countApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter) => {
     const filters = [
       where('status', '==', status)
     ]
@@ -130,7 +130,7 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const getApplicantsByStatus = async (status : string, filterData?: ApplicantFilter, perQuery = 20, showMore = false) => {
+  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false) => {
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
@@ -167,30 +167,34 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function updateApplicant(applicantData : Partial<Applicant>, showAlert = true) {
+  async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
     if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
-      for(const [key, value] of Object.entries(applicantData)){
-        if(typeof value === 'undefined'){
-          delete applicantData[key]
+
+      /** transform strings to timestamps */
+      const saveData = JSON.parse(JSON.stringify(applicantData));
+      if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
+      if(applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
+      if(applicantData.seductionDay) saveData.seductionDay = dateToTimestampFormat(new Date(applicantData.seductionDay));
+      if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
+      if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
+
+      for(const [key, value] of Object.entries(saveData)){
+        if(!value){
+          saveData[key] = deleteField()
         }
       }
-      await updateDoc(applicantRef, applicantData)
+      saveData['updated_at'] = serverTimestamp();
+
+      await updateDoc(applicantRef, saveData)
       if (showAlert){ Alert.success($q, t); }
-      state.value.selectedApplicant = {
-        ...state.value.selectedApplicant,
-        ...applicantData,
-        staffRank: RankCount.countRank(state.value.selectedApplicant)
+      try {
+        state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+      } catch(error) {
+        if (showAlert){  Alert.warning($q, t); }
       }
     } catch (error) {
-      if(state.value.selectedApplicant?.status){
-        try {
-          state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
-        } catch(error) {
-          if (showAlert){  Alert.warning($q, t); }
-        }
-      }
       if (showAlert){  Alert.warning($q, t); }
     }
   };
@@ -199,6 +203,67 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
     return result.data() as Applicant
+  }
+
+  async function createApplicant(data : Applicant, applicantImage? : FileList | []){
+    const docRef = doc(collection(db, 'applicants'));
+    data['id'] = docRef.id;
+    if (applicantImage && applicantImage.length > 0) {
+      const file = applicantImage[0];
+      const storage = getStorage();
+      const storageRef = refStorage(storage, 'applicants/' + docRef.id + '/image/' + file['name']);
+      try {
+        const snapshot = await uploadBytes(storageRef, file)
+        data['imagePath'] = snapshot.ref.fullPath;
+        data['imageURL'] = await getDownloadURL(storageRef)
+      } catch(error){
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: t('failed'),
+        });
+        return false;
+      }
+    }
+    try {
+      await setDoc(
+        docRef,
+        data
+      );
+      $q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: t('success'),
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      $q.notify({
+        color: 'red-5',
+        textColor: 'white',
+        icon: 'warning',
+        message: t('failed'),
+      });
+      return false;
+    }
+  }
+
+  async function getApplicantsByConstraints(constraints : ConstraintsType){
+    const q = query(collection(db, 'applicants'), ...constraints);
+    const snapshot = await getDocs(q);
+    return snapshot?.docs.map((doc) => {
+      return doc.data() as Applicant
+    })
+  }
+  async function getApplicantContactData(applicantId, constraints : ConstraintsType){
+    const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
+    const snapshot = await getDocs(q);
+    const result =  snapshot?.docs.map((doc) => {
+      return {id: doc.id, ...doc.data()}
+    })
+    return result
   }
 
   async function getClients( active_organization_id?: string ): Promise<Client[]> {
@@ -243,32 +308,52 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }
 
+  const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
+    const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
+    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth)) 
+    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth)) 
+    
+    try {
+        const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
+        await updateDoc(boRef, {
+          updated_at: serverTimestamp(),
+          ...saveData
+        })
+        Alert.success($q, t);
+    } catch (e) {
+      console.log(e)
+      Alert.warning($q, t);
+    }
+  }
+
   /** update Applicant in tables after details changes */
   watch(() => state.value.selectedApplicant, (newValue) => {
     if(!newValue?.status) return;
+    if(!state.value.applicantsByColumn[newValue.status]) return;
     const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id==newValue?.id)
     if(changingApplicantIndex>=0){
       state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
     }
   }, {deep: true})
 
-  /** update timestamps and sort columns */
-  watch(() => state.value.selectedApplicant?.status, async (newValue, oldValue) => {
+  /** update columns */
+  watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
+
     if (!state.value.selectedApplicant) return;
-    if (!newValue || !oldValue) return;
-    if (newValue == oldValue) return;
-    const timeData = {
-      currentStatusMonth : toMonthYear(),
-      currentStatusTimestamp : serverTimestamp() as Timestamp,
-      ['statusChangeTimestamp.'+newValue] : serverTimestamp() as Timestamp
+    if (!newValue[0] || !oldValue[0]) return;
+    if (newValue[0] != oldValue[0]) return;
+    if (newValue[1] == oldValue[1]) return;
+    if (!newValue[1]) return;
+
+    if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
+      state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
-    await updateApplicant(timeData, false);
-    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant.id)
-    if (state.value.applicantsByColumn[newValue]) {
-      const index = state.value.applicantsByColumn[newValue].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
+
+    if (state.value.applicantsByColumn[newValue[1]]) {
+      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
       if (index>-1) return; 
-      state.value.applicantsByColumn[newValue].push(state.value.selectedApplicant)
-      state.value.applicantsByColumn[newValue].sort((a : Applicant, b: Applicant) => {
+      state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
+      state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
         try{
           return a.currentStatusTimestamp.toDate() > b.currentStatusTimestamp.toDate()
         } catch (error){
@@ -276,11 +361,8 @@ export const useApplicant = defineStore('applicant', () => {
         }
       })
     }
-    if (state.value.applicantsByColumn[oldValue]) {
-      state.value.applicantsByColumn[oldValue] = state.value.applicantsByColumn[oldValue].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
-    }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
 })
   

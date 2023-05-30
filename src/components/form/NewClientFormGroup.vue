@@ -9,6 +9,7 @@ import FacilityType from './clientForms/FacilityType.vue'
 import HeadOfficeInformation from './clientForms/HeadOfficeInformation.vue';
 import ContractInfo from './clientForms/ContractInfo.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { contractUnits } from 'src/shared/constants/ContractUnits.const';
 import { Client } from 'src/shared/model';
 import { QForm } from 'quasar';
 
@@ -55,7 +56,7 @@ const headInfoSection = ref<{ [key: string]: string | number | boolean }>({
 const contractInfo = ref<{ [key: string]: string | number | boolean }>({
     conclusionDispatchContract: false,
     conclusionReferralContract: false,
-    contractUnit: 'corporate bulk',
+    contractUnit: contractUnits.value[0].value,
     conclusionContract: false,
     personInChargeTel: '',
     personInchargeFax: '',

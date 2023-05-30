@@ -1,17 +1,16 @@
 <template>
-
   <DropDownEditGroup
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
-    @closeEdit="resetData();edit = false;"
+    @closeEdit="resetData(); edit = false;"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.date') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant.applicationDate || ''}}</span>
+        <span v-if="!edit">{{ timestampToDateFormat(applicant['applicationDate']) || ''}}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
@@ -100,7 +99,7 @@
         {{ $t('applicant.list.info.birth') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.dob? applicant.dob+` (${age})` :''}}</span>
+        <span v-if="!edit">{{timestampToDateFormat(applicant['dob'])}} {{age?`(${age})`:''}}</span>
         <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -175,42 +174,45 @@
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, Ref, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
-import { Applicant, ApplicantInfo } from 'src/shared/model';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate } from 'src/shared/utils/utils'
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   applicant: Applicant
 }>()
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 const edit = ref(false);
 const loading = ref(false);
-const applicationMethodOption = ref(applicationMethod)
 const applicantStore = useApplicant();
-const data: Ref<ApplicantInfo> = ref({})
 
-function resetData(){
-  data.value = {
-    applicationDate: props?.applicant['applicationDate'] || '',
-    name: props?.applicant['name'] || '',
-    media: props?.applicant['media'] || '',
-    kanaName: props?.applicant['kanaName'] || '',
-    applicationMetod: props?.applicant['applicationMetod'] || '',
+const applicationMethodOption = ref(applicationMethod)
+
+function resetData() {
+  defaultData.value = {
+    applicationDate: timestampToDateFormat(props?.applicant['applicationDate']),
+    name: props?.applicant['name'],
+    media: props?.applicant['media'],
+    kanaName: props?.applicant['kanaName'],
+    applicationMetod: props?.applicant['applicationMetod'],
     sex: props?.applicant['sex'],
-    dob: props?.applicant['dob'] || '',
-    phone: props?.applicant['phone'] || '',
-    email: props?.applicant['email'] || '',
-    lon: props?.applicant['lon'] || undefined,
-    lat: props?.applicant['lat'] || undefined,
-    postCode: props?.applicant['postCode'] || '',
+    dob: timestampToDateFormat(props?.applicant['dob']),
+    phone: props?.applicant['phone'],
+    email: props?.applicant['email'],
+    lon: props?.applicant['lon'],
+    lat: props?.applicant['lat'],
+    postCode: props?.applicant['postCode'],
   }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
+resetData()
 
-resetData();
 const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'');
 
 async function save() {
