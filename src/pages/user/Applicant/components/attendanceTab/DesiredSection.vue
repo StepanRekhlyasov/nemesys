@@ -227,12 +227,12 @@
 
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
-import { Ref, ref } from 'vue';
+import { ref } from 'vue';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -244,9 +244,8 @@ const days = ref(daysList);
 const specialDays = ref(specialDaysList);
 const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
-const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
-const data: Ref<Partial<ApplicantInputs>> = ref({})
-const saveData: Ref<Partial<Applicant>> = ref({})
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
   defaultData.value = {
@@ -278,16 +277,11 @@ resetData()
 
 async function saveDesired(){
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
-  if(data.value.timeToWork){
-    saveData.value.timeToWork = dateToTimestampFormat(new Date(data.value.timeToWork));
-  }
   try {
-    await applicantStore.updateApplicant(saveData.value);
+    await applicantStore.updateApplicant(data.value);
     desiredEdit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
   }
   loading.value = false
 }

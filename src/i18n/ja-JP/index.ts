@@ -205,7 +205,10 @@ export default {
         numberOfSlots: '枠数',
         execution: '実行',
         cancel: 'キャンセル',
-        licenseFee: 'ライセンス料金'
+        licenseFee: 'ライセンス料金',
+        licenseHistory: '枠変更履歴',
+        executionTime: '実行日時',
+        executor: '実行者'
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',

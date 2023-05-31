@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
 import { watch } from 'vue';
@@ -167,17 +167,27 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function updateApplicant(applicantData : Partial<Applicant>, showAlert = true) {
+  async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
     if (!state.value.selectedApplicant) return; 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
-      for(const [key, value] of Object.entries(applicantData)){
+
+      /** transform strings to timestamps */
+      const saveData = JSON.parse(JSON.stringify(applicantData));
+      if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
+      if(applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
+      if(applicantData.seductionDay) saveData.seductionDay = dateToTimestampFormat(new Date(applicantData.seductionDay));
+      if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
+      if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
+
+      for(const [key, value] of Object.entries(saveData)){
         if(!value){
-          applicantData[key] = deleteField()
+          saveData[key] = deleteField()
         }
       }
-      applicantData['updated_at'] = serverTimestamp();
-      await updateDoc(applicantRef, applicantData)
+      saveData['updated_at'] = serverTimestamp();
+
+      await updateDoc(applicantRef, saveData)
       if (showAlert){ Alert.success($q, t); }
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
@@ -300,12 +310,9 @@ export const useApplicant = defineStore('applicant', () => {
 
   const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
-    if(rawData.startMonth){
-      saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth))
-    }
-    if(rawData.endMonth){
-      saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth))
-    }
+    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth)) 
+    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth)) 
+    
     try {
         const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
         await updateDoc(boRef, {

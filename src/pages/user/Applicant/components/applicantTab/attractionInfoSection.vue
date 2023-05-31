@@ -134,14 +134,13 @@ import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { dateToTimestampFormat, limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   applicant: Applicant
 }>()
 const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
 const data: Ref<Partial<ApplicantInputs>> = ref({})
-const saveData: Ref<Partial<Applicant>> = ref({})
 const edit = ref(false);
 const loading = ref(false);
 const applicantStore = useApplicant();
@@ -169,12 +168,8 @@ resetData()
 
 async function save() {
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
-  if(data.value.seductionDay){
-    saveData.value.seductionDay = dateToTimestampFormat(new Date(data.value.seductionDay));
-  }
   try {
-    await applicantStore.updateApplicant(saveData.value);
+    await applicantStore.updateApplicant(data.value);
     edit.value = false;
   } catch (error) {
     console.log(error);

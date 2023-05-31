@@ -72,10 +72,19 @@ export const columns = computed<QTableProps['columns']>(() => [
     sortable: sortable.value
   },
   {
-    name:'addMoreSlots',
-    label: '',
-    field: 'addMoreSlots',
+    name: 'executionTime',
+    label:  t('menu.admin.licenseManagement.executionTime'),
+    field: 'executionTime',
     align: 'left',
+    sortable: sortable.value
+  },
+  {
+    name: 'executor',
+    label:  t('menu.admin.licenseManagement.executor'),
+    field: 'executor',
+    align: 'left',
+    sortable: sortable.value
   }
+
 
 ])

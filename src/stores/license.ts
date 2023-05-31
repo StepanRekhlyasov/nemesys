@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth';
 import { collection, deleteDoc, doc, getDocs, getFirestore, query, serverTimestamp, setDoc, Timestamp, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { LicenseHistory } from 'src/pages/admin/LicenseManagement/types/LicenseHistory';
+import { LicenseHistory, LicensePath, LicenseVariation } from 'src/pages/admin/LicenseManagement/types/LicenseHistory';
 import { LicenseRequest } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
 import { useOrganization } from './organization';
 
@@ -10,7 +10,7 @@ export const useLicense = defineStore('license', () => {
   const db = getFirestore()
   const organization = useOrganization()
 
-  async function search(search: string) {
+  async function search<T extends LicensePath>(search: string, collectionPath: T) {
     const organizations = await organization.getOrganizationsByName(search)
     const organizationIds = organizations.map((org) => {
       return org.id
@@ -18,13 +18,13 @@ export const useLicense = defineStore('license', () => {
     if (!organizationIds.length) {
       return
     }
-    const organizationQuery = query(collection(db, 'licenseRequests'), where('organizationId', 'in', organizationIds))
+    const organizationQuery = query(collection(db, collectionPath), where('organizationId', 'in', organizationIds))
     const docs = await getDocs(organizationQuery)
     if (!docs.docs.length) {
       return
     }
     return docs.docs.map((doc) => {
-      return doc.data() as LicenseRequest
+      return doc.data() as LicenseVariation<T>
     })
   }
 

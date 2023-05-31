@@ -118,7 +118,7 @@ import { useQuasar } from 'quasar';
 import { employmentStatus } from 'src/shared/constants/Applicant.const';
 import { ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
 import { useApplicant } from 'src/stores/applicant';
 import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -164,22 +164,21 @@ async function save() {
 }
 async function addExperience() {
   loading.value = true;
-  let newData = JSON.parse(JSON.stringify(data.value));
+  const newData = JSON.parse(JSON.stringify(data.value));
   try {
       newData['created_at'] = serverTimestamp();
       newData['updated_at'] = serverTimestamp();
       newData['deleted'] = false;
-
+      if(newData.startMonth) newData.startMonth = dateToTimestampFormat(new Date(newData.startMonth)) 
+      if(newData.endMonth) newData.endMonth = dateToTimestampFormat(new Date(newData.endMonth)) 
       const clientRef = collection(db, 'applicants/'+props.applicantId+'/experience/');
       await addDoc(clientRef, newData);
-
       emit('closeDialog');
       Alert.success($q, t);
-      loading.value = false;
   } catch (e) {
     console.log(e)
     Alert.warning($q, t);
-    loading.value = false;
   }
+  loading.value = false;
 }
 </script>

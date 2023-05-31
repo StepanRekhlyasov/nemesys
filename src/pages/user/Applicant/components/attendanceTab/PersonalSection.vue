@@ -146,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref } from 'vue';
+import { ref } from 'vue';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
@@ -161,10 +161,8 @@ const loading = ref(false);
 const smokingStatusOptions = ref(smokingStatusList)
 const marriedOptions = ref(marriedStatusList)
 const tattoosOptions = ref(tattoosStatusList)
-
-const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
-const data: Ref<Partial<ApplicantInputs>> = ref({})
-const saveData: Ref<Partial<Applicant>> = ref({})
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
   defaultData.value = {
@@ -188,13 +186,11 @@ resetData()
 
 async function save() {
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
   try {
-    await applicantStore.updateApplicant(saveData.value);
+    await applicantStore.updateApplicant(data.value);
     edit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
   }
   loading.value = false
 }
