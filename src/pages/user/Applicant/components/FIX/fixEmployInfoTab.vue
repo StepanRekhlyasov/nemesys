@@ -286,8 +286,8 @@ function showEditDialog(data) {
   disableChange();
 }
 function rowColor(row) {
-  if ((row.status == true && row.inspectionStatus == true && row.offerStatus == true && row.admissionStatus == true)
-    || row.status == false || row.inspectionStatus == false|| row.offerStatus == false|| row.admissionStatus == false ) {
+  if ((row.status && row.inspectionStatus && row.offerStatus && row.admissionStatus )
+    || !row.status || !row.inspectionStatus || !row.offerStatus || !row.admissionStatus ) {
     return ''
   }
   return 'bg-light-blue-1'
@@ -320,19 +320,19 @@ async function  updateStatus(newDoc?: boolean){
   if (newDoc) {
     status = ApplicantStatus.WAIT_CONTACT;
   }
-  if(props.applicant.attractionsStatus == true) {
+  if(props.applicant) {
     status = ApplicantStatus.WAIT_FIX;
   }
-  if (lastFix['status'] == true) {
+  if (lastFix['status']) {
     status = ApplicantStatus.WAIT_VISIT
   }
-  if (lastFix['inspectionStatus'] == true) {
+  if (lastFix['inspectionStatus']) {
     status = ApplicantStatus.WAIT_OFFER
   }
-  if (lastFix['offerStatus'] == true) {
+  if (lastFix['offerStatus']) {
     status = ApplicantStatus.WAIT_ENTRY
   }
-  if (lastFix['admissionStatus'] == true) {
+  if (lastFix['admissionStatus']) {
     status = ApplicantStatus.WORKING
   }
   await applicantStore.updateApplicant({status: status})
