@@ -268,14 +268,13 @@ async function updateData(data){
 
 function disableChange() {
   let level = 0;
-  console.log(fixData.value['status'],fixData.value['inspectionStatus'],fixData.value['offerStatus'])
-  if (fixData.value['status'] == true) {
+  if (fixData.value['status']) {
     level = 1
   }
-  if (fixData.value['inspectionStatus'] == true) {
+  if (fixData.value['inspectionStatus']) {
     level = 2
   }
-  if (fixData.value['offerStatus'] == true) {
+  if (fixData.value['offerStatus']) {
     level = 3
   }
   disableLevel.value = level
