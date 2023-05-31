@@ -1,20 +1,22 @@
 export class RankCount {
-	static getRank (rank: number) {
-		if (rank >= 90) {
-			return 'S'
-		}
-		if (rank >= 80) {
-			return 'A'
-		}
-		if (rank >= 60) {
-			return 'B'
-		}
-		if (rank >= 40) {
-			return 'C'
-		}
-		if (rank >= 20) {
-			return 'D'
-		}
+	static getRank (rank: number | undefined) {
+    if(rank){
+      if (rank >= 90) {
+        return 'S'
+      }
+      if (rank >= 80) {
+        return 'A'
+      }
+      if (rank >= 60) {
+        return 'B'
+      }
+      if (rank >= 40) {
+        return 'C'
+      }
+      if (rank >= 20) {
+        return 'D'
+      }
+    }
 		return 'E'
 	}
 	

@@ -492,3 +492,9 @@ export const workExpColumns : ComputedRef<QTableProps['columns']> = computed(() 
     }
   ];
 });
+
+export const requiredFields = {
+  'staffRank' : 0,
+  'occupation' : '',
+  'classification' : '',
+}

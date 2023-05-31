@@ -50,7 +50,17 @@
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
-        <applicant-table :status="statusParams.firestore" :applicants="applicantsByColumn" :loading="loading" @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" />
+        <applicant-table 
+          :status="statusParams.firestore" 
+          :applicants="applicantsByColumn" 
+          :loading="loading" 
+          @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
+          @sortQuery="(param : QueryOrderByConstraint)=>{
+            paginationRef?.setOrder(param);
+            paginationRef?.setConstraints(paginationConstraints);
+            paginationRef?.queryFirstPage()
+          }"
+        />
         <TablePagination
           :isAdmin="false"
           ref="paginationRef"
@@ -67,16 +77,15 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { ComputedRef, computed, onMounted, ref, watch } from 'vue';
+import { ComputedRef, computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
 import { useApplicant } from 'src/stores/applicant';
-import { useMetadata } from 'src/stores/metadata';
 import { limitQuery } from './const/applicantColumns';
 import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
-import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
+import { QueryFieldFilterConstraint, QueryOrderByConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import { Applicant } from 'src/shared/model';
@@ -85,7 +94,6 @@ import { prefectureList } from 'src/shared/constants/Prefecture.const';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
-const prefectureOptions = ref<{label: string, value: string | number}[]>([]);
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 
 /** check if status url is correct */
@@ -97,7 +105,7 @@ if(!statusParams){
 }
 
 /** stores */
-const metadataStore = useMetadata();
+// const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
 const paginationConstraints = computed(()=>{
@@ -119,27 +127,6 @@ const pagination = ref({
 /** getters */
 const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 
-onMounted( async ()=>{
-  applicantStore.fetchUsersInChrage()
-  if(applicantStore.state.prefectureList.length){
-    prefectureOptions.value = applicantStore.state.prefectureList
-  } else {
-    const metadataData = await metadataStore.getPrefectureJP()
-    const prefKeys = Object.keys(metadataData)
-    prefKeys.sort()
-    prefectureOptions.value = prefKeys.map((item)=>{
-      return {
-        label: 'prefectures.' + item,
-        value: item
-      }
-    })
-    prefectureOptions.value.unshift({
-      label: 'common.all',
-      value: 0
-    })
-    applicantStore.state.prefectureList = prefectureOptions.value
-  }
-})
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
     paginationRef.value?.setConstraints(paginationConstraints.value);

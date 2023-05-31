@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
@@ -12,6 +12,7 @@ import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { requiredFields } from 'src/shared/constants/Applicant.const';
 
 interface ApplicantState {
   clientList: Client[],
@@ -130,7 +131,7 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false) => {
+  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
@@ -145,7 +146,7 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
-    const querys = query(applicantRef, ...filters, orderBy('currentStatusTimestamp', 'asc'), ...start, limit(perQuery+1))
+    const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
     const docSnap = await getDocs(querys)
 
     if (!docSnap.empty) {
@@ -165,6 +166,33 @@ export const useApplicant = defineStore('applicant', () => {
     }
     state.value.continueFromDoc[status] = null
     return []
+  }
+
+  /** this function checks and creates reqiured fields if they would not exist for some reason */
+  async function validateApplicant(applicants : Applicant[]){
+    const fire = ref(false)
+    const batch = writeBatch(db);
+    const forUpdate : Record<string, string | number>[] = []
+    applicants.map((applicant)=>{
+      const needsUpdate : Record<string, string | number>[] = []
+      for(const [key, value] of Object.entries(requiredFields)){
+        if(typeof applicant[key] == 'undefined'){
+          needsUpdate[key] = value
+        }
+      }
+      if(needsUpdate){
+        forUpdate[applicant.id] = needsUpdate
+      }
+    })
+    for(const [key, value] of Object.entries(forUpdate)){
+      fire.value = true
+      const docRef = doc(db, 'applicants/' + key);
+      batch.update(docRef, {...value})
+    }
+    if(fire.value){
+      await batch.commit()
+    }
+    return
   }
 
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
@@ -199,9 +227,12 @@ export const useApplicant = defineStore('applicant', () => {
     }
   };
 
-  async function getApplicantByID(id : string){
+  async function getApplicantByID(id : string, validate = false){
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
+    if(validate){
+      validateApplicant([result.data() as Applicant])
+    }
     return result.data() as Applicant
   }
 
