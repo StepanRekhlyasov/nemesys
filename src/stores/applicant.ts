@@ -190,9 +190,13 @@ export const useApplicant = defineStore('applicant', () => {
       batch.update(docRef, {...value})
     }
     if(fire.value){
-      await batch.commit()
+      try{
+        return await batch.commit()
+      } catch (e){
+        console.log(e)
+      }
     }
-    return
+    return false
   }
 
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {

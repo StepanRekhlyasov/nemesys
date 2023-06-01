@@ -96,6 +96,7 @@ const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 
+
 /** check if status url is correct */
 const route = useRoute()
 const statusParams = statusStringMask[route.params.status as string]
@@ -105,9 +106,10 @@ if(!statusParams){
 }
 
 /** stores */
-// const metadataStore = useMetadata();
 const applicantStore = useApplicant();
 
+/** getters */
+const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
   for (const [key, value] of Object.entries(applicantStore.state.applicantProgressFilter)){
@@ -123,9 +125,6 @@ const pagination = ref({
   order: orderBy('currentStatusTimestamp', 'asc'),
   constraints: paginationConstraints.value
 });
-
-/** getters */
-const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
 
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
