@@ -37,7 +37,7 @@ const hideDrawer = () => {
                     <CFDrawerTitle v-if="selectedItem" :selectedItem="selectedItem"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-2 q-pa-none">
-                    <CFDrawerBody v-if="selectedItem" :selectedItem="selectedItem"/>
+                    <CFDrawerBody :clientFactory="selectedItem"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-3">
                     <CFDrawerTabs :clientFactory="selectedItem" />

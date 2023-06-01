@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, watchEffect, ref } from 'vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
-import EditableTwoColumnLayout, { Data } from 'src/components/EditableTwoColumnLayout.vue';
+import EditableColumnsCF, { Data } from 'src/components/EditableColumnsCF.vue';
 import { useOfficeDetails, updateClientFactoryHangler } from '../../handlers/ClientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderOfficeDetails } from '../../types';
@@ -50,7 +50,7 @@ watchEffect(() => {
         <TwoColumnLayout
             v-if="!isOpedEditDropDown.registeredInfo" :data="officeDetails.registeredInfo" theme="accent"/>
 
-        <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')" :data="officeDetails.registeredInfo" theme="accent"/>
+        <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')" :data="officeDetails.registeredInfo" theme="accent"/>
     </DropDownEditGroup>
 
     <DropDownEditGroup
@@ -63,7 +63,7 @@ watchEffect(() => {
     @onSave="isOpedEditDropDown.commonItems = false; updateClientFactoryHangler(dataForUpdating.commonItems, clientFactory)">
         <TwoColumnLayout v-if="!isOpedEditDropDown.commonItems" :data="officeDetails.commonItems" theme="accent"/>
 
-        <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'commonItems')" :data="officeDetails.commonItems" theme="accent"/>
+        <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'commonItems')" :data="officeDetails.commonItems" theme="accent"/>
     </DropDownEditGroup>
 
     <DropDownEditGroup
@@ -76,7 +76,7 @@ watchEffect(() => {
     @onSave="isOpedEditDropDown.uniqueItems = false; updateClientFactoryHangler(dataForUpdating.uniqueItems, clientFactory)">
         <TwoColumnLayout v-if="!isOpedEditDropDown.uniqueItems" :data="officeDetails.uniqueItems" theme="accent"/>
 
-        <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'uniqueItems')" :data="officeDetails.uniqueItems" theme="accent"/>
+        <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'uniqueItems')" :data="officeDetails.uniqueItems" theme="accent"/>
     </DropDownEditGroup>
 </template>
 

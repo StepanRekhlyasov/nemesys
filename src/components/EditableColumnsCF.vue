@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineProps, defineEmits, withDefaults, computed, ref, watch } from 'vue';
 import ParentClient from './form/clientFactoryForms/ParentClient.vue';
+import FacilityType from './form/clientFactoryForms/FacilityType.vue';
 import ContractUnit from './form/ContractUnit.vue';
 import ClientType from './form/clientForms/ClientType.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
@@ -15,12 +16,15 @@ enum InputType {
     MUNICIPALITY = 'municipality',
     CLIENT = 'client',
     CONTRACT_UNIT = 'contract_unit',
-    INDUSTRY = 'industry'
+    INDUSTRY = 'industry',
+    DISPATCH_CONTRACT = 'dispatch_contract',
+    REFERRAL_CONTRACT = 'referral_contract',
+    FACILITY = 'facility'
 }
 
 export interface Data {
     label: string;
-    value: string | number | string[];
+    value: string | number | boolean | string[];
     editType: string
     key: string
 }
@@ -76,9 +80,18 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                     :options="municipalities"
                     v-model="row.value"  
                     :placeholder="t('client.add.municipalitieLabel')"/>
+                <q-checkbox v-else-if="row.editType === InputType.DISPATCH_CONTRACT && typeof row.value === 'boolean'"
+                    size="xs"
+                    v-model="row.value"
+                    :label="t('client.add.conclusionDispatchContract')" :color="theme" />
+                <q-checkbox v-else-if="row.editType === InputType.REFERRAL_CONTRACT && typeof row.value === 'boolean'"
+                    size="xs"
+                    v-model="row.value"
+                    :label="t('client.add.conclusionReferralContract')" :color="theme"/>
                 <ParentClient v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'" v-model="row.value" :is-label="false" :theme="theme"/>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
+                <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
@@ -98,9 +111,18 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                     :options="municipalities"
                     v-model="row.value"  
                     :placeholder="t('client.add.municipalitieLabel')"/>
+                <q-checkbox v-else-if="row.editType === InputType.DISPATCH_CONTRACT && typeof row.value === 'boolean'"
+                    size="xs"
+                    v-model="row.value"
+                    :label="t('client.add.conclusionDispatchContract')" :color="theme" />
+                <q-checkbox v-else-if="row.editType === InputType.REFERRAL_CONTRACT && typeof row.value === 'boolean'"
+                    size="xs"
+                    v-model="row.value"
+                    :label="t('client.add.conclusionReferralContract')" :color="theme"/>
                 <ParentClient v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'" v-model="row.value" :is-label="false" :theme="theme"/>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
+                <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
@@ -113,7 +135,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
 }
 .line {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     width: 100%;
 
     &__label {

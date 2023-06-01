@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, ref, watchEffect, watch } from 'vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
-import EditableTwoColumnLayout, {Data} from 'src/components/EditableTwoColumnLayout.vue';
+import EditableColumnsCF, {Data} from 'src/components/EditableColumnsCF.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../../handlers/ClientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -68,7 +68,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
                 v-if="!isOpedEditDropDown.headOfficeInfo"/>
 
-            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
+            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
         </DropDownEditGroup>
 
         <DropDownEditGroup
@@ -82,7 +82,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             <TwoColumnLayout :data="headDetails.clientInfo" theme="accent"
                 v-if="!isOpedEditDropDown.clientInfo"/>
 
-            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
+            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
         </DropDownEditGroup>
 
         <DropDownEditGroup
@@ -96,7 +96,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
                 v-if="!isOpedEditDropDown.contractInfo"/>
 
-            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
+            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
         </DropDownEditGroup>
 
     </div>

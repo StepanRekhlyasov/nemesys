@@ -3,7 +3,7 @@ import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
-import EditableTwoColumnLayout, { Data } from 'src/components/EditableTwoColumnLayout.vue';
+import EditableColumnsCF, { Data } from 'src/components/EditableColumnsCF.vue';
 
 import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../../handlers/ClientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -47,7 +47,7 @@ watchEffect(() => {
             <TwoColumnLayout :data="headDetails.clientInfo" theme="accent"
                 v-if="!isOpedEditDropDown.clientInfo"/>
 
-            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
+            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
         </DropDownEditGroup>
 
         <DropDownEditGroup
@@ -61,7 +61,7 @@ watchEffect(() => {
             <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
                 v-if="!isOpedEditDropDown.contractInfo"/>
 
-            <EditableTwoColumnLayout v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
+            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
         </DropDownEditGroup>
 </template>
 
