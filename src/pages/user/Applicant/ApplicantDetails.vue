@@ -158,12 +158,11 @@ const chooseFiles = () => {
 const selectedApplicant = computed(()=>applicantStore.state.selectedApplicant)
 const applicantImage = ref([])
 
-const onFileChange = async (applicantImage) => {
-  if (selectedApplicant.value && applicantImage.value && applicantImage.value.length > 0) {
-    const file = applicantImage[0];
+const onFileChange = async (image) => {
+  if (selectedApplicant.value && image && image.length > 0) {
+    const file = image[0];
     const storage = getStorage();
     const storageRef = refStorage(storage, 'applicants/' + selectedApplicant.value.id + '/image/' + file['name']);
-
     try {
       const ret = {}
       const snapshot = await uploadBytes(storageRef, file)

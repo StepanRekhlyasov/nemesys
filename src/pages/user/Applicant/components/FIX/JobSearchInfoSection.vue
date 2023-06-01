@@ -9,9 +9,11 @@
 
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" 
-				:value="fixData.inspectionStatus" valueClass="text-uppercase col-3 q-pl-md">
-				<q-radio v-model="data['inspectionStatus']" val="ok" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" :disable="disableLevel < 1"/>
-				<q-radio v-model="data['inspectionStatus']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" :disable="disableLevel < 1"/>
+				:value="fixData.inspectionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+				<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" 
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+				<q-checkbox v-model="data['inspectionStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
+          unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
 			</labelField>
 			
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.date')" :value="fixData.inspectionDate">                
@@ -123,7 +125,7 @@ resetData();
 
 function resetData() {
 	data.value = {
-		inspectionStatus: props.editData['inspectionStatus'] || '',
+		inspectionStatus: props.editData['inspectionStatus'] || false,
 		inspectionDate: props.editData['inspectionDate'] || '',
 		reasonNG: props.editData['reasonNG'] || '',
 		reasonJobDetal: props.editData['reasonJobDetal'] || '',
@@ -135,7 +137,7 @@ function resetData() {
 }
 
 function changeJobStatus() {
-	if (data.value['inspectionStatus'] && data.value['inspectionStatus'] == 'ng') {
+	if (data.value['inspectionStatus'] && data.value['inspectionStatus'] == false) {
 		switch(data.value['reasonNG']){
 			case('notApplicable'):
 				statusJobOptions.value = notApplicableFixList;
