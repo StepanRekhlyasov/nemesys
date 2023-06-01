@@ -1,9 +1,9 @@
 <template>
   <q-td auto-width key="EditButton">
     <q-btn v-if="props.rowIndex !== editableRow" icon="edit" flat
-      @click="emit('onEditableRowChange', props.rowIndex); onEdit();" :color="color" />
+      @click="emit('onEditableRowChange', props.rowIndex); onEdit();" :color="color" :disable="disable" />
     <q-btn v-if="editableRow >= 0 && props.rowIndex === editableRow" flat icon="mdi-content-save"
-      @click="onSave(); emit('onEditableRowChange', -1)" :color="color" />
+      @click="onSave(); emit('onEditableRowChange', -1)" :color="color" :disable="disable" />
   </q-td>
 </template>
 
@@ -16,6 +16,7 @@ interface EditButtonProps {
   editableRow: number
   onEdit: () => void
   onSave: () => Promise<void>
+  disable?: boolean
 }
 
 defineProps<EditButtonProps>()

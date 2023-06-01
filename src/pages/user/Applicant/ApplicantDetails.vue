@@ -134,6 +134,7 @@ import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { useOrganization } from 'src/stores/organization';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
@@ -174,6 +175,10 @@ const onFileChange = async (applicantImage) => {
       console.log(error);
     }
   }
+}
+const organization = useOrganization()
+if (organization.currentOrganizationId){
+  applicantStore.fetchUsersInChrage()
 }
 </script>
 <style lang="scss">

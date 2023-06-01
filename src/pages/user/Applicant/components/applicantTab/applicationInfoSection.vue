@@ -3,7 +3,7 @@
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
-    @closeEdit="resetData();edit = false;"
+    @closeEdit="resetData(); edit = false;"
     @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -174,52 +174,51 @@
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, Ref, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
-import { Applicant, ApplicantInfo } from 'src/shared/model';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate, timestampToDateFormat, dateToTimestampFormat } from 'src/shared/utils/utils'
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   applicant: Applicant
 }>()
-
+const defaultData = ref<Partial<ApplicantInputs>>({})
+const data = ref<Partial<ApplicantInputs>>({})
 const edit = ref(false);
 const loading = ref(false);
-const applicationMethodOption = ref(applicationMethod)
 const applicantStore = useApplicant();
-const defaultData = {
-  applicationDate: timestampToDateFormat(props?.applicant['applicationDate']),
-  name: props?.applicant['name'] || '',
-  media: props?.applicant['media'] || '',
-  kanaName: props?.applicant['kanaName'] || '',
-  applicationMetod: props?.applicant['applicationMetod'] || '',
-  sex: props?.applicant['sex'],
-  dob: timestampToDateFormat(props?.applicant['dob']),
-  phone: props?.applicant['phone'],
-  email: props?.applicant['email'] || '',
-  lon: props?.applicant['lon'] || undefined,
-  lat: props?.applicant['lat'] || undefined,
-  postCode: props?.applicant['postCode'] || '',
-}
-const data = ref(JSON.parse(JSON.stringify(defaultData)))
 
-const saveData: Ref<ApplicantInfo> = ref({})
-function resetData(){
-  data.value = JSON.parse(JSON.stringify(defaultData));
+const applicationMethodOption = ref(applicationMethod)
+
+function resetData() {
+  defaultData.value = {
+    applicationDate: timestampToDateFormat(props?.applicant['applicationDate']),
+    name: props?.applicant['name'],
+    media: props?.applicant['media'],
+    kanaName: props?.applicant['kanaName'],
+    applicationMetod: props?.applicant['applicationMetod'],
+    sex: props?.applicant['sex'],
+    dob: timestampToDateFormat(props?.applicant['dob']),
+    phone: props?.applicant['phone'],
+    email: props?.applicant['email'],
+    lon: props?.applicant['lon'],
+    lat: props?.applicant['lat'],
+    postCode: props?.applicant['postCode'],
+  }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
+resetData()
+
 const age = computed(()=>data.value['dob']?RankCount.ageCount(data.value['dob']):'');
 
 async function save() {
   loading.value = true
-  saveData.value = JSON.parse(JSON.stringify(data.value));
-  saveData.value.applicationDate = dateToTimestampFormat(new Date(data.value.applicationDate));
-  saveData.value.dob = dateToTimestampFormat(new Date(data.value.dob));
   try {
-    await applicantStore.updateApplicant(saveData.value);
+    await applicantStore.updateApplicant(data.value);
     edit.value = false;
   } catch (error) {
     loading.value = false;

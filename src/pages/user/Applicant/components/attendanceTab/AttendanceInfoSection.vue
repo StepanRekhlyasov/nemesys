@@ -21,7 +21,7 @@
       {{ $t('applicant.attendant.day') }}
     </div>
     <div class="col-2 q-pl-md  blue ">
-      <span v-if="!infoEdit">{{ applicant.attendingDate }}</span>
+      <span v-if="!infoEdit">{{ timestampToDateFormat(applicant.attendingDate) }}</span>
       <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendingDate']"  :disable="loading">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
@@ -62,65 +62,44 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { attendantStatus } from 'src/shared/constants/Applicant.const';
-import { Ref, computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { Alert } from 'src/shared/utils/Alert.utils';
-import { useOrganization } from 'src/stores/organization';
-import { Applicant, Attendance } from 'src/shared/model';
+import { attendantStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
+import { ref } from 'vue';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   applicant: Applicant
 }>()
 
 const applicantStore = useApplicant();
-const organization = useOrganization();
 const infoEdit = ref(false);
 const loading = ref(false);
 const attendantStatusOption = ref(attendantStatus);
-const usersListOption = computed(()=>{
-  return applicantStore.state.usersInCharge.map((doc) => {
-    return {
-      label: doc.displayName,
-      value: doc.id
-    }
-  });
-});
-const data: Ref<Attendance>  = ref({});
-
-if (organization.currentOrganizationId){
-  applicantStore.fetchUsersInChrage()
-}
-resetData();
+const usersListOption = usersInCharge.value
+const data = ref<Partial<ApplicantInputs>>({});
+const defaultData = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
-  data.value = {
-    attendingStatus: props?.applicant['attendingStatus'] || undefined,
-    attendingDate: props?.applicant['attendingDate'] || '',
-    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'] || '',
-    memo: props?.applicant['memo'] || '',
+  defaultData.value = {
+    attendingStatus: props?.applicant['attendingStatus'],
+    attendingDate: timestampToDateFormat(props?.applicant['attendingDate']),
+    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'],
+    memo: props?.applicant['memo'],
   }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
+resetData()
 
 async function saveInfo() {
   loading.value = true
   try {
     await applicantStore.updateApplicant(data.value);
-    Alert.success($q, t);
     infoEdit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }
-
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 </script>

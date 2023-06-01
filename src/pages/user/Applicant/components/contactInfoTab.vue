@@ -67,7 +67,7 @@
 
       <template v-slot:body-cell-content="props">
         <q-td :props="props">
-          <q-input :color="color" v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.content" />
+          <q-input v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.content" />
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.content }}
           </template>
@@ -76,7 +76,7 @@
 
       <template v-slot:body-cell-note="props">
         <q-td :props="props">
-          <q-input :color="color" v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.note" />
+          <q-input v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.note" />
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.note }}
           </template>
@@ -85,7 +85,7 @@
 
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
-          {{ props.value }}
+          {{ toDate(props.value) }}
         </q-td>
       </template>
       <template v-slot:body-cell-created_by="props">
@@ -96,13 +96,22 @@
 
       <template v-slot:body-cell-edit="props">
         <EditButton :props="props" color="primary"
-          :on-edit="() => { editableContect = JSON.parse(JSON.stringify(props.row))}"
-          :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
-          :editable-row="editableRow" :key="props.rowIndex"/>
+          :disable="loading"
+          :on-edit="() => { 
+            editableContect = JSON.parse(JSON.stringify(props.row))
+            editableContect.created_at = props.row.created_at
+          }"
+          :on-save="() => onUpdate(props.rowIndex)" 
+          @onEditableRowChange="(row) => {
+            editableRow = row
+          }"
+          :editable-row="editableRow" 
+          :key="props.rowIndex"
+        />
       </template>
       <template v-slot:body-cell-delete="props">
         <q-td :props="props">
-          <q-btn icon="mdi-delete-outline" flat @click="showDeleteDialog(props.row)"/>
+          <q-btn icon="mdi-delete-outline" flat @click="showDeleteDialog(props.row.id)"/>
         </q-td>
       </template>
 
@@ -110,291 +119,155 @@
   </q-card>
 </template>
 
-<script >
+<script setup lang="ts">
+
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount} from 'vue';
-import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
+import { ref, onMounted} from 'vue';
+import { addDoc, collection, serverTimestamp, getFirestore, where, updateDoc, doc, orderBy, DocumentData } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 import { getAuth } from '@firebase/auth';
+import { Applicant } from 'src/shared/model';
+import { usersInCharge, contactColumns as columns } from 'src/shared/constants/Applicant.const';
+import { useApplicant } from 'src/stores/applicant';
 
-//import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
-//import { teleAppointmentData } from 'src/shared/constants/TeleAppoint.const';
+const props = defineProps<{
+  applicant: Applicant
+}>()
+const { t } = useI18n({ useScope: 'global' });
+const auth = getAuth()
+const contactListData = ref<DocumentData[]>([])
 
-export default {
-  name: 'contactInfo',
-  components: {
-  },
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+});
 
-  props: {
-    applicant: {
-      type: Object,
-      required: true
-    }
-  },
-  components: {
-    EditButton
-  },
-  setup(props) {
-    const { t } = useI18n({ useScope: 'global' });
-    const auth = getAuth()
-    const contactListData = ref([])
-    const deleteItemId = ref('');
+const loading = ref(false);
+const showAddForm = ref(false);
+const editableRow = ref(-1)
+const editableContect = ref<DocumentData>({})
+const contactData = ref({
+});
 
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
+const db = getFirestore();
+const $q = useQuasar();
+const applicantStore = useApplicant()
+const user : {
+  uid: string
+} | null = $q.localStorage.getItem('user');
+
+const users = usersInCharge
+function isRowSelected(row ) {
+  return row == editableRow.value
+}
+const updateContactList = async () => {
+  contactListData.value = await applicantStore.getApplicantContactData(props.applicant.id, [where('deleted', '==', false), orderBy('created_at', 'desc')])
+}
+onMounted( () => {
+  updateContactList()
+});
+
+async function onSubmit() {
+  loading.value = true;
+  let data = contactData.value;
+  if (!data['contactMethod']) {
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('failed'),
     });
-
-    const columns = computed(() => {
-      return [
-        {
-          name: 'edit',
-          align: 'left',
-          headerStyle: 'width: 24px'
-        },
-        {
-          name: 'created_at',
-          required: true,
-          label: t('applicant.list.contacts.dateTime'),
-          field: 'created_at',
-          align: 'left',
-        },
-        {
-          name: 'contactMethod',
-          required: true,
-          label: t('applicant.list.contacts.contactMethod'),
-          field: 'contactMethod',
-          align: 'left',
-        },
-        {
-          name: 'created_by',
-          label: t('applicant.list.contacts.userInharge'),
-          field: 'created_by',
-          align: 'left',
-        },
-        {
-          name: 'content',
-          label: t('applicant.list.contacts.content'),
-          field: 'content',
-          align: 'left',
-        },
-        {
-          name: 'note',
-          label: t('applicant.list.contacts.note'),
-          field: 'note',
-          align: 'left',
-        },
-        {
-          name: 'delete',
-          align: 'left',
-        }
-      ];
+    loading.value = false;
+    return
+  }
+  try {
+    data['created_at'] = serverTimestamp();
+    data['updated_at'] = serverTimestamp();
+    data['deleted'] = false;
+    data['created_by'] = user?.uid;
+    await addDoc(
+      collection(db, 'applicants/' + props.applicant.id + '/contacts'),
+      data
+    );
+    loading.value = false;
+    contactData.value = {};
+    await updateContactList()
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: t('success'),
     });
-
-    const loading = ref(false);
-    const showAddForm = ref(false);
-    const editableRow = ref(-1)
-    const editableContect = ref({})
-    const contactData = ref({
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('failed'),
     });
-
-    const db = getFirestore();
-    const $q = useQuasar();
-    const unsubscribe = ref();
-    const unsubscribeUsers = ref();
-
-    loadContactData()
-    function loadContactData() {
-      const q = query(collection(db, 'applicants/' + props.applicant.id + '/contacts'), where('deleted', '==', false), orderBy('created_at', 'desc'));
-      unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-        let contData = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          data['id'] = doc.id;
-          contData.push({ ...data, created_at: toDate(data.created_at) });
-        });
-        contactListData.value = contData;
-      },
-        (error) => {
-          console.log(error)
-          // ...
-        });
-    }
-
-
-    const users = ref([]);
-    loadUsers()
-    function loadUsers() {
-      const q = query(collection(db, 'users/'), where('deleted', '==', false));
-      unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
-        let userList = [];
-        querySnapshot.forEach((doc) => {
-          userList.push({ id: doc.id, name: doc.data().name });
-        });
-        users.value = userList;
-      });
-    }
-
-
-    onBeforeUnmount(() => {
-      unsubscribe.value();
-      unsubscribeUsers.value();
+  }
+}
+function resetData() {
+  contactData.value = {};
+  showAddForm.value = false;
+}
+async function onUpdate(index : number) {     
+  try {
+    loading.value = true;
+    const updateData = {}
+    updateData['updated_at'] = serverTimestamp();
+    updateData['updated_by'] = auth.currentUser?.uid;
+    updateData['content'] = editableContect.value.content  || '';
+    updateData['note'] = editableContect.value.note || '';
+    updateData['contactMethod'] = editableContect.value.contactMethod || '';
+    await updateDoc(
+      doc(db, 'applicants/' + props.applicant.id + '/contacts/' + editableContect.value['id']),
+      updateData
+    );
+    contactListData.value[index] = editableContect.value;
+    loading.value = false;
+  } catch (e) {
+    console.log(e) 
+    loading.value = false;
+  }
+}
+function getUserName(uid : string) {
+  const value = users.value.find(x => x['value'] === uid)
+  if (value) {
+    return value['label'];
+  }
+  return '';
+}
+function showDeleteDialog(id : string) {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('common.deleteInfo'),
+    persistent: true,
+    cancel: t('common.cancel'),
+  }).onOk(async () => {
+    let updateData = {}
+    updateData['deleted'] = true;
+    updateData['deleted_by'] = user?.uid;
+    updateData['deleted_at'] = serverTimestamp();
+    await updateDoc(
+      doc(db, 'applicants/' + props.applicant.id + '/contacts/' + id),
+      updateData
+    );
+    await updateContactList()
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: t('success'),
     });
-
-
-    return {
-      columns,
-      contactListData,
-      pagination,
-
-      contactData,
-      showAddForm,
-      loading,
-
-      editableRow,
-      editableContect,
-
-
-      isRowSelected(row ) {
-        return row == editableRow.value
-      },
-      async onSubmit() {
-        loading.value = true;
-        let data = contactData.value;
-        if (!data['contactMethod']) {
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
-          return
-
-        }
-        const user = $q.localStorage.getItem('user');
-
-        try {
-          data['created_at'] = serverTimestamp();
-          data['updated_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = user?.uid;
-
-          await addDoc(
-            collection(db, 'applicants/' + props.applicant.id + '/contacts'),
-            data
-          );
-
-          loading.value = false;
-          contactData.value = {};
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
-          //applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
-          //applicantForm.value.resetValidation();
-        } catch (error) {
-          console.log(error);
-          loading.value = false;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
-        }
-      },
-      async deleteItem() {
-        if (!deleteItemId.value) {
-          return false;
-        }
-        const user = $q.localStorage.getItem('user');
-
-        let updateData = {}
-        updateData['deleted'] = true;
-        updateData['deleted_by'] = user.uid;
-        updateData['deleted_at'] = serverTimestamp();
-
-        await updateDoc(
-          doc(db, 'applicants/' + props.applicant.id + '/contacts/' + deleteItemId.value),
-          updateData
-        );
-
-        $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-        });
-      },
-      resetData() {
-        contactData.value = {};
-        showAddForm.value = false;
-      },
-      async onUpdate(index) {       
-        try {
-          loading.value = true;
-          let updateData = {}
-          updateData['updated_at'] = serverTimestamp();
-          updateData['updated_by'] = auth.currentUser?.uid;
-          updateData['content'] = editableContect.value.content  || '';
-          updateData['note'] = editableContect.value.note || '';
-          updateData['contactMethod'] = editableContect.value.contactMethod || '';
-
-          await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/contacts/' + editableContect.value['id']),
-            updateData
-          );
-          contactListData.value[index] = editableContect.value;
-          loading.value = false;
-        } catch (e) {
-          console.log(e) 
-          loading.value = false;
-        }
-      },
-      getUserName(uid) {
-        const value = users.value.find(x => x['id'] === uid)
-        if (value) {
-          return value['name'];
-        }
-        return '';
-      },
-      showDeleteDialog(data) {
-        $q.dialog({
-          title: t('common.delete'),
-          message: t('common.deleteInfo'),
-          persistent: true,
-          cancel: t('common.cancel'),
-        }).onOk(async () => {
-          const user = $q.localStorage.getItem('user');
-
-          let updateData = {}
-          updateData['deleted'] = true;
-          updateData['deleted_by'] = user?.uid;
-          updateData['deleted_at'] = serverTimestamp();
-
-          await updateDoc(
-            doc(db, 'applicants/' + props.applicant.id + '/contacts/' + data.id),
-            updateData
-          );
-
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
-        })
-      }
-
-    };
-  },
-};
+  })
+}
 </script>
 
 <style>
