@@ -154,7 +154,7 @@ export const useApplicant = defineStore('applicant', () => {
         return item.data() as Applicant
       })
 
-      if(perQuery+1 == docSnap.docs.length){
+      if(perQuery+1 === docSnap.docs.length){
         state.value.continueFromDoc[status] = docSnap.docs[docSnap.docs.length-1]
         documents.pop()
       } else {
@@ -176,7 +176,7 @@ export const useApplicant = defineStore('applicant', () => {
     applicants.map((applicant)=>{
       const needsUpdate : Record<string, string | number>[] = []
       for(const [key, value] of Object.entries(requiredFields)){
-        if(typeof applicant[key] == 'undefined'){
+        if(typeof applicant[key] === 'undefined'){
           needsUpdate[key] = value
         }
       }
@@ -365,7 +365,7 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => state.value.selectedApplicant, (newValue) => {
     if(!newValue?.status) return;
     if(!state.value.applicantsByColumn[newValue.status]) return;
-    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id==newValue?.id)
+    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id===newValue?.id)
     if(changingApplicantIndex>=0){
       state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
     }
@@ -375,9 +375,9 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
 
     if (!state.value.selectedApplicant) return;
-    if (newValue[0] != oldValue[0]) return;
+    if (newValue[0] !== oldValue[0]) return;
     if (!newValue[0] || !oldValue[0]) return;
-    if (newValue[1] == oldValue[1]) return;
+    if (newValue[1] === oldValue[1]) return;
     if (!newValue[1]) return;
 
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
@@ -385,7 +385,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
 
     if (state.value.applicantsByColumn[newValue[1]]) {
-      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
+      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
       if (index>-1) return; 
       state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
