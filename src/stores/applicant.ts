@@ -169,7 +169,7 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   /** this function checks and creates reqiured fields if they would not exist for some reason */
-  async function validateApplicant(applicants : Applicant[]){
+  function validateApplicant(applicants : Applicant[]){
     const fire = ref(false)
     const batch = writeBatch(db);
     const forUpdate : Record<string, string | number>[] = []
@@ -191,12 +191,12 @@ export const useApplicant = defineStore('applicant', () => {
     }
     if(fire.value){
       try{
-        return await batch.commit()
+        batch.commit()
       } catch (e){
         console.log(e)
       }
     }
-    return false
+    return fire.value
   }
 
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
