@@ -111,7 +111,8 @@ import { useFix } from 'src/stores/fix';
 
 const props = defineProps<{
   fixData: ApplicantFix,
-  applicant: Applicant
+  applicant: Applicant,
+  disableLevel: number
 }>()
 const emits = defineEmits(['updateList', 'close', 'updateDoc', 'updateStatus'])
 
@@ -123,23 +124,8 @@ const fixStore = useFix();
 
 const data = ref({...props.fixData});
 const loading = ref(false);
-const disableLevel = ref(0);
 const edit = ref<string[]>([])
 const usersListOption = ref<selectOptions[]>([]);
-
-function disableChange() {
-  let level = 0;
-  if (data.value['status'] == 'ok') {
-    level = 1
-  }
-  if (data.value['inspectionStatus'] == 'ok') {
-    level = 2
-  }
-  if (data.value['offerStatus'] == 'ok') {
-    level = 3
-  }
-  disableLevel.value = level
-}
 
 function loadUser() {
   const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
@@ -157,9 +143,8 @@ function loadUser() {
   })
 }
 loadUser();
-disableChange();
 
-function save(type: string, dataR) {
+async function save(type: string, dataR) {
   let retData = {};
   switch(type){
     case 'info': {
@@ -202,11 +187,10 @@ function save(type: string, dataR) {
       return ;
     }
   }
-  emits('updateDoc', retData);
+  await emits('updateDoc', retData)
   emits('updateList')
   emits('updateStatus')
   edit.value=edit.value.filter(i => i !== type)
-  disableChange()
 }
 async function  saveDoc() {
   try {
