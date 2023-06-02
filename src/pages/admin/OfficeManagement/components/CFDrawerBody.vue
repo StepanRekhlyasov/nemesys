@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, ref, watchEffect } from 'vue';
 import EditableColumnsCF, {Data} from 'src/components/EditableColumnsCF.vue';
 import HighlightTwoColumn from './HighlightTwoColumn.vue';
-import { useHighlightMainInfo } from '../../handlers/ClientFactory';
-import { RenderMainInfo } from '../../types';
+import { useHighlightMainInfo } from '../handlers';
+import { RenderMainInfo } from '../types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });

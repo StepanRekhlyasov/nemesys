@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineProps, onMounted, ref, watch } from 'vue';
-import { useReflectLogLabels } from '../../handlers/ClientFactory';
+import { useReflectLogLabels } from '../handlers';
 import { ReflectLog } from 'src/shared/model/ReflectLog'
 import { useClientFactory } from 'src/stores/clientFactory';
 

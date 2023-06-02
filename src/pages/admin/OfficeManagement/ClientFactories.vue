@@ -3,16 +3,17 @@ import { ref, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
-import CFPageActions from './components/ClientFactory/CFPageActions.vue';
+import CFPageActions from './components/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
-import NewClientDrawer from './NewClientDrawer.vue';
-import NewClientFactoryDrawer from './NewClientFactoryDrawer.vue';
-import ClientFactoryTable from './components/ClientFactory/ClientFactoryTable.vue';
-import Pagination from './components/PaginationView.vue';
+import NewClientDrawer from 'src/components/client-factory/NewClientDrawer.vue';
+import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFactoryDrawer.vue';
+import ClientFactoryTable from 'src/components/client-factory/ClientFactoryTable.vue';
+import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryTableRow } from './types';
-import { clientFactoriesToTableRows } from './handlers/ClientFactory';
+import { ClientFactoryTableRow } from 'src/components/client-factory/types';
+import { clientFactoriesToTableRows } from './handlers';
 import { useClient } from 'src/stores/client';
+import consts from './consts';
 
 const { t } = useI18n({ useScope: 'global' });
 const clientFactoryStore = useClientFactory()
@@ -110,6 +111,7 @@ const openNewClientFactoryDrawer = () => {
                 :isFetching="fetchData"
                 :rows="paginatedTableRows"
                 :pagination="pagination"
+                :table-columns="consts.tableColumnsClientFactory.value"
                 />
                 <Pagination
                 :rows="tableRows"

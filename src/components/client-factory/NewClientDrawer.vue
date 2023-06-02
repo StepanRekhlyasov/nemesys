@@ -68,6 +68,7 @@ const onSubmit = async (newClientData: Client | null) => {
                     telContact: newClientData.tel,
                     mailContact: newClientData.mail,
                     numberEmployees: newClientData.numberEmployees,
+                    positionContact: '',
                     contractInfo: {
                         contractUnit: newClientData.contractUnit,
                         industry: newClientData.industry,
@@ -75,7 +76,8 @@ const onSubmit = async (newClientData: Client | null) => {
                         contractFax: newClientData.personInChargeFax,
                         contractMail: newClientData.personInChargeMail,
                         contractPerson: newClientData.personInCharge,
-                    }
+                    },
+                    draft: {}
                 } as ClientFactory)
             }
 

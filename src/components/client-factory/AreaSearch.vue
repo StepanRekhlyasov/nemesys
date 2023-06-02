@@ -3,7 +3,7 @@ import { ref, defineProps, defineEmits, watch, onMounted } from 'vue';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
-import SearchField from './SearchField.vue';
+import SearchField from '../SearchField.vue';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 
 const props = defineProps<{

@@ -1,25 +1,19 @@
 <script lang="ts" setup>
-import { computed, ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
-import consts from '../../consts';
-import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from '../../types';
+import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from './types';
 
 const props = defineProps<{
     rows: ClientFactoryTableRow[],
     isFetching: boolean,
-    pagination: Pagination
+    pagination: Pagination,
+    tableColumns: ClientFactoryTableColumn[]
 }>()
 const emit = defineEmits<{
     (e: 'selectItem', item: ClientFactoryTableRow)
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
-const columns = computed(() => {
-    return consts.tableColumnsClientFactory.map((column: ClientFactoryTableColumn, index: number) => {
-        column.label = t(consts.columnLabelsClientFactory[index])
-        return column
-    })
-})
 
 const selected = ref<number[]>([])
 const getSelectedString = () => {
@@ -34,7 +28,7 @@ const selectItem = (item: ClientFactoryTableRow) => {
 <template>
     <q-table
     :rows="props.rows"
-    :columns="columns"
+    :columns="tableColumns"
     :rows-per-page-options="[pagination.rowsPerPage]"
     row-key="id"
     color="accent"

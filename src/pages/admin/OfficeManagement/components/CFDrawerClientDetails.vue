@@ -5,9 +5,9 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableColumnsCF, { Data } from 'src/components/EditableColumnsCF.vue';
 
-import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../../handlers/ClientFactory';
+import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderHeadDetails } from '../../types'
+import { RenderHeadDetails } from '../types'
 const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
@@ -36,7 +36,7 @@ watchEffect(() => {
 </script>
 
 <template>
-        <DropDownEditGroup
+    <DropDownEditGroup
         :label="t('clientFactory.drawer.clientInfo')"
         :isEdit="isOpedEditDropDown.clientInfo"
         :isLabelSquare="true"
@@ -48,9 +48,9 @@ watchEffect(() => {
                 v-if="!isOpedEditDropDown.clientInfo"/>
 
             <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
-        </DropDownEditGroup>
+    </DropDownEditGroup>
 
-        <DropDownEditGroup
+    <DropDownEditGroup
         :label="t('clientFactory.drawer.contractInfo')"
         :isEdit="isOpedEditDropDown.contractInfo"
         :isLabelSquare="true"
@@ -62,7 +62,7 @@ watchEffect(() => {
                 v-if="!isOpedEditDropDown.contractInfo"/>
 
             <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
-        </DropDownEditGroup>
+    </DropDownEditGroup>
 </template>
 
 <style lang="scss" scoped>

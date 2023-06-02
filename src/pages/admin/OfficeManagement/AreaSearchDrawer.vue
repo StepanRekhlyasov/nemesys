@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
-import AreaSearch from 'src/components/AreaSearch.vue';
+import AreaSearch from 'src/components/client-factory/AreaSearch.vue';
 import { Client } from 'src/shared/model';
 
 const props = defineProps<{

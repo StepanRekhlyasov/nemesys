@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, onMounted, ref, watch } from 'vue';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { ImportLog } from 'src/shared/model/ImportLog';
-import {useImportLogLabels} from '../../handlers/ClientFactory'
+import {useImportLogLabels} from '../handlers'
 
 const { t } = useI18n({ useScope: 'global' });
 

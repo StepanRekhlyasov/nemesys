@@ -5,9 +5,9 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableColumnsCF, {Data} from 'src/components/EditableColumnsCF.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../../handlers/ClientFactory';
+import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderHeadDetails } from '../../types'
+import { RenderHeadDetails } from '../types'
 
 const { t } = useI18n({ useScope: 'global' });
 

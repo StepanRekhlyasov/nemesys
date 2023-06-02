@@ -7,7 +7,7 @@ import CFDrawerClientDetails from './CFDrawerClientDetails.vue';
 import CFDrawerImportDetails from './CFDrawerImportDetails.vue';
 import CFDrawerReflectDetail from './CFDrawerReflectDetail.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryDetailTabs } from '../../types'
+import { ClientFactoryDetailTabs } from '../types'
 
 defineProps<{
     clientFactory: ClientFactory

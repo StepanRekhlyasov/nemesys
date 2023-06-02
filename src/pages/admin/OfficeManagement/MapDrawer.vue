@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
-import MapSearchVue from 'src/components/MapSearch.vue';
+import MapSearchVue from 'src/components/client-factory/MapSearch.vue';
 import { Client } from 'src/shared/model';
 
 const props = defineProps<{

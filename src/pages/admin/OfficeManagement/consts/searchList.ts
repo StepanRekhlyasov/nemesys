@@ -1,4 +1,4 @@
-import { ClientFactoryTableColumn } from '../types';
+import { ClientFactoryTableColumn } from 'src/components/client-factory/types'
 
 export const tableColumnsSavedCriteriaList: ClientFactoryTableColumn[] = [
     {

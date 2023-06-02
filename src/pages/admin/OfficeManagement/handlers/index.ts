@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
-import { ClientFactoryTableRow, RenderOfficeDetails, RenderHeadDetails, RenderMainInfo } from '../../types';
+import { RenderOfficeDetails, RenderHeadDetails, RenderMainInfo } from '../types';
+import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -11,7 +12,7 @@ const {updateClient} = useClient()
 const { t } = i18n.global
 
 export const updateClientFactoryHangler = (
-  changedData: Array<{ label: string; value: string | number | string[]; editType: string; key: string }>,
+  changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
   clientFactory: ClientFactory
   ) => {
     const updatedClientFactory = JSON.parse(JSON.stringify(clientFactory));
@@ -35,7 +36,7 @@ export const updateClientFactoryHangler = (
 };
 
 export const updateClientHandler = (
-  changedData: Array<{ label: string; value: string | number | string[]; editType: string; key: string }>,
+  changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
   clientFactory: ClientFactory
 ) => {
   const updatedClient = JSON.parse(JSON.stringify(clientFactory.client))
