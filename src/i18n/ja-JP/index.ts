@@ -1525,6 +1525,7 @@ export default {
     genderRatio:'性別比率 ',
     ageComposition:'年齢構成',
     daysToWork:'勤務日数',
+    yen:'円',
     categories:{
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
@@ -1546,6 +1547,10 @@ export default {
       BOExisting:'BO既存',
       female:'女性',
       male:'男性',
+      startUnitPrice:'開始単価',
+      applicationUnitPrice:'応募単価',
+      applicationUnitPriceAllAverage:'応募単価 全体平均',
+      startUnitPriceAllAverage:'開始単価 全体平均',
       teens:'10代',
       twenties:'20代',
       thirties:'30代',
@@ -1564,6 +1569,9 @@ export default {
       sex:'性別',
       age:'年齢',
       daysToWork:'勤務日数',
+    unitPriceTransition:'単価推移',
+    mediaApplicationUnitPrice:'媒体別応募単価',
+
     }
   },
   billing: {

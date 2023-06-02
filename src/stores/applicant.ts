@@ -177,6 +177,22 @@ export const useApplicant = defineStore('applicant', () => {
     }
     return result
   }
+  const countApplicantsByMedia = async (media:string, dateRange: { from: string; to: string }) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo),
+      where('media', '==', media)
+    ]
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docCount = await getCountFromServer(querys)
+    const result = docCount.data().count
+    return result
+
+  }
+
 
   const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: ApplicantFilter):Promise<number[] | undefined>=> {
     const targetDateFrom = new Date(dateRange.from);
@@ -348,6 +364,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , countApplicantsBySex, agesListOfApplicants ,countApplicantsdaysToWork }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , countApplicantsBySex, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia}
 })
 

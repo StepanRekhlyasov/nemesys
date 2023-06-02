@@ -1,13 +1,13 @@
 <template>
   <div class="row">
     <div class="col">
-      <RecruitmentEffecitvenessReportRightDownChart
+      <RecruitmentEffecitvenessReportLeftUpChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
         :branch_user_list="branch_user_list"
         :graph_type="graph_type"
-      ></RecruitmentEffecitvenessReportRightDownChart>
+      ></RecruitmentEffecitvenessReportLeftUpChart>
     </div>
     <div class="col">
       <RecruitmentEffecitvenessReportRightUpChart
@@ -21,13 +21,13 @@
   </div>
   <div class="row">
     <div class="col">
-      <RecruitmentEffecitvenessReportRightDownChart
+      <RecruitmentEffecitvenessReportLeftDownChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
         :branch_user_list="branch_user_list"
         :graph_type="graph_type"
-      ></RecruitmentEffecitvenessReportRightDownChart>
+      ></RecruitmentEffecitvenessReportLeftDownChart>
     </div>
     <div class="col">
       <RecruitmentEffecitvenessReportRightDownChart
@@ -45,6 +45,8 @@
 // import ApplicantReportLeftChart from './ApplicantReportLeftChart.vue';
 import RecruitmentEffecitvenessReportRightDownChart from './RecruitmentEffecitvenessReportRightDownChart.vue';
 import RecruitmentEffecitvenessReportRightUpChart from './RecruitmentEffecitvenessReportRightUpChart.vue';
+import RecruitmentEffecitvenessReportLeftUpChart from './RecruitmentEffecitvenessReportLeftUpChart.vue';
+import RecruitmentEffecitvenessReportLeftDownChart from './RecruitmentEffecitvenessReportLeftDownChart.vue';
 
 import { graphType } from '../Models';
 

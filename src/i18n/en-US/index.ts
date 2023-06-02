@@ -1531,6 +1531,7 @@ export default {
     genderRatio:'genderratio',
     ageComposition:'age composition',
     daysToWork:'days to Work',
+    yen:'yen',
     categories:{
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
@@ -1552,6 +1553,10 @@ export default {
       BOExisting:'BO Exisiting',
       female:'female',
       male:'male',
+      startUnitPrice:'Start Unit Price',
+      applicationUnitPrice:'Application Unit Price',
+      applicationUnitPriceAllAverage:'Application Unit Price All Average',
+      startUnitPriceAllAverage:'Start Unit Price All Average',
       teens:'10s',
       twenties:'20s',
       thirties:'30s',
@@ -1569,6 +1574,10 @@ export default {
       sex:'Sex',
       age:'Age',
       daysToWork:'Days to work',
+    unitPriceTransition:'unit price transition',
+    mediaApplicationUnitPrice:'Media application unit price',
+
+
   }
 },
   billing: {

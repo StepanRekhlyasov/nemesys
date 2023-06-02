@@ -11,7 +11,7 @@ export const calculateCVR = (input_list: number[]) => {
 export const  convertToPercentage = (data:number[][]):number[][] => {
   const total = data.reduce((a, b) => a + b[0], 0);
   const percentage = data.map((row) => {
-    return [(row[0] / total) * 100];
+    return [(row[0] / total)*100 ];
   });
   return percentage;
 };

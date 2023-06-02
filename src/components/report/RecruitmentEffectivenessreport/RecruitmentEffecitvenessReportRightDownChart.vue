@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { useApplicant } from 'stores/applicant';
 import { graphType } from '../Models';
-import { onMounted, Ref, ref, ComputedRef, computed } from 'vue';
+import { onMounted, Ref, ref, ComputedRef, computed ,watch} from 'vue';
 import {
   chartOptionsSex,
   chartOptionsAges,
@@ -46,11 +46,11 @@ import {
   rowNamesSex,
   chartTypeAges,
   chartTypeDaysToWork,
-  chartTypeSex
+  chartTypeSex,
 } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
-import {convertToPercentage} from '../reportUtil';
+import { convertToPercentage } from '../reportUtil';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const Applicant = useApplicant();
@@ -108,17 +108,14 @@ const props = defineProps<{
   branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
-//number[][] を百分率に変換する関数 [[3],[2],[12]]を[[15],[10],[60]]に変換する
 
-onMounted(async () => {
+const showChart = async () => {
   if (props.dateRangeProps == undefined) return;
   const sexData = [
     [await countApplicantsBySex('male', props.dateRangeProps)],
     [await countApplicantsBySex('female', props.dateRangeProps)],
   ];
-  //sexDataを100分率に変換してdataToshowに格納する
   dataToshow.value = convertToPercentage(sexData);
-
   const listofages = await agesListOfApplicants(props.dateRangeProps);
   if (listofages == undefined) return;
   const agesData = [
@@ -129,12 +126,19 @@ onMounted(async () => {
     [listofages.filter((age) => age >= 50 && age < 60).length],
     [listofages.filter((age) => age >= 60).length],
   ];
- dataToshowAges.value = convertToPercentage(agesData);
-  const daysData = await countApplicantsdaysToWork(
-    props.dateRangeProps
-  );
-  console.log(daysData)
+  dataToshowAges.value = convertToPercentage(agesData);
+  const daysData = await countApplicantsdaysToWork(props.dateRangeProps);
   dataToshowDaysToWork.value = convertToPercentage(daysData);
-  console.log(dataToshowDaysToWork.value)
+};
+watch(
+  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  async () => {
+    if (props.dateRangeProps == undefined) return;
+    await showChart();
+  }
+);
+
+onMounted(async () => {
+  showChart();
 });
 </script>

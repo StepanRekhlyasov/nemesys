@@ -1,10 +1,24 @@
 <template>
-  工事中
+  <apexchart
+    :options="chartOptions"
+    :series="dataToshow"
+    ref="donut"
+    type="donut"
+  ></apexchart>
 </template>
 
 <script setup lang="ts">
 import { graphType } from '../Models';
+import { onMounted, Ref, ref, computed } from 'vue';
+import { useMedia } from 'stores/media';
+import { useApplicant } from 'stores/applicant';
+import VueApexCharts from 'vue3-apexcharts';
 
+const apexchart = VueApexCharts;
+const dataToshow: Ref<(number | string)[]> = ref([]);
+const media = useMedia();
+const applicant = useApplicant();
+const media_list: Ref<string[]> = ref([]);
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
@@ -12,4 +26,21 @@ const props = defineProps<{
   branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
+const chartOptions = computed(() => {
+  return {
+    legend: { position: 'left' },
+    labels: [...media_list.value],
+  };
+});
+
+onMounted(async () => {
+  media_list.value = await media.getAllmedia();
+  if (props.dateRangeProps === undefined) return;
+  const dateRange = props.dateRangeProps;
+  dataToshow.value = await Promise.all(
+    media_list.value.map(async (media_name) => {
+      return await applicant.countApplicantsByMedia(media_name, dateRange);
+    })
+  );
+});
 </script>

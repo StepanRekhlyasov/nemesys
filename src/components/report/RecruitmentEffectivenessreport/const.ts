@@ -6,6 +6,9 @@ export const rowNamesSex = [
   'report.categories.female',
 ];
 export const chartTypeSex: string[] = ['bar', 'bar'];
+export const chartTypeUnitPrice: string[] = ['bar','bar','line','line']
+export const chartTypeUnitPricePerMedia: string[] = ['bar','bar']
+
 export const rowNamesAges = [
   'report.categories.teens',
   'report.categories.twenties',
@@ -14,6 +17,7 @@ export const rowNamesAges = [
   'report.categories.fifties',
   'report.categories.sixties',
 ];
+
 export const chartTypeAges: string[] = [
   'bar',
   'bar',
@@ -31,6 +35,18 @@ export const chartTypeDaysToWork: string[] = [
   'bar',
   'bar',
   'bar',
+];
+export const chartTypeMedia: string[] = ['pie'];
+
+export const unitPricenames: string[] = [
+  'report.categories.applicationUnitPrice',
+  'report.categories.startUnitPrice',
+  'report.categories.applicationUnitPriceAllAverage',
+  'report.categories.startUnitPriceAllAverage',
+];
+export const unitPricenamesPerMedia: string[] = [
+  'report.categories.applicationUnitPrice',
+  'report.categories.applicationUnitPriceAllAverage',
 ];
 export const chartOptionsSex = computed(() => {
   return {
@@ -64,13 +80,14 @@ export const chartOptionsSex = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(0)+'%';
+            return value.toFixed(0) + '%';
           },
         },
       },
     ],
   };
 });
+
 
 export const chartOptionsAges = computed(() => {
   return {
@@ -104,7 +121,7 @@ export const chartOptionsAges = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(0)+'%';
+            return value.toFixed(0) + '%';
           },
         },
       },
@@ -144,10 +161,17 @@ export const chartOptionsDaysToWork = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(0)+'%';
+            return value.toFixed(0) + '%';
           },
         },
       },
     ],
+  };
+});
+
+export const chartOptionsMedia = computed(() => {
+  return {
+    legend: { position: 'left' },
+    labels: [],
   };
 });
