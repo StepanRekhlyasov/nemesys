@@ -1,22 +1,24 @@
 <template>
-  <q-select
-    class="mySelect"
-    outlined
-    dense
-    :options="optionsList"
-    v-model="inputVal"
-    bg-color="white"
-    :label="$t('common.pleaseSelect')"
-    :loading="loading"
-    :disable="loading"
-    emit-value
-    map-options
-    clearable
-    @update:model-value="(newVal)=>{
-      emit('update:modelValue', newVal);
-      emit('update');
-    }"
-  />
+  <div class="myWrapper">
+    <q-select
+      class="mySelect"
+      outlined
+      dense
+      :options="optionsList"
+      v-model="inputVal"
+      bg-color="white"
+      :label="$t('common.pleaseSelect')"
+      :loading="loading"
+      :disable="loading"
+      emit-value
+      map-options
+      clearable
+      @update:model-value="(newVal)=>{
+        emit('update:modelValue', newVal);
+        emit('update');
+      }"
+    />
+  </div>
 </template>
 <script setup lang="ts">
 import { watch } from 'vue';
@@ -29,11 +31,17 @@ import { onMounted, ref } from 'vue';
 type optionToFetch = 'usersInCharge' | 'branchIncharge'
 
 const emit = defineEmits(['update', 'update:modelValue'])
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue?: string | undefined,
   options?: selectOptions[],
-  optionToFetch?: optionToFetch
-}>()
+  optionToFetch?: optionToFetch,
+  width?: string,
+  height?: string,
+}>(),{
+  width: '100%',
+  height: 'auto'
+})
+
 const optionsList = ref(props.options)
 const loading = ref(false)
 const inputVal = ref(props.modelValue)
@@ -43,6 +51,17 @@ onMounted(async ()=>{
       case 'usersInCharge':
         loading.value = true
         const applicantStore = useApplicant()
+       
+        if(applicantStore.state.usersInCharge.length){
+          optionsList.value = applicantStore.state.usersInCharge.map((doc) => {
+            return {
+              label: doc.displayName,
+              value: doc.id
+            }
+          });
+          loading.value = false
+          break;
+        }
         await applicantStore.fetchUsersInChrage()
         optionsList.value = applicantStore.state.usersInCharge.map((doc) => {
           return {
@@ -55,7 +74,13 @@ onMounted(async ()=>{
       case 'branchIncharge':
         loading.value = true
         const organization = useOrganization()
-        optionsList.value = mapToSelectOptions(await organization.getBranchesInOrganization(organization.currentOrganizationId))
+        if(organization.state.branchesInOrganization && Object.keys(organization.state.branchesInOrganization).length){
+          optionsList.value = mapToSelectOptions(organization.state.branchesInOrganization)
+          loading.value = false
+          break;
+        }
+        await organization.getBranchesInOrganization(organization.currentOrganizationId)
+        optionsList.value = mapToSelectOptions(organization.state.branchesInOrganization)
         loading.value = false
       break;
       default:
@@ -70,5 +95,8 @@ watch(()=>props.options, (newValue)=>{
 <style lang="scss" scoped>
 .mySelect{
   white-space: nowrap;
+}
+.myWrapper{
+  width: v-bind(width);
 }
 </style>

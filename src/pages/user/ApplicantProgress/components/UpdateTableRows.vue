@@ -40,7 +40,7 @@ const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
 }>()
 defineProps<{
-  applicants: Applicant[],
+  applicants: Applicant[]
 }>()
 
 </script>

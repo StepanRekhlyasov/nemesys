@@ -10,6 +10,9 @@ const { t } = i18n.global
 interface OrganizationState {
   organizations: Organization[],
   activeOrganization: number,
+  branchesInOrganization: {
+    [id: string]: Branch;
+  }
 }
 
 const organization = 'organization'
@@ -19,6 +22,7 @@ export const useOrganization = defineStore('organization', () => {
   const state = ref<OrganizationState>({
     organizations: [],
     activeOrganization: 0,
+    branchesInOrganization: {}
   })
 
   const currentOrganizationId = computed(() => {
@@ -95,6 +99,7 @@ export const useOrganization = defineStore('organization', () => {
     querySnapshot.forEach((doc) => {
       branches[doc.id] = doc.data() as Branch
     })
+    state.value.branchesInOrganization = branches
     return branches
   }
 

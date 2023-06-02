@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',
     numberOfSelections: 'Number of selections',
@@ -1607,5 +1608,14 @@ export default {
       unitPrice: 'Unit Price',
       billingAmount: 'Billing Amount'
     }
+  },
+  dashboard: {
+    showBranch: 'Show branch',
+    notification: 'Notification',
+    openList: 'Open list',
+    applicantProgress: 'Applicant Progress',
+    showWhiteboard: 'Show whiteboard',
+    showList: 'Show list',
+    waitList: ' waiting list'
   }
 }

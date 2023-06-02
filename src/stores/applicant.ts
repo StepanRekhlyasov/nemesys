@@ -22,7 +22,8 @@ interface ApplicantState {
   applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
   prefectureList: {label: string, value: string | number}[],
-  selectedApplicant: Applicant | null
+  selectedApplicant: Applicant | null,
+  needsUpdateOnBack: boolean,
   columnsLoading: {
     'wait_contact': boolean,
     'wait_attend': boolean,
@@ -31,6 +32,15 @@ interface ApplicantState {
     'wait_offer': boolean,
     'wait_entry': boolean,
     'wait_termination': boolean,
+  },
+  applicantCount: {
+    'wait_contact': number | undefined,
+    'wait_attend': number | undefined,
+    'wait_FIX': number | undefined,
+    'wait_visit': number | undefined,
+    'wait_offer': number | undefined,
+    'wait_entry': number | undefined,
+    'wait_termination': number | undefined,
   },
   usersInCharge: User[],
 }
@@ -92,13 +102,14 @@ export const useApplicant = defineStore('applicant', () => {
     },
     applicantProgressFilter: {
       branch: '',
-      userInCharge: '',
+      attendeeUserInCharge: '',
       prefecture: '',
       currentStatusMonth: ''
     },
     reFilterOnReturn: false,
     prefectureList: [],
     selectedApplicant: null,
+    needsUpdateOnBack: false,
     columnsLoading: {
       'wait_contact': false,
       'wait_attend': false,
@@ -107,6 +118,15 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_offer': false,
       'wait_entry': false,
       'wait_termination': false,
+    },
+    applicantCount: {
+      'wait_contact': undefined,
+      'wait_attend': undefined,
+      'wait_FIX': undefined,
+      'wait_visit': undefined,
+      'wait_offer': undefined,
+      'wait_entry': undefined,
+      'wait_termination': undefined,
     },
     usersInCharge: [],
   })
@@ -136,6 +156,7 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
     }
+    state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
     if(filterData){
@@ -147,7 +168,10 @@ export const useApplicant = defineStore('applicant', () => {
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
     const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
+    const countQuery = query(applicantRef, ...filters)
     const docSnap = await getDocs(querys)
+    const countSnapshot = await getCountFromServer(countQuery)
+    state.value.applicantCount[status] = countSnapshot.data().count
 
     if (!docSnap.empty) {
       const documents = docSnap.docs.map(item => {
@@ -162,9 +186,11 @@ export const useApplicant = defineStore('applicant', () => {
       }
       const result = state.value.applicantsByColumn[status].concat(documents)
       state.value.applicantsByColumn[status] = result
+      state.value.columnsLoading[status] = false
       return result
     }
     state.value.continueFromDoc[status] = null
+    state.value.columnsLoading[status] = false
     return []
   }
 

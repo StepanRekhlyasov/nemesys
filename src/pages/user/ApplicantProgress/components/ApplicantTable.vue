@@ -1,9 +1,9 @@
 <template>
-  <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;">
-    <q-inner-loading showing color="primary" v-if="loading"/>
-    <UpdateTableRows v-if="status=='wait_termination'" :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></UpdateTableRows>
-    <ProgressTableRows v-else :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint)=>{emit('sortQuery', param)}"></ProgressTableRows>
+  <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;" class="applicantTable" :loading="loading">
+    <UpdateTableRows v-if="status=='wait_termination'" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></UpdateTableRows>
+    <ProgressTableRows v-else :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
+  <q-linear-progress query v-if="loading" color="primary"/>
 </template>
 <script setup lang="ts">
 import { Applicant } from 'src/shared/model';
@@ -18,34 +18,36 @@ defineProps<{
 }>()
 const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
-  (e: 'sortQuery', param: QueryOrderByConstraint)
+  (e: 'sortQuery', param: QueryOrderByConstraint[])
 }>()
 
 </script>
 <style lang="scss">
 @import "src/css/imports/colors";
 @import "src/css/imports/variables";
-table{
-  thead{
-    background-color: $main-primary;
+.applicantTable{
+  table{
+    thead{
+      background-color: $main-primary;
+    }
+    th{
+      font-size: 15px;
+      background-color: $main-primary;
+      color: #fff;
+      border-color: #fff!important;
+      padding: 0 3px;
+      white-space: break-spaces;
+    }
+    td{
+      text-align: center;
+    }
   }
-  th{
-    font-size: 15px;
-    background-color: $main-primary;
-    color: #fff;
-    border-color: #fff!important;
-    padding: 0 3px;
-    white-space: break-spaces;
-  }
-  td{
-    text-align: center;
-  }
-}
-.applicant-clickable{
-  color: $primary;
-  cursor: pointer;
-  &:hover{
-    text-decoration: underline;
+  .applicant-clickable{
+    color: $primary;
+    cursor: pointer;
+    &:hover{
+      text-decoration: underline;
+    }
   }
 }
 </style>

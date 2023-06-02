@@ -76,7 +76,7 @@ async function refreshPage() {
 function setConstraints(c: ConstraintsType) {
   query.setConstraints(c)
 }
-function setOrder(c: QueryOrderByConstraint) {
+function setOrder(c: QueryOrderByConstraint[]) {
   query.setOrder(c)
 }
 
