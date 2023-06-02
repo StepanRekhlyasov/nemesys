@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
@@ -12,6 +12,7 @@ import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { requiredFields } from 'src/shared/constants/Applicant.const';
 
 interface ApplicantState {
   clientList: Client[],
@@ -130,7 +131,7 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false) => {
+  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
@@ -145,7 +146,7 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
-    const querys = query(applicantRef, ...filters, orderBy('currentStatusTimestamp', 'asc'), ...start, limit(perQuery+1))
+    const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
     const docSnap = await getDocs(querys)
 
     if (!docSnap.empty) {
@@ -153,7 +154,7 @@ export const useApplicant = defineStore('applicant', () => {
         return item.data() as Applicant
       })
 
-      if(perQuery+1 == docSnap.docs.length){
+      if(perQuery+1 === docSnap.docs.length){
         state.value.continueFromDoc[status] = docSnap.docs[docSnap.docs.length-1]
         documents.pop()
       } else {
@@ -165,6 +166,37 @@ export const useApplicant = defineStore('applicant', () => {
     }
     state.value.continueFromDoc[status] = null
     return []
+  }
+
+  /** this function checks and creates reqiured fields if they would not exist for some reason */
+  function validateApplicant(applicants : Applicant[]){
+    const fire = ref(false)
+    const batch = writeBatch(db);
+    const forUpdate : Record<string, string | number>[] = []
+    applicants.map((applicant)=>{
+      const needsUpdate : Record<string, string | number>[] = []
+      for(const [key, value] of Object.entries(requiredFields)){
+        if(typeof applicant[key] === 'undefined'){
+          needsUpdate[key] = value
+        }
+      }
+      if(needsUpdate){
+        forUpdate[applicant.id] = needsUpdate
+      }
+    })
+    for(const [key, value] of Object.entries(forUpdate)){
+      fire.value = true
+      const docRef = doc(db, 'applicants/' + key);
+      batch.update(docRef, {...value})
+    }
+    if(fire.value){
+      try{
+        batch.commit()
+      } catch (e){
+        console.log(e)
+      }
+    }
+    return fire.value
   }
 
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
@@ -199,9 +231,12 @@ export const useApplicant = defineStore('applicant', () => {
     }
   };
 
-  async function getApplicantByID(id : string){
+  async function getApplicantByID(id : string, validate = false){
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
+    if(validate){
+      validateApplicant([result.data() as Applicant])
+    }
     return result.data() as Applicant
   }
 
@@ -312,7 +347,7 @@ export const useApplicant = defineStore('applicant', () => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
     if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth)) 
     if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth)) 
-    
+
     try {
         const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
         await updateDoc(boRef, {
@@ -330,7 +365,7 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => state.value.selectedApplicant, (newValue) => {
     if(!newValue?.status) return;
     if(!state.value.applicantsByColumn[newValue.status]) return;
-    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id==newValue?.id)
+    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id===newValue?.id)
     if(changingApplicantIndex>=0){
       state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
     }
@@ -340,9 +375,9 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
 
     if (!state.value.selectedApplicant) return;
+    if (newValue[0] !== oldValue[0]) return;
     if (!newValue[0] || !oldValue[0]) return;
-    if (newValue[0] != oldValue[0]) return;
-    if (newValue[1] == oldValue[1]) return;
+    if (newValue[1] === oldValue[1]) return;
     if (!newValue[1]) return;
 
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
@@ -350,7 +385,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
 
     if (state.value.applicantsByColumn[newValue[1]]) {
-      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
+      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
       if (index>-1) return; 
       state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
