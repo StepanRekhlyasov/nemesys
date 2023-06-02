@@ -7,9 +7,11 @@
     @onSave="emit('save', 'info', data)">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
-        :value="fixData.status" valueClass="text-uppercase col-3 q-pl-md">
-        <q-radio v-model="data['status']" val="ok" label="OK" @click="data['data'] = '';emit('disableChange')"/>
-        <q-radio v-model="data['status']" val="ng" label="NG" class="q-ml-sm" @click="emit('disableChange')" />
+        :value="fixData.status? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+        <q-checkbox v-model="data['status']" label="OK" @click="data['data'] = '';emit('disableChange')"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
+        <q-checkbox v-model="data['status']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
+          unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
       </labelField>
 
       <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.date">
@@ -111,7 +113,7 @@ const statusOptions = ref<selectOptions[]> ([]);
 resetData();
 
 function changeStatus() {
-  if (data.value['status'] && data.value['status'] == 'ng') {
+  if (data.value['status'] && data.value['status'] == false) {
     switch(data.value['reason']){
       case('notApplicable'):
         statusOptions.value = notApplicableFixList;
@@ -132,7 +134,7 @@ function changeStatus() {
 
 function resetData() {
   data.value = {
-    status: props.editData['status'] || '',
+    status: props.editData['status'] || false,
     date: props.editData['date'] || '',
     reason: props.editData['reason'] || '',
     reasonDetal: props.editData['reasonDetal'] || '',

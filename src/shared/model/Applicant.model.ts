@@ -63,7 +63,7 @@ export interface ApplicantBase {
   currentStatusMonth?: string;
   deleted: boolean;
   imageURL?: string;
-  attractionsStatus?: string;
+  attractionsStatus?: boolean;
   seduser?: string;
   employmentStatus?: string;
   period?: string;
@@ -228,14 +228,14 @@ export interface ApplicantFix {
   created_user?: string;
   created_at: string;
   // Fix Info 
-  status: 'ok' | 'ng';
+  status: boolean;
   reason: string;
   reasonDetal?: string;
   date: string;
   contactPerson: string;
   memo: string;
   // Job Search Info 
-  inspectionStatus: 'ok' | 'ng';
+  inspectionStatus: boolean;
   inspectionDate: string;
   reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   reasonJobDetal?: string;
@@ -245,13 +245,13 @@ export interface ApplicantFix {
   comments: string;
   notesInspection: string;
   // Job Offers Info
-  offerStatus: 'ok' | 'ng';
+  offerStatus: boolean;
   offerDate: string;
   offerReasonNG: string;
   chargeOfOffer: string;
   offerMemo: string;
   // Employment Info
-  admissionStatus: 'ok' | 'ng';
+  admissionStatus: boolean;
   admissionDate: string;
   reasonNotJoining: string;
   chargeOfAdmission: string;

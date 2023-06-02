@@ -7,8 +7,10 @@ const { t } = useI18n({ useScope: 'global' });
 const props = withDefaults(defineProps<{
     modelValue: Array<string>
     theme?: string
+    isLabel?: boolean
 }>(), {
-    theme: 'primary'
+    theme: 'primary',
+    isLabel: true
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -29,7 +31,7 @@ const updateType = (value: string, isChecked: boolean) => {
 <template>
     <q-item>
         <div class="q-gutter-sm">
-            <q-item-label class="q-pb-xs">
+            <q-item-label v-if="isLabel" class="q-pb-xs">
                     {{t('client.add.facilityType')}}
             </q-item-label>
             <q-checkbox size="xs" :model-value="localType.includes(option.value)" :val="option.value" :label="option.name" :color="`${theme}`"

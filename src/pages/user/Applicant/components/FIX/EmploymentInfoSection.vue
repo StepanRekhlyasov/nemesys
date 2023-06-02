@@ -4,13 +4,15 @@
       :label="$t('applicant.list.fixEmployment.employmentInfo')"
       @openEdit="emit('openEdit'); resetData();"
       @closeEdit="emit('closeEdit'); resetData();"
-      @onSave="emit('save')"
+      @onSave="emit('save', 'employmentInfo', data)"
       :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">
       <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" 
-        :value="fixData.admissionStatus" valueClass="text-uppercase col-3 q-pl-md">
-        <q-radio v-model="data['admissionStatus']" val="ok" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"/>
-        <q-radio v-model="data['admissionStatus']" val="ng" label="NG" class="q-ml-sm" :disable="disableLevel < 3"/>
+        :value="fixData.admissionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+        <q-checkbox v-model="data['admissionStatus']" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
+        <q-checkbox v-model="data['admissionStatus']" label="NG" class="q-ml-sm" :disable="disableLevel < 3"
+          unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
       </labelField>
 
       <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.date')" :value="fixData.admissionDate">

@@ -91,7 +91,8 @@ const validateAndSubmit = async () => {
                 },
                 commonItems: {},
                 uniqueItems: {}
-            } as ClientFactory['officeDetails']
+            } as ClientFactory['officeDetails'],
+            draft: {}
         } as Partial<ClientFactory>
 
         emit('submit', newClientFactory.value);

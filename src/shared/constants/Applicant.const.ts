@@ -90,10 +90,10 @@ export const employmentStatus = computed(() => {
 export const attendantStatus = computed(() =>{
   return [{
     label: 'OK',
-    value: 'ok'
+    value:  true
   }, {
     label: 'NG',
-    value: 'ng'
+    value: false
   }]
 })
 
