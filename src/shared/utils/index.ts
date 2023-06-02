@@ -13,7 +13,7 @@ export const recursivelyRemoveField = (obj: any, fieldToRemove: string) => {
 
 export const safeGet = (obj: any, path: string): any => {
      if (!obj) {
-    return undefined;
+    return
   }
 
   return path.split('.').reduce((acc: any, part: string) => acc && acc[part], obj);
