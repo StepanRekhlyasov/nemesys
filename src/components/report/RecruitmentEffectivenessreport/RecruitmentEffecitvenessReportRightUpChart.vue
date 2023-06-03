@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { graphType } from '../Models';
-import { onMounted, Ref, ref, computed } from 'vue';
+import { onMounted, Ref, ref, computed ,watch} from 'vue';
 import { useMedia } from 'stores/media';
 import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
@@ -33,7 +33,7 @@ const chartOptions = computed(() => {
   };
 });
 
-onMounted(async () => {
+const showChart = async () => {
   media_list.value = await media.getAllmedia();
   if (props.dateRangeProps === undefined) return;
   const dateRange = props.dateRangeProps;
@@ -42,5 +42,21 @@ onMounted(async () => {
       return await applicant.countApplicantsByMedia(media_name, dateRange);
     })
   );
+};
+
+watch(
+  () => [
+    props.branch_user_list,
+    props.dateRangeProps,
+    props.graph_type,
+  ],
+  async () => {
+    await showChart();
+  }
+);
+
+
+onMounted(async () => {
+  await showChart();
 });
 </script>

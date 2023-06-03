@@ -77,6 +77,7 @@ export const chartOptionsSex = computed(() => {
     yaxis: [
       {
         min: 0,
+        max:100,
 
         labels: {
           formatter: function (value) {
@@ -118,6 +119,7 @@ export const chartOptionsAges = computed(() => {
     yaxis: [
       {
         min: 0,
+        max:100,
 
         labels: {
           formatter: function (value) {
@@ -158,6 +160,7 @@ export const chartOptionsDaysToWork = computed(() => {
     yaxis: [
       {
         min: 0,
+        max:100,
 
         labels: {
           formatter: function (value) {

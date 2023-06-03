@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import { useApplicant } from 'stores/applicant';
 import { graphType } from '../Models';
-import { onMounted, Ref, ref, ComputedRef, computed ,watch} from 'vue';
+import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
 import {
   chartOptionsSex,
   chartOptionsAges,
@@ -117,28 +117,32 @@ const showChart = async () => {
   ];
   dataToshow.value = convertToPercentage(sexData);
   const listofages = await agesListOfApplicants(props.dateRangeProps);
-  if (listofages == undefined) return;
-  const agesData = [
-    [listofages.filter((age) => age >= 10 && age < 20).length],
-    [listofages.filter((age) => age >= 20 && age < 30).length],
-    [listofages.filter((age) => age >= 30 && age < 40).length],
-    [listofages.filter((age) => age >= 40 && age < 50).length],
-    [listofages.filter((age) => age >= 50 && age < 60).length],
-    [listofages.filter((age) => age >= 60).length],
-  ];
-  dataToshowAges.value = convertToPercentage(agesData);
+  if (listofages !== undefined) {
+    const agesData = [
+      [listofages.filter((age) => age >= 10 && age < 20).length],
+      [listofages.filter((age) => age >= 20 && age < 30).length],
+      [listofages.filter((age) => age >= 30 && age < 40).length],
+      [listofages.filter((age) => age >= 40 && age < 50).length],
+      [listofages.filter((age) => age >= 50 && age < 60).length],
+      [listofages.filter((age) => age >= 60).length],
+    ];
+    dataToshowAges.value = convertToPercentage(agesData);
+  } else {
+    const agesData = [[0], [0], [0], [0], [0], [0]];
+    dataToshowAges.value = convertToPercentage(agesData);
+  }
+
   const daysData = await countApplicantsdaysToWork(props.dateRangeProps);
   dataToshowDaysToWork.value = convertToPercentage(daysData);
 };
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
-    if (props.dateRangeProps == undefined) return;
     await showChart();
   }
 );
 
 onMounted(async () => {
-  showChart();
+  await showChart();
 });
 </script>

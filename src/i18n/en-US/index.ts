@@ -1528,7 +1528,7 @@ export default {
     basedOnLeftMostItemDate:'basedonLeftMostItemDate',
     basedOnEachItemDate:'BasedOnEachItemDate',
     day:' day',
-    genderRatio:'genderratio',
+    genderRatio:'gender ratio',
     ageComposition:'age composition',
     daysToWork:'days to Work',
     yen:'yen',
