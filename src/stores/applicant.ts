@@ -354,9 +354,7 @@ export const useApplicant = defineStore('applicant', () => {
 
       await updateDoc(applicantRef, saveData)
       const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
-      console.log(applicantIndex)
       if (applicantIndex >=0) {
-        console.log(123)
         state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
       }
       if (showAlert){ Alert.success($q, t); }
