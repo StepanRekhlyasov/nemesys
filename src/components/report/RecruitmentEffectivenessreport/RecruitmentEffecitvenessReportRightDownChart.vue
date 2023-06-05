@@ -53,12 +53,12 @@ import { i18n } from 'boot/i18n';
 import { convertToPercentage } from '../reportUtil';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
-const Applicant = useApplicant();
+const applicant = useApplicant();
 const {
   countApplicantsBySex,
   agesListOfApplicants,
   countApplicantsdaysToWork,
-} = Applicant;
+} = applicant;
 
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowAges: Ref<(number | string)[][]> = ref([]);
