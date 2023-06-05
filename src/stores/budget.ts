@@ -33,9 +33,10 @@ interface Budget {
 
 export const useBudget = defineStore('budget', () => {
   const db = getFirestore();
+  const monthPerYear = 12;
   const getUnitPricePerOrganization = async (
-    dateRangeProps: { from: string; to: string } | undefined,
-    organization_id: string | undefined = undefined,
+    dateRangeProps?: { from: string; to: string },
+    organization_id?: string,
     beforeMonth = 7
   ) => {
     const mediaRef = collection(db, 'budget');
@@ -82,7 +83,7 @@ export const useBudget = defineStore('budget', () => {
       let index: number;
       if (Number(toMonth) - doc.data().record_month < 0) {
         index =
-          -Number(toMonth) + doc.data().record_month - 12 + beforeMonth - 1;
+          -Number(toMonth) + doc.data().record_month - monthPerYear + beforeMonth - 1;
       } else {
         index = -Number(toMonth) + doc.data().record_month + beforeMonth - 1;
       }
@@ -109,9 +110,9 @@ export const useBudget = defineStore('budget', () => {
   };
 
   const getUnitPricePerOrganizationPerMedia = async (
-    dateRangeProps: { from: string; to: string } | undefined,
-    organization_id: string | undefined = undefined,
-    media_list: string[]
+    media_list: string[],
+    dateRangeProps?: { from: string; to: string },
+    organization_id?: string,
   ) => {
     const mediaRef = collection(db, 'budget');
     const filters: QueryFieldFilterConstraint[] = [];

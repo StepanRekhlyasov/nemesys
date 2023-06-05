@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col">
-      <apexchart :options="chartOptions" :series="seriesSex"></apexchart>
+      <apexchart :options="chartOptions" :series="series"></apexchart>
     </div>
   </div>
 </template>
@@ -16,9 +16,9 @@ import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
-const Budget = useBudget();
-const Media = useMedia();
-const media_list: Ref<string[]> = ref([]);
+const budget = useBudget();
+const media = useMedia();
+const mediaList: Ref<string[]> = ref([]);
 const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },
@@ -43,7 +43,7 @@ const chartOptions = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [...media_list.value],
+      categories: [...mediaList.value],
     },
     yaxis: [
       {
@@ -60,17 +60,17 @@ const chartOptions = computed(() => {
 });
 
 const dataToshow: Ref<(number | string)[][]> = ref([]);
-const seriesSex: ComputedRef<
+const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshow.value.map((row_data, index) => {
+  const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: t(unitPricenamesPerMedia[index]),
-      data: row_data,
+      data: rowData,
       type: chartTypeUnitPricePerMedia[index],
     };
   });
-  return series_;
+  return seriesList;
 });
 
 const props = defineProps<{
@@ -83,18 +83,18 @@ const props = defineProps<{
 
 const showChart = async () => {
   dataToshow.value = [];
-  media_list.value = await Media.getAllmedia();
-  const company_average = await Budget.getUnitPricePerOrganizationPerMedia(
+  mediaList.value = await media.getAllmedia();
+  const company_average = await budget.getUnitPricePerOrganizationPerMedia(
+    mediaList.value,
     props.dateRangeProps,
     props.organization_id,
-    media_list.value
   );
-  const company_average_all = await Budget.getUnitPricePerOrganizationPerMedia(
+  const company_average_all = await budget.getUnitPricePerOrganizationPerMedia(
+    mediaList.value,
     props.dateRangeProps,
     undefined,
-    media_list.value
   );
-  if (company_average == undefined || company_average_all == undefined) return;
+  if (!company_average || !company_average_all) return;
   dataToshow.value = [[...company_average], [...company_average_all]];
 };
 
@@ -105,7 +105,7 @@ watch(
     props.graph_type,
   ],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     await showChart();
   }
 );

@@ -14,7 +14,7 @@ import {
   computed,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, data_names } from './const';
+import { chartOptions, columns, data_names as dataNames } from './const';
 import { getIndividualReport } from 'src/stores/individualReport';
 import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../reportUtil';
@@ -38,14 +38,14 @@ const { t } = useI18n({ useScope: 'global' });
 const dataToShow: Ref<(number | string)[][]> = ref([]);
 const dataToShowCVR: Ref<(number | string)[][]> = ref([]);
 const rows_: Ref<ROWS> = ref([]);
-const series_: Ref<
+const seriesList: Ref<
   { name: string; data: (number | string)[]; type: string }[]
 > = ref([]);
 const rows: ComputedRef<ROWS> = computed(() => {
   return dataToShow.value
     .map((row_data, index) => {
       return {
-        name: t(data_names[index]),
+        name: t(dataNames[index]),
         fix: row_data[0],
         inspection: row_data[1],
         offer: row_data[2],
@@ -61,14 +61,14 @@ const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
   return dataToShow.value
-    .map((row_data, index) => {
+    .map((rowData, index) => {
       return {
-        name: t(data_names[index]),
-        data: row_data,
+        name: t(dataNames[index]),
+        data: rowData,
         type: 'line',
       };
     })
-    .concat(series_.value);
+    .concat(seriesList.value);
 });
 const user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const organization_id = ref('');
@@ -91,7 +91,7 @@ const showIndividualReport = async (
     props.graph_type
   );
   rows_.value = rows__;
-  series_.value = series__;
+  seriesList.value = series__;
   let target: { applicants: string; fix: string; bo: string } | undefined =
     undefined;
   if (props.graph_type == 'BasedOnLeftMostItemDate') {

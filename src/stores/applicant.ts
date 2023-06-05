@@ -63,6 +63,8 @@ type ApplicantsByStatusCount = {
 
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
+    //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
+  const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
   const state = ref<ApplicantState>({
@@ -158,7 +160,6 @@ export const useApplicant = defineStore('applicant', () => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
 
-    //daysToWork = 1,2,3,4,5,6,7 で検索
     const result:number[][] = []
     for(let i = 1; i <= 7; i++){
 
@@ -220,7 +221,7 @@ export const useApplicant = defineStore('applicant', () => {
     if(!doc.data().dob) return undefined
     const dob = doc.data().dob
     const now = new Date()
-    const age = Math.floor((now.getTime() - dob.seconds * 1000) / 31536000000)
+    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
     return age
     })
     if (applicants.length === 0) return undefined

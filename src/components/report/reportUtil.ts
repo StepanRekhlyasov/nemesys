@@ -6,13 +6,14 @@ export const calculateCVR = (input_list: number[]) => {
     const per_str = per.toFixed(1);
     return per_str + '%';
   });
-  return data_cvr;}
+  return data_cvr;
+};
 
-export const  convertToPercentage = (data:number[][]):number[][] => {
+export const convertToPercentage = (data: number[][]): number[][] => {
   const total = data.reduce((a, b) => a + b[0], 0);
   const percentage = data.map((row) => {
-    if(total==0)return [0]
-    else{return [(row[0] / total)*100 ];}
+    if (total == 0) return [0];
+    return [(row[0] / total) * 100];
   });
   return percentage;
 };

@@ -18,14 +18,14 @@ const dataToshow: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshow.value.map((row_data, index) => {
+  const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: t(row_names[index]),
-      data: row_data,
+      data: rowData,
       type: chartType[index],
     };
   });
-  return series_;
+  return seriesList;
 });
 const rows: ComputedRef<
   {

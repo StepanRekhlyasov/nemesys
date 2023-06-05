@@ -1595,8 +1595,8 @@ export default {
       sex:'性別',
       age:'年齢',
       daysToWork:'勤務日数',
-    unitPriceTransition:'単価推移',
-    mediaApplicationUnitPrice:'媒体別応募単価',
+      unitPriceTransition:'単価推移',
+      mediaApplicationUnitPrice:'媒体別応募単価',
 
     }
   },

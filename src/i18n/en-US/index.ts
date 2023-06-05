@@ -1600,8 +1600,8 @@ export default {
       sex:'Sex',
       age:'Age',
       daysToWork:'Days to work',
-    unitPriceTransition:'unit price transition',
-    mediaApplicationUnitPrice:'Media application unit price',
+      unitPriceTransition:'unit price transition',
+      mediaApplicationUnitPrice:'Media application unit price',
 
 
   }

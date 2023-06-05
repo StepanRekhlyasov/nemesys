@@ -67,10 +67,10 @@ const dataToshowDaysToWork: Ref<(number | string)[][]> = ref([]);
 const seriesSex: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshow.value.map((row_data, index) => {
+  const series_ = dataToshow.value.map((rowdata, index) => {
     return {
       name: t(rowNamesSex[index]),
-      data: row_data,
+      data: rowdata,
       type: chartTypeSex[index],
     };
   });
@@ -79,10 +79,10 @@ const seriesSex: ComputedRef<
 const seriesAges: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshowAges.value.map((row_data, index) => {
+  const series_ = dataToshowAges.value.map((rowdata, index) => {
     return {
       name: t(rowNamesAges[index]),
-      data: row_data,
+      data: rowdata,
       type: chartTypeAges[index],
     };
   });
@@ -91,10 +91,10 @@ const seriesAges: ComputedRef<
 const seriesDaysToWork: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshowDaysToWork.value.map((row_data, index) => {
+  const series_ = dataToshowDaysToWork.value.map((rowData, index) => {
     return {
       name: rowNamesDaysToWork[index] + t('report.day'),
-      data: row_data,
+      data: rowData,
       type: chartTypeDaysToWork[index],
     };
   });
@@ -110,14 +110,14 @@ const props = defineProps<{
 }>();
 
 const showChart = async () => {
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   const sexData = [
     [await countApplicantsBySex('male', props.dateRangeProps)],
     [await countApplicantsBySex('female', props.dateRangeProps)],
   ];
   dataToshow.value = convertToPercentage(sexData);
   const listofages = await agesListOfApplicants(props.dateRangeProps);
-  if (listofages !== undefined) {
+  if (listofages) {
     const agesData = [
       [listofages.filter((age) => age >= 10 && age < 20).length],
       [listofages.filter((age) => age >= 20 && age < 30).length],

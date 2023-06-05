@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col">
-      <apexchart :options="chartOptions" :series="seriesSex"></apexchart>
+      <apexchart :options="chartOptions" :series="series"></apexchart>
     </div>
   </div>
 </template>
@@ -10,26 +10,27 @@
 import { useBudget } from 'stores/budget';
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
-import {unitPricenames,chartTypeUnitPrice
-} from './const';
+import {unitPricenames,chartTypeUnitPrice} from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
+const monthPerYear = 12;
+const beforeMonth =7;
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
-const Budget = useBudget();
+const budget = useBudget();
 const dataToshow: Ref<(number | string)[][] > = ref([]);
-const month_list: Ref<number[]> = ref([]);
-const seriesSex: ComputedRef<
+const monthList: Ref<number[]> = ref([]);
+const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshow.value.map((row_data, index) => {
+  const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: t(unitPricenames[index]),
-      data: row_data,
+      data: rowData,
       type: chartTypeUnitPrice[index]
     };
   });
-  return series_;
+  return seriesList;
 });
 
 const chartOptions = computed(() => {
@@ -56,7 +57,7 @@ const chartOptions = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [...month_list.value].map((month) => {
+      categories: [...monthList.value].map((month) => {
     return t(`common.months.${month}`);
   }),
     },
@@ -84,31 +85,33 @@ const props = defineProps<{
 
 const showChart = async () => {
   dataToshow.value = [];
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   const month = props.dateRangeProps.to.split('/')[1];
-  month_list.value = Array.from({ length: 7 }, (_, i) => {
+  monthList.value = Array.from({ length: beforeMonth }, (_, i) => {
     const month_ = Number(month) - i;
     if (month_ <= 0) {
-      return month_ + 12;
+      return month_ + monthPerYear;
     } else {
       return month_;
     }
   }).reverse();
 
-  const company_average = await Budget.getUnitPricePerOrganization(
+  const company_average = await budget.getUnitPricePerOrganization(
     props.dateRangeProps,
-    props.organization_id
+    props.organization_id,
+    beforeMonth
   );
-  if(company_average == undefined) return;
+  if(!company_average) return;
   dataToshow.value.push(company_average[0]);
   dataToshow.value.push(company_average[1]);
 
 
-  const all_average = await Budget.getUnitPricePerOrganization(
+  const all_average = await budget.getUnitPricePerOrganization(
     props.dateRangeProps,
-    undefined
+    undefined,
+    beforeMonth
   );
-  if(all_average == undefined) return;
+  if(!all_average) return;
   dataToshow.value.push(all_average[0]);
   dataToshow.value.push(all_average[1]);
 
@@ -119,7 +122,7 @@ const showChart = async () => {
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     await showChart();
   }
 );

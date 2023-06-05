@@ -1,5 +1,6 @@
 import { i18n } from 'boot/i18n';
-import { computed } from 'vue';
+import { computed ,ComputedRef} from 'vue';
+import { QTableProps } from 'quasar';
 const { t } = i18n.global;
 
 export const row_names = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
@@ -78,12 +79,13 @@ export const chartOptions = computed(() => {
   };
 });
 
-export const columns = computed(() => {
+export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
       required: true,
       align: 'left',
+      label:'',
       field: (row) => row.name,
       format: (val) => `${val}`,
       sortable: true,
@@ -204,12 +206,13 @@ export const chartOptionsLeadtime = computed(() => {
   };
 });
 
-export const columnsLeadtime = computed(() => {
+export const columnsLeadtime:ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
       required: true,
       align: 'left',
+      label: '',
       field: (row) => row.name,
       format: (val) => `${val}`,
       sortable: true,
