@@ -14,7 +14,7 @@ import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptions, chartOptionsR, columns, columnsR ,data_names,data_namesR,chart_names ,chart_namesR } from './const';
 import { useTotalizer } from 'src/stores/totalization';
-import { calculateCVR } from '../report_util';
+import { calculateCVR } from '../reportUtil';
 import {graphType} from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 

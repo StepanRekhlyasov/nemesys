@@ -8,6 +8,7 @@ import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { usecalcLeadtime } from 'src/stores/leadtime';
 import { chartOptionsLeadtime, columnsLeadtime } from './const';
+import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 const  Leadtime  = usecalcLeadtime();
 const apexchart = VueApexCharts;
@@ -15,14 +16,14 @@ const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<{ name: string; data: (number|string)[]; type: string }[]> =
   computed(() => {
-    const series_ = dataToshow.value.map((row_data) => {
+    const seriesList = dataToshow.value.map((rowData) => {
       return {
         name: t('report.companyAverage'),
-        data: row_data,
+        data: rowData,
         type: 'bar',
       };
     });
-    return series_;
+    return seriesList;
   });
 const rows: ComputedRef<
   {
@@ -51,6 +52,7 @@ const props = defineProps<{
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
   branch_user_list: { id: string; name: string }[];
+  graph_type: graphType;
 }>();
 
 const showLeadtime = async (

@@ -1555,6 +1555,10 @@ export default {
     basedOnLeftMostItemDate:'basedonLeftMostItemDate',
     basedOnEachItemDate:'BasedOnEachItemDate',
     day:' day',
+    genderRatio:'gender ratio',
+    ageComposition:'age composition',
+    daysToWork:'days to Work',
+    yen:'yen',
     categories:{
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
@@ -1574,6 +1578,18 @@ export default {
       BOTotal:'BO total',
       BONew:'BO New',
       BOExisting:'BO Exisiting',
+      female:'female',
+      male:'male',
+      startUnitPrice:'Start Unit Price',
+      applicationUnitPrice:'Application Unit Price',
+      applicationUnitPriceAllAverage:'Application Unit Price All Average',
+      startUnitPriceAllAverage:'Start Unit Price All Average',
+      teens:'10s',
+      twenties:'20s',
+      thirties:'30s',
+      forties:'40s',
+      fifties:'50s',
+      sixties:'over 60s',
     },
     title:{
       leadtime:'Leadtime',
@@ -1582,6 +1598,13 @@ export default {
       salseProductivity:'Salse Productivity',
       individualPerformanceStatus:'Individual Performance Status',
       BOAcquisitionStatus:'BO Acquisition Status',
+      sex:'Sex',
+      age:'Age',
+      daysToWork:'Days to work',
+      unitPriceTransition:'unit price transition',
+      mediaApplicationUnitPrice:'Media application unit price',
+
+
   }
 },
   billing: {

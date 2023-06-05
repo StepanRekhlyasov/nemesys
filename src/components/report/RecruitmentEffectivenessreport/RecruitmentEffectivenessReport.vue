@@ -1,49 +1,51 @@
 <template>
   <div class="row">
     <div class="col">
-      <!-- <ApplicantReportLeftChart
+      <RecruitmentEffecitvenessReportLeftUpChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :graph_type="graph_type"
         :branch_user_list="branch_user_list"
-      ></ApplicantReportLeftChart> -->
+        :graph_type="graph_type"
+      ></RecruitmentEffecitvenessReportLeftUpChart>
     </div>
     <div class="col">
-      <!-- <ApplicantReportRightChart
+      <RecruitmentEffecitvenessReportRightUpChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
         :branch_user_list="branch_user_list"
         :graph_type="graph_type"
-      ></ApplicantReportRightChart> -->
+      ></RecruitmentEffecitvenessReportRightUpChart>
     </div>
   </div>
-  <div>
+  <div class="row">
     <div class="col">
-      <!-- <ApplicantReportLeftChart
+      <RecruitmentEffecitvenessReportLeftDownChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :graph_type="graph_type"
         :branch_user_list="branch_user_list"
-      ></ApplicantReportLeftChart> -->
+        :graph_type="graph_type"
+      ></RecruitmentEffecitvenessReportLeftDownChart>
     </div>
     <div class="col">
-      <!-- <ApplicantReportRightChart
+      <RecruitmentEffecitvenessReportRightDownChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
         :branch_user_list="branch_user_list"
         :graph_type="graph_type"
-      ></ApplicantReportRightChart> -->
+      ></RecruitmentEffecitvenessReportRightDownChart>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// import ApplicantReportLeftChart from './ApplicantReportLeftChart.vue';
-// import RecruitmentEffecitvenessReportRightDownChart from './RecruitmentEffecitvenessReportRightDownChart.vue';
+import RecruitmentEffecitvenessReportRightDownChart from './RecruitmentEffecitvenessReportRightDownChart.vue';
+import RecruitmentEffecitvenessReportRightUpChart from './RecruitmentEffecitvenessReportRightUpChart.vue';
+import RecruitmentEffecitvenessReportLeftUpChart from './RecruitmentEffecitvenessReportLeftUpChart.vue';
+import RecruitmentEffecitvenessReportLeftDownChart from './RecruitmentEffecitvenessReportLeftDownChart.vue';
 import { graphType } from '../Models';
 
 defineProps<{

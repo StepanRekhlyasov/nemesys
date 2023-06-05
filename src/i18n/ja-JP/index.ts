@@ -1549,6 +1549,10 @@ export default {
     basedOnLeftMostItemDate:'最左項日付ベース',
     basedOnEachItemDate:'項目別日付ベース',
     day:'日',
+    genderRatio:'性別比率 ',
+    ageComposition:'年齢構成',
+    daysToWork:'勤務日数',
+    yen:'円',
     categories:{
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
@@ -1568,6 +1572,19 @@ export default {
       BOTotal:'BO合計',
       BONew:'BO新規',
       BOExisting:'BO既存',
+      female:'女性',
+      male:'男性',
+      startUnitPrice:'開始単価',
+      applicationUnitPrice:'応募単価',
+      applicationUnitPriceAllAverage:'応募単価 全体平均',
+      startUnitPriceAllAverage:'開始単価 全体平均',
+      teens:'10代',
+      twenties:'20代',
+      thirties:'30代',
+      forties:'40代',
+      fifties:'50代',
+      sixties:'60代以上',
+
     },
     title:{
       leadtime:'リードタイム',
@@ -1576,6 +1593,12 @@ export default {
       salseProductivity:'営業生産性',
       individualPerformanceStatus:'個人実績状況',
       BOAcquisitionStatus:'BO獲得状況',
+      sex:'性別',
+      age:'年齢',
+      daysToWork:'勤務日数',
+      unitPriceTransition:'単価推移',
+      mediaApplicationUnitPrice:'媒体別応募単価',
+
     }
   },
   billing: {
