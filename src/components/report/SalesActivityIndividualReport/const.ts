@@ -136,8 +136,8 @@ export const chartOptionsR = computed(() => {
       categories: [
         t('report.categories.numberOfCallsPerDay'),
         t('report.categories.numberOfFAXPerDay'),
-        t('report.categoriesBOTotal'),
-        t('report.categoriesBONew'),
+        t('report.categories.BOTotal'),
+        t('report.categories.BONew'),
         t('report.categories.BOExisting'),
       ],
     },
