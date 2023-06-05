@@ -19,6 +19,7 @@
   />
 </template>
 <script setup lang="ts">
+import { watch } from 'vue';
 import { selectOptions } from 'src/shared/model';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useApplicant } from 'src/stores/applicant';
@@ -61,6 +62,9 @@ onMounted(async ()=>{
         console.log('wrong prop')
     }
   }
+})
+watch(()=>props.options, (newValue)=>{
+  optionsList.value = newValue
 })
 </script>
 <style lang="scss" scoped>

@@ -14,7 +14,7 @@ import {
   ComputedRef,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptionsR, columnsR ,data_names} from './const';
+import { chartOptionsR, columnsR ,data_names as dataNames} from './const';
 import { useBOIndividualReport } from 'src/stores/BOindividualReport';
 import { useTotalizer } from 'src/stores/totalization';
 import {graphType} from '../Models';
@@ -51,14 +51,14 @@ const rows: ComputedRef<
   }[]
 > = computed(() => {
   return dataToShow.value
-    .map((row_data, index) => {
+    .map((rowData, index) => {
       return {
-        name: t(data_names[index]),
-        number_of_calls_per_day: row_data[0],
-        number_of_FAX_per_day: row_data[1],
-        BO_total: row_data[2],
-        BO_New: row_data[3],
-        BO_Existing: row_data[4],
+        name: t(dataNames[index]),
+        number_of_calls_per_day: rowData[0],
+        number_of_FAX_per_day: rowData[1],
+        BO_total: rowData[2],
+        BO_New: rowData[3],
+        BO_Existing: rowData[4],
       };
     })
     .concat(rows_.value);
@@ -70,7 +70,7 @@ const series: ComputedRef<
   return dataToShow.value
     .map((row_data, index) => {
       return {
-        name: t(data_names[index]),
+        name: t(dataNames[index]),
         data: row_data,
         type: 'line',
       };

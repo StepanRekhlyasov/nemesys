@@ -4,6 +4,7 @@ import { usePagination } from 'src/stores/pagination';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { Pagination } from './types';
 import { QPaginationProps } from 'quasar';
+import { QueryOrderByConstraint } from 'firebase/firestore';
 
 interface TablePaginationProps extends Omit<QPaginationProps, 'modelValue' | 'max'> {
   pagination: Pagination
@@ -25,7 +26,7 @@ const query = pagination.queryData(props.pagination.rowsPerPage, props.paginatio
 
 const color = props.isAdmin ? 'accent' : 'primary'
 
-defineExpose({ refreshPage, setConstraints, queryFirstPage })
+defineExpose({ refreshPage, setConstraints, queryFirstPage, setOrder })
 
 onMounted(async () => {
   await queryFirstPage()
@@ -74,6 +75,9 @@ async function refreshPage() {
 
 function setConstraints(c: ConstraintsType) {
   query.setConstraints(c)
+}
+function setOrder(c: QueryOrderByConstraint) {
+  query.setOrder(c)
 }
 
 async function queryFirstPage() {

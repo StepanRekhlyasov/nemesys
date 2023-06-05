@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
@@ -12,6 +12,7 @@ import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { requiredFields } from 'src/shared/constants/Applicant.const';
 
 interface ApplicantState {
   clientList: Client[],
@@ -61,7 +62,9 @@ type ApplicantsByStatusCount = {
 }
 
 export const useApplicant = defineStore('applicant', () => {
-  const db = getFirestore();  
+  const db = getFirestore();
+    //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
+  const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
   const state = ref<ApplicantState>({
@@ -130,7 +133,106 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false) => {
+  const countApplicantsBySex = async (sex : 'female'|'male', dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('sex', '==', sex),
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo)
+    ]
+
+    if(filterData){
+      for(const [key, value] of Object.entries(filterData)){
+        if(value){
+          filters.push(where(key, '==', value))
+        }
+      }
+    }
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docCount = await getCountFromServer(querys)
+    const result = docCount.data().count
+    return result
+  }
+
+  const countApplicantsdaysToWork = async ( dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+
+    const result:number[][] = []
+    for(let i = 1; i <= 7; i++){
+
+      const filters = [
+        where('applicationDate', '>=', targetDateFrom),
+        where('applicationDate', '<=', targetDateTo)
+      ]
+      filters.push(where('daysToWork', '==', i))
+      if(filterData){
+        for(const [key, value] of Object.entries(filterData)){
+          if(value){
+            filters.push(where(key, '==', value))
+          }
+        }
+      }
+      const applicantRef = collection(db, 'applicants')
+      const querys = query(applicantRef, ...filters)
+      const docCount = await getCountFromServer(querys)
+      result.push([docCount.data().count])
+      filters.length = 0
+    }
+    return result
+  }
+  const countApplicantsByMedia = async (media:string, dateRange: { from: string; to: string }) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo),
+      where('media', '==', media)
+    ]
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docCount = await getCountFromServer(querys)
+    const result = docCount.data().count
+    return result
+
+  }
+
+
+  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?:ApplicantProgressFilter):Promise<number[] | undefined>=> {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo)
+    ]
+    if(filterData){
+      for(const [key, value] of Object.entries(filterData)){
+        if(value){
+          filters.push(where(key, '==', value))
+        }
+      }
+    }
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docSnap = await getDocs(querys)
+    const applicants = docSnap.docs.map((doc) => {
+    if(!doc.data().dob) return undefined
+    const dob = doc.data().dob
+    const now = new Date()
+    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
+    return age
+    })
+    if (applicants.length === 0) return undefined
+    //remove undefined in applicants
+    const filteredApplicants = applicants.filter((applicant):applicant is number  => typeof applicant =='number' )
+    return filteredApplicants
+
+  }
+
+
+  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
     if(!showMore){
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
@@ -145,7 +247,7 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
-    const querys = query(applicantRef, ...filters, orderBy('currentStatusTimestamp', 'asc'), ...start, limit(perQuery+1))
+    const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
     const docSnap = await getDocs(querys)
 
     if (!docSnap.empty) {
@@ -153,7 +255,7 @@ export const useApplicant = defineStore('applicant', () => {
         return item.data() as Applicant
       })
 
-      if(perQuery+1 == docSnap.docs.length){
+      if(perQuery+1 === docSnap.docs.length){
         state.value.continueFromDoc[status] = docSnap.docs[docSnap.docs.length-1]
         documents.pop()
       } else {
@@ -167,8 +269,40 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
+
+  /** this function checks and creates reqiured fields if they would not exist for some reason */
+  function validateApplicant(applicants : Applicant[]){
+    const fire = ref(false)
+    const batch = writeBatch(db);
+    const forUpdate : Record<string, string | number>[] = []
+    applicants.map((applicant)=>{
+      const needsUpdate : Record<string, string | number>[] = []
+      for(const [key, value] of Object.entries(requiredFields)){
+        if(typeof applicant[key] === 'undefined'){
+          needsUpdate[key] = value
+        }
+      }
+      if(needsUpdate){
+        forUpdate[applicant.id] = needsUpdate
+      }
+    })
+    for(const [key, value] of Object.entries(forUpdate)){
+      fire.value = true
+      const docRef = doc(db, 'applicants/' + key);
+      batch.update(docRef, {...value})
+    }
+    if(fire.value){
+      try{
+        batch.commit()
+      } catch (e){
+        console.log(e)
+      }
+    }
+    return fire.value
+  }
+
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
-    if (!state.value.selectedApplicant) return; 
+    if (!state.value.selectedApplicant) return;
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
 
@@ -199,9 +333,12 @@ export const useApplicant = defineStore('applicant', () => {
     }
   };
 
-  async function getApplicantByID(id : string){
+  async function getApplicantByID(id : string, validate = false){
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
+    if(validate){
+      validateApplicant([result.data() as Applicant])
+    }
     return result.data() as Applicant
   }
 
@@ -286,7 +423,7 @@ export const useApplicant = defineStore('applicant', () => {
 
       return list
   }
-  
+
   getClients().then(clients => {
       state.value.clientList = clients
       state.value.clientList.map(async (client) => {
@@ -295,7 +432,7 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
-  
+
   const fetchUsersInChrage = async () => {
     const organization = useOrganization()
     const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
@@ -310,9 +447,9 @@ export const useApplicant = defineStore('applicant', () => {
 
   const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
-    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth)) 
-    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth)) 
-    
+    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth))
+    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth))
+
     try {
         const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
         await updateDoc(boRef, {
@@ -330,7 +467,7 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => state.value.selectedApplicant, (newValue) => {
     if(!newValue?.status) return;
     if(!state.value.applicantsByColumn[newValue.status]) return;
-    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id==newValue?.id)
+    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id===newValue?.id)
     if(changingApplicantIndex>=0){
       state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
     }
@@ -340,18 +477,19 @@ export const useApplicant = defineStore('applicant', () => {
   watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
 
     if (!state.value.selectedApplicant) return;
+    if (newValue[0] !== oldValue[0]) return;
     if (!newValue[0] || !oldValue[0]) return;
-    if (newValue[0] != oldValue[0]) return;
-    if (newValue[1] == oldValue[1]) return;
+    if (newValue[1] === oldValue[1]) return;
     if (!newValue[1]) return;
 
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
       state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
 
+
     if (state.value.applicantsByColumn[newValue[1]]) {
-      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id == state.value.selectedApplicant?.id)
-      if (index>-1) return; 
+      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
+      if (index>-1) return;
       state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
         try{
@@ -363,6 +501,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , fetchUsersInChrage,createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
 })
-  
+
