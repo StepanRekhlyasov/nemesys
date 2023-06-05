@@ -57,28 +57,28 @@ export const getIndividualReport = async (
         where('contactPerson', '==', Id),
         where(DateTargets[0], '>=', targetDateFrom),
         where(DateTargets[0], '<=', targetDateTo),
-        where('status', '==', 'ok')
+        where('status', '==', true)
       ),
       query(
         collectionRef,
         where('chargeOfInspection', '==', Id),
         where(DateTargets[1], '>=', targetDateFrom),
         where(DateTargets[1], '<=', targetDateTo),
-        where('inspectionStatus', '==', 'ok')
+        where('inspectionStatus', '==', true)
       ),
       query(
         collectionRef,
         where('chargeOfOffer', '==', Id),
         where(DateTargets[2], '>=', targetDateFrom),
         where(DateTargets[2], '<=', targetDateTo),
-        where('offerStatus', '==', 'ok')
+        where('offerStatus', '==', true)
       ),
       query(
         collectionRef,
         where('chargeOfAdmission', '==', Id),
         where(DateTargets[3], '>=', targetDateFrom),
         where(DateTargets[3], '<=', targetDateTo),
-        where('admissionStatus', '==', 'ok')
+        where('admissionStatus', '==', true)
       ),
     ];
     const data = await Promise.all(

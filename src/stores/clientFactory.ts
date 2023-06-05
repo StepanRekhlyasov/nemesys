@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, setDoc, doc, where } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -40,7 +40,6 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined
         }
 
         return reflectLog
@@ -97,7 +96,6 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined
         }
 
         return importLog
@@ -152,7 +150,15 @@ export const useClientFactory = defineStore('client-factory', () => {
                     const newClientFactories: ClientFactory[] = [];
 
                     const clientFactoryPromises = snapshot.docs.map(async (doc) => {
-                        const clientFactory = { ...doc.data(), id: doc.id, client } as ClientFactory;
+                        const clientFactoryData = doc.data()
+
+                        const clientFactory = {
+                            ...clientFactoryData,
+                            id: doc.id,
+                            updated_at: date.formatDate(clientFactoryData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                            created_at: date.formatDate(clientFactoryData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                            client } as ClientFactory;
+                            
                         clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
                         clientFactory.importLog = await getLastImportLog(clientFactory.clientID, clientFactory.id);
 
@@ -180,8 +186,47 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         } catch(e) {
             console.log(e)
-            return undefined
         }
+    }
+
+    const updateClientFactory = async(updatedClientFactory: Omit<ClientFactory, 'created_at'>) => {
+        try {
+
+            await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
+                ...updatedClientFactory,
+                updated_at: serverTimestamp()
+            }, {merge: true});
+
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
+    const getHeadClientFactory = async(clientId: string) => {
+        let headClientFactory: ClientFactory | undefined
+
+        try {
+            const headClientFactoryQuerySnapshot = await getDocs(query(
+                collection(db, 'clients', clientId, 'client-factory'),
+                where('isHead', '==', true)
+            ))
+
+            headClientFactoryQuerySnapshot.forEach((doc) => {
+                const docData = doc.data()
+
+                headClientFactory = {
+                    ...docData,
+                        id: doc.id,
+                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                } as ClientFactory
+            })
+
+        } catch(e) {
+            console.log(e)
+        }
+
+        return headClientFactory;
     }
 
     return {
@@ -189,6 +234,8 @@ export const useClientFactory = defineStore('client-factory', () => {
         getClientFactories,
         getAllImportLogs,
         getAllReflectLogs,
-        addClientFactory
+        addClientFactory,
+        updateClientFactory,
+        getHeadClientFactory
     }
 })

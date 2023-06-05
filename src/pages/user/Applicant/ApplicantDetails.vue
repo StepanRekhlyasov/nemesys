@@ -31,7 +31,7 @@
             </div>
             <div class="row">
               <span class="q-pr-md">
-                {{ $t('applicant.add.applicationDate') }}: {{ selectedApplicant.applicationDate }}
+                {{ $t('applicant.add.applicationDate') }}: {{ timestampToDateFormat(selectedApplicant.applicationDate, 'YYYY/MM/DD')  }}
               </span>
             </div>
             <div class="row">
@@ -133,12 +133,14 @@ import { statusList } from 'src/shared/constants/Applicant.const';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { useOrganization } from 'src/stores/organization';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
 const statusOption = ref(statusList);
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
-const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(selectedApplicant.value['dob']):'0')
+const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(timestampToDateFormat(selectedApplicant.value['dob'])):'0')
 const openDrawer = async (data : Applicant) => {
   if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
     drawerRight.value = false;
@@ -156,12 +158,11 @@ const chooseFiles = () => {
 const selectedApplicant = computed(()=>applicantStore.state.selectedApplicant)
 const applicantImage = ref([])
 
-const onFileChange = async (applicantImage) => {
-  if (selectedApplicant.value && applicantImage.value && applicantImage.value.length > 0) {
-    const file = applicantImage[0];
+const onFileChange = async (image) => {
+  if (selectedApplicant.value && image && image.length > 0) {
+    const file = image[0];
     const storage = getStorage();
     const storageRef = refStorage(storage, 'applicants/' + selectedApplicant.value.id + '/image/' + file['name']);
-
     try {
       const ret = {}
       const snapshot = await uploadBytes(storageRef, file)
@@ -173,6 +174,10 @@ const onFileChange = async (applicantImage) => {
       console.log(error);
     }
   }
+}
+const organization = useOrganization()
+if (organization.currentOrganizationId){
+  applicantStore.fetchUsersInChrage()
 }
 </script>
 <style lang="scss">

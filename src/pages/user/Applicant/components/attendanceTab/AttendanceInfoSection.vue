@@ -21,7 +21,7 @@
       {{ $t('applicant.attendant.day') }}
     </div>
     <div class="col-2 q-pl-md  blue ">
-      <span v-if="!infoEdit">{{ applicant.attendingDate }}</span>
+      <span v-if="!infoEdit">{{ timestampToDateFormat(applicant.attendingDate) }}</span>
       <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendingDate']"  :disable="loading">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
@@ -37,15 +37,15 @@
       </q-input>
     </div>
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
-      {{ $t('applicant.attendant.attendee') }}
+      {{ $t('applicant.attendant.attendeeUserInCharge') }}
     </div>
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit">{{
           usersListOption
-            .filter(user => user.value === data['attendee'])
+            .filter(user => user.value === data['attendeeUserInCharge'])
             .map(user => user.label).join('')
       }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendee']"
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendeeUserInCharge']"
         bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
@@ -62,76 +62,44 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { attendantStatus } from 'src/shared/constants/Applicant.const';
-import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { Alert } from 'src/shared/utils/Alert.utils';
-import { useOrganization } from 'src/stores/organization';
-import { getFirestore } from '@firebase/firestore';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
-import { Applicant, Attendance, selectOptions, UserPermissionNames } from 'src/shared/model';
+import { attendantStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
+import { ref } from 'vue';
+import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   applicant: Applicant
 }>()
 
-const db = getFirestore();
 const applicantStore = useApplicant();
-const organization = useOrganization();
 const infoEdit = ref(false);
 const loading = ref(false);
 const attendantStatusOption = ref(attendantStatus);
-const usersListOption: Ref<selectOptions[]> = ref([]);
-const data: Ref<Attendance>  = ref({});
-
-if (organization.currentOrganizationId){
-  loadUser()
-}
-resetData();
+const usersListOption = usersInCharge.value
+const data = ref<Partial<ApplicantInputs>>({});
+const defaultData = ref<Partial<ApplicantInputs>>({})
 
 function resetData() {
-  data.value = {
-    attendingStatus: props?.applicant['attendingStatus'] || undefined,
-    attendingDate: props?.applicant['attendingDate'] || '',
-    attendee: props?.applicant['attendee'] || '',
-    memo: props?.applicant['memo'] || '',
+  defaultData.value = {
+    attendingStatus: props?.applicant['attendingStatus'],
+    attendingDate: timestampToDateFormat(props?.applicant['attendingDate']),
+    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'],
+    memo: props?.applicant['memo'],
   }
+  data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
+resetData()
 
 async function saveInfo() {
   loading.value = true
   try {
     await applicantStore.updateApplicant(data.value);
-    Alert.success($q, t);
     infoEdit.value = false;
   } catch (error) {
     console.log(error);
-    loading.value = false;
-    Alert.warning($q, t);
   }
   loading.value = false
 }
-async function loadUser() {
-  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
-
-  const users = await usersSnapshot
-  
-  let list: selectOptions[] = [];
-    users?.forEach((doc) => {
-      const data = doc.data();
-      list.push({
-        label: data.displayName,
-        value: doc.id
-      });
-  });
-  usersListOption.value = list;
-}
-
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 </script>

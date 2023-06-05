@@ -25,14 +25,18 @@ export interface ClientFactory {
     isSignedReferralContract: boolean;
     nameContact: string;
     telContact: string;
-    positionContact?: string;
+    positionContact: string;
     mailContact: string;
-    officeDetails?: OfficeDetails
-    contractInfo?: ContractInfo
+    updated_at: string;
+    created_at: string;
+    officeDetails?: OfficeDetails;
+    contractInfo?: ContractInfo;
     reflectLog?: ReflectLog;
-    importLog?: ImportLog
+    importLog?: ImportLog;
 
     client?: Client
+
+    draft: Partial<ClientFactory> | Record<string, never>
 }
 
 interface OfficeDetails {
@@ -40,9 +44,11 @@ interface OfficeDetails {
         prefecture: string
         officeName: string
         parentClient: string
+        municipality: string
         city: string
         tel: string
-        townAndStreet: string
+        street: string
+        building: string
         fax: string
         others: string
         latitude: number
@@ -74,7 +80,7 @@ interface OfficeDetails {
 }
 
 interface ContractInfo {
-    contractUnit: boolean;
+    contractUnit: string;
     industry: string[]
     contractTel: string;
     contractFax: string;

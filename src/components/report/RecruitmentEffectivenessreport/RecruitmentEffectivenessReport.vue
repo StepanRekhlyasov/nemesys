@@ -42,12 +42,10 @@
 </template>
 
 <script setup lang="ts">
-// import ApplicantReportLeftChart from './ApplicantReportLeftChart.vue';
 import RecruitmentEffecitvenessReportRightDownChart from './RecruitmentEffecitvenessReportRightDownChart.vue';
 import RecruitmentEffecitvenessReportRightUpChart from './RecruitmentEffecitvenessReportRightUpChart.vue';
 import RecruitmentEffecitvenessReportLeftUpChart from './RecruitmentEffecitvenessReportLeftUpChart.vue';
 import RecruitmentEffecitvenessReportLeftDownChart from './RecruitmentEffecitvenessReportLeftDownChart.vue';
-
 import { graphType } from '../Models';
 
 defineProps<{

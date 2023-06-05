@@ -1,4 +1,4 @@
-import { ApplicantCol } from '../types/applicant.types';
+import { ApplicantCol } from 'src/pages/user/Applicant/types/applicant.types';
 
 export const COLUMN_STATUSES = [
   'wait_contact',

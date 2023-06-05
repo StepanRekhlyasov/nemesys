@@ -1,0 +1,327 @@
+<template>
+  <q-card class="no-shadow full-width bg-grey-1">
+    <q-card-section class="bg-grey-3">
+      <div class="text-h6 text-primary">{{ $t('menu.newApplicant') }}</div>
+    </q-card-section>
+    <q-separator color="white" size="2px" />
+    <q-card-section class="bg-grey-3">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.name') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['name']" bg-color="white"
+                  :rules="[(val) => !!val || '']" hide-bottom-space />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.kanaName') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['kanaName']" 
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.postCode') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['postCode']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.prefecture') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" 
+                  :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.municipalities') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['municipalities']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.street') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['street']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.apartment') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['apartment']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.phone') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['phone']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.email') }}
+              </div>
+              <div class="col-8 q-pl-sm">
+                <q-input outlined dense v-model="applicantData['email']"
+                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.status') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
+                  :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.branchIncharge') }}
+              </div>
+              <div class="col-6 q-ml-sm bg-white">
+                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.sex') }}
+              </div>
+              <div class="col-8 q-pl-sm">                
+                <q-field                
+                  ref="toggle" borderless dense
+                  v-model="applicantData['sex']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  <template v-slot:control>      
+                    <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
+                    <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
+                  </template>
+                </q-field>
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.dob') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-input dense outlined bg-color="white" v-model="applicantData['dob']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="applicantData['dob']" default-view="Years" :options="limitDate">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.occupation') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-field                
+                  ref="toggle" borderless dense
+                  v-model="applicantData['occupation']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  <template v-slot:control>                    
+                    <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
+                    <q-radio v-model="applicantData['occupation']" val="nursingCare"
+                      :label="$t('applicant.add.nursingCare')" />
+                    <q-radio v-model="applicantData['occupation']" val="lifeCounselor"
+                      :label="$t('applicant.add.lifeCounselor')" />
+                    <q-radio v-model="applicantData['occupation']" val="careManager"
+                      :label="$t('applicant.add.careManager')" />
+                    <q-radio v-model="applicantData['occupation']" val="others" :label="$t('applicant.add.others')" />
+                  </template>
+                </q-field>
+              </div>
+            </div>
+            <div class="row q-pt-md q-pb-sm ">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.qualification') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-field                
+                  ref="toggle" borderless dense
+                  v-model="applicantData['qualification']"
+                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  <template v-slot:control>       
+                    <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
+                      :label="$t('applicant.add.registeredNurse')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
+                      :label="$t('applicant.add.assistantNurse')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="newcomer"
+                      :label="$t('applicant.add.newcomer')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="careWorker"
+                      :label="$t('applicant.add.careWorker')" />
+                  </template>
+                </q-field>
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.applicationDate') }}
+              </div>
+              <div class="col-6 q-pl-sm">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
+                  <template v-slot:prepend>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm" format24h>
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat />
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+
+              </div>
+            </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.image') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-file name="applicant_image" v-model="applicantImage" multiple use-chips outlined dense
+                  bg-color="white" @update:model-value="onFileChange" accept=".jpg, image/*">
+                  <template v-slot:append>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file>
+                <div class="">
+                  <q-img :src="imageURL" spinner-color="white" style="height: 150px; max-width: 150px" v-if="imageURL"
+                    class="q-mt-sm" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <q-separator color="white" size="2px" class="q-mt-md" />
+        <div class="q-pt-sm">
+          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
+          <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
+        </div>
+      </q-form>
+    </q-card-section>
+  </q-card>
+</template>
+ 
+<script lang="ts" setup>
+import { QForm } from 'quasar';
+import { Ref, ref } from 'vue';
+import { serverTimestamp, Timestamp, } from 'firebase/firestore';
+import { limitDate, toMonthYear } from 'src/shared/utils/utils'
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { statusList } from 'src/shared/constants/Applicant.const';
+import { ApplicantStatus } from 'src/shared/model';
+import SelectBranch from '../Settings/management/components/SelectBranch.vue';
+import { useOrganization } from 'src/stores/organization';
+import { useApplicant } from 'src/stores/applicant';
+import { requiredFields } from 'src/shared/constants/Applicant.const';
+
+const applicantDataSample = {
+  qualification: [],
+  status: ApplicantStatus.UNSUPPORTED,
+};
+const organizationStore = useOrganization()
+const applicantStore = useApplicant()
+
+const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
+const prefectureOption = ref(prefectureList);
+const statusOption = ref(statusList);
+
+const applicantForm: Ref<QForm|null> = ref(null);
+const loading = ref(false);
+const imageURL = ref('');
+const applicantImage = ref<FileList | []>([]);
+
+function resetData() {
+  applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
+  imageURL.value = '';
+  applicantImage.value = [];
+  if (applicantForm.value) {
+    applicantForm.value.resetValidation();
+  }
+}
+function onFileChange(files : FileList) {
+  imageURL.value = '';
+  if (files && files.length > 0) {
+    const file = files[0];
+    imageURL.value = URL.createObjectURL(file);
+  }
+}
+
+async function onSubmit() {
+  loading.value = true;
+  let data = JSON.parse(JSON.stringify(applicantData.value));
+  data['created_at'] = serverTimestamp();
+  data['updated_at'] = serverTimestamp();
+  
+  if(data.applicationDate){
+    data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+    data['currentStatusTimestamp'] = data['applicationDate'] ;
+    data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
+    data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+  }
+  /** required fields */
+  for(const [key, value] of Object.entries(requiredFields)){
+    if(typeof data[key] == 'undefined'){
+      data[key] = value
+    }
+  }
+  /** required fields */
+  data['dob'] = Timestamp.fromDate(new Date(data.dob));
+  data['deleted'] = false;
+  const success = await applicantStore.createApplicant(data, applicantImage.value)
+  if(success){
+    applicantForm.value?.reset();
+  }
+  loading.value = false;
+}
+</script>

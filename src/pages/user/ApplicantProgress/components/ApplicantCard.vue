@@ -7,25 +7,26 @@
     :class='{redAlert:redAlert}'
   >
     <div class='row q-gutter-sm items-center'>
-      <span class='col-1'>S</span>
+      <span class='col-1'>{{ RankCount.getRank(item.staffRank) }}</span>
       <span class='col applicant-clickable' @click="emit('selectApplicant', item)">{{ item.name }}</span>
     </div>
     <div class='row q-gutter-md items-center'>
-      <div class='col'>{{ item.occupation }}</div>
+      <div class='col'>{{ item.occupation && $t('applicant.add.' + item.occupation) }}</div>
       <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }}</div>
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1'>応</div>
-      <div class='col' v-if="(item.currentStatusTimestamp instanceof Timestamp)">{{ firebaseDateFormat(item.currentStatusTimestamp, 'YYYY.MM.DD') }}</div>
+      <div class='col'>{{ timestampToDateFormat(item.currentStatusTimestamp, 'YYYY.MM.DD') }}</div>
     </div>
   </q-card>
 </template>
 <script lang="ts" setup>
 import { Timestamp } from 'firebase/firestore'
 import { Applicant } from 'src/shared/model'
-import { firebaseDateFormat } from 'src/shared/utils/utils'
+import { timestampToDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
+import { RankCount } from 'src/shared/utils/RankCount.utils'
 
 const props = defineProps<{
   item: Applicant,

@@ -2,13 +2,14 @@
   <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;">
     <q-inner-loading showing color="primary" v-if="loading"/>
     <UpdateTableRows v-if="status=='wait_termination'" :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></UpdateTableRows>
-    <ProgressTableRows v-else :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></ProgressTableRows>
+    <ProgressTableRows v-else :status="status" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint)=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
 </template>
 <script setup lang="ts">
 import { Applicant } from 'src/shared/model';
 import ProgressTableRows from './ProgressTableRows.vue';
 import UpdateTableRows from './UpdateTableRows.vue';
+import { QueryOrderByConstraint } from 'firebase/firestore';
 
 defineProps<{
   applicants: Applicant[],
@@ -17,6 +18,7 @@ defineProps<{
 }>()
 const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
+  (e: 'sortQuery', param: QueryOrderByConstraint)
 }>()
 
 </script>

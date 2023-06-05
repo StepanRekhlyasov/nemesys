@@ -15,6 +15,12 @@ export const sortDate = (a:dataObject, b:dataObject)=>{
   return a.date.localeCompare(b.date)
 }
 
+export function sortOrganization (a: string, b: string){
+  const firstOrganizationName = a.split(' ')[1]
+  const secondOrganizationName = b.split(' ')[1]
+  return firstOrganizationName.localeCompare(secondOrganizationName)
+}
+
 export function cloneToRaw<T>(obj: T) {
   return JSON.parse(JSON.stringify(toRaw(obj)))
 }
@@ -112,8 +118,15 @@ export const dayMonthFromDate = (myDate?: string | undefined | Timestamp) => {
   }
 }
 
-export const firebaseDateFormat = (myDate : Timestamp, mask : string) => {
-  return date.formatDate(myDate.toDate(), mask);
+export const timestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
+  return date.formatDate(myDate?.toDate?.(), mask);
+}
+export const dateToTimestampFormat = (myDate : Date) => {
+  const result = Timestamp.fromDate?.(myDate)
+  if(isNaN(result.seconds)){
+    return undefined
+  }
+  return Timestamp.fromDate?.(myDate);
 }
 
 // collection

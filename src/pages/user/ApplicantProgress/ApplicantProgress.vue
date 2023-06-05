@@ -5,69 +5,50 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <div class="row q-pt-md q-gutter-sm">
+      <div class="row q-pt-md q-gutter-sm applicant__inputWrapper">
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
-          <q-select
-            outlined
-            dense
-            :options="[]"
-            v-model="applicantStore.state.applicantFilter['branch']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
-            clearable
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
+          <MySelect 
+            @update="fetchResults()" 
+            v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
+            :optionToFetch="'branchIncharge'"
           />
         </div>
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
-          <q-select
-            outlined
-            dense
-            :options="[]"
-            v-model="applicantStore.state.applicantFilter['userInCharge']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
-            clearable
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
+          <MySelect 
+            @update="fetchResults()" 
+            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
+            :optionToFetch="'usersInCharge'"
           />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
-          <q-select
-            outlined
-            dense
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.prefecture") }}</p>
+          <MySelect 
+            @update="fetchResults()" 
+            v-model="applicantStore.state.applicantProgressFilter['prefecture']"
             :options="prefectureList"
-            v-model="applicantStore.state.applicantFilter['prefecture']"
-            bg-color="white"
-            :label="$t('common.pleaseSelect')"
-            emit-value
-            map-options
-            @update:model-value="fetchResults()"
-            clearable
           />
         </div>
         <div class="col-2">
-          <p class="q-ml-md">{{ $t("applicant.progress.filters.month") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.month") }}</p>
           <YearMonthPicker 
-            v-model="applicantStore.state.applicantFilter['currentStatusMonth']" 
+            v-model="applicantStore.state.applicantProgressFilter['currentStatusMonth']" 
             height="40px" 
             width="100%" 
             :disable="loading"
           />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.entry") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.entry") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.entry" />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.retire") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.retire") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.retired" />
         </div>
         <div class="col-1">
-          <p class="q-ml-md">{{ $t("applicant.progress.working") }}</p>
+          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.working") }}</p>
           <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.working" />
         </div>
       </div>
@@ -93,63 +74,75 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onMounted, ref, watch } from 'vue';
-  import ApplicantColumn from './components/ApplicantColumn.vue';
-  import { APPLICANT_COLUMNS } from './const/applicantColumns';
-  import { useApplicant } from 'src/stores/applicant';
-  import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
-  import { limitQuery } from './const/applicantColumns';
-  import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
-  import { prefectureList } from 'src/shared/constants/Prefecture.const';
-  import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
-  
-  /** consts */
-  const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
-  const perQuery = ref<number>(limitQuery)
-  const countApplicantsStatuses = ref({
-    entry: 0,
-    retired: 0,
-    working: 0
-  })
-  const columns = computed(()=>APPLICANT_COLUMNS.map(item => {
-    return {...item,
-      items: applicantsByColumn.value[item.status]
-    }
-  }))
-  const columnsLoading = computed(() => applicantStore.state.columnsLoading);
-  const loading = computed(()=>{
-    for (const value of Object.values(columnsLoading.value)){
-      if(!value){
-        return false
-      }
-    }
-    return true
-  })
+import { computed, onMounted, ref, watch } from 'vue';
+import ApplicantColumn from './components/ApplicantColumn.vue';
+import { APPLICANT_COLUMNS } from './const/applicantColumns';
+import { useApplicant } from 'src/stores/applicant';
+import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
+import { limitQuery } from './const/applicantColumns';
+import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
+import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
+import MySelect from 'src/components/inputs/MySelect.vue';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
 
-  /** stores */
-  const applicantStore = useApplicant();
-
-  /** getters */
-  const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
-
-  /** fetchers */
-  const fetchResultsHandler = async (status : string, fetchMore = false) => {
-    columnsLoading.value[status] = true
-    await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantFilter, perQuery.value, fetchMore)
-    columnsLoading.value[status] = false
+/** consts */
+const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
+const perQuery = ref<number>(limitQuery)
+const countApplicantsStatuses = ref({
+  entry: 0,
+  retired: 0,
+  working: 0
+})
+const columns = computed(()=>APPLICANT_COLUMNS.map(item => {
+  return {...item,
+    items: applicantsByColumn.value[item.status]
   }
-  const fetchResults = async () => {
-    COLUMN_STATUSES.map(async (status)=>{
-      fetchResultsHandler(status, false)
-    })
-    COUNT_STATUSES.map(async (status)=>{
-      countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantFilter)
-    })
+}))
+const columnsLoading = computed(() => applicantStore.state.columnsLoading);
+const loading = computed(()=>{
+  for (const value of Object.values(columnsLoading.value)){
+    if(!value){
+      return false
+    }
   }
-  onMounted( async ()=>{
-    await fetchResults()
+  return true
+})
+
+/** stores */
+const applicantStore = useApplicant();
+
+/** getters */
+const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
+
+/** fetchers */
+const fetchResultsHandler = async (status : string, fetchMore = false) => {
+  columnsLoading.value[status] = true
+  await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
+  columnsLoading.value[status] = false
+}
+const fetchResults = async () => {
+  COLUMN_STATUSES.map(async (status)=>{
+    fetchResultsHandler(status, false)
   })
-  watch(()=>applicantStore.state.applicantFilter['currentStatusMonth'], (newVal, oldVal)=>{
-    if(newVal!=oldVal) fetchResults()
+  COUNT_STATUSES.map(async (status)=>{
+    countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
   })
+}
+onMounted( async ()=>{
+  await fetchResults()
+})
+watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
+  if(newVal!=oldVal) fetchResults()
+})
 </script>
+<style lang="scss">
+.applicant__inputWrapper{
+  .q-field__inner{
+    background: #fff;
+  }
+  .inputLabel,
+  .q-field__native {
+    white-space: nowrap;
+  }
+}
+</style>

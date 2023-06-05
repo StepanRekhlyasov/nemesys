@@ -4,14 +4,14 @@ const applicant_router: MenuRouter[] = [
   {
     path: 'applicant/add',
     title: 'menu.newApplicant',
-    component: () => import('src/pages/user/Applicant/add.vue'),
+    component: () => import('src/pages/user/Applicant/AddApplicant.vue'),
     meta: { requiresAuth: true },
     menuParent: MenuParent.ApplicantManagement
   },
   {
     path: 'applicant/search',
     title: 'menu.applicantSearch',
-    component: () => import('src/pages/user/Applicant/list.vue'),
+    component: () => import('src/pages/user/Applicant/ApplicantList.vue'),
     meta: {
       requiresAuth: true,
     },

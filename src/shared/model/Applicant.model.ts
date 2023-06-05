@@ -1,25 +1,51 @@
 import { User } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 
-export interface ApplicantExperience {
+export interface ApplicantExperience extends ApplicantExperienceBase, ApplicantExperienceDates { }
+export interface ApplicantExperienceInputs extends ApplicantExperienceBase, ApplicantExperienceInputDates { }
+export interface ApplicantExperienceBase {
   id: string;
-  experience: string;
-  facilityType: string;
-  startMonth: string;
-  endMonth: string;
-  nameEstablishment: string;
-  employmentType: string;
-  reasonResignation: string;
-  pastInterviews: EmploymentStatus;
-
+  experience?: string;
+  facilityType?: string;
+  nameEstablishment?: string;
+  employmentType?: string;
+  reasonResignation?: string;
+  pastInterviews?: EmploymentStatus;
+  deleted?: boolean;
+}
+export interface ApplicantExperienceInputDates{
+  startMonth?: string;
+  endMonth?: string;
+}
+export interface ApplicantExperienceDates{
+  startMonth?: Timestamp;
+  endMonth?: Timestamp;
 }
 
 export enum EmploymentStatus {
   'working',
   'notWorking'
 }
+export interface ApplicantDates {
+  seductionDay?: Timestamp;
+  created_at: Timestamp;
+  currentStatusTimestamp: Timestamp;
+  applicationDate?: Timestamp;
+  dob?: Timestamp;
+  attendingDate?: Timestamp;
+  timeToWork?: Timestamp;
+}
+export interface ApplicantInputDates {
+  seductionDay?: string;
+  created_at: string;
+  currentStatusTimestamp: string;
+  applicationDate?: string;
+  dob?: string;
+  attendingDate?: string;
+  timeToWork?: string;
+}
 
-export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo{
+export interface ApplicantBase {
   id: string;
   prefecture?: string;
   municipalities?: string;
@@ -34,26 +60,26 @@ export interface Applicant extends DesiredConditions, PersonalStatus, AssignedEv
   totalYear?: string;
   address?: string;
   classification?: string;
-  created_at: Timestamp;
   currentStatusMonth?: string;
-  currentStatusTimestamp: Timestamp;
-  deleted: false;
+  deleted: boolean;
   imageURL?: string;
-  attractionsStatus?: string;
+  attractionsStatus?: boolean;
+  seduser?: string;
   employmentStatus?: string;
   period?: string;
   position?: string[];
-  seductionDay?: string;
+}
+export interface Applicant extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantDates {
+}
+export interface ApplicantInputs extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantInputDates {
 }
 
 export interface ApplicantInfo {
-  applicationDate?: Timestamp | string;
   name?: string;
   media?: string;
   kanaName?: string;
   applicationMetod?: string;
   sex?: ApplicantSex;
-  dob?: string;
   phone?: string;
   email?: string;
   lat?: number;
@@ -62,8 +88,7 @@ export interface ApplicantInfo {
 }
 
 export interface DesiredConditions {
-  timeAvailable?: string;
-  timeToWork?: string;
+  timeAvailable?: boolean;
   daysToWork?: number;
   daysPerWeek?: Days[];
   specialDay?: SpecialDay[];
@@ -88,8 +113,7 @@ export interface DesiredConditions {
 
 export interface Attendance { 
   attendingStatus?: 'ok' | 'ng';
-  attendingDate?: Timestamp | string;
-  attendee?: string;
+  attendeeUserInCharge?: string;
   memo?: string;
 }
 
@@ -204,14 +228,14 @@ export interface ApplicantFix {
   created_user?: string;
   created_at: string;
   // Fix Info 
-  status: 'ok' | 'ng';
+  status: boolean;
   reason: string;
   reasonDetal?: string;
   date: string;
   contactPerson: string;
   memo: string;
   // Job Search Info 
-  inspectionStatus: 'ok' | 'ng';
+  inspectionStatus: boolean;
   inspectionDate: string;
   reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   reasonJobDetal?: string;
@@ -221,13 +245,13 @@ export interface ApplicantFix {
   comments: string;
   notesInspection: string;
   // Job Offers Info
-  offerStatus: 'ok' | 'ng';
+  offerStatus: boolean;
   offerDate: string;
   offerReasonNG: string;
   chargeOfOffer: string;
   offerMemo: string;
   // Employment Info
-  admissionStatus: 'ok' | 'ng';
+  admissionStatus: boolean;
   admissionDate: string;
   reasonNotJoining: string;
   chargeOfAdmission: string;

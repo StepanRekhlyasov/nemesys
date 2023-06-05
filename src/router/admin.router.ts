@@ -27,8 +27,8 @@ const admin_router: MenuRouter[] = [
   },
   {
     path: 'officeSearch',
-    component: () => import('src/pages/admin/OfficeManagment/OfficeSearch.vue'),
-    meta: { 
+    component: () => import('src/pages/admin/OfficeManagement/OfficeMenu.vue'),
+    meta: {
       requiresAuth: true,
       isAdmin: true
     },
@@ -38,16 +38,16 @@ const admin_router: MenuRouter[] = [
   {
     title: 'menu.client-factory',
     path: 'client-factory',
-    component: () => import('src/pages/admin/OfficeManagment/ClientFactory.vue'),
-    meta: { 
+    component: () => import('src/pages/admin/OfficeManagement/ClientFactories.vue'),
+    meta: {
       requiresAuth: true,
       isAdmin: true
     },
   },
   {
     path: 'savedSearchList',
-    component: () => import('src/pages/admin/OfficeManagment/SavedSearchList.vue'),
-    meta: { 
+    component: () => import('src/pages/admin/OfficeManagement/SavedSearchList.vue'),
+    meta: {
       requiresAuth: true,
       isAdmin: true
     },
@@ -79,10 +79,10 @@ const admin_router: MenuRouter[] = [
 
   },
   {
-    path:'organizations-list',
+    path: 'organizations-list',
     title: 'menu.admin.organizationsList',
-    component: ()=> import('src/pages/admin/EnterpriseManagement/OrganizationsList.vue'),
-    meta:{
+    component: () => import('src/pages/admin/EnterpriseManagement/OrganizationsList.vue'),
+    meta: {
       permission: [UserPermissionNames.AdminPageAccess],
       requiresAuth: true,
       isAdmin: true
@@ -121,6 +121,27 @@ const admin_router: MenuRouter[] = [
       isAdmin: true
     },
     menuParent: MenuParent.AdminBillingInformation,
+  },
+  {
+    path: 'license-request',
+    title: 'menu.admin.licenseManagement.licenseRequest',
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess]
+    },
+    menuParent: MenuParent.AdminLicenseManagement,
+    component: () => import('src/pages/admin/LicenseManagement/Requests/LicenseRequests.vue')
+  },
+  {
+    path: 'license-history',
+    title: 'menu.admin.licenseManagement.licenseHistory',
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess]
+    },
+    menuParent: MenuParent.AdminLicenseManagement,
+    component: () => import('src/pages/admin/LicenseManagement/History/LicenseHistory.vue')
+
   }
 ]
 
