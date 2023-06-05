@@ -1,5 +1,6 @@
 import { i18n } from 'boot/i18n';
-import { computed } from 'vue';
+import { QTableProps } from 'quasar';
+import { computed ,ComputedRef} from 'vue';
 const { t } = i18n.global;
 export const data_names = ['report.companyAverage', 'report.allAverage'];
 export const chartOptions = computed(() => {
@@ -47,11 +48,12 @@ export const chartOptions = computed(() => {
   };
 });
 
-export const columns = computed(() => {
+export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
       required: true,
+      label:'',
       align: 'left',
       field: (row) => row.name,
       format: (val) => `${val}`,
@@ -136,8 +138,8 @@ export const chartOptionsR = computed(() => {
       categories: [
         t('report.categories.numberOfCallsPerDay'),
         t('report.categories.numberOfFAXPerDay'),
-        t('report.categoriesBOTotal'),
-        t('report.categoriesBONew'),
+        t('report.categories.BOTotal'),
+        t('report.categories.BONew'),
         t('report.categories.BOExisting'),
       ],
     },
@@ -155,11 +157,12 @@ export const chartOptionsR = computed(() => {
   };
 });
 
-export const columnsR = computed(() => {
+export const columnsR:ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
       required: true,
+      label:'',
       align: 'left',
       field: (row) => row.name,
       format: (val) => `${val}`,

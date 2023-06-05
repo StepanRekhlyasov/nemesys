@@ -62,7 +62,9 @@ type ApplicantsByStatusCount = {
 }
 
 export const useApplicant = defineStore('applicant', () => {
-  const db = getFirestore();  
+  const db = getFirestore();
+    //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
+  const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
   const state = ref<ApplicantState>({
@@ -131,6 +133,105 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
+  const countApplicantsBySex = async (sex : 'female'|'male', dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('sex', '==', sex),
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo)
+    ]
+
+    if(filterData){
+      for(const [key, value] of Object.entries(filterData)){
+        if(value){
+          filters.push(where(key, '==', value))
+        }
+      }
+    }
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docCount = await getCountFromServer(querys)
+    const result = docCount.data().count
+    return result
+  }
+
+  const countApplicantsdaysToWork = async ( dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+
+    const result:number[][] = []
+    for(let i = 1; i <= 7; i++){
+
+      const filters = [
+        where('applicationDate', '>=', targetDateFrom),
+        where('applicationDate', '<=', targetDateTo)
+      ]
+      filters.push(where('daysToWork', '==', i))
+      if(filterData){
+        for(const [key, value] of Object.entries(filterData)){
+          if(value){
+            filters.push(where(key, '==', value))
+          }
+        }
+      }
+      const applicantRef = collection(db, 'applicants')
+      const querys = query(applicantRef, ...filters)
+      const docCount = await getCountFromServer(querys)
+      result.push([docCount.data().count])
+      filters.length = 0
+    }
+    return result
+  }
+  const countApplicantsByMedia = async (media:string, dateRange: { from: string; to: string }) => {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo),
+      where('media', '==', media)
+    ]
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docCount = await getCountFromServer(querys)
+    const result = docCount.data().count
+    return result
+
+  }
+
+
+  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?:ApplicantProgressFilter):Promise<number[] | undefined>=> {
+    const targetDateFrom = new Date(dateRange.from);
+    const targetDateTo = new Date(dateRange.to);
+    const filters = [
+      where('applicationDate', '>=', targetDateFrom),
+      where('applicationDate', '<=', targetDateTo)
+    ]
+    if(filterData){
+      for(const [key, value] of Object.entries(filterData)){
+        if(value){
+          filters.push(where(key, '==', value))
+        }
+      }
+    }
+    const applicantRef = collection(db, 'applicants')
+    const querys = query(applicantRef, ...filters)
+    const docSnap = await getDocs(querys)
+    const applicants = docSnap.docs.map((doc) => {
+    if(!doc.data().dob) return undefined
+    const dob = doc.data().dob
+    const now = new Date()
+    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
+    return age
+    })
+    if (applicants.length === 0) return undefined
+    //remove undefined in applicants
+    const filteredApplicants = applicants.filter((applicant):applicant is number  => typeof applicant =='number' )
+    return filteredApplicants
+
+  }
+
+
   const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
     if(!showMore){
       state.value.applicantsByColumn[status] = []
@@ -168,6 +269,7 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
+
   /** this function checks and creates reqiured fields if they would not exist for some reason */
   function validateApplicant(applicants : Applicant[]){
     const fire = ref(false)
@@ -200,7 +302,7 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
-    if (!state.value.selectedApplicant) return; 
+    if (!state.value.selectedApplicant) return;
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
 
@@ -321,7 +423,7 @@ export const useApplicant = defineStore('applicant', () => {
 
       return list
   }
-  
+
   getClients().then(clients => {
       state.value.clientList = clients
       state.value.clientList.map(async (client) => {
@@ -330,7 +432,7 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
-  
+
   const fetchUsersInChrage = async () => {
     const organization = useOrganization()
     const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
@@ -345,8 +447,8 @@ export const useApplicant = defineStore('applicant', () => {
 
   const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
-    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth)) 
-    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth)) 
+    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth))
+    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth))
 
     try {
         const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
@@ -384,9 +486,10 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
 
+
     if (state.value.applicantsByColumn[newValue[1]]) {
       const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
-      if (index>-1) return; 
+      if (index>-1) return;
       state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
         try{
@@ -398,6 +501,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , fetchUsersInChrage,createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
 })
-  
+
