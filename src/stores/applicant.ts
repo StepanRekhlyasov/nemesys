@@ -1,6 +1,6 @@
 import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
+import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
@@ -12,6 +12,7 @@ import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { api } from 'src/boot/axios';
 
 interface ApplicantState {
   clientList: Client[],
@@ -20,6 +21,15 @@ interface ApplicantState {
   continueFromDoc: ContinueFromDoc,
   applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
+  applicantList: Applicant[],
+  currentIds: number[],
+  isLoadingProgress: boolean,
+  metaData: {
+    current: number,
+    size: number,
+    total_pages: number,
+    total_results: number
+  },  
   prefectureList: {label: string, value: string | number}[],
   selectedApplicant: Applicant | null
   columnsLoading: {
@@ -66,6 +76,15 @@ export const useApplicant = defineStore('applicant', () => {
   const { t } = useI18n({ useScope: 'global' });
   const state = ref<ApplicantState>({
     clientList: [] as Client[],
+    applicantList: [] as Applicant[],
+    currentIds: [] as number[],
+    isLoadingProgress: false,
+    metaData: {
+      current: 0,
+      size: 0,
+      total_pages: 0,
+      total_results: 0
+    },
     applicantsByColumn: {
       'wait_contact': [],
       'wait_attend': [],
@@ -129,6 +148,152 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.applicantsByStatusCount[status] = result
     return result
   }
+  
+  const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}, 
+    pagination = {
+      page: 1,
+      rowsPerPage: 10
+    }) => {
+    state.value.applicantList = []
+    state.value.isLoadingProgress = true;
+
+    const filters : ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
+    const queryString = searchData['keyword'] ? searchData['keyword'] : ''
+
+    if (searchData['status']) {
+      filters['all'].push({
+        'status': searchData['status']
+      });
+    }
+    if (searchData.applicationDateMin && searchData.applicationDateMax) {
+      filters['all'].push({
+        'applicationdate': { 'from': formatDate(new Date(searchData.applicationDateMin), true), 'to': formatDate(new Date(searchData.applicationDateMax)) }
+      });
+    }
+    else if (searchData.applicationDateMin) {
+      filters['all'].push({
+        'applicationdate': { 'from': formatDate(new Date(searchData.applicationDateMin), true) }
+      });
+    }
+    else if (searchData.applicationDateMax) {
+      filters['all'].push({
+        'applicationdate': { 'to': formatDate(new Date(searchData.applicationDateMax)) }
+      });
+    }
+    if (searchData.ageMin) {
+      filters['all'].push({
+        'dob': { 'to': getDate(parseInt(searchData.ageMin)) }
+      });
+    }
+    if (searchData.ageMax) {
+      filters['all'].push({
+        'dob': { 'from': getDate(parseInt(searchData.ageMax)) }
+      });
+    }
+  
+    const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
+    for (let i = 0; i < items.length; i++) {
+      if (searchData[items[i]] && searchData[items[i]].length > 0) {
+        const obj = {}
+        obj[items[i]] = searchData[items[i]]
+        filters['all'].push(obj);
+      }
+    }
+    if (searchData.availableShift && searchData.availableShift.length > 0) {
+      for (let i = 0; i < searchData.availableShift.length; i++) {
+        const obj = {}
+        obj[searchData.availableShift[i]] = 'true'
+        filters['all'].push(obj);
+      }
+    }
+    if (searchData.workPerWeekMin && searchData.workPerWeekMax) {
+      filters['all'].push({
+        'daystowork': { 'from': parseInt(searchData.workPerWeekMin), 'to': parseInt(searchData.workPerWeekMax) }
+      });
+    } else if (searchData.workPerWeekMin) {
+      filters['all'].push({
+        'daystowork': { 'from': parseInt(searchData.workPerWeekMin) }
+      });
+    } else if (searchData.workPerWeekMax) {
+      filters['all'].push({
+        'daystowork': { 'to': parseInt(searchData.workPerWeekMax) }
+      });
+    }
+  
+    if (searchData.mapData) {
+      filters['all'].push({
+        'geohash': {
+          'center': `${searchData.mapData.lat}, ${searchData.mapData.lng}`,
+          'distance': searchData.mapData.radiusInM,
+          'unit': 'm'
+        }
+      });
+    }
+  
+    if (!queryString && filters.all.length == 1) {
+      const d = new Date();
+      const m = d.getMonth();
+      d.setMonth(d.getMonth() - 1);
+      /** If still in same month, set date to last day of previous month */
+      if (d.getMonth() == m) d.setDate(0);
+      filters['all'].push({
+        'created_at': { 'from': formatDate(d, true), 'to': formatDate(new Date()) }
+      });
+    }
+    await api.post(
+      (process.env.elasticSearchStaffURL as string),
+      {
+        'query': queryString,
+        'page': { 'size': pagination.rowsPerPage, 'current': pagination.page },
+        'filters': filters,
+      },
+      {
+        headers: { 'Authorization': process.env.elasticSearchKey, 'Content-Type': 'application/json' },
+      }
+    ).then(async (response) => {
+      if (response.status == 200) {
+        const responseData = ref(response.data.results).value;
+        state.value.metaData = response.data.meta.page;
+        for (let i = 0; i < responseData.length; i++) {
+          state.value.currentIds.push(responseData[i]['id']['raw'])
+        }
+        loadFirestoreApplicantData()
+      }
+    }).catch((error) => {
+      console.log(error)
+    });
+  };
+  
+  const loadFirestoreApplicantData = async () => {
+    state.value.applicantList = [];
+    state.value.isLoadingProgress = true;
+    while (state.value.currentIds.length) {
+      const batch = state.value.currentIds.splice(0, 10);
+      state.value.applicantList = await getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch)])
+    }
+    state.value.isLoadingProgress = false;
+  }
+  
+  const formatDate = (dt : Date, midNight = false) => {
+    const year = dt.toLocaleString('en-US', { year: 'numeric' });
+    const month = dt.toLocaleString('en-US', { month: '2-digit' });
+    const day = dt.toLocaleString('en-US', { day: '2-digit' });
+    if (midNight) {
+      return year + '-' + month + '-' + day + 'T00:00:00+00:00';
+  
+    }
+    return year + '-' + month + '-' + day + 'T23:59:59+00:00';
+  }
+  
+  const getDate = (ageInYears : number) => {
+    const calDate = new Date();
+    calDate.setFullYear(calDate.getFullYear() - ageInYears);
+    const year = calDate.toLocaleString('en-US', { year: 'numeric' });
+    const month = calDate.toLocaleString('en-US', { month: '2-digit' });
+    const day = calDate.toLocaleString('en-US', { day: '2-digit' });
+  
+    return year + '-' + month + '-' + day + 'T00:00:00+00:00';
+  }
 
   const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false) => {
     if(!showMore){
@@ -188,6 +353,12 @@ export const useApplicant = defineStore('applicant', () => {
       saveData['updated_at'] = serverTimestamp();
 
       await updateDoc(applicantRef, saveData)
+      const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
+      console.log(applicantIndex)
+      if (applicantIndex >=0) {
+        console.log(123)
+        state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
+      }
       if (showAlert){ Alert.success($q, t); }
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
@@ -257,6 +428,7 @@ export const useApplicant = defineStore('applicant', () => {
       return doc.data() as Applicant
     })
   }
+
   async function getApplicantContactData(applicantId, constraints : ConstraintsType){
     const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
     const snapshot = await getDocs(q);
@@ -363,6 +535,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
 })
   
