@@ -13,7 +13,7 @@
     <q-separator color="white" size="2px" />
       <DashboardNotificationTable :rows="notificationRows" />
     <q-separator color="white" size="2px" />
-      <DashboardProgressBlocks :forceUpdate="forceUpdate" />
+      <DashboardProgressBlocks :updateOnMounted="updateOnMounted" />
     <q-separator color="white" size="2px" />
   </q-page>
 </template>
@@ -24,9 +24,12 @@ import DashboardNotificationTable from './components/DashboardNotificationTable.
 import { onBeforeMount, ref } from 'vue';
 import DashboardProgressBlocks from './components/DashboardProgressBlocks.vue';
 import { COLUMN_STATUSES, limitQuery } from '../ApplicantProgress/const/applicantColumns';
+import { storeToRefs } from 'pinia';
 
 const applicantStore = useApplicant()
-const forceUpdate = ref(false)
+const { state } = storeToRefs(applicantStore)
+const { attendeeUserInCharge, prefecture, currentStatusMonth } = state.value.applicantProgressFilter
+const updateOnMounted = ref(false)
 const notificationRows = ref([
   {
     date: '2023/1/1',
@@ -54,16 +57,16 @@ const onBranchChange = async () => {
 }
 onBeforeMount(()=>{
   if(
-    applicantStore.state.applicantProgressFilter.attendeeUserInCharge ||
-    applicantStore.state.applicantProgressFilter.prefecture ||
-    applicantStore.state.applicantProgressFilter.currentStatusMonth ||
+    attendeeUserInCharge ||
+    prefecture ||
+    currentStatusMonth ||
     applicantStore.state.needsUpdateOnBack
   ) {
-    applicantStore.state.applicantProgressFilter.attendeeUserInCharge = ''
-    applicantStore.state.applicantProgressFilter.prefecture = ''
-    applicantStore.state.applicantProgressFilter.currentStatusMonth = ''
+    state.value.applicantProgressFilter.attendeeUserInCharge = ''
+    state.value.applicantProgressFilter.prefecture = ''
+    state.value.applicantProgressFilter.currentStatusMonth= ''
     applicantStore.state.needsUpdateOnBack = false
-    forceUpdate.value = true
+    updateOnMounted.value = true
   }
 })
 </script>

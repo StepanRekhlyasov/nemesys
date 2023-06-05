@@ -23,10 +23,10 @@
 </template>
 <script setup lang="ts">
 import { dashboardNotificationTableColumns as columns } from '../const/dashboard.const'
-import { dashboardNotificationRows } from '../types/dashboard.types'
+import { DashboardNotificationRows } from '../types/dashboard.types'
 import InquiryDrawer from 'src/pages/admin/InquiryPage/components/InquiryDrawer.vue';
 
 defineProps<{
-  rows?: dashboardNotificationRows[]
+  rows?: DashboardNotificationRows[]
 }>()
 </script>

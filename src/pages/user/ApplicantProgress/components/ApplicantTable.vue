@@ -34,7 +34,7 @@ const emit = defineEmits<{
       font-size: 15px;
       background-color: $main-primary;
       color: #fff;
-      border-color: #fff!important;
+      border-color: #fff;
       padding: 0 3px;
       white-space: break-spaces;
     }

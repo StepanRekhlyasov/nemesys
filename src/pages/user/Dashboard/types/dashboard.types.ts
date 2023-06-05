@@ -1,4 +1,4 @@
-export interface dashboardNotificationRows {
+export interface DashboardNotificationRows {
   date: string,
   category: string,
   subject: string,

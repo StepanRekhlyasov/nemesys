@@ -36,12 +36,12 @@ import { limitQuery } from '../../ApplicantProgress/const/applicantColumns';
 const applicantStore = useApplicant()
 const props = defineProps<{
   status: string,
-  forceUpdate: boolean
+  updateOnMounted: boolean
 }>()
 const showPreview = ref(false)
 
 onMounted(async ()=>{
-  if(props.forceUpdate || typeof applicantStore.state.applicantCount[props.status] === 'undefined') {
+  if(props.updateOnMounted || typeof applicantStore.state.applicantCount[props.status] === 'undefined') {
     await applicantStore.getApplicantsByStatus(props.status, applicantStore.state.applicantProgressFilter, limitQuery)
   } 
 })

@@ -79,8 +79,8 @@ onMounted(async ()=>{
           loading.value = false
           break;
         }
-        await organization.getBranchesInOrganization(organization.currentOrganizationId)
-        optionsList.value = mapToSelectOptions(organization.state.branchesInOrganization)
+        const branches = await organization.getBranchesInOrganization(organization.currentOrganizationId)
+        optionsList.value = mapToSelectOptions(branches)
         loading.value = false
       break;
       default:

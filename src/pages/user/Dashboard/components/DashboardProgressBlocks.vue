@@ -3,7 +3,7 @@
       <p style="font-size:16px; margin:0;" class="text-primary text-bold">■{{ $t('dashboard.applicantProgress') }}</p>
     </q-card-section>
     <div class="DashboardStatusBlock__wrapper bg-grey-3">
-      <DashboardStatusBlock v-for="status in COLUMN_STATUSES" :status="status" :key="status" :forceUpdate="forceUpdate"/>
+      <DashboardStatusBlock v-for="status in COLUMN_STATUSES" :status="status" :key="status" :updateOnMounted="updateOnMounted"/>
     </div>
 </template>
 <script setup lang="ts">
@@ -11,7 +11,7 @@ import DashboardStatusBlock from './DashboardStatusBlock.vue';
 import { COLUMN_STATUSES } from '../../ApplicantProgress/const/applicantColumns';
 
 defineProps<{
-  forceUpdate: boolean
+  updateOnMounted: boolean
 }>()
 </script>
 <style scoped lang="scss">
