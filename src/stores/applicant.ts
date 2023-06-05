@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
 import { watch } from 'vue';
@@ -9,8 +9,6 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
-import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
 
@@ -22,7 +20,8 @@ interface ApplicantState {
   applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
   prefectureList: {label: string, value: string | number}[],
-  selectedApplicant: Applicant | null
+  selectedApplicant: Applicant | null,
+  needsUpdateOnBack: boolean,
   columnsLoading: {
     'wait_contact': boolean,
     'wait_attend': boolean,
@@ -32,7 +31,15 @@ interface ApplicantState {
     'wait_entry': boolean,
     'wait_termination': boolean,
   },
-  usersInCharge: User[],
+  applicantCount: {
+    'wait_contact': number | undefined,
+    'wait_attend': number | undefined,
+    'wait_FIX': number | undefined,
+    'wait_visit': number | undefined,
+    'wait_offer': number | undefined,
+    'wait_entry': number | undefined,
+    'wait_termination': number | undefined,
+  },
 }
 
 type ContinueFromDoc = {
@@ -94,13 +101,14 @@ export const useApplicant = defineStore('applicant', () => {
     },
     applicantProgressFilter: {
       branch: '',
-      userInCharge: '',
+      attendeeUserInCharge: '',
       prefecture: '',
       currentStatusMonth: ''
     },
     reFilterOnReturn: false,
     prefectureList: [],
     selectedApplicant: null,
+    needsUpdateOnBack: false,
     columnsLoading: {
       'wait_contact': false,
       'wait_attend': false,
@@ -110,7 +118,15 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': false,
       'wait_termination': false,
     },
-    usersInCharge: [],
+    applicantCount: {
+      'wait_contact': undefined,
+      'wait_attend': undefined,
+      'wait_FIX': undefined,
+      'wait_visit': undefined,
+      'wait_offer': undefined,
+      'wait_entry': undefined,
+      'wait_termination': undefined,
+    },
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter) => {
@@ -237,6 +253,7 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
     }
+    state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
     if(filterData){
@@ -248,7 +265,10 @@ export const useApplicant = defineStore('applicant', () => {
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
     const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
+    const countQuery = query(applicantRef, ...filters)
     const docSnap = await getDocs(querys)
+    const countSnapshot = await getCountFromServer(countQuery)
+    state.value.applicantCount[status] = countSnapshot.data().count
 
     if (!docSnap.empty) {
       const documents = docSnap.docs.map(item => {
@@ -263,9 +283,11 @@ export const useApplicant = defineStore('applicant', () => {
       }
       const result = state.value.applicantsByColumn[status].concat(documents)
       state.value.applicantsByColumn[status] = result
+      state.value.columnsLoading[status] = false
       return result
     }
     state.value.continueFromDoc[status] = null
+    state.value.columnsLoading[status] = false
     return []
   }
 
@@ -433,18 +455,6 @@ export const useApplicant = defineStore('applicant', () => {
       })
   })
 
-  const fetchUsersInChrage = async () => {
-    const organization = useOrganization()
-    const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
-    const users = await usersSnapshot
-    if(users){
-      const result = users.docs.map(item => {
-        return item.data() as User
-      })
-      state.value.usersInCharge = result
-    }
-  }
-
   const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
     if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth))
@@ -501,6 +511,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , fetchUsersInChrage,createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
 })
 

@@ -1,8 +1,9 @@
 import { ComputedRef, computed } from 'vue';
 import { i18n } from 'boot/i18n'
 import { ApplicantStatus } from '../model';
-import { useApplicant } from 'src/stores/applicant';
 import { QTableProps } from 'quasar';
+import { useOrganization } from 'src/stores/organization';
+import { mapToSelectOptions } from '../utils/User.utils';
 
 const { t } = i18n.global
 
@@ -381,13 +382,8 @@ export const applicantListColumn = computed(() => {
 })
 
 export const usersInCharge = computed(()=>{
-  const applicantStore = useApplicant()
-  return applicantStore.state.usersInCharge.map((doc) => {
-    return {
-      label: doc.displayName,
-      value: doc.id
-    }
-  });
+  const organization = useOrganization()
+  return mapToSelectOptions(organization.state.currentOrganizationUsers)
 });
 
 export const contactColumns : ComputedRef<QTableProps['columns']> = computed(() => {

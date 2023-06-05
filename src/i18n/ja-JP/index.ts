@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    select: '選択',
     reflect: '反映',
     capture: '取込',
     numberOfSelections: '選択数',
@@ -1624,5 +1625,14 @@ export default {
       unitPrice: '単価',
       billingAmount: '請求額'
     }
+  },
+  dashboard: {
+    showBranch: '表示支店',
+    notification: '通知',
+    openList: 'リストを開く',
+    applicantProgress: '応募者進捗状況',
+    showWhiteboard: 'ホワイトボードを表示する',
+    showList: 'リストを表示する',
+    waitList: 'リスト'
   }
 };

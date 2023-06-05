@@ -10,6 +10,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
             @update="()=>{
+              applicantStore.state.needsUpdateOnBack = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -21,6 +22,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="()=>{
+              applicantStore.state.needsUpdateOnBack = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -32,6 +34,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
           <MySelect 
             @update="()=>{
+              applicantStore.state.needsUpdateOnBack = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -52,10 +55,10 @@
       <q-scroll-area style="height: 80vh; max-width: 90vw">
         <applicant-table 
           :status="statusParams.firestore" 
-          :applicants="applicantsByColumn" 
+          :applicants="applicantsForTable" 
           :loading="loading" 
           @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
-          @sortQuery="(param : QueryOrderByConstraint)=>{
+          @sortQuery="(param : QueryOrderByConstraint[])=>{
             paginationRef?.setOrder(param);
             paginationRef?.setConstraints(paginationConstraints);
             paginationRef?.queryFirstPage()
@@ -67,7 +70,7 @@
           :pagination="pagination"
           @on-loading-state-change="(v) => loading = v"
           @on-data-update="async (newData) => {
-            applicantStore.state.applicantsByColumn[statusParams.firestore] = newData
+            applicantsForTable = newData as Applicant[]
           }"
         />
       </q-scroll-area>
@@ -77,7 +80,7 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { ComputedRef, computed, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
@@ -109,7 +112,7 @@ if(!statusParams){
 const applicantStore = useApplicant();
 
 /** getters */
-const applicantsByColumn : ComputedRef<Applicant[]> = computed(() => applicantStore.state.applicantsByColumn[statusParams.firestore]);
+const applicantsForTable = ref<Applicant[]>([])
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
   for (const [key, value] of Object.entries(applicantStore.state.applicantProgressFilter)){
@@ -128,6 +131,7 @@ const pagination = ref({
 
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
+    applicantStore.state.needsUpdateOnBack = true
     paginationRef.value?.setConstraints(paginationConstraints.value);
     paginationRef.value?.queryFirstPage()
   }
