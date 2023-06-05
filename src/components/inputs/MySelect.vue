@@ -24,9 +24,9 @@
 import { watch } from 'vue';
 import { selectOptions } from 'src/shared/model';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
-import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 
 type optionToFetch = 'usersInCharge' | 'branchIncharge'
 
@@ -41,55 +41,51 @@ const props = withDefaults(defineProps<{
   width: '100%',
   height: 'auto'
 })
-
 const optionsList = ref(props.options)
 const loading = ref(false)
 const inputVal = ref(props.modelValue)
+
+const organization = useOrganization()
+const { state, currentOrganizationId } = storeToRefs(organization)
 onMounted(async ()=>{
   if(props.optionToFetch){
     switch (props.optionToFetch) {
       case 'usersInCharge':
-        loading.value = true
-        const applicantStore = useApplicant()
-       
-        if(applicantStore.state.usersInCharge.length){
-          optionsList.value = applicantStore.state.usersInCharge.map((doc) => {
-            return {
-              label: doc.displayName,
-              value: doc.id
-            }
-          });
-          loading.value = false
-          break;
+        if(state.value.currentOrganizationUsers){
+          optionsList.value = mapToSelectOptions(state.value.currentOrganizationUsers)
         }
-        await applicantStore.fetchUsersInChrage()
-        optionsList.value = applicantStore.state.usersInCharge.map((doc) => {
-          return {
-            label: doc.displayName,
-            value: doc.id
-          }
-        });
-        loading.value = false
       break;
       case 'branchIncharge':
-        loading.value = true
-        const organization = useOrganization()
-        if(organization.state.branchesInOrganization && Object.keys(organization.state.branchesInOrganization).length){
-          optionsList.value = mapToSelectOptions(organization.state.branchesInOrganization)
-          loading.value = false
-          break;
+        if(state.value.currentOrganizationBranches){
+          optionsList.value = mapToSelectOptions(state.value.currentOrganizationBranches)
         }
-        const branches = await organization.getBranchesInOrganization(organization.currentOrganizationId)
-        optionsList.value = mapToSelectOptions(branches)
-        loading.value = false
       break;
       default:
         console.log('wrong prop')
+      break;
     }
   }
+  loading.value = false
 })
 watch(()=>props.options, (newValue)=>{
   optionsList.value = newValue
+})
+watch(()=>currentOrganizationId.value, ()=>{
+  if(props.optionToFetch){
+    loading.value = true
+  }
+})
+watch(()=>state.value.currentOrganizationBranches, ()=>{
+  if(props.optionToFetch === 'branchIncharge'){
+    optionsList.value = mapToSelectOptions(state.value.currentOrganizationBranches)
+    loading.value = false
+  }
+})
+watch(()=>state.value.currentOrganizationUsers, ()=>{
+  if(props.optionToFetch === 'usersInCharge'){
+    optionsList.value = mapToSelectOptions(state.value.currentOrganizationUsers)
+    loading.value = false
+  }
 })
 </script>
 <style lang="scss" scoped>

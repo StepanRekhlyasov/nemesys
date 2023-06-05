@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice, User, UserPermissionNames } from 'src/shared/model';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice } from 'src/shared/model';
 import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref } from 'vue'
 import { watch } from 'vue';
@@ -9,8 +9,6 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
-import { useOrganization } from './organization';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
 
@@ -42,7 +40,6 @@ interface ApplicantState {
     'wait_entry': number | undefined,
     'wait_termination': number | undefined,
   },
-  usersInCharge: User[],
 }
 
 type ContinueFromDoc = {
@@ -128,7 +125,6 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': undefined,
       'wait_termination': undefined,
     },
-    usersInCharge: [],
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter) => {
@@ -356,18 +352,6 @@ export const useApplicant = defineStore('applicant', () => {
           }
       })
   })
-  
-  const fetchUsersInChrage = async () => {
-    const organization = useOrganization()
-    const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
-    const users = await usersSnapshot
-    if(users){
-      const result = users.docs.map(item => {
-        return item.data() as User
-      })
-      state.value.usersInCharge = result
-    }
-  }
 
   const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
     const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
@@ -424,6 +408,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }, { deep: true})
 
-  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, fetchUsersInChrage, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
+  return { state, getClients, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, createApplicant, getApplicantsByConstraints, getApplicantContactData, saveWorkExperience }
 })
   
