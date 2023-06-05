@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import consts from './consts'
+import { tableColumnsSavedCriteriaList } from './consts';
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -39,7 +39,6 @@ const pagination = ref({
     rowsPerPage: 10
     // rowsNumber: xx if getting data from a server
 });
-
 </script>
 
 <template>
@@ -55,7 +54,7 @@ const pagination = ref({
                 </div>
                 <form class="form q-mt-sm">
                     <input class="form__input" type="text" :placeholder="t('form.searchPlaceholder')">
-                    <q-btn color="accent">
+                    <q-btn color="primary">
                         {{ t('common.search') }}
                     </q-btn>
                     <q-btn>
@@ -64,24 +63,20 @@ const pagination = ref({
                 </form>
             </q-card-section>
             <q-card-section class="no-padding">
-                <q-markup-table
-                class="table"
-                :bordered="false"
-                :square="false"
-                separator="none"
-                flat>
+                <q-markup-table class="table" :bordered="false" :square="false" separator="none" flat>
                     <thead>
                         <tr>
                             <th class="table__column text-left"></th>
-                            <th class="table__column text-left" :key="item.name" v-for="item in consts.tableColumnsSavedCriteriaList.value">
+                            <th class="table__column text-left" :key="item.name" v-for="item in tableColumnsSavedCriteriaList">
                                 {{ item.label }}
                             </th>
                             <th class="table__column text-left"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table__row wrapper_animate_left_border" :key="item.id" v-for="item in data">
-                            <td class="table__btn-wrapper q-ml-xs"><q-icon size="1.5rem" color="accent" class="table__edit-btn" name="edit"/></td>
+                        <tr class="table__row wrapper_animate_left_border_client" :key="item.id" v-for="item in data">
+                            <td class="table__btn-wrapper q-ml-xs"><q-icon size="1.5rem" color="primary"
+                                    class="table__edit-btn" name="edit" /></td>
                             <td class="table__row_name text-left">
                                 <a href="">{{ item.name }}</a>
                             </td>
@@ -89,22 +84,16 @@ const pagination = ref({
                             <td class="text-left"> {{ item.date }}</td>
                             <td class="text-left">{{ item.update }}</td>
                             <td class="text-left">{{ item.modified }}</td>
-                            <td class="table__btn-wrapper"><q-icon size="1.5rem" color="accent" class="table__delete-btn" name="delete_outline"/></td>
+                            <td class="table__btn-wrapper"><q-icon size="1.5rem" color="primary" class="table__delete-btn"
+                                    name="delete_outline" /></td>
                         </tr>
                     </tbody>
                 </q-markup-table>
                 <div class="pagination">
-                    <q-pagination
-                    v-model="pagination.page"
-                    gutter="md"
-                    color="white"
-                    size="18px"
-                    text-color="black"
-                    active-text-color="white"
-                    active-color="accent"
-                    :max="(data.length / pagination.rowsPerPage) >= 1 ? data.length / pagination.rowsPerPage : 1"
-                    direction-links
-                    outline />
+                    <q-pagination v-model="pagination.page" gutter="md" color="white" size="18px" text-color="black"
+                        active-text-color="white" active-color="primary"
+                        :max="(data.length / pagination.rowsPerPage) >= 1 ? data.length / pagination.rowsPerPage : 1"
+                        direction-links outline />
                 </div>
             </q-card-section>
         </q-card>
@@ -116,43 +105,48 @@ const pagination = ref({
 @import "src/css/animate-left-border.scss";
 
 .table {
-    &__column {
-        
-    }
+    &__column {}
+
     &__row {
         position: relative;
 
         &_name {
             text-decoration: underline;
-            color: $main-purple;
+            color: $main-primary;
             font-size: 1rem;
         }
     }
+
     &__btn-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
     }
+
     &__edit-btn {
         display: block;
         cursor: pointer;
         padding: 5px;
     }
+
     &__delete-btn {
         display: block;
         cursor: pointer;
         padding: 5px;
     }
 }
-.wrapper_animate_left_border::after {
+
+.wrapper_animate_left_border_client::after {
     width: 1.5%;
     z-index: 11;
 }
+
 .title {
     color: $main-black;
     font-weight: bold;
     font-size: 1rem;
 }
+
 .form {
     display: flex;
     flex-direction: row;
@@ -167,6 +161,7 @@ const pagination = ref({
         border-radius: 4px;
         padding: 1%;
     }
+
     &__input:focus {
         outline: none;
     }
