@@ -36,8 +36,8 @@ const admin_router: MenuRouter[] = [
     title: 'menu.officeSearch',
   },
   {
-    title: 'menu.client-factory',
-    path: 'client-factory',
+    title: 'menu.admin.officeManagement',
+    path: 'client-factories',
     component: () => import('src/pages/admin/OfficeManagement/ClientFactories.vue'),
     meta: {
       requiresAuth: true,
