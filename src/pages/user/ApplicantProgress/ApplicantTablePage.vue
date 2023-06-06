@@ -58,7 +58,7 @@
           :applicants="applicantsForTable" 
           :loading="loading" 
           @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
-          @sortQuery="(param : QueryOrderByConstraint[])=>{
+          @sortQuery="(param)=>{
             paginationRef?.setOrder(param);
             paginationRef?.setConstraints(paginationConstraints);
             paginationRef?.queryFirstPage()
@@ -88,7 +88,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { limitQuery } from './const/applicantColumns';
 import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
-import { QueryFieldFilterConstraint, QueryOrderByConstraint, orderBy, where } from 'firebase/firestore';
+import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import { Applicant } from 'src/shared/model';
