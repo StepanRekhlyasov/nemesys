@@ -118,12 +118,12 @@
           v-model="data['meansCommuting']" :disable="loading" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.nearestStation') }}
+        {{ $t('applicant.attendant.route') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
+        <hidden-text v-if="!desiredEdit" :value="applicant.route" />
         <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['nearestStation']" :disable="loading" />
+          v-model="data['route']" :disable="loading"/>
       </div>
     </div>
 
@@ -137,12 +137,12 @@
           v-model="data['commutingTime']" :disable="loading" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.route') }}
+        {{ $t('applicant.attendant.nearestStation') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit" :value="applicant.route" />
+        <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
         <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['route']" :disable="loading"/>
+          v-model="data['nearestStation']" :disable="loading" />
       </div>
     </div>
 
@@ -164,9 +164,10 @@
         {{ $t('applicant.attendant.facilityDesired') }}
       </div>
       <div class="col-9 q-pl-md blue ">
-        <span v-if="!desiredEdit" class="text_dots">{{ applicant.facilityDesired }}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['facilityDesired']" :disable="loading" />
+        <span v-if="!desiredEdit" class="text_dots">{{ applicant.facilityDesired?.map(val => $t(`client.add.facilityOp.${val}`)).join(', ') }}</span>
+        <q-select outlined dense multiple :options="facilityOp" 
+          use-chips emit-value map-options v-if="desiredEdit"  option-label="name"
+          v-model="data['facilityDesired']" :disable="loading"/>
       </div>
     </div>
 
@@ -175,9 +176,10 @@
         {{ $t('applicant.attendant.ngFacilityType') }}
       </div>
       <div class="col-9 q-pl-md blue ">
-        <span v-if="!desiredEdit" class="text_dots">{{ applicant.ngFacilityType }}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['ngFacilityType']" :disable="loading" />
+        <span v-if="!desiredEdit" class="text_dots">{{ applicant.ngFacilityType?.map(val => $t(`client.add.facilityOp.${val}`)).join(', ') }}</span>
+        <q-select outlined dense multiple :options="facilityOp"
+          use-chips emit-value map-options v-if="desiredEdit" option-label="name"
+          v-model="data['ngFacilityType']" :disable="loading"/>
       </div>
     </div>
 
@@ -233,6 +235,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 
 const props = defineProps<{
   applicant: Applicant
@@ -259,8 +262,8 @@ function resetData() {
     nearestStation: props.applicant['nearestStation'],
     commutingTime: props.applicant['commutingTime'],
     commutingTimeRemarks: props.applicant['commutingTimeRemarks'],
-    facilityDesired: props.applicant['facilityDesired'],
-    ngFacilityType: props.applicant['ngFacilityType'],
+    facilityDesired: props.applicant['facilityDesired'] || [],
+    ngFacilityType: props.applicant['ngFacilityType'] || [],
     hourlyRate: props.applicant['hourlyRate'],
     transportationServices: props.applicant['transportationServices'],
     jobSearchPriorities1: props.applicant['jobSearchPriorities1'],
@@ -273,7 +276,8 @@ function resetData() {
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
-resetData()
+console.log(facilityOp.value)
+resetData();
 
 async function saveDesired(){
   loading.value = true
