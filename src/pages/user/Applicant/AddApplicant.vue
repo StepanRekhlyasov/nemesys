@@ -10,7 +10,7 @@
           <div class="col-6">
             <div class="row">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.name') }}
+                {{ $t('applicant.add.name') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['name']" bg-color="white"
@@ -19,7 +19,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.kanaName') }}
+                {{ $t('applicant.add.kanaName') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['kanaName']" 
@@ -28,7 +28,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.postCode') }}
+                {{ $t('applicant.add.postCode') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['postCode']"
@@ -37,7 +37,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.prefecture') }}
+                {{ $t('applicant.add.prefecture') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
@@ -47,7 +47,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.municipalities') }}
+                {{ $t('applicant.add.municipalities') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['municipalities']"
@@ -56,7 +56,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.street') }}
+                {{ $t('applicant.add.street') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['street']"
@@ -83,7 +83,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.email') }}
+                {{ $t('applicant.add.email') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['email']"
@@ -92,7 +92,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.status') }}
+                {{ $t('applicant.add.status') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
@@ -101,7 +101,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.branchIncharge') }}
+                {{ $t('applicant.add.branchIncharge') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm bg-white">
                 <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
@@ -111,7 +111,7 @@
           <div class="col-6">
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.sex') }}
+                {{ $t('applicant.add.sex') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">                
                 <q-field                
@@ -127,7 +127,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.dob') }}
+                {{ $t('applicant.add.dob') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['dob']"
@@ -148,7 +148,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.occupation') }}
+                {{ $t('applicant.add.occupation') }} <span style="color: red">*</span>
               </div>
               <div class="col-9 q-pl-sm">
                 <q-field                
@@ -192,7 +192,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.applicationDate') }}
+                {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
