@@ -276,7 +276,6 @@ function resetData() {
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
-console.log(facilityOp.value)
 resetData();
 
 async function saveDesired(){
