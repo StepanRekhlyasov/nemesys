@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {defineProps, defineEmits } from 'vue';
-import { ClientFactoryTableRow, Pagination } from '../types';
+import {defineProps, defineEmits, withDefaults } from 'vue';
+import { ClientFactoryTableRow, Pagination } from './types';
 
 const emit = defineEmits<{
     (e: 'updatePage', value: number)
@@ -10,10 +10,13 @@ const updatePage = (value: number) => {
     emit('updatePage', value);
 }
 
-defineProps<{
-    rows: ClientFactoryTableRow[],
+withDefaults(defineProps<{
+    rows: ClientFactoryTableRow[]
     pagination: Pagination
-}>()
+    theme?: string
+}>(), {
+    theme: 'primary'
+})
 
 </script>
 
@@ -27,7 +30,7 @@ defineProps<{
         color="white"
         text-color="black"
         active-text-color="white"
-        active-color="accent"
+        :active-color="theme"
         :max="Math.ceil(rows.length / pagination.rowsPerPage) || 1"
         direction-links
         outline />

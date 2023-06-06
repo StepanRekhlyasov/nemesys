@@ -58,7 +58,7 @@ export const menuParent: MenuParentType[] = [
     title: 'menu.applicant',
     icon: 'mdi-face-man-outline'
   },{
-    type: MenuParent.ClientMenagment,
+    type: MenuParent.BusinessMenagment,
     title: 'menu.clientManagement',
     icon: 'business'
   },{
