@@ -29,12 +29,6 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
                 <div :class="`bg-${theme} square`"></div>
                 <span :class="`text-${theme} subtitle`">{{ label }}</span>
             </div>
-            <!-- <div v-if="isButton">
-                <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
-                  class="text-grey-9" @click="show = false" v-if="show" />
-                <q-btn :label="t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
-                  class="text-grey-9" @click="show = true" v-else />
-            </div> -->
         </div>
         <div class="col-3 text-right">
             <q-btn v-if="!isEdit" 
@@ -58,17 +52,17 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
                     {{ row.label }}
                 </span>
 
-                <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" class="link q-pl-sm">
+                <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" :class="`link q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </a>
 
-                <span v-else-if="Array.isArray(row.value)" class="q-pl-sm">
+                <span v-else-if="Array.isArray(row.value)" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value.join(', ') }}
                 </span>
 
-                <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" class="q-pl-sm"/>
+                <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`"/>
 
-                <span v-else class="line__value q-pl-sm">
+                <span v-else :class="`line__value q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </span>
             </div>
@@ -80,17 +74,17 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
                     {{ row.label }}
                 </span>
 
-                <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" class="link q-pl-sm">
+                <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" :class="`link q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </a>
 
-                <span v-else-if="Array.isArray(row.value)" class="q-pl-sm">
+                <span v-else-if="Array.isArray(row.value)" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value.join(', ') }}
                 </span>
 
-                <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" class="q-pl-sm"/>
+                <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`"/>
 
-                <span v-else class="line__value q-pl-sm">
+                <span v-else :class="`line__value q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </span>
             </div>
@@ -99,6 +93,8 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
 </template>
 
 <style lang="scss" scoped>
+@import 'src/css/imports/colors';
+
 .column {
     width: 50%;
 }
@@ -118,6 +114,10 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
     &__value {
         word-wrap: break-word;
         width: 50%;
+    }
+
+    &__highlight {
+        background-color: $edit-highlight;
     }
 }
 

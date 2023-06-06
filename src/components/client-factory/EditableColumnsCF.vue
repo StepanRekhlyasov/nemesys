@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineProps, defineEmits, withDefaults, computed, ref, watch } from 'vue';
-import ParentClient from './form/clientFactoryForms/ParentClient.vue';
-import FacilityType from './form/clientFactoryForms/FacilityType.vue';
-import ContractUnit from './form/ContractUnit.vue';
-import ClientType from './form/clientForms/ClientType.vue';
+import ParentClient from '../form/clientFactoryForms/ParentClient.vue';
+import FacilityType from '../form/clientFactoryForms/FacilityType.vue';
+import ContractUnit from '../form/ContractUnit.vue';
+import ClientType from '../form/clientForms/ClientType.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 const { t } = useI18n({ useScope: 'global' });

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineProps, ref, watchEffect } from 'vue';
-import EditableColumnsCF, {Data} from 'src/components/EditableColumnsCF.vue';
-import HighlightTwoColumn from './HighlightTwoColumn.vue';
+import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
+import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import { useHighlightMainInfo } from '../handlers';
 import { RenderMainInfo } from '../types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';

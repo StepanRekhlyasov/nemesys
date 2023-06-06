@@ -31,7 +31,7 @@ const hideDrawer = () => {
         :width="1000">
             <q-scroll-area class="fit text-left">
                 <q-card class="no-shadow bg-grey-2">
-                    <q-card-section class="text-white bg-accent row items-end" >
+                    <q-card-section class="text-white bg-primary row items-end" >
                         <q-btn dense flat icon="close" @click="hideDrawer" />
                         <CFDrawerTitle v-if="selectedItem" :selectedItem="selectedItem"/>
                     </q-card-section>
