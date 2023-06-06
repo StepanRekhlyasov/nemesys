@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
-import {OfficeMenuItem} from './types'
+import { OfficeMenuItem } from './types'
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -35,21 +35,21 @@ const menu = computed(() => {
             name: t('menu.advancedSearch'),
             right: require('assets/admin-office-managment/advanced-search-image.png'),
             click() {
-                router.push('client-factories')
+                router.push('client-factories');
             },
         },
         {
             name: t('menu.addOffice'),
             center: t('menu.addOfficeHint'),
             click() {
-                router.push('client-factories')
+                router.push('client-factories');
             },
         },
         {
             name: t('menu.addClient'),
             center: t('menu.addNewClient'),
             click() {
-                router.push('client-factories')
+                router.push('client-factories');
             },
         },
     ]
@@ -84,14 +84,9 @@ const onMenuItem = (item: OfficeMenuItem) => {
             <q-card-section class="no-padding">
                 <q-list bordered separator padding class="rounded-borders bg-grey-3">
                     <q-separator color="white" size="2px" />
-                    <q-item
-                    @click="onMenuItem(item)"
-                    class="item_wrapper wrapper_animate_left_border"
-                    clickable
-                    activeClass="active-link"
-                    :active="item.name === activeItem?.name"
-                    :key="item.name"
-                    v-for="item in menu">
+                    <q-item @click="onMenuItem(item)" class="item_wrapper wrapper_animate_left_border_client" clickable
+                        activeClass="active-link" :active="item.name === activeItem?.name" :key="item.name"
+                        v-for="item in menu">
                         <q-item-section>
                             <div class="menu-item">
                                 <div class="menu-item__name">
@@ -101,7 +96,7 @@ const onMenuItem = (item: OfficeMenuItem) => {
                                     {{ item.center }}
                                 </div>
                                 <div class="menu-item__right">
-                                    <q-img v-if="item.right" :src="item.right " :alt="item.name" />
+                                    <q-img v-if="item.right" :src="item.right" :alt="item.name" />
                                 </div>
                             </div>
                         </q-item-section>
@@ -110,32 +105,34 @@ const onMenuItem = (item: OfficeMenuItem) => {
             </q-card-section>
         </q-card>
 
-        <MapDrawer
-        @hide-drawer="hideMapDrawer" 
-        :isDrawer="isDrawer.mapSearchDrawer"/>
-        <AreaSearchDrawer
-        @hide-drawer="hideAreaDrawer"
-        :isDrawer="isDrawer.areaSearchDrawer"/>
+        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" />
+        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" />
     </div>
 </template>
 
 <style lang="scss" scoped>
 @import "src/css/imports/colors";
 @import "src/css/animate-left-border.scss";
+
 .title {
     color: $main-black;
     font-weight: bold;
     font-size: 1rem;
 }
+
 .q-list {
-    color: $main-purple;
+    color: $main-primary;
 }
+
 .active-link {
-    color: $main-purple;
+    color: $main-primary;
 }
-.wrapper_animate_left_border::after, .active-link::after {
+
+.wrapper_animate_left_border_client::after,
+.active-link::after {
     width: 2.5%;
 }
+
 .menu-item {
     display: flex;
     flex-direction: row;
@@ -148,9 +145,11 @@ const onMenuItem = (item: OfficeMenuItem) => {
         flex: 0 0 33%;
         padding-left: 5%;
     }
+
     &__center {
         flex: 0 0 27%;
     }
+
     &__right {
         flex: 0 0 40%;
 
@@ -161,7 +160,7 @@ const onMenuItem = (item: OfficeMenuItem) => {
         }
     }
 }
+
 .item_wrapper {
     max-height: 80px;
-}
-</style>
+}</style>

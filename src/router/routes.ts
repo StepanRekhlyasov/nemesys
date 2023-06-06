@@ -1,6 +1,6 @@
 import { MenuRouter } from 'src/shared/model/Menu.model';
 import systemRouter from './system.router';
-import clientRouters from './clients.router';
+import businessManagementRouters from './business-management.router';
 import applicantRouters from './applicant.router';
 import reportRouters from './totalization.router';
 import adminRouters from './admin.router';
@@ -20,7 +20,7 @@ const routes: MenuRouter[] = [{
     },
     ...dashboardRouter,
     ...systemRouter,
-    ...clientRouters,
+    ...businessManagementRouters,
     ...applicantRouters,
     ...backOrderRouter,
     ...reportRouters

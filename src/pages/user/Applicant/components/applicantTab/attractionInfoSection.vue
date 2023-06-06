@@ -114,8 +114,18 @@
         <q-input v-if="edit" outlined dense v-model="data['period']" bg-color="white" />
       </div>
     </div>
-
-      <div class="row q-pb-sm">
+    
+    <div class="row q-pt-sm  q-pb-sm ">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.branchIncharge') }}
+      </div>
+      <div class="col-9 q-pl-md blue relative-position">
+        <span v-if="!edit">{{data.branchIncharge? branches.find(b => b.value == data.branchIncharge)?.label : ''}}</span>
+        <select-branch v-if="edit" :organization-id="organizationStore.currentOrganizationId" v-model="data['branchIncharge']" />
+      </div>
+    </div>
+    
+    <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.memo') }}
       </div>
@@ -130,11 +140,14 @@
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
 import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
-import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Applicant, ApplicantInputs, selectOptions } from 'src/shared/model';
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import SelectBranch from 'src/pages/user/Settings/management/components/SelectBranch.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
+import { useOrganization } from 'src/stores/organization';
+import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -144,15 +157,17 @@ const data: Ref<Partial<ApplicantInputs>> = ref({})
 const edit = ref(false);
 const loading = ref(false);
 const applicantStore = useApplicant();
+const organizationStore = useOrganization();
+const branches = ref<selectOptions[]>([])
 
 const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
 const usersListOption = usersInCharge.value
 
 
-function resetData() {
+async function resetData() {
   defaultData.value = {
-    attractionsStatus: props?.applicant['attractionsStatus'],
+    attractionsStatus: props?.applicant['attractionsStatus'] || false,
     seductionDay: timestampToDateFormat(props?.applicant['seductionDay']),
     employmentStatus: props?.applicant['employmentStatus'],
     seduser: props?.applicant['seduser'],
@@ -160,9 +175,11 @@ function resetData() {
     position: props?.applicant['position'],
     qualification: props?.applicant['qualification'],
     period: props?.applicant['period'],
+    branchIncharge: props?.applicant['branchIncharge'],
     memo: props?.applicant['memo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
+  branches.value = mapToSelectOptions(await organizationStore.getBranchesInOrganization(organizationStore.currentOrganizationId))
 }
 resetData()
 
