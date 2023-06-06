@@ -78,12 +78,14 @@ watch(()=>currentOrganizationId.value, ()=>{
 watch(()=>state.value.currentOrganizationBranches, ()=>{
   if(props.optionToFetch === 'branchIncharge'){
     optionsList.value = mapToSelectOptions(state.value.currentOrganizationBranches)
+    inputVal.value = ''
     loading.value = false
   }
 })
 watch(()=>state.value.currentOrganizationUsers, ()=>{
   if(props.optionToFetch === 'usersInCharge'){
     optionsList.value = mapToSelectOptions(state.value.currentOrganizationUsers)
+    inputVal.value = ''
     loading.value = false
   }
 })

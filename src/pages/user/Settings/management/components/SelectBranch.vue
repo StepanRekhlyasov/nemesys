@@ -8,7 +8,7 @@ import { QSelectProps } from 'quasar';
 import { selectOptions } from 'src/shared/model';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
-import { onBeforeMount, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const organization = useOrganization()
 
@@ -18,13 +18,15 @@ interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
 const loading = ref(true)
 const branches = ref<selectOptions[]>([])
 const modelValue = ref('')
-onBeforeMount(async () => {
+onMounted(async () => {
   branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(props.organizationId))
   loading.value = false
 })
 
 const props = defineProps<SelectBranchProps>()
-
+watch(()=>props.organizationId, async (newValue)=>{
+  loading.value = true
+  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(newValue))
+  loading.value = false
+})
 </script>
-
-<style scoped></style>

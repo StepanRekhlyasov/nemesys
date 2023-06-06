@@ -10,7 +10,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
             @update="()=>{
-              applicantStore.state.needsUpdateOnBack = true
+              applicantStore.state.needsApplicantUpdateOnMounted = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -22,7 +22,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="()=>{
-              applicantStore.state.needsUpdateOnBack = true
+              applicantStore.state.needsApplicantUpdateOnMounted = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -34,7 +34,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
           <MySelect 
             @update="()=>{
-              applicantStore.state.needsUpdateOnBack = true
+              applicantStore.state.needsApplicantUpdateOnMounted = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -94,6 +94,7 @@ import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import { Applicant } from 'src/shared/model';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { useOrganization } from 'src/stores/organization';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
@@ -110,6 +111,7 @@ if(!statusParams){
 
 /** stores */
 const applicantStore = useApplicant();
+const organization = useOrganization()
 
 /** getters */
 const applicantsForTable = ref<Applicant[]>([])
@@ -131,10 +133,17 @@ const pagination = ref({
 
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
-    applicantStore.state.needsUpdateOnBack = true
+    applicantStore.state.needsApplicantUpdateOnMounted = true
     paginationRef.value?.setConstraints(paginationConstraints.value);
     paginationRef.value?.queryFirstPage()
   }
+})
+watch(()=>organization.currentOrganizationId, (newVal)=>{
+  applicantStore.state.applicantProgressFilter.organizationId = newVal
+  applicantStore.state.applicantProgressFilter.branchIncharge = ''
+  applicantStore.state.applicantProgressFilter.attendeeUserInCharge = ''
+  paginationRef.value?.setConstraints(paginationConstraints.value);
+  paginationRef.value?.queryFirstPage()
 })
 </script>
 <style scoped>

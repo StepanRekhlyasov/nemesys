@@ -27,7 +27,7 @@ export enum EmploymentStatus {
   'notWorking'
 }
 export interface ApplicantDates {
-  seductionDay?: Timestamp;
+  invitationDate?: Timestamp;
   created_at: Timestamp;
   currentStatusTimestamp: Timestamp;
   applicationDate?: Timestamp;
@@ -36,7 +36,7 @@ export interface ApplicantDates {
   timeToWork?: Timestamp;
 }
 export interface ApplicantInputDates {
-  seductionDay?: string;
+  invitationDate?: string;
   created_at: string;
   currentStatusTimestamp: string;
   applicationDate?: string;
@@ -47,6 +47,7 @@ export interface ApplicantInputDates {
 
 export interface ApplicantBase {
   id: string;
+  organizationId: string;
   prefecture?: string;
   municipalities?: string;
   street: string;

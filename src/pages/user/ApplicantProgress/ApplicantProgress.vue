@@ -128,11 +128,11 @@ const fetchResults = async () => {
 }
 onMounted( async ()=>{
   COLUMN_STATUSES.map(async (status)=>{
-    if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsUpdateOnBack){
+    if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
       fetchResultsHandler(status, false)
     }
   })
-  applicantStore.state.needsUpdateOnBack = false
+  applicantStore.state.needsApplicantUpdateOnMounted = false
   COUNT_STATUSES.map(async (status)=>{
     if(!countApplicantsStatuses.value[status]){
       countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)

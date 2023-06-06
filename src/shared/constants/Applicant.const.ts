@@ -489,8 +489,14 @@ export const workExpColumns : ComputedRef<QTableProps['columns']> = computed(() 
   ];
 });
 
-export const requiredFields = {
-  'staffRank' : 0,
-  'occupation' : '',
-  'classification' : '',
-}
+const organization = useOrganization()
+
+export const requiredFields = computed(()=>{
+  return {
+    'staffRank' : 0,
+    'occupation' : '',
+    'classification' : '',
+    'organizationId' : organization.currentOrganizationId,
+    // 'branchIncharge' : Object.keys(organization.state.currentOrganizationBranches)[0]
+  }
+})

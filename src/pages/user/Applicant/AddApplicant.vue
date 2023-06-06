@@ -303,14 +303,17 @@ async function onSubmit() {
   data['created_at'] = serverTimestamp();
   data['updated_at'] = serverTimestamp();
   
-  if(data.applicationDate){
-    data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
-    data['currentStatusTimestamp'] = data['applicationDate'] ;
-    data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
-    data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+  if(!data.applicationDate){
+    data.applicationDate = new Date()
   }
+  data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+  data['currentStatusTimestamp'] = data['applicationDate'] ;
+  data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
+  data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+  
+ 
   /** required fields */
-  for(const [key, value] of Object.entries(requiredFields)){
+  for(const [key, value] of Object.entries(requiredFields.value)){
     if(typeof data[key] == 'undefined'){
       data[key] = value
     }
@@ -320,6 +323,7 @@ async function onSubmit() {
   data['deleted'] = false;
   const success = await applicantStore.createApplicant(data, applicantImage.value)
   if(success){
+    applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   }
   loading.value = false;
