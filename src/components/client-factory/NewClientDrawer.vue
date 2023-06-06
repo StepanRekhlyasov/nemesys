@@ -111,7 +111,7 @@ const onSubmit = async (newClientData: Client | null) => {
         show>
             <q-scroll-area class="fit text-left">
                 <q-card class="no-shadow bg-grey-3">
-                    <q-card-section class="text-white bg-accent">
+                    <q-card-section :class="`text-white bg-${theme}`">
                         <div class="text-h6">
                             <q-btn dense flat icon="close" @click="hideDrawer" />
                             <q-btn

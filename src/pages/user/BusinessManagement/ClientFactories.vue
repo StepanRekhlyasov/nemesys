@@ -10,14 +10,14 @@ import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFacto
 import ClientFactoryTable from 'src/components/client-factory/ClientFactoryTable.vue';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryTableRow, ActionsType } from 'src/components/client-factory/types';
+import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { clientFactoriesToTableRows } from './handlers';
 import { useClient } from 'src/stores/client';
-import consts from './consts';
+import {tableColumnsClientFactory} from './consts';
 
 const { t } = useI18n({ useScope: 'global' });
 const clientFactoryStore = useClientFactory()
-const {clientFactories} = storeToRefs(clientFactoryStore)
+const { clientFactories } = storeToRefs(clientFactoryStore)
 const clientStore = useClient()
 const { clients } = storeToRefs(clientStore)
 
@@ -49,7 +49,7 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
 
     activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
 
-    if(activeClientFactoryItem.value) {
+    if (activeClientFactoryItem.value) {
         isClientFactoryDrawer.value = true
     }
 }
@@ -59,7 +59,7 @@ watch([clients], () => {
     clientFactoryStore.getClientFactories(clients.value).then(() => {
         tableRows.value.length ? fetchData.value = false : fetchData.value = true
     })
-    
+
 }, { deep: true, immediate: true });
 
 watch([clientFactories], () => {
@@ -67,7 +67,7 @@ watch([clientFactories], () => {
     tableRows.value = clientFactoriesToTableRows(clientFactories.value)
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
 
-}, {deep: true, immediate: true})
+}, { deep: true, immediate: true })
 
 // client-factory drawer
 
@@ -106,40 +106,36 @@ const openNewClientFactoryDrawer = () => {
             <q-separator color="grey-4" size="2px" />
             <CFPageActions
                 @open-client-drawer="openNewClientDrawer"
-                @open-client-factory-drawer="openNewClientFactoryDrawer"
-                :actions-type="ActionsType.ADMIN"
-                theme="accent"/>
+                @open-client-factory-drawer="openNewClientFactoryDrawer"/>
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
-                @select-item="clientFactoryDrawerHandler"
-                :isFetching="fetchData"
-                :rows="paginatedTableRows"
-                :pagination="pagination"
-                :table-columns="consts.tableColumnsClientFactory.value"
-                theme="accent"/>
+                    @select-item="clientFactoryDrawerHandler"
+                    :isFetching="fetchData"
+                    :rows="paginatedTableRows"
+                    :pagination="pagination"
+                    :table-columns="tableColumnsClientFactory"/>
                 <Pagination
-                :rows="tableRows"
-                @updatePage="pagination.page = $event"
-                v-model:pagination="pagination"
-                theme="accent"/>
+                    :rows="tableRows"
+                    @updatePage="pagination.page = $event"
+                    v-model:pagination="pagination" />
             </q-card-section>
         </q-card>
 
         <ClientFactoryDrawer
-        v-if="activeClientFactoryItem"
-        v-model:selectedItem="activeClientFactoryItem"
-        :isDrawer="isClientFactoryDrawer"
-        @hide-drawer="hideClientFactoryDrawer"/>
+            v-if="activeClientFactoryItem"
+            v-model:selectedItem="activeClientFactoryItem"
+            :isDrawer="isClientFactoryDrawer"
+            @hide-drawer="hideClientFactoryDrawer"/>
 
         <NewClientDrawer
-        @hide-drawer="hideNewClientDrawer"
-        theme="accent"
-        :is-drawer="isNewClientDrawer"/>
+            @hide-drawer="hideNewClientDrawer"
+            theme="primary"
+            :is-drawer="isNewClientDrawer" />
 
         <NewClientFactoryDrawer 
-        @hide-drawer="hideNewClientFactoryDrawer"
-        theme="accent"
-        :is-drawer="isNewClientFactoryDrawer"/>
+            @hide-drawer="hideNewClientFactoryDrawer"
+            theme="primary"
+            :is-drawer="isNewClientFactoryDrawer"/>
     </div>
 </template>
 
