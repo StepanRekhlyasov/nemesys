@@ -9,7 +9,7 @@ export type ApplicantCol = {
 
 export type ApplicantProgressFilter = {
   branch: string,
-  userInCharge: string,
+  attendeeUserInCharge: string,
   prefecture: string,
   currentStatusMonth: string
 }

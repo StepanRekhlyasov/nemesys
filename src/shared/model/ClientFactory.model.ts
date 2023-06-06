@@ -25,7 +25,7 @@ export interface ClientFactory {
     isSignedReferralContract: boolean;
     nameContact: string;
     telContact: string;
-    positionContact?: string;
+    positionContact: string;
     mailContact: string;
     updated_at: string;
     created_at: string;
@@ -35,19 +35,20 @@ export interface ClientFactory {
     importLog?: ImportLog;
 
     client?: Client
+
+    draft: Partial<ClientFactory> | Record<string, never>
 }
 
 interface OfficeDetails {
     registeredInfo: {
         prefecture: string
-        municipality: string
-        street: string
-        building: string
         officeName: string
         parentClient: string
+        municipality: string
         city: string
         tel: string
-        townAndStreet: string
+        street: string
+        building: string
         fax: string
         others: string
         latitude: number

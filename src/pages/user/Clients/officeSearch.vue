@@ -79,8 +79,8 @@ import { useI18n } from 'vue-i18n';
 //   getFirestore,
 // } from 'firebase/firestore';
 import { ref, computed } from 'vue';
-import MapSearch from 'src/components/MapSearch.vue';
-import AreaSearch from 'src/components/AreaSearch.vue';
+import MapSearch from 'src/components/client-factory/MapSearch.vue';
+import AreaSearch from 'src/components/client-factory/AreaSearch.vue';
 import advanceSearch from './components/advanceSearch.vue';
 import addClient from './components/addClient.vue';
 import addOffice from './components/addOffice.vue';

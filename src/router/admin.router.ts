@@ -27,7 +27,7 @@ const admin_router: MenuRouter[] = [
   },
   {
     path: 'officeSearch',
-    component: () => import('src/pages/admin/OfficeManagment/OfficeSearch.vue'),
+    component: () => import('src/pages/admin/OfficeManagement/OfficeMenu.vue'),
     meta: {
       requiresAuth: true,
       isAdmin: true
@@ -38,7 +38,7 @@ const admin_router: MenuRouter[] = [
   {
     title: 'menu.client-factory',
     path: 'client-factory',
-    component: () => import('src/pages/admin/OfficeManagment/ClientFactories.vue'),
+    component: () => import('src/pages/admin/OfficeManagement/ClientFactories.vue'),
     meta: {
       requiresAuth: true,
       isAdmin: true
@@ -46,7 +46,7 @@ const admin_router: MenuRouter[] = [
   },
   {
     path: 'savedSearchList',
-    component: () => import('src/pages/admin/OfficeManagment/SavedSearchList.vue'),
+    component: () => import('src/pages/admin/OfficeManagement/SavedSearchList.vue'),
     meta: {
       requiresAuth: true,
       isAdmin: true

@@ -6,12 +6,11 @@ import { ConstraintsType } from 'src/shared/utils/utils';
 export const usePagination = defineStore('pagination', () => {
   const db = getFirestore()
 
-  function queryData(rowsPerPage: number, path: string, order: QueryOrderByConstraint, constraints?: ConstraintsType) {
+  function queryData(rowsPerPage: number, path: string, order: QueryOrderByConstraint | QueryOrderByConstraint[], constraints?: ConstraintsType) {
 
     let lastSnapshot: QuerySnapshot<DocumentData>
     let lastQuery: Query<DocumentData>
-
-    let constraintsArray: (QueryOrderByConstraint | ElementOf<ConstraintsType>)[] = [order]
+    let constraintsArray: (QueryOrderByConstraint | ElementOf<ConstraintsType>)[] = (order instanceof QueryOrderByConstraint)?[order]:order
 
     if (constraints) {
       constraintsArray.push(...constraints)
@@ -60,7 +59,14 @@ export const usePagination = defineStore('pagination', () => {
     }
 
     function setConstraints(newConstraints: ConstraintsType){
-      constraintsArray = [order, ...newConstraints]
+      if(Array.isArray(order)){
+        constraintsArray = [...order, ...newConstraints]
+      } else {
+        constraintsArray = [order, ...newConstraints]
+      }
+    }
+    function setOrder(newOrder: QueryOrderByConstraint[]){
+      order = newOrder;
     }
 
 
@@ -72,6 +78,7 @@ export const usePagination = defineStore('pagination', () => {
       lastPage,
       refreshPage,
       setConstraints,
+      setOrder
     }
   }
 

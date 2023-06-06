@@ -263,6 +263,7 @@ import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
+import { requiredFields } from 'src/shared/constants/Applicant.const';
 
 const applicantDataSample = {
   qualification: [],
@@ -308,6 +309,13 @@ async function onSubmit() {
     data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
     data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
   }
+  /** required fields */
+  for(const [key, value] of Object.entries(requiredFields)){
+    if(typeof data[key] == 'undefined'){
+      data[key] = value
+    }
+  }
+  /** required fields */
   data['dob'] = Timestamp.fromDate(new Date(data.dob));
   data['deleted'] = false;
   const success = await applicantStore.createApplicant(data, applicantImage.value)

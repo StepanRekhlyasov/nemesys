@@ -4,7 +4,7 @@ const dashboard_router: MenuRouter[] = [
   {
     path: 'dashboard',
     title: 'menu.dashboard',
-    component: () => import('src/pages/user/Dashboard/Index.vue'),
+    component: () => import('src/pages/user/Dashboard/DashboardPage.vue'),
     meta: { requiresAuth: true },
     menuParent: MenuParent.DashboardData
   },
