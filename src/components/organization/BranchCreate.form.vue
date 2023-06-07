@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { collection, doc, getFirestore, serverTimestamp, setDoc, updateDoc } from '@firebase/firestore';
+import { doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { ref, SetupContext } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -103,7 +103,7 @@ export default {
     const organization = useOrganization()
     const branchFlag = ref<branchFlags>(branchData.value['flag'] ?? branchFlags.All)
 
-    const businessId = ref<string>()
+    const businessId = ref<string>('')
 
     const currentOrganizationId = props.defaultOrganizationid ?? organization.currentOrganizationId
 
@@ -128,10 +128,7 @@ export default {
           data['businessId'] = businessId.value
           data['priceForOneUserInYen'] = 10000
           data['licensesSlots'] = 0
-          const clientRef = collection(db, `organization/${currentOrganizationId}/businesses/${businessId.value}/branches`);
-          const docRef = doc(clientRef)
-          data['id'] = docRef.id
-          await setDoc(docRef, data)
+          await organization.createBranch(data, currentOrganizationId, businessId.value)
           context.emit('closeDialog');
           Alert.success($q, t);
           loading.value = false;
