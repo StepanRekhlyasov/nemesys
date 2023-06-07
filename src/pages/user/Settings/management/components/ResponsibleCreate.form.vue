@@ -14,8 +14,8 @@
             :rules="[creationRule]" type="email" />
         </InputWrapper>
 
-        <InputWrapper :text-key="'settings.users.person_name'">
-          <q-input v-model="accountData['displayName']" name="displayName" :disable="loading" outlined dense
+        <InputWrapper :text-key="'settings.users.name'">
+          <q-input v-model="accountData['name']" name="name" :disable="loading" outlined dense
             :color="color" :rules="[creationRule]" />
         </InputWrapper>
 
@@ -125,12 +125,13 @@ export default {
           url,
           {
             userId: auth.currentUser?.uid, //userId of user who is creating new user
-            displayName: data['displayName'], // name for new user
+            name: data['name'], // name for new user
             password: data['passworld'], // password for new user
             email: data['email'], // email address for new user
             branch: isAdminRole() ? undefined : data['branch_id'], // optional at present
             role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
-            organization_ids: isAdminRole() ? undefined : [organization.currentOrganizationId]
+            organization_ids: isAdminRole() ? undefined : [organization.currentOrganizationId],
+            hidden: data.hidden,
           },
           {
             headers: headers,
