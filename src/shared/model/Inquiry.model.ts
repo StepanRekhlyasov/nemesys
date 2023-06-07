@@ -1,4 +1,4 @@
-import { FieldValue } from 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore'
 import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
 import { Organization } from './Organization.model'
 
@@ -8,7 +8,7 @@ export interface InquiryData {
   category: string
   inquiryContent: string
   organization: string
-  recievedDate:  FieldValue | Date
+  recievedDate:  Timestamp
   subject: string
   messages: InquiryMessage[] | never[]
 }

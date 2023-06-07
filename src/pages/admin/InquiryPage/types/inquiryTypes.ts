@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore'
 
 export enum INQUIRY_STATUS {
   answered = 'answered',
@@ -10,7 +11,7 @@ export enum INQUIRY_MESSAGE_TYPE {
 }
 
 export type InquiryMessage = {
-  date: Date
+  date: Timestamp
   messageDate?: string,
   content: string
   type: INQUIRY_MESSAGE_TYPE.issue | INQUIRY_MESSAGE_TYPE.response
