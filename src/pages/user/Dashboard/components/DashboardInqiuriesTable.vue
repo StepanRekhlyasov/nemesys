@@ -91,6 +91,8 @@ onMounted(async ()=>{
 })
 
 watch(() => organization.currentOrganizationId, () => {
+  drawerCreate.value = false
+  drawerDetails.value = false
   updateInqueries()
 })
 </script>
