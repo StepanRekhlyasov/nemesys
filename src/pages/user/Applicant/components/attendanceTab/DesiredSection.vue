@@ -259,8 +259,6 @@ const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({})
 const data = ref<Partial<ApplicantInputs>>({})
 
-const { t } = i18n.global
-
 const daysPerWeekComputed = computed(()=>{
   if(Array.isArray(props.applicant.daysPerWeek)){
     return props.applicant.daysPerWeek.map(day => t('weekDay.'+day)).join('・')
