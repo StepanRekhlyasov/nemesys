@@ -10,7 +10,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.branch") }}</p>
           <MySelect 
             @update="()=>{
-              applicantStore.state.needsUpdateOnBack = true
+              applicantStore.state.needsApplicantUpdateOnMounted = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -22,7 +22,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="()=>{
-              applicantStore.state.needsUpdateOnBack = true
+              applicantStore.state.needsApplicantUpdateOnMounted = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -34,7 +34,7 @@
           <p class="q-ml-md">{{ $t("applicant.progress.filters.prefecture") }}</p>
           <MySelect 
             @update="()=>{
-              applicantStore.state.needsUpdateOnBack = true
+              applicantStore.state.needsApplicantUpdateOnMounted = true
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
@@ -58,7 +58,7 @@
           :applicants="applicantsForTable" 
           :loading="loading" 
           @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
-          @sortQuery="(param : QueryOrderByConstraint[])=>{
+          @sortQuery="(param)=>{
             paginationRef?.setOrder(param);
             paginationRef?.setConstraints(paginationConstraints);
             paginationRef?.queryFirstPage()
@@ -88,12 +88,13 @@ import { useApplicant } from 'src/stores/applicant';
 import { limitQuery } from './const/applicantColumns';
 import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
-import { QueryFieldFilterConstraint, QueryOrderByConstraint, orderBy, where } from 'firebase/firestore';
+import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import { Applicant } from 'src/shared/model';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { useOrganization } from 'src/stores/organization';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
@@ -110,6 +111,7 @@ if(!statusParams){
 
 /** stores */
 const applicantStore = useApplicant();
+const organization = useOrganization()
 
 /** getters */
 const applicantsForTable = ref<Applicant[]>([])
@@ -131,10 +133,17 @@ const pagination = ref({
 
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
-    applicantStore.state.needsUpdateOnBack = true
+    applicantStore.state.needsApplicantUpdateOnMounted = true
     paginationRef.value?.setConstraints(paginationConstraints.value);
     paginationRef.value?.queryFirstPage()
   }
+})
+watch(()=>organization.currentOrganizationId, (newVal)=>{
+  applicantStore.state.applicantProgressFilter.organizationId = newVal
+  applicantStore.state.applicantProgressFilter.branchIncharge = ''
+  applicantStore.state.applicantProgressFilter.attendeeUserInCharge = ''
+  paginationRef.value?.setConstraints(paginationConstraints.value);
+  paginationRef.value?.queryFirstPage()
 })
 </script>
 <style scoped>

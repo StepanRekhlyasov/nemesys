@@ -19,15 +19,15 @@
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.seductionDay') }}
+        {{ $t('applicant.list.info.invitationDate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ timestampToDateFormat(applicant.seductionDay) }}</span>
-        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['seductionDay']">
+        <span v-if="!edit">{{ timestampToDateFormat(applicant.invitationDate) }}</span>
+        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['invitationDate']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['seductionDay']" default-view="Years" :options="limitDate">
+                <q-date v-model="data['invitationDate']" default-view="Years" :options="limitDate">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -168,7 +168,7 @@ const usersListOption = usersInCharge.value
 async function resetData() {
   defaultData.value = {
     attractionsStatus: props?.applicant['attractionsStatus'] || false,
-    seductionDay: timestampToDateFormat(props?.applicant['seductionDay']),
+    invitationDate: timestampToDateFormat(props?.applicant['invitationDate']),
     employmentStatus: props?.applicant['employmentStatus'],
     seduser: props?.applicant['seduser'],
     classification: props?.applicant['classification'],

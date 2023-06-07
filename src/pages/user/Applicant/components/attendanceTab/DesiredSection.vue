@@ -45,20 +45,28 @@
         {{ $t('applicant.attendant.daysPerWeek') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ applicant.daysPerWeek?applicant.daysPerWeek.map(day => $t('weekDay.'+day)).join('・'): '' }}</span>
+        <span v-if="!desiredEdit">{{ daysPerWeekComputed }}</span>
         <template v-if="desiredEdit">
-          <q-checkbox v-for="day in days" :key="day.value" :disable="loading"
-            :label="day.label" :val="day.value" v-model="data['daysPerWeek']" />
+          <q-option-group 
+            type="checkbox"
+            :disable="loading"
+            :options="days"
+            v-model="data['daysPerWeek']" 
+          />
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.specialDay') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.specialDay? applicant.specialDay.map(day => $t('applicant.attendant.specialDays.'+day)).join('・'): '' }}</span>
+        <span v-if="!desiredEdit">{{ specialDayComputed }}</span>
         <template v-if="desiredEdit">
-          <q-checkbox v-for="day in specialDays" :key="day.value" :disable="loading"
-            :label="day.label" :val="day.value" v-model="data['specialDay']" />
+          <q-option-group 
+            type="checkbox"
+            :disable="loading"
+            :options="specialDays"
+            v-model="data['specialDay']" 
+          />
         </template>
       </div>
     </div>
@@ -251,13 +259,28 @@ const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({})
 const data = ref<Partial<ApplicantInputs>>({})
 
+const daysPerWeekComputed = computed(()=>{
+  if(Array.isArray(props.applicant.daysPerWeek)){
+    return props.applicant.daysPerWeek.map(day => t('weekDay.'+day)).join('・')
+  }
+  return ''
+})
+
+const specialDayComputed = computed(()=>{
+  if(Array.isArray(props.applicant.specialDay)){
+    return props.applicant.specialDay.map(day => t('applicant.attendant.specialDays.'+day)).join('・')
+  }
+  return ''
+})
+
+
 function resetData() {
   defaultData.value = {
     timeToWork: timestampToDateFormat(props.applicant['timeToWork']),
     daysToWork: props.applicant['daysToWork'],
-    daysPerWeek: props.applicant['daysPerWeek'],
+    daysPerWeek: Array.isArray(props.applicant['daysPerWeek'])?props.applicant['daysPerWeek']:[],
     timeAvailable: props.applicant['timeAvailable'] || false,
-    specialDay: props.applicant['specialDay'],
+    specialDay: Array.isArray(props.applicant['specialDay'])?props.applicant['specialDay']:[],
     shiftRemarks: props.applicant['shiftRemarks'],
     meansCommuting: props.applicant['meansCommuting'],
     nearestStation: props.applicant['nearestStation'],

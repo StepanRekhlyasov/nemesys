@@ -1,10 +1,9 @@
-import { QueryDocumentSnapshot, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
-import { ref } from 'vue'
-import { watch } from 'vue';
+import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField } from 'src/shared/utils/Applicant.utils';
+import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
@@ -12,6 +11,9 @@ import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
+import { useOrganization } from './organization';
+import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/ApplicantProgress/const/applicantColumns';
+import { useRoute } from 'vue-router';
 
 interface ApplicantState {
   clientList: Client[],
@@ -31,7 +33,7 @@ interface ApplicantState {
   },  
   prefectureList: {label: string, value: string | number}[],
   selectedApplicant: Applicant | null,
-  needsUpdateOnBack: boolean,
+  needsApplicantUpdateOnMounted: boolean,
   columnsLoading: {
     'wait_contact': boolean,
     'wait_attend': boolean,
@@ -84,6 +86,7 @@ export const useApplicant = defineStore('applicant', () => {
   const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
+  const organization = useOrganization()
   const state = ref<ApplicantState>({
     clientList: [] as Client[],
     applicantList: [] as Applicant[],
@@ -119,15 +122,16 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_termination': null,
     },
     applicantProgressFilter: {
-      branch: '',
+      branchIncharge: '',
       attendeeUserInCharge: '',
       prefecture: '',
-      currentStatusMonth: ''
+      currentStatusMonth: '',
+      organizationId: organization.currentOrganizationId
     },
     reFilterOnReturn: false,
     prefectureList: [],
     selectedApplicant: null,
-    needsUpdateOnBack: false,
+    needsApplicantUpdateOnMounted: false,
     columnsLoading: {
       'wait_contact': false,
       'wait_attend': false,
@@ -418,6 +422,10 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
     }
+    if(!organization.currentOrganizationId){
+      state.value.applicantCount[status] = 0
+      return []
+    }
     state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
@@ -434,7 +442,6 @@ export const useApplicant = defineStore('applicant', () => {
     const docSnap = await getDocs(querys)
     const countSnapshot = await getCountFromServer(countQuery)
     state.value.applicantCount[status] = countSnapshot.data().count
-
     if (!docSnap.empty) {
       const documents = docSnap.docs.map(item => {
         return item.data() as Applicant
@@ -464,8 +471,8 @@ export const useApplicant = defineStore('applicant', () => {
     const forUpdate : Record<string, string | number>[] = []
     applicants.map((applicant)=>{
       const needsUpdate : Record<string, string | number>[] = []
-      for(const [key, value] of Object.entries(requiredFields)){
-        if(typeof applicant[key] === 'undefined'){
+      for(const [key, value] of Object.entries(requiredFields.value)){
+        if(value && typeof applicant[key] === 'undefined'){
           needsUpdate[key] = value
         }
       }
@@ -490,6 +497,7 @@ export const useApplicant = defineStore('applicant', () => {
 
   async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
     if (!state.value.selectedApplicant) return;
+
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
 
@@ -497,14 +505,24 @@ export const useApplicant = defineStore('applicant', () => {
       const saveData = JSON.parse(JSON.stringify(applicantData));
       if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
       if(applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
-      if(applicantData.seductionDay) saveData.seductionDay = dateToTimestampFormat(new Date(applicantData.seductionDay));
+      if(applicantData.invitationDate) saveData.invitationDate = dateToTimestampFormat(new Date(applicantData.invitationDate));
       if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
       if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
 
-      for(const [key, value] of Object.entries(saveData)){
-        if(!value){
-          saveData[key] = deleteField()
+      if (applicantData.status){
+        const dateField = getApplicantCurrentStatusTimestampField(applicantData.status)
+        if(state.value.selectedApplicant[dateField] instanceof Timestamp) {
+          saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
+          saveData.statusChangeTimestamp = {}
+          saveData.statusChangeTimestamp[dateField] = state.value.selectedApplicant[dateField]
+          state.value.selectedApplicant.currentStatusTimestamp = state.value.selectedApplicant[dateField]
+        } else {
+          saveData.currentStatusTimestamp = serverTimestamp();
         }
+      }
+
+      for(const [key, value] of Object.entries(saveData)){
+        if(typeof value === 'undefined') delete saveData[key];
       }
       saveData['updated_at'] = serverTimestamp();
 
@@ -520,6 +538,7 @@ export const useApplicant = defineStore('applicant', () => {
         if (showAlert){  Alert.warning($q, t); }
       }
     } catch (error) {
+      console.log(error)
       if (showAlert){  Alert.warning($q, t); }
     }
   };
@@ -536,6 +555,9 @@ export const useApplicant = defineStore('applicant', () => {
   async function createApplicant(data : Applicant, applicantImage? : FileList | []){
     const docRef = doc(collection(db, 'applicants'));
     data['id'] = docRef.id;
+    for (const [key, value] of Object.entries(data)){
+      if(typeof value === 'undefined') delete data[key];
+    }
     if (applicantImage && applicantImage.length > 0) {
       const file = applicantImage[0];
       const storage = getStorage();
@@ -606,23 +628,23 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   async function getClientFactories(client_id: string): Promise<ClientOffice[]>{
-      const officeData = await getClientFactoriesList(db, client_id)
-      const list: ClientOffice[] = []
+    const officeData = await getClientFactoriesList(db, client_id)
+    const list: ClientOffice[] = []
 
-      officeData.forEach(office => {
-          list.push({id: office.id, ...office.data()} as ClientOffice)
-      })
+    officeData.forEach(office => {
+        list.push({id: office.id, ...office.data()} as ClientOffice)
+    })
 
-      return list
+    return list
   }
 
   getClients().then(clients => {
-      state.value.clientList = clients
-      state.value.clientList.map(async (client) => {
-          if (client.id) {
-              client.office = await getClientFactories(client.id)
-          }
-      })
+    state.value.clientList = clients
+    state.value.clientList.map(async (client) => {
+        if (client.id) {
+            client.office = await getClientFactories(client.id)
+        }
+    })
   })
 
   const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
@@ -655,18 +677,14 @@ export const useApplicant = defineStore('applicant', () => {
 
   /** update columns */
   watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
-
     if (!state.value.selectedApplicant) return;
     if (newValue[0] !== oldValue[0]) return;
     if (!newValue[0] || !oldValue[0]) return;
     if (newValue[1] === oldValue[1]) return;
     if (!newValue[1]) return;
-
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
       state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
-
-
     if (state.value.applicantsByColumn[newValue[1]]) {
       const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
       if (index>-1) return;
@@ -680,6 +698,25 @@ export const useApplicant = defineStore('applicant', () => {
       })
     }
   }, { deep: true})
+  const route = useRoute()
+
+  /** reload applicants by status */
+  watch(()=>organization.currentOrganizationId, (newValue)=>{
+    state.value.applicantProgressFilter.organizationId = newValue
+    state.value.applicantProgressFilter.branchIncharge = ''
+    state.value.applicantProgressFilter.attendeeUserInCharge = ''
+    state.value.selectedApplicant = null
+    if ( route.meta.applicantsUpdateOnOrganizationChange ) {
+      COLUMN_STATUSES.map(async (status)=>{
+        await getApplicantsByStatus(status, state.value.applicantProgressFilter, limitQuery, false)
+      })
+      COUNT_STATUSES.map(async (status)=>{
+        state.value.applicantsByStatusCount[status] = await countApplicantsByStatus(status, state.value.applicantProgressFilter)
+      })
+    } else {
+      state.value.needsApplicantUpdateOnMounted = true
+    }
+  })
 
   return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
 })
