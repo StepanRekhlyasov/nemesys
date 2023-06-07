@@ -1,4 +1,4 @@
-import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, runTransaction, serverTimestamp, setDoc, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
@@ -6,6 +6,7 @@ import { ConstraintsType, toDateObject } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
 import { i18n } from 'boot/i18n';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { LicenseStatistic } from 'src/pages/admin/LicenseManagement/types/LicenseStatistic';
 
 const { t } = i18n.global
 interface OrganizationState {
@@ -298,5 +299,38 @@ export const useOrganization = defineStore('organization', () => {
     return licenceFee
   }
 
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization, getOrganizationsByName, getDataById, countUsersInBranch, calculateLicenceFee, getBranch }
+  async function createBranch(branch: Branch, organizationId: string, businessId: string) {
+    const branchRef = doc(collection(db, `organization/${organizationId}/businesses/${businessId}/branches`));
+
+    //We must use the same format as in execute_license_request cloud function
+    const date = Timestamp.now().toDate().toLocaleDateString('ja-JP', {
+      timeZone: 'Asia/Tokyo',
+      year: 'numeric',
+      month: 'numeric',
+    }).split('/')
+
+    const [year, month] = date
+
+
+    await runTransaction(db, async (t) => {
+      branch.id = branchRef.id
+      t.set(branchRef, branch)
+      const license: Partial<LicenseStatistic> = {}
+      license.branchId = branch.id
+      license.businessId = branch.businessId
+      license.count = branch.licensesSlots
+      license.month = parseInt(month)
+      license.organizationId = organizationId
+      license.year = parseInt(year)
+      license.isFirstDoc = true
+      const licenseDoc = doc(collection(db, 'licenseStatistic'))
+      license.id = licenseDoc.id
+      t.set(licenseDoc, license)
+    })
+
+
+
+  }
+
+  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization, getOrganizationsByName, getDataById, countUsersInBranch, calculateLicenceFee, getBranch, createBranch }
 })
