@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, Client, ClientOffice } from 'src/shared/model';
@@ -518,9 +518,7 @@ export const useApplicant = defineStore('applicant', () => {
       }
 
       for(const [key, value] of Object.entries(saveData)){
-        if(!value){
-          saveData[key] = deleteField()
-        }
+        if(typeof value === 'undefined') delete saveData[key];
       }
       saveData['updated_at'] = serverTimestamp();
 
@@ -554,7 +552,7 @@ export const useApplicant = defineStore('applicant', () => {
     const docRef = doc(collection(db, 'applicants'));
     data['id'] = docRef.id;
     for (const [key, value] of Object.entries(data)){
-      if(!value) delete data[key];
+      if(typeof value === 'undefined') delete data[key];
     }
     if (applicantImage && applicantImage.length > 0) {
       const file = applicantImage[0];
