@@ -1435,6 +1435,15 @@ export default {
       headOfficeInfo: '本社事業所情報',
       clientInfo: 'クライアント情報',
       contractInfo: '契約情報',
+      withMasterData: 'マスタデータあり',
+      noAutoRenewal: '自動更新なし',
+      situation: '状態',
+      contactTendency: '接電傾向',
+      dispatchIndex: '派遣指標',
+      referralMetrics: '紹介指標',
+      morning: '午前',
+      afternoon: '午後',
+      evening: '夕方',
       details: {
         // Office details
         parentClient: '親クライアント',

@@ -2,7 +2,7 @@ import { i18n } from 'boot/i18n';
 import { computed } from 'vue'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model'
 import { ClientFactoryTableRow } from 'src/components/client-factory/types'
-import { safeGet } from 'src/shared/utils'
+import { safeGet, arraysAreEqual } from 'src/shared/utils'
 import { RenderMainInfo } from '../types'
 
 const { t } = i18n.global
@@ -27,23 +27,33 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
 
 export const finishEditing = (
   changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
-  draft: ClientFactory
+  draft: ClientFactory,
+  clientFactory: ClientFactory,
 ) => {
-        changedData.forEach(({key, value}) => {
-        const keys = key.split('.'); 
-        let nestedObj = draft;
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            if (i === keys.length - 1) {
-                nestedObj[key] = value;
-            } else {
-                nestedObj[key] = nestedObj[key] || {}; 
-                nestedObj = nestedObj[key];
-            }
+  changedData.forEach(({key, value}) => {
+    const keys = key.split('.'); 
+    let nestedObj = draft;
+    let nestedOriginalObj = clientFactory;
+    for (let i = 0; i < keys.length; i++) {
+      const currentKey = keys[i];
+      if (!nestedOriginalObj || typeof nestedOriginalObj !== 'object') {
+        throw new Error(`clientFactory does not contain the key: ${currentKey}`);
+      }
+      if (i === keys.length - 1) {
+        if (nestedOriginalObj[currentKey] === value) {
+          if (nestedObj.hasOwnProperty(currentKey)) {
+            delete nestedObj[currentKey];
+          }
+        } else {
+          nestedObj[currentKey] = value;
         }
-    });
-
-    console.log(draft)
+      } else {
+        nestedOriginalObj = nestedOriginalObj[currentKey];
+        nestedObj[currentKey] = nestedObj[currentKey] || {};
+        nestedObj = nestedObj[currentKey];
+      }
+    }
+  });
 }
 
 export const useHighlightMainInfo = (clientFactory: ClientFactory, draft: ClientFactory): RenderMainInfo => {
@@ -55,7 +65,7 @@ export const useHighlightMainInfo = (clientFactory: ClientFactory, draft: Client
       {label: t('clientFactory.homePage'), value: (safeGet(draft, 'homepageUrl') ?? safeGet(clientFactory, 'homepageUrl')) || '', editType: 'text', key: 'homepageUrl', isHighlight: safeGet(draft, 'homepageUrl') !== undefined && safeGet(clientFactory, 'homepageUrl') !== safeGet(draft, 'homepageUrl')},
       {label: t('clientFactory.numberEmployees'), value: (safeGet(draft, 'numberEmployees') ?? safeGet(clientFactory, 'numberEmployees')) || '', editType: 'text', key: 'numberEmployees', isHighlight: safeGet(draft, 'numberEmployees') !== undefined && safeGet(clientFactory, 'numberEmployees') !== safeGet(draft, 'numberEmployees')},
       {label: t('clientFactory.conclusionDispatchContract'), value: (safeGet(draft, 'isSignedDispatchContract') ?? safeGet(clientFactory, 'isSignedDispatchContract')) || false, editType: 'dispatch_contract', key: 'isSignedDispatchContract', isHighlight: safeGet(draft, 'isSignedDispatchContract') !== undefined && safeGet(clientFactory, 'isSignedDispatchContract') !== safeGet(draft, 'isSignedDispatchContract')},
-      {label: t('clientFactory.facilityType'), value: (safeGet(draft, 'facilityType') ?? safeGet(clientFactory, 'facilityType')) || [], editType: 'facility', key: 'facilityType', isHighlight: safeGet(draft, 'facilityType') !== undefined && JSON.stringify(safeGet(clientFactory, 'facilityType')) !== JSON.stringify(safeGet(draft, 'facilityType'))},
+      {label: t('clientFactory.facilityType'), value: (safeGet(draft, 'facilityType') ?? safeGet(clientFactory, 'facilityType')) || [], editType: 'facility', key: 'facilityType', isHighlight: safeGet(draft, 'facilityType') !== undefined && !arraysAreEqual(safeGet(clientFactory, 'facilityType'), safeGet(draft, 'facilityType'))},
       {label: t('clientFactory.conclusionReferralContract'), value: (safeGet(draft, 'isSignedReferralContract') || safeGet(clientFactory, 'isSignedReferralContract')) || false, editType: 'referral_contract', key: 'isSignedReferralContract', isHighlight: safeGet(draft, 'isSignedReferralContract') !== undefined && safeGet(clientFactory, 'isSignedReferralContract') !== safeGet(draft, 'isSignedReferralContract')}
     ]
   }).value
