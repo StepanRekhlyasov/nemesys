@@ -497,6 +497,5 @@ export const requiredFields = computed(()=>{
     'occupation' : '',
     'classification' : '',
     'organizationId' : organization.currentOrganizationId,
-    // 'branchIncharge' : Object.keys(organization.state.currentOrganizationBranches)[0]
   }
 })
