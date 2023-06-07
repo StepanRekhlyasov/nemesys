@@ -164,7 +164,7 @@
         {{ $t('applicant.attendant.facilityDesired') }}
       </div>
       <div class="col-9 q-pl-md blue ">
-        <span v-if="!desiredEdit" class="text_dots">{{ applicant.facilityDesired?.map(val => $t(`client.add.facilityOp.${val}`)).join(', ') }}</span>
+        <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityDesired }}</span>
         <q-select outlined dense multiple :options="facilityOp" 
           use-chips emit-value map-options v-if="desiredEdit"  option-label="name"
           v-model="data['facilityDesired']" :disable="loading"/>
@@ -176,7 +176,7 @@
         {{ $t('applicant.attendant.ngFacilityType') }}
       </div>
       <div class="col-9 q-pl-md blue ">
-        <span v-if="!desiredEdit" class="text_dots">{{ applicant.ngFacilityType?.map(val => $t(`client.add.facilityOp.${val}`)).join(', ') }}</span>
+        <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityType }}</span>
         <q-select outlined dense multiple :options="facilityOp"
           use-chips emit-value map-options v-if="desiredEdit" option-label="name"
           v-model="data['ngFacilityType']" :disable="loading"/>
@@ -229,19 +229,20 @@
 
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
+import { i18n } from 'boot/i18n';
 
 const props = defineProps<{
   applicant: Applicant
 }>()
 const applicantStore = useApplicant();
-
+const { t } = i18n.global
 const desiredEdit = ref(false);
 const days = ref(daysList);
 const specialDays = ref(specialDaysList);
@@ -277,6 +278,9 @@ function resetData() {
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
 resetData();
+
+const joinFacilityType = computed(() => props.applicant.ngFacilityType?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
+const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
 
 async function saveDesired(){
   loading.value = true
