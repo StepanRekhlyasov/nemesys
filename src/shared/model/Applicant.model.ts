@@ -103,8 +103,8 @@ export interface DesiredConditions {
   commutingTime?: string;
   route?: string;
   commutingTimeRemarks?: string;
-  facilityDesired?: string;
-  ngFacilityType?: string;
+  facilityDesired?: string[];
+  ngFacilityType?: string[];
   hourlyRate?: string;
   transportationServices?: 'possible' | 'no';
   jobSearchPriorities1?: string;

@@ -383,7 +383,11 @@ export const applicantListColumn = computed(() => {
 
 export const usersInCharge = computed(()=>{
   const organization = useOrganization()
-  return mapToSelectOptions(organization.state.currentOrganizationUsers)
+  try{
+    return mapToSelectOptions(organization.state.currentOrganizationUsers)
+  } catch {
+    return []
+  }
 });
 
 export const contactColumns : ComputedRef<QTableProps['columns']> = computed(() => {
