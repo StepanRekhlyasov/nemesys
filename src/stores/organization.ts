@@ -27,7 +27,7 @@ export const useOrganization = defineStore('organization', () => {
   })
 
   const currentOrganizationId = computed(() => {
-    return state.value.organizations[state.value.activeOrganization].id
+    return state.value.organizations[state.value.activeOrganization]?.id
   })
 
   const storage = localStorage.getItem(organization)

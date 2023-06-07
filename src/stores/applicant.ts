@@ -422,6 +422,10 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
     }
+    if(!organization.currentOrganizationId){
+      state.value.applicantCount[status] = 0
+      return []
+    }
     state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
