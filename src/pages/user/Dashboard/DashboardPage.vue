@@ -60,12 +60,12 @@ onBeforeMount(()=>{
     attendeeUserInCharge ||
     prefecture ||
     currentStatusMonth ||
-    applicantStore.state.needsUpdateOnBack
+    applicantStore.state.needsApplicantUpdateOnMounted
   ) {
     state.value.applicantProgressFilter.attendeeUserInCharge = ''
     state.value.applicantProgressFilter.prefecture = ''
     state.value.applicantProgressFilter.currentStatusMonth= ''
-    applicantStore.state.needsUpdateOnBack = false
+    applicantStore.state.needsApplicantUpdateOnMounted = false
     updateOnMounted.value = true
   }
 })

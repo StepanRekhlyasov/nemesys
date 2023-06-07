@@ -383,7 +383,11 @@ export const applicantListColumn = computed(() => {
 
 export const usersInCharge = computed(()=>{
   const organization = useOrganization()
-  return mapToSelectOptions(organization.state.currentOrganizationUsers)
+  try{
+    return mapToSelectOptions(organization.state.currentOrganizationUsers)
+  } catch {
+    return []
+  }
 });
 
 export const contactColumns : ComputedRef<QTableProps['columns']> = computed(() => {
@@ -489,8 +493,13 @@ export const workExpColumns : ComputedRef<QTableProps['columns']> = computed(() 
   ];
 });
 
-export const requiredFields = {
-  'staffRank' : 0,
-  'occupation' : '',
-  'classification' : '',
-}
+const organization = useOrganization()
+
+export const requiredFields = computed(()=>{
+  return {
+    'staffRank' : 0,
+    'occupation' : '',
+    'classification' : '',
+    'organizationId' : organization.currentOrganizationId,
+  }
+})

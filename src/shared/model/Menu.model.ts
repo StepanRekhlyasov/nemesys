@@ -19,6 +19,7 @@ export interface Meta {
   permission?: UserPermissionNames [];
   isAdmin?: boolean;
   hideInMenu?: boolean;
+  applicantsUpdateOnOrganizationChange?: boolean
 }
 
 export enum MenuParent{

@@ -879,7 +879,7 @@ export default {
         classiffication: '区分',
         qualifications: '資格',
         memo: '誘致メモ',
-        seductionDay: '誘致日',
+        invitationDate: '誘致日',
         seduser: '誘致者',
         position: '職種',
         period: '就業期間',
@@ -1062,7 +1062,11 @@ export default {
       },
       card: {
         applicationDate: '応',
-        lastCotactDate: '接',
+        invitationDate: '接',
+        attendingDate: 'ア',
+        FIXDate: 'F',
+        jobDate: '職',
+        appointmentDate: '内',
       },
       table: {
         'fullName': '氏名',
@@ -1093,7 +1097,7 @@ export default {
         'endDate': '終了日',
         'remainingDays': '残日数',
         'invoice': '請求',
-        'payment': '支払'
+        'payment': '支払',
       }
     }
   },

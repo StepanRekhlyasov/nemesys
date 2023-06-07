@@ -27,7 +27,7 @@ export enum EmploymentStatus {
   'notWorking'
 }
 export interface ApplicantDates {
-  seductionDay?: Timestamp;
+  invitationDate?: Timestamp;
   created_at: Timestamp;
   currentStatusTimestamp: Timestamp;
   applicationDate?: Timestamp;
@@ -36,7 +36,7 @@ export interface ApplicantDates {
   timeToWork?: Timestamp;
 }
 export interface ApplicantInputDates {
-  seductionDay?: string;
+  invitationDate?: string;
   created_at: string;
   currentStatusTimestamp: string;
   applicationDate?: string;
@@ -47,6 +47,7 @@ export interface ApplicantInputDates {
 
 export interface ApplicantBase {
   id: string;
+  organizationId: string;
   prefecture?: string;
   municipalities?: string;
   street: string;
@@ -102,8 +103,8 @@ export interface DesiredConditions {
   commutingTime?: string;
   route?: string;
   commutingTimeRemarks?: string;
-  facilityDesired?: string;
-  ngFacilityType?: string;
+  facilityDesired?: string[];
+  ngFacilityType?: string[];
   hourlyRate?: string;
   transportationServices?: 'possible' | 'no';
   jobSearchPriorities1?: string;

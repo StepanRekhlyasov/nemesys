@@ -883,7 +883,7 @@ export default {
         classiffication: 'Classiffication',
         qualifications: 'Qualifications',
         memo: 'Attraction Memo',
-        seductionDay: 'Seduction Day',
+        invitationDate: 'Invitation Date',
         seduser: 'Seduser',
         position: 'Position',
         period: 'Employment Period',
@@ -1064,8 +1064,12 @@ export default {
         waitTermination: 'Wait-Termination',
       },
       card: {
-        applicationDate: 'Date of the application',
-        lastCotactDate: 'Date of the last contact',
+        applicationDate: 'I',
+        invitationDate: 'C',
+        attendingDate: 'A',
+        FIXDate: 'F',
+        jobDate: 'V',
+        appointmentDate: 'O',
       },
       table: {
         'fullName': 'Name',
