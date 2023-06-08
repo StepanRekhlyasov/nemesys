@@ -44,10 +44,10 @@ watch(props, (newProps, oldProps) => {
         <div v-if="Object.keys(draft).length && !isEditForm.contactInfo && !isEditForm.officeInfo" class="q-mb-md">
             <div class="row">
                 <q-btn size="sm" color="primary" class="no-shadow q-mr-md">
-                    保存
+                    {{ t('common.save') }}
                 </q-btn>
                 <q-btn size="sm" outline>
-                    キャンセル
+                    {{ t('common.cancel') }}
                 </q-btn>
             </div>
 
@@ -193,6 +193,7 @@ watch(props, (newProps, oldProps) => {
         word-wrap: break-word;
     }
 }
+
 .subtitle {
     color: $main-purple;
     font-size: 1rem;
