@@ -44,13 +44,14 @@
 </template>
 
 <script setup lang="ts">
-import { QDialogProps } from 'quasar';
+import { QDialogProps, useQuasar } from 'quasar';
 import { LicenseRequest } from '../types/LicenseRequest';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import { ref, onMounted } from 'vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import { useLicense } from 'src/stores/license';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 interface ManageLicenseDialogProps extends QDialogProps {
   licenseRequest: LicenseRequest
@@ -61,6 +62,7 @@ interface ManageLicenseDialogProps extends QDialogProps {
     priceForOneUserInYen: number
   }
 }
+const $q = useQuasar()
 const { t } = useI18n({ useScope: 'global' });
 const organization = useOrganization()
 const props = defineProps<ManageLicenseDialogProps>()
@@ -87,9 +89,13 @@ async function execute() {
   if (currentSlotsCount.value == changedSlotsCount.value || currentLicenceFee.value == changedLicenceFee.value) {
     return
   }
-  const { organizationId, businessId, branchId, } = props.licenseRequest
 
-  await licenceStore.execute(props.licenseRequest, changedSlotsCount.value, organizationId, businessId, branchId)
+  try {
+    await licenceStore.execute(props.licenseRequest)
+    Alert.success($q, t);
+  } catch (error) {
+    Alert.warning($q, t);
+  }
   loading.value = false
   emit('onDialogHide', false)
   emit('refesh')
