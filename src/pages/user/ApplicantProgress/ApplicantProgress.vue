@@ -127,6 +127,7 @@ const fetchResults = async () => {
   })
 }
 onMounted( async ()=>{
+  // await applicantStore.validateAllApplicants()
   COLUMN_STATUSES.map(async (status)=>{
     if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
       fetchResultsHandler(status, false)

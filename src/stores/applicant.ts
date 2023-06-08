@@ -18,7 +18,7 @@ import { useRoute } from 'vue-router';
 interface ApplicantState {
   clientList: Client[],
   applicantsByColumn: ApplicantsByColumn,
-  applicantsByStatusCount: ApplicantsByStatusCount,
+  applicantERWCount: ApplicantERWCount,
   continueFromDoc: ContinueFromDoc,
   applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
@@ -74,7 +74,7 @@ type ApplicantsByColumn = {
   'wait_termination': Applicant[] | [];
 };
 
-type ApplicantsByStatusCount = {
+type ApplicantERWCount = {
   'entry': number,
   'retired': number,
   'working': number,
@@ -107,7 +107,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': [],
       'wait_termination': [],
     },
-    applicantsByStatusCount: {
+    applicantERWCount: {
       'entry': 0,
       'retired': 0,
       'working': 0,
@@ -168,7 +168,7 @@ export const useApplicant = defineStore('applicant', () => {
     const querys = query(applicantRef, ...filters)
     const docCount = await getCountFromServer(querys)
     const result = docCount.data().count
-    state.value.applicantsByStatusCount[status] = result
+    state.value.applicantERWCount[status] = result
     return result
   }
   
@@ -426,6 +426,7 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantCount[status] = 0
       return []
     }
+
     state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
@@ -437,10 +438,11 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
-    const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
-    const countQuery = query(applicantRef, ...filters)
+    const querys = query(applicantRef, ...orderQuery, ...filters, ...start, limit(perQuery+1))
+
+    const countSnapshot = await getCountFromServer(query(applicantRef, ...orderQuery, ...filters))
+
     const docSnap = await getDocs(querys)
-    const countSnapshot = await getCountFromServer(countQuery)
     state.value.applicantCount[status] = countSnapshot.data().count
     if (!docSnap.empty) {
       const documents = docSnap.docs.map(item => {
@@ -463,20 +465,33 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
+  async function validateAllApplicants(){
+    const applicantRef = collection(db, 'applicants')
+    const applicantQuery = query(applicantRef)
+    const docSnap = await getDocs(applicantQuery)
+    if (!docSnap.empty) {
+      const documents = docSnap.docs.map(item => {
+        const id = item.id
+        return {id, ...item.data()}
+      })
+      return validateApplicants(documents as Applicant[])
+    }
+    return false
+  }
 
   /** this function checks and creates reqiured fields if they would not exist for some reason */
-  function validateApplicant(applicants : Applicant[]){
+  async function validateApplicants(applicants : Applicant[]){
     const fire = ref(false)
     const batch = writeBatch(db);
     const forUpdate : Record<string, string | number>[] = []
     applicants.map((applicant)=>{
-      const needsUpdate : Record<string, string | number>[] = []
+      const needsUpdate : { [key : string]: string | number; } = {}
       for(const [key, value] of Object.entries(requiredFields.value)){
-        if(value && typeof applicant[key] === 'undefined'){
+        if(typeof applicant[key] === 'undefined'){
           needsUpdate[key] = value
         }
       }
-      if(needsUpdate){
+      if(Object.keys(needsUpdate).length > 0){
         forUpdate[applicant.id] = needsUpdate
       }
     })
@@ -487,7 +502,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
     if(fire.value){
       try{
-        batch.commit()
+        await batch.commit()
       } catch (e){
         console.log(e)
       }
@@ -547,7 +562,7 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
     if(validate){
-      validateApplicant([result.data() as Applicant])
+      validateApplicants([result.data() as Applicant])
     }
     return result.data() as Applicant
   }
@@ -711,13 +726,13 @@ export const useApplicant = defineStore('applicant', () => {
         await getApplicantsByStatus(status, state.value.applicantProgressFilter, limitQuery, false)
       })
       COUNT_STATUSES.map(async (status)=>{
-        state.value.applicantsByStatusCount[status] = await countApplicantsByStatus(status, state.value.applicantProgressFilter)
+        state.value.applicantERWCount[status] = await countApplicantsByStatus(status, state.value.applicantProgressFilter)
       })
     } else {
       state.value.needsApplicantUpdateOnMounted = true
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants}
 })
 

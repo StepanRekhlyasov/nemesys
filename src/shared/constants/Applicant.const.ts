@@ -500,6 +500,7 @@ export const requiredFields = computed(()=>{
     'staffRank' : 0,
     'occupation' : '',
     'classification' : '',
+    'currentStatusTimestamp' : '',
     'organizationId' : organization.currentOrganizationId,
   }
 })
