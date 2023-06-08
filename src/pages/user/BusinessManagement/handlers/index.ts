@@ -40,12 +40,24 @@ export const finishEditing = (
         throw new Error(`clientFactory does not contain the key: ${currentKey}`);
       }
       if (i === keys.length - 1) {
-        if (nestedOriginalObj[currentKey] === value) {
-          if (nestedObj.hasOwnProperty(currentKey)) {
-            delete nestedObj[currentKey];
+        // Check if both values are arrays
+        if (Array.isArray(nestedOriginalObj[currentKey]) && Array.isArray(value)) {
+          // Use arraysAreEqual function to compare
+          if (arraysAreEqual(nestedOriginalObj[currentKey], value)) {
+            if (nestedObj.hasOwnProperty(currentKey)) {
+              delete nestedObj[currentKey];
+            }
+          } else {
+            nestedObj[currentKey] = value;
           }
         } else {
-          nestedObj[currentKey] = value;
+          if (nestedOriginalObj[currentKey] === value) {
+            if (nestedObj.hasOwnProperty(currentKey)) {
+              delete nestedObj[currentKey];
+            }
+          } else {
+            nestedObj[currentKey] = value;
+          }
         }
       } else {
         nestedOriginalObj = nestedOriginalObj[currentKey];
@@ -56,7 +68,8 @@ export const finishEditing = (
   });
 }
 
-export const useHighlightMainInfo = (clientFactory: ClientFactory, draft: ClientFactory): RenderMainInfo => {
+export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draft: ClientFactory): RenderMainInfo => {
+  const clientFactory = JSON.parse(JSON.stringify(traceableClientFactory));
   const mainInfo = {} as RenderMainInfo
 
   mainInfo.officeInfo = computed(() => {
