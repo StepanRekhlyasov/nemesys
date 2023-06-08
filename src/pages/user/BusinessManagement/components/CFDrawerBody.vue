@@ -19,7 +19,7 @@ const isEditForm = ref({
     contactInfo: false
 })
 
-const draft = ref({} as ClientFactory)
+const draft = ref<Partial<ClientFactory>>({})
 const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>)
 
 const getNewDataToUpdate = (data: Data[], key: string) => {

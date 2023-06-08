@@ -27,7 +27,7 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
 
 export const finishEditing = (
   changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
-  draft: ClientFactory,
+  draft: Partial<ClientFactory>,
   clientFactory: ClientFactory,
 ) => {
   changedData.forEach(({key, value}) => {
@@ -68,7 +68,7 @@ export const finishEditing = (
   });
 }
 
-export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draft: ClientFactory): RenderMainInfo => {
+export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draft: Partial<ClientFactory>): RenderMainInfo => {
   const clientFactory = JSON.parse(JSON.stringify(traceableClientFactory));
   const mainInfo = {} as RenderMainInfo
 
