@@ -290,6 +290,7 @@ export default {
       email: 'Email',
       password: 'Password',
       person_name: "Contact Person's Name",
+      name: 'Name',
       branch_name: 'Branch Name',
       company_name: 'User Company Name',
       passworld: 'passworld',
