@@ -7,7 +7,7 @@ import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
+import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
@@ -531,8 +531,9 @@ export const useApplicant = defineStore('applicant', () => {
           saveData.statusChangeTimestamp = {}
           saveData.statusChangeTimestamp[dateField] = state.value.selectedApplicant[dateField]
           state.value.selectedApplicant.currentStatusTimestamp = state.value.selectedApplicant[dateField]
+          saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
         } else {
-          saveData.currentStatusTimestamp = serverTimestamp();
+          saveData.currentStatusTimestamp = ''
         }
       }
 
@@ -582,12 +583,7 @@ export const useApplicant = defineStore('applicant', () => {
         data['imagePath'] = snapshot.ref.fullPath;
         data['imageURL'] = await getDownloadURL(storageRef)
       } catch(error){
-        $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-        });
+        Alert.warning($q, t);
         return false;
       }
     }
@@ -596,21 +592,10 @@ export const useApplicant = defineStore('applicant', () => {
         docRef,
         data
       );
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success($q, t);
       return true;
     } catch (error) {
-      console.log(error);
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: t('failed'),
-      });
+      Alert.warning($q, t);
       return false;
     }
   }
@@ -700,6 +685,7 @@ export const useApplicant = defineStore('applicant', () => {
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
       state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
+    state.value.needsApplicantUpdateOnMounted = true
     if (state.value.applicantsByColumn[newValue[1]]) {
       const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
       if (index>-1) return;
