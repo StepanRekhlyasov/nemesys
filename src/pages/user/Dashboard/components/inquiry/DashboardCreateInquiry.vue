@@ -56,6 +56,7 @@
 import { serverTimestamp } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { InquiryData } from 'src/shared/model';
+import { Alert } from 'src/shared/utils/Alert.utils';
 import { useInquiry } from 'src/stores/inquiry';
 import { useOrganization } from 'src/stores/organization';
 import { ref, computed } from 'vue';
@@ -67,11 +68,7 @@ const { t } = useI18n({ useScope: 'global' });
 const inquiryStore = useInquiry()
 const organization = useOrganization()
 const emit = defineEmits(['closeDrawer', 'inquiryAdded'])
-const inquiryData = ref<Partial<InquiryData>>({
-  category: '',
-  subject: '',
-  inquiryContent: '',
-})
+const inquiryData = ref<Partial<InquiryData>>({})
 const inquirySaveData = ref(JSON.parse(JSON.stringify(inquiryData.value)))
 const disable = computed(()=>!(inquiryData.value.category && inquiryData.value.subject && inquiryData.value.inquiryContent && !isEdit.value))
 function resetChanges(){
@@ -90,12 +87,7 @@ async function submitInquiry(){
   submitData.recievedDate = serverTimestamp()
   try{
     await inquiryStore.addInquiry(submitData)
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: t('success'),
-    });
+    Alert.success($q, t);
     inquiryData.value = {
       category: '',
       subject: '',
@@ -104,12 +96,7 @@ async function submitInquiry(){
     resetChanges()
     emit('inquiryAdded')
   } catch (e) {
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: t('failed'),
-    });
+    Alert.warning($q, t);
     console.log(e)
   }
 }
