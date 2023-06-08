@@ -11,7 +11,7 @@
       />
     </q-card-section>
     <q-separator color="white" size="2px" />
-      <DashboardNotificationTable :rows="notificationRows" />
+      <DashboardInqiuriesTable/>
     <q-separator color="white" size="2px" />
       <DashboardProgressBlocks :updateOnMounted="updateOnMounted" />
     <q-separator color="white" size="2px" />
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
 import MySelect from 'src/components/inputs/MySelect.vue';
-import DashboardNotificationTable from './components/DashboardNotificationTable.vue';
+import DashboardInqiuriesTable from './components/DashboardInqiuriesTable.vue';
 import { onBeforeMount, ref } from 'vue';
 import DashboardProgressBlocks from './components/DashboardProgressBlocks.vue';
 import { COLUMN_STATUSES, limitQuery } from '../ApplicantProgress/const/applicantColumns';
@@ -30,26 +30,6 @@ const applicantStore = useApplicant()
 const { state } = storeToRefs(applicantStore)
 const { attendeeUserInCharge, prefecture, currentStatusMonth } = state.value.applicantProgressFilter
 const updateOnMounted = ref(false)
-const notificationRows = ref([
-  {
-    date: '2023/1/1',
-    category: 'test 2',
-    subject: 'test',
-    content: 'test',
-  },
-  {
-    date: '2023/1/3',
-    category: 'test',
-    subject: 'test',
-    content: 'test',
-  },
-  {
-    date: '2023/1/2',
-    category: 'test',
-    subject: 'test',
-    content: 'test',
-  },
-])
 const onBranchChange = async () => {
   COLUMN_STATUSES.map(async (status)=>{
     applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, limitQuery)

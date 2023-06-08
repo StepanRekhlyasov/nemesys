@@ -1,9 +1,9 @@
-import { addDoc, arrayUnion, collection, deleteDoc, doc, DocumentData, getDoc, getDocs, getFirestore, orderBy, query, QueryDocumentSnapshot, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, deleteDoc, doc, DocumentData, getDoc, getDocs, getFirestore, orderBy, query, QueryDocumentSnapshot, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { date } from 'quasar';
 import { InquiryMessage, INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData, InquiryDataRow, Organization } from 'src/shared/model';
-import { findTheLastDate } from 'src/shared/utils/utils';
+import { findTheLastDate, timestampToDateFormat } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 
 type InquiryState = {
@@ -95,7 +95,8 @@ export const useInquiry = defineStore('inquiry', () => {
     const inquirySnap = await getDoc(docRef)
 
     if (inquirySnap.exists()) {
-      return inquirySnap.data() as Organization
+      const id = inquirySnap.id
+      return { id, ...inquirySnap.data() } as InquiryData
     }
   }
 
@@ -107,7 +108,7 @@ export const useInquiry = defineStore('inquiry', () => {
       // @ts-expect-error the same problem as on 98 line
       messages: [...state.value.currentRowData.messages,
         {
-          messageDate: date.formatDate(message.date, 'YYYY-MM-DD HH:mm:ss'),
+          messageDate: timestampToDateFormat(message.date),
           content: message.content,
           type: message.type
         }
@@ -138,6 +139,18 @@ export const useInquiry = defineStore('inquiry', () => {
     return await deleteDoc(inquiryRef)
   }
 
+  const getInqueriesByOrganizationId = async (organizationId : string) => {
+    if(!organizationId){
+      return []
+    }
+    const docSnap =  await getDocs(query(collection(db, 'inquires'), orderBy('recievedDate', 'desc'), where('organization', '==', organizationId)));
+    const documents = docSnap.docs.map(item => {
+      const id = item.id
+      return { id, ...item.data() }
+    })
+    return documents as InquiryData[]
+  }
+
   return {
     state,
     setCurrentRowData,
@@ -149,7 +162,8 @@ export const useInquiry = defineStore('inquiry', () => {
     replyOnInquiry,
     getCurrentInquiry,
     updateCurrentRowDataMessages,
-    deleteInquiryData
+    deleteInquiryData,
+    getInqueriesByOrganizationId
   }
 
 })
