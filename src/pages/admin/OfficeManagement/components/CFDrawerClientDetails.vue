@@ -3,7 +3,7 @@ import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
-import EditableColumnsCF, { Data } from 'src/components/EditableColumnsCF.vue';
+import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
 
 import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';

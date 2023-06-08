@@ -1454,6 +1454,15 @@ export default {
       headOfficeInfo: 'Head office info',
       clientInfo: 'Client info',
       contractInfo: 'Contract info',
+      withMasterData: 'With master data',
+      noAutoRenewal: 'No automatic renewal',
+      situation: 'Situation',
+      contactTendency: 'Contact tendency',
+      dispatchIndex: 'Dispatch index',
+      referralMetrics: 'Referral metrics',
+      morning: 'Morning',
+      afternoon: 'Afternoon',
+      evening: 'Evening',
       details: {
         // Office details
         parentClient: 'Parent client',
