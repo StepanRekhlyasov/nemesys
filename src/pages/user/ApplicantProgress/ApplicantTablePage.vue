@@ -76,7 +76,7 @@
       </q-scroll-area>
     </div>
     </q-card-section>
-    <ApplicantDetails ref="detailsDrawer" />
+    <ApplicantDetails ref="detailsDrawer" @statusUpdated="paginationRef?.queryFirstPage()" />
   </q-page>
 </template>
 <script setup lang="ts">
