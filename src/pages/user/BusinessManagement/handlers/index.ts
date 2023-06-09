@@ -2,8 +2,9 @@ import { i18n } from 'boot/i18n';
 import { computed } from 'vue'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model'
 import { ClientFactoryTableRow } from 'src/components/client-factory/types'
-import { safeGet, arraysAreEqual } from 'src/shared/utils'
+import { safeGet, arraysAreEqual, deepMerge, deepCopy } from 'src/shared/utils'
 import { RenderMainInfo } from '../types'
+import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 
 const { t } = i18n.global
 
@@ -33,7 +34,7 @@ export const finishEditing = (
   changedData.forEach(({key, value}) => {
     const keys = key.split('.'); 
     let nestedObj = draft;
-    let nestedOriginalObj = clientFactory;
+    let nestedOriginalObj = deepCopy(clientFactory);
     for (let i = 0; i < keys.length; i++) {
       const currentKey = keys[i];
       if (!nestedOriginalObj || typeof nestedOriginalObj !== 'object') {
@@ -68,8 +69,14 @@ export const finishEditing = (
   });
 }
 
+export const mergeWithDraft = (dataToMerge: ClientFactory | ModifiedCF, draft: Partial<ClientFactory>) => {
+  const copyData = deepCopy(dataToMerge)
+
+  return deepMerge(copyData, draft)
+}
+
 export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draft: Partial<ClientFactory>): RenderMainInfo => {
-  const clientFactory = JSON.parse(JSON.stringify(traceableClientFactory));
+  const clientFactory = deepCopy(traceableClientFactory);
   const mainInfo = {} as RenderMainInfo
 
   mainInfo.officeInfo = computed(() => {

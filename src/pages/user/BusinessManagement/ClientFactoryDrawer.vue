@@ -1,14 +1,51 @@
 <script lang="ts" setup>
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { defineEmits, defineProps } from 'vue';
+import { defineEmits, defineProps, ref, watch } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
+import { useClientFactory } from 'src/stores/clientFactory';
+import  { mergeWithDraft } from './handlers';
+
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ModifiedCF } from 'src/shared/model/ModifiedCF';
+import { useOrganization } from 'src/stores/organization';
+
+const { addModifiedCF, getModifiedCF, updateModifiedCF } = useClientFactory()
+const { currentOrganizationId } = useOrganization()
 
 const props = defineProps<{
     isDrawer: boolean,
     selectedItem: ClientFactory
 }>()
+
+const modifiedCF = ref<ModifiedCF | undefined>()
+const draft = ref<Partial<ClientFactory>>({})
+const isLoading = ref(false)
+
+const cancelHandler = () => {
+    draft.value = {} as ClientFactory;
+}
+
+const saveHandler = async () => {
+    if(modifiedCF.value) {
+
+        const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
+        
+        await updateModifiedCF(props.selectedItem.id, mergedData)
+        modifiedCF.value = mergedData
+        draft.value = {} as ClientFactory;
+    } else {
+        const mergedData = mergeWithDraft(props.selectedItem, draft.value)
+        console.log(mergedData)
+        const res = await addModifiedCF(currentOrganizationId, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>)
+
+        if(res) {
+            modifiedCF.value = mergedData
+        }
+
+        draft.value = {} as ClientFactory;
+    }
+}
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
@@ -17,6 +54,16 @@ const emit = defineEmits<{
 const hideDrawer = () => {
     emit('hideDrawer')
 }
+
+watch([() => props.selectedItem], async (newProps, oldProps) => {
+    if (oldProps) {
+        isLoading.value = true
+        draft.value = {} as ClientFactory;
+        modifiedCF.value = await getModifiedCF(currentOrganizationId, props.selectedItem)
+        console.log(modifiedCF.value)
+        isLoading.value = false
+    }
+}, { immediate: true });
 
 </script>
 
@@ -36,14 +83,18 @@ const hideDrawer = () => {
                         <CFDrawerTitle v-if="selectedItem" :selectedItem="selectedItem"/>
                     </q-card-section>
                     <q-card-section class="bg-grey-2 q-pa-none">
-                        <CFDrawerBody :clientFactory="selectedItem"/>
+                        <CFDrawerBody
+                            @cancel-draft="cancelHandler"
+                            @save-draft="saveHandler"
+                            :clientFactory="modifiedCF ?? selectedItem"
+                            :draft="draft"
+                            :is-loading="isLoading"/>
                     </q-card-section>
                     <q-card-section class="bg-grey-3">
-                        <CFDrawerTabs :clientFactory="selectedItem" />
+                        <CFDrawerTabs :clientFactory="modifiedCF ?? selectedItem" />
                     </q-card-section>
                 </q-card>
             </q-scroll-area>
-
     </q-drawer>
 </template>
 
