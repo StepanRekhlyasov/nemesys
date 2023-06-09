@@ -5,7 +5,7 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData" greedy>
         <div class="row">
           <div class="col-6">
             <div class="row">
@@ -68,13 +68,12 @@
                 {{ $t('applicant.add.apartment') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['apartment']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['apartment']" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.phone') }}
+                {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['phone']"
@@ -104,7 +103,14 @@
                 {{ $t('applicant.add.branchIncharge') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm bg-white">
-                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
+                <select-branch 
+                  :organization-id="organizationStore.currentOrganizationId" 
+                  v-model="applicantData['branchIncharge']" 
+                  :rules="[(val) => !!val || '']" 
+                  hide-bottom-space
+                  @im-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
+                  @im-loaded="disableSubmit = false"
+                />
               </div>
             </div>
           </div>
@@ -195,7 +201,7 @@
                 {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
               </div>
               <div class="col-6 q-pl-sm">
-                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']" :rules="[(val) => !!val || '']">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -244,7 +250,7 @@
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
+          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
@@ -275,12 +281,11 @@ const applicantStore = useApplicant()
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList);
 const statusOption = ref(statusList);
-
+const disableSubmit = ref(false)
 const applicantForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
-
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
   imageURL.value = '';

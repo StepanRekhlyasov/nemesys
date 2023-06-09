@@ -286,7 +286,7 @@ export default {
     users: {
       contactPersonName: 'Add new contact person',
       addUser: 'Add new user',
-      fio: 'FIO',
+      fio: 'Full name',
       email: 'Email',
       password: 'Password',
       person_name: "Contact Person's Name",

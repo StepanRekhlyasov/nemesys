@@ -18,15 +18,21 @@ interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
 const loading = ref(true)
 const branches = ref<selectOptions[]>([])
 const modelValue = ref('')
+const emit = defineEmits(['imLoading', 'imLoaded'])
 onMounted(async () => {
+  emit('imLoading')
   branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(props.organizationId))
   loading.value = false
+  emit('imLoaded')
 })
 
 const props = defineProps<SelectBranchProps>()
 watch(()=>props.organizationId, async (newValue)=>{
+  emit('imLoading')
   loading.value = true
+  modelValue.value = ''
   branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(newValue))
   loading.value = false
+  emit('imLoaded')
 })
 </script>
