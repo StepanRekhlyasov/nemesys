@@ -9,12 +9,16 @@ import { LicensePath, LicenseVariation } from 'src/pages/admin/LicenseManagement
 import { LicenseRequest } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
 import { LicenseStatistic } from 'src/pages/admin/LicenseManagement/types/LicenseStatistic';
 import { Branch } from 'src/shared/model';
+import { useBranch } from './branch';
+import { useBusiness } from './business';
 import { useOrganization } from './organization';
 
 
 export const useLicense = defineStore('license', () => {
   const db = getFirestore()
   const organizationStore = useOrganization()
+  const businessStore = useBusiness()
+  const branchStore = useBranch()
 
   async function search<T extends LicensePath>(search: string, collectionPath: T) {
     const organizations = await organizationStore.getOrganizationsByName(search)
@@ -47,8 +51,8 @@ export const useLicense = defineStore('license', () => {
   async function getLicensesInMonth({ organizationId, selectedYear, selectedMonth }: { organizationId: string, selectedYear: number, selectedMonth: number }): Promise<Table | undefined> {
     const defaultData = await Promise.all([
       organizationStore.getDataById([organizationId], 'Organization'),
-      organizationStore.getBusinesses(db, organizationId),
-      organizationStore.getBranchesInOrganization(organizationId),
+      businessStore.getBusinesses(db, organizationId),
+      branchStore.getBranchesInOrganization(organizationId),
     ])
 
     // first [0] - get from defaultData, second [0] get from getDataById (always one element)

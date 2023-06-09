@@ -35,6 +35,8 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { manageUserAvailability } from './handlers/handlers';
 import OrganizationColspanTabel from 'src/components/organization/OrganizationColspanTabel.vue';
 import { toTable } from 'src/components/organization/handlers/ToTable';
+import { useBranch } from 'src/stores/branch';
+import { useBusiness } from 'src/stores/business';
 
 
 type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
@@ -46,6 +48,8 @@ interface ExpandedTableProps {
 const $q = useQuasar();
 
 const organization = useOrganization()
+const branchStore = useBranch()
+const business = useBusiness()
 
 const loading = ref(false)
 
@@ -70,11 +74,11 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
     }
 
     if (organizationId && businessId && !branchId) {
-      await organization.editBusiness(db, { working }, organizationId, businessId)
+      await business.editBusiness(db, { working }, organizationId, businessId)
     }
 
     if (organizationId && businessId && branchId) {
-      await organization.editBranch(db, { working }, organizationId, businessId, branchId)
+      await branchStore.editBranch(db, { working }, organizationId, businessId, branchId)
       await manageUserAvailability({ enabled: working, branchId })
     }
 
@@ -103,7 +107,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
         if (branchId) {
           continue
         }
-        await organization.editBusiness(db, { working }, organizationItem.id, businessItem.id)
+        await business.editBusiness(db, { working }, organizationItem.id, businessItem.id)
         businessItem.working = working
         for (let k = 0; k < businessItem.branches.length; k++) {
           const branchItem = businessItem.branches[k]
@@ -111,7 +115,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
             continue
           }
           branchItem.working = working
-          await organization.editBranch(db, { working }, organizationItem.id, businessItem.id, branchItem.id)
+          await branchStore.editBranch(db, { working }, organizationItem.id, businessItem.id, branchItem.id)
           await manageUserAvailability({ enabled: working, branchId: branchItem.id })
         }
       }
@@ -129,8 +133,8 @@ loadTableData()
 async function loadTableData() {
   loading.value = true
 
-  const businesses = await organization.getBusinesses(db, componentProps.props.row.id)
-  const branches = await organization.getBranches(db, componentProps.props.row.id)
+  const businesses = await business.getBusinesses(db, componentProps.props.row.id)
+  const branches = await branchStore.getBranches(db, componentProps.props.row.id)
 
   data.value = [toTable(businesses, branches, componentProps.props.row)]
 

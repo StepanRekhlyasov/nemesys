@@ -69,6 +69,7 @@ import { creationRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
 import { flagOptions } from 'src/components/handlers/flagOptions';
 import DialogHeader from '../dialog/DialogHeader.vue';
+import { useBranch } from 'src/stores/branch';
 
 export default {
   name: 'BranchCreateForm',
@@ -101,6 +102,8 @@ export default {
     const loading = ref(false)
     const prefectureOption = ref(prefectureList);
     const organization = useOrganization()
+    const branchStore = useBranch()
+
     const branchFlag = ref<branchFlags>(branchData.value['flag'] ?? branchFlags.All)
 
     const businessId = ref<string>('')
@@ -128,7 +131,7 @@ export default {
           data['businessId'] = businessId.value
           data['priceForOneUserInYen'] = 10000
           data['licensesSlots'] = 0
-          await organization.createBranch(data, currentOrganizationId, businessId.value)
+          await branchStore.createBranch(data, currentOrganizationId, businessId.value)
           context.emit('closeDialog');
           Alert.success($q, t);
           loading.value = false;
