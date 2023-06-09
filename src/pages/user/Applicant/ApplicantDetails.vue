@@ -138,6 +138,7 @@ import { timestampToDateFormat } from 'src/shared/utils/utils';
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
 const statusOption = ref(statusList);
+const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
 const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(timestampToDateFormat(selectedApplicant.value['dob'])):'0')
 const openDrawer = async (data : Applicant) => {
@@ -150,6 +151,7 @@ const openDrawer = async (data : Applicant) => {
 defineExpose({ openDrawer })
 const changeApplicantStatus = () => {
   applicantStore.updateApplicant({status: selectedApplicant.value?.status})
+  emit('statusUpdated')
 }
 const chooseFiles = () => {
   fileUploadRef.value?.pickFiles()

@@ -7,7 +7,7 @@ import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
+import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
@@ -18,7 +18,7 @@ import { useRoute } from 'vue-router';
 interface ApplicantState {
   clientList: Client[],
   applicantsByColumn: ApplicantsByColumn,
-  applicantsByStatusCount: ApplicantsByStatusCount,
+  applicantERWCount: ApplicantERWCount,
   continueFromDoc: ContinueFromDoc,
   applicantProgressFilter: ApplicantProgressFilter,
   reFilterOnReturn: boolean,
@@ -74,7 +74,7 @@ type ApplicantsByColumn = {
   'wait_termination': Applicant[] | [];
 };
 
-type ApplicantsByStatusCount = {
+type ApplicantERWCount = {
   'entry': number,
   'retired': number,
   'working': number,
@@ -107,7 +107,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': [],
       'wait_termination': [],
     },
-    applicantsByStatusCount: {
+    applicantERWCount: {
       'entry': 0,
       'retired': 0,
       'working': 0,
@@ -168,7 +168,7 @@ export const useApplicant = defineStore('applicant', () => {
     const querys = query(applicantRef, ...filters)
     const docCount = await getCountFromServer(querys)
     const result = docCount.data().count
-    state.value.applicantsByStatusCount[status] = result
+    state.value.applicantERWCount[status] = result
     return result
   }
   
@@ -426,6 +426,7 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantCount[status] = 0
       return []
     }
+
     state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
@@ -437,10 +438,11 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
-    const querys = query(applicantRef, ...filters, ...orderQuery, ...start, limit(perQuery+1))
-    const countQuery = query(applicantRef, ...filters)
+    const querys = query(applicantRef, ...orderQuery, ...filters, ...start, limit(perQuery+1))
+
+    const countSnapshot = await getCountFromServer(query(applicantRef, ...orderQuery, ...filters))
+
     const docSnap = await getDocs(querys)
-    const countSnapshot = await getCountFromServer(countQuery)
     state.value.applicantCount[status] = countSnapshot.data().count
     if (!docSnap.empty) {
       const documents = docSnap.docs.map(item => {
@@ -463,20 +465,33 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
+  async function validateAllApplicants(){
+    const applicantRef = collection(db, 'applicants')
+    const applicantQuery = query(applicantRef)
+    const docSnap = await getDocs(applicantQuery)
+    if (!docSnap.empty) {
+      const documents = docSnap.docs.map(item => {
+        const id = item.id
+        return {id, ...item.data()}
+      })
+      return validateApplicants(documents as Applicant[])
+    }
+    return false
+  }
 
   /** this function checks and creates reqiured fields if they would not exist for some reason */
-  function validateApplicant(applicants : Applicant[]){
+  async function validateApplicants(applicants : Applicant[]){
     const fire = ref(false)
     const batch = writeBatch(db);
     const forUpdate : Record<string, string | number>[] = []
     applicants.map((applicant)=>{
-      const needsUpdate : Record<string, string | number>[] = []
+      const needsUpdate : { [key : string]: string | number; } = {}
       for(const [key, value] of Object.entries(requiredFields.value)){
-        if(value && typeof applicant[key] === 'undefined'){
+        if(typeof applicant[key] === 'undefined'){
           needsUpdate[key] = value
         }
       }
-      if(needsUpdate){
+      if(Object.keys(needsUpdate).length > 0){
         forUpdate[applicant.id] = needsUpdate
       }
     })
@@ -487,7 +502,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
     if(fire.value){
       try{
-        batch.commit()
+        await batch.commit()
       } catch (e){
         console.log(e)
       }
@@ -516,8 +531,9 @@ export const useApplicant = defineStore('applicant', () => {
           saveData.statusChangeTimestamp = {}
           saveData.statusChangeTimestamp[dateField] = state.value.selectedApplicant[dateField]
           state.value.selectedApplicant.currentStatusTimestamp = state.value.selectedApplicant[dateField]
+          saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
         } else {
-          saveData.currentStatusTimestamp = serverTimestamp();
+          saveData.currentStatusTimestamp = ''
         }
       }
 
@@ -547,7 +563,7 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
     if(validate){
-      validateApplicant([result.data() as Applicant])
+      validateApplicants([result.data() as Applicant])
     }
     return result.data() as Applicant
   }
@@ -567,12 +583,7 @@ export const useApplicant = defineStore('applicant', () => {
         data['imagePath'] = snapshot.ref.fullPath;
         data['imageURL'] = await getDownloadURL(storageRef)
       } catch(error){
-        $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-        });
+        Alert.warning($q, t);
         return false;
       }
     }
@@ -581,21 +592,10 @@ export const useApplicant = defineStore('applicant', () => {
         docRef,
         data
       );
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success($q, t);
       return true;
     } catch (error) {
-      console.log(error);
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: t('failed'),
-      });
+      Alert.warning($q, t);
       return false;
     }
   }
@@ -685,6 +685,7 @@ export const useApplicant = defineStore('applicant', () => {
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
       state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
     }
+    state.value.needsApplicantUpdateOnMounted = true
     if (state.value.applicantsByColumn[newValue[1]]) {
       const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
       if (index>-1) return;
@@ -711,13 +712,13 @@ export const useApplicant = defineStore('applicant', () => {
         await getApplicantsByStatus(status, state.value.applicantProgressFilter, limitQuery, false)
       })
       COUNT_STATUSES.map(async (status)=>{
-        state.value.applicantsByStatusCount[status] = await countApplicantsByStatus(status, state.value.applicantProgressFilter)
+        state.value.applicantERWCount[status] = await countApplicantsByStatus(status, state.value.applicantProgressFilter)
       })
     } else {
       state.value.needsApplicantUpdateOnMounted = true
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints}
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants}
 })
 
