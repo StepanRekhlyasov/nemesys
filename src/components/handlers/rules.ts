@@ -8,7 +8,7 @@ export const creationRule = (val: string) => val && val.length > 0 || ''
 
 export const organizationCodeRule = async (val: string) => {
 
-  if (!/^[A-Z]+$/.test(val)) {
+  if (!/^[A-Za-z1-9!?#$%&]+$/.test(val)) {
     return t('menu.admin.organizationsTable.onlyUppercase')
   }
 

@@ -180,7 +180,7 @@ export default {
         addOrganization: '企業新規追加',
         organizationCode: '企業コード',
         staffName: 'スタッフ名',
-        onlyUppercase: '大文字のアルファベットのみが許可されています。',
+        onlyUppercase: '大文字、小文字、記号（! ? # $ % &）、数字のみ使用できます。',
         codeMustBeUnique: 'コードはユニークである必要があります。',
         codeNotUnique: '同じコードを持つ組織を複数が見つかりました。コードはユニークである必要があります。'
       },
@@ -293,7 +293,7 @@ export default {
       name: '氏名',
       passworld: 'パスワード',
       branch_name: '所属支店',
-      company_name: 'ユーザー企業名',
+      organizationName: '企業名',
       deleteAccaunt: 'アカウント削除',
       role: 'ロール',
       infoEditUser: 'メールアドレス・ユーザー企業は永久に変更できません',
