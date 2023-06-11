@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { defineEmits, defineProps } from 'vue';
+import { defineEmits, defineProps, watch, ref } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
@@ -10,6 +10,8 @@ const props = defineProps<{
     selectedItem: ClientFactory
 }>()
 
+const localData = ref<ClientFactory>(props.selectedItem)
+
 const emit = defineEmits<{
     (e: 'hideDrawer')
 }>()
@@ -17,6 +19,12 @@ const emit = defineEmits<{
 const hideDrawer = () => {
     emit('hideDrawer')
 }
+
+watch([() => props.selectedItem], async (newProps, oldProps) => {
+    if (oldProps) {
+        localData.value.draft = props.selectedItem.draft ?? {}
+    }
+}, { immediate: true });
 
 </script>
 
@@ -34,13 +42,13 @@ const hideDrawer = () => {
             <q-card class="no-shadow bg-grey-2">
                 <q-card-section class="text-white bg-accent row items-end" >
                     <q-btn dense flat icon="close" @click="hideDrawer" />
-                    <CFDrawerTitle v-if="selectedItem" :selectedItem="selectedItem"/>
+                    <CFDrawerTitle v-if="localData" :selectedItem="localData"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-2 q-pa-none">
-                    <CFDrawerBody :clientFactory="selectedItem"/>
+                    <CFDrawerBody :clientFactory="localData"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-3">
-                    <CFDrawerTabs :clientFactory="selectedItem" />
+                    <CFDrawerTabs :clientFactory="localData" />
                 </q-card-section>
             </q-card>
         </q-scroll-area>

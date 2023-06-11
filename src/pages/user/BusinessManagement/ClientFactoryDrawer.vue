@@ -4,7 +4,7 @@ import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import  { mergeWithDraft } from './handlers';
+import { mergeWithDraft } from 'src/components/client-factory/hadlers';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
@@ -60,7 +60,6 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
         isLoading.value = true
         draft.value = {} as ClientFactory;
         modifiedCF.value = await getModifiedCF(currentOrganizationId, props.selectedItem)
-        console.log(modifiedCF.value)
         isLoading.value = false
     }
 }, { immediate: true });

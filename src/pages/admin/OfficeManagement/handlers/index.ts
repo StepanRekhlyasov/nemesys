@@ -5,7 +5,7 @@ import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { recursivelyRemoveField, safeGet } from 'src/shared/utils';
+import { recursivelyRemoveField, safeGet, arraysAreEqual, deepCopy } from 'src/shared/utils';
 
 const {updateClientFactory} = useClientFactory()
 const {updateClient} = useClient()
@@ -82,21 +82,21 @@ export const useHighlightMainInfo = (clientFactory: ClientFactory): RenderMainIn
 
   mainInfo.officeInfo = computed(() => {
     return [
-      {label: '担当者MAIL', value: (safeGet(clientFactory, 'draft.mail') ?? safeGet(clientFactory, 'mail')) || '', editType: 'text', key: 'mail', isHighlight: safeGet(clientFactory, 'mail') === safeGet(clientFactory, 'draft.mail')},
-      {label: t('clientFactory.homePage'), value: (safeGet(clientFactory, 'draft.homepageUrl') ?? safeGet(clientFactory, 'homepageUrl')) || '', editType: 'text', key: 'homepageUrl', isHighlight: safeGet(clientFactory, 'homepageUrl') === safeGet(clientFactory, 'draft.homepageUrl')},
-      {label: t('clientFactory.numberEmployees'), value: (safeGet(clientFactory, 'draft.numberEmployees') ?? safeGet(clientFactory, 'numberEmployees')) || '', editType: 'text', key: 'numberEmployees', isHighlight: safeGet(clientFactory, 'numberEmployees') === safeGet(clientFactory, 'draft.numberEmployees')},
-      {label: t('clientFactory.conclusionDispatchContract'), value: (safeGet(clientFactory, 'draft.isSignedDispatchContract') ?? safeGet(clientFactory, 'isSignedDispatchContract')) || false, editType: 'dispatch_contract', key: 'isSignedDispatchContract', isHighlight: safeGet(clientFactory, 'isSignedDispatchContract') === safeGet(clientFactory, 'draft.isSignedDispatchContract')},
-      {label: t('clientFactory.facilityType'), value: (safeGet(clientFactory, 'draft.facilityType') ?? safeGet(clientFactory, 'facilityType')) || [], editType: 'facility', key: 'facilityType', isHighlight: JSON.stringify(safeGet(clientFactory, 'facilityType')) === JSON.stringify(safeGet(clientFactory, 'draft.facilityType'))},
-      {label: t('clientFactory.conclusionReferralContract'), value: (safeGet(clientFactory, 'draft.isSignedReferralContract') || safeGet(clientFactory, 'isSignedReferralContract')) || false, editType: 'referral_contract', key: 'isSignedReferralContract', isHighlight: safeGet(clientFactory, 'isSignedReferralContract') === safeGet(clientFactory, 'draft.isSignedReferralContract')}
+      {label: '担当者MAIL', value: (safeGet(clientFactory, 'draft.mail') ?? safeGet(clientFactory, 'mail')) || '', editType: 'text', key: 'mail', isHighlight: safeGet(clientFactory, 'draft.mail') !== undefined && safeGet(clientFactory, 'mail') !== safeGet(clientFactory, 'draft.mail')},
+      {label: t('clientFactory.homePage'), value: (safeGet(clientFactory, 'draft.homepageUrl') ?? safeGet(clientFactory, 'homepageUrl')) || '', editType: 'text', key: 'homepageUrl', isHighlight: safeGet(clientFactory, 'draft.homepageUrl') !== undefined && safeGet(clientFactory, 'homepageUrl') !== safeGet(clientFactory, 'draft.homepageUrl')},
+      {label: t('clientFactory.numberEmployees'), value: (safeGet(clientFactory, 'draft.numberEmployees') ?? safeGet(clientFactory, 'numberEmployees')) || '', editType: 'text', key: 'numberEmployees', isHighlight: safeGet(clientFactory, 'draft.numberEmployees') !== undefined && safeGet(clientFactory, 'numberEmployees') !== safeGet(clientFactory, 'draft.numberEmployees')},
+      {label: t('clientFactory.conclusionDispatchContract'), value: (safeGet(clientFactory, 'draft.isSignedDispatchContract') ?? safeGet(clientFactory, 'isSignedDispatchContract')) || false, editType: 'dispatch_contract', key: 'isSignedDispatchContract', isHighlight: safeGet(clientFactory, 'draft.isSignedDispatchContract') !== undefined && safeGet(clientFactory, 'isSignedDispatchContract') === safeGet(clientFactory, 'draft.isSignedDispatchContract')},
+      {label: t('clientFactory.facilityType'), value: (safeGet(clientFactory, 'draft.facilityType') ?? safeGet(clientFactory, 'facilityType')) || [], editType: 'facility', key: 'facilityType', isHighlight: safeGet(clientFactory, 'draft.facilityType') !== undefined && !arraysAreEqual(safeGet(clientFactory, 'facilityType'), safeGet(clientFactory, 'draft.facilityType'))},
+      {label: t('clientFactory.conclusionReferralContract'), value: (safeGet(clientFactory, 'draft.isSignedReferralContract') || safeGet(clientFactory, 'isSignedReferralContract')) || false, editType: 'referral_contract', key: 'isSignedReferralContract', isHighlight: safeGet(clientFactory, 'draft.isSignedReferralContract') !== undefined && safeGet(clientFactory, 'isSignedReferralContract') === safeGet(clientFactory, 'draft.isSignedReferralContract')}
     ]
   }).value
 
   mainInfo.contactInfo = computed(() => {
     return [
-      {label: t('clientFactory.namePersonInCharge'), value: (safeGet(clientFactory, 'draft.nameContact') ?? safeGet(clientFactory, 'nameContact')) || '', editType: 'text', key: 'nameContact', isHighlight: safeGet(clientFactory, 'nameContact') === safeGet(clientFactory, 'draft.nameContact')},
-      {label: t('clientFactory.personInChargeTitle'), value: (safeGet(clientFactory, 'draft.positionContact') ?? safeGet(clientFactory, 'positionContact')) || '', editType: 'text', key: 'positionContact', isHighlight: safeGet(clientFactory, 'positionContact') === safeGet(clientFactory, 'draft.positionContact')},
-      {label: '担当者TEL', value: (safeGet(clientFactory, 'draft.telContact') ?? safeGet(clientFactory, 'telContact')) || '', editType: 'text', key: 'telContact', isHighlight: safeGet(clientFactory, 'telContact') === safeGet(clientFactory, 'draft.telContact')},
-      {label: '担当者MAIL', value: (safeGet(clientFactory, 'draft.mailContact') ?? safeGet(clientFactory, 'mailContact')) ||'', editType: 'text', key: 'mailContact', isHighlight: safeGet(clientFactory, 'mailContact') === safeGet(clientFactory, 'draft.mailContact')}
+      {label: t('clientFactory.namePersonInCharge'), value: (safeGet(clientFactory, 'draft.nameContact') ?? safeGet(clientFactory, 'nameContact')) || '', editType: 'text', key: 'nameContact', isHighlight: safeGet(clientFactory, 'draft.nameContact') !== undefined && safeGet(clientFactory, 'nameContact') !== safeGet(clientFactory, 'draft.nameContact')},
+      {label: t('clientFactory.personInChargeTitle'), value: (safeGet(clientFactory, 'draft.positionContact') ?? safeGet(clientFactory, 'positionContact')) || '', editType: 'text', key: 'positionContact', isHighlight: safeGet(clientFactory, 'draft.positionContact') !== undefined && safeGet(clientFactory, 'positionContact') !== safeGet(clientFactory, 'draft.positionContact')},
+      {label: '担当者TEL', value: (safeGet(clientFactory, 'draft.telContact') ?? safeGet(clientFactory, 'telContact')) || '', editType: 'text', key: 'telContact', isHighlight: safeGet(clientFactory, 'draft.telContact') !== undefined && safeGet(clientFactory, 'telContact') !== safeGet(clientFactory, 'draft.telContact')},
+      {label: '担当者MAIL', value: (safeGet(clientFactory, 'draft.mailContact') ?? safeGet(clientFactory, 'mailContact')) ||'', editType: 'text', key: 'mailContact', isHighlight: safeGet(clientFactory, 'draft.mailContact') !== undefined && safeGet(clientFactory, 'mailContact') !== safeGet(clientFactory, 'draft.mailContact')}
     ]
   }).value
 

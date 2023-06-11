@@ -248,7 +248,11 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
         try {
-            await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), modifiedCF)
+            await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), {
+                ...modifiedCF,
+                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)),
+                updated_at: serverTimestamp(),
+            })
 
             $q.notify({
                 color: 'green-4',

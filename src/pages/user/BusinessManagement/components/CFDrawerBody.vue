@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, watch } from 'vue';
+import { ref, defineProps, defineEmits, watch, watchEffect } from 'vue';
 import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderMainInfo } from '../types';
-import { useHighlightMainInfo, finishEditing } from '../handlers';
+import { finishEditing } from 'src/components/client-factory/hadlers';
+import { useHighlightMainInfo } from '../handlers';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -43,9 +44,9 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
 }
 
-watch([() => props.clientFactory, () => props.draft], () => {
+watchEffect(() => {
     mainInfo.value = useHighlightMainInfo(props.clientFactory, props.draft)
-}, { deep: true, immediate: true });
+})
 
 </script>
 
@@ -57,10 +58,10 @@ watch([() => props.clientFactory, () => props.draft], () => {
 
         <div v-if="Object.keys(draft).length && !isEditForm.contactInfo && !isEditForm.officeInfo" class="q-mb-md">
             <div class="row">
-                <q-btn @click="saveHandler" size="sm" color="primary" class="no-shadow q-mr-md">
+                <q-btn @click="saveHandler" size="sm" color="primary" class="no-shadow q-mr-md" :disable="isLoading">
                     {{ t('common.save') }}
                 </q-btn>
-                <q-btn @click="cancelHandler" size="sm" outline>
+                <q-btn @click="cancelHandler" size="sm" outline :disable="isLoading">
                     {{ t('common.cancel') }}
                 </q-btn>
             </div>
