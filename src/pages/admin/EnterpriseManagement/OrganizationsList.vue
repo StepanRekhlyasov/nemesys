@@ -66,10 +66,10 @@
         </q-td>
 
         <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
-          @update:model-value="(v) => editableRow!.tel = v" />
+          @update:model-value="(v) => editableRow!.tel = v" type="tel" mask="phone" />
 
         <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
-          @update:model-value="(v) => editableRow!.fax = v" />
+          @update:model-value="(v) => editableRow!.fax = v" type="tel" mask="phone" />
 
         <q-td>
           {{ props.row.mailaddress }}
@@ -98,7 +98,7 @@
         </q-td>
       </q-tr>
 
-      <q-tr v-show="props.expand" :props="props">
+      <q-tr v-if="props.expand" :props="props">
         <ExpandedTable :props="props" v-if="renderComponent" />
       </q-tr>
 
@@ -187,6 +187,7 @@ async function searchOrganizations(name: string) {
 
 async function refresh() {
   await paginationRef.value?.refreshPage()
+  search.value = ''
 }
 
 
@@ -211,6 +212,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
     Alert.success($q, t)
   } catch (error) {
     Alert.warning($q, t);
+    console.log(error)
     loading.value = false;
   }
 
@@ -220,5 +222,4 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
 
 <style lang="scss" scoped>
 @import 'src/css/no-breaks.scss';
-
 </style>
