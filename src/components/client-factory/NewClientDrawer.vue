@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
 import { withDefaults, ref } from 'vue';
 import NewClientFormGroup from 'src/components/form/NewClientFormGroup.vue';
 import { useClient } from 'src/stores/client';
@@ -33,8 +32,6 @@ const hideDrawer = () => {
     emit('hideDrawer')
 }
 
-const $q = useQuasar();
-
 const submitForm = () => {
     if (childFormRef.value) {
         childFormRef.value.validateAndSubmit();
@@ -47,53 +44,38 @@ const onSubmit = async (newClientData: Client | null) => {
     emit('hideDrawer')
     
     if(newClientData) {
-        try {
-            const clientRef = await addNewClient(newClientData)
+        const clientRef = await addNewClient(newClientData)
 
-            if (clientRef) {
-                await addClientFactory({
-                    ...newClientData,
-                    name: newClientData.headName,
-                    isHead: true,
-                    clientID: clientRef.id,
-                    distance: 0,
-                    homepageUrl: newClientData.homePage,
-                    existingOfficeFlag: newClientData.numberOffices ? true : false,
-                    isSignedDispatchContract: newClientData.conclusionDispatchContract,
-                    isSignedReferralContract: newClientData.conclusionReferralContract,
-                    clientFlag: true,
-                    basicInfoChangingFlag: false,
-                    address: newClientData.prefecture + ' ' + newClientData.municipality + ' ' + newClientData.street,
-                    nameContact: newClientData.headName,
-                    telContact: newClientData.tel,
-                    mailContact: newClientData.mail,
-                    numberEmployees: newClientData.numberEmployees,
-                    positionContact: '',
-                    contractInfo: {
-                        contractUnit: newClientData.contractUnit,
-                        industry: newClientData.industry,
-                        contractTel: newClientData.personInChargeTel,
-                        contractFax: newClientData.personInChargeFax,
-                        contractMail: newClientData.personInChargeMail,
-                        contractPerson: newClientData.personInCharge,
-                    },
-                    draft: {}
-                } as ClientFactory)
-            }
+        if (clientRef) {
+            await addClientFactory({
+                ...newClientData,
+                name: newClientData.headName,
+                isHead: true,
+                clientID: clientRef.id,
+                distance: 0,
+                homepageUrl: newClientData.homePage,
+                existingOfficeFlag: newClientData.numberOffices ? true : false,
+                isSignedDispatchContract: newClientData.conclusionDispatchContract,
+                isSignedReferralContract: newClientData.conclusionReferralContract,
+                clientFlag: true,
+                basicInfoChangingFlag: false,
+                address: newClientData.prefecture + ' ' + newClientData.municipality + ' ' + newClientData.street,
+                nameContact: newClientData.headName,
+                telContact: newClientData.tel,
+                mailContact: newClientData.mail,
+                numberEmployees: newClientData.numberEmployees,
+                positionContact: '',
+                contractInfo: {
+                    contractUnit: newClientData.contractUnit,
+                    industry: newClientData.industry,
+                    contractTel: newClientData.personInChargeTel,
+                    contractFax: newClientData.personInChargeFax,
+                    contractMail: newClientData.personInChargeMail,
+                    contractPerson: newClientData.personInCharge,
+                },
 
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: t('success'),
-            });
-        } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
+                draft: {}
+            } as ClientFactory)
         }
     }
 }
