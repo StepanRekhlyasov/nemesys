@@ -74,11 +74,11 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
+                {{ $t('applicant.add.phone')}} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']" pattern="^[a-zA-Z0-9]+$"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['phone']" @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g,'') }" 
+                :rules="phoneRules" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -282,6 +282,13 @@ const applicantForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
+const phoneRules = [
+  (val) => val&&!!val || '',
+  (val) => {
+    const reg = /^[a-zA-Z0-9]+$/
+    return reg.test(val) || ''
+  }
+] 
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
