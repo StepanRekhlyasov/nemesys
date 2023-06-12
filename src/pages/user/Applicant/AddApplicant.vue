@@ -69,15 +69,15 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['apartment']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                 hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.phone') }}
+                {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']"
+                <q-input outlined dense v-model="applicantData['phone']" 
                 :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
@@ -96,7 +96,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                  :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -104,7 +104,8 @@
                 {{ $t('applicant.add.branchIncharge') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm bg-white">
-                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
+                <select-branch :organization-id="organizationStore.currentOrganizationId" 
+                  v-model="applicantData['branchIncharge']" :rules="[(val) => !!val || '']" />
               </div>
             </div>
           </div>
@@ -195,7 +196,8 @@
                 {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
               </div>
               <div class="col-6 q-pl-sm">
-                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
+                :rules="[(val) => !!val || '']" hide-bottom-space >
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
