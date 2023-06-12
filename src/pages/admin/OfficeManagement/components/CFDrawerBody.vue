@@ -28,7 +28,6 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 }
 
 watchEffect(() => {
-    console.log(props.clientFactory.draft)
     mainInfo.value = useHighlightMainInfo(props.clientFactory)
 })
 </script>

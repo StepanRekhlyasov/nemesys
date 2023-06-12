@@ -5,7 +5,7 @@ import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { recursivelyRemoveField, safeGet, arraysAreEqual, deepCopy } from 'src/shared/utils';
+import { recursivelyRemoveField, safeGet, arraysAreEqual } from 'src/shared/utils';
 
 const {updateClientFactory} = useClientFactory()
 const {updateClient} = useClient()

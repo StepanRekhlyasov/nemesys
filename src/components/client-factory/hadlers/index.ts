@@ -46,7 +46,5 @@ export const finishEditing = (
 }
 
 export const mergeWithDraft = (dataToMerge: ClientFactory | ModifiedCF, draft: Partial<ClientFactory>) => {
-  const copyData = deepCopy(dataToMerge)
-
-  return deepMerge(copyData, draft)
+  return deepMerge(dataToMerge, draft)
 }

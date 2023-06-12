@@ -47,7 +47,6 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 watchEffect(() => {
     mainInfo.value = useHighlightMainInfo(props.clientFactory, props.draft)
 })
-
 </script>
 
 <template>

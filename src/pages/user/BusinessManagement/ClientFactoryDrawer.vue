@@ -36,7 +36,6 @@ const saveHandler = async () => {
         draft.value = {} as ClientFactory;
     } else {
         const mergedData = mergeWithDraft(props.selectedItem, draft.value)
-        console.log(mergedData)
         const res = await addModifiedCF(currentOrganizationId, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>)
 
         if(res) {

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { i18n } from 'boot/i18n';
 import { useQuasar } from 'quasar';
 import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, doc, where } from 'firebase/firestore';
 import { ref } from 'vue';
@@ -8,8 +9,12 @@ import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { date } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClientFactory = defineStore('client-factory', () => {
+
+    // translation
+    const { t } = i18n.global
 
     //quasar
     const $q = useQuasar();
@@ -198,20 +203,9 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'Success',
-            });
-
+            Alert.success($q, t)
         } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
+            Alert.warning($q, t)
 
             console.log(e)
         }
@@ -226,21 +220,11 @@ export const useClientFactory = defineStore('client-factory', () => {
                 created_at: Timestamp.fromDate(new Date(modifiedClientFactory.created_at))
             })
 
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'CF was modified',
-            })
+            Alert.success($q, t)
 
             return res.id
         } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
+            Alert.warning($q, t)
 
             console.log(e)
         }
@@ -254,19 +238,9 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp(),
             })
 
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'CF was updated',
-            });
+            Alert.success($q, t)
         } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
+            Alert.warning($q, t)
 
             console.log(e)
         }
@@ -294,7 +268,11 @@ export const useClientFactory = defineStore('client-factory', () => {
                 })
             }
 
+            Alert.success($q, t)
+
         } catch(e) {
+            Alert.warning($q, t)
+
             console.log(e) 
         }
 
@@ -309,19 +287,9 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             }, {merge: true});
 
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'CF was updated',
-            });
+             Alert.success($q, t)
         } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
+            Alert.warning($q, t)
 
             console.log(e)
         }
@@ -347,7 +315,11 @@ export const useClientFactory = defineStore('client-factory', () => {
                 } as ClientFactory
             })
 
+            Alert.success($q, t)
+
         } catch(e) {
+            Alert.warning($q, t)
+
             console.log(e)
         }
 
