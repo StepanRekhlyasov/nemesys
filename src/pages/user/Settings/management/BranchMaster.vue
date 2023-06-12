@@ -105,6 +105,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
 import { flagOptions } from 'src/components/handlers/flagOptions';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
+import { useBranch } from 'src/stores/branch';
 export default {
   name: 'branchMaster',
   components: {
@@ -186,6 +187,7 @@ export default {
       }])
 
     const organization = useOrganization()
+    const branchStore = useBranch()
 
     watch(() => organization.currentOrganizationId, () => {
       loadBranchesList()
@@ -197,7 +199,7 @@ export default {
       editBranch.value = undefined;
       try {
         if (organization.currentOrganizationId) {
-          branches.value = Object.values(await organization.getBranches(db, organization.currentOrganizationId, search.value)).reduce((prev, curr) => {
+          branches.value = Object.values(await branchStore.getBranches(db, organization.currentOrganizationId, search.value)).reduce((prev, curr) => {
             return prev.concat(curr)
           }, [])
         }
@@ -231,7 +233,7 @@ export default {
         }).onOk(async () => {
           try {
             loading.value = true;
-            await organization.editBranch(db, { deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
+            await branchStore.editBranch(db, { deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
             loadBranchesList();
             Alert.success($q, t)
           } catch (e) {

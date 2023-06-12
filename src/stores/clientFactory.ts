@@ -1,13 +1,23 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, setDoc, doc, where } from 'firebase/firestore';
+import { i18n } from 'boot/i18n';
+import { useQuasar } from 'quasar';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, doc, where } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { date } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClientFactory = defineStore('client-factory', () => {
+
+    // translation
+    const { t } = i18n.global
+
+    //quasar
+    const $q = useQuasar();
 
     // db
     const db = getFirestore();
@@ -159,8 +169,17 @@ export const useClientFactory = defineStore('client-factory', () => {
                             created_at: date.formatDate(clientFactoryData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                             client } as ClientFactory;
                             
-                        clientFactory.reflectLog = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
-                        clientFactory.importLog = await getLastImportLog(clientFactory.clientID, clientFactory.id);
+                        const reflectRes = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
+
+                        if(reflectRes) {
+                            clientFactory.reflectLog = reflectRes
+                        }
+
+                        const importRes = await getLastImportLog(clientFactory.clientID, clientFactory.id);
+
+                        if(importRes) {
+                            clientFactory.importLog = importRes
+                        }
 
                         newClientFactories.push(clientFactory);
                     });
@@ -184,9 +203,80 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
+            Alert.success($q, t)
         } catch(e) {
+            Alert.warning($q, t)
+
             console.log(e)
         }
+    }
+
+    const addModifiedCF = async (organizationId: string, modifiedClientFactory: ClientFactory) => {
+        try {
+            const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
+                ...modifiedClientFactory,
+                organizationId: organizationId,
+                updated_at: serverTimestamp(),
+                created_at: Timestamp.fromDate(new Date(modifiedClientFactory.created_at))
+            })
+
+            Alert.success($q, t)
+
+            return res.id
+        } catch(e) {
+            Alert.warning($q, t)
+
+            console.log(e)
+        }
+    }
+
+    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
+        try {
+            await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), {
+                ...modifiedCF,
+                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)),
+                updated_at: serverTimestamp(),
+            })
+
+            Alert.success($q, t)
+        } catch(e) {
+            Alert.warning($q, t)
+
+            console.log(e)
+        }
+    }
+
+    const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory) => {
+        let modifiedCF: ModifiedCF | undefined
+
+        try {
+            const foundModifiedCF = await getDocs(query(
+                collection(db, 'clients', originalClientFactory.clientID, 'client-factory', originalClientFactory.id, 'modifiedCF'),
+                where('organizationId', '==', organizationId)
+            ))
+
+            if(!foundModifiedCF.empty) {
+                foundModifiedCF.forEach((doc) => {
+                    const docData = doc.data()
+
+                    modifiedCF = {
+                        ...docData,
+                        id: doc.id,
+                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                    } as ModifiedCF
+                })
+            }
+
+            Alert.success($q, t)
+
+        } catch(e) {
+            Alert.warning($q, t)
+
+            console.log(e) 
+        }
+
+        return modifiedCF
     }
 
     const updateClientFactory = async(updatedClientFactory: Omit<ClientFactory, 'created_at'>) => {
@@ -197,7 +287,10 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             }, {merge: true});
 
+             Alert.success($q, t)
         } catch(e) {
+            Alert.warning($q, t)
+
             console.log(e)
         }
     }
@@ -222,7 +315,11 @@ export const useClientFactory = defineStore('client-factory', () => {
                 } as ClientFactory
             })
 
+            Alert.success($q, t)
+
         } catch(e) {
+            Alert.warning($q, t)
+
             console.log(e)
         }
 
@@ -236,6 +333,9 @@ export const useClientFactory = defineStore('client-factory', () => {
         getAllReflectLogs,
         addClientFactory,
         updateClientFactory,
-        getHeadClientFactory
+        getHeadClientFactory,
+        addModifiedCF,
+        getModifiedCF,
+        updateModifiedCF
     }
 })

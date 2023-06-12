@@ -131,6 +131,7 @@ import { useUserStore } from 'src/stores/user';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { PaginationExposedMethods } from 'src/components/pagination/types';
 import { ResponsibleMasterColumns as columns, sortable } from './consts/ResponsibleMasterColumns'
+import { useBranch } from 'src/stores/branch';
 
 const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
@@ -141,6 +142,7 @@ const roles = ref({})
 const branches = ref({})
 const loading = ref(false)
 const organization = useOrganization()
+const branchStore = useBranch()
 const usersListData: Ref<User[]> = ref([]);
 const copyUsersListData: Ref<User[]> = ref([]);
 const isAdmin = route.meta.isAdmin
@@ -166,7 +168,7 @@ onBeforeMount(async () => {
   visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
   rolesData.value = await getRoles(db)
   if (!isAdmin) {
-    branches.value = await organization.getBranchesInOrganization(organization.currentOrganizationId)
+    branches.value = await branchStore.getBranchesInOrganization(organization.currentOrganizationId)
   }
 })
 
