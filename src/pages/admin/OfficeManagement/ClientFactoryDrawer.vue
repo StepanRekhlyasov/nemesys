@@ -4,13 +4,14 @@ import { defineEmits, defineProps, watch, ref } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
+import { deepCopy } from 'src/shared/utils';
 
 const props = defineProps<{
     isDrawer: boolean,
     selectedItem: ClientFactory
 }>()
 
-const localData = ref<ClientFactory>(props.selectedItem)
+const localData = ref<ClientFactory>(deepCopy(props.selectedItem))
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
@@ -20,8 +21,9 @@ const hideDrawer = () => {
     emit('hideDrawer')
 }
 
-watch([() => props.selectedItem], async (newProps, oldProps) => {
+watch([() => props.selectedItem], (newProps, oldProps) => {
     if (oldProps) {
+        localData.value = deepCopy(props.selectedItem)
         localData.value.draft = props.selectedItem.draft ?? {}
     }
 }, { immediate: true });
