@@ -180,7 +180,7 @@ export default {
         addOrganization: 'Add organization',
         organizationCode: 'Organization code',
         staffName: 'Staff name',
-        onlyUppercase: 'Only the uppercase alphabet is allowed',
+        onlyUppercase: 'Only the upper case, lower case, ! ? # $ % & and numbers is allowed',
         codeMustBeUnique: 'Code must be unique',
         codeNotUnique: 'Found several organizations with the same code. Code must be unique'
       },
@@ -293,7 +293,7 @@ export default {
       name: 'Name',
       branch_name: 'Branch Name',
       company_name: 'User Company Name',
-      passworld: 'passworld',
+      organizationName: 'Organization name',
       role: 'Role',
       infoEditUser: 'Email addresses and user companies cannot be permanently changed',
       infoContact: 'If you wish to change your roll or login password, please contact your team administrator.',

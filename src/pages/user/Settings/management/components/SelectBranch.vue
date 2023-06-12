@@ -7,10 +7,10 @@
 import { QSelectProps, ValidationRule } from 'quasar';
 import { selectOptions } from 'src/shared/model';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
-import { useOrganization } from 'src/stores/organization';
+import { useBranch } from 'src/stores/branch';
 import { onMounted, ref, watch } from 'vue';
 
-const organization = useOrganization()
+const branchStore = useBranch()
 
 interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
   organizationId: string,
@@ -20,14 +20,14 @@ const loading = ref(true)
 const branches = ref<selectOptions[]>([])
 const modelValue = ref('')
 onMounted(async () => {
-  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(props.organizationId))
+  branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(props.organizationId))
   loading.value = false
 })
 
 const props = defineProps<SelectBranchProps>()
 watch(()=>props.organizationId, async (newValue)=>{
   loading.value = true
-  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(newValue))
+  branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(newValue))
   loading.value = false
 })
 </script>

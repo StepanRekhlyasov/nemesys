@@ -1,6 +1,6 @@
 <template>
-  <div class="row q-pb-sm">
-    <div class="col-3 text-right center q-mr-md" v-bind="$attrs">
+  <div class="container q-pt-md">
+    <div class="text q-pr-md">
       {{ $t(textKey) }}
     </div>
     <slot>
@@ -22,8 +22,14 @@ defineProps<InputWarapperProps>()
 </script>
 
 <style lang="scss" scoped>
-.center {
-  align-self: center;
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.text {
+  min-width: 120px;
+  text-align: right;
 }
 </style>
 

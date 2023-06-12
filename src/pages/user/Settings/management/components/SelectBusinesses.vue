@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { getFirestore } from '@firebase/firestore';
 import { Business } from 'src/shared/model';
+import { useBusiness } from 'src/stores/business';
 import { useOrganization } from 'src/stores/organization';
 import { onMounted, ref } from 'vue';
 
@@ -20,6 +21,7 @@ const props = defineProps<SelectBusinessesProps>()
 
 const businesses = ref<BusinessType[]>([])
 const organization = useOrganization()
+const business = useBusiness()
 const db = getFirestore();
 const model = ref<BusinessType>()
 const loading = ref(true)
@@ -40,7 +42,7 @@ function toBusinessType(b: { [id: string]: Business }): BusinessType[] {
 const emit = defineEmits<{ (e: 'onBusinessChange', id: string) }>()
 
 onMounted(async () => {
-  const businessesArr = toBusinessType(await organization.getBusinesses(db, currentOrganizationId))
+  const businessesArr = toBusinessType(await business.getBusinesses(db, currentOrganizationId))
   if (!businessesArr || !businessesArr.length) {
     return
   }
