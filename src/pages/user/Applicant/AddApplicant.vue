@@ -77,7 +77,7 @@
                 {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']" 
+                <q-input outlined dense v-model="applicantData['phone']" pattern="^[a-zA-Z0-9]+$"
                 :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
