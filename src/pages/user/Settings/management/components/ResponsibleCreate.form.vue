@@ -1,28 +1,28 @@
 <template>
-  <DialogWrapper width="420px">
+  <DialogWrapper width="475px">
     <q-form @submit="addAccaunt">
-      <PageHeader :separator="false" :color="color">
-        <q-card-section>
+      <div class="q-mt-sm">
+        <PageHeader :separator="false" :color="color" class="q-pb-none">
           {{ $t('settings.users.addUser') }}
-        </q-card-section>
-      </PageHeader>
+        </PageHeader>
+      </div>
 
-      <q-card-section>
+      <q-card-section class="q-pt-none">
 
-        <InputWrapper :text-key="'settings.users.email'" style=" white-space: nowrap">
+        <InputWrapper :text-key="'settings.users.email'">
           <q-input v-model="accountData['email']" name="email" :disable="loading" outlined dense :color="color"
-            :rules="[creationRule]" type="email" />
+            :rules="[creationRule]" type="email" hide-bottom-space />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.name'">
-          <q-input v-model="accountData['name']" name="name" :disable="loading" outlined dense
-            :color="color" :rules="[creationRule]" />
+          <q-input v-model="accountData['name']" name="name" :disable="loading" outlined dense :color="color"
+            :rules="[creationRule]" hide-bottom-space />
         </InputWrapper>
 
-        <InputWrapper :text-key="'settings.users.passworld'">
-          <q-input v-model="accountData['passworld']" name="password" :disable="loading" outlined
-            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color" hide-bottom-space
-            type="password" />
+        <InputWrapper :text-key="'settings.users.password'">
+          <q-input v-model="accountData['password']" name="password" :disable="loading" outlined
+            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color" type="password"
+            hide-bottom-space />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.role'">
@@ -35,7 +35,7 @@
           <SelectBranch :color="color" :rules="[creationRule]" :organization-id="organization.currentOrganizationId"
             bg-color="white" @update:model-value="(id: string) => {
                 accountData['branch_id'] = id
-              }" />
+              }" hide-bottom-space />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.branch.hiddenFlag'">
@@ -126,7 +126,7 @@ export default {
           {
             userId: auth.currentUser?.uid, //userId of user who is creating new user
             name: data['name'], // name for new user
-            password: data['passworld'], // password for new user
+            password: data['password'], // password for new user
             email: data['email'], // email address for new user
             branch: isAdminRole() ? undefined : data['branch_id'], // optional at present
             role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
