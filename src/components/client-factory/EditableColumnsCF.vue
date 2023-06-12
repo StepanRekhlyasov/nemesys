@@ -7,6 +7,7 @@ import ContractUnit from '../form/ContractUnit.vue';
 import ClientType from '../form/clientForms/ClientType.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
+import { deepCopy } from 'src/shared/utils';
 const { t } = useI18n({ useScope: 'global' });
 
 enum InputType {
@@ -36,7 +37,7 @@ const props = withDefaults(defineProps<{
     theme: 'primary'
 })
 
-const newData = ref(props.data)
+const newData = ref(deepCopy(props.data))
 
 const municipalities = ref<string[]>([])
 const fetchMunicipalities = ref(false)
