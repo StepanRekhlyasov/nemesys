@@ -1028,6 +1028,7 @@ export default {
       pastInterviews: '過去面談歴',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: '経験',
+      yearsOfTotalExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',

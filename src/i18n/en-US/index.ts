@@ -1032,6 +1032,7 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
+      yearsOfTotalExperience: 'Years of total experience',
 
       // Operation Info Component
       placeOperation: 'Place of operation',
