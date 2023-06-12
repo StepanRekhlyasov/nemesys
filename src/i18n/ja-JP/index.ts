@@ -291,7 +291,6 @@ export default {
       password: 'パスワード',
       person_name: '担当者名',
       name: '氏名',
-      passworld: 'パスワード',
       branch_name: '所属支店',
       company_name: 'ユーザー企業名',
       deleteAccaunt: 'アカウント削除',
