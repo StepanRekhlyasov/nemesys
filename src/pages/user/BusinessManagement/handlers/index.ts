@@ -2,8 +2,8 @@ import { i18n } from 'boot/i18n';
 import { computed } from 'vue'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model'
 import { ClientFactoryTableRow } from 'src/components/client-factory/types'
-import { safeGet, arraysAreEqual } from 'src/shared/utils'
-import { RenderMainInfo } from '../types'
+import { safeGet, arraysAreEqual, deepCopy } from 'src/shared/utils'
+import { RenderMainInfo } from '../types';
 
 const { t } = i18n.global
 
@@ -25,51 +25,8 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
     })
 }
 
-export const finishEditing = (
-  changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
-  draft: Partial<ClientFactory>,
-  clientFactory: ClientFactory,
-) => {
-  changedData.forEach(({key, value}) => {
-    const keys = key.split('.'); 
-    let nestedObj = draft;
-    let nestedOriginalObj = clientFactory;
-    for (let i = 0; i < keys.length; i++) {
-      const currentKey = keys[i];
-      if (!nestedOriginalObj || typeof nestedOriginalObj !== 'object') {
-        throw new Error(`clientFactory does not contain the key: ${currentKey}`);
-      }
-      if (i === keys.length - 1) {
-        // Check if both values are arrays
-        if (Array.isArray(nestedOriginalObj[currentKey]) && Array.isArray(value)) {
-          // Use arraysAreEqual function to compare
-          if (arraysAreEqual(nestedOriginalObj[currentKey], value)) {
-            if (nestedObj.hasOwnProperty(currentKey)) {
-              delete nestedObj[currentKey];
-            }
-          } else {
-            nestedObj[currentKey] = value;
-          }
-        } else {
-          if (nestedOriginalObj[currentKey] === value) {
-            if (nestedObj.hasOwnProperty(currentKey)) {
-              delete nestedObj[currentKey];
-            }
-          } else {
-            nestedObj[currentKey] = value;
-          }
-        }
-      } else {
-        nestedOriginalObj = nestedOriginalObj[currentKey];
-        nestedObj[currentKey] = nestedObj[currentKey] || {};
-        nestedObj = nestedObj[currentKey];
-      }
-    }
-  });
-}
-
 export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draft: Partial<ClientFactory>): RenderMainInfo => {
-  const clientFactory = JSON.parse(JSON.stringify(traceableClientFactory));
+  const clientFactory = deepCopy(traceableClientFactory) as ClientFactory;
   const mainInfo = {} as RenderMainInfo
 
   mainInfo.officeInfo = computed(() => {

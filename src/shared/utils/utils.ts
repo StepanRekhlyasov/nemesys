@@ -21,6 +21,15 @@ export function sortOrganization (a: string, b: string){
   return firstOrganizationName.localeCompare(secondOrganizationName)
 }
 
+export function serializeTimestamp(obj: object) {
+  for (const key in obj) {
+    const val = obj[key]
+    if (val.hasOwnProperty?.('seconds') && val.hasOwnProperty?.('nanoseconds')) {
+      obj[key] =  new Timestamp(val.seconds, val.nanoseconds)
+    }
+  }
+}
+
 export function cloneToRaw<T>(obj: T) {
   return JSON.parse(JSON.stringify(toRaw(obj)))
 }
