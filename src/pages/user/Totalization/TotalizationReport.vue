@@ -47,12 +47,14 @@ import ApplicantReport from '../../../components/report/ApplicantReport/Applican
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 import {graphType} from 'src/components/report/Models'
+import { useBranch } from 'src/stores/branch';
 const UserStore = useUserStore();
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type:Ref<graphType> = ref('BasedOnLeftMostItemDate');
 const branch_input: Ref<string> = ref('');
 const branchs: Ref<string[]> = ref([]);
 const organizationStore = useOrganization()
+const branchStore = useBranch()
 const {currentOrganizationId} = storeToRefs(organizationStore)
 const branch_user_list: Ref<{ id: string; name: string }[]> = ref([]);
 const model_report: Ref<{ label: string; value: number }> = ref({
@@ -101,7 +103,7 @@ watch(branch_input, async () => {
 });
 
 onMounted(async () => {
-  branchs.value = Object.keys(await organizationStore.getBranchesInOrganization(currentOrganizationId.value))
+  branchs.value = Object.keys(await branchStore.getBranchesInOrganization(currentOrganizationId.value))
 });
 </script>
 
