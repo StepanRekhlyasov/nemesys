@@ -2,7 +2,7 @@ import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDoc,
 import { defineStore } from 'pinia';
 import { Branch, branchFlags, Business, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { BranchesSearch } from 'src/shared/utils/User.utils';
-import { ConstraintsType, toDateObject } from 'src/shared/utils/utils';
+import { ConstraintsType, serializeTimestamp, toDateObject } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
 import { i18n } from 'boot/i18n';
 import { getUsersByPermission } from 'src/shared/utils/User.utils';
@@ -42,7 +42,7 @@ export const useOrganization = defineStore('organization', () => {
   },
     { deep: true }
   )
-  watch(()=>currentOrganizationId.value, async () => {
+  watch(() => currentOrganizationId.value, async () => {
     state.value.currentOrganizationBranches = await getCurrentOrganizationBranches()
     state.value.currentOrganizationUsers = await getCurrentUsersInChrage()
   })
@@ -119,12 +119,12 @@ export const useOrganization = defineStore('organization', () => {
     return branches
   }
 
-  async function getCurrentUsersInChrage () {
+  async function getCurrentUsersInChrage() {
     const organization = useOrganization()
     const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
     const querySnapshot = await usersSnapshot
     const users: { [id: string]: User; } = {}
-    if(querySnapshot){
+    if (querySnapshot) {
       querySnapshot.forEach((doc) => {
         users[doc.id] = doc.data() as User
       })
@@ -197,8 +197,9 @@ export const useOrganization = defineStore('organization', () => {
     return branchesObj
   }
 
-  async function editOrganization(db: Firestore, organization: PartialWithFieldValue<Organization>, organizationId: string) {
+  async function editOrganization(db: Firestore, organization: Partial<Organization>, organizationId: string) {
     const ref = doc(db, 'organization/' + organizationId)
+    serializeTimestamp(organization)
     await updateDoc(ref, {
       ...organization
     })
@@ -206,6 +207,7 @@ export const useOrganization = defineStore('organization', () => {
 
   async function editBusiness(db: Firestore, business: PartialWithFieldValue<Business>, organizationId: string, businessId: string) {
     const ref = doc(db, `organization/${organizationId}/businesses/${businessId}`)
+    serializeTimestamp(business)
     await updateDoc(ref, {
       ...business
     })
@@ -213,6 +215,7 @@ export const useOrganization = defineStore('organization', () => {
 
   async function editBranch(db: Firestore, branch: PartialWithFieldValue<Branch>, organizationId: string, businessId: string, branchId: string) {
     const ref = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`)
+    serializeTimestamp(branch)
     await updateDoc(ref, {
       ...branch
     })
