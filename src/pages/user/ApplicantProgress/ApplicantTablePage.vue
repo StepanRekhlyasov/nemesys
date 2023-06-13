@@ -68,9 +68,9 @@
           :isAdmin="false"
           ref="paginationRef"
           :pagination="pagination"
-          @on-loading-state-change="(v) => loading = v"
-          @on-data-update="async (newData) => {
-            applicantsForTable = newData as Applicant[]
+          @on-loading-state-change="(v : boolean) => loading = v"
+          @on-data-update="async (newData : Applicant[]) => {
+            applicantsForTable = newData
           }"
         />
       </q-scroll-area>
