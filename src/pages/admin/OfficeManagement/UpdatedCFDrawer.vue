@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
+// import { useI18n } from 'vue-i18n';
 import { defineProps, defineEmits } from 'vue';
 import UpdatedCFDrawerTitle from './components/UpdatedCFDrawerTitle.vue'
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
-const { t } = useI18n({ useScope: 'global' });
+// const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
     isDrawer: boolean,
