@@ -3,17 +3,11 @@ import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Account.model';
 import { branchFlags } from '../model/Branch.model';
-import { itemFlags } from '../model/system';
-import { ConstraintsType, itemCollection } from './utils';
+import { ConstraintsType } from './utils';
 
 export interface BranchesSearch {
   queryText?: string;
   flag?: branchFlags;
-}
-
-export interface ItemsSearch {
-  queryText?: string;
-  flag?: itemFlags;
 }
 
 export const isPermission = (permissions: UserPermissionNames[], permission: UserPermissionNames) => permissions?.includes(permission);
@@ -90,14 +84,4 @@ export const getUsersByPermission = async (db: Firestore, permission: UserPermis
 
 }
 
-export const getItem = (db: Firestore, active_organization_id: string, search?: ItemsSearch) => {
-  return getDocs(query(
-    itemCollection(db, active_organization_id),
-    where('deleted', '==', false),
-    orderBy('name'),
-    search?.flag !== itemFlags.All && search?.flag ? where('flag', 'array-contains', search.flag) : where('flag', 'in', ['valid', '']),
-    startAt(search?.queryText || ''),
-    endAt(search?.queryText + '\uf8ff')
-  ))
-}
 
