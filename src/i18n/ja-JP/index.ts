@@ -147,7 +147,7 @@ export default {
     addNewClient: '新しくクライアントを追加したい場合はこちら',
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
-    KPI: '営業活動集計',
+    SAA: '営業活動集計',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -1659,7 +1659,7 @@ export default {
     showList: 'リストを表示する',
     waitList: 'リスト'
   },
-  kpi: {
+  SAA: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     jobs: '職見数',

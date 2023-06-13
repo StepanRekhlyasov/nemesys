@@ -20,7 +20,7 @@
 </template>
 <script setup lang="ts">
 import { QTableProps, exportFile, useQuasar } from 'quasar';
-import { kpiTableColumns as columns } from '../const/kpi.const'
+import { kpiTableColumns as columns } from '../const/saa.const'
 import { Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';

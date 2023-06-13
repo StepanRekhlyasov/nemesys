@@ -1,11 +1,11 @@
 <template>
   <q-page class="bg-grey-3">
    <q-card-section class="bg-grey-3 flex items-center q-pb-none">
-      <div class="text-h6 text-primary"><span style="font-size:28px;">■</span>{{ $t('menu.KPI') }}</div>
+      <div class="text-h6 text-primary"><span style="font-size:28px;">■</span>{{ $t('menu.SAA') }}</div>
     </q-card-section>
     <q-card-section class="bg-grey-3 flex items-end">
       <label class="text-subtitle1 q-mr-md">
-        {{ $t('kpi.mode') }}
+        {{ $t('SAA.mode') }}
         <MySelect
           :options="[
             {
@@ -24,7 +24,7 @@
         />
       </label>
       <label class="text-subtitle1 q-mr-md">
-        {{ $t('kpi.targetPeriod') }}
+        {{ $t('SAA.targetPeriod') }}
         <DateRange
           v-model="dateRange"
           :width="'250px'"
@@ -42,7 +42,7 @@
         />
       </label>
       <label class="text-subtitle1">
-        {{ $t('kpi.username') }}
+        {{ $t('SAA.username') }}
         <MySelect
           :option-to-fetch="'usersInCharge'"
           :width="'175px'"
@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import DateRange from 'src/components/inputs/DateRange.vue';
-import KpiTable from './components/KpiTable.vue';
+import KpiTable from './components/SAATable.vue';
 import { ref, onMounted, watch } from 'vue'
 import { useOrganization } from 'src/stores/organization';
 import { Applicant, User } from 'src/shared/model';
