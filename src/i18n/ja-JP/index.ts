@@ -87,7 +87,8 @@ export default {
       '11' : '11月',
       '12' : '12月',
     },
-    more: 'もっと'
+    more: 'もっと',
+    downloadCSV: 'CSVダウンロード'
   },
   smoking: {
     no: '無',
@@ -146,6 +147,7 @@ export default {
     addNewClient: '新しくクライアントを追加したい場合はこちら',
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
+    KPI: 'KPI',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -180,7 +182,7 @@ export default {
         addOrganization: '企業新規追加',
         organizationCode: '企業コード',
         staffName: 'スタッフ名',
-        onlyUppercase: '大文字のアルファベットのみが許可されています。',
+        onlyUppercase: '大文字、小文字、記号（! ? # $ % &）、数字のみ使用できます。',
         codeMustBeUnique: 'コードはユニークである必要があります。',
         codeNotUnique: '同じコードを持つ組織を複数が見つかりました。コードはユニークである必要があります。'
       },
@@ -291,9 +293,9 @@ export default {
       password: 'パスワード',
       person_name: '担当者名',
       name: '氏名',
-      passworld: 'パスワード',
       branch_name: '所属支店',
-      company_name: 'ユーザー企業名',
+      availableSlots: '使用可能ライセンス数',
+      organizationName: '企業名',
       deleteAccaunt: 'アカウント削除',
       role: 'ロール',
       infoEditUser: 'メールアドレス・ユーザー企業は永久に変更できません',
@@ -1027,8 +1029,9 @@ export default {
       employmentType: '雇用形態',
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
-      deletedInfo: 'All data related to this experience will be deleted.',
+      deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
       totalYearsExperience: '経験',
+      yearsOfTotalExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',
@@ -1663,5 +1666,19 @@ export default {
     showWhiteboard: 'ホワイトボードを表示する',
     showList: 'リストを表示する',
     waitList: 'リスト'
+  },
+  kpi: {
+    targetPeriod: '対象期間',
+    numberOfFix: 'FIX数',
+    jobs: '職見数',
+    innerConstant: '内定数',
+    entry: '入職数',
+    numberOfCalls: '架電数',
+    numberOfFax: 'FAX数',
+    dispatch: '派遣',
+    introduction: '紹介',
+    occupationRate: '職見率',
+    jobOfferRate: '内定率',
+    hiringRate: '入職率'
   }
 };

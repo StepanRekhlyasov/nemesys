@@ -87,7 +87,8 @@ export default {
       '11' : 'November',
       '12' : 'December',
     },
-    more: 'More'
+    more: 'More',
+    downloadCSV: 'Download CSV'
   },
   smoking: {
     no: 'No',
@@ -146,6 +147,7 @@ export default {
     addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
+    KPI: 'KPI',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -180,7 +182,7 @@ export default {
         addOrganization: 'Add organization',
         organizationCode: 'Organization code',
         staffName: 'Staff name',
-        onlyUppercase: 'Only the uppercase alphabet is allowed',
+        onlyUppercase: 'Only the upper case, lower case, ! ? # $ % & and numbers is allowed',
         codeMustBeUnique: 'Code must be unique',
         codeNotUnique: 'Found several organizations with the same code. Code must be unique'
       },
@@ -286,14 +288,15 @@ export default {
     users: {
       contactPersonName: 'Add new contact person',
       addUser: 'Add new user',
-      fio: 'FIO',
+      fio: 'Full name',
       email: 'Email',
       password: 'Password',
       person_name: "Contact Person's Name",
       name: 'Name',
       branch_name: 'Branch Name',
+      availableSlots: 'Available slots',
       company_name: 'User Company Name',
-      passworld: 'passworld',
+      organizationName: 'Organization name',
       role: 'Role',
       infoEditUser: 'Email addresses and user companies cannot be permanently changed',
       infoContact: 'If you wish to change your roll or login password, please contact your team administrator.',
@@ -1032,6 +1035,7 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
+      yearsOfTotalExperience: 'Years of total experience',
 
       // Operation Info Component
       placeOperation: 'Place of operation',
@@ -1669,5 +1673,19 @@ export default {
     showWhiteboard: 'Show whiteboard',
     showList: 'Show list',
     waitList: ' waiting list'
+  },
+  kpi: {
+    targetPeriod: 'Target period',
+    numberOfFix: '№ of FIX',
+    jobs: 'Jobs',
+    innerConstant: 'Inner constant',
+    entry: 'Entry',
+    numberOfCalls: '№ of Calls',
+    numberOfFax: '№ of FAX',
+    dispatch: 'Dispatch',
+    introduction: 'Introduction',
+    occupationRate: 'Occupation rate',
+    jobOfferRate: 'Job offer rate',
+    hiringRate: 'Hiring rate'
   }
 }

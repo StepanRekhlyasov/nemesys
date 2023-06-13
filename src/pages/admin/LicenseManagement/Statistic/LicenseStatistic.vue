@@ -44,6 +44,8 @@ import { toTable } from 'src/components/organization/handlers/ToTable'
 import { Branch } from 'src/shared/model';
 import { useLicense } from 'src/stores/license';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useBranch } from 'src/stores/branch';
+import { useBusiness } from 'src/stores/business';
 
 const $q = useQuasar()
 const { t } = useI18n({ useScope: 'global' });
@@ -54,7 +56,9 @@ const loading = ref(true)
 const db = getFirestore()
 const organization = useOrganization()
 const licenceStore = useLicense()
-/* TODO Alert */
+const branchStore = useBranch()
+const business = useBusiness()
+
 async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
 
@@ -96,8 +100,8 @@ async function loadCurrentData() {
   const organizationIds = await organization.getAllOrganizationsIds(db)
   const dataArray = await Promise.all(organizationIds.map(async (id) => {
     return Promise.all([
-      organization.getBusinesses(db, id),
-      organization.getBranchesInOrganization(id),
+      business.getBusinesses(db, id),
+      branchStore.getBranchesInOrganization(id),
       organization.getDataById([id], 'Organization')
     ])
   }))

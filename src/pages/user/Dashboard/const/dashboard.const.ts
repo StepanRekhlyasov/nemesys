@@ -51,10 +51,10 @@ export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() 
       sortable: true
     },
     {
-      name: 'name',
-      field: 'name',
-      label: t('applicant.progress.table.fullName'),
-      align: 'center',
+      name: 'occupation',
+      field: 'occupation',
+      label: t('applicant.add.occupation'),
+      align: 'left',
       sortable: true
     },
     {
@@ -65,9 +65,9 @@ export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() 
       sortable: true
     },
     {
-      name: 'kanaName',
-      field: 'kanaName',
-      label: t('applicant.add.kanaName'),
+      name: 'name',
+      field: 'name',
+      label: t('applicant.progress.table.fullName'),
       align: 'center',
       sortable: true
     },

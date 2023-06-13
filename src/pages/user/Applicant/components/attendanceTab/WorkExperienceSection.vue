@@ -88,7 +88,10 @@
       <div class="row q-pa-sm"></div>
 
       <div class="row q-pb-sm">
-        <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
+        <div class="col-2 flex justify-between items-center q-pl-md text-right text-blue text-weight-regular self-center">
+          <div class="text-blue text-weight-regular self-center text-subtitle1 ">
+            [{{ $t('applicant.attendant.experienceDetails') }}]
+          </div>
           {{ $t('applicant.attendant.totalYearsExperience') }}
         </div>
         <div class="col-4 q-pl-md blue self-center">

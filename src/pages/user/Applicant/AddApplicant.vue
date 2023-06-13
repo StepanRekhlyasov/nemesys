@@ -5,7 +5,7 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData" greedy>
         <div class="row">
           <div class="col-6">
             <div class="row">
@@ -68,17 +68,16 @@
                 {{ $t('applicant.add.apartment') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['apartment']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['apartment']" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.phone') }}
+                {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['phone']" @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g,'') }" 
+                :rules="phoneRules" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -96,7 +95,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                  :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -104,7 +103,14 @@
                 {{ $t('applicant.add.branchIncharge') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm bg-white">
-                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
+                <select-branch 
+                  :organization-id="organizationStore.currentOrganizationId" 
+                  v-model="applicantData['branchIncharge']" 
+                  :rules="[(val) => !!val || '']" 
+                  hide-bottom-space
+                  @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
+                  @on-end-loading="disableSubmit = false"
+                />
               </div>
             </div>
           </div>
@@ -195,7 +201,8 @@
                 {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
               </div>
               <div class="col-6 q-pl-sm">
-                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
+                :rules="[(val) => !!val || '']" hide-bottom-space >
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -244,7 +251,7 @@
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
+          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
@@ -268,6 +275,8 @@ import { requiredFields } from 'src/shared/constants/Applicant.const';
 const applicantDataSample = {
   qualification: [],
   status: ApplicantStatus.UNSUPPORTED,
+  lon: 0,
+  lat: 0
 };
 const organizationStore = useOrganization()
 const applicantStore = useApplicant()
@@ -275,11 +284,18 @@ const applicantStore = useApplicant()
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList);
 const statusOption = ref(statusList);
-
+const disableSubmit = ref(false)
 const applicantForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
+const phoneRules = [
+  (val) => val&&!!val || '',
+  (val) => {
+    const reg = /^[a-zA-Z0-9]+$/
+    return reg.test(val) || ''
+  }
+] 
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
