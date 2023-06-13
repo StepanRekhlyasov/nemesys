@@ -294,6 +294,7 @@ export default {
       person_name: '担当者名',
       name: '氏名',
       branch_name: '所属支店',
+      availableSlots: '使用可能ライセンス数',
       organizationName: '企業名',
       deleteAccaunt: 'アカウント削除',
       role: 'ロール',
