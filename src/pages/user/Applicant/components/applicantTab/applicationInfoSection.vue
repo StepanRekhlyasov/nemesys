@@ -156,7 +156,7 @@
       </div>
       <div class="col-9 q-pl-md">
         <hidden-text v-if="!edit" :value="applicant.address" />
-        <q-input v-if="edit" outlined dense v-model="data['addres']" />
+        <q-input v-if="edit" outlined dense v-model="data['address']" />
       </div>
     </div>
   </DropDownEditGroup>
