@@ -294,6 +294,7 @@ export default {
       person_name: "Contact Person's Name",
       name: 'Name',
       branch_name: 'Branch Name',
+      availableSlots: 'Available slots',
       company_name: 'User Company Name',
       organizationName: 'Organization name',
       role: 'Role',
