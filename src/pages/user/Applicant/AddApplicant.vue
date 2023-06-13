@@ -270,6 +270,8 @@ import { requiredFields } from 'src/shared/constants/Applicant.const';
 const applicantDataSample = {
   qualification: [],
   status: ApplicantStatus.UNSUPPORTED,
+  lon: 0,
+  lat: 0
 };
 const organizationStore = useOrganization()
 const applicantStore = useApplicant()
