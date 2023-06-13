@@ -26,7 +26,7 @@
               </div>
               <div class="col-3">
                 <span class="row">{{ selectedApplicant.prefecture }} {{ selectedApplicant.municipalities }} </span>
-                <span class="row">{{ selectedApplicant.address }} {{ selectedApplicant.apartment }}</span>
+                <span class="row">{{ selectedApplicant.address }} </span>
               </div>
             </div>
             <div class="row">
