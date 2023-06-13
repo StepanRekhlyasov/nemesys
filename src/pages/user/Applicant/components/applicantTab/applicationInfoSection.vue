@@ -67,7 +67,7 @@
         {{ $t('applicant.list.info.gender') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.sex || ''}}</span>
+        <span v-if="!edit">{{ applicant.sex ? $t(`applicant.add.${applicant.sex}`) : ''}}</span>
         <template  v-if="edit" >
           <q-radio v-model="data['sex']" :label="$t('applicant.add.male')" val="male"/>
           <q-radio v-model="data['sex']" :label="$t('applicant.add.female')" val="female"/>
