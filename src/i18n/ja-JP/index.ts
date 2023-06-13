@@ -1457,6 +1457,13 @@ export default {
       morning: '午前',
       afternoon: '午後',
       evening: '夕方',
+      importCandidates: '事業所情報取込候補',
+      lastModifiedDate: '最終変更日時',
+      acquisitionUpdateResults: '取込更新実績',
+      importCreationRecord: '取込作成実績',
+      changeItemClassification: '変更項目分類',
+      ignore: '無視する',
+      updateData: '更新データ',
       details: {
         // Office details
         parentClient: '親クライアント',

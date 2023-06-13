@@ -6,6 +6,7 @@ import { useClient } from 'src/stores/client';
 import {useClientFactory} from 'src/stores/clientFactory'
 import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import Quasar, { useQuasar } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
 const { addNewClient } = useClient()
@@ -23,6 +24,7 @@ withDefaults(
 const childFormRef = ref<{
     validateAndSubmit: () => void
 } | null>(null);
+const $q = useQuasar()
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
@@ -75,7 +77,8 @@ const onSubmit = async (newClientData: Client | null) => {
                 },
 
                 draft: {}
-            } as ClientFactory)
+            } as ClientFactory,
+            $q as unknown as typeof Quasar)
         }
     }
 }

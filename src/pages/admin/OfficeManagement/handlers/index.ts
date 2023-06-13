@@ -1,3 +1,4 @@
+import Quasar from 'quasar';
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 import { RenderOfficeDetails, RenderHeadDetails, RenderMainInfo } from '../types';
@@ -5,7 +6,7 @@ import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { recursivelyRemoveField, safeGet, arraysAreEqual } from 'src/shared/utils';
+import { recursivelyRemoveField, safeGet, arraysAreEqual, deepCopy } from 'src/shared/utils';
 
 const {updateClientFactory} = useClientFactory()
 const {updateClient} = useClient()
@@ -13,9 +14,10 @@ const { t } = i18n.global
 
 export const updateClientFactoryHangler = (
   changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
-  clientFactory: ClientFactory
+  clientFactory: ClientFactory,
+  $q: typeof Quasar
   ) => {
-    const updatedClientFactory = JSON.parse(JSON.stringify(clientFactory));
+    const updatedClientFactory = deepCopy(clientFactory);
 
     changedData.forEach(({key, value}) => {
         const keys = key.split('.'); 
@@ -32,7 +34,7 @@ export const updateClientFactoryHangler = (
     });
 
     recursivelyRemoveField(updatedClientFactory, 'created_at')
-    updateClientFactory(updatedClientFactory);
+    updateClientFactory(updatedClientFactory, $q);
 };
 
 export const updateClientHandler = (
@@ -219,5 +221,15 @@ export const useReflectLogLabels = computed(() => {
     t('clientFactory.drawer.details.executionDateTime'),
     t('clientFactory.drawer.details.update_create'),
     t('clientFactory.drawer.details.captured'),
+  ]
+})
+
+export const useImportCandidatesLabels = computed(() => {
+  return [
+    t('clientFactory.drawer.details.sourceCompany'),
+    t('clientFactory.drawer.lastModifiedDate'),
+    t('clientFactory.drawer.acquisitionUpdateResults'),
+    t('clientFactory.drawer.importCreationRecord'),
+    ''
   ]
 })
