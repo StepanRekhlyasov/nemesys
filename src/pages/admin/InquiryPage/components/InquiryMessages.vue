@@ -14,7 +14,7 @@
         <div class="col-3 text-right ">
           {{ $t('inquiry.detail.replyContent') }}
         </div>
-        <div class="col-8">
+        <div class="col-8" style="word-break:break-all">
           {{ message.content }}
         </div>
       </div>

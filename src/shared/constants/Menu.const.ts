@@ -72,7 +72,7 @@ export const menuParent: MenuParentType[] = [
   },{
     type: MenuParent.TotalizationManagement,
     title: 'menu.totalization',
-    icon: 'mdi-cog',
+    icon: 'mdi-chart-box-plus-outline',
   }
 ]
 
