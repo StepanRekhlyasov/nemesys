@@ -524,16 +524,24 @@ export const useApplicant = defineStore('applicant', () => {
       if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
       if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
 
-      if (applicantData.status){
-        const dateField = getApplicantCurrentStatusTimestampField(applicantData.status)
-        if(state.value.selectedApplicant[dateField] instanceof Timestamp) {
+      /** control current date change */
+      if (state.value.selectedApplicant.status){
+        const dateField = getApplicantCurrentStatusTimestampField(state.value.selectedApplicant.status)
+        if(saveData[dateField] instanceof Timestamp) {
+          saveData.currentStatusTimestamp = saveData[dateField]
+          saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
+          saveData.statusChangeTimestamp[state.value.selectedApplicant.status] = saveData[dateField]
+          state.value.selectedApplicant.currentStatusTimestamp = saveData[dateField]
+          saveData.currentStatusMonth = toMonthYear(saveData[dateField])
+        } else if (state.value.selectedApplicant[dateField] instanceof Timestamp) {
           saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
-          saveData.statusChangeTimestamp = {}
-          saveData.statusChangeTimestamp[dateField] = state.value.selectedApplicant[dateField]
+          saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
+          saveData.statusChangeTimestamp[state.value.selectedApplicant.status] = state.value.selectedApplicant[dateField]
           state.value.selectedApplicant.currentStatusTimestamp = state.value.selectedApplicant[dateField]
           saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
         } else {
           saveData.currentStatusTimestamp = ''
+          saveData.currentStatusMonth = ''
         }
       }
 
