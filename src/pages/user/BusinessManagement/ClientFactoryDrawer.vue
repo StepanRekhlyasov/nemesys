@@ -29,6 +29,7 @@ const cancelHandler = () => {
 }
 
 const saveHandler = async () => {
+    isLoading.value = true
     if(modifiedCF.value) {
 
         const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
@@ -46,6 +47,7 @@ const saveHandler = async () => {
 
         draft.value = {} as ClientFactory;
     }
+    isLoading.value = false
 }
 
 const emit = defineEmits<{

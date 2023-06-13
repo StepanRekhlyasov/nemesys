@@ -66,7 +66,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.headOfficeInfo = true"
         @closeEdit="isOpedEditDropDown.headOfficeInfo = false"
-        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory, $q as unknown as typeof Quasar)">
+        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory)">
             <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
                 v-if="!isOpedEditDropDown.headOfficeInfo"/>
 
@@ -94,7 +94,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.contractInfo = true"
         @closeEdit="isOpedEditDropDown.contractInfo = false"
-        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory, $q as unknown as typeof Quasar)">
+        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory)">
             <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
                 v-if="!isOpedEditDropDown.contractInfo"/>
 

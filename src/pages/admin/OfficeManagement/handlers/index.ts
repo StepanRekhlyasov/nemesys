@@ -1,40 +1,24 @@
-import Quasar from 'quasar';
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
+import { finishEditing } from 'src/components/client-factory/hadlers';
 import { RenderOfficeDetails, RenderHeadDetails, RenderMainInfo } from '../types';
 import { ClientFactoryTableRow } from 'src/components/client-factory/types';
-import { useClientFactory } from 'src/stores/clientFactory';
 import { useClient } from 'src/stores/client';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { recursivelyRemoveField, safeGet, arraysAreEqual, deepCopy } from 'src/shared/utils';
+import { recursivelyRemoveField, safeGet, arraysAreEqual } from 'src/shared/utils';
 
-const {updateClientFactory} = useClientFactory()
-const {updateClient} = useClient()
+const { updateClient } = useClient()
 const { t } = i18n.global
 
 export const updateClientFactoryHangler = (
   changedData: Array<{ label: string; value: string | number | boolean | string[]; editType: string; key: string }>,
-  clientFactory: ClientFactory,
-  $q: typeof Quasar
+  clientFactory: ClientFactory
   ) => {
-    const updatedClientFactory = deepCopy(clientFactory);
 
-    changedData.forEach(({key, value}) => {
-        const keys = key.split('.'); 
-        let nestedObj = updatedClientFactory;
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            if (i === keys.length - 1) {
-                nestedObj[key] = value;
-            } else {
-                nestedObj[key] = nestedObj[key] || {}; 
-                nestedObj = nestedObj[key];
-            }
-        }
-    });
+    finishEditing(changedData, clientFactory.draft, clientFactory)
 
-    recursivelyRemoveField(updatedClientFactory, 'created_at')
-    updateClientFactory(updatedClientFactory, $q);
+    console.log(clientFactory.draft)
+    return clientFactory
 };
 
 export const updateClientHandler = (

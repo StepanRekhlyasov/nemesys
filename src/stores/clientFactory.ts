@@ -324,13 +324,14 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateClientFactory = async(updatedClientFactory: Omit<ClientFactory, 'created_at'>, $q: typeof Quasar) => {
+    const updateClientFactory = async(updatedClientFactory: ClientFactory, $q: typeof Quasar) => {
         try {
 
             await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
                 ...updatedClientFactory,
+                created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
                 updated_at: serverTimestamp()
-            }, {merge: true});
+            });
 
              Alert.success($q, t)
         } catch(e) {

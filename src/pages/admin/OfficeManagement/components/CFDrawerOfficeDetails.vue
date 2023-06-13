@@ -7,10 +7,8 @@ import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableC
 import { useOfficeDetails, updateClientFactoryHangler } from '../handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderOfficeDetails } from '../types';
-import Quasar, { useQuasar } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar()
 
 const props = defineProps<{
     clientFactory: ClientFactory
@@ -48,7 +46,7 @@ watchEffect(() => {
     :isLabelSquare="true"
     @openEdit="isOpedEditDropDown.registeredInfo = true"
     @closeEdit="isOpedEditDropDown.registeredInfo = false"
-    @onSave="isOpedEditDropDown.registeredInfo = false; updateClientFactoryHangler(dataForUpdating.registeredInfo, clientFactory, $q as unknown as typeof Quasar)">
+    @onSave="isOpedEditDropDown.registeredInfo = false; updateClientFactoryHangler(dataForUpdating.registeredInfo, clientFactory)">
         <TwoColumnLayout
             v-if="!isOpedEditDropDown.registeredInfo" :data="officeDetails.registeredInfo" theme="accent"/>
 
@@ -62,7 +60,7 @@ watchEffect(() => {
     :isLabelSquare="true"
     @openEdit="isOpedEditDropDown.commonItems = true"
     @closeEdit="isOpedEditDropDown.commonItems = false"
-    @onSave="isOpedEditDropDown.commonItems = false; updateClientFactoryHangler(dataForUpdating.commonItems, clientFactory, $q as unknown as typeof Quasar)">
+    @onSave="isOpedEditDropDown.commonItems = false; updateClientFactoryHangler(dataForUpdating.commonItems, clientFactory)">
         <TwoColumnLayout v-if="!isOpedEditDropDown.commonItems" :data="officeDetails.commonItems" theme="accent"/>
 
         <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'commonItems')" :data="officeDetails.commonItems" theme="accent"/>
@@ -75,7 +73,7 @@ watchEffect(() => {
     :isLabelSquare="true"
     @openEdit="isOpedEditDropDown.uniqueItems = true"
     @closeEdit="isOpedEditDropDown.uniqueItems = false"
-    @onSave="isOpedEditDropDown.uniqueItems = false; updateClientFactoryHangler(dataForUpdating.uniqueItems, clientFactory, $q as unknown as typeof Quasar)">
+    @onSave="isOpedEditDropDown.uniqueItems = false; updateClientFactoryHangler(dataForUpdating.uniqueItems, clientFactory)">
         <TwoColumnLayout v-if="!isOpedEditDropDown.uniqueItems" :data="officeDetails.uniqueItems" theme="accent"/>
 
         <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'uniqueItems')" :data="officeDetails.uniqueItems" theme="accent"/>

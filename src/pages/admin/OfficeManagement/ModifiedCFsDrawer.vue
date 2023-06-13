@@ -80,8 +80,6 @@ const labels = useImportCandidatesLabels
                                 </div>
                                 <div class="label-data">
                                     {{ modifiedCF.numberImports }}
-
-                                    {{ modifiedCF.isIgnored }}
                                 </div>
 
                                 <div class="label-data row items-center">

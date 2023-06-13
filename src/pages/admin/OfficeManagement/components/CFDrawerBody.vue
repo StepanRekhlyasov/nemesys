@@ -4,13 +4,17 @@ import { defineProps, defineEmits, ref, watchEffect } from 'vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
-import { useHighlightMainInfo } from '../handlers';
-import { finishEditing } from 'src/components/client-factory/hadlers';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { useHighlightMainInfo, updateClientFactoryHangler } from '../handlers';
 
 import { RenderMainInfo } from '../types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import Quasar, { useQuasar } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
+const $q = useQuasar()
+
+const { updateClientFactory } = useClientFactory()
 const props = defineProps<{
     clientFactory: ClientFactory
 }>();
@@ -19,6 +23,7 @@ const emit = defineEmits<{
 }>()
 
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
+const isLoading = ref(false)
 const isEditForm = ref({
     officeInfo: false,
     contactInfo: false
@@ -29,8 +34,18 @@ const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>
 const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
 }
+
 const handleImport = () => {
     emit('handleImport')
+}
+
+const onSaveHandle = async (dataToChange: RenderMainInfo['contactInfo'] | RenderMainInfo['officeInfo']) => {
+    isLoading.value = true
+    const modifiedCF = updateClientFactoryHangler(dataToChange, props.clientFactory)
+
+    await updateClientFactory(modifiedCF, $q as unknown as typeof Quasar)
+
+    isLoading.value = false
 }
 
 watchEffect(() => {
@@ -40,14 +55,19 @@ watchEffect(() => {
 
 <template>
     <div class="wrapper">
+        <div style="height: 5px;" class="q-my-none q-pa-none">
+            <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
+        </div>
+
         <HighlightTwoColumn 
             :data="mainInfo.officeInfo"
+            :is-disable-edit="isLoading"
             :is-edit="isEditForm.officeInfo"
             :label="t('client.add.officeInfo')"
             theme="accent"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
-            @on-save="isEditForm.officeInfo = false; finishEditing(dataForUpdating.officeInfo, props.clientFactory.draft, props.clientFactory)"/>
+            @on-save="isEditForm.officeInfo = false; onSaveHandle(dataForUpdating.officeInfo as RenderMainInfo['contactInfo'] | RenderMainInfo['officeInfo'])"/>
         
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"
@@ -57,11 +77,12 @@ watchEffect(() => {
         <HighlightTwoColumn
             :data="mainInfo.contactInfo"
             :is-edit="isEditForm.contactInfo"
+            :is-disable-edit="isLoading"
             :label="t('client.add.contactInfo')"
             theme="accent"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"
-            @on-save="isEditForm.contactInfo = false; finishEditing(dataForUpdating.contactInfo, props.clientFactory.draft, props.clientFactory)"/>
+            @on-save="isEditForm.contactInfo = false; onSaveHandle(dataForUpdating.contactInfo as RenderMainInfo['contactInfo'] | RenderMainInfo['officeInfo'])"/>
 
         <EditableColumnsCF v-if="isEditForm.contactInfo"
             :data="mainInfo.contactInfo"

@@ -7,8 +7,10 @@ const props = withDefaults(defineProps<{
     data: { label: string; value: string | number | string[] | boolean, isHighlight: boolean, key?: string }[]
     isEdit: boolean
     label: string
+    isDisableEdit?: boolean
     theme?: string
 }>(), {
+    isDisableEdit: false,
     theme: 'primary'
 })
 
@@ -32,6 +34,7 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
         </div>
         <div class="col-3 text-right">
             <q-btn v-if="!isEdit" 
+                :disable="isDisableEdit"
                 :label="t('common.edit')" :color="theme" 
                 outline  icon="edit" @click="emit('openEdit')" 
                 class="no-shadow q-ml-lg" size="sm" />

@@ -50,8 +50,12 @@ const { t } = useI18n({ useScope: 'global' });
                     <q-icon v-else color="black" name="mdi-close"/>
 
                     <div class="row justify-between items-center no-wrap">
-                        <div class="circle q-mx-md"></div>
-                        <q-btn text-color="accent" outline dense padding="xs md" size="sm">
+                        <div :class="`${Object.keys(clientFactory.draft).length ? 'circle-highlight' : 'circle'} q-mx-md`"></div>
+                        <q-btn
+                            text-color="accent"
+                            outline dense
+                            padding="xs md" size="sm"
+                            :disable="!Object.keys(clientFactory.draft).length">
                             <q-icon name="mdi-tray-arrow-up" color="accent" size="xs" left/>
                                 {{ t('common.reflect') }}
                         </q-btn>

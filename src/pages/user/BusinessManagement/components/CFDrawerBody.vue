@@ -31,7 +31,6 @@ const saveHandler = () => {
 }
 
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
-const isLoading = ref(false)
 const isEditForm = ref({
     officeInfo: false,
     contactInfo: false
