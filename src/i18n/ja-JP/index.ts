@@ -1028,8 +1028,9 @@ export default {
       employmentType: '雇用形態',
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
-      deletedInfo: 'All data related to this experience will be deleted.',
+      deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
       totalYearsExperience: '経験',
+      yearsOfTotalExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',

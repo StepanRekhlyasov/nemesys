@@ -19,7 +19,7 @@
           <div class="col-10">
             <div class="row">
               <div class="col-9 flex items-center">
-                <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span>{{ `(${age})`}} {{ selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex) }}
+                <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span>{{ age ? `(${age})` : '' }} {{ selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex) }}
                 <div class="q-pl-md">
                   <q-select :options="statusOption" v-model="applicantStore.state.selectedApplicant.status" color="black" label-color="black" rounded standout bg-color="white" dense @update:model-value="changeApplicantStatus" emit-value map-options class="select_colorFix"/>
                 </div>
