@@ -8,8 +8,10 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from '../types'
+import Quasar, { useQuasar } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
+const $q = useQuasar()
 
 const props = defineProps<{
     clientId: string
@@ -37,7 +39,7 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 const fetchHeadClientFactory = async () => {
     isLoading.value = true
 
-    headClientFactory.value = await getHeadClientFactory(props.clientId) as ClientFactory
+    headClientFactory.value = await getHeadClientFactory(props.clientId, $q as unknown as typeof Quasar) as ClientFactory
 
     isLoading.value = false
 }
@@ -64,7 +66,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.headOfficeInfo = true"
         @closeEdit="isOpedEditDropDown.headOfficeInfo = false"
-        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory)">
+        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory, $q as unknown as typeof Quasar)">
             <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
                 v-if="!isOpedEditDropDown.headOfficeInfo"/>
 
@@ -92,7 +94,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.contractInfo = true"
         @closeEdit="isOpedEditDropDown.contractInfo = false"
-        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory)">
+        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory, $q as unknown as typeof Quasar)">
             <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
                 v-if="!isOpedEditDropDown.contractInfo"/>
 

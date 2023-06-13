@@ -1467,6 +1467,13 @@ export default {
       morning: 'Morning',
       afternoon: 'Afternoon',
       evening: 'Evening',
+      importCandidates: 'Candidates for importing office information',
+      lastModifiedDate: 'Last modified date',
+      acquisitionUpdateResults: 'Acquisition update results',
+      importCreationRecord: 'Import creation record',
+      changeItemClassification: 'Change item classification',
+      ignore: 'Ignore',
+      updateData: 'Update data',
       details: {
         // Office details
         parentClient: 'Parent client',

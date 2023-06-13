@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Quasar, { useQuasar } from 'quasar';
 import { defineEmits, defineProps, ref, watch } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
@@ -18,6 +19,7 @@ const props = defineProps<{
     selectedItem: ClientFactory
 }>()
 
+const $q = useQuasar()
 const modifiedCF = ref<ModifiedCF | undefined>()
 const draft = ref<Partial<ClientFactory>>({})
 const isLoading = ref(false)
@@ -31,12 +33,12 @@ const saveHandler = async () => {
 
         const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
         
-        await updateModifiedCF(props.selectedItem.id, mergedData)
+        await updateModifiedCF(props.selectedItem.id, mergedData, $q as unknown as typeof Quasar)
         modifiedCF.value = mergedData
         draft.value = {} as ClientFactory;
     } else {
         const mergedData = mergeWithDraft(props.selectedItem, draft.value)
-        const res = await addModifiedCF(currentOrganizationId, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>)
+        const res = await addModifiedCF(currentOrganizationId, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>, $q as unknown as typeof Quasar)
 
         if(res) {
             modifiedCF.value = mergedData
@@ -58,7 +60,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
     if (oldProps) {
         isLoading.value = true
         draft.value = {} as ClientFactory;
-        modifiedCF.value = await getModifiedCF(currentOrganizationId, props.selectedItem)
+        modifiedCF.value = await getModifiedCF(currentOrganizationId, props.selectedItem, $q as unknown as typeof Quasar)
         isLoading.value = false
     }
 }, { immediate: true });
