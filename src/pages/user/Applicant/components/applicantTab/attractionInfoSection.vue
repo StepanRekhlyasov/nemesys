@@ -174,6 +174,7 @@ async function resetData() {
     employmentStatus: props?.applicant['employmentStatus'],
     seduser: props?.applicant['seduser'],
     classification: props?.applicant['classification'],
+    occupation: props?.applicant['occupation'],
     position: props?.applicant['position'],
     qualification: props?.applicant['qualification'],
     period: props?.applicant['period'],

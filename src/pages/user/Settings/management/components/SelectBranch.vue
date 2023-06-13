@@ -44,18 +44,16 @@ interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
 const loading = ref(true)
 const options = ref<selectOptions[]>([])
 const modelValue = ref('')
-const emit = defineEmits(['imLoading', 'imLoaded'])
+const emit = defineEmits(['onStartLoading', 'onEndLoading'])
 onMounted(async () => {
-  emit('imLoading')
   await display(props.organizationId)
-  emit('imLoaded')
+  emit('onEndLoading')
 })
 const props = defineProps<SelectBranchProps>()
 watch(() => props.organizationId, async (newValue) => {
-  emit('imLoading')
-  modelValue.value = ''
+  emit('onStartLoading')
   await display(newValue)
-  emit('imLoaded')
+  emit('onEndLoading')
 })
 
 const availableSlots = computed(() => branches.value[modelValue.value]?.licensesSlots - usersInBranch.value[modelValue.value])
