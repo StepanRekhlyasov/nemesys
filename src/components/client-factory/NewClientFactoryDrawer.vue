@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { withDefaults, defineEmits, defineProps, ref } from 'vue';
 import { useClientFactory } from 'src/stores/clientFactory'
@@ -16,7 +15,6 @@ withDefaults(
     }
 )
 
-const $q = useQuasar()
 const { addClientFactory } = useClientFactory()
 
 const childFormRef = ref<{
@@ -42,26 +40,7 @@ const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) 
     emit('hideDrawer')
 
     if(newClientFactoryData) {
-
-        try {
-
-            await addClientFactory(newClientFactoryData as ClientFactory)
-
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: t('success'),
-            });
-
-        } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
-        }
+        await addClientFactory(newClientFactoryData as ClientFactory)
     }
 }
 

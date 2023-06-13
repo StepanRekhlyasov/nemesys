@@ -76,8 +76,8 @@
                 {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['phone']" @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g,'') }" 
+                :rules="phoneRules" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -95,7 +95,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                  :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -201,7 +201,8 @@
                 {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
               </div>
               <div class="col-6 q-pl-sm">
-                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']" :rules="[(val) => !!val || '']">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
+                :rules="[(val) => !!val || '']" hide-bottom-space >
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -286,6 +287,14 @@ const applicantForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
+const phoneRules = [
+  (val) => val&&!!val || '',
+  (val) => {
+    const reg = /^[a-zA-Z0-9]+$/
+    return reg.test(val) || ''
+  }
+] 
+
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
   imageURL.value = '';

@@ -5,7 +5,7 @@ import {ActionsType} from './types'
 const { t } = useI18n({ useScope: 'global' });
 
 withDefaults(defineProps<{
-    actionsType: ActionsType
+    actionsType?: ActionsType
     theme?: string
 }>(), {
     actionsType: ActionsType.CLIENT,

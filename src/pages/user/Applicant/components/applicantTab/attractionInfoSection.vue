@@ -12,9 +12,9 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!edit">{{ applicant?.attractionsStatus? 'OK' : 'NG'}}</span>
         <template v-if="edit">
-          <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+          <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate"
             unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
-          <q-checkbox v-model="data['attractionsStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate" 
+          <q-checkbox v-model="data['attractionsStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate"
             checked-icon="mdi-checkbox-blank-outline" color="primary"/>
         </template>
       </div>
@@ -114,7 +114,7 @@
         <q-input v-if="edit" outlined dense v-model="data['period']" bg-color="white" />
       </div>
     </div>
-    
+
     <div class="row q-pt-sm  q-pb-sm ">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.add.branchIncharge') }}
@@ -124,7 +124,7 @@
         <select-branch v-if="edit" :organization-id="organizationStore.currentOrganizationId" v-model="data['branchIncharge']" />
       </div>
     </div>
-    
+
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.memo') }}
@@ -148,6 +148,7 @@ import SelectBranch from 'src/pages/user/Settings/management/components/SelectBr
 import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { useBranch } from 'src/stores/branch';
 
 const props = defineProps<{
   applicant: Applicant
@@ -158,6 +159,7 @@ const edit = ref(false);
 const loading = ref(false);
 const applicantStore = useApplicant();
 const organizationStore = useOrganization();
+const branchStore = useBranch()
 const branches = ref<selectOptions[]>([])
 
 const employmentStatusOption = ref(employmentStatus);
@@ -179,7 +181,7 @@ async function resetData() {
     memo: props?.applicant['memo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
-  branches.value = mapToSelectOptions(await organizationStore.getBranchesInOrganization(organizationStore.currentOrganizationId))
+  branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(organizationStore.currentOrganizationId))
 }
 resetData()
 

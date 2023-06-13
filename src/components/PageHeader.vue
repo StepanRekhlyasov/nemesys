@@ -1,5 +1,5 @@
 <template>
-  <q-card-section class="container q-px-none">
+  <q-card-section class="container q-px-none" v-bind="$attrs">
     <div class="text-h6 q-px-lg"
       :class="{ accent: color === 'accent', mainBlack: color === 'mainBlack', primary: color === 'primary' }">
       <slot>

@@ -35,7 +35,7 @@
               </div>
               <div class="row">
                 <div class="col-3 text-right q-pa-sm q-pr-md text-primary">
-                  {{$t('settings.users.company_name')}}
+                  {{$t('settings.users.organizationName')}}
                 </div>
                 <div class="col-9  q-pt-sm q-pb-sm">
                   {{organizations.join(', ')}}
@@ -138,7 +138,7 @@ export default {
       resetData();
 
       Promise.all(getUserOrganizationList(db, currentUser.organization_ids))
-      .then(list => organizations.value = list.map(item => item.data().staff_name))
+      .then(list => organizations.value = list.map(item => item.data().name))
 
       if (user.value.photoURL){
         const storageRef = refStorage(storage, 'users/' + user.value.uid + '/profile/' + user.value.photoURL);

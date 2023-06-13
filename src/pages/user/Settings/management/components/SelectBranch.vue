@@ -1,27 +1,27 @@
 <template>
   <q-select outlined dense v-model:model-value="modelValue" :options="branches" :disable="loading" :loading="loading"
-    :label="$t('common.pleaseSelect')" emit-value map-options />
+    :label="$t('common.pleaseSelect')" emit-value map-options :rules="props.rules" hide-bottom-space/>
 </template>
 
 <script setup lang="ts">
-import { QSelectProps } from 'quasar';
+import { QSelectProps, ValidationRule } from 'quasar';
 import { selectOptions } from 'src/shared/model';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
-import { useOrganization } from 'src/stores/organization';
+import { useBranch } from 'src/stores/branch';
 import { onMounted, ref, watch } from 'vue';
 
-const organization = useOrganization()
+const branchStore = useBranch()
 
 interface SelectBranchProps extends Omit<QSelectProps, 'modelValue'> {
-  organizationId: string
+  organizationId: string,
+  rules?: ValidationRule[]
 }
 const loading = ref(true)
 const branches = ref<selectOptions[]>([])
 const modelValue = ref('')
 const emit = defineEmits(['imLoading', 'imLoaded'])
 onMounted(async () => {
-  emit('imLoading')
-  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(props.organizationId))
+  branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(props.organizationId))
   loading.value = false
   emit('imLoaded')
 })
@@ -30,8 +30,7 @@ const props = defineProps<SelectBranchProps>()
 watch(()=>props.organizationId, async (newValue)=>{
   emit('imLoading')
   loading.value = true
-  modelValue.value = ''
-  branches.value = mapToSelectOptions(await organization.getBranchesInOrganization(newValue))
+  branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(newValue))
   loading.value = false
   emit('imLoaded')
 })

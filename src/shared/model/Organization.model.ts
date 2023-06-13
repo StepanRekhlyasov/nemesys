@@ -5,7 +5,6 @@ import { Business } from './Business.model';
 export interface Organization {
   id: string;
   name: string;
-  staff_name?: string;
   tel: string;
   fax: string;
   deletedAt?: Timestamp;
