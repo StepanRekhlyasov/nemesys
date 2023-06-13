@@ -26,7 +26,7 @@
       <div class="col-3 text-right text-accent">
         {{ $t('inquiry.detail.content') }}
       </div>
-      <div class="col-8" style="word-break:break-all">
+      <div class="col-8 wordBreak">
         {{ inquiryDetail.inquiryContent }}
       </div>
     </div>
@@ -52,3 +52,8 @@
   })
 
 </script>
+<style>
+.wordBreak{
+  word-break:break-all;
+}
+</style>

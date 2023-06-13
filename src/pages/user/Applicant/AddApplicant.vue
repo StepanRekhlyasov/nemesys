@@ -108,8 +108,8 @@
                   v-model="applicantData['branchIncharge']" 
                   :rules="[(val) => !!val || '']" 
                   hide-bottom-space
-                  @im-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
-                  @im-loaded="disableSubmit = false"
+                  @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
+                  @on-end-loading="disableSubmit = false"
                 />
               </div>
             </div>

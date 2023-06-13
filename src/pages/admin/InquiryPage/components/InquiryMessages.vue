@@ -14,7 +14,7 @@
         <div class="col-3 text-right ">
           {{ $t('inquiry.detail.replyContent') }}
         </div>
-        <div class="col-8" style="word-break:break-all">
+        <div class="col-8 wordBreak">
           {{ message.content }}
         </div>
       </div>
@@ -37,3 +37,8 @@
   const inquiryMessages = computed(() => inquiryStore.state.currentRowData.messages);
 
 </script>
+<style scoped>
+.wordBreak{
+  word-break: break-all;
+}
+</style>
