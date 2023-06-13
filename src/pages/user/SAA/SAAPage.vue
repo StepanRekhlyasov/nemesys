@@ -9,11 +9,11 @@
         <MySelect
           :options="[
             {
-              label: '個人別データ集計',
+              label: $t('SAA.modeIndividual'),
               value: 'user'
             },
             {
-              label: '支店別データ集計',
+              label: $t('SAA.modeBranch'),
               value: 'branch'
             },
           ]"
