@@ -4,6 +4,7 @@ import { User } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
+import { useOrganization } from './organization';
 
 const { t } = i18n.global
 
@@ -120,5 +121,22 @@ export const useUserStore = defineStore('user', () => {
     return user_list;
   };
 
-  return { getAllUsers, getUserById, editUser, checkUserAffiliation, searchUsers ,getAllUsersInBranch }
+  const getUsersByConstrains = async (constraints: ConstraintsType) => {
+    const organization = useOrganization()
+    constraints.push(where('deleted', '==', false))
+    constraints.push(where('organization_ids', 'array-contains', organization.currentOrganizationId))
+    const usersData = await getDocs(query(
+      collection(db, 'users'),
+      ...constraints
+    ))
+    const users: User[] = []
+    usersData.forEach((user) => {
+      if (user.exists()) {
+        users.push(user.data() as User)
+      }
+    })
+    return users
+  }
+
+  return { getAllUsers, getUserById, editUser, checkUserAffiliation, searchUsers , getAllUsersInBranch, getUsersByConstrains }
 })

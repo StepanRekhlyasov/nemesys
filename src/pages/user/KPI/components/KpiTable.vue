@@ -58,6 +58,7 @@ defineExpose({ exportTable })
 </script>
 <style lang="scss">
 .kpiTable{
+  overflow: auto;
   th {
     background-color: $primary;
     color: #fff;

@@ -1678,6 +1678,10 @@ export default {
     introduction: 'Introduction',
     occupationRate: 'Occupation rate',
     jobOfferRate: 'Job offer rate',
-    hiringRate: 'Hiring rate'
+    hiringRate: 'Hiring rate',
+    username: 'Username',
+    mode: 'Aggregation method',
+    modeIndividual: 'Individual aggregation',
+    modeBranch: 'Branch aggregation',
   }
 }
