@@ -33,7 +33,7 @@
 			</labelField>
 		</div>
 		
-		<div class="row q-pb-sm" v-if="data['inspectionStatus'] == 'ng'">
+		<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" :value="fixData.reasonNG" valueClass="col-9">
 				<div class="row">
 						<div class="col-9">
