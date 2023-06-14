@@ -130,8 +130,7 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.route" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['route']" :disable="loading"/>
+        <q-select v-if="desiredEdit" outlined v-model="data['route']" dense :options="routeData" :disable="loading"/>
       </div>
     </div>
 
@@ -149,8 +148,9 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['nearestStation']" :disable="loading" />
+        
+        <q-select v-if="desiredEdit" outlined v-model="data['nearestStation']"
+          :options="stationData" :disable="!data['route'] || loading" dense />
       </div>
     </div>
 
@@ -237,7 +237,7 @@
 
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
@@ -245,19 +245,24 @@ import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 const props = defineProps<{
   applicant: Applicant
 }>()
 const applicantStore = useApplicant();
-const { t } = i18n.global
+const db = getFirestore();
+const { t } = i18n.global;
+
 const desiredEdit = ref(false);
 const days = ref(daysList);
 const specialDays = ref(specialDaysList);
 const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
-const defaultData = ref<Partial<ApplicantInputs>>({})
-const data = ref<Partial<ApplicantInputs>>({})
+const defaultData = ref<Partial<ApplicantInputs>>({});
+const data = ref<Partial<ApplicantInputs>>({});
+const routeData = ref([]);
+const stationData = ref([]);
 
 const daysPerWeekComputed = computed(()=>{
   if(Array.isArray(props.applicant.daysPerWeek)){
@@ -272,6 +277,30 @@ const specialDayComputed = computed(()=>{
   }
   return ''
 })
+
+onMounted(async () => {
+  const stationDocRef = doc(db, 'metadata', 'stationRoutes');
+  const stationDocSnap = await getDoc(stationDocRef);
+
+  if (stationDocSnap.exists()) {
+    routeData.value = stationDocSnap.data().routes;
+  }
+});
+
+watch(
+    () => (data.value['route']),
+    async (newVal,) => {
+        if (newVal) {
+            stationData.value = [];
+            data.value['neareststation'] = '';
+            const docRef = doc(db, 'metadata', 'stationRoutes', 'station', newVal);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                stationData.value = docSnap.data()['stations'];
+            }
+        }
+    }
+)
 
 
 function resetData() {
@@ -306,7 +335,7 @@ const joinFacilityType = computed(() => props.applicant.ngFacilityType?.map(val 
 const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
 
 async function saveDesired(){
-  loading.value = true
+  loading.value = true;
   try {
     await applicantStore.updateApplicant(data.value);
     desiredEdit.value = false;
