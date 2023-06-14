@@ -11,8 +11,10 @@ export type ConstraintsType = Array<QueryStartAtConstraint | QueryFieldFilterCon
 
 export const pick = (obj: object, keys: string[]) => keys.reduce((acc, n) => (obj.hasOwnProperty(n) && (acc[n] = obj[n]), acc), {});
 
-export const sortDate = (a:dataObject, b:dataObject)=>{
-  return a.date.localeCompare(b.date)
+export const sortDate = (a: dataObject, b: dataObject) => {
+  const aDate = date.extractDate(a.date + '--' + a.time, 'YYYY/MM/DD--H:mm:ss')
+  const bDate = date.extractDate(b.date + '--' + b.time, 'YYYY/MM/DD--H:mm:ss')
+  return aDate.getTime() - bDate.getTime()
 }
 
 export function sortOrganization (a: string, b: string){
