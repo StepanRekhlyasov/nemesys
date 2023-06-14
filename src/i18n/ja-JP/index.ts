@@ -251,7 +251,7 @@ export default {
       deletedInfo: 'この支店に関するデータはすべて消去されます',
       flags: {
         all: 'すべて',
-        valid: '有効'
+        working:'稼働',
       },
       business: '事業',
       branchFlag: '支店フラグ',

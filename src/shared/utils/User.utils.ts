@@ -2,13 +2,7 @@ import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, sta
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Account.model';
-import { branchFlags } from '../model/Branch.model';
 import { ConstraintsType } from './utils';
-
-export interface BranchesSearch {
-  queryText?: string;
-  flag?: branchFlags;
-}
 
 export const isPermission = (permissions: UserPermissionNames[], permission: UserPermissionNames) => permissions?.includes(permission);
 
