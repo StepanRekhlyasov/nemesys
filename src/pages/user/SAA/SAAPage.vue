@@ -100,9 +100,9 @@ async function getData(){
      * because of csv downloading
      */
     if(user.value){
-      rowData.value = await userStore.getUsersByConstrains([where('id', '==', user.value)])
+      rowData.value = await userStore.getUsersByConstrains([where('id', '==', user.value), where('deleted', '==', false), where('organization_ids', 'array-contains', organizationStore.currentOrganizationId)])
     } else if (branch.value) {
-      rowData.value = await userStore.getUsersByConstrains([where('branch_id', '==', branch.value)])
+      rowData.value = await userStore.getUsersByConstrains([where('branch_id', '==', branch.value), where('deleted', '==', false), where('organization_ids', 'array-contains', organizationStore.currentOrganizationId)])
     } else {
       rowData.value = await userStore.getAllUsers(organizationStore.currentOrganizationId)
     }

@@ -12,7 +12,8 @@
       <td 
         class="clickable" 
         @click="()=>{
-          emit('openDrawer', props.row)
+          emit('openDrawer', null)
+          //** null is temporary */
         }" 
       >{{ props.row.name }}</td>
     </template>
@@ -31,7 +32,7 @@ const props = defineProps<{
   rows: QTableProps['rows']
 }>()
 const emit = defineEmits<{
-  (e: 'openDrawer', applicant: Applicant)
+  (e: 'openDrawer', applicant: Applicant | null)
 }>()
 
 const exportTable = () => {

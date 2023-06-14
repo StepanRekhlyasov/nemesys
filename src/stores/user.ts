@@ -121,10 +121,11 @@ export const useUserStore = defineStore('user', () => {
     return user_list;
   };
 
-  const getUsersByConstrains = async (constraints: ConstraintsType) => {
+  const getUsersByConstrains = async (constraints?: ConstraintsType) => {
     const organization = useOrganization()
-    constraints.push(where('deleted', '==', false))
-    constraints.push(where('organization_ids', 'array-contains', organization.currentOrganizationId))
+    if(!constraints){
+      constraints = [where('deleted', '==', false), where('organization_ids', 'array-contains', organization.currentOrganizationId)]
+    }
     const usersData = await getDocs(query(
       collection(db, 'users'),
       ...constraints
