@@ -147,7 +147,7 @@ export default {
     addNewClient: '新しくクライアントを追加したい場合はこちら',
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
-    KPI: 'KPI',
+    SAA: '営業活動集計',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -294,6 +294,7 @@ export default {
       person_name: '担当者名',
       name: '氏名',
       branch_name: '所属支店',
+      availableSlots: '使用可能ライセンス数',
       organizationName: '企業名',
       deleteAccaunt: 'アカウント削除',
       role: 'ロール',
@@ -1459,6 +1460,13 @@ export default {
       morning: '午前',
       afternoon: '午後',
       evening: '夕方',
+      importCandidates: '事業所情報取込候補',
+      lastModifiedDate: '最終変更日時',
+      acquisitionUpdateResults: '取込更新実績',
+      importCreationRecord: '取込作成実績',
+      changeItemClassification: '変更項目分類',
+      ignore: '無視する',
+      updateData: '更新データ',
       details: {
         // Office details
         parentClient: '親クライアント',
@@ -1659,7 +1667,7 @@ export default {
     showList: 'リストを表示する',
     waitList: 'リスト'
   },
-  kpi: {
+  SAA: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     jobs: '職見数',
@@ -1671,6 +1679,10 @@ export default {
     introduction: '紹介',
     occupationRate: '職見率',
     jobOfferRate: '内定率',
-    hiringRate: '入職率'
+    hiringRate: '入職率',
+    username: 'ユーザー名',
+    mode: '集計方法',
+    modeIndividual: '個人別データ集計',
+    modeBranch: '支店別データ集計',
   }
 };

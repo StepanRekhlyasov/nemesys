@@ -45,7 +45,6 @@ watch(props, fetchReflectLogs, { deep: true })
         </div>
     </div>
 
-
     <div v-for="log in reflectLogs" :key="log.id">
         <div class="q-pa-md bg-grey-2 row justify-between">
             <div class="label-data">{{ log.userName }}</div>

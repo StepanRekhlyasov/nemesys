@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, watch, watchEffect } from 'vue';
+import { ref, defineProps, defineEmits, watchEffect } from 'vue';
 import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';

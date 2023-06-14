@@ -15,6 +15,7 @@ import { LocalizationKeys } from 'src/shared/types/LocalizationKeys';
 
 interface InputWarapperProps {
   textKey: LocalizationKeys
+  textPaddingBottom?: string
 }
 
 
@@ -30,6 +31,7 @@ defineProps<InputWarapperProps>()
 .text {
   min-width: 120px;
   text-align: right;
+  padding-bottom: v-bind(textPaddingBottom);
 }
 </style>
 

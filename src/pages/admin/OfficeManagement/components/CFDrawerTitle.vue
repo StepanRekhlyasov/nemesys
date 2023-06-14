@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineProps, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -85,5 +86,6 @@ const dropDownHandler = (item: string) => {
 <style lang="scss" scoped>
 .wrapper {
     flex: 1 1 90%;
+    height: 4rem;
 }
 </style>
