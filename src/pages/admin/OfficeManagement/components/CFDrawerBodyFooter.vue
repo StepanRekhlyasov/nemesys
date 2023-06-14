@@ -1,12 +1,31 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
-import { defineProps } from 'vue';
+import { defineProps, defineEmits, watch } from 'vue';
+import { useClientFactory } from 'src/stores/clientFactory';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
-defineProps<{
+const clientFactoryStore = useClientFactory()
+const { modifiedCFs } = storeToRefs(clientFactoryStore)
+
+const props = defineProps<{
     clientFactory: ClientFactory
-}>();
+}>()
+
+const emit = defineEmits<{
+    (e: 'handleImport')
+}>()
+
+const importHandle = () => {
+    emit('handleImport')
+}
+
+watch([() => props.clientFactory], async (newProps, oldProps) => {
+    if (oldProps) {
+        await clientFactoryStore.getModifiedCFs(props.clientFactory.clientID, props.clientFactory.id)
+    }
+}, { immediate: true });
 
 const { t } = useI18n({ useScope: 'global' });
 </script>
@@ -56,8 +75,12 @@ const { t } = useI18n({ useScope: 'global' });
                     <q-icon v-else color="black" name="mdi-close"/>
 
                         <div class="row justify-between items-center no-wrap">
-                            <div class="circle q-mx-md"></div>
-                            <q-btn text-color="accent" outline dense padding="xs md" size="sm">
+                            <div :class="`${modifiedCFs.length ? 'circle-highlight' : 'circle'} q-mx-md`"></div>
+                            <q-btn
+                                text-color="accent"
+                                outline dense padding="xs md" size="sm"
+                                :disable="!modifiedCFs.length"
+                                @click="importHandle">
                                 <q-icon name="mdi-tray-arrow-down" color="accent" size="xs" left/>
                                     {{ t('common.capture') }}
                                 </q-btn>
@@ -84,5 +107,13 @@ const { t } = useI18n({ useScope: 'global' });
     width: 10px;
     border-radius:50%;
     border: 1px solid $main-purple;
+}
+
+.circle-highlight {
+    height: 10px;
+    width: 10px;
+    border-radius:50%;
+    border: 1px solid $main-purple;
+    background-color: $edit-highlight;
 }
 </style>

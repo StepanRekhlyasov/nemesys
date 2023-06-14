@@ -4,6 +4,7 @@ import { withDefaults, defineEmits, defineProps, ref } from 'vue';
 import { useClientFactory } from 'src/stores/clientFactory'
 import NewClientFactoryFormGroup from 'src/components/form/NewClientFactoryFormGroup.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import Quasar, { useQuasar } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
 withDefaults(
@@ -20,6 +21,7 @@ const { addClientFactory } = useClientFactory()
 const childFormRef = ref<{
     validateAndSubmit: () => void
 } | null>(null);
+const $q = useQuasar()
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
@@ -40,7 +42,7 @@ const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) 
     emit('hideDrawer')
 
     if(newClientFactoryData) {
-        await addClientFactory(newClientFactoryData as ClientFactory)
+        await addClientFactory(newClientFactoryData as ClientFactory, $q as unknown as typeof Quasar)
     }
 }
 

@@ -147,7 +147,7 @@ export default {
     addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
-    KPI: 'KPI',
+    SAA: 'Sales Activity Aggregation',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -1452,6 +1452,13 @@ export default {
       morning: 'Morning',
       afternoon: 'Afternoon',
       evening: 'Evening',
+      importCandidates: 'Candidates for importing office information',
+      lastModifiedDate: 'Last modified date',
+      acquisitionUpdateResults: 'Acquisition update results',
+      importCreationRecord: 'Import creation record',
+      changeItemClassification: 'Change item classification',
+      ignore: 'Ignore',
+      updateData: 'Update data',
       details: {
         // Office details
         parentClient: 'Parent client',
@@ -1652,7 +1659,7 @@ export default {
     showList: 'Show list',
     waitList: ' waiting list'
   },
-  kpi: {
+  SAA: {
     targetPeriod: 'Target period',
     numberOfFix: '№ of FIX',
     jobs: 'Jobs',
@@ -1664,6 +1671,10 @@ export default {
     introduction: 'Introduction',
     occupationRate: 'Occupation rate',
     jobOfferRate: 'Job offer rate',
-    hiringRate: 'Hiring rate'
+    hiringRate: 'Hiring rate',
+    username: 'Username',
+    mode: 'Aggregation method',
+    modeIndividual: 'Individual aggregation',
+    modeBranch: 'Branch aggregation',
   }
 }

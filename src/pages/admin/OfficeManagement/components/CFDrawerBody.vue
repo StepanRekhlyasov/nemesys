@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, ref, watchEffect } from 'vue';
+import { defineProps, defineEmits, ref, watchEffect } from 'vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
@@ -14,6 +14,9 @@ const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
     clientFactory: ClientFactory
 }>();
+const emit = defineEmits<{
+    (e: 'handleImport')
+}>()
 
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
 const isEditForm = ref({
@@ -25,6 +28,9 @@ const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>
 
 const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
+}
+const handleImport = () => {
+    emit('handleImport')
 }
 
 watchEffect(() => {
@@ -66,7 +72,9 @@ watchEffect(() => {
 
     <q-separator color="bg-grey-3 q-mt-md"></q-separator>
 
-   <CFDrawerBodyFooter :client-factory="clientFactory"/>
+   <CFDrawerBodyFooter
+    @handle-import="handleImport"
+    :client-factory="clientFactory"/>
 </template>
 
 <style lang="scss" scoped>
