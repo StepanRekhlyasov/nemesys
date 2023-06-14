@@ -144,8 +144,6 @@ export const templateCollection = (db: Firestore, organization_id: string) => co
 
 export const branchCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/branch')
 
-export const itemCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/item')
-
 // DB request
 
 export const getTemplates = (db: Firestore, organization_id: string, queryText?: string) => {

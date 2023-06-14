@@ -251,7 +251,7 @@ export default {
       deletedInfo: 'この支店に関するデータはすべて消去されます',
       flags: {
         all: 'すべて',
-        valid: '有効'
+        working:'稼働',
       },
       business: '事業',
       branchFlag: '支店フラグ',
@@ -269,21 +269,6 @@ export default {
 
       create_at: '作成日',
       last_update: '更新日',
-    },
-    item: {
-      addItem: '項目新規追加',
-      id: '区分ID',
-      name: '区分名',
-      itemName: '項目名',
-      displayOrder: '表示順',
-      flag: '有効フラグ',
-      hide: '非表示にする',
-      edit: '項目編集',
-      classification: {
-        oualifications: '資格',
-        job: '職種',
-        media: '応募媒体'
-      }
     },
     users: {
       contactPersonName: '担当者新規追加',

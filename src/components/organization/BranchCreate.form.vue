@@ -26,12 +26,6 @@
           :color="color" />
       </DialogItemContainer>
 
-
-      <DialogItemContainer name-key="settings.branch.branchFlag">
-        <q-select v-model="branchFlag" :options="flagOptions" option-value="flag" option-label="label" emit-value
-          map-options dense outlined :disable="loading" :color="color" />
-      </DialogItemContainer>
-
       <DialogItemContainer name-key="settings.branch.hiddenFlag">
         <q-checkbox v-model="branchData['hidden']" :label="$t('settings.branch.hide')"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" class="q-pr-md"
@@ -63,7 +57,6 @@ import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import { useOrganization } from 'src/stores/organization';
-import { branchFlags } from 'src/shared/model';
 import SelectBusinesses from 'src/pages/user/Settings/management/components/SelectBusinesses.vue'
 import { creationRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
@@ -104,8 +97,6 @@ export default {
     const organization = useOrganization()
     const branchStore = useBranch()
 
-    const branchFlag = ref<branchFlags>(branchData.value['flag'] ?? branchFlags.All)
-
     const businessId = ref<string>('')
 
     const currentOrganizationId = props.defaultOrganizationid ?? organization.currentOrganizationId
@@ -114,7 +105,6 @@ export default {
     return {
       businessId,
       flagOptions,
-      branchFlag,
       branchData,
       loading,
       prefectureOption,
@@ -126,7 +116,6 @@ export default {
           data['created_at'] = serverTimestamp();
           data['updated_at'] = serverTimestamp();
           data['created_user'] = auth.currentUser?.uid;
-          data['flag'] = branchFlag.value
           data['deleted'] = false
           data['businessId'] = businessId.value
           data['priceForOneUserInYen'] = 10000
@@ -153,7 +142,6 @@ export default {
             name: data.name,
             prefecture: data.prefecture,
             phone: data.phone,
-            flag: branchFlag.value,
             working: data.working
           })
           context.emit('closeDialog');
