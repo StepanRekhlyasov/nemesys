@@ -12,7 +12,8 @@
       <td 
         class="clickable" 
         @click="()=>{
-          emit('openDrawer', props.row)
+          emit('openDrawer', null)
+          //** null is temporary */
         }" 
       >{{ props.row.name }}</td>
     </template>
@@ -20,7 +21,7 @@
 </template>
 <script setup lang="ts">
 import { QTableProps, exportFile, useQuasar } from 'quasar';
-import { kpiTableColumns as columns } from '../const/kpi.const'
+import { kpiTableColumns as columns } from '../const/saa.const'
 import { Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
@@ -31,7 +32,7 @@ const props = defineProps<{
   rows: QTableProps['rows']
 }>()
 const emit = defineEmits<{
-  (e: 'openDrawer', applicant: Applicant)
+  (e: 'openDrawer', applicant: Applicant | null)
 }>()
 
 const exportTable = () => {
@@ -58,6 +59,7 @@ defineExpose({ exportTable })
 </script>
 <style lang="scss">
 .kpiTable{
+  overflow: auto;
   th {
     background-color: $primary;
     color: #fff;

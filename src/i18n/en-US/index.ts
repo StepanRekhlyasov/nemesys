@@ -147,7 +147,7 @@ export default {
     addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
-    KPI: 'KPI',
+    SAA: 'Sales Activity Aggregation',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -1674,7 +1674,7 @@ export default {
     showList: 'Show list',
     waitList: ' waiting list'
   },
-  kpi: {
+  SAA: {
     targetPeriod: 'Target period',
     numberOfFix: '№ of FIX',
     jobs: 'Jobs',
@@ -1686,6 +1686,10 @@ export default {
     introduction: 'Introduction',
     occupationRate: 'Occupation rate',
     jobOfferRate: 'Job offer rate',
-    hiringRate: 'Hiring rate'
+    hiringRate: 'Hiring rate',
+    username: 'Username',
+    mode: 'Aggregation method',
+    modeIndividual: 'Individual aggregation',
+    modeBranch: 'Branch aggregation',
   }
 }

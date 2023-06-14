@@ -4,15 +4,15 @@
       class="mySelect"
       outlined
       dense
+      v-bind="$attrs"
       :options="optionsList"
+      :disable="loading"
+      :loading="loading"
       v-model="inputVal"
       bg-color="white"
       :label="$t('common.pleaseSelect')"
-      :loading="loading"
-      :disable="loading"
       emit-value
       map-options
-      clearable
       @update:model-value="(newVal)=>{
         emit('update:modelValue', newVal);
         emit('update');
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<{
   height?: string,
 }>(),{
   width: '100%',
-  height: 'auto'
+  height: 'auto',
 })
 const optionsList = ref(props.options)
 const loading = ref(false)
