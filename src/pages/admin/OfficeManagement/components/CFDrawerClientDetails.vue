@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Quasar, { useQuasar } from 'quasar';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
@@ -9,6 +10,7 @@ import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from '../types'
 const { t } = useI18n({ useScope: 'global' });
+const $q = useQuasar()
 
 const props = defineProps<{
     clientFactory: ClientFactory
@@ -57,7 +59,7 @@ watchEffect(() => {
         theme="accent"
         @openEdit="isOpedEditDropDown.contractInfo = true"
         @closeEdit="isOpedEditDropDown.contractInfo = false"
-        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, clientFactory)">
+        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, clientFactory, $q as unknown as typeof Quasar)">
             <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
                 v-if="!isOpedEditDropDown.contractInfo"/>
 
