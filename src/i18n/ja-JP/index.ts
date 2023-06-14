@@ -147,7 +147,7 @@ export default {
     addNewClient: '新しくクライアントを追加したい場合はこちら',
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
-    KPI: 'KPI',
+    SAA: '営業活動集計',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -1652,7 +1652,7 @@ export default {
     showList: 'リストを表示する',
     waitList: 'リスト'
   },
-  kpi: {
+  SAA: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     jobs: '職見数',
@@ -1664,6 +1664,10 @@ export default {
     introduction: '紹介',
     occupationRate: '職見率',
     jobOfferRate: '内定率',
-    hiringRate: '入職率'
+    hiringRate: '入職率',
+    username: 'ユーザー名',
+    mode: '集計方法',
+    modeIndividual: '個人別データ集計',
+    modeBranch: '支店別データ集計',
   }
 };

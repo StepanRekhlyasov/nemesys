@@ -13,8 +13,8 @@ const report_router: MenuRouter[] = [
   },
   {
     path: 'totalization/kpi',
-    title: 'menu.KPI',
-    component: () => import('src/pages/user/KPI/KpiPage.vue'),
+    title: 'menu.SAA',
+    component: () => import('src/pages/user/SAA/SAAPage.vue'),
     meta: {
       requiresAuth: true,
     },
