@@ -7,11 +7,6 @@ const { t } = i18n.global
 export const sortable = ref(true)
 export const columns = computed<QTableProps['columns']>(() => [
   {
-    name: 'edit',
-    label: '',
-    field: '',
-  },
-  {
     name: 'name',
     required: true,
     label: t('settings.branch.name'),
