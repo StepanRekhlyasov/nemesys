@@ -47,12 +47,10 @@
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.AdminPageAccess)">
+              <q-item clickable :to="routeNames.admin" target="_blank" v-close-popup class="q-pt-none q-pb-none" v-if="isPermission(permissions, UserPermissionNames.AdminPageAccess)">
                 <q-item-section>
                   <q-item-label>
-                    <router-link :to="routeNames.admin" target="_blank">
                       {{$t('settings.users.adminPage')}}
-                    </router-link>
                   </q-item-label>
                 </q-item-section>
               </q-item>
