@@ -76,8 +76,11 @@
 				:value="usersListOption
 					.filter(user => user.value === data['contact'])
 					.map(user => user.label).join('')">
-				<q-input dense outlined bg-color="white"
-					v-model="data['contact']" :disable="loading || disableLevel < 1" />
+          <q-select
+            v-model="data['chargeOfOffer']"
+            :disable="loading || disableLevel < 1"
+            emit-value map-options dense outlined
+            :options="usersListOption" :label="$t('common.pleaseSelect')" />
 			</labelField>
 			<labelField
 				:edit="edit.includes('jobSearchInfo')"

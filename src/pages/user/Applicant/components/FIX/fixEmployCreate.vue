@@ -117,7 +117,6 @@ import FixInfoSection from './FixInfoSection.vue';
 import JobSearchInfoSection from './JobSearchInfoSection.vue';
 import JobOffersInfoSection from './JobOffersInfoSection.vue';
 import EmploymentInfoSection from './EmploymentInfoSection.vue';
-import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useFix } from 'src/stores/fix';
 
 const props = defineProps<{
