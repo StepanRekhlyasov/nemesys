@@ -31,7 +31,7 @@
       </labelField>
     </div>
     
-    <template v-if="data['status'] == 'ng'">
+    <template v-if="!data['status']">
       <div class="row q-pb-sm">  
         <labelField 
           :edit="edit.includes('info') " 

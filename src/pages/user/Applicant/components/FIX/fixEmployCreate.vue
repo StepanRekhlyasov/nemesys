@@ -9,8 +9,8 @@
           <div class="col-11 ">
             <span class="row">{{ applicant.name }}</span>
             <div class="row">
-              <span class="text-h6"> {{ $t('client.add.officeName') }}</span>
-              <q-btn :label="$t('applicant.list.fixEmployment.save')" class="q-ml-md" color="white" text-color="primary" @click="saveDoc" size="sm"/>
+              <span class="text-h6 q-pr-md" v-if="!!name"> {{ name }}</span>
+              <q-btn v-if="!fixData.id" :label="$t('applicant.list.fixEmployment.save')" color="white" text-color="primary" @click="saveDoc" size="sm"/>
             </div>
           </div>
         </div>
@@ -18,84 +18,94 @@
       <q-separator />
       <q-form>
         <!-- Main Information -->
-        <q-card-section>
+        <q-card-section>       
+          <div class="row" v-if="fixData.id">            
+            <div class="col-12 text-right" >
+              <q-btn 
+                :label="$t('common.save')" color="primary" 
+                @click="save('main', data)" size="sm" />
+            </div>
+          </div>           
           <q-select
-            v-model="data.client"
-            @update:model-value="data['office']=null"
-            :loading="loading"
-            :options="applicantStore.state.clientList"
-            option-value="id"
-            option-label="name"
-            emit-value map-options
-            :label="$t('applicant.list.fixEmployment.client')"  />
-          <q-select
-            v-model="data.office"
-            :loading="loading"
-            emit-value map-options
-            option-value="id"
-            option-label="name"
-            :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office" 
-            :label="$t('applicant.list.fixEmployment.office')" />
+              v-model="data.client"
+              @update:model-value="data['office']=null"
+              :loading="loading"
+              :options="applicantStore.state.clientList"
+              option-value="id"
+              option-label="name"
+              emit-value map-options
+              :label="$t('applicant.list.fixEmployment.client')"  />
+            <q-select
+              v-model="data.office"
+              :loading="loading"
+              emit-value map-options
+              option-value="id"
+              option-label="name"
+              :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office"
+              :disable="!data['client']" 
+              :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
-        <!-- Fix Information -->
-        <q-card-section>
-          <FixInfoSection 
-            :edit="edit" 
-            :loading="loading" 
-            :fix-data="fixData" 
-            :edit-data="data"
-            :users-list-option="usersListOption"
-            @save="save"
-            @closeEdit="edit=edit.filter(i => i !== 'info')" 
-            @openEdit="edit.push('info')"/>
-        </q-card-section>
+        <template v-if="fixData.id">
+          <!-- Fix Information -->
+          <q-card-section>
+            <FixInfoSection 
+              :edit="edit" 
+              :loading="loading" 
+              :fix-data="fixData" 
+              :edit-data="data"
+              :users-list-option="usersListOption"
+              @save="save"
+              @closeEdit="edit=edit.filter(i => i !== 'info')" 
+              @openEdit="edit.push('info')"/>
+          </q-card-section>
 
-        <!-- Job-search Information  -->
-        <q-card-section>
-          <JobSearchInfoSection
-            :edit="edit" 
-            :loading="loading" 
-            :fix-data="fixData" 
-            :edit-data="data"
-            :users-list-option="usersListOption"
-            @save="save"
-            @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
-            @openEdit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
-        </q-card-section>
+          <!-- Job-search Information  -->
+          <q-card-section>
+            <JobSearchInfoSection
+              :edit="edit" 
+              :loading="loading" 
+              :fix-data="fixData" 
+              :edit-data="data"
+              :users-list-option="usersListOption"
+              @save="save"
+              @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
+              @openEdit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
+          </q-card-section>
 
-        <!-- Information on job offers -->
-        <q-card-section>
-          <JobOffersInfoSection
-            :edit="edit" 
-            :loading="loading" 
-            :fix-data="fixData" 
-            :edit-data="data"
-            :users-list-option="usersListOption"
-            @save="save"
-            @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
-            @openEdit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
-        </q-card-section>
+          <!-- Information on job offers -->
+          <q-card-section>
+            <JobOffersInfoSection
+              :edit="edit" 
+              :loading="loading" 
+              :fix-data="fixData" 
+              :edit-data="data"
+              :users-list-option="usersListOption"
+              @save="save"
+              @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
+              @openEdit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
+          </q-card-section>
 
-        <!-- Employment Information -->
-        <q-card-section>
-          <EmploymentInfoSection
-            :edit="edit" 
-            :loading="loading" 
-            :fix-data="fixData" 
-            :edit-data="data"
-            :users-list-option="usersListOption"
-            @save="save"
-            @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')" 
-            @openEdit="edit.push('employmentInfo')" :disable-level="disableLevel"  />
-        </q-card-section>
+          <!-- Employment Information -->
+          <q-card-section>
+            <EmploymentInfoSection
+              :edit="edit" 
+              :loading="loading" 
+              :fix-data="fixData" 
+              :edit-data="data"
+              :users-list-option="usersListOption"
+              @save="save"
+              @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')" 
+              @openEdit="edit.push('employmentInfo')" :disable-level="disableLevel"  />
+          </q-card-section>
+        </template>
       </q-form>
     </q-card>
   </q-scroll-area>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getFirestore, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { Applicant, ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
@@ -124,8 +134,29 @@ const fixStore = useFix();
 
 const data = ref({...props.fixData});
 const loading = ref(false);
-const edit = ref<string[]>([])
+const edit = ref<string[]>([]);
 const usersListOption = ref<selectOptions[]>([]);
+const name = ref('');
+
+watch(
+  () => [data.value['client'], data.value['office'], props.fixData],
+  () => {
+    let clientName = '', officeName = ''
+    if (data.value['client']) {
+      clientName = applicantStore.state.clientList.find(client => client.id === data.value['client'])?.name || '';
+      const offices = applicantStore.state.clientList.find(client => client.id === data.value['client'])?.office
+      if (data.value['office']) {
+        officeName = offices?.find(office => office.id === data.value['office'])?.name || ''
+      }
+    }
+    if (clientName || officeName ) {
+      name.value = `${clientName } ${officeName }`
+      return ;
+    }
+    name.value = ''
+  },
+  { deep: true, immediate: true}
+)
 
 function loadUser() {
   const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
@@ -147,6 +178,10 @@ loadUser();
 async function save(type: string, dataR) {
   let retData = {};
   switch(type){
+    case 'main': {
+      retData = pick(dataR, ['office', 'client'])
+      break;
+    }
     case 'info': {
       retData = pick(dataR, ['status', 'date', 'reason', 'contactPerson', 'memo'])
       if (retData['date']) {

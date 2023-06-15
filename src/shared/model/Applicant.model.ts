@@ -50,8 +50,8 @@ export interface ApplicantBase {
   organizationId: string;
   prefecture?: string;
   municipalities?: string;
-  street: string;
-  apartment: string;
+  street?: string;
+  apartment?: string;
   status?: ApplicantStatus;
   statusChangeTimestamp?: {[key: string] : Timestamp}[]
   staffRank?: number;
@@ -62,7 +62,7 @@ export interface ApplicantBase {
   address?: string;
   classification?: string;
   currentStatusMonth?: string;
-  deleted: boolean;
+  deleted?: boolean;
   imageURL?: string;
   attractionsStatus?: boolean;
   seduser?: string;
@@ -232,6 +232,7 @@ export interface ApplicantFix {
   status: boolean;
   reason: string;
   reasonDetal?: string;
+  client: string;
   date: string;
   contactPerson: string;
   memo: string;

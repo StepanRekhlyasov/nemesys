@@ -33,7 +33,7 @@
 			</labelField>
 		</div>
 		
-		<div class="row q-pb-sm" v-if="data['inspectionStatus'] == 'ng'">
+		<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" :value="fixData.reasonNG" valueClass="col-9">
 				<div class="row">
 						<div class="col-9">
@@ -76,8 +76,11 @@
 				:value="usersListOption
 					.filter(user => user.value === data['contact'])
 					.map(user => user.label).join('')">
-				<q-input dense outlined bg-color="white"
-					v-model="data['contact']" :disable="loading || disableLevel < 1" />
+          <q-select
+            v-model="data['contact']"
+            :disable="loading || disableLevel < 1"
+            emit-value map-options dense outlined
+            :options="usersListOption" :label="$t('common.pleaseSelect')" />
 			</labelField>
 			<labelField
 				:edit="edit.includes('jobSearchInfo')"
