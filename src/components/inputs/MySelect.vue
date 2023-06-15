@@ -4,6 +4,7 @@
       class="mySelect"
       outlined
       dense
+      :clearable="true"
       v-bind="$attrs"
       :options="optionsList"
       :disable="loading"
