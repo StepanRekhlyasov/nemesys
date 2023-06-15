@@ -2,7 +2,7 @@
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-xs q-mb-none">
       <span class="text-primary text-h6 q-pt-md"> {{ $t('applicant.list.fixEmployment.fixDestinationOffice') }} </span>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true"
+      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true;fixData={}"
         class="no-shadow q-ml-lg" />
     </q-card-section>
 
@@ -167,7 +167,7 @@ const contactListData: Ref<ApplicantFix[]> = ref([]);
 const users:Ref<User[]> = ref([]);
 const drawerRight = ref(false);
 const disableLevel = ref(0);
-const fixData = ref({} as ApplicantFix)
+const fixData = ref({})
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -255,13 +255,21 @@ async function updateData(data){
     data['updated_at'] = serverTimestamp();
     await fixStore.updateFix(fixData.value.id, data)
   }
+  if ('date' in data) {
+    data['date'] = data['date'] ? toDateFormat(data['date']): data['date']
+  }
+  if ('offerDate' in data) {
+    data['offerDate'] = data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate']
+  }
+  if ('admissionDate' in data) {
+    data['admissionDate'] = data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate']
+  }
+  if ('inspectionDate' in data) {
+    data['inspectionDate'] = data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
+  }
   fixData.value = {
     ...fixData.value, 
-    ...data,        
-    date: data['date'] ? toDateFormat(data['date']): data['date'],
-    offerDate: data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate'],
-    admissionDate: data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate'],
-    inspectionDate: data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
+    ...data
   };
   disableChange();
 }
