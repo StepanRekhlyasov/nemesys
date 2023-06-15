@@ -7,19 +7,19 @@
     @onSave="emit('save', 'info', data); resetData();">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
-        :value="fixData.status? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
-        <q-checkbox v-model="data['status']" label="OK" @click="data['data'] = '';emit('disableChange')"
+        :value="fixData.fixStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+        <q-checkbox v-model="data['fixStatus']" label="OK" @click="data['data'] = '';emit('disableChange')"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
-        <q-checkbox v-model="data['status']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
+        <q-checkbox v-model="data['fixStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
           unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
       </labelField>
 
-      <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.date">
-        <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['date']" :disable="loading">
+      <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.fixDate">
+        <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['fixDate']" :disable="loading">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['date']" mask="YYYY/MM/DD">
+                <q-date v-model="data['fixDate']" mask="YYYY/MM/DD">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -31,7 +31,7 @@
       </labelField>
     </div>
     
-    <template v-if="!data['status']">
+    <template v-if="!data['fixStatus']">
       <div class="row q-pb-sm">  
         <labelField 
           :edit="edit.includes('info') " 
@@ -114,7 +114,7 @@ const statusOptions = ref<selectOptions[]> ([]);
 resetData();
 
 watch(() => [data.value['reason']], () => {
-  if ('status' in data.value && data.value['status'] == false) {
+  if ('fixStatus' in data.value && data.value['fixStatus'] == false) {
     switch(data.value['reason']){
       case('notApplicable'):
         statusOptions.value = notApplicableFixList;
@@ -142,8 +142,8 @@ watch(
 
 function resetData() {
   data.value = {
-    status: props.editData['status'] || false,
-    date: props.editData['date'] || '',
+    fixStatus: props.editData['fixStatus'] || false,
+    fixDate: props.editData['fixDate'] || '',
     reason: props.editData['reason'] || '',
     reasonDetal: props.editData['reasonDetal'] || '',
     contactPerson: props.editData['contactPerson'] || '',

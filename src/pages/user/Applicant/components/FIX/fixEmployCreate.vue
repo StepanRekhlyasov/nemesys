@@ -124,7 +124,7 @@ const props = defineProps<{
   applicant: Applicant,
   disableLevel: number
 }>()
-const emits = defineEmits(['updateList', 'close', 'updateDoc', 'updateStatus'])
+const emits = defineEmits(['updateList', 'close', 'updateDoc'])
 
 const db = getFirestore();
 const auth = getAuth();
@@ -183,9 +183,9 @@ async function save(type: string, dataR) {
       break;
     }
     case 'info': {
-      retData = pick(dataR, ['status', 'date', 'reason', 'reasonDetal', 'contactPerson', 'memo'])
-      if (retData['date']) {
-        retData['date'] = Timestamp.fromDate(new Date(retData['date']))
+      retData = pick(dataR, ['fixStatus', 'fixDate', 'reason', 'reasonDetal', 'contactPerson', 'memo'])
+      if (retData['fixDate']) {
+        retData['fixDate'] = Timestamp.fromDate(new Date(retData['fixDate']))
       }
       break;
     }
@@ -222,9 +222,8 @@ async function save(type: string, dataR) {
       return ;
     }
   }
-  await emits('updateDoc', retData)
+  emits('updateDoc', retData)
   emits('updateList')
-  emits('updateStatus')
   edit.value=edit.value.filter(i => i !== type)
 }
 watch(() => props.fixData, () => {
@@ -240,7 +239,6 @@ async function saveDoc() {
       fixStore.updateFix(props.fixData.id, retData)
 
       emits('updateList')
-      emits('updateStatus')
       emits('close')
       return;
     }
@@ -250,7 +248,6 @@ async function saveDoc() {
     await fixStore.saveFix(props.applicant.id, retData)
 
     emits('updateList')
-    emits('updateStatus', [true])
     emits('close')
   } catch (e) {
     console.log(e)

@@ -34,6 +34,10 @@ export interface ApplicantDates {
   dob?: Timestamp;
   attendingDate?: Timestamp;
   timeToWork?: Timestamp;
+  fixDate?: Timestamp;
+  inspectionDate?: Timestamp;
+  offerDate?: Timestamp;
+  admissionDate?: Timestamp;
 }
 export interface ApplicantInputDates {
   invitationDate?: string;
@@ -43,6 +47,10 @@ export interface ApplicantInputDates {
   dob?: string;
   attendingDate?: string;
   timeToWork?: string;
+  fixDate?: string;
+  inspectionDate?: string;
+  offerDate?: string;
+  admissionDate?: string;
 }
 
 export interface ApplicantBase {
@@ -69,6 +77,10 @@ export interface ApplicantBase {
   employmentStatus?: string;
   period?: string;
   position?: string[];
+  fixStatus?: boolean;
+  inspectionStatus?: boolean;
+  offerStatus?: boolean;
+  admissionStatus?: boolean;
 }
 export interface Applicant extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantDates {
 }
@@ -229,11 +241,11 @@ export interface ApplicantFix {
   created_user?: string;
   created_at: string;
   // Fix Info 
-  status: boolean;
+  fixStatus: boolean;
   reason: string;
   reasonDetal?: string;
   client: string;
-  date: string;
+  fixDate: string;
   contactPerson: string;
   memo: string;
   // Job Search Info 

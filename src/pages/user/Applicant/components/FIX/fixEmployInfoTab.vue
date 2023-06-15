@@ -45,21 +45,21 @@
       <template v-slot:body-cell-fixDate="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <span class="row" v-if="props.row.status">{{ props.row.date }}</span>
-          <span class="row text-uppercase">{{ props.row.status? 'OK' : 'status' in props.row ? 'NG' : '-' }}</span>
+          <span class="row" v-if="props.row.fixStatus">{{ props.row.fixDate }}</span>
+          <span class="row text-uppercase">{{ props.row.fixStatus? 'OK' : 'fixStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
       <template v-slot:body-cell-workDay="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <template v-if="props.row.status">
+          <template v-if="props.row.fixStatus">
             <span class="row" v-if="props.row.inspectionStatus">{{ props.row.inspectionDate }}</span>
             <span class="row text-uppercase">
               {{ props.row.inspectionStatus? 'OK' : 'inspectionStatus' in props.row ? 'NG' : '-' }}
             </span>
           </template>
-          <span v-if="!props.row.status">-</span>
+          <span v-if="!props.row.fixStatus">-</span>
         </q-td>
       </template>
 
@@ -123,7 +123,6 @@
     :applicant="applicant"
     :disableLevel="disableLevel"
     @updateList="loadContactData"
-    @updateStatus="updateStatus"
     @updateDoc="updateData"/>
 </q-drawer>
 </template>
@@ -136,7 +135,7 @@ import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
-import { User, ApplicantFix, ApplicantStatus, Applicant } from 'src/shared/model';
+import { User, ApplicantFix, Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 
@@ -155,7 +154,7 @@ const contactListData: Ref<ApplicantFix[]> = ref([]);
 const users:Ref<User[]> = ref([]);
 const drawerRight = ref(false);
 const disableLevel = ref(0);
-const fixData = ref({})
+const fixData = ref<Partial<ApplicantFix>>({})
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -243,8 +242,8 @@ async function updateData(data){
     data['updated_at'] = serverTimestamp();
     await fixStore.updateFix(fixData.value.id, data)
   }
-  if ('date' in data) {
-    data['date'] = data['date'] ? toDateFormat(data['date']): data['date']
+  if ('fixDate' in data) {
+    data['fixDate'] = data['fixDate'] ? toDateFormat(data['fixDate']): data['fixDate']
   }
   if ('offerDate' in data) {
     data['offerDate'] = data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate']
@@ -261,19 +260,22 @@ async function updateData(data){
   }
   const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
   contactListData.value[updateIndex] = {...contactListData.value[updateIndex], ...fixData.value}
+  await applicantStore.saveFixDataToApplicant(fixData.value, props.applicant.id)
   disableChange();
 }
 
 function disableChange() {
   let level = 0;
-  if (fixData.value['status']) {
-    level = 1
-  }
-  if (fixData.value['inspectionStatus']) {
-    level = 2
-  }
-  if (fixData.value['offerStatus']) {
-    level = 3
+  if(fixData.value){
+    if (fixData.value['fixStatus']) {
+      level = 1
+    }
+    if (fixData.value['inspectionStatus']) {
+      level = 2
+    }
+    if (fixData.value['offerStatus']) {
+      level = 3
+    }
   }
   disableLevel.value = level
 }
@@ -284,8 +286,8 @@ function showEditDialog(data) {
   disableChange();
 }
 function rowColor(row) {
-  if ((row.status && row.inspectionStatus && row.offerStatus && row.admissionStatus )
-    || !row.status || !row.inspectionStatus || !row.offerStatus || !row.admissionStatus ) {
+  if ((row.fixStatus && row.inspectionStatus && row.offerStatus && row.admissionStatus )
+    || !row.fixStatus || !row.inspectionStatus || !row.offerStatus || !row.admissionStatus ) {
     return ''
   }
   return 'bg-light-blue-1'
@@ -309,29 +311,6 @@ function showDeleteDialog(data) {
     await fixStore.updateFix(data.id, updateData)
     Alert.success($q, t)
   })
-}
-async function  updateStatus(newDoc?: boolean){
-  let status = props.applicant.status;
-  const lastFix = contactListData.value[0]
-  if (newDoc) {
-    status = ApplicantStatus.WAIT_CONTACT;
-  }
-  if(props.applicant) {
-    status = ApplicantStatus.WAIT_FIX;
-  }
-  if (lastFix['status']) {
-    status = ApplicantStatus.WAIT_VISIT
-  }
-  if (lastFix['inspectionStatus']) {
-    status = ApplicantStatus.WAIT_OFFER
-  }
-  if (lastFix['offerStatus']) {
-    status = ApplicantStatus.WAIT_ENTRY
-  }
-  if (lastFix['admissionStatus']) {
-    status = ApplicantStatus.WORKING
-  }
-  await applicantStore.updateApplicant({status: status})
 }
 </script>
 
