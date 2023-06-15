@@ -195,9 +195,9 @@ function onDataUpdate(users: User[]) {
   rolesData.value?.forEach((doc) => {
     list[doc?.id] = doc
   })
-  if (isAdmin) {
-    filterRoles(list)
-  }
+
+  filterRoles(list, isAdmin)
+
   roles.value = list;
 }
 
