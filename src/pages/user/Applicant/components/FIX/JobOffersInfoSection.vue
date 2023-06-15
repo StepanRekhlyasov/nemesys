@@ -44,7 +44,7 @@
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.chargeOfOffer')"
           :value="usersListOption
-            .filter(user => user.value === data['chargeOfOffer'])
+            .filter(user => user.value === fixData['chargeOfOffer'])
             .map(user => user.label).join('')"
           valueClass="col-9 q-pl-md">
           <q-select
@@ -70,7 +70,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   loading: boolean,
@@ -95,6 +95,13 @@ function resetData(){
     offerMemo: props.editData['offerMemo'] || '',
   }
 }
+
+watch(
+  () => [props.editData, props.fixData],
+  () =>{
+    resetData();
+  }, {deep: true, immediate: true}
+) 
 </script>
 
 <style>
