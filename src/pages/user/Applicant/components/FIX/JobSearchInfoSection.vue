@@ -77,7 +77,7 @@
 					.filter(user => user.value === data['contact'])
 					.map(user => user.label).join('')">
           <q-select
-            v-model="data['chargeOfOffer']"
+            v-model="data['contact']"
             :disable="loading || disableLevel < 1"
             emit-value map-options dense outlined
             :options="usersListOption" :label="$t('common.pleaseSelect')" />
