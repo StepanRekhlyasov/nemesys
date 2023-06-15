@@ -132,7 +132,7 @@ const organization = useOrganization();
 const applicantStore = useApplicant();
 const fixStore = useFix();
 
-const data = ref({...props.fixData});
+const data = ref({});
 const loading = ref(false);
 const edit = ref<string[]>([]);
 const usersListOption = ref<selectOptions[]>([]);
@@ -155,7 +155,7 @@ watch(
     }
     name.value = ''
   },
-  { deep: true, immediate: true}
+  { deep: true, immediate: true }
 )
 
 function loadUser() {
@@ -164,9 +164,9 @@ function loadUser() {
   usersSnapshot.then(users => {
     let list: selectOptions[] = [];
     users?.forEach((doc) => {
-      const data = doc.data();
+      const user = doc.data();
       list.push({
-        label: data.displayName,
+        label: user.displayName,
         value: doc.id
       });
     });
@@ -183,7 +183,7 @@ async function save(type: string, dataR) {
       break;
     }
     case 'info': {
-      retData = pick(dataR, ['status', 'date', 'reason', 'contactPerson', 'memo'])
+      retData = pick(dataR, ['status', 'date', 'reason', 'reasonDetal', 'contactPerson', 'memo'])
       if (retData['date']) {
         retData['date'] = Timestamp.fromDate(new Date(retData['date']))
       }
@@ -192,7 +192,7 @@ async function save(type: string, dataR) {
     case 'jobSearchInfo': {
       retData = pick(
         dataR,
-        ['inspectionStatus', 'inspectionDate', 'reasonNG', 'chargeOfFacility',
+        ['inspectionStatus', 'inspectionDate', 'reasonNG', 'reasonJobDetal', 'chargeOfFacility',
         'jobTitle', 'contact', 'comments', 'notesInspection'])
       if (retData['inspectionDate']) {
         retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
@@ -227,7 +227,11 @@ async function save(type: string, dataR) {
   emits('updateStatus')
   edit.value=edit.value.filter(i => i !== type)
 }
-async function  saveDoc() {
+watch(() => props.fixData, () => {
+  data.value = props.fixData;
+}, {deep: true, immediate: true })
+
+async function saveDoc() {
   try {
     const retData = data.value
     retData['updated_at'] = serverTimestamp();

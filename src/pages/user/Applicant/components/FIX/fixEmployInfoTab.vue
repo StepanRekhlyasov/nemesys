@@ -45,22 +45,21 @@
       <template v-slot:body-cell-fixDate="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <template v-if="props.row.status">
-            <span class="row">{{ props.row.date }}</span>
-            <span class="row text-uppercase">{{ props.row.status? 'OK' : 'NG' }}</span>
-          </template>
-          <span v-if="!props.row.status">-</span>
+          <span class="row" v-if="props.row.status">{{ props.row.date }}</span>
+          <span class="row text-uppercase">{{ props.row.status? 'OK' : 'status' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
       <template v-slot:body-cell-workDay="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <template v-if="props.row.inspectionStatus">
-            <span class="row">{{ props.row.inspectionDate }}</span>
-            <span class="row text-uppercase">{{ props.row.inspectionStatus? 'OK' : 'NG'  }}</span>
+          <template v-if="props.row.status">
+            <span class="row" v-if="props.row.inspectionStatus">{{ props.row.inspectionDate }}</span>
+            <span class="row text-uppercase">
+              {{ props.row.inspectionStatus? 'OK' : 'inspectionStatus' in props.row ? 'NG' : '-' }}
+            </span>
           </template>
-          <span v-if="!props.row.inspectionStatus">-</span>
+          <span v-if="!props.row.status">-</span>
         </q-td>
       </template>
 
@@ -259,7 +258,9 @@ async function updateData(data){
   fixData.value = {
     ...fixData.value, 
     ...data
-  };
+  }
+  const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
+  contactListData.value[updateIndex] = {...contactListData.value[updateIndex], ...fixData.value}
   disableChange();
 }
 
@@ -298,8 +299,7 @@ function showDeleteDialog(data) {
   }).onOk(async () => {
     const user = $q.localStorage.getItem('user');
     if (!user) {
-      return ;
-    }
+      return ;}
 
     let updateData = {}
     updateData['deleted'] = true;
@@ -307,7 +307,6 @@ function showDeleteDialog(data) {
     updateData['deleted_at'] = serverTimestamp();
 
     await fixStore.updateFix(data.id, updateData)
-
     Alert.success($q, t)
   })
 }

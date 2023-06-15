@@ -4,7 +4,7 @@
     :label="$t('applicant.list.fixEmployment.info')"
     @openEdit="emit('openEdit'); resetData();"
     @closeEdit="emit('closeEdit'); resetData();"
-    @onSave="emit('save', 'info', data)">
+    @onSave="emit('save', 'info', data); resetData();">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
         :value="fixData.status? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
@@ -37,18 +37,19 @@
           :edit="edit.includes('info') " 
           :label="$t('applicant.list.fixEmployment.reason')"
           :value="fixData.reason? $t('applicant.list.fixEmployment.'+fixData.reason) : ''"
-          valueClass="col-9">
+          valueClass="col-9 q-pl-md">
           <div class="row">
-            <div class="col-9">
-              <q-radio v-model="data['reason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" @click="changeStatus" />
-              <q-radio v-model="data['reason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" @click="changeStatus" />
-              <q-radio v-model="data['reason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" @click="changeStatus" />
-              <q-radio v-model="data['reason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" @click="changeStatus" />
+            <div class="col-9 q-pl-md">
+              <q-radio v-model="data['reason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" />
+              <q-radio v-model="data['reason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" />
+              <q-radio v-model="data['reason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" />
+              <q-radio v-model="data['reason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" />
             </div>
             <div class="col-3">
               <q-select 
                 v-if="data['reason']" 
                 v-model="data['reasonDetal']"
+                :disable="loading"
                 :options="statusOptions"                        
                 emit-value map-options dense outlined
                 :label="$t('common.pleaseSelect')" 
@@ -62,7 +63,7 @@
       <labelField 
         :edit="edit.includes('info')"
         :value="usersListOption
-          .filter(user => user.value === data['contactPerson'])
+          .filter(user => user.value === fixData['contactPerson'])
           .map(user => user.label).join('')"
         :label="$t('applicant.list.fixEmployment.contactPerson')"
         valueClass="col-9 q-pl-md">  
@@ -96,7 +97,7 @@ import labelField from 'src/components/form/LabelField.vue';
 
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 import { ApplicantFix, selectOptions } from 'src/shared/model';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   loading: boolean,
@@ -112,8 +113,8 @@ const data = ref();
 const statusOptions = ref<selectOptions[]> ([]);
 resetData();
 
-function changeStatus() {
-  if (data.value['status'] && data.value['status'] == false) {
+watch(() => [data.value['reason']], () => {
+  if ('status' in data.value && data.value['status'] == false) {
     switch(data.value['reason']){
       case('notApplicable'):
         statusOptions.value = notApplicableFixList;
@@ -130,7 +131,14 @@ function changeStatus() {
     }
     data.value['reasonDetal'] = '';
   }
-}
+}, {deep: true, immediate: true}) 
+
+watch(
+  () => [props.editData, props.fixData],
+  () =>{
+    resetData();
+  }, {deep: true, immediate: true}
+) 
 
 function resetData() {
   data.value = {

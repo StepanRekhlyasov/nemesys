@@ -34,13 +34,14 @@
 		</div>
 		
 		<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
-			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" :value="fixData.reasonNG" valueClass="col-9">
+			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" 
+				:value="fixData.reasonNG" valueClass="col-9 q-pl-md">
 				<div class="row">
-						<div class="col-9">
-							<q-radio v-model="data['reasonNG']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" @click="changeJobStatus" />
-							<q-radio v-model="data['reasonNG']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" @click="changeJobStatus" />
-							<q-radio v-model="data['reasonNG']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" @click="changeJobStatus" />
-							<q-radio v-model="data['reasonNG']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" @click="changeJobStatus" />
+						<div class="col-9 q-pl-md">
+							<q-radio v-model="data['reasonNG']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')"/>
+							<q-radio v-model="data['reasonNG']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" />
+							<q-radio v-model="data['reasonNG']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" />
+							<q-radio v-model="data['reasonNG']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm"/>
 						</div>
 						<div class="col-3">
 							<q-select 
@@ -74,7 +75,7 @@
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')" 
 				:value="usersListOption
-					.filter(user => user.value === data['contact'])
+					.filter(user => user.value === fixData['contact'])
 					.map(user => user.label).join('')">
           <q-select
             v-model="data['contact']"
@@ -107,7 +108,7 @@ import labelField from 'src/components/form/LabelField.vue';
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 
 
@@ -133,14 +134,15 @@ function resetData() {
 		reasonNG: props.editData['reasonNG'] || '',
 		reasonJobDetal: props.editData['reasonJobDetal'] || '',
 		chargeOfFacility: props.editData['chargeOfFacility'] || '',
+		contact: props.editData['contact'] || '',
 		jobTitle: props.editData['jobTitle'] || '',
 		comments: props.editData['comments'] || '',
 		notesInspection: props.editData['notesInspection'] || '',
 	}
 }
 
-function changeJobStatus() {
-	if (data.value['inspectionStatus'] && data.value['inspectionStatus'] == false) {
+watch(() => [data.value['reasonNG']], () => {
+  if ('inspectionStatus' in data.value && data.value['inspectionStatus'] == false) {
 		switch(data.value['reasonNG']){
 			case('notApplicable'):
 				statusJobOptions.value = notApplicableFixList;
@@ -156,9 +158,15 @@ function changeJobStatus() {
 			break;
 		}
 		data.value['reasonJobDetal'] = '';
-	}
-}
+  }
+}, {deep: true, immediate: true})
 
+watch(
+  () => [props.editData, props.fixData],
+  () =>{
+    resetData();
+  }, {deep: true, immediate: true}
+) 
 </script>
 
 <style>

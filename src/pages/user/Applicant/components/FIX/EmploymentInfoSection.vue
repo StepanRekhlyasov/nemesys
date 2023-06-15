@@ -45,7 +45,7 @@
       <labelField 
         :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.chargeOfAdmission')"
         :value="usersListOption
-          .filter(user => user.value === data['chargeOfAdmission'])
+          .filter(user => user.value === fixData['chargeOfAdmission'])
           .map(user => user.label).join('')">
         <q-select
           v-model="data['chargeOfAdmission']"
@@ -87,7 +87,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   loading: boolean,
@@ -112,6 +112,13 @@ function resetData() {
     admissionMemo: props.editData['admissionMemo'] || '',
   }
 }
+
+watch(
+  () => [props.editData, props.fixData],
+  () =>{
+    resetData();
+  }, {deep: true, immediate: true}
+) 
 </script>
 
 <style>
