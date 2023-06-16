@@ -174,7 +174,6 @@ onMounted( () => {
 async function onSubmit() {
   loading.value = true;
   let data = contactData.value;
-  console.log(contactListData.value.length)
   if (!data['contactMethod']) {
     $q.notify({
       color: 'red-5',
