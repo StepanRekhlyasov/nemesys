@@ -116,7 +116,7 @@
         {{ $t('applicant.list.info.lon') }}
       </div>
       <div class="col-3 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.lon" />
+        <hidden-text v-if="!edit" :value="applicant.lon?.toString()" />
         <q-input
           v-if="edit"
           outlined
@@ -139,7 +139,7 @@
         {{ $t('applicant.list.info.lat') }}
       </div>
       <div class="col-3 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.lat" />
+        <hidden-text v-if="!edit" :value="applicant.lat?.toString()" />
         <q-input
           v-if="edit"
           outlined

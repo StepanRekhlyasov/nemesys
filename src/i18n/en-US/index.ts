@@ -789,8 +789,8 @@ export default {
         fixDestinationOffice: 'FIX Destination Office',
         fixedDestination: 'FIX Destination',
         fixDate: 'FIX Date',
-        workDay: 'Job day',
-        informalOfferDate: 'Date of appointment',
+        workDay: 'Date of visit',
+        informalOfferDate: 'Date of job offer',
         hiringDate: 'Date of entry',
         save: 'Save selection information',
         client: 'Client',
@@ -805,7 +805,7 @@ export default {
         jobOffersInfo: '■Information on job offers',
         employmentInfo: '■Employment Information',
         inspectionStatus :'job inspection status',
-        inspectionDate: 'Date of inspection',
+        inspectionDate: 'Date of visit',
         inspectionRecord: 'Job inspection record',
         reasonNG: 'Reason for NG',
         chargeOfFacility: 'Person in charge of facility',
@@ -827,7 +827,7 @@ export default {
         noDesireWork: 'No desire to work',
         inspection: {
           status :'job inspection status',
-          date: 'Date of inspection',
+          date: 'Date of visit',
           record: 'Job inspection record',
           reasonNG: 'Reason for NG',
           chargeOfFacility: 'Person in charge of facility',
@@ -838,7 +838,7 @@ export default {
         },
         offer:{
           status: 'Offer Status',
-          date: 'Date of Offer',
+          date: 'Date of job offer',
           reasonNG: 'Reason for NG',
           chargeOfOffer: 'Person in charge of job offer',
           memo: 'Offer Memo'

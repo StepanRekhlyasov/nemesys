@@ -45,6 +45,10 @@ export const statusList = computed(() => {
         label:t( 'applicant.statusOption.wait_visit'),
         value :ApplicantStatus.WAIT_VISIT
      },
+    {
+        label:t( 'applicant.statusOption.wait_offer'),
+        value :ApplicantStatus.WAIT_OFFER
+     },
      {
          label:t( 'applicant.statusOption.wait_entry'),
          value :ApplicantStatus.WAIT_ENTRY
@@ -504,3 +508,12 @@ export const requiredFields = computed(()=>{
     'organizationId' : organization.currentOrganizationId,
   }
 })
+
+export const applicantStatusOkFields = {
+  'attractionsStatus' : ApplicantStatus.WAIT_ATTEND,
+  'attendingStatus' : ApplicantStatus.WAIT_FIX,
+  'fixStatus' : ApplicantStatus.WAIT_VISIT,
+  'inspectionStatus' : ApplicantStatus.WAIT_OFFER,
+  'offerStatus' : ApplicantStatus.WAIT_ENTRY,
+  'admissionStatus' : ApplicantStatus.WORKING,
+}

@@ -10,7 +10,7 @@ import { useQuasar } from 'quasar';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
-import { requiredFields } from 'src/shared/constants/Applicant.const';
+import { applicantStatusOkFields, requiredFields } from 'src/shared/constants/Applicant.const';
 import { useOrganization } from './organization';
 import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/ApplicantProgress/const/applicantColumns';
 import { useRoute } from 'vue-router';
@@ -562,9 +562,10 @@ export const useApplicant = defineStore('applicant', () => {
       if (applicantIndex >=0) {
         state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
       }
-      if (showAlert){ Alert.success($q, t); }
+      if (showAlert) { Alert.success($q, t); }
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+        changeApplicantStatusByOkFields()
       } catch(error) {
         if (showAlert){  Alert.warning($q, t); }
       }
@@ -705,6 +706,24 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
     await updateApplicant(saveData)
+  }
+
+  const changeApplicantStatusByOkFields = async () => {
+    if(!state.value.selectedApplicant){
+      return
+    }
+    const initStatus = state.value.selectedApplicant.status
+    let newStatus : ApplicantStatus | null = null
+    for (const [key, value] of Object.entries(applicantStatusOkFields)){
+      if(state.value.selectedApplicant[key]){
+        newStatus = value
+      }
+    }
+    if(newStatus && newStatus !== initStatus){
+      updateApplicant({
+        status: newStatus
+      })
+    }
   }
 
   /** update Applicant in tables after details changes */
