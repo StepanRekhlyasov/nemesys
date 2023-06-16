@@ -7,9 +7,10 @@
             <q-btn dense flat icon="close" @click="$emit('close')" class="q-mr-md"/>
           </div>
           <div class="col-11 ">
-            <span class="row">{{ applicant.name }}</span>
+            <span class="row">{{ fixData.id ? applicant.name: $t('client.add.clientName') }}</span>
             <div class="row">
-              <span class="text-h6 q-pr-md" v-if="!!name"> {{ name }}</span>
+              <span class="text-h6 q-pr-md" v-if="!fixData.id">{{ $t('backOrder.officeName') }}</span>
+              <span class="text-h6 q-pr-md" v-if="!!name && fixData.id"> {{ name }}</span>
               <q-btn v-if="!fixData.id" :label="$t('applicant.list.fixEmployment.save')" color="white" text-color="primary" @click="saveDoc" size="sm"/>
             </div>
           </div>
