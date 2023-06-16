@@ -212,7 +212,8 @@ async function save(type: string, dataR) {
     case 'employmentInfo': {
       retData = pick(
         dataR,
-        ['admissionStatus', 'admissionDate', 'reasonNotJoining', 'chargeOfAdmission', 'admissionMemo', 'endDate'])
+        ['admissionStatus', 'admissionDate', 'admissionReason', 'admissionReasonDetal',
+        'chargeOfAdmission', 'admissionMemo', 'endDate'])
       if (retData['admissionDate']) {
         retData['admissionDate'] = Timestamp.fromDate(new Date(retData['admissionDate']))
       }
