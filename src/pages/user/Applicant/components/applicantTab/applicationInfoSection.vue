@@ -195,7 +195,7 @@ function resetData() {
     email: props?.applicant['email'],
     lon: props?.applicant['lon'],
     lat: props?.applicant['lat'],
-    address: props.applicant['address'] ||  [props.applicant['prefecture'], props.applicant['municipality'], props.applicant['street'], props.applicant['apartament']].join(' '),
+    address: props.applicant['address'] ||  '',
     postCode: props?.applicant['postCode'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));

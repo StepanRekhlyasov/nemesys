@@ -7,7 +7,7 @@
             <q-btn dense flat icon="close" @click="$emit('close')" class="q-mr-md"/>
           </div>
           <div class="col-11 ">
-            <span class="row">{{ fixData.id ? applicant.name: $t('client.add.clientName') }}</span>
+            <span class="row">{{ fixData.id ? applicantStore.state.clientList.find(client => client.id === fixData['client'])?.name || '': $t('client.add.clientName') }}</span>
             <div class="row">
               <span class="text-h6 q-pr-md" v-if="!fixData.id">{{ $t('backOrder.officeName') }}</span>
               <span class="text-h6 q-pr-md" v-if="!!name && fixData.id"> {{ name }}</span>
@@ -37,7 +37,7 @@
               emit-value map-options
               :label="$t('applicant.list.fixEmployment.client')"  />
             <q-select
-              v-model="data.office"
+              v-model="data['office']"
               :loading="loading"
               emit-value map-options
               option-value="id"
@@ -140,18 +140,17 @@ const usersListOption = ref<selectOptions[]>([]);
 const name = ref('');
 
 watch(
-  () => [data.value['client'], data.value['office'], props.fixData],
+  () => [props.fixData],
   () => {
-    let clientName = '', officeName = ''
-    if (data.value['client']) {
-      clientName = applicantStore.state.clientList.find(client => client.id === data.value['client'])?.name || '';
-      const offices = applicantStore.state.clientList.find(client => client.id === data.value['client'])?.office
-      if (data.value['office']) {
-        officeName = offices?.find(office => office.id === data.value['office'])?.name || ''
+    let officeName = ''
+    if (props.fixData['client']) {
+      const offices = applicantStore.state.clientList.find(client => client.id === props.fixData['client'])?.office
+      if (props.fixData['office']) {
+        officeName = offices?.find(office => office.id === props.fixData['office'])?.name || ''
       }
     }
-    if (clientName || officeName ) {
-      name.value = `${clientName } ${officeName }`
+    if (officeName ) {
+      name.value = officeName
       return ;
     }
     name.value = ''
@@ -228,8 +227,8 @@ async function save(type: string, dataR) {
   edit.value=edit.value.filter(i => i !== type)
 }
 watch(() => props.fixData, () => {
-  data.value = props.fixData;
-}, {deep: true, immediate: true })
+  data.value = {...props.fixData};
+}, {immediate: true })
 
 async function saveDoc() {
   try {

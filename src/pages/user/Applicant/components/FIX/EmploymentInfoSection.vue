@@ -104,7 +104,7 @@ resetData();
 
 function resetData() {
   data.value = {
-    admissionStatus: props.editData['admissionStatus'] || '',
+    admissionStatus: props.editData['admissionStatus'] || false,
     admissionDate: props.editData['admissionDate'] || '',
     reasonNotJoining: props.editData['reasonNotJoining'] || '',
     chargeOfAdmission: props.editData['chargeOfAdmission'] || '',
