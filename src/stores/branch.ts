@@ -1,4 +1,4 @@
-import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, runTransaction, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, runTransaction, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, BranchesSearch, branchFlags } from 'src/shared/model';
 import { ConstraintsType, serializeTimestamp, toDateObject } from 'src/shared/utils/utils';
@@ -24,8 +24,8 @@ export const useBranch = defineStore('branch', () => {
 
 
 
-  async function getBranches(db: Firestore, organization_id: string, search?: BranchesSearch) {
-    const businesses = await business.getBusinesses(db, organization_id)
+  async function getBranches(organization_id: string, search?: BranchesSearch) {
+    const businesses = await business.getBusinesses(organization_id)
     const businessesIds = Object.keys(businesses)
     const branchesObj: { [businessId: string]: Branch[] } = {}
 
@@ -61,7 +61,7 @@ export const useBranch = defineStore('branch', () => {
     return branchesObj
   }
 
-  async function editBranch(db: Firestore, branch: PartialWithFieldValue<Branch>, organizationId: string, businessId: string, branchId: string) {
+  async function editBranch(branch: PartialWithFieldValue<Branch>, organizationId: string, businessId: string, branchId: string) {
     const ref = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`)
     serializeTimestamp(branch)
     await updateDoc(ref, {

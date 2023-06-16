@@ -37,7 +37,6 @@ import { useI18n } from 'vue-i18n';
 import { columns } from '../consts/LicenseStatisticColumns'
 import { date, useQuasar } from 'quasar'
 import { Table } from 'src/pages/admin/EnterpriseManagement/types/index'
-import { getFirestore, } from '@firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import OrganizationColspanTabel from 'src/components/organization/OrganizationColspanTabel.vue';
 import { toTable } from 'src/components/organization/handlers/ToTable'
@@ -53,7 +52,6 @@ const currentDate = date.formatDate(Date.now(), 'YYYY-MM')
 const selectedDate = ref(currentDate)
 const data = ref<Table[]>([])
 const loading = ref(true)
-const db = getFirestore()
 const organization = useOrganization()
 const licenceStore = useLicense()
 const branchStore = useBranch()
@@ -62,7 +60,7 @@ const business = useBusiness()
 async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
 
-  const organizationIds = await organization.getAllOrganizationsIds(db)
+  const organizationIds = await organization.getAllOrganizationsIds()
   const tableData = await Promise.all(organizationIds.map(async (id) => {
     return licenceStore.getLicensesInMonth({
       organizationId: id,
@@ -97,10 +95,10 @@ onMounted(async () => {
 
 async function loadCurrentData() {
   data.value = []
-  const organizationIds = await organization.getAllOrganizationsIds(db)
+  const organizationIds = await organization.getAllOrganizationsIds()
   const dataArray = await Promise.all(organizationIds.map(async (id) => {
     return Promise.all([
-      business.getBusinesses(db, id),
+      business.getBusinesses(id),
       branchStore.getBranchesInOrganization(id),
       organization.getDataById([id], 'Organization')
     ])

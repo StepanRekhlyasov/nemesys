@@ -58,7 +58,6 @@ import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
-import { getFirestore } from '@firebase/firestore';
 import SelectUser from './SelectUser.vue'
 import { useMail } from 'src/stores/email';
 import { toDate } from 'src/shared/utils/utils';
@@ -70,14 +69,13 @@ const emit = defineEmits<{ (e: 'closeDialog'), (e: 'onOrganizationAdded') }>()
 const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 const organizationStore = useOrganization()
-const db = getFirestore()
 const user = ref<User>()
 const email = useMail()
 async function addOrganization() {
 
   loading.value = true
   try {
-    await organizationStore.addOrganization(db, organization.value)
+    await organizationStore.addOrganization(organization.value)
     const createdAt = toDate((await organizationStore.getOrganizationByCode(organization.value.code)).createdAt)
     const subject = 'Your organization has been started to use Nemesys.'
     const content = {
