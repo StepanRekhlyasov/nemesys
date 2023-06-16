@@ -1099,6 +1099,7 @@ export default {
     dealType: '案件種別',
     transactionType: '取引種別',
     distance: '起点からの距離',
+    selectBOType: 'BOの種類を選択',
     officeName: '事業所名',
     clientName: 'クライアント名',
     employmentType: '雇用形態',
