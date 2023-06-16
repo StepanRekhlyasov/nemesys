@@ -128,7 +128,7 @@ import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 import { getAuth } from '@firebase/auth';
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantStatus } from 'src/shared/model';
 import { usersInCharge, contactColumns as columns } from 'src/shared/constants/Applicant.const';
 import { useApplicant } from 'src/stores/applicant';
 
@@ -174,6 +174,7 @@ onMounted( () => {
 async function onSubmit() {
   loading.value = true;
   let data = contactData.value;
+  console.log(contactListData.value.length)
   if (!data['contactMethod']) {
     $q.notify({
       color: 'red-5',
@@ -195,6 +196,14 @@ async function onSubmit() {
     );
     loading.value = false;
     contactData.value = {};
+
+    //** if this is first contact added change status */
+    if(contactListData.value.length === 0){
+      applicantStore.updateApplicant({
+        status: ApplicantStatus.WAIT_CONTACT
+      })
+    }
+    
     await updateContactList()
     $q.notify({
       color: 'green-4',
