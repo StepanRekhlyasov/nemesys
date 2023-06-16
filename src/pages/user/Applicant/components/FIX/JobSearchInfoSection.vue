@@ -74,14 +74,9 @@
 
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')" 
-				:value="usersListOption
-					.filter(user => user.value === fixData['contact'])
-					.map(user => user.label).join('')">
-          <q-select
-            v-model="data['contact']"
-            :disable="loading || disableLevel < 1"
-            emit-value map-options dense outlined
-            :options="usersListOption" :label="$t('common.pleaseSelect')" />
+				:value="fixData['contact']">
+          	<q-input dense outlined bg-color="white"
+					v-model="data['contact']" :disable="loading || disableLevel < 1" />
 			</labelField>
 			<labelField
 				:edit="edit.includes('jobSearchInfo')"

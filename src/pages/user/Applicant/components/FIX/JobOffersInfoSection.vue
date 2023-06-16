@@ -33,13 +33,31 @@
         </labelField>
       </div>
 
-      <div class="row q-pb-sm">
-        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" 
-        :value="fixData.offerReasonNG" valueClass="col-9 q-pl-md">                
-          <q-input dense outlined bg-color="white"
-            v-model="data['offerReasonNG']" :disable="loading || disableLevel < 2" />
-        </labelField>
-      </div>
+      <template v-if="!data['offerStatus']">
+        <div class="row q-pb-sm">
+          <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" 
+          :value="fixData.offerReasonNG" valueClass="col-9 q-pl-md">    
+            <div class="row">
+              <div class="col-9 q-pl-md">
+                <q-radio v-model="data['offerReason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" />
+                <q-radio v-model="data['offerReason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" />
+                <q-radio v-model="data['offerReason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" />
+                <q-radio v-model="data['offerReason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" />
+              </div>
+              <div class="col-3">
+                <q-select 
+                  v-if="data['offerReason'] && data['offerReason'] !== 'notCovered'" 
+                  v-model="data['offerReasonDetal']"
+                  :disable="loading"
+                  :options="statusOptions"                        
+                  emit-value map-options dense outlined
+                  :label="$t('common.pleaseSelect')" 
+                />
+              </div>
+            </div>
+          </labelField>
+        </div>
+      </template>
 
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.chargeOfOffer')"
@@ -68,6 +86,7 @@
 <script lang="ts" setup>
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
+import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'
 import { ref, watch } from 'vue';
@@ -81,8 +100,8 @@ const props = defineProps<{
 	disableLevel: number
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
-
 const data = ref({})
+const statusOptions = ref<selectOptions[]> ([]);
 
 resetData();
 
@@ -90,11 +109,33 @@ function resetData(){
   data.value = {
     offerStatus: props.editData['offerStatus'] || false,
     offerDate: props.editData['offerDate'] || '',
-    offerReasonNG: props.editData['offerReasonNG'] || '',
+    offerReasonNG: props.editData['offerReason'] || '',
+    offerReasonDetal: props.editData['offerReasonDetal'] || '',
     chargeOfOffer: props.editData['chargeOfOffer'] || '',
     offerMemo: props.editData['offerMemo'] || '',
   }
 }
+
+
+watch(() => [data.value['offerReason']], () => {
+  if ('offerStatus' in data.value && data.value['offerStatus'] == false) {
+    switch(data.value['offerReason']){
+      case('notApplicable'):
+        statusOptions.value = notApplicableFixList;
+      break;
+      case('decided'):
+        statusOptions.value = decidedFixList;
+      break;
+      case('notCovered'):
+        statusOptions.value = [];
+      break;
+      case('registrationDeclined'):
+        statusOptions.value = registrationDeclinedFixList;
+      break;
+    }
+    data.value['offerReasonDetal'] = '';
+  }
+}, {deep: true, immediate: true}) 
 
 watch(
   () => [props.editData, props.fixData],

@@ -47,7 +47,7 @@
             </div>
             <div class="col-3">
               <q-select 
-                v-if="data['reason']" 
+                v-if="data['reason'] && data['reason'] !== 'notCovered'" 
                 v-model="data['reasonDetal']"
                 :disable="loading"
                 :options="statusOptions"                        
