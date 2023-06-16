@@ -31,6 +31,33 @@
         </q-input>
       </labelField>
     </div>
+    
+
+    <template v-if="!data['admissionStatus']">
+        <div class="row q-pb-sm">
+          <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.offer.reasonNG')" 
+          :value="fixData['admissionReason']" valueClass="col-9 q-pl-md">    
+            <div class="row">
+              <div class="col-9 q-pl-md">
+                <q-radio v-model="data['admissionReason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" />
+                <q-radio v-model="data['admissionReason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" />
+                <q-radio v-model="data['admissionReason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" />
+                <q-radio v-model="data['admissionReason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" />
+              </div>
+              <div class="col-3">
+                <q-select 
+                  v-if="data['admissionReason'] && data['admissionReason'] !== 'notCovered'" 
+                  v-model="data['admissionReasonDetal']"
+                  :disable="loading"
+                  :options="statusOptions"                        
+                  emit-value map-options dense outlined
+                  :label="$t('common.pleaseSelect')" 
+                />
+              </div>
+            </div>
+          </labelField>
+        </div>
+      </template>
 
     <div class="row q-pb-sm">
       <labelField 
@@ -85,6 +112,7 @@
 <script lang="ts" setup>
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
+import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'
 import { ref, watch } from 'vue';
@@ -97,7 +125,8 @@ const props = defineProps<{
   edit: string[],
 	disableLevel: number
 }>()
-const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
+const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit']);
+const statusOptions = ref<selectOptions[]> ([]);
 
 const data = ref({})
 resetData();
@@ -106,12 +135,35 @@ function resetData() {
   data.value = {
     admissionStatus: props.editData['admissionStatus'] || false,
     admissionDate: props.editData['admissionDate'] || '',
-    reasonNotJoining: props.editData['reasonNotJoining'] || '',
+    admissionReason: props.editData['admissionReason'] || '',
+    admissionReasonDetal: props.editData['admissionReasonDetal'] || '',
     chargeOfAdmission: props.editData['chargeOfAdmission'] || '',
     endDate: props.editData['endDate'] || '',
     admissionMemo: props.editData['admissionMemo'] || '',
   }
 }
+
+
+watch(() => [data.value['admissionReason']], () => {
+  if ('admissionStatus' in data.value && data.value['admissionStatus'] == false) {
+    switch(data.value['admissionReason']){
+      case('notApplicable'):
+        statusOptions.value = notApplicableFixList;
+      break;
+      case('decided'):
+        statusOptions.value = decidedFixList;
+      break;
+      case('notCovered'):
+        statusOptions.value = [];
+      break;
+      case('registrationDeclined'):
+        statusOptions.value = registrationDeclinedFixList;
+      break;
+    }
+    data.value['admissionReasonDetal'] = '';
+  }
+}, {deep: true, immediate: true}) 
+
 
 watch(
   () => [props.editData, props.fixData],

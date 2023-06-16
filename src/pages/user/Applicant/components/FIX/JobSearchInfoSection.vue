@@ -45,7 +45,7 @@
 						</div>
 						<div class="col-3">
 							<q-select 
-								v-if="data['reasonNG']" 
+								v-if="data['reasonNG'] && data['reasonNG'] !== 'notCovered'" 
 								v-model="data['reasonJobDetal']"
 								:options="statusJobOptions"                        
 								emit-value map-options dense outlined

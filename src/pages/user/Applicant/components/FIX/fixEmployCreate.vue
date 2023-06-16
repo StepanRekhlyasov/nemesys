@@ -202,7 +202,7 @@ async function save(type: string, dataR) {
     case 'jobOffersInfo': {
       retData = pick(
         dataR,
-        ['offerStatus', 'offerDate', 'offerReasonNG', 'contactPerson', 'memo',
+        ['offerStatus', 'offerDate', 'offerReason', 'offerReasonDetal' ,'contactPerson', 'memo',
         'offerReasonNG', 'chargeOfOffer', 'offerMemo'])
       if (retData['offerDate']) {
         retData['offerDate'] = Timestamp.fromDate(new Date(retData['offerDate']))
