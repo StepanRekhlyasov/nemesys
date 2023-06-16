@@ -125,7 +125,7 @@ export interface DesiredConditions {
 }
 
 export interface Attendance { 
-  attendingStatus?: 'ok' | 'ng';
+  attendingStatus?: boolean;
   attendeeUserInCharge?: string;
   memo?: string;
 }
