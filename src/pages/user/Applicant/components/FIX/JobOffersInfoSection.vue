@@ -10,9 +10,9 @@
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" 
           :value="fixData.offerStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3  q-pl-md">
-          <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange')"
+          <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange');data['offerDate'] = '';"
             checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
-          <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="data['offerDate'] = '';emit('disableChange')"
+          <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
             unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
         </labelField>
 
