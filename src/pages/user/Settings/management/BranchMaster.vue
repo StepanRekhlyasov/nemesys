@@ -38,12 +38,6 @@
               </q-td>
             </template>
 
-            <template v-slot:body-cell-edit=" props ">
-              <q-td :props=" props " auto-width>
-                <q-btn icon="edit" flat @click=" editBranch = props.row; openDialog = true; " />
-              </q-td>
-            </template>
-
             <template v-slot:body-cell-hidden=" props ">
               <q-td :props=" props ">
                 <q-checkbox v-model=" props.row.hidden " :disable=" true " checked-icon="mdi-checkbox-intermediate"
