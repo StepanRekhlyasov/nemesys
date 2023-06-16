@@ -13,11 +13,14 @@ export function getVisibleColumns(columns: QTableProps['columns'], isAdmin: bool
   }, [] as string[])
 }
 
-const userRole = ['KLQYPMOoYxTBLFURjCTy']
+const organizationMembersRoles = ['KLQYPMOoYxTBLFURjCTy', '47SZpyVibCXyPf5gkazr']
 
-export function filterRoles(roles: Record<string, Role>) {
+export function filterRoles(roles: Record<string, Role>, isAdmin: boolean | undefined) {
   for (const roleId in roles) {
-    if (!adminRolesIds.includes(roleId)) {
+    if (!adminRolesIds.includes(roleId) && isAdmin) {
+      delete roles[roleId]
+    }
+    if (!organizationMembersRoles.includes(roleId) && !isAdmin) {
       delete roles[roleId]
     }
   }
@@ -29,7 +32,7 @@ export function getConstraints(isAdmin: boolean | undefined, currentOrganization
     return [where('deleted', '==', false), where('role', 'in', adminRolesIds), orderBy('displayName')]
   }
 
-  return [where('deleted', '==', false), where('role', 'in', userRole), where('organization_ids', 'array-contains', currentOrganizationId)]
+  return [where('deleted', '==', false), where('role', 'in', organizationMembersRoles), where('organization_ids', 'array-contains', currentOrganizationId)]
 }
 
 
