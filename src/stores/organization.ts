@@ -1,4 +1,4 @@
-import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt , updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt , updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
@@ -45,7 +45,7 @@ export const useOrganization = defineStore('organization', () => {
     state.value.currentOrganizationUsers = await getCurrentUsersInChrage()
   })
 
-  async function getAllOrganizationsIds(db: Firestore) {
+  async function getAllOrganizationsIds() {
     const organizationsQuery = query(collection(db, 'organization/'), where('deleted', '==', false));
     const querySnapshot = await getDocs(organizationsQuery);
     const organizationsIds: string[] = []
@@ -82,7 +82,7 @@ export const useOrganization = defineStore('organization', () => {
     return users
   }
 
-  async function addOrganization(db: Firestore, organization: Organization) {
+  async function addOrganization(organization: Organization) {
     const organizationRef = collection(db, 'organization/')
     const docRef = doc(organizationRef)
     organization.id = docRef.id
@@ -101,7 +101,7 @@ export const useOrganization = defineStore('organization', () => {
     return querySnapshot.size === 0
   }
 
-  async function editOrganization(db: Firestore, organization: Partial<Organization>, organizationId: string) {
+  async function editOrganization(organization: Partial<Organization>, organizationId: string) {
     const ref = doc(db, 'organization/' + organizationId)
     serializeTimestamp(organization)
     await updateDoc(ref, {

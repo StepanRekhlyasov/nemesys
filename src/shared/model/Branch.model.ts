@@ -3,7 +3,7 @@ import { dataObject } from '../utils/utils';
 export interface Branch {
   id: string;
   name: string;
-  prefectures: string;
+  prefecture: string;
   phone?: string;
   hidden: boolean;
   created_at: dataObject;

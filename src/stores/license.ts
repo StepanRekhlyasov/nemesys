@@ -51,7 +51,7 @@ export const useLicense = defineStore('license', () => {
   async function getLicensesInMonth({ organizationId, selectedYear, selectedMonth }: { organizationId: string, selectedYear: number, selectedMonth: number }): Promise<Table | undefined> {
     const defaultData = await Promise.all([
       organizationStore.getDataById([organizationId], 'Organization'),
-      businessStore.getBusinesses(db, organizationId),
+      businessStore.getBusinesses(organizationId),
       branchStore.getBranchesInOrganization(organizationId),
     ])
 

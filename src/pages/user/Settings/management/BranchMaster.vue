@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { getFirestore, serverTimestamp } from '@firebase/firestore';
+import { serverTimestamp } from '@firebase/firestore';
 import { Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Branch, BranchesSearch, branchFlags } from 'src/shared/model/Branch.model';
@@ -103,7 +103,6 @@ import { useBranch } from 'src/stores/branch';
 import { columns } from './consts/BranchMasterColumns'
 
 const { t } = useI18n({ useScope: 'global' });
-const db = getFirestore();
 const $q = useQuasar();
 
 const search: Ref<BranchesSearch> = ref({
@@ -139,7 +138,7 @@ async function loadBranchesList() {
   editBranch.value = undefined;
   try {
     if (organization.currentOrganizationId) {
-      branches.value = Object.values(await branchStore.getBranches(db, organization.currentOrganizationId, search.value)).reduce((prev, curr) => {
+      branches.value = Object.values(await branchStore.getBranches(organization.currentOrganizationId, search.value)).reduce((prev, curr) => {
         return prev.concat(curr)
       }, [])
     }
@@ -163,7 +162,7 @@ async function deleteBranch(branch) {
   }).onOk(async () => {
     try {
       loading.value = true;
-      await branchStore.editBranch(db, { deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
+      await branchStore.editBranch({ deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
       loadBranchesList();
       Alert.success($q, t)
     } catch (e) {
