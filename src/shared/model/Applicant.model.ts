@@ -1,5 +1,5 @@
 import { User } from 'firebase/auth';
-import { Timestamp } from 'firebase/firestore';
+import { FieldValue, Timestamp } from 'firebase/firestore';
 
 export interface ApplicantExperience extends ApplicantExperienceBase, ApplicantExperienceDates { }
 export interface ApplicantExperienceInputs extends ApplicantExperienceBase, ApplicantExperienceInputDates { }
@@ -34,6 +34,10 @@ export interface ApplicantDates {
   dob?: Timestamp;
   attendingDate?: Timestamp;
   timeToWork?: Timestamp;
+  fixDate?: Timestamp;
+  inspectionDate?: Timestamp;
+  offerDate?: Timestamp;
+  admissionDate?: Timestamp;
 }
 export interface ApplicantInputDates {
   invitationDate?: string;
@@ -43,6 +47,10 @@ export interface ApplicantInputDates {
   dob?: string;
   attendingDate?: string;
   timeToWork?: string;
+  fixDate?: string;
+  inspectionDate?: string;
+  offerDate?: string;
+  admissionDate?: string;
 }
 
 export interface ApplicantBase {
@@ -50,8 +58,8 @@ export interface ApplicantBase {
   organizationId: string;
   prefecture?: string;
   municipalities?: string;
-  street: string;
-  apartment: string;
+  street?: string;
+  apartment?: string;
   status?: ApplicantStatus;
   statusChangeTimestamp?: {[key: string] : Timestamp}[]
   staffRank?: number;
@@ -62,13 +70,17 @@ export interface ApplicantBase {
   address?: string;
   classification?: string;
   currentStatusMonth?: string;
-  deleted: boolean;
+  deleted?: boolean;
   imageURL?: string;
   attractionsStatus?: boolean;
   seduser?: string;
   employmentStatus?: string;
   period?: string;
   position?: string[];
+  fixStatus?: boolean;
+  inspectionStatus?: boolean;
+  offerStatus?: boolean;
+  admissionStatus?: boolean;
 }
 export interface Applicant extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantDates {
 }
@@ -227,12 +239,14 @@ export enum ApplicantStatus {
 export interface ApplicantFix { 
   id: string;
   created_user?: string;
-  created_at: string;
+  created_at: Timestamp | FieldValue | string;
   // Fix Info 
-  status: boolean;
+  fixStatus: boolean;
   reason: string;
   reasonDetal?: string;
-  date: string;
+  client: string;
+  office: string;
+  fixDate: string;
   contactPerson: string;
   memo: string;
   // Job Search Info 
@@ -271,7 +285,7 @@ export interface ApplicantMemo {
 }
 
 export interface ContactInfo {
-  created_at: string;
+  created_at: Timestamp;
   contactMethod: ContactMethod;
   content: string;
   note: string;
