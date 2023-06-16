@@ -245,13 +245,12 @@ import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { useMetadata } from 'src/stores/metadata';
 
 const props = defineProps<{
   applicant: Applicant
 }>()
 const applicantStore = useApplicant();
-const db = getFirestore();
 const { t } = i18n.global;
 
 const desiredEdit = ref(false);
@@ -278,26 +277,18 @@ const specialDayComputed = computed(()=>{
   return ''
 })
 
+const metadataStore = useMetadata()
 onMounted(async () => {
-  const stationDocRef = doc(db, 'metadata', 'stationRoutes');
-  const stationDocSnap = await getDoc(stationDocRef);
-
-  if (stationDocSnap.exists()) {
-    routeData.value = stationDocSnap.data().routes;
-  }
+  routeData.value = await metadataStore.getStationRoutes()
 });
 
 watch(
     () => (data.value['route']),
     async (newVal,) => {
         if (newVal) {
-            stationData.value = [];
-            data.value['neareststation'] = '';
-            const docRef = doc(db, 'metadata', 'stationRoutes', 'station', newVal);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                stationData.value = docSnap.data()['stations'];
-            }
+          data.value['neareststation'] = '';
+          stationData.value = [];
+          stationData.value = await metadataStore.getStationByID(newVal)
         }
     }
 )

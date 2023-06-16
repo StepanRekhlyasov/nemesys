@@ -236,31 +236,29 @@ onBeforeUnmount(() => {
   unsubscribeUsers.value();
 });
 
+function mutateDatesInData(data){
+  const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate']
+  keys.map((key)=>{
+    if(data[key]){
+      data[key] = toDateFormat(data[key])
+    }
+  })
+  return data
+}
 
 async function updateData(data){
   if (fixData.value?.id){
     data['updated_at'] = serverTimestamp();
     await fixStore.updateFix(fixData.value.id, data)
   }
-  if ('fixDate' in data) {
-    data['fixDate'] = data['fixDate'] ? toDateFormat(data['fixDate']): data['fixDate']
-  }
-  if ('offerDate' in data) {
-    data['offerDate'] = data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate']
-  }
-  if ('admissionDate' in data) {
-    data['admissionDate'] = data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate']
-  }
-  if ('inspectionDate' in data) {
-    data['inspectionDate'] = data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
-  }
+  data = mutateDatesInData(data)
   fixData.value = {
     ...fixData.value, 
     ...data
   }
   const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
   contactListData.value[updateIndex] = {...contactListData.value[updateIndex], ...fixData.value}
-  await applicantStore.saveFixDataToApplicant(fixData.value, props.applicant.id)
+  await applicantStore.saveFixDataToApplicant(fixData.value)
   disableChange();
 }
 

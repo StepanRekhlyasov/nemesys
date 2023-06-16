@@ -28,7 +28,7 @@
           </div>           
           <q-select
               v-model="data.client"
-              @update:model-value="data['office']=null"
+              @update:model-value="data['office']=undefined"
               :loading="loading"
               :options="applicantStore.state.clientList"
               option-value="id"
@@ -132,7 +132,7 @@ const organization = useOrganization();
 const applicantStore = useApplicant();
 const fixStore = useFix();
 
-const data = ref({});
+const data = ref<Partial<ApplicantFix>>({});
 const loading = ref(false);
 const edit = ref<string[]>([]);
 const usersListOption = ref<selectOptions[]>([]);

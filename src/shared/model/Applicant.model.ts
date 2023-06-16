@@ -1,5 +1,5 @@
 import { User } from 'firebase/auth';
-import { Timestamp } from 'firebase/firestore';
+import { FieldValue, Timestamp } from 'firebase/firestore';
 
 export interface ApplicantExperience extends ApplicantExperienceBase, ApplicantExperienceDates { }
 export interface ApplicantExperienceInputs extends ApplicantExperienceBase, ApplicantExperienceInputDates { }
@@ -239,12 +239,13 @@ export enum ApplicantStatus {
 export interface ApplicantFix { 
   id: string;
   created_user?: string;
-  created_at: string;
+  created_at: Timestamp | FieldValue | string;
   // Fix Info 
   fixStatus: boolean;
   reason: string;
   reasonDetal?: string;
   client: string;
+  office: string;
   fixDate: string;
   contactPerson: string;
   memo: string;
@@ -284,7 +285,7 @@ export interface ApplicantMemo {
 }
 
 export interface ContactInfo {
-  created_at: string;
+  created_at: Timestamp;
   contactMethod: ContactMethod;
   content: string;
   note: string;

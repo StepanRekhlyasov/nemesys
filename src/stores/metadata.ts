@@ -28,6 +28,24 @@ export const useMetadata = defineStore('metadata', () => {
     return [];
   }
 
-  return { state, getPrefectureJP }
+  async function getStationRoutes() {
+    const stationDocRef = doc(db, 'metadata', 'stationRoutes');
+    const stationDocSnap = await getDoc(stationDocRef);
+
+    if (stationDocSnap.exists()) {
+      return stationDocSnap.data().routes;
+    }
+    return []
+  }
+  async function getStationByID(id : string) {
+    const docRef = doc(db, 'metadata', 'stationRoutes', 'station', id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return docSnap.data()['stations'];
+    }
+    return []
+  }
+
+  return { state, getPrefectureJP, getStationRoutes, getStationByID }
 
 })
