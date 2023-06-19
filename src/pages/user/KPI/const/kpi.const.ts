@@ -155,3 +155,365 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
     },
   ]
 }) 
+export const unitPriceColumns = computed<QTableProps['columns']>(() => {
+  return [
+    {
+      name: '',
+      field: 'name',
+      label: '',
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.1'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.2'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.3'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.4'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.5'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.6'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.7'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.8'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.9'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.10'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.11'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.12'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.13'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.14'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.15'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.15'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.unitPrice.15'),
+      align: 'center',
+      sortable: true
+    },
+  ]
+}) 
+export const applicationAttributeColumns = computed<QTableProps['columns']>(() => {
+  return [
+    {
+      name: '',
+      field: 'name',
+      label: '',
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.1'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.2'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.3'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.4'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.5'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.6'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.7'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.8'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.9'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.10'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.11'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.12'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.13'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.14'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.15'),
+      align: 'center',
+      sortable: true
+    },
+  ]
+}) 
+export const everydayColumns = computed<QTableProps['columns']>(() => {
+  return [
+    {
+      name: '',
+      field: 'name',
+      label: '',
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.1'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.2'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.3'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.4'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.5'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.6'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.7'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.8'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.9'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.10'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.11'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.12'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.13'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.14'),
+      align: 'center',
+      sortable: true
+    },
+    {
+      name: '',
+      field: '',
+      label: t('KPI.tables.everyday.15'),
+      align: 'center',
+      sortable: true
+    },
+  ]
+}) 

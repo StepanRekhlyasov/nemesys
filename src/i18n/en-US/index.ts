@@ -1701,7 +1701,25 @@ export default {
     unitPrice: 'Unit price/LT',
     applicationAttribute: 'Application attribute',
     media: 'Media',
+    total: 'Total',
     tables: {
+      everyday: {
+        1: 'Number of Outgoing Calls',
+        2: 'Number of Incoming Calls',
+        3: 'FAX',
+        4: 'BO_Introduction',
+        5: 'BO_Observation',
+        6: 'BO_Dispatch',
+        7: 'BO_Referral',
+        8: 'BO_TTP',
+        9: 'Application',
+        10: 'Attraction',
+        11: 'Attend',
+        12: 'FIX',
+        13: 'Job Interview',
+        14: 'Job Offer',
+        15: 'Joining'
+      },
       actualFigures: {
         1: 'Branch Name',
         2: 'Expenses',
@@ -1724,6 +1742,47 @@ export default {
         19: 'Joining Rate',
         20: 'Application → FIX',
         21: 'Application → Joining'
+      },
+      unitPrice: {
+        1: 'Application',
+        2: 'Valid Application',
+        3: 'Contact',
+        4: 'Attraction',
+        5: 'Attend',
+        6: 'FIX',
+        7: 'Job Interview',
+        8: 'Job Offer',
+        9: 'Joining',
+        10: 'Application → Contact',
+        11: 'Contact → Attraction',
+        12: 'Attraction → Attend',
+        13: 'Attend → FIX',
+        14: 'FIX → Job Interview',
+        15: 'Job Interview → Job Offer',
+        16: 'Job Offer → Joining',
+        17: 'Joining → Application'
+      },
+      applicationAttribute: {
+        1: 'Male',
+        2: 'Female',
+        3: '10s',
+        4: '20s',
+        5: '30s',
+        6: '40s',
+        7: '50s',
+        8: '60s',
+        9: '1 day/week',
+        10: '2 days/week',
+        11: '3 days/week',
+        12: '4 days/week',
+        13: '5 days/week',
+        14: 'No Qualification',
+        15: 'Novice',
+        16: 'Practitioner',
+        17: 'Nursing Care',
+        18: 'Assistant Nurse',
+        19: 'Registered Nurse',
+        20: 'Others'
       }
     }
   }

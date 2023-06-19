@@ -27,7 +27,7 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1">
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
         {{ $t('KPI.item') }}
         <MySelect
           :options="[
@@ -50,14 +50,23 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1">
-        {{ mode!=='day'?$t('KPI.targetPeriod'):$t('applicant.progress.filters.month') }}
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
+        {{ $t('KPI.targetPeriod') }}
         <DateRange
           v-model="dateRange"
-          :width="mode!=='day'?'250px':'150px'"
+          :width="'250px'"
           :height="'40px'"
           @update:model-value="getData()"
-          :range="mode!=='day'"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'day'">
+        {{ $t('applicant.progress.filters.month') }}
+        <DateRange
+          v-model="day"
+          :width="'150px'"
+          :height="'40px'"
+          @update:model-value="getData()"
+          :range="false"
         />
       </label>
       <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
@@ -103,6 +112,7 @@
       <KpiTable
         :rows="rowData"
         :mode="mode"
+        :item="item"
         ref="kpiTableRef"
       />
       <q-linear-progress query v-if="loading" color="primary"/>
@@ -127,8 +137,15 @@ const dateRange = ref('')
 const branch = ref('')
 const occupation = ref('')
 const user = ref('')
-const mode = ref('branch')
+const mode = ref('day')
 const item = ref('actualFigures')
+const resetData = () => {
+  user.value = ''
+  day.value = ''
+  dateRange.value = ''
+  branch.value = ''
+  occupation.value = ''
+}
 const loading = ref(false)
 const rowData = ref<User[]>([])
 const userStore = useUserStore()
@@ -157,9 +174,13 @@ async function getData(){
 watch(()=>organizationStore.currentOrganizationId, ()=>{
   getData()
 })
+watch(()=>mode.value, ()=>{
+  resetData()
+})
 function downloadCSV(){
   kpiTableRef.value?.exportTable()
 }
+
 onMounted(()=>{
   getData()
 })
