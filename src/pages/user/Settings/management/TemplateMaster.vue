@@ -88,7 +88,6 @@
 import { doc, getFirestore, updateDoc} from '@firebase/firestore';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { branchFlags } from 'src/shared/model/Branch.model';
 import { getTemplates, toDateObject } from 'src/shared/utils/utils';
 import TemplateCreateForm from './components/TemplateCreateForm.vue';
 import { Template } from 'src/shared/model/Template.model';
@@ -198,7 +197,6 @@ export default {
       editTemplate,
 
       templates,
-      branchFlags,
 
       async deleteTemplate(template) {
         $q.dialog({

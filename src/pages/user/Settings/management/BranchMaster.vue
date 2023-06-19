@@ -23,233 +23,155 @@
           </q-input>
           <div class="row content-center q-pr-md">
             <span class="row content-center q-pr-md">{{ $t('settings.branch.flag') }}</span>
-            <q-select v-model="search.flag" :options="flagOptions" option-value="flag" option-label="label" emit-value
+            <q-select v-model=" search.flag " :options=" flagOptions " option-value="flag" option-label="label" emit-value
               map-options dense />
           </div>
-          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" unelevated
-            @click="loadBranchesList" />
+          <q-btn :label=" $t('common.search') " color="primary" text-color="white" size="md" unelevated
+            @click=" loadBranchesList " />
         </q-card-section>
         <q-card-section class="q-pa-none">
-          <q-table :columns="columns" :rows="branches" row-key="id" :loading="loading" v-model:pagination="pagination"
-            hide-pagination class="no-shadow">
-            <template v-slot:body-cell-delete="props">
-              <q-td :props="props" auto-width>
-                <q-btn icon="delete" flat @click="deleteBranch(props.row)" />
+          <q-table :columns=" columns " :rows=" branches " row-key="id" :loading=" loading "
+            v-model:pagination=" pagination " hide-pagination class="no-shadow">
+            <template v-slot:body-cell-delete=" props ">
+              <q-td :props=" props " auto-width>
+                <q-btn icon="delete" flat @click=" deleteBranch(props.row) " />
               </q-td>
             </template>
 
-            <template v-slot:body-cell-edit="props">
-              <q-td :props="props" auto-width>
-                <q-btn icon="edit" flat @click="editBranch = props.row; openDialog = true;" />
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-hidden="props">
-              <q-td :props="props">
-                <q-checkbox v-model="props.row.hidden" :disable="true" checked-icon="mdi-checkbox-intermediate"
+            <template v-slot:body-cell-hidden=" props ">
+              <q-td :props=" props ">
+                <q-checkbox v-model=" props.row.hidden " :disable=" true " checked-icon="mdi-checkbox-intermediate"
                   unchecked-icon="mdi-checkbox-blank-outline" class="q-pr-md" />
               </q-td>
             </template>
 
-            <template v-slot:body-cell-prefectures="props">
-              <q-td :props="props">
-                <span v-if="props.row.prefectures">{{ $t('prefectures.' + props.row.prefectures) }}</span>
+            <template v-slot:body-cell-prefectures=" props ">
+              <q-td :props=" props ">
+                <span v-if=" props.row.prefectures ">{{ $t('prefectures.' + props.row.prefectures) }}</span>
               </q-td>
             </template>
 
-            <template v-slot:body-cell-flag="props">
-              <q-td :props="props">
-                <span v-if="props.row.flag">{{ $t('settings.branch.flags.' + (props.row.flag)) }}</span>
+            <template v-slot:body-cell-flag=" props ">
+              <q-td :props=" props ">
+                <span v-if=" props.row.flag ">{{ $t('settings.branch.flags.' + (props.row.flag)) }}</span>
               </q-td>
             </template>
 
-            <template v-slot:body-cell-created_at="props">
-              <q-td :props="props">
+            <template v-slot:body-cell-created_at=" props ">
+              <q-td :props=" props ">
                 {{ props.row.created_at.date }}<br />
                 {{ props.row.created_at.time }}
               </q-td>
             </template>
 
-            <template v-slot:body-cell-updated_at="props">
-              <q-td :props="props">
+            <template v-slot:body-cell-updated_at=" props ">
+              <q-td :props=" props ">
                 {{ props.row.updated_at.date }}<br />
                 {{ props.row.updated_at.time }}
               </q-td>
             </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
-            <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-              :max="(branches.length / pagination.rowsPerPage) >= 1 ? branches.length / pagination.rowsPerPage : 1"
+            <q-pagination v-model=" pagination.page " color="grey-8" padding="5px 16px" gutter="md"
+              :max=" (branches.length / pagination.rowsPerPage) >= 1 ? branches.length / pagination.rowsPerPage : 1 "
               direction-links outline />
           </div>
         </q-card-section>
       </q-card>
     </q-card-section>
   </div>
-  <q-dialog v-model="openDialog" @hide="editBranch = undefined">
+  <q-dialog v-model=" openDialog " @hide=" editBranch = undefined ">
     <DialogWrapper>
-      <BranchCreateForm @closeDialog="loadBranchesList(); openDialog = false;" :editBranch="editBranch" color="primary" />
+      <BranchCreateForm @closeDialog=" loadBranchesList(); openDialog = false; " :editBranch=" editBranch "
+        color="primary" />
     </DialogWrapper>
   </q-dialog>
 </template>
 
-<script lang="ts">
-import { getFirestore, serverTimestamp } from '@firebase/firestore';
-import { computed, Ref, ref, watch } from 'vue';
+<script setup lang="ts">
+import { serverTimestamp } from '@firebase/firestore';
+import { Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { BranchesSearch } from 'src/shared/utils/User.utils';
-import { Branch, branchFlags } from 'src/shared/model/Branch.model';
+import { Branch, BranchesSearch, branchFlags } from 'src/shared/model/Branch.model';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
-import { QTableProps, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
 import { flagOptions } from 'src/components/handlers/flagOptions';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import { useBranch } from 'src/stores/branch';
-export default {
-  name: 'branchMaster',
-  components: {
-    BranchCreateForm,
-    DialogWrapper
-  },
-  setup() {
-    const { t } = useI18n({ useScope: 'global' });
-    const db = getFirestore();
-    const $q = useQuasar();
+import { columns } from './consts/BranchMasterColumns'
 
-    const search: Ref<BranchesSearch> = ref({
-      queryText: '',
-      flag: branchFlags.All,
-    });
-    const branches: Ref<Branch[]> = ref([])
-    const loading = ref(false);
-    const editBranch: Ref<Branch | undefined> = ref(undefined)
+const { t } = useI18n({ useScope: 'global' });
+const $q = useQuasar();
 
-    // dialog date
-    const openDialog = ref(false)
+const search: Ref<BranchesSearch> = ref({
+  queryText: '',
+  flag: branchFlags.All,
+});
+const branches: Ref<Branch[]> = ref([])
+const loading = ref(false);
+const editBranch: Ref<Branch | undefined> = ref(undefined)
 
-    // table date
-    const pagination = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 10
-    });
-    const columns = computed<QTableProps['columns']>(() => [
-      {
-        name: 'edit',
-        label: '',
-        field: '',
-      }, {
-        name: 'name',
-        required: true,
-        label: t('settings.branch.name'),
-        field: 'name',
-        align: 'left',
-      }, {
-        name: 'prefecture',
-        label: t('settings.branch.prefectures'),
-        field: 'prefecture',
-        align: 'left',
-      }, {
-        name: 'phone',
-        required: true,
-        label: t('settings.branch.phone'),
-        field: 'phone',
-        align: 'left',
-      }, {
-        name: 'flag',
-        required: true,
-        label: t('settings.branch.flag'),
-        field: 'flag',
-        align: 'left',
-      }, {
-        name: 'hidden',
-        required: true,
-        label: t('settings.users.hidden'),
-        field: 'hidden',
-        align: 'left',
-      }, {
-        name: 'created_at',
-        required: true,
-        label: t('settings.branch.create_at'),
-        field: 'created_at',
-        align: 'left',
-      }, {
-        name: 'updated_at',
-        label: t('settings.branch.last_update'),
-        field: 'updated_at',
-        align: 'left',
-      }, {
-        name: 'delete',
-        label: '',
-        field: '',
-      }])
+// dialog date
+const openDialog = ref(false)
 
-    const organization = useOrganization()
-    const branchStore = useBranch()
+// table date
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10
+});
 
-    watch(() => organization.currentOrganizationId, () => {
-      loadBranchesList()
-    })
 
-    loadBranchesList()
-    async function loadBranchesList() {
-      loading.value = true;
-      editBranch.value = undefined;
-      try {
-        if (organization.currentOrganizationId) {
-          branches.value = Object.values(await branchStore.getBranches(db, organization.currentOrganizationId, search.value)).reduce((prev, curr) => {
-            return prev.concat(curr)
-          }, [])
-        }
-        loading.value = false;
-      } catch (e) {
-        console.log(e)
-        loading.value = false;
-        Alert.warning($q, t);
-      }
+const organization = useOrganization()
+const branchStore = useBranch()
+
+watch(() => organization.currentOrganizationId, () => {
+  loadBranchesList()
+})
+
+loadBranchesList()
+async function loadBranchesList() {
+  loading.value = true;
+  editBranch.value = undefined;
+  try {
+    if (organization.currentOrganizationId) {
+      branches.value = Object.values(await branchStore.getBranches(organization.currentOrganizationId, search.value)).reduce((prev, curr) => {
+        return prev.concat(curr)
+      }, [])
     }
-
-    return {
-      search,
-      columns,
-      pagination,
-      loading,
-
-      openDialog,
-      editBranch,
-      loadBranchesList,
-      deleteBranch(branch) {
-        $q.dialog({
-          title: t('common.delete'),
-          message: t('settings.branch.deletedInfo'),
-          ok: {
-            label: t('common.delete'),
-            color: 'negative',
-            class: 'no-shadow',
-            unelevated: true
-          },
-        }).onOk(async () => {
-          try {
-            loading.value = true;
-            await branchStore.editBranch(db, { deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
-            loadBranchesList();
-            Alert.success($q, t)
-          } catch (e) {
-            console.log(e)
-            Alert.warning($q, t)
-            loading.value = false;
-          }
-        })
-      },
-
-      branches,
-      branchFlags,
-      flagOptions
-    }
+    loading.value = false;
+  } catch (e) {
+    console.log(e)
+    loading.value = false;
+    Alert.warning($q, t);
   }
 }
+async function deleteBranch(branch) {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('settings.branch.deletedInfo'),
+    ok: {
+      label: t('common.delete'),
+      color: 'negative',
+      class: 'no-shadow',
+      unelevated: true
+    },
+  }).onOk(async () => {
+    try {
+      loading.value = true;
+      await branchStore.editBranch({ deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
+      loadBranchesList();
+      Alert.success($q, t)
+    } catch (e) {
+      console.log(e)
+      Alert.warning($q, t)
+      loading.value = false;
+    }
+  })
+}
+
 </script>
 
-<style></style>

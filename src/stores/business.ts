@@ -1,11 +1,11 @@
-import { collection, doc, Firestore, getDocs, PartialWithFieldValue, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, Firestore, getDocs, getFirestore, PartialWithFieldValue, query, setDoc, updateDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Business } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
 
 export const useBusiness = defineStore('business', () => {
-
-  async function getBusinesses(db: Firestore, organization_id: string) {
+  const db = getFirestore()
+  async function getBusinesses(organization_id: string) {
     const businessesQuery = query(collection(db, `/organization/${organization_id}/businesses/`))
     const businesses = await getDocs(businessesQuery)
     const businessList: { [id: string]: Business } = {}
@@ -25,7 +25,7 @@ export const useBusiness = defineStore('business', () => {
     })
   }
 
-  async function editBusiness(db: Firestore, business: PartialWithFieldValue<Business>, organizationId: string, businessId: string) {
+  async function editBusiness(business: PartialWithFieldValue<Business>, organizationId: string, businessId: string) {
     const ref = doc(db, `organization/${organizationId}/businesses/${businessId}`)
     serializeTimestamp(business)
     await updateDoc(ref, {

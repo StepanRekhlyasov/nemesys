@@ -11,8 +11,10 @@ export type ConstraintsType = Array<QueryStartAtConstraint | QueryFieldFilterCon
 
 export const pick = (obj: object, keys: string[]) => keys.reduce((acc, n) => (obj.hasOwnProperty(n) && (acc[n] = obj[n]), acc), {});
 
-export const sortDate = (a:dataObject, b:dataObject)=>{
-  return a.date.localeCompare(b.date)
+export const sortDate = (a: dataObject, b: dataObject) => {
+  const aDate = date.extractDate(a.date + '--' + a.time, 'YYYY/MM/DD--H:mm:ss')
+  const bDate = date.extractDate(b.date + '--' + b.time, 'YYYY/MM/DD--H:mm:ss')
+  return aDate.getTime() - bDate.getTime()
 }
 
 export function sortOrganization (a: string, b: string){
@@ -143,8 +145,6 @@ export const dateToTimestampFormat = (myDate : Date) => {
 export const templateCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/template');
 
 export const branchCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/branch')
-
-export const itemCollection = (db: Firestore, organization_id: string) => collection(db, 'organization/'+organization_id+'/item')
 
 // DB request
 

@@ -18,7 +18,7 @@ export const useFix = defineStore('fix', () => {
         list.push({
             ...data,
             id: fix.id,
-            date: toDateFormat(data['date']),
+            fixDate: toDateFormat(data['fixDate']),
             offerDate: toDateFormat(data['offerDate']),
             admissionDate: toDateFormat(data['admissionDate']),
             inspectionDate: toDateFormat(data['inspectionDate']),

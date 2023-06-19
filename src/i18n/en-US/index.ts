@@ -147,7 +147,7 @@ export default {
     addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
-    KPI: 'KPI',
+    SAA: 'Sales Activity Aggregation',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -251,7 +251,7 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        valid: 'Valid'
+        working: 'Working'
       },
       business:'Business',
       branchFlag: 'Branch flag'
@@ -269,21 +269,6 @@ export default {
 
       create_at: 'Create At',
       last_update: 'Last Update',
-    },
-    item: {
-      addItem: 'Add new item',
-      id: 'Classification Id',
-      name: 'Classification Name',
-      itemName: 'Item Name',
-      displayOrder: 'Display Order',
-      flag: 'Enable Flag',
-      hide: 'Hide',
-      edit: 'Item Edit',
-      classification: {
-        oualifications: 'Qualifications',
-        job: 'Job Title',
-        media: 'Application Media'
-      }
     },
     users: {
       contactPersonName: 'Add new contact person',
@@ -804,8 +789,8 @@ export default {
         fixDestinationOffice: 'FIX Destination Office',
         fixedDestination: 'FIX Destination',
         fixDate: 'FIX Date',
-        workDay: 'Job day',
-        informalOfferDate: 'Date of appointment',
+        workDay: 'Date of visit',
+        informalOfferDate: 'Date of job offer',
         hiringDate: 'Date of entry',
         save: 'Save selection information',
         client: 'Client',
@@ -820,7 +805,7 @@ export default {
         jobOffersInfo: '■Information on job offers',
         employmentInfo: '■Employment Information',
         inspectionStatus :'job inspection status',
-        inspectionDate: 'Date of inspection',
+        inspectionDate: 'Date of visit',
         inspectionRecord: 'Job inspection record',
         reasonNG: 'Reason for NG',
         chargeOfFacility: 'Person in charge of facility',
@@ -842,7 +827,7 @@ export default {
         noDesireWork: 'No desire to work',
         inspection: {
           status :'job inspection status',
-          date: 'Date of inspection',
+          date: 'Date of visit',
           record: 'Job inspection record',
           reasonNG: 'Reason for NG',
           chargeOfFacility: 'Person in charge of facility',
@@ -853,7 +838,7 @@ export default {
         },
         offer:{
           status: 'Offer Status',
-          date: 'Date of Offer',
+          date: 'Date of job offer',
           reasonNG: 'Reason for NG',
           chargeOfOffer: 'Person in charge of job offer',
           memo: 'Offer Memo'
@@ -1675,7 +1660,7 @@ export default {
     showList: 'Show list',
     waitList: ' waiting list'
   },
-  kpi: {
+  SAA: {
     targetPeriod: 'Target period',
     numberOfFix: '№ of FIX',
     jobs: 'Jobs',
@@ -1687,6 +1672,10 @@ export default {
     introduction: 'Introduction',
     occupationRate: 'Occupation rate',
     jobOfferRate: 'Job offer rate',
-    hiringRate: 'Hiring rate'
+    hiringRate: 'Hiring rate',
+    username: 'Username',
+    mode: 'Aggregation method',
+    modeIndividual: 'Individual aggregation',
+    modeBranch: 'Branch aggregation',
   }
 }

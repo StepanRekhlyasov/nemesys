@@ -16,42 +16,42 @@ export const kpiTableColumns = computed<QTableProps['columns']>(() => {
     {
       name: 'numberOfFix',
       field: 'numberOfFix',
-      label: t('kpi.numberOfFix'),
+      label: t('SAA.numberOfFix'),
       align: 'left',
       sortable: true
     },
     {
       name: 'jobs',
       field: 'jobs',
-      label: t('kpi.jobs'),
+      label: t('SAA.jobs'),
       align: 'left',
       sortable: true
     },
     {
       name: 'innerConstant',
       field: 'innerConstant',
-      label: t('kpi.innerConstant'),
+      label: t('SAA.innerConstant'),
       align: 'left',
       sortable: true
     },
     {
       name: 'entry',
       field: 'entry',
-      label: t('kpi.entry'),
+      label: t('SAA.entry'),
       align: 'left',
       sortable: true
     },
     {
       name: 'numberOfCalls',
       field: 'numberOfCalls',
-      label: t('kpi.numberOfCalls'),
+      label: t('SAA.numberOfCalls'),
       align: 'left',
       sortable: true
     },
     {
       name: 'numberOfFax',
       field: 'numberOfFax',
-      label: t('kpi.numberOfFax'),
+      label: t('SAA.numberOfFax'),
       align: 'left',
       sortable: true
     },
@@ -72,21 +72,21 @@ export const kpiTableColumns = computed<QTableProps['columns']>(() => {
     {
       name: 'dispatch',
       field: 'dispatch',
-      label: t('kpi.dispatch'),
+      label: t('SAA.dispatch'),
       align: 'left',
       sortable: true
     },
     {
       name: 'introduction',
       field: 'introduction',
-      label: t('kpi.introduction'),
+      label: t('SAA.introduction'),
       align: 'left',
       sortable: true
     },
     {
       name: 'occupationRate',
       field: 'occupationRate',
-      label: t('kpi.occupationRate'),
+      label: t('SAA.occupationRate'),
       align: 'left',
       sortable: true
     },
@@ -100,21 +100,21 @@ export const kpiTableColumns = computed<QTableProps['columns']>(() => {
     {
       name: 'occupationRate',
       field: 'occupationRate',
-      label: t('kpi.occupationRate'),
+      label: t('SAA.occupationRate'),
       align: 'left',
       sortable: true
     },
     {
       name: 'jobOfferRate',
       field: 'jobOfferRate',
-      label: t('kpi.jobOfferRate'),
+      label: t('SAA.jobOfferRate'),
       align: 'left',
       sortable: true
     },
     {
       name: 'hiringRate',
       field: 'hiringRate',
-      label: t('kpi.hiringRate'),
+      label: t('SAA.hiringRate'),
       align: 'left',
       sortable: true
     },

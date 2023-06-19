@@ -116,7 +116,7 @@
         {{ $t('applicant.list.info.lon') }}
       </div>
       <div class="col-3 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.lon" />
+        <hidden-text v-if="!edit" :value="applicant.lon?.toString()" />
         <q-input
           v-if="edit"
           outlined
@@ -139,7 +139,7 @@
         {{ $t('applicant.list.info.lat') }}
       </div>
       <div class="col-3 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.lat" />
+        <hidden-text v-if="!edit" :value="applicant.lat?.toString()" />
         <q-input
           v-if="edit"
           outlined
@@ -151,7 +151,7 @@
     </div>
 
     <div class="row q-pb-sm">
-      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.addres') }}
       </div>
       <div class="col-9 q-pl-md">
@@ -195,6 +195,7 @@ function resetData() {
     email: props?.applicant['email'],
     lon: props?.applicant['lon'],
     lat: props?.applicant['lat'],
+    address: props.applicant['address'] ||  [props.applicant['prefecture'], props.applicant['municipality'], props.applicant['street'], props.applicant['apartament']].join(' '),
     postCode: props?.applicant['postCode'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));

@@ -92,8 +92,8 @@
 
         <q-td auto-width>
           <q-btn unelevated dense @click="props.expand = !props.expand" size="1px">
-            <q-icon v-if="props.expand" name="mdi-menu-down" size="xl" color="accent" />
-            <q-icon v-else name="mdi-menu-up" size="xl" color="accent" />
+            <q-icon v-if="props.expand" name="mdi-menu-up" size="xl" color="accent" />
+            <q-icon v-else name="mdi-menu-down" size="xl" color="accent" />
           </q-btn>
         </q-td>
       </q-tr>
@@ -121,7 +121,7 @@ import { useI18n } from 'vue-i18n';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
-import { getFirestore, orderBy } from '@firebase/firestore';
+import { orderBy } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
@@ -152,8 +152,6 @@ const organization = ref<Row>()
 const dialogType = ref<DialogType>('Business')
 
 const editableRowNumber = ref(-1);
-
-const db = getFirestore();
 
 const search = ref('')
 
@@ -206,7 +204,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
 
   try {
     const organization = rowToOrganization(row)
-    await organizationStore.editOrganization(db, organization, row.id)
+    await organizationStore.editOrganization(organization, row.id)
     await refresh()
     loading.value = false;
     Alert.success($q, t)

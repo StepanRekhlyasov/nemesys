@@ -15,16 +15,24 @@
     </template>
 
     <template #branch="props">
-      <q-toggle v-model="props.branchItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
-        color="accent"
-        @update:model-value="async (working) => await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id, branchId: props.branchItem.id })" />
+      <div class="row justify-between full-width">
+        <q-toggle v-model="props.branchItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
+          color="accent"
+          @update:model-value="async (working) => await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id, branchId: props.branchItem.id })" />
+        <q-btn flat icon="edit" color="accent" @click="openDialog = true; organizationId=props.organizationItem.id; branchToEdit=props.branchItem" />
+      </div>
     </template>
 
   </OrganizationColspanTabel>
+
+  <q-dialog v-model="openDialog">
+    <DialogWrapper>
+      <BranchCreateForm @closeDialog="openDialog = false; loadTableData()" color="accent" :defaultOrganizationid="organizationId" :editBranch="JSON.parse(JSON.stringify(branchToEdit))" @onCatchError="loadTableData"/>
+    </DialogWrapper>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { getFirestore } from '@firebase/firestore';
 import { QTableProps, QTableSlots, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -37,6 +45,9 @@ import OrganizationColspanTabel from 'src/components/organization/OrganizationCo
 import { toTable } from 'src/components/organization/handlers/ToTable';
 import { useBranch } from 'src/stores/branch';
 import { useBusiness } from 'src/stores/business';
+import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
+import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
+import { Branch } from 'src/shared/model';
 
 
 type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
@@ -50,10 +61,10 @@ const $q = useQuasar();
 const organization = useOrganization()
 const branchStore = useBranch()
 const business = useBusiness()
-
+const openDialog = ref(false)
 const loading = ref(false)
-
-const db = getFirestore()
+const organizationId = ref<string>()
+const branchToEdit = ref<Branch>()
 
 const componentProps = defineProps<ExpandedTableProps>()
 
@@ -69,16 +80,16 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
   try {
 
     if (organizationId && !businessId && !branchId) {
-      await organization.editOrganization(db, { working }, organizationId)
+      await organization.editOrganization({ working }, organizationId)
       await manageUserAvailability({ enabled: working, organizationId })
     }
 
     if (organizationId && businessId && !branchId) {
-      await business.editBusiness(db, { working }, organizationId, businessId)
+      await business.editBusiness({ working }, organizationId, businessId)
     }
 
     if (organizationId && businessId && branchId) {
-      await branchStore.editBranch(db, { working }, organizationId, businessId, branchId)
+      await branchStore.editBranch({ working }, organizationId, businessId, branchId)
       await manageUserAvailability({ enabled: working, branchId })
     }
 
@@ -107,7 +118,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
         if (branchId) {
           continue
         }
-        await business.editBusiness(db, { working }, organizationItem.id, businessItem.id)
+        await business.editBusiness({ working }, organizationItem.id, businessItem.id)
         businessItem.working = working
         for (let k = 0; k < businessItem.branches.length; k++) {
           const branchItem = businessItem.branches[k]
@@ -115,7 +126,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
             continue
           }
           branchItem.working = working
-          await branchStore.editBranch(db, { working }, organizationItem.id, businessItem.id, branchItem.id)
+          await branchStore.editBranch({ working }, organizationItem.id, businessItem.id, branchItem.id)
           await manageUserAvailability({ enabled: working, branchId: branchItem.id })
         }
       }
@@ -133,8 +144,8 @@ loadTableData()
 async function loadTableData() {
   loading.value = true
 
-  const businesses = await business.getBusinesses(db, componentProps.props.row.id)
-  const branches = await branchStore.getBranches(db, componentProps.props.row.id)
+  const businesses = await business.getBusinesses(componentProps.props.row.id)
+  const branches = await branchStore.getBranches(componentProps.props.row.id)
 
   data.value = [toTable(businesses, branches, componentProps.props.row)]
 
