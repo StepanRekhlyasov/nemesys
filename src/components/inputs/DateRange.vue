@@ -26,7 +26,7 @@
         >
           <q-date
             minimal
-            range
+            :range="range"
             emit-immediately
             v-model="dateValue"
             :color="isAdmin?'accent':'primary'"
@@ -45,7 +45,7 @@ import { ref } from 'vue';
 
 const datePicker = ref<InstanceType<typeof QPopupProxy> | null>(null)
 const emit = defineEmits(['update:modelValue', 'pickerHide', 'cleared'])
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   width?: string,
   height?: string,
   fontSize?: string,
@@ -56,17 +56,19 @@ const props = withDefaults(defineProps<{
   },
   clearable?: boolean,
   maxYearMonth?: string,
-  disable?:boolean
+  disable?:boolean,
+  range?: boolean
 }>(), {
   width: '175px',
   height: '30px',
   fontSize: '12px',
   isAdmin: false,
   clearable: true,
-  disable: false
+  disable: false,
+  range: true
 })
 const dateValue = ref()
-const dateStringValue = ref(props.modelValue)
+const dateStringValue = ref()
 watch(dateValue, (newVal)=>{
   if(newVal.from && newVal.to){
     dateStringValue.value = newVal.from + ' - ' + newVal.to
