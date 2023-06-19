@@ -7,6 +7,12 @@ const { t } = i18n.global
 export const sortable = ref(true)
 export const columns = computed<QTableProps['columns']>(() => [
   {
+    name: 'addLicenseRequestButton',
+    label: '',
+    field: '',
+    align: 'center',
+  },
+  {
     name: 'name',
     required: true,
     label: t('settings.branch.name'),
@@ -57,4 +63,5 @@ export const columns = computed<QTableProps['columns']>(() => [
     name: 'delete',
     label: '',
     field: '',
-  }])
+  }
+])

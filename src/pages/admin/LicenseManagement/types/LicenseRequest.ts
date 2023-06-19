@@ -6,12 +6,16 @@ export interface LicenseRequest {
   businessId: string,
   branchId: string,
   targetSystem: TargetSystem,
-  requestType: 'Addition' | 'Delete',
+  requestType: RequestType,
   requestQuantity: number,
   requestDate: Timestamp,
   requestUserId: string
 }
 
+export const requestType = ['Addition', 'Delete'] as const
+
+type RequestType = typeof requestType[number]
+
 type TargetSystem = typeof targetSystem[number]
 
-const targetSystem = ['nemesys'] as const
+export const targetSystem = ['nemesys'] as const

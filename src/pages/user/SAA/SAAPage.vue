@@ -61,7 +61,7 @@
     <q-card-section class="bg-grey-3 flex items-center">
       <KpiTable
         :rows="rowData"
-        @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)"
+        @openDrawer="(applicant)=>detailsDrawer?.openDrawer(applicant as Applicant)"
         ref="kpiTableRef"
       />
       <q-linear-progress query v-if="loading" color="primary"/>

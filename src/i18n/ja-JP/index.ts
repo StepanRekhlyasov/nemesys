@@ -220,6 +220,8 @@ export default {
         branchName: '支店名',
         systemInUse:'利用中システム',
         usageCount: '利用数',
+        requestType: '申請区分',
+        addLicenseRequest: 'ライセンス変更申請'
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
