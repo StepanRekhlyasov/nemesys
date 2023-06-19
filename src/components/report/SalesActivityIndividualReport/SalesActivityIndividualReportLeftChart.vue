@@ -6,11 +6,9 @@
 <script setup lang="ts">
 import {
   ref,
-  Ref,
   watch,
   defineProps,
   onMounted,
-  ComputedRef,
   computed,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -20,7 +18,6 @@ import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../reportUtil';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
-
 
 type ROWS = {
   name: string;
@@ -32,24 +29,24 @@ type ROWS = {
   offer_rate: number | string;
   admission_rate: number | string;
 }[];
-const apexchart = VueApexCharts
-const Totalizer = useTotalizer();
+const apexchart = VueApexCharts;
+const totalizer = useTotalizer();
 const { t } = useI18n({ useScope: 'global' });
-const dataToShow: Ref<(number | string)[][]> = ref([]);
-const dataToShowCVR: Ref<(number | string)[][]> = ref([]);
-const rows_: Ref<ROWS> = ref([]);
-const seriesList: Ref<
+const dataToShow = ref<(number | string)[][]>([]);
+const dataToShowCVR = ref<(number | string)[][]>([]);
+const rows_ = ref<ROWS>([]);
+const seriesList = ref<
   { name: string; data: (number | string)[]; type: string }[]
-> = ref([]);
-const rows: ComputedRef<ROWS> = computed(() => {
+>([]);
+const rows = computed<ROWS>(() => {
   return dataToShow.value
-    .map((row_data, index) => {
+    .map((rowData, index) => {
       return {
         name: t(dataNames[index]),
-        fix: row_data[0],
-        inspection: row_data[1],
-        offer: row_data[2],
-        admission: row_data[3],
+        fix: rowData[0],
+        inspection: rowData[1],
+        offer: rowData[2],
+        admission: rowData[3],
         inspection_rate: dataToShowCVR.value[index][1],
         offer_rate: dataToShowCVR.value[index][2],
         admission_rate: dataToShowCVR.value[index][3],
@@ -57,9 +54,9 @@ const rows: ComputedRef<ROWS> = computed(() => {
     })
     .concat(rows_.value);
 });
-const series: ComputedRef<
+const series = computed<
   { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+>(() => {
   return dataToShow.value
     .map((rowData, index) => {
       return {
@@ -70,7 +67,7 @@ const series: ComputedRef<
     })
     .concat(seriesList.value);
 });
-const user_list: Ref<{ id: string; name: string }[]> = ref([]);
+const user_list = ref<{ id: string; name: string }[]>([]);
 const organization_id = ref('');
 const props = defineProps<{
   branch_id: string;
@@ -97,14 +94,14 @@ const showIndividualReport = async (
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
   }
-  const data_average = await Totalizer.Totalize(
+  const data_average = await totalizer.Totalize(
     dateRange,
     ['fix', 'inspection', 'offer', 'admission'],
     true,
     organization_id.value,
     target
   );
-  const all_data_average = await Totalizer.Totalize(
+  const all_data_average = await totalizer.Totalize(
     dateRange,
     ['fix', 'inspection', 'offer', 'admission'],
     true,
@@ -134,4 +131,3 @@ onMounted(async () => {
   await showIndividualReport(user_list.value, props.dateRangeProps);
 });
 </script>
-

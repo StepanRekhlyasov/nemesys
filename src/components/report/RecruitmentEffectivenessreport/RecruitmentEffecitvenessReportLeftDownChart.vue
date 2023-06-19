@@ -10,15 +10,15 @@
 import { useBudget } from 'stores/budget';
 import { useMedia } from 'stores/media';
 import { graphType } from '../Models';
-import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
-import { chartTypeUnitPricePerMedia,unitPricenamesPerMedia } from './const';
+import { onMounted, ref, computed, watch } from 'vue';
+import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const budget = useBudget();
 const media = useMedia();
-const mediaList: Ref<string[]> = ref([]);
+const mediaList = ref<string[]>([]);
 const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },
@@ -59,10 +59,10 @@ const chartOptions = computed(() => {
   };
 });
 
-const dataToshow: Ref<(number | string)[][]> = ref([]);
-const series: ComputedRef<
+const dataToshow = ref<(number | string)[][]>([]);
+const series = computed<
   { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+>(() => {
   const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: t(unitPricenamesPerMedia[index]),
@@ -87,23 +87,19 @@ const showChart = async () => {
   const company_average = await budget.getUnitPricePerOrganizationPerMedia(
     mediaList.value,
     props.dateRangeProps,
-    props.organization_id,
+    props.organization_id
   );
   const company_average_all = await budget.getUnitPricePerOrganizationPerMedia(
     mediaList.value,
     props.dateRangeProps,
-    undefined,
+    undefined
   );
   if (!company_average || !company_average_all) return;
   dataToshow.value = [[...company_average], [...company_average_all]];
 };
 
 watch(
-  () => [
-    props.branch_user_list,
-    props.dateRangeProps,
-    props.graph_type,
-  ],
+  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showChart();

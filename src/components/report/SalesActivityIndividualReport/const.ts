@@ -5,6 +5,8 @@ const { t } = i18n.global;
 export const data_names = ['report.companyAverage', 'report.allAverage'];
 export const chartOptions = computed(() => {
   return {
+
+    legend: { position: 'left' },
     chart: {},
     title: {
       text: t('report.title.individualPerformanceStatus'),
@@ -113,6 +115,7 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
 
 export const chartOptionsR = computed(() => {
   return {
+    legend: { position: 'left' },
     chart: {},
     title: {
       text: t('report.title.BOAcquisitionStatus'),
