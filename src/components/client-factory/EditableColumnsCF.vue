@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineProps, defineEmits, withDefaults, computed, ref, watch } from 'vue';
-// import ParentClient from '../form/clientFactoryForms/ParentClient.vue';
 import FacilityType from '../form/clientFactoryForms/FacilityType.vue';
 import ContractUnit from '../form/ContractUnit.vue';
 import ClientType from '../form/clientForms/ClientType.vue';
@@ -89,7 +88,6 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                     size="xs"
                     v-model="row.value"
                     :label="t('client.add.conclusionReferralContract')" :color="theme"/>
-                <!-- <ParentClient v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'" v-model="row.value" :is-label="false" :theme="theme"/> -->
                 <div v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'">{{ row.value }}</div>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
@@ -121,7 +119,6 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                     size="xs"
                     v-model="row.value"
                     :label="t('client.add.conclusionReferralContract')" :color="theme"/>
-                <!-- <ParentClient v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'" v-model="row.value" :is-label="false" :theme="theme"/> -->
                 <div v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'">{{ row.value }}</div>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>

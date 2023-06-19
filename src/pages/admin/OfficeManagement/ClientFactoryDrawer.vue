@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { getAuth } from 'firebase/auth';
 import Quasar, { useQuasar } from 'quasar';
+import { storeToRefs } from 'pinia'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps, watch, ref } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
@@ -24,7 +25,8 @@ const props = defineProps<{
 }>()
 
 const { updateClientFactory, addReflectLog, addImportLog } = useClientFactory()
-const { currentOrganizationId, getDataById } = useOrganization()
+const organizationStore = useOrganization()
+const { currentOrganizationId } = storeToRefs(organizationStore)
 const { getUserById } = useUserStore();
 const $q = useQuasar()
 const auth = getAuth();
@@ -84,16 +86,16 @@ const onImport = async (data: ChangedData) => {
     if(user != null) {
         const uid = user.uid;
         const currentUser = await getUserById(uid)
-        const organizations = await getDataById([currentOrganizationId], 'Organization')
+        const organizations = await organizationStore.getDataById([currentOrganizationId.value], 'Organization')
 
         localDraft.value = finishEditing(data, localDraft.value, localData.value)
 
-        const copyBeforeRemoreDraft = deepCopy(localData.value)
-        recursivelyRemoveField(copyBeforeRemoreDraft, 'draft')
+        const copyBeforeRemoveDraft = deepCopy(localData.value)
+        recursivelyRemoveField(copyBeforeRemoveDraft, 'draft')
 
-        const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoreDraft, localDraft.value)
+        const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoveDraft, localDraft.value)
         const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
-        localData.value = copyBeforeRemoreDraft
+        localData.value = copyBeforeRemoveDraft
         localDraft.value = {}
 
         await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, $q as unknown as typeof Quasar)
