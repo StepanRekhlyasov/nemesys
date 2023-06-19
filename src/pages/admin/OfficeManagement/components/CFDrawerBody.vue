@@ -4,26 +4,32 @@ import { defineProps, defineEmits, ref, watchEffect } from 'vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
-import { useClientFactory } from 'src/stores/clientFactory';
-import { useHighlightMainInfo, updateClientFactoryHangler } from '../handlers';
+import { useHighlightMainInfo } from 'src/components/client-factory/handlers';
 
+import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { RenderMainInfo } from '../types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import Quasar, { useQuasar } from 'quasar';
+import { ChangedData } from 'src/components/client-factory/types';
+import { ImportLog } from 'src/shared/model/ImportLog';
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar()
 
-const { updateClientFactory } = useClientFactory()
 const props = defineProps<{
-    clientFactory: ClientFactory
+    clientFactory: ClientFactory,
+    draft: Partial<ClientFactory>,
+    isLoading: boolean,
+    isReflecting: boolean,
+    isImporting: boolean,
+    newReflectLog: ReflectLog | undefined,
+    newImportLog: ImportLog | undefined
 }>();
 const emit = defineEmits<{
-    (e: 'handleImport')
+    (e: 'handleImport'),
+    (e: 'handleReflect'),
+    (e: 'editDraft', changedData: ChangedData)
 }>()
 
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
-const isLoading = ref(false)
 const isEditForm = ref({
     officeInfo: false,
     contactInfo: false
@@ -39,17 +45,16 @@ const handleImport = () => {
     emit('handleImport')
 }
 
-const onSaveHandle = async (dataToChange: RenderMainInfo['contactInfo'] | RenderMainInfo['officeInfo']) => {
-    isLoading.value = true
-    const modifiedCF = updateClientFactoryHangler(dataToChange, props.clientFactory)
+const handleReflect = () => {
+    emit('handleReflect')
+}
 
-    await updateClientFactory(modifiedCF, $q as unknown as typeof Quasar)
-
-    isLoading.value = false
+const handleEditDraft = (changedData: ChangedData) => {
+    emit('editDraft', changedData)
 }
 
 watchEffect(() => {
-    mainInfo.value = useHighlightMainInfo(props.clientFactory)
+    mainInfo.value = useHighlightMainInfo(props.clientFactory, props.draft)
 })
 </script>
 
@@ -67,7 +72,7 @@ watchEffect(() => {
             theme="accent"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
-            @on-save="isEditForm.officeInfo = false; onSaveHandle(dataForUpdating.officeInfo as RenderMainInfo['contactInfo'] | RenderMainInfo['officeInfo'])"/>
+            @on-save="isEditForm.officeInfo = false; handleEditDraft(dataForUpdating.officeInfo as RenderMainInfo['officeInfo'])"/>
         
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"
@@ -82,7 +87,7 @@ watchEffect(() => {
             theme="accent"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"
-            @on-save="isEditForm.contactInfo = false; onSaveHandle(dataForUpdating.contactInfo as RenderMainInfo['contactInfo'] | RenderMainInfo['officeInfo'])"/>
+            @on-save="isEditForm.contactInfo = false; handleEditDraft(dataForUpdating.contactInfo as RenderMainInfo['contactInfo'])"/>
 
         <EditableColumnsCF v-if="isEditForm.contactInfo"
             :data="mainInfo.contactInfo"
@@ -94,8 +99,14 @@ watchEffect(() => {
     <q-separator color="bg-grey-3 q-mt-md"></q-separator>
 
    <CFDrawerBodyFooter
+    @handle-reflect="handleReflect"
     @handle-import="handleImport"
-    :client-factory="clientFactory"/>
+    :client-factory="clientFactory"
+    :draft="draft"
+    :is-reflect-loading="isReflecting"
+    :is-import-loading="isImporting"
+    :new-reflect-log="newReflectLog"
+    :new-import-log="newImportLog"/>
 </template>
 
 <style lang="scss" scoped>

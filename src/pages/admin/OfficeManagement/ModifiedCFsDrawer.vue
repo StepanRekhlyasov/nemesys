@@ -8,6 +8,7 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { useImportCandidatesLabels } from './handlers';
 import Quasar, { useQuasar } from 'quasar';
+import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar()
@@ -22,7 +23,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'hideDrawer'),
-    (e: 'openUpdatedInfo')
+    (e: 'openUpdatedInfo', modifiedCF: ModifiedCF)
 }>()
 
 const isLoading = ref(false)
@@ -31,8 +32,8 @@ const hideDrawer = () => {
     emit('hideDrawer')
 }
 
-const updatedInfoHandle = () => {
-    emit('openUpdatedInfo')
+const updatedInfoHandle = (modifiedCF: ModifiedCF) => {
+    emit('openUpdatedInfo', modifiedCF)
 }
 
 const setIgnoredStatus = async (modifiedCFId: string) => {
@@ -90,7 +91,7 @@ const labels = useImportCandidatesLabels
                                     </div>
 
                                     <div>
-                                        <q-btn flat round size="md" @click="updatedInfoHandle" icon="mdi-information-outline">
+                                        <q-btn flat round size="md" @click="updatedInfoHandle(modifiedCF)" icon="mdi-information-outline">
                                         </q-btn>
                                     </div>
                                 </div>

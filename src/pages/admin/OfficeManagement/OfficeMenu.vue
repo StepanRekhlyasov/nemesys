@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
-import {OfficeMenuItem} from './types'
+import { OfficeMenuItem } from './types'
 
 const { t } = useI18n({ useScope: 'global' });
 

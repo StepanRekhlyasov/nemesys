@@ -1467,6 +1467,7 @@ export default {
       changeItemClassification: '変更項目分類',
       ignore: '無視する',
       updateData: '更新データ',
+      importTitle: '以下の変更点の取込を実行します。',
       details: {
         // Office details
         parentClient: '親クライアント',

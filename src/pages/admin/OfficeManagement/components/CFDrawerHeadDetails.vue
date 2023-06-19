@@ -5,7 +5,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../handlers';
+import { useHeadDetails, updateClientHandler } from '../handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from '../types'
 import Quasar, { useQuasar } from 'quasar';
@@ -66,7 +66,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.headOfficeInfo = true"
         @closeEdit="isOpedEditDropDown.headOfficeInfo = false"
-        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory)">
+        @onSave="isOpedEditDropDown.headOfficeInfo = false">
             <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
                 v-if="!isOpedEditDropDown.headOfficeInfo"/>
 
@@ -94,7 +94,7 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
         theme="accent"
         @openEdit="isOpedEditDropDown.contractInfo = true"
         @closeEdit="isOpedEditDropDown.contractInfo = false"
-        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory)">
+        @onSave="isOpedEditDropDown.contractInfo = false">
             <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
                 v-if="!isOpedEditDropDown.contractInfo"/>
 

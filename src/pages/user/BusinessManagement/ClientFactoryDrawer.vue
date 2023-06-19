@@ -5,7 +5,8 @@ import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import { mergeWithDraft } from 'src/components/client-factory/hadlers';
+import { mergeWithDraft } from 'src/components/client-factory/handlers';
+import { finishEditing } from 'src/components/client-factory/handlers';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
@@ -26,6 +27,10 @@ const isLoading = ref(false)
 
 const cancelHandler = () => {
     draft.value = {} as ClientFactory;
+}
+
+const editDraftHandler = (changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
+    draft.value = finishEditing(changedData, draft.value, modifiedCF.value ?? props.selectedItem)
 }
 
 const saveHandler = async () => {
@@ -86,6 +91,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                     </q-card-section>
                     <q-card-section class="bg-grey-2 q-pa-none">
                         <CFDrawerBody
+                            @edit-draft="editDraftHandler"
                             @cancel-draft="cancelHandler"
                             @save-draft="saveHandler"
                             :clientFactory="modifiedCF ?? selectedItem"
@@ -93,7 +99,11 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                             :is-loading="isLoading"/>
                     </q-card-section>
                     <q-card-section class="bg-grey-3">
-                        <CFDrawerTabs :clientFactory="modifiedCF ?? selectedItem" />
+                        <CFDrawerTabs
+                            @edit-draft="editDraftHandler"
+                            :clientFactory="modifiedCF ?? selectedItem"
+                            :draft="draft"
+                            :is-loading="isLoading"/>
                     </q-card-section>
                 </q-card>
             </q-scroll-area>

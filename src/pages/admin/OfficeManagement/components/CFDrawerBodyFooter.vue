@@ -5,20 +5,32 @@ import { defineProps, defineEmits, watch } from 'vue';
 import { useClientFactory } from 'src/stores/clientFactory';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ReflectLog } from 'src/shared/model/ReflectLog';
+import { ImportLog } from 'src/shared/model/ImportLog';
 
 const clientFactoryStore = useClientFactory()
 const { modifiedCFs } = storeToRefs(clientFactoryStore)
 
 const props = defineProps<{
     clientFactory: ClientFactory
+    draft: Partial<ClientFactory>
+    isReflectLoading: boolean
+    isImportLoading: boolean
+    newReflectLog: ReflectLog | undefined
+    newImportLog: ImportLog | undefined
 }>()
 
 const emit = defineEmits<{
-    (e: 'handleImport')
+    (e: 'handleImport'),
+    (e: 'handleReflect')
 }>()
 
 const importHandle = () => {
     emit('handleImport')
+}
+
+const reflectHandle = () => {
+    emit('handleReflect')
 }
 
 watch([() => props.clientFactory], async (newProps, oldProps) => {
@@ -44,19 +56,21 @@ const { t } = useI18n({ useScope: 'global' });
             </div>
 
             <div>
-                <div :class="`row ${!clientFactory.reflectLog?.executionDate && 'items-center'}`">
+                <div class="row items-center">
                     <span class="info-footer__label q-mx-md">{{ t('clientFactory.lastReflected') }}</span>
-                    <span v-if="clientFactory.reflectLog">{{ clientFactory.reflectLog?.executionDate }}</span>
+                    <span v-if="clientFactory.reflectLog">{{ newReflectLog?.executionDate ?? clientFactory.reflectLog?.executionDate }}</span>
                     <q-icon v-else color="black" name="mdi-close"/>
 
                     <div class="row justify-between items-center no-wrap">
-                        <div :class="`${Object.keys(clientFactory.draft).length ? 'circle-highlight' : 'circle'} q-mx-md`"></div>
+                        <q-spinner-gears v-if="isReflectLoading" size="1.5rem" color="accent" class="q-mx-md"/>
+                        <div v-else :class="`${Object.keys(draft).length ? 'circle-highlight' : 'circle'} q-mx-md`"></div>
                         <q-btn
+                            @click="reflectHandle"
                             text-color="accent"
                             outline dense
                             padding="xs md" size="sm"
-                            :disable="!Object.keys(clientFactory.draft).length">
-                            <q-icon name="mdi-tray-arrow-up" color="accent" size="xs" left/>
+                            :disable="!Object.keys(draft).length || isReflectLoading">
+                                <q-icon name="mdi-tray-arrow-up" color="accent" size="xs" left/>
                                 {{ t('common.reflect') }}
                         </q-btn>
                     </div>
@@ -73,17 +87,18 @@ const { t } = useI18n({ useScope: 'global' });
             </div>
 
             <div>
-                <div :class="`row ${!clientFactory.reflectLog?.executionDate && 'items-center'}`">
+                <div class="row items-center">
                     <span class="info-footer__label q-mx-md">{{ t('clientFactory.lastCaptured') }}</span>
-                    <span v-if="clientFactory.importLog">{{ clientFactory.importLog?.executionDate }}</span>
+                    <span v-if="clientFactory.importLog">{{ newImportLog?.executionDate ?? clientFactory.importLog?.executionDate }}</span>
                     <q-icon v-else color="black" name="mdi-close"/>
 
                         <div class="row justify-between items-center no-wrap">
-                            <div :class="`${modifiedCFs.length ? 'circle-highlight' : 'circle'} q-mx-md`"></div>
+                            <q-spinner-gears v-if="isImportLoading" size="1.5rem" color="accent" class="q-mx-md"/>
+                            <div v-else :class="`${modifiedCFs.length ? 'circle-highlight' : 'circle'} q-mx-md`"></div>
                             <q-btn
                                 text-color="accent"
                                 outline dense padding="xs md" size="sm"
-                                :disable="!modifiedCFs.length"
+                                :disable="!modifiedCFs.length || isImportLoading"
                                 @click="importHandle">
                                 <q-icon name="mdi-tray-arrow-down" color="accent" size="xs" left/>
                                     {{ t('common.capture') }}

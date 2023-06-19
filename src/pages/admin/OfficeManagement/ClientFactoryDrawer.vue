@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { getAuth } from 'firebase/auth';
+import Quasar, { useQuasar } from 'quasar';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps, watch, ref } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
@@ -6,14 +8,39 @@ import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
 import ModifiedCFsDrawer from './ModifiedCFsDrawer.vue';
 import UpdatedCFDrawer from './UpdatedCFDrawer.vue';
-import { deepCopy } from 'src/shared/utils';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { useOrganization } from 'src/stores/organization';
+import { useUserStore } from 'src/stores/user';
+import { finishEditing, mergeWithDraft } from 'src/components/client-factory/handlers';
+import { deepCopy, recursivelyRemoveField } from 'src/shared/utils';
+import { ModifiedCF } from 'src/shared/model/ModifiedCF';
+import { ReflectLog } from 'src/shared/model/ReflectLog';
+import { ChangedData } from 'src/components/client-factory/types';
+import { ImportLog } from 'src/shared/model/ImportLog';
 
 const props = defineProps<{
     isDrawer: boolean,
     selectedItem: ClientFactory
 }>()
 
+const { updateClientFactory, addReflectLog, addImportLog } = useClientFactory()
+const { currentOrganizationId, getDataById } = useOrganization()
+const { getUserById } = useUserStore();
+const $q = useQuasar()
+const auth = getAuth();
+const user = auth.currentUser;
+
+const isLoading = ref({
+    isGeneral: false,
+    isReflecting: false,
+    isImporting: false
+})
+
 const localData = ref<ClientFactory>(deepCopy(props.selectedItem))
+const localDraft = ref<Partial<ClientFactory>>(deepCopy(props.selectedItem.draft))
+const selectedModifiedCF = ref<ModifiedCF>()
+const newReflectLog = ref<ReflectLog>()
+const newImportLog = ref<ImportLog>()
 const modifiedCFsDrawer = ref(false)
 const updatedCFDrawer = ref(false)
 
@@ -33,12 +60,75 @@ const openModifiedCFsDrawer = () => {
     modifiedCFsDrawer.value = true
 }
 
-const openUpdatedCFDrawer = () => {
+const openUpdatedCFDrawer = (modifiedCF: ModifiedCF) => {
+    selectedModifiedCF.value = modifiedCF
     updatedCFDrawer.value = true
 }
 
 const closeUpdatedCFDrawer = () => {
     updatedCFDrawer.value = false
+}
+
+const editDraftHandler = async (changedData: ChangedData) => {
+    isLoading.value.isGeneral = true
+
+    localDraft.value = finishEditing(changedData, localDraft.value, localData.value)
+    await updateClientFactory({ ...localData.value, draft: localDraft.value }, $q as unknown as typeof Quasar)
+
+    isLoading.value.isGeneral = false
+}
+
+const onImport = async (data: ChangedData) => {
+    isLoading.value.isImporting = true
+
+    if(user != null) {
+        const uid = user.uid;
+        const currentUser = await getUserById(uid)
+        const organizations = await getDataById([currentOrganizationId], 'Organization')
+
+        localDraft.value = finishEditing(data, localDraft.value, localData.value)
+
+        const copyBeforeRemoreDraft = deepCopy(localData.value)
+        recursivelyRemoveField(copyBeforeRemoreDraft, 'draft')
+
+        const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoreDraft, localDraft.value)
+        const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
+        localData.value = copyBeforeRemoreDraft
+        localDraft.value = {}
+
+        await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, $q as unknown as typeof Quasar)
+
+        const importLog = await addImportLog(currentUser, localData.value, organizations[0], isOfficeDetailsChanged)
+        newImportLog.value = importLog as ImportLog
+    }
+
+    isLoading.value.isImporting = false
+    closeUpdatedCFDrawer()
+    hideModifiedCFsDrawer()
+}
+
+const onReflect = async () => {
+    isLoading.value.isReflecting = true
+
+    if (user != null) {
+        const uid = user.uid;
+        const currentUser = await getUserById(uid)
+
+        const copyBeforeRemoreDraft = deepCopy(localData.value)
+        recursivelyRemoveField(copyBeforeRemoreDraft, 'draft')
+
+        const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoreDraft, localDraft.value)
+        const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
+        localData.value = copyBeforeRemoreDraft
+        localDraft.value = {}
+
+        await updateClientFactory({...clientFactoryToUpdate, draft: localDraft.value}, $q as unknown as typeof Quasar)
+
+        const reflectLog = await addReflectLog(currentUser, localData.value, isOfficeDetailsChanged)
+        newReflectLog.value = reflectLog as ReflectLog
+    }
+
+    isLoading.value.isReflecting = false
 }
 
 watch([() => props.selectedItem], (newProps, oldProps) => {
@@ -67,10 +157,24 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                     <CFDrawerTitle v-if="localData" :selectedItem="localData"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-2 q-pa-none">
-                    <CFDrawerBody :clientFactory="localData" @handle-import="openModifiedCFsDrawer"/>
+                    <CFDrawerBody
+                        @edit-draft="editDraftHandler"
+                        :clientFactory="localData"
+                        :draft="localDraft"
+                        :new-import-log="newImportLog"
+                        :new-reflect-log="newReflectLog"
+                        :is-loading="isLoading.isGeneral"
+                        :is-reflecting="isLoading.isReflecting"
+                        :is-importing="isLoading.isImporting"
+                        @handle-import="openModifiedCFsDrawer"
+                        @handle-reflect="onReflect"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-3">
-                    <CFDrawerTabs :clientFactory="localData" />
+                    <CFDrawerTabs
+                        :clientFactory="localData"
+                        :draft="localDraft"
+                        :is-loading="isLoading.isGeneral"
+                        @edit-draft="editDraftHandler" />
                 </q-card-section>
             </q-card>
         </q-scroll-area>
@@ -80,12 +184,16 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
         @open-updated-info="openUpdatedCFDrawer"
         @hide-drawer="hideModifiedCFsDrawer"
         :is-drawer="modifiedCFsDrawer"
-        :client-factory="props.selectedItem"/>
+        :client-factory="localData"/>
 
     <UpdatedCFDrawer
+        v-if="selectedModifiedCF"
+        :modifiedCF="selectedModifiedCF"
+        @apply-import="onImport"
         @hide-drawer="closeUpdatedCFDrawer"
         :is-drawer="updatedCFDrawer"
-        :client-factory="props.selectedItem"/>
+        :client-factory="localData"
+        :is-loading="isLoading.isImporting"/>
 </template>
 
 <style lang="scss" scoped>
