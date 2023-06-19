@@ -68,7 +68,7 @@
       </labelField>
     </div>
 
-    <div class="row q-pb-sm">
+    <div class="row q-pb-sm self-center">
       <labelField 
         :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.chargeOfAdmission')"
         :value="usersListOption

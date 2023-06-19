@@ -11,20 +11,19 @@
             <div class="row">
               <span class="text-h6 q-pr-md" v-if="!fixData.id">{{ $t('backOrder.officeName') }}</span>
               <span class="text-h6 q-pr-md" v-if="!!name && fixData.id"> {{ name }}</span>
-              <q-btn v-if="!fixData.id" :label="$t('applicant.list.fixEmployment.save')" color="white" text-color="primary" @click="saveDoc" size="sm"/>
+              <q-btn v-if="!fixData.id" :label="$t('applicant.list.fixEmployment.save')" color="white" text-color="primary" @click="saveDoc" size="sm" :disable="loading"/>
             </div>
           </div>
         </div>
       </q-card-section>
       <q-separator />
-      <q-form>
+      <q-form @submit="save('main', data)" ref="formRef">
         <!-- Main Information -->
         <q-card-section>       
           <div class="row" v-if="fixData.id">            
             <div class="col-12 text-right" >
               <q-btn 
-                :label="$t('common.save')" color="primary" 
-                @click="save('main', data)" size="sm" />
+                :label="$t('common.save')" color="primary" type="submit" size="sm" :disable="loading"/>
             </div>
           </div>           
           <q-select
@@ -34,6 +33,7 @@
               :options="applicantStore.state.clientList"
               option-value="id"
               option-label="name"
+              :rules="[creationRule]" hide-bottom-space
               emit-value map-options
               :label="$t('applicant.list.fixEmployment.client')"  />
             <q-select
@@ -42,6 +42,7 @@
               emit-value map-options
               option-value="id"
               option-label="name"
+              :rules="[creationRule]" hide-bottom-space
               :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office"
               :disable="!data['client']" 
               :label="$t('applicant.list.fixEmployment.office')" />
@@ -118,13 +119,16 @@ import FixInfoSection from './FixInfoSection.vue';
 import JobSearchInfoSection from './JobSearchInfoSection.vue';
 import JobOffersInfoSection from './JobOffersInfoSection.vue';
 import EmploymentInfoSection from './EmploymentInfoSection.vue';
+import { creationRule } from 'src/components/handlers/rules';
 import { useFix } from 'src/stores/fix';
+import { QForm } from 'quasar';
 
 const props = defineProps<{
   fixData: ApplicantFix,
   applicant: Applicant,
   disableLevel: number
 }>()
+const formRef = ref<QForm | null>(null);
 const emits = defineEmits(['updateList', 'close', 'updateDoc'])
 
 const db = getFirestore();
@@ -232,7 +236,12 @@ watch(() => props.fixData, () => {
 }, {immediate: true })
 
 async function saveDoc() {
+  const isValid = await formRef.value?.validate();
+  if (!isValid) {
+    return ;
+  }
   try {
+    loading.value = true;
     const retData = data.value
     retData['updated_at'] = serverTimestamp();
     delete retData['created_at']
@@ -250,7 +259,9 @@ async function saveDoc() {
 
     emits('updateList')
     emits('close')
+    loading.value = false;
   } catch (e) {
+    loading.value = false;
     console.log(e)
   }
 }
