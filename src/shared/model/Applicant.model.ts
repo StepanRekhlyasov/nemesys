@@ -246,7 +246,7 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
 
 export interface FixMainInfo {
   fixStatus: boolean;
-  fixDate: Timestamp | FieldValue | string;
+  fixDate: string;
   reason: string;
   reasonDetal?: string;
   contactPerson: string;
