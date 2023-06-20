@@ -1,30 +1,57 @@
 <template>
   <q-page class="bg-grey-3">
    <q-card-section class="bg-grey-3 flex items-center q-pb-none">
-      <div class="text-h6 text-primary"><span style="font-size:28px;">■</span>{{ $t('menu.SAA') }}</div>
+      <div class="text-h6 text-primary"><span style="font-size:28px;">■</span>{{ $t('menu.KPI') }}</div>
     </q-card-section>
     <q-card-section class="bg-grey-3 flex items-end gap">
       <label class="text-subtitle1">
-        {{ $t('SAA.mode') }}
+        {{ $t('KPI.mode') }}
         <MySelect
           :options="[
             {
-              label: $t('SAA.modeIndividual'),
-              value: 'user'
+              label: $t('KPI.modeDay'),
+              value: 'day'
             },
             {
-              label: $t('SAA.modeBranch'),
+              label: $t('KPI.modeBranch'),
               value: 'branch'
+            },
+            {
+              label: $t('KPI.modeMedia'),
+              value: 'media'
             },
           ]"
           :width="'175px'"
-          v-model="method"
+          v-model="mode"
           :clearable="false"
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1">
-        {{ $t('SAA.targetPeriod') }}
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
+        {{ $t('KPI.item') }}
+        <MySelect
+          :options="[
+            {
+              label: $t('KPI.actualFigures'),
+              value: 'actualFigures'
+            },
+            {
+              label: $t('KPI.unitPrice'),
+              value: 'unitPrice'
+            },
+            {
+              label: $t('KPI.applicationAttribute'),
+              value: 'applicationAttribute'
+            },
+          ]"
+          :width="'175px'"
+          v-model="item"
+          :clearable="false"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
+        {{ $t('KPI.targetPeriod') }}
         <DateRange
           v-model="dateRange"
           :width="'250px'"
@@ -32,21 +59,44 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1">
-        {{ $t('applicant.progress.filters.branch') }}
-        <MySelect
-          :option-to-fetch="'branchIncharge'"
-          :width="'175px'"
-          v-model="branch"
+      <label class="text-subtitle1" v-if="mode === 'day'">
+        {{ $t('applicant.progress.filters.month') }}
+        <DateRange
+          v-model="day"
+          :width="'150px'"
+          :height="'40px'"
           @update:model-value="getData()"
+          :range="false"
         />
       </label>
-      <label class="text-subtitle1">
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
+        {{ $t('KPI.location') }}
+        <MySelect
+          :width="'150px'"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'media'">
+        {{ $t('KPI.media') }}
+        <MySelect
+          :width="'150px'"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'day'">
         {{ $t('SAA.username') }}
         <MySelect
           :option-to-fetch="'usersInCharge'"
           :width="'175px'"
           v-model="user"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
+        {{ $t('applicant.add.occupation') }}
+        <MySelect
+          :options="occupationList"
+          :width="'100px'"
+          v-model="occupation"
+          :clearable="false"
           @update:model-value="getData()"
         />
       </label>
@@ -59,9 +109,11 @@
       </q-btn>
     </q-card-section>
     <q-card-section class="bg-grey-3 flex items-center">
-      <SAATable
+      <KpiTable
         :rows="rowData"
-        ref="saaTableRef"
+        :mode="mode"
+        :item="item"
+        ref="kpiTableRef"
       />
       <q-linear-progress query v-if="loading" color="primary"/>
     </q-card-section>
@@ -71,24 +123,35 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import DateRange from 'src/components/inputs/DateRange.vue';
-import SAATable from './components/SAATable.vue';
+import KpiTable from './components/KPITable.vue';
 import { ref, onMounted, watch } from 'vue'
 import { useOrganization } from 'src/stores/organization';
 import { User } from 'src/shared/model';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
 import { where } from 'firebase/firestore';
+import { occupationList } from 'src/shared/constants/Applicant.const';
 
+const day = ref('')
 const dateRange = ref('')
 const branch = ref('')
+const occupation = ref('')
 const user = ref('')
-const method = ref('user')
+const mode = ref('day')
+const item = ref('actualFigures')
+const resetData = () => {
+  user.value = ''
+  day.value = ''
+  dateRange.value = ''
+  branch.value = ''
+  occupation.value = ''
+}
 const loading = ref(false)
 const rowData = ref<User[]>([])
 const userStore = useUserStore()
 const organizationStore = useOrganization()
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
-const saaTableRef = ref<InstanceType<typeof SAATable> | null>(null);
+const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
 async function getData(){
   if(organizationStore.currentOrganizationId){
@@ -111,9 +174,13 @@ async function getData(){
 watch(()=>organizationStore.currentOrganizationId, ()=>{
   getData()
 })
+watch(()=>mode.value, ()=>{
+  resetData()
+})
 function downloadCSV(){
-  saaTableRef.value?.exportTable()
+  kpiTableRef.value?.exportTable()
 }
+
 onMounted(()=>{
   getData()
 })

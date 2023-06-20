@@ -4,7 +4,7 @@ import { i18n } from 'boot/i18n'
 
 const { t } = i18n.global
 
-export const kpiTableColumns = computed<QTableProps['columns']>(() => {
+export const saaTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       name: 'name',
