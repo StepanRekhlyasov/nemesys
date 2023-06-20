@@ -79,6 +79,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
 <template>
     <q-drawer
         :model-value="props.isDrawer"
+        :key="props.selectedItem.id"
         overlay
         elevated
         bordered

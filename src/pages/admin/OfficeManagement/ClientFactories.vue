@@ -47,11 +47,14 @@ const paginatedTableRows = computed(() => {
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
 
-    activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
 
-    if(activeClientFactoryItem.value) {
-        isClientFactoryDrawer.value = true
-    }
+    setTimeout(() => {
+        activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
+
+        if (activeClientFactoryItem.value) {
+            isClientFactoryDrawer.value = true
+        }
+    }, 200);
 }
 
 watch([clients], () => {
