@@ -1460,6 +1460,7 @@ export default {
       changeItemClassification: 'Change item classification',
       ignore: 'Ignore',
       updateData: 'Update data',
+      importTitle: 'Execute the import of the following changes.',
       details: {
         // Office details
         parentClient: 'Parent client',

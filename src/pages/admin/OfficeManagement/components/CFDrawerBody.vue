@@ -4,18 +4,29 @@ import { defineProps, defineEmits, ref, watchEffect } from 'vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
-import { useHighlightMainInfo } from '../handlers';
-import { finishEditing } from 'src/components/client-factory/hadlers';
+import { useHighlightMainInfo } from 'src/components/client-factory/handlers';
 
+import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { RenderMainInfo } from '../types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ChangedData } from 'src/components/client-factory/types';
+import { ImportLog } from 'src/shared/model/ImportLog';
 
 const { t } = useI18n({ useScope: 'global' });
+
 const props = defineProps<{
-    clientFactory: ClientFactory
+    clientFactory: ClientFactory,
+    draft: Partial<ClientFactory>,
+    isLoading: boolean,
+    isReflecting: boolean,
+    isImporting: boolean,
+    newReflectLog: ReflectLog | undefined,
+    newImportLog: ImportLog | undefined
 }>();
 const emit = defineEmits<{
-    (e: 'handleImport')
+    (e: 'handleImport'),
+    (e: 'handleReflect'),
+    (e: 'editDraft', changedData: ChangedData)
 }>()
 
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
@@ -29,25 +40,39 @@ const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>
 const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
 }
+
 const handleImport = () => {
     emit('handleImport')
 }
 
+const handleReflect = () => {
+    emit('handleReflect')
+}
+
+const handleEditDraft = (changedData: ChangedData) => {
+    emit('editDraft', changedData)
+}
+
 watchEffect(() => {
-    mainInfo.value = useHighlightMainInfo(props.clientFactory)
+    mainInfo.value = useHighlightMainInfo(props.clientFactory, props.draft)
 })
 </script>
 
 <template>
     <div class="wrapper">
+        <div style="height: 5px;" class="q-my-none q-pa-none">
+            <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
+        </div>
+
         <HighlightTwoColumn 
             :data="mainInfo.officeInfo"
+            :is-disable-edit="isLoading"
             :is-edit="isEditForm.officeInfo"
             :label="t('client.add.officeInfo')"
             theme="accent"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
-            @on-save="isEditForm.officeInfo = false; finishEditing(dataForUpdating.officeInfo, props.clientFactory.draft, props.clientFactory)"/>
+            @on-save="isEditForm.officeInfo = false; handleEditDraft(dataForUpdating.officeInfo as RenderMainInfo['officeInfo'])"/>
         
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"
@@ -57,11 +82,12 @@ watchEffect(() => {
         <HighlightTwoColumn
             :data="mainInfo.contactInfo"
             :is-edit="isEditForm.contactInfo"
+            :is-disable-edit="isLoading"
             :label="t('client.add.contactInfo')"
             theme="accent"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"
-            @on-save="isEditForm.contactInfo = false; finishEditing(dataForUpdating.contactInfo, props.clientFactory.draft, props.clientFactory)"/>
+            @on-save="isEditForm.contactInfo = false; handleEditDraft(dataForUpdating.contactInfo as RenderMainInfo['contactInfo'])"/>
 
         <EditableColumnsCF v-if="isEditForm.contactInfo"
             :data="mainInfo.contactInfo"
@@ -73,8 +99,14 @@ watchEffect(() => {
     <q-separator color="bg-grey-3 q-mt-md"></q-separator>
 
    <CFDrawerBodyFooter
+    @handle-reflect="handleReflect"
     @handle-import="handleImport"
-    :client-factory="clientFactory"/>
+    :client-factory="clientFactory"
+    :draft="draft"
+    :is-reflect-loading="isReflecting"
+    :is-import-loading="isImporting"
+    :new-reflect-log="newReflectLog"
+    :new-import-log="newImportLog"/>
 </template>
 
 <style lang="scss" scoped>
