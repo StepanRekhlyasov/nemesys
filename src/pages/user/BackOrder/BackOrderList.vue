@@ -74,7 +74,7 @@
 	<q-drawer
 		v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" 
 		overlay elevated bordered>
-		<creareBO :type="typeBoCreate" @close-dialog="cteateBoDrawer=false"/>
+		<createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer=false"/>
 	</q-drawer>
   <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="showSearchByMap=false"></SearchByMapDrawer>
 </template>
@@ -82,11 +82,11 @@
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
 import SearchByMapDrawer from './components/info/searchByMapDrawer.vue';
-import creareBO from './components/create/createBO.vue';
+import createBO from './components/create/createBO.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 
@@ -99,7 +99,7 @@ const showSearchByMap = ref(false)
 const selected = ref<BackOrderModel[]>([])
 const drawerRight = ref(false);
 const cteateBoDrawer = ref(false);
-const typeBoCreate = ref('referral')
+const typeBoCreate:Ref<'referral' | 'dispatch'> = ref('referral')
 const selectedBo = ref<BackOrderModel | undefined>();
 const selectedClient = ref<Client | undefined>(undefined);
 const pagination = ref({

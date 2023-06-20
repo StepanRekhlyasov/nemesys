@@ -96,7 +96,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
-import { ApplicantFix, selectOptions } from 'src/shared/model';
+import { ApplicantFix, FixMainInfo, selectOptions } from 'src/shared/model';
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -109,7 +109,7 @@ const props = defineProps<{
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
 
-const data = ref();
+const data = ref<Partial<FixMainInfo>>({});
 const statusOptions = ref<selectOptions[]> ([]);
 resetData();
 

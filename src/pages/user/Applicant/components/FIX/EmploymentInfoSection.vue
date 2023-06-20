@@ -114,7 +114,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 
-import { ApplicantFix, selectOptions } from 'src/shared/model'
+import { ApplicantFix, FixEmploymentInfo, selectOptions } from 'src/shared/model'
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -128,7 +128,7 @@ const props = defineProps<{
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit']);
 const statusOptions = ref<selectOptions[]> ([]);
 
-const data = ref({})
+const data = ref<Partial<FixEmploymentInfo>>({});
 resetData();
 
 function resetData() {
@@ -137,6 +137,7 @@ function resetData() {
     admissionDate: props.editData['admissionDate'] || '',
     admissionReason: props.editData['admissionReason'] || '',
     admissionReasonDetal: props.editData['admissionReasonDetal'] || '',
+		reasonNotJoining: props.editData['reasonNotJoining'] || '',
     chargeOfAdmission: props.editData['chargeOfAdmission'] || '',
     endDate: props.editData['endDate'] || '',
     admissionMemo: props.editData['admissionMemo'] || '',
