@@ -33,6 +33,19 @@
 			</labelField>
 		</div>
 		
+		<div class="row q-pb-sm">
+			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.userInChargeVisit')" 
+				:value="usersListOption
+					.filter(user => user.value === fixData['visit'])
+					.map(user => user.label).join('')">
+					<q-select
+						v-model="data['visit']"
+						:disable="loading || disableLevel < 1"
+						emit-value map-options dense outlined
+						:options="usersListOption" :label="$t('common.pleaseSelect')" />
+			</labelField>
+		</div>
+		
 		<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.reasonNG')" 
 				:value="fixData.reasonNG" valueClass="col-9 q-pl-md">
@@ -131,6 +144,7 @@ function resetData() {
 	data.value = {
 		inspectionStatus: props.editData['inspectionStatus'] || false,
 		inspectionDate: props.editData['inspectionDate'] || '',
+		visit: props.editData['visit'] || '',
 		reasonNG: props.editData['reasonNG'] || '',
 		reasonJobDetal: props.editData['reasonJobDetal'] || '',
 		chargeOfFacility: props.editData['chargeOfFacility'] || '',
