@@ -242,6 +242,7 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
   created_at: Timestamp | FieldValue | string;
   client: string;
   office: string;
+  applicant_id: string;
 }
 
 export interface FixMainInfo {

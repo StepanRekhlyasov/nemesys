@@ -1,15 +1,22 @@
 <template>
   <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;" class="applicantTable" :loading="loading">
-    <UpdateTableRows v-if="status=='wait_termination'" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></UpdateTableRows>
+    <UpdateTableRows 
+      v-if="status=='wait_termination'" 
+      :applicants="applicants" 
+      @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"
+      @onLoadingStart="()=>emit('onLoadingStart')"
+      @onLoadingEnds="()=>emit('onLoadingEnd')"
+    ></UpdateTableRows>
     <ProgressTableRows v-else :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
-  <q-linear-progress query v-if="loading" color="primary"/>
+  <q-linear-progress query v-if="loading || innerLoading" color="primary"/>
 </template>
 <script setup lang="ts">
 import { Applicant } from 'src/shared/model';
 import ProgressTableRows from './ProgressTableRows.vue';
 import UpdateTableRows from './UpdateTableRows.vue';
 import { QueryOrderByConstraint } from 'firebase/firestore';
+import { ref } from 'vue'
 
 defineProps<{
   applicants: Applicant[],
@@ -17,9 +24,13 @@ defineProps<{
   status: string
 }>()
 const emit = defineEmits<{
-  (e: 'openDrawer', applicant: Applicant)
-  (e: 'sortQuery', param: QueryOrderByConstraint[])
+  (e: 'openDrawer', applicant: Applicant),
+  (e: 'sortQuery', param: QueryOrderByConstraint[]),
+  (e: 'onLoadingStart'),
+  (e: 'onLoadingEnd'),
 }>()
+
+const innerLoading = ref(false)
 
 </script>
 <style lang="scss">
