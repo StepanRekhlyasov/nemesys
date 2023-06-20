@@ -4,7 +4,7 @@
       {{'■ '+ $t('backOrder.basicInfo') }}
     </div>
     <div class="row ">
-      <labelField :label="$t('client.list.client')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
+      <labelField :label="$t('client.list.client')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4" v-if="client">
         {{ client['client_name'] }}
       </labelField>
       <labelField :label="$t('backOrder.officeName')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
@@ -111,13 +111,13 @@
 </template>
 
 <script lang="ts" setup>
-import LabelField from 'src/components/form/LabelField.vue';
+import labelField from 'src/components/form/LabelField.vue';
 import { BackOrderModel, Client } from 'src/shared/model';
 
 defineProps<{
   backOrder: BackOrderModel,
   loading: boolean,
-  client: Client
+  client?: Client
 }>()
 
 </script>

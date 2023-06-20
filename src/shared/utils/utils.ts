@@ -45,7 +45,7 @@ export const toDateFormat = (time?: Timestamp):string => {
 		return ''
 	}
 	const dateFormat = new Date(time['seconds']*1000);
-	return date.formatDate(dateFormat, 'YYYY-MM-DD')
+	return date.formatDate(dateFormat, 'YYYY/MM/DD')
 }
 
 export const toMonthYear = (time?: Timestamp) => {

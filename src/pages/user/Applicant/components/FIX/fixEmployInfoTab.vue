@@ -307,6 +307,7 @@ function showDeleteDialog(data) {
     updateData['deleted_at'] = serverTimestamp();
 
     await fixStore.updateFix(data.id, updateData)
+    loadContactData();
     Alert.success($q, t)
   })
 }
