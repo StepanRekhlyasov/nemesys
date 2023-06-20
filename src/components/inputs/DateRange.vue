@@ -67,13 +67,17 @@ withDefaults(defineProps<{
   disable: false,
   range: true
 })
-const dateValue = ref()
-const dateStringValue = ref()
+const dateValue = ref<{
+  from: string,
+  to: string
+} | string>()
+const dateStringValue = ref<string>()
+
 watch(dateValue, (newVal)=>{
-  if(newVal.from && newVal.to){
+  if(typeof newVal !== 'string' && newVal){
     dateStringValue.value = newVal.from + ' - ' + newVal.to
   } 
-  if(!newVal.from && !newVal.to){
+  if(typeof newVal === 'string'){
     dateStringValue.value = newVal
   }
   emit('update:modelValue', newVal);
