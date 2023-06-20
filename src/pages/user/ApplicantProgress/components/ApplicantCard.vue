@@ -15,8 +15,8 @@
       <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }}</div>
     </div>
     <div class='row q-gutter-sm items-center'>
-      <div class='col-1'>応</div>
-      <div class='col'>{{ timestampToDateFormat(item.currentStatusTimestamp, 'YYYY.MM.DD') }}</div>
+      <div class='col-1' v-if="item.status" v-html="statusDateName[item.status]"></div>
+      <div class='col'>{{ item[statusDateField(item.status)] ? timestampToDateFormat(item[statusDateField(item.status)], 'YYYY.MM.DD') : '—' }}</div>
     </div>
   </q-card>
 </template>
@@ -27,10 +27,24 @@ import { timestampToDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
 import { RankCount } from 'src/shared/utils/RankCount.utils'
+import { getApplicantCurrentStatusTimestampField as statusDateField } from 'src/shared/utils/Applicant.utils'
+import { i18n } from 'boot/i18n'
 
 const props = defineProps<{
   item: Applicant,
 }>()
+const { t } = i18n.global
+const statusDateName = computed(()=>{
+  return {
+    'wait_contact' : t('applicant.progress.card.applicationDate'),
+    'wait_attend' : t('applicant.progress.card.invitationDate'),
+    'wait_FIX' : t('applicant.progress.card.attendingDate'),
+    'wait_visit' : t('applicant.progress.card.FIXDate'),
+    'wait_offer' : t('applicant.progress.card.jobDate'),
+    'wait_entry' : t('applicant.progress.card.appointmentDate'),
+    'wait_termination' : '&#128337;',
+  }
+})
 
 const emit = defineEmits<{
     (e: 'selectApplicant', applicant : Applicant)

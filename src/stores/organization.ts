@@ -1,15 +1,17 @@
-import { collection, collectionGroup, doc, documentId, endAt, Firestore, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt , updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { Branch, branchFlags, Business, Organization, RequestType, ReturnedObjectType } from 'src/shared/model';
-import { BranchesSearch } from 'src/shared/utils/User.utils';
-import { ConstraintsType, toDateObject } from 'src/shared/utils/utils';
+import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
+import { serializeTimestamp } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
 import { i18n } from 'boot/i18n';
+import { getUsersByPermission } from 'src/shared/utils/User.utils';
 
 const { t } = i18n.global
 interface OrganizationState {
   organizations: Organization[],
   activeOrganization: number,
+  currentOrganizationBranches: { [id: string]: Branch; },
+  currentOrganizationUsers: { [id: string]: User; },
 }
 
 const organization = 'organization'
@@ -19,10 +21,12 @@ export const useOrganization = defineStore('organization', () => {
   const state = ref<OrganizationState>({
     organizations: [],
     activeOrganization: 0,
+    currentOrganizationBranches: {},
+    currentOrganizationUsers: {},
   })
 
   const currentOrganizationId = computed(() => {
-    return state.value.organizations[state.value.activeOrganization].id
+    return state.value.organizations[state.value.activeOrganization]?.id
   })
 
   const storage = localStorage.getItem(organization)
@@ -36,30 +40,12 @@ export const useOrganization = defineStore('organization', () => {
   },
     { deep: true }
   )
+  watch(() => currentOrganizationId.value, async () => {
+    state.value.currentOrganizationBranches = await getCurrentOrganizationBranches()
+    state.value.currentOrganizationUsers = await getCurrentUsersInChrage()
+  })
 
-  async function getBusinesses(db: Firestore, organization_id: string) {
-    const businessesQuery = query(collection(db, `/organization/${organization_id}/businesses/`))
-    const businesses = await getDocs(businessesQuery)
-    const businessList: { [id: string]: Business } = {}
-    businesses.forEach((business) => {
-      businessList[business.id] = business.data() as Business
-    })
-
-    return businessList
-  }
-
-  async function getAllBusinesses(db: Firestore) {
-    const organizationsIds = await getAllOrganizationsIds(db)
-    const businessList: { [id: string]: Business } = {}
-    for (let i = 0; i < organizationsIds.length; i++) {
-      const id = organizationsIds[i]
-      const businesses = await getBusinesses(db, id)
-      Object.assign(businessList, businesses)
-    }
-    return businessList
-  }
-
-  async function getAllOrganizationsIds(db: Firestore) {
+  async function getAllOrganizationsIds() {
     const organizationsQuery = query(collection(db, 'organization/'), where('deleted', '==', false));
     const querySnapshot = await getDocs(organizationsQuery);
     const organizationsIds: string[] = []
@@ -72,42 +58,31 @@ export const useOrganization = defineStore('organization', () => {
     return organizationsIds
   }
 
-
-  async function getAllBranches() {
-
-    const branches: { [id: string]: Branch; } = {}
-
-    const branchesQuery = query(collectionGroup(db, 'branches'));
-    const querySnapshot = await getDocs(branchesQuery);
-    querySnapshot.forEach((doc) => {
-      branches[doc.id] = doc.data() as Branch
-    });
-
-    return branches
-  }
-
-  async function getBranchesInOrganization(organizationId: string) {
-    const organizationRef = doc(db, `/organization/${organizationId}/`)
+  async function getCurrentOrganizationBranches() {
+    const organizationRef = doc(db, `/organization/${currentOrganizationId.value}/`);
     const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()), startAt(organizationRef.path), endAt(organizationRef.path + '\uf8ff'));
     const querySnapshot = await getDocs(branchesQuery);
     const branches: { [id: string]: Branch; } = {}
-
     querySnapshot.forEach((doc) => {
       branches[doc.id] = doc.data() as Branch
     })
     return branches
   }
 
-  async function addBusiness(db: Firestore, business: Omit<Business, 'id'>, organizationId: string) {
-    const businessRef = collection(db, `organization/${organizationId}/businesses/`)
-    const docRef = doc(businessRef)
-    await setDoc(docRef, {
-      ...business,
-      id: docRef.id
-    })
+  async function getCurrentUsersInChrage() {
+    const organization = useOrganization()
+    const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+    const querySnapshot = await usersSnapshot
+    const users: { [id: string]: User; } = {}
+    if (querySnapshot) {
+      querySnapshot.forEach((doc) => {
+        users[doc.id] = doc.data() as User
+      })
+    }
+    return users
   }
 
-  async function addOrganization(db: Firestore, organization: Organization) {
+  async function addOrganization(organization: Organization) {
     const organizationRef = collection(db, 'organization/')
     const docRef = doc(organizationRef)
     organization.id = docRef.id
@@ -126,61 +101,11 @@ export const useOrganization = defineStore('organization', () => {
     return querySnapshot.size === 0
   }
 
-  async function getBranches(db: Firestore, organization_id: string, search?: BranchesSearch) {
-    const businesses = await getBusinesses(db, organization_id)
-    const businessesIds = Object.keys(businesses)
-    const branchesObj: { [businessId: string]: Branch[] } = {}
-
-    const constraints: ConstraintsType = [orderBy('name'), where('deleted', '==', false)]
-    if (search && search?.flag !== branchFlags.All) {
-      constraints.push(where('flag', '==', search.flag))
-    }
-
-    if (search && search?.queryText) {
-      constraints.push(startAt(search?.queryText || ''), endAt(search?.queryText + '\uf8ff'))
-    }
-
-    for (let i = 0; i < businessesIds.length; i++) {
-      const businessId = businessesIds[i]
-      const branchesQuery = query(
-        collection(db, `/organization/${organization_id}/businesses/${businessId}/branches`),
-        ...constraints
-      )
-      const branches = await getDocs(branchesQuery)
-
-      branches.forEach((branch) => {
-        if (!Array.isArray(branchesObj[businessId])) {
-          branchesObj[businessId] = []
-        }
-        const branchToPush = branch.data()
-        branchToPush.created_at = toDateObject(branchToPush.created_at)
-        branchToPush.updated_at = toDateObject(branchToPush.updated_at)
-        branchToPush.deletedAt = toDateObject(branchToPush.deletedAt)
-        branchesObj[businessId].push(branchToPush as Branch)
-      })
-    }
-
-    return branchesObj
-  }
-
-  async function editOrganization(db: Firestore, organization: PartialWithFieldValue<Organization>, organizationId: string) {
+  async function editOrganization(organization: Partial<Organization>, organizationId: string) {
     const ref = doc(db, 'organization/' + organizationId)
+    serializeTimestamp(organization)
     await updateDoc(ref, {
       ...organization
-    })
-  }
-
-  async function editBusiness(db: Firestore, business: PartialWithFieldValue<Business>, organizationId: string, businessId: string) {
-    const ref = doc(db, `organization/${organizationId}/businesses/${businessId}`)
-    await updateDoc(ref, {
-      ...business
-    })
-  }
-
-  async function editBranch(db: Firestore, branch: PartialWithFieldValue<Branch>, organizationId: string, businessId: string, branchId: string) {
-    const ref = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`)
-    await updateDoc(ref, {
-      ...branch
     })
   }
 
@@ -238,32 +163,15 @@ export const useOrganization = defineStore('organization', () => {
 
   }
 
-  async function countUsersInBranch(id: string) {
-    const q = query(collection(db, 'users'), where('branch_id', '==', id), where('deleted', '==', false))
-    const d = await getDocs(q)
-    return d.docs.length
+  return {
+    state,
+    currentOrganizationId,
+    addOrganization,
+    editOrganization,
+    isCodeUnique,
+    getOrganizationByCode,
+    getAllOrganizationsIds,
+    getOrganizationsByName,
+    getDataById,
   }
-
-  async function getBranch(organizationId: string, businessId: string, branchId: string) {
-    const ref = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`)
-    const branchSnapshot = await getDoc(ref)
-    const branch = branchSnapshot.data() as Branch
-    return branch
-  }
-
-  async function calculateLicenceFee(organizationId: string) {
-    const allBranches = await getBranchesInOrganization(organizationId)
-
-    const allBranchesArr = Object.values(allBranches)
-
-    let licenceFee = 0
-    for (let i = 0; i < allBranchesArr.length; i++) {
-      const branch = allBranchesArr[i]
-      const usersInBranch = await countUsersInBranch(branch.id)
-      licenceFee += usersInBranch * branch.priceForOneUserInYen
-    }
-    return licenceFee
-  }
-
-  return { state, currentOrganizationId, getBranches, getBusinesses, getAllBranches, getAllBusinesses, addBusiness, addOrganization, editOrganization, editBusiness, editBranch, isCodeUnique, getOrganizationByCode, getAllOrganizationsIds, getBranchesInOrganization, getOrganizationsByName, getDataById, countUsersInBranch, calculateLicenceFee, getBranch }
 })

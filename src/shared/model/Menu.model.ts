@@ -19,15 +19,17 @@ export interface Meta {
   permission?: UserPermissionNames [];
   isAdmin?: boolean;
   hideInMenu?: boolean;
+  applicantsUpdateOnOrganizationChange?: boolean
 }
 
 export enum MenuParent{
   DashboardData = 'DASHBOARD_DATA',
-  ClientMenagment = 'CLIENT_MENAGMENT',
+  BusinessMenagment = 'BUSINESS_MENAGMENT',
   SystemSettings = 'SYSTEM_SETTINGS',
   ApplicantManagement = 'APPLICANT_MANAGEMENT',
   TotalizationManagement = 'TOTALIZATION_MANAGEMENT',
   BackOrder = 'BACK_ORDER',
+
   AdminOfficeManagement = 'SYSTEMS_OFFICE_MANAGEMENT',
   AdminEnterpriseManagement = 'ENTERPRISE_MANAGEMENT',
   AdminAggregationData = 'ADMIN_AGGREGATION_DATA',

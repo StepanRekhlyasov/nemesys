@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import consts from './consts'
 
@@ -39,20 +39,7 @@ const pagination = ref({
     rowsPerPage: 10
     // rowsNumber: xx if getting data from a server
 });
-const column_labels = [
-    'office.searchConditionName',
-    'office.registeredUser',
-    'office.registeredDate',
-    'office.updatedUser',
-    'office.lastModified'
-]
 
-const columns = computed(() => {
-    return consts.tableColumnsSavedCriteriaList.map((column, index) => {
-        column.label = t(column_labels[index])
-        return column
-    })
-})
 </script>
 
 <template>
@@ -86,7 +73,7 @@ const columns = computed(() => {
                     <thead>
                         <tr>
                             <th class="table__column text-left"></th>
-                            <th class="table__column text-left" :key="item.name" v-for="item in columns">
+                            <th class="table__column text-left" :key="item.name" v-for="item in consts.tableColumnsSavedCriteriaList.value">
                                 {{ item.label }}
                             </th>
                             <th class="table__column text-left"></th>

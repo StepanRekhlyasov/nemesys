@@ -44,13 +44,14 @@
 </template>
 
 <script setup lang="ts">
-import { QDialogProps } from 'quasar';
+import { QDialogProps, useQuasar } from 'quasar';
 import { LicenseRequest } from '../types/LicenseRequest';
 import { useI18n } from 'vue-i18n';
-import { useOrganization } from 'src/stores/organization';
 import { ref, onMounted } from 'vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import { useLicense } from 'src/stores/license';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { useBranch } from 'src/stores/branch';
 
 interface ManageLicenseDialogProps extends QDialogProps {
   licenseRequest: LicenseRequest
@@ -61,8 +62,9 @@ interface ManageLicenseDialogProps extends QDialogProps {
     priceForOneUserInYen: number
   }
 }
+const $q = useQuasar()
 const { t } = useI18n({ useScope: 'global' });
-const organization = useOrganization()
+const branchStore = useBranch()
 const props = defineProps<ManageLicenseDialogProps>()
 const currentSlotsCount = ref<number>(0)
 const changedSlotsCount = ref<number>(0)
@@ -87,9 +89,13 @@ async function execute() {
   if (currentSlotsCount.value == changedSlotsCount.value || currentLicenceFee.value == changedLicenceFee.value) {
     return
   }
-  const { organizationId, businessId, branchId, } = props.licenseRequest
 
-  await licenceStore.execute(props.licenseRequest, changedSlotsCount.value, organizationId, businessId, branchId)
+  try {
+    await licenceStore.execute(props.licenseRequest)
+    Alert.success($q, t);
+  } catch (error) {
+    Alert.warning($q, t);
+  }
   loading.value = false
   emit('onDialogHide', false)
   emit('refesh')
@@ -101,8 +107,8 @@ async function fetchData() {
   const { priceForOneUserInYen } = props.dialogData
   const { organizationId, businessId, branchId, requestQuantity, } = props.licenseRequest
 
-  currentSlotsCount.value = (await organization.getBranch(organizationId, businessId, branchId)).licensesSlots
-  currentLicenceFee.value = await organization.calculateLicenceFee(organizationId)
+  currentSlotsCount.value = (await branchStore.getBranch(organizationId, businessId, branchId)).licensesSlots
+  currentLicenceFee.value = await branchStore.calculateLicenceFee(organizationId)
 
   if (props.licenseRequest.requestType == 'Addition') {
     changedSlotsCount.value = requestQuantity + currentSlotsCount.value

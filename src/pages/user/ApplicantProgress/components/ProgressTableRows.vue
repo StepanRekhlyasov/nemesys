@@ -76,8 +76,7 @@ const emit = defineEmits<{
   (e: 'sortQuery', orderBy: QueryOrderByConstraint[])
 }>()
 defineProps<{
-  applicants: Applicant[],
-  status: string
+  applicants: Applicant[]
 }>()
 const orderByFetch = (param : string) => {
   if(!queryDirections.value[param]){

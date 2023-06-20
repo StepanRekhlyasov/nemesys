@@ -3,9 +3,8 @@ import { dataObject } from '../utils/utils';
 export interface Branch {
   id: string;
   name: string;
-  prefectures: string;
+  prefecture: string;
   phone?: string;
-  flag: branchFlags;
   hidden: boolean;
   created_at: dataObject;
   updated_at?: dataObject;
@@ -20,5 +19,11 @@ export interface Branch {
 
 export enum branchFlags {
   All = 'all',
-  Valid = 'valid'
+  Working = 'working'
+}
+
+
+export interface BranchesSearch {
+  queryText?: string;
+  flag?: branchFlags;
 }

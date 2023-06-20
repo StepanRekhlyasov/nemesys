@@ -12,22 +12,22 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!edit">{{ applicant?.attractionsStatus? 'OK' : 'NG'}}</span>
         <template v-if="edit">
-          <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+          <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate"
             unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
-          <q-checkbox v-model="data['attractionsStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate" 
+          <q-checkbox v-model="data['attractionsStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate"
             checked-icon="mdi-checkbox-blank-outline" color="primary"/>
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.seductionDay') }}
+        {{ $t('applicant.list.info.invitationDate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ timestampToDateFormat(applicant.seductionDay) }}</span>
-        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['seductionDay']">
+        <span v-if="!edit">{{ timestampToDateFormat(applicant.invitationDate) }}</span>
+        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['invitationDate']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['seductionDay']" default-view="Years" :options="limitDate">
+                <q-date v-model="data['invitationDate']" default-view="Years" :options="limitDate">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -115,7 +115,17 @@
       </div>
     </div>
 
-      <div class="row q-pb-sm">
+    <div class="row q-pt-sm  q-pb-sm ">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.branchIncharge') }}
+      </div>
+      <div class="col-9 q-pl-md blue relative-position">
+        <span v-if="!edit">{{data.branchIncharge? branches.find(b => b.value == data.branchIncharge)?.label : ''}}</span>
+        <select-branch v-if="edit" :organization-id="organizationStore.currentOrganizationId" v-model="data['branchIncharge']" />
+      </div>
+    </div>
+
+    <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.memo') }}
       </div>
@@ -130,11 +140,15 @@
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
 import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
-import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Applicant, ApplicantInputs, selectOptions } from 'src/shared/model';
+import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
+import SelectBranch from 'src/pages/user/Settings/management/components/SelectBranch.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
+import { useOrganization } from 'src/stores/organization';
+import { mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { useBranch } from 'src/stores/branch';
 
 const props = defineProps<{
   applicant: Applicant
@@ -144,25 +158,31 @@ const data: Ref<Partial<ApplicantInputs>> = ref({})
 const edit = ref(false);
 const loading = ref(false);
 const applicantStore = useApplicant();
+const organizationStore = useOrganization();
+const branchStore = useBranch()
+const branches = ref<selectOptions[]>([])
 
 const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
 const usersListOption = usersInCharge.value
 
 
-function resetData() {
+async function resetData() {
   defaultData.value = {
-    attractionsStatus: props?.applicant['attractionsStatus'],
-    seductionDay: timestampToDateFormat(props?.applicant['seductionDay']),
+    attractionsStatus: props?.applicant['attractionsStatus'] || false,
+    invitationDate: timestampToDateFormat(props?.applicant['invitationDate']),
     employmentStatus: props?.applicant['employmentStatus'],
     seduser: props?.applicant['seduser'],
     classification: props?.applicant['classification'],
+    occupation: props?.applicant['occupation'],
     position: props?.applicant['position'],
     qualification: props?.applicant['qualification'],
     period: props?.applicant['period'],
+    branchIncharge: props?.applicant['branchIncharge'],
     memo: props?.applicant['memo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
+  branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(organizationStore.currentOrganizationId))
 }
 resetData()
 

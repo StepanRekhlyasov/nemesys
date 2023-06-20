@@ -2,17 +2,15 @@
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-xs q-mb-none">
       <span class="text-primary text-h6 q-pt-md"> {{ $t('applicant.list.fixEmployment.fixDestinationOffice') }} </span>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true"
+      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true;fixData={}"
         class="no-shadow q-ml-lg" />
     </q-card-section>
 
     <q-table :columns="columns" :rows="contactListData" row-key="id" v-model:pagination="pagination" hide-pagination>
 
       <template v-slot:body-cell-contactMethod="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)" >
           <div v-if="props.value == 'phone'">
             {{ $t('applicant.list.contacts.phone') }}
           </div>
@@ -23,10 +21,8 @@
       </template>
 
       <template v-slot:body-cell-created_at="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)">
           <span class="row">{{
             applicantStore.state.clientList?.
             find(client => client.id == props.row.client)?.name
@@ -40,45 +36,36 @@
       </template>
 
       <template v-slot:body-cell="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)">
           {{props.value}}
         </q-td>
       </template>
 
       <template v-slot:body-cell-fixDate="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
-          <template v-if="props.row.status">
-            <span class="row">{{ props.row.date }}</span>
-            <span class="row text-uppercase">{{ props.row.status? 'OK' : 'NG' }}</span>
-          </template>
-          <span v-if="!props.row.status">-</span>
+        <q-td :props="props"
+          :class="rowColor(props.row)">
+          <span class="row" v-if="props.row.fixStatus">{{ props.row.fixDate }}</span>
+          <span class="row text-uppercase">{{ props.row.fixStatus? 'OK' : 'fixStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
       <template v-slot:body-cell-workDay="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
-          <template v-if="props.row.inspectionStatus">
-            <span class="row">{{ props.row.inspectionDate }}</span>
-            <span class="row text-uppercase">{{ props.row.inspectionStatus? 'OK' : 'NG'  }}</span>
+        <q-td :props="props"
+          :class="rowColor(props.row)">
+          <template v-if="props.row.fixStatus">
+            <span class="row" v-if="props.row.inspectionStatus">{{ props.row.inspectionDate }}</span>
+            <span class="row text-uppercase">
+              {{ props.row.inspectionStatus? 'OK' : 'inspectionStatus' in props.row ? 'NG' : '-' }}
+            </span>
           </template>
-          <span v-if="!props.row.inspectionStatus">-</span>
+          <span v-if="!props.row.fixStatus">-</span>
         </q-td>
       </template>
 
       <template v-slot:body-cell-informalOfferDate="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)">
           <template v-if="props.row.offerStatus">
             <span class="row">{{ props.row.offerDate }}</span>
             <span class="row text-uppercase">{{ props.row.offerStatus? 'OK' : 'NG'  }}</span>
@@ -88,10 +75,8 @@
       </template>
 
       <template v-slot:body-cell-hiringDate="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)">
           <template v-if="props.row.admissionStatus">
             <span class="row">{{ props.row.admissionDate }}</span>
             <span class="row text-uppercase">{{ props.row.admissionStatus? 'OK' : 'NG'  }}</span>
@@ -101,20 +86,23 @@
       </template>
 
       <template v-slot:body-cell-edit="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)">
           <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat
             @click="showEditDialog(props.row)" />
         </q-td>
       </template>
 
+      <template v-slot:body-cell-memo="props">
+        <q-td :props="props"
+          :class="rowColor(props.row)">
+          {{ props.row.admissionMemo || props.row.offerMemo || props.row.notesInspection || props.row.memo }}
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-delete="props">
-        <q-td
-          :props="props"
-          :class="rowColor(props.row)"
-        >
+        <q-td :props="props"
+          :class="rowColor(props.row)">
           <q-btn style="color: #222222" icon="delete" size="sm" round flat @click="showDeleteDialog(props.row)" />
         </q-td>
       </template>
@@ -135,7 +123,6 @@
     :applicant="applicant"
     :disableLevel="disableLevel"
     @updateList="loadContactData"
-    @updateStatus="updateStatus"
     @updateDoc="updateData"/>
 </q-drawer>
 </template>
@@ -148,7 +135,7 @@ import { useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
-import { User, ApplicantFix, ApplicantStatus, Applicant } from 'src/shared/model';
+import { User, ApplicantFix, Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 
@@ -167,7 +154,7 @@ const contactListData: Ref<ApplicantFix[]> = ref([]);
 const users:Ref<User[]> = ref([]);
 const drawerRight = ref(false);
 const disableLevel = ref(0);
-const fixData = ref({} as ApplicantFix)
+const fixData = ref<Partial<ApplicantFix>>({})
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -249,33 +236,44 @@ onBeforeUnmount(() => {
   unsubscribeUsers.value();
 });
 
+function mutateDatesInData(data){
+  const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate']
+  keys.map((key)=>{
+    if(data[key]){
+      data[key] = toDateFormat(data[key])
+    }
+  })
+  return data
+}
 
 async function updateData(data){
   if (fixData.value?.id){
     data['updated_at'] = serverTimestamp();
     await fixStore.updateFix(fixData.value.id, data)
   }
+  data = mutateDatesInData(data)
   fixData.value = {
     ...fixData.value, 
-    ...data,        
-    date: data['date'] ? toDateFormat(data['date']): data['date'],
-    offerDate: data['offerDate'] ? toDateFormat(data['offerDate']): data['offerDate'],
-    admissionDate: data['admissionDate'] ? toDateFormat(data['admissionDate']): data['admissionDate'],
-    inspectionDate: data['inspectionDate'] ? toDateFormat(data['inspectionDate']): data['inspectionDate']
-  };
+    ...data
+  }
+  const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
+  contactListData.value[updateIndex] = {...contactListData.value[updateIndex], ...fixData.value}
+  await applicantStore.saveFixDataToApplicant(fixData.value)
   disableChange();
 }
 
 function disableChange() {
   let level = 0;
-  if (fixData.value['status']) {
-    level = 1
-  }
-  if (fixData.value['inspectionStatus']) {
-    level = 2
-  }
-  if (fixData.value['offerStatus']) {
-    level = 3
+  if(fixData.value){
+    if (fixData.value['fixStatus']) {
+      level = 1
+    }
+    if (fixData.value['inspectionStatus']) {
+      level = 2
+    }
+    if (fixData.value['offerStatus']) {
+      level = 3
+    }
   }
   disableLevel.value = level
 }
@@ -286,8 +284,8 @@ function showEditDialog(data) {
   disableChange();
 }
 function rowColor(row) {
-  if ((row.status && row.inspectionStatus && row.offerStatus && row.admissionStatus )
-    || !row.status || !row.inspectionStatus || !row.offerStatus || !row.admissionStatus ) {
+  if ((row.fixStatus && row.inspectionStatus && row.offerStatus && row.admissionStatus )
+    || !row.fixStatus || !row.inspectionStatus || !row.offerStatus || !row.admissionStatus ) {
     return ''
   }
   return 'bg-light-blue-1'
@@ -301,8 +299,7 @@ function showDeleteDialog(data) {
   }).onOk(async () => {
     const user = $q.localStorage.getItem('user');
     if (!user) {
-      return ;
-    }
+      return ;}
 
     let updateData = {}
     updateData['deleted'] = true;
@@ -310,32 +307,8 @@ function showDeleteDialog(data) {
     updateData['deleted_at'] = serverTimestamp();
 
     await fixStore.updateFix(data.id, updateData)
-
     Alert.success($q, t)
   })
-}
-async function  updateStatus(newDoc?: boolean){
-  let status = props.applicant.status;
-  const lastFix = contactListData.value[0]
-  if (newDoc) {
-    status = ApplicantStatus.WAIT_CONTACT;
-  }
-  if(props.applicant) {
-    status = ApplicantStatus.WAIT_FIX;
-  }
-  if (lastFix['status']) {
-    status = ApplicantStatus.WAIT_VISIT
-  }
-  if (lastFix['inspectionStatus']) {
-    status = ApplicantStatus.WAIT_OFFER
-  }
-  if (lastFix['offerStatus']) {
-    status = ApplicantStatus.WAIT_ENTRY
-  }
-  if (lastFix['admissionStatus']) {
-    status = ApplicantStatus.WORKING
-  }
-  await applicantStore.updateApplicant({status: status})
 }
 </script>
 

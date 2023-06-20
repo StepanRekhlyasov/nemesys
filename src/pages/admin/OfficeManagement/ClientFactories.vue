@@ -3,14 +3,14 @@ import { ref, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
-import CFPageActions from './components/CFPageActions.vue';
+import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from 'src/components/client-factory/NewClientDrawer.vue';
 import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFactoryDrawer.vue';
 import ClientFactoryTable from 'src/components/client-factory/ClientFactoryTable.vue';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryTableRow } from 'src/components/client-factory/types';
+import { ClientFactoryTableRow, ActionsType } from 'src/components/client-factory/types';
 import { clientFactoriesToTableRows } from './handlers';
 import { useClient } from 'src/stores/client';
 import consts from './consts';
@@ -104,7 +104,11 @@ const openNewClientFactoryDrawer = () => {
                 <div class="title text-h6 text-weight-bold">{{ t('menu.admin.masterSearch') }}</div>
             </q-card-section>
             <q-separator color="grey-4" size="2px" />
-            <CFPageActions @open-client-drawer="openNewClientDrawer" @open-client-factory-drawer="openNewClientFactoryDrawer"/>
+            <CFPageActions
+                @open-client-drawer="openNewClientDrawer"
+                @open-client-factory-drawer="openNewClientFactoryDrawer"
+                :actions-type="ActionsType.ADMIN"
+                theme="accent"/>
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
@@ -112,11 +116,12 @@ const openNewClientFactoryDrawer = () => {
                 :rows="paginatedTableRows"
                 :pagination="pagination"
                 :table-columns="consts.tableColumnsClientFactory.value"
-                />
+                theme="accent"/>
                 <Pagination
                 :rows="tableRows"
                 @updatePage="pagination.page = $event"
-                v-model:pagination="pagination" />
+                v-model:pagination="pagination"
+                theme="accent"/>
             </q-card-section>
         </q-card>
 
@@ -129,7 +134,7 @@ const openNewClientFactoryDrawer = () => {
         <NewClientDrawer
         @hide-drawer="hideNewClientDrawer"
         theme="accent"
-        :is-drawer="isNewClientDrawer" />
+        :is-drawer="isNewClientDrawer"/>
 
         <NewClientFactoryDrawer 
         @hide-drawer="hideNewClientFactoryDrawer"

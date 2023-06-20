@@ -36,8 +36,8 @@ const admin_router: MenuRouter[] = [
     title: 'menu.officeSearch',
   },
   {
-    title: 'menu.client-factory',
-    path: 'client-factory',
+    title: 'menu.admin.officeManagement',
+    path: 'client-factories',
     component: () => import('src/pages/admin/OfficeManagement/ClientFactories.vue'),
     meta: {
       requiresAuth: true,
@@ -141,6 +141,16 @@ const admin_router: MenuRouter[] = [
     },
     menuParent: MenuParent.AdminLicenseManagement,
     component: () => import('src/pages/admin/LicenseManagement/History/LicenseHistory.vue')
+  },
+  {
+    path: 'license-statistic',
+    title: 'menu.admin.licenseManagement.licenseStatistic',
+    meta: {
+      requiresAuth: true,
+      permission: [UserPermissionNames.AdminPageAccess]
+    },
+    menuParent: MenuParent.AdminLicenseManagement,
+    component: () => import('src/pages/admin/LicenseManagement/Statistic/LicenseStatistic.vue')
 
   }
 ]

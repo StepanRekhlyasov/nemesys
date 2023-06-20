@@ -10,7 +10,15 @@ const report_router: MenuRouter[] = [
       requiresAuth: true,
     },
     menuParent: MenuParent.TotalizationManagement,
-
+  },
+  {
+    path: 'totalization/kpi',
+    title: 'menu.SAA',
+    component: () => import('src/pages/user/SAA/SAAPage.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.TotalizationManagement,
   }
 ]
 

@@ -10,9 +10,9 @@
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" 
           :value="fixData.offerStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3  q-pl-md">
-          <q-checkbox v-model="data['offerStatus']" label="OK" @click="data['offerDate'] = '';emit('disableChange')"
+          <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange')"
             checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
-          <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
+          <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="data['offerDate'] = '';emit('disableChange')"
             unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
         </labelField>
 
@@ -44,7 +44,7 @@
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.chargeOfOffer')"
           :value="usersListOption
-            .filter(user => user.value === data['chargeOfOffer'])
+            .filter(user => user.value === fixData['chargeOfOffer'])
             .map(user => user.label).join('')"
           valueClass="col-9 q-pl-md">
           <q-select
@@ -70,7 +70,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   loading: boolean,
@@ -88,13 +88,20 @@ resetData();
 
 function resetData(){
   data.value = {
-    offerStatus: props.editData['offerStatus'] || '',
+    offerStatus: props.editData['offerStatus'] || false,
     offerDate: props.editData['offerDate'] || '',
     offerReasonNG: props.editData['offerReasonNG'] || '',
     chargeOfOffer: props.editData['chargeOfOffer'] || '',
     offerMemo: props.editData['offerMemo'] || '',
   }
 }
+
+watch(
+  () => [props.editData, props.fixData],
+  () =>{
+    resetData();
+  }, {deep: true, immediate: true}
+) 
 </script>
 
 <style>

@@ -4,8 +4,11 @@ const dashboard_router: MenuRouter[] = [
   {
     path: 'dashboard',
     title: 'menu.dashboard',
-    component: () => import('src/pages/user/Dashboard/Index.vue'),
-    meta: { requiresAuth: true },
+    component: () => import('src/pages/user/Dashboard/DashboardPage.vue'),
+    meta: { 
+      requiresAuth: true, 
+      applicantsUpdateOnOrganizationChange: true 
+    },
     menuParent: MenuParent.DashboardData
   },
   {
@@ -13,7 +16,8 @@ const dashboard_router: MenuRouter[] = [
     title: 'menu.applicantProgress',
     component: () => import('src/pages/user/ApplicantProgress/ApplicantProgress.vue'),
     meta: {
-      requiresAuth: true,
+      requiresAuth: true, 
+      applicantsUpdateOnOrganizationChange: true
     },
     menuParent: MenuParent.DashboardData,
   },

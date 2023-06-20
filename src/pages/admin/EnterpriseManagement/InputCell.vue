@@ -3,7 +3,7 @@
     <template v-if="!editing">
       {{ text }}
     </template>
-    <q-input v-else color="accent" :model-value="text" @update:model-value="(v) => emit('update:modelValue', v)" />
+    <q-input v-else color="accent" :model-value="text" @update:model-value="(v) => emit('update:modelValue', v)" v-bind="$attrs"/>
   </q-td>
 </template>
 

@@ -5,12 +5,12 @@
     </q-card-section>
     <q-separator color="white" size="2px" />
     <q-card-section class="bg-grey-3">
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData">
+      <q-form ref="applicantForm" @submit="onSubmit" @reset="resetData" greedy>
         <div class="row">
           <div class="col-6">
             <div class="row">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.name') }}
+                {{ $t('applicant.add.name') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['name']" bg-color="white"
@@ -19,7 +19,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.kanaName') }}
+                {{ $t('applicant.add.kanaName') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['kanaName']" 
@@ -28,7 +28,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.postCode') }}
+                {{ $t('applicant.add.postCode') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['postCode']"
@@ -37,7 +37,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.prefecture') }}
+                {{ $t('applicant.add.prefecture') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
@@ -47,7 +47,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.municipalities') }}
+                {{ $t('applicant.add.municipalities') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['municipalities']"
@@ -56,7 +56,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.street') }}
+                {{ $t('applicant.add.street') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['street']"
@@ -68,22 +68,21 @@
                 {{ $t('applicant.add.apartment') }}
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['apartment']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['apartment']" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.phone') }}
+                {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['phone']" @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g,'') }" 
+                :rules="phoneRules" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.email') }}
+                {{ $t('applicant.add.email') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['email']"
@@ -92,26 +91,33 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.status') }}
+                {{ $t('applicant.add.status') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                  :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.branchIncharge') }}
+                {{ $t('applicant.add.branchIncharge') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm bg-white">
-                <select-branch :organization-id="organizationStore.currentOrganizationId" v-model="applicantData['branchIncharge']" />
+                <select-branch 
+                  :organization-id="organizationStore.currentOrganizationId" 
+                  v-model="applicantData['branchIncharge']" 
+                  :rules="[(val) => !!val || '']" 
+                  hide-bottom-space
+                  @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
+                  @on-end-loading="disableSubmit = false"
+                />
               </div>
             </div>
           </div>
           <div class="col-6">
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.sex') }}
+                {{ $t('applicant.add.sex') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">                
                 <q-field                
@@ -127,7 +133,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.dob') }}
+                {{ $t('applicant.add.dob') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['dob']"
@@ -148,7 +154,7 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.occupation') }}
+                {{ $t('applicant.add.occupation') }} <span style="color: red">*</span>
               </div>
               <div class="col-9 q-pl-sm">
                 <q-field                
@@ -192,10 +198,11 @@
             </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.applicationDate') }}
+                {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
               </div>
               <div class="col-6 q-pl-sm">
-                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']">
+                <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
+                :rules="[(val) => !!val || '']" hide-bottom-space >
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -244,7 +251,7 @@
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" />
+          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
@@ -268,6 +275,8 @@ import { requiredFields } from 'src/shared/constants/Applicant.const';
 const applicantDataSample = {
   qualification: [],
   status: ApplicantStatus.UNSUPPORTED,
+  lon: 0,
+  lat: 0
 };
 const organizationStore = useOrganization()
 const applicantStore = useApplicant()
@@ -275,11 +284,18 @@ const applicantStore = useApplicant()
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList);
 const statusOption = ref(statusList);
-
+const disableSubmit = ref(false)
 const applicantForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
+const phoneRules = [
+  (val) => val&&!!val || '',
+  (val) => {
+    const reg = /^[a-zA-Z0-9]+$/
+    return reg.test(val) || ''
+  }
+] 
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
@@ -303,14 +319,17 @@ async function onSubmit() {
   data['created_at'] = serverTimestamp();
   data['updated_at'] = serverTimestamp();
   
-  if(data.applicationDate){
-    data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
-    data['currentStatusTimestamp'] = data['applicationDate'] ;
-    data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
-    data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+  if(!data.applicationDate){
+    data.applicationDate = new Date()
   }
+  data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+  data['currentStatusTimestamp'] = data['applicationDate'] ;
+  data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
+  data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+  
+ 
   /** required fields */
-  for(const [key, value] of Object.entries(requiredFields)){
+  for(const [key, value] of Object.entries(requiredFields.value)){
     if(typeof data[key] == 'undefined'){
       data[key] = value
     }
@@ -320,6 +339,7 @@ async function onSubmit() {
   data['deleted'] = false;
   const success = await applicantStore.createApplicant(data, applicantImage.value)
   if(success){
+    applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   }
   loading.value = false;

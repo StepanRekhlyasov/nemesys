@@ -6,10 +6,11 @@
     v-model="selectedMonth"
     @click="monthPicker?.show()"
     fill-mask=""
-    filled 
+    filled
     dense
+    :disable="disable"
   >
-  <template v-slot:append>
+  <template v-slot:append v-if="clearable">
     <q-icon v-if="selectedMonth" name="cancel" @click="()=>{
       selectedMonth = '';
       monthPicker?.hide();
@@ -18,9 +19,9 @@
   </template>
     <template v-slot:prepend>
       <q-icon name="event" class="cursor-pointer">
-        <q-popup-proxy 
-          ref="monthPicker" 
-          transition-show="scale" 
+        <q-popup-proxy
+          ref="monthPicker"
+          transition-show="scale"
           transition-hide="scale"
           @before-hide="emit('pickerHide', selectedMonth)"
         >
@@ -32,6 +33,7 @@
             v-model="selectedMonth"
             @update:model-value="(_, reason)=>checkValue(reason)"
             :color="isAdmin?'accent':'primary'"
+            :navigation-max-year-month="maxYearMonth"
           />
         </q-popup-proxy>
       </q-icon>
@@ -57,11 +59,16 @@ const props = withDefaults(defineProps<{
   fontSize?: string,
   isAdmin?: boolean,
   modelValue: string,
+  clearable?: boolean,
+  maxYearMonth?: string,
+  disable?:boolean
 }>(), {
   width: '175px',
   height: '30px',
   fontSize: '12px',
-  isAdmin: false
+  isAdmin: false,
+  clearable: true,
+  disable: false
 })
 const selectedMonth = ref(props.modelValue)
 watch(selectedMonth, (newVal)=>{
@@ -74,7 +81,7 @@ watch(selectedMonth, (newVal)=>{
 .input--monthYearOnly{
   background: #FFFFFF;
   box-sizing: border-box;
-  
+
   border-radius: 3px;
   width: v-bind(width);
   height: v-bind(height);
@@ -97,6 +104,6 @@ watch(selectedMonth, (newVal)=>{
       border: 1px solid $input-border;
     }
   }
-  
+
 }
 </style>

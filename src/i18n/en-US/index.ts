@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',
     numberOfSelections: 'Number of selections',
@@ -86,7 +87,8 @@ export default {
       '11' : 'November',
       '12' : 'December',
     },
-    more: 'More'
+    more: 'More',
+    downloadCSV: 'Download CSV'
   },
   smoking: {
     no: 'No',
@@ -145,6 +147,7 @@ export default {
     addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
+    SAA: 'Sales Activity Aggregation',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -179,7 +182,7 @@ export default {
         addOrganization: 'Add organization',
         organizationCode: 'Organization code',
         staffName: 'Staff name',
-        onlyUppercase: 'Only the uppercase alphabet is allowed',
+        onlyUppercase: 'Only the upper case, lower case, ! ? # $ % & and numbers is allowed',
         codeMustBeUnique: 'Code must be unique',
         codeNotUnique: 'Found several organizations with the same code. Code must be unique'
       },
@@ -208,7 +211,15 @@ export default {
         licenseFee: 'License fee:',
         licenseHistory: 'License history',
         executionTime: 'Execution time',
-        executor: 'Executor'
+        executor: 'Executor',
+        licenseStatistic: 'License statistic',
+        totalLicenseNumber: 'Total number of license (by month/company)',
+        issueDate: 'issue date',
+        numberIdName: 'No./organization ID/organization name',
+        businessName: 'Business Name',
+        branchName: 'Branch name',
+        systemInUse: 'System in use',
+        usageCount: 'Usage Count',
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
@@ -240,7 +251,7 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        valid: 'Valid'
+        working: 'Working'
       },
       business:'Business',
       branchFlag: 'Branch flag'
@@ -259,31 +270,18 @@ export default {
       create_at: 'Create At',
       last_update: 'Last Update',
     },
-    item: {
-      addItem: 'Add new item',
-      id: 'Classification Id',
-      name: 'Classification Name',
-      itemName: 'Item Name',
-      displayOrder: 'Display Order',
-      flag: 'Enable Flag',
-      hide: 'Hide',
-      edit: 'Item Edit',
-      classification: {
-        oualifications: 'Qualifications',
-        job: 'Job Title',
-        media: 'Application Media'
-      }
-    },
     users: {
       contactPersonName: 'Add new contact person',
       addUser: 'Add new user',
-      fio: 'FIO',
+      fio: 'Full name',
       email: 'Email',
       password: 'Password',
       person_name: "Contact Person's Name",
+      name: 'Name',
       branch_name: 'Branch Name',
+      availableSlots: 'Available slots',
       company_name: 'User Company Name',
-      passworld: 'passworld',
+      organizationName: 'Organization name',
       role: 'Role',
       infoEditUser: 'Email addresses and user companies cannot be permanently changed',
       infoContact: 'If you wish to change your roll or login password, please contact your team administrator.',
@@ -791,8 +789,8 @@ export default {
         fixDestinationOffice: 'FIX Destination Office',
         fixedDestination: 'FIX Destination',
         fixDate: 'FIX Date',
-        workDay: 'Job day',
-        informalOfferDate: 'Date of appointment',
+        workDay: 'Date of visit',
+        informalOfferDate: 'Date of job offer',
         hiringDate: 'Date of entry',
         save: 'Save selection information',
         client: 'Client',
@@ -807,7 +805,7 @@ export default {
         jobOffersInfo: '■Information on job offers',
         employmentInfo: '■Employment Information',
         inspectionStatus :'job inspection status',
-        inspectionDate: 'Date of inspection',
+        inspectionDate: 'Date of visit',
         inspectionRecord: 'Job inspection record',
         reasonNG: 'Reason for NG',
         chargeOfFacility: 'Person in charge of facility',
@@ -829,7 +827,7 @@ export default {
         noDesireWork: 'No desire to work',
         inspection: {
           status :'job inspection status',
-          date: 'Date of inspection',
+          date: 'Date of visit',
           record: 'Job inspection record',
           reasonNG: 'Reason for NG',
           chargeOfFacility: 'Person in charge of facility',
@@ -840,7 +838,7 @@ export default {
         },
         offer:{
           status: 'Offer Status',
-          date: 'Date of Offer',
+          date: 'Date of job offer',
           reasonNG: 'Reason for NG',
           chargeOfOffer: 'Person in charge of job offer',
           memo: 'Offer Memo'
@@ -874,7 +872,7 @@ export default {
         classiffication: 'Classiffication',
         qualifications: 'Qualifications',
         memo: 'Attraction Memo',
-        seductionDay: 'Seduction Day',
+        invitationDate: 'Invitation Date',
         seduser: 'Seduser',
         position: 'Position',
         period: 'Employment Period',
@@ -1022,6 +1020,7 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
+      yearsOfTotalExperience: 'Years of total experience',
 
       // Operation Info Component
       placeOperation: 'Place of operation',
@@ -1055,8 +1054,12 @@ export default {
         waitTermination: 'Wait-Termination',
       },
       card: {
-        applicationDate: 'Date of the application',
-        lastCotactDate: 'Date of the last contact',
+        applicationDate: 'I',
+        invitationDate: 'C',
+        attendingDate: 'A',
+        FIXDate: 'F',
+        jobDate: 'V',
+        appointmentDate: 'O',
       },
       table: {
         'fullName': 'Name',
@@ -1440,6 +1443,22 @@ export default {
       headOfficeInfo: 'Head office info',
       clientInfo: 'Client info',
       contractInfo: 'Contract info',
+      withMasterData: 'With master data',
+      noAutoRenewal: 'No automatic renewal',
+      situation: 'Situation',
+      contactTendency: 'Contact tendency',
+      dispatchIndex: 'Dispatch index',
+      referralMetrics: 'Referral metrics',
+      morning: 'Morning',
+      afternoon: 'Afternoon',
+      evening: 'Evening',
+      importCandidates: 'Candidates for importing office information',
+      lastModifiedDate: 'Last modified date',
+      acquisitionUpdateResults: 'Acquisition update results',
+      importCreationRecord: 'Import creation record',
+      changeItemClassification: 'Change item classification',
+      ignore: 'Ignore',
+      updateData: 'Update data',
       details: {
         // Office details
         parentClient: 'Parent client',
@@ -1630,5 +1649,32 @@ export default {
       unitPrice: 'Unit Price',
       billingAmount: 'Billing Amount'
     }
+  },
+  dashboard: {
+    showBranch: 'Show branch',
+    notification: 'Notification',
+    openList: 'Open list',
+    applicantProgress: 'Applicant Progress',
+    showWhiteboard: 'Show whiteboard',
+    showList: 'Show list',
+    waitList: ' waiting list'
+  },
+  SAA: {
+    targetPeriod: 'Target period',
+    numberOfFix: '№ of FIX',
+    jobs: 'Jobs',
+    innerConstant: 'Inner constant',
+    entry: 'Entry',
+    numberOfCalls: '№ of Calls',
+    numberOfFax: '№ of FAX',
+    dispatch: 'Dispatch',
+    introduction: 'Introduction',
+    occupationRate: 'Occupation rate',
+    jobOfferRate: 'Job offer rate',
+    hiringRate: 'Hiring rate',
+    username: 'Username',
+    mode: 'Aggregation method',
+    modeIndividual: 'Individual aggregation',
+    modeBranch: 'Branch aggregation',
   }
 }

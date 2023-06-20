@@ -33,9 +33,9 @@ import { Business } from 'src/shared/model';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import { creationRule } from 'src/components/handlers/rules';
-import { useOrganization } from 'src/stores/organization';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
+import { useBusiness } from 'src/stores/business';
 
 interface AddBusinessProps {
   organization: Row
@@ -48,7 +48,7 @@ const props = defineProps<AddBusinessProps>()
 const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore()
 const emit = defineEmits<{ (e: 'closeDialog') }>()
-const organization = useOrganization()
+const businessStore = useBusiness()
 const loading = ref(false)
 
 async function addBusiness() {
@@ -59,7 +59,7 @@ async function addBusiness() {
   }
 
   try {
-    await organization.addBusiness(db, business, props.organization.id)
+    await businessStore.addBusiness(db, business, props.organization.id)
     Alert.success($q, t);
   } catch (error) {
     Alert.warning($q, t);

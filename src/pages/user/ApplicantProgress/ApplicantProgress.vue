@@ -116,9 +116,7 @@ const applicantsByColumn = computed(() => applicantStore.state.applicantsByColum
 
 /** fetchers */
 const fetchResultsHandler = async (status : string, fetchMore = false) => {
-  columnsLoading.value[status] = true
   await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
-  columnsLoading.value[status] = false
 }
 const fetchResults = async () => {
   COLUMN_STATUSES.map(async (status)=>{
@@ -129,7 +127,17 @@ const fetchResults = async () => {
   })
 }
 onMounted( async ()=>{
-  await fetchResults()
+  COLUMN_STATUSES.map(async (status)=>{
+    if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
+      fetchResultsHandler(status, false)
+    }
+  })
+  applicantStore.state.needsApplicantUpdateOnMounted = false
+  COUNT_STATUSES.map(async (status)=>{
+    if(!countApplicantsStatuses.value[status]){
+      countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
+    }
+  })
 })
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()

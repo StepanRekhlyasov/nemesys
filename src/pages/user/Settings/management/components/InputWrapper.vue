@@ -1,6 +1,6 @@
 <template>
-  <div class="row q-pb-sm">
-    <div class="col-3 text-right center q-mr-md" v-bind="$attrs">
+  <div class="container q-pt-md">
+    <div class="text q-pr-md">
       {{ $t(textKey) }}
     </div>
     <slot>
@@ -15,6 +15,7 @@ import { LocalizationKeys } from 'src/shared/types/LocalizationKeys';
 
 interface InputWarapperProps {
   textKey: LocalizationKeys
+  textPaddingBottom?: string
 }
 
 
@@ -22,8 +23,15 @@ defineProps<InputWarapperProps>()
 </script>
 
 <style lang="scss" scoped>
-.center {
-  align-self: center;
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.text {
+  min-width: 120px;
+  text-align: right;
+  padding-bottom: v-bind(textPaddingBottom);
 }
 </style>
 

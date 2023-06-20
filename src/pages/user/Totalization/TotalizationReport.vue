@@ -37,6 +37,8 @@
       />
     </div>
   </div>
+  {{ state }}
+  {{ currentOrganizationId }}
   <keep-alive>
     <component
       v-bind:is="report_componets[model_report.value]"
@@ -50,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, onMounted, computed } from 'vue';
+import { ref, Ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import { storeToRefs } from 'pinia';
@@ -64,9 +66,18 @@ const UserStore = useUserStore();
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type = ref<graphType>('BasedOnLeftMostItemDate');
 const branch_input = ref('');
-const branchs = ref<string[]>([]);
 const organizationStore = useOrganization();
-const { currentOrganizationId } = storeToRefs(organizationStore);
+// currentOrganizationBranches: { [id: string]: Branch; },のような形をしているのでbranchをlist化するmapを使ってbranchの名前を取り出
+const {currentOrganizationId,state} = storeToRefs(organizationStore);
+const branchs = computed(() => {
+  if (!state.value.currentOrganizationBranches) {
+    return [];
+  }
+  const branchs_ = Object.values(state.value.currentOrganizationBranches).map((branch) => {
+    return branch.name;
+  });
+  return branchs_;
+});
 const branch_user_list = ref<{ id: string; name: string }[]>([]);
 const reportType = computed<{ label: string; value: number }[]>(() => {
   return [
@@ -118,11 +129,4 @@ watch(branch_input, async () => {
   );
 });
 
-onMounted(async () => {
-  branchs.value = Object.keys(
-    await organizationStore.getBranchesInOrganization(
-      currentOrganizationId.value
-    )
-  );
-});
 </script>

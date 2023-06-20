@@ -15,23 +15,11 @@
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                <q-date v-model="data['applicationDate']" mask="YYYY/MM/DD">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
                 </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-
-          <template v-slot:append>
-            <q-icon name="access_time" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-time v-model="data['applicationDate']" mask="YYYY/MM/DD HH:mm" format24h>
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
-                  </div>
-                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -79,7 +67,7 @@
         {{ $t('applicant.list.info.gender') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.sex || ''}}</span>
+        <span v-if="!edit">{{ applicant.sex ? $t(`applicant.add.${applicant.sex}`) : ''}}</span>
         <template  v-if="edit" >
           <q-radio v-model="data['sex']" :label="$t('applicant.add.male')" val="male"/>
           <q-radio v-model="data['sex']" :label="$t('applicant.add.female')" val="female"/>
@@ -128,7 +116,7 @@
         {{ $t('applicant.list.info.lon') }}
       </div>
       <div class="col-3 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.lon" />
+        <hidden-text v-if="!edit" :value="applicant.lon?.toString()" />
         <q-input
           v-if="edit"
           outlined
@@ -151,7 +139,7 @@
         {{ $t('applicant.list.info.lat') }}
       </div>
       <div class="col-3 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.lat" />
+        <hidden-text v-if="!edit" :value="applicant.lat?.toString()" />
         <q-input
           v-if="edit"
           outlined
@@ -163,12 +151,12 @@
     </div>
 
     <div class="row q-pb-sm">
-      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular">
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.addres') }}
       </div>
       <div class="col-9 q-pl-md">
         <hidden-text v-if="!edit" :value="applicant.address" />
-        <q-input v-if="edit" outlined dense v-model="data['addres']" />
+        <q-input v-if="edit" outlined dense v-model="data['address']" />
       </div>
     </div>
   </DropDownEditGroup>
@@ -207,6 +195,7 @@ function resetData() {
     email: props?.applicant['email'],
     lon: props?.applicant['lon'],
     lat: props?.applicant['lat'],
+    address: props.applicant['address'] ||  [props.applicant['prefecture'], props.applicant['municipality'], props.applicant['street'], props.applicant['apartament']].join(' '),
     postCode: props?.applicant['postCode'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));

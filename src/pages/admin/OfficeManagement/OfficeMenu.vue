@@ -35,21 +35,21 @@ const menu = computed(() => {
             name: t('menu.advancedSearch'),
             right: require('assets/admin-office-managment/advanced-search-image.png'),
             click() {
-                router.push('client-factory')
+                router.push('client-factories')
             },
         },
         {
             name: t('menu.addOffice'),
             center: t('menu.addOfficeHint'),
             click() {
-                router.push('client-factory')
+                router.push('client-factories')
             },
         },
         {
             name: t('menu.addClient'),
             center: t('menu.addNewClient'),
             click() {
-                router.push('client-factory')
+                router.push('client-factories')
             },
         },
     ]

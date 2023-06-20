@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    select: '選択',
     reflect: '反映',
     capture: '取込',
     numberOfSelections: '選択数',
@@ -86,7 +87,8 @@ export default {
       '11' : '11月',
       '12' : '12月',
     },
-    more: 'もっと'
+    more: 'もっと',
+    downloadCSV: 'CSVダウンロード'
   },
   smoking: {
     no: '無',
@@ -145,6 +147,7 @@ export default {
     addNewClient: '新しくクライアントを追加したい場合はこちら',
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
+    SAA: '営業活動集計',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -179,7 +182,7 @@ export default {
         addOrganization: '企業新規追加',
         organizationCode: '企業コード',
         staffName: 'スタッフ名',
-        onlyUppercase: '大文字のアルファベットのみが許可されています。',
+        onlyUppercase: '大文字、小文字、記号（! ? # $ % &）、数字のみ使用できます。',
         codeMustBeUnique: 'コードはユニークである必要があります。',
         codeNotUnique: '同じコードを持つ組織を複数が見つかりました。コードはユニークである必要があります。'
       },
@@ -208,7 +211,15 @@ export default {
         licenseFee: 'ライセンス料金',
         licenseHistory: '枠変更履歴',
         executionTime: '実行日時',
-        executor: '実行者'
+        executor: '実行者',
+        licenseStatistic: '枠数集計',
+        totalLicenseNumber: '枠数集計（月別・企業別）',
+        issueDate: '発行日',
+        numberIdName: 'No./企業ID/企業名',
+        businessName: '事業名',
+        branchName: '支店名',
+        systemInUse:'利用中システム',
+        usageCount: '利用数',
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
@@ -240,7 +251,7 @@ export default {
       deletedInfo: 'この支店に関するデータはすべて消去されます',
       flags: {
         all: 'すべて',
-        valid: '有効'
+        working:'稼働',
       },
       business: '事業',
       branchFlag: '支店フラグ',
@@ -259,21 +270,6 @@ export default {
       create_at: '作成日',
       last_update: '更新日',
     },
-    item: {
-      addItem: '項目新規追加',
-      id: '区分ID',
-      name: '区分名',
-      itemName: '項目名',
-      displayOrder: '表示順',
-      flag: '有効フラグ',
-      hide: '非表示にする',
-      edit: '項目編集',
-      classification: {
-        oualifications: '資格',
-        job: '職種',
-        media: '応募媒体'
-      }
-    },
     users: {
       contactPersonName: '担当者新規追加',
       addUser: 'ユーザー新規追加',
@@ -281,9 +277,10 @@ export default {
       email: 'メールアドレス',
       password: 'パスワード',
       person_name: '担当者名',
-      passworld: 'パスワード',
+      name: '氏名',
       branch_name: '所属支店',
-      company_name: 'ユーザー企業名',
+      availableSlots: '使用可能ライセンス数',
+      organizationName: '企業名',
       deleteAccaunt: 'アカウント削除',
       role: 'ロール',
       infoEditUser: 'メールアドレス・ユーザー企業は永久に変更できません',
@@ -870,7 +867,7 @@ export default {
         classiffication: '区分',
         qualifications: '資格',
         memo: '誘致メモ',
-        seductionDay: '誘致日',
+        invitationDate: '誘致日',
         seduser: '誘致者',
         position: '職種',
         period: '就業期間',
@@ -1017,8 +1014,9 @@ export default {
       employmentType: '雇用形態',
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
-      deletedInfo: 'All data related to this experience will be deleted.',
+      deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
       totalYearsExperience: '経験',
+      yearsOfTotalExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',
@@ -1053,7 +1051,11 @@ export default {
       },
       card: {
         applicationDate: '応',
-        lastCotactDate: '接',
+        invitationDate: '接',
+        attendingDate: 'ア',
+        FIXDate: 'F',
+        jobDate: '職',
+        appointmentDate: '内',
       },
       table: {
         'fullName': '氏名',
@@ -1084,7 +1086,7 @@ export default {
         'endDate': '終了日',
         'remainingDays': '残日数',
         'invoice': '請求',
-        'payment': '支払'
+        'payment': '支払',
       }
     }
   },
@@ -1434,6 +1436,22 @@ export default {
       headOfficeInfo: '本社事業所情報',
       clientInfo: 'クライアント情報',
       contractInfo: '契約情報',
+      withMasterData: 'マスタデータあり',
+      noAutoRenewal: '自動更新なし',
+      situation: '状態',
+      contactTendency: '接電傾向',
+      dispatchIndex: '派遣指標',
+      referralMetrics: '紹介指標',
+      morning: '午前',
+      afternoon: '午後',
+      evening: '夕方',
+      importCandidates: '事業所情報取込候補',
+      lastModifiedDate: '最終変更日時',
+      acquisitionUpdateResults: '取込更新実績',
+      importCreationRecord: '取込作成実績',
+      changeItemClassification: '変更項目分類',
+      ignore: '無視する',
+      updateData: '更新データ',
       details: {
         // Office details
         parentClient: '親クライアント',
@@ -1624,5 +1642,32 @@ export default {
       unitPrice: '単価',
       billingAmount: '請求額'
     }
+  },
+  dashboard: {
+    showBranch: '表示支店',
+    notification: '通知',
+    openList: 'リストを開く',
+    applicantProgress: '応募者進捗状況',
+    showWhiteboard: 'ホワイトボードを表示する',
+    showList: 'リストを表示する',
+    waitList: 'リスト'
+  },
+  SAA: {
+    targetPeriod: '対象期間',
+    numberOfFix: 'FIX数',
+    jobs: '職見数',
+    innerConstant: '内定数',
+    entry: '入職数',
+    numberOfCalls: '架電数',
+    numberOfFax: 'FAX数',
+    dispatch: '派遣',
+    introduction: '紹介',
+    occupationRate: '職見率',
+    jobOfferRate: '内定率',
+    hiringRate: '入職率',
+    username: 'ユーザー名',
+    mode: '集計方法',
+    modeIndividual: '個人別データ集計',
+    modeBranch: '支店別データ集計',
   }
 };

@@ -58,7 +58,7 @@ export const menuParent: MenuParentType[] = [
     title: 'menu.applicant',
     icon: 'mdi-face-man-outline'
   },{
-    type: MenuParent.ClientMenagment,
+    type: MenuParent.BusinessMenagment,
     title: 'menu.clientManagement',
     icon: 'business'
   },{
@@ -72,7 +72,7 @@ export const menuParent: MenuParentType[] = [
   },{
     type: MenuParent.TotalizationManagement,
     title: 'menu.totalization',
-    icon: 'mdi-cog',
+    icon: 'mdi-chart-box-plus-outline',
   }
 ]
 

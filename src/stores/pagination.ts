@@ -65,7 +65,7 @@ export const usePagination = defineStore('pagination', () => {
         constraintsArray = [order, ...newConstraints]
       }
     }
-    function setOrder(newOrder: QueryOrderByConstraint){
+    function setOrder(newOrder: QueryOrderByConstraint[]){
       order = newOrder;
     }
 

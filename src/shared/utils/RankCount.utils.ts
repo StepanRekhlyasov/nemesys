@@ -158,9 +158,8 @@ export class RankCount {
 
 	// Applicant age calculation
 	static ageCount(data: string) {
-		const now = new Date()
-		let diff =(now.getTime() - new Date(data).getTime()) / 1000;
-		diff /= (60 * 60 * 24);
-		return Math.abs(Math.round(diff/365.25));
+		const now = new Date(), birth = new Date(data)
+		const diff = now.getFullYear() - birth.getFullYear() - (now.getTime() < birth.setFullYear(now.getFullYear())?1:0);
+		return diff;
 	}
 }

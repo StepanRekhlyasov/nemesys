@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { withDefaults, defineEmits, defineProps, ref } from 'vue';
 import { useClientFactory } from 'src/stores/clientFactory'
 import NewClientFactoryFormGroup from 'src/components/form/NewClientFactoryFormGroup.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import Quasar, { useQuasar } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
 withDefaults(
@@ -16,12 +16,12 @@ withDefaults(
     }
 )
 
-const $q = useQuasar()
 const { addClientFactory } = useClientFactory()
 
 const childFormRef = ref<{
     validateAndSubmit: () => void
 } | null>(null);
+const $q = useQuasar()
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
@@ -42,26 +42,7 @@ const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) 
     emit('hideDrawer')
 
     if(newClientFactoryData) {
-
-        try {
-
-            await addClientFactory(newClientFactoryData as ClientFactory)
-
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: t('success'),
-            });
-
-        } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
-        }
+        await addClientFactory(newClientFactoryData as ClientFactory, $q as unknown as typeof Quasar)
     }
 }
 
@@ -79,7 +60,7 @@ const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) 
             show>
                 <q-scroll-area class="fit text-left">
                     <q-card class="no-shadow bg-grey-3">
-                        <q-card-section class="text-white bg-accent">
+                        <q-card-section :class="`text-white bg-${theme}`">
                             <div class="text-h6">
                                 <q-btn dense flat icon="close" @click="hideDrawer" />
                                 <q-btn

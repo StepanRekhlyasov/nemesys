@@ -30,3 +30,8 @@ export interface ClientFactoryTableRow {
         clientMaster: string,
         basicInfo: string,
 }
+
+export enum ActionsType {
+    ADMIN = 'admin',
+    CLIENT = 'client'
+}

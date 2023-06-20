@@ -19,14 +19,14 @@
           <div class="col-10">
             <div class="row">
               <div class="col-9 flex items-center">
-                <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span>{{ `(${age})`}} {{ selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex) }}
+                <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span>{{ age ? `(${age})` : '' }} {{ selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex) }}
                 <div class="q-pl-md">
                   <q-select :options="statusOption" v-model="applicantStore.state.selectedApplicant.status" color="black" label-color="black" rounded standout bg-color="white" dense @update:model-value="changeApplicantStatus" emit-value map-options class="select_colorFix"/>
                 </div>
               </div>
               <div class="col-3">
-                <span class="row">{{ selectedApplicant.municipalities }} {{ selectedApplicant.street }}</span>
-                <span class="row">{{ selectedApplicant.apartment }}</span>
+                <span class="row">{{ selectedApplicant.prefecture }} {{ selectedApplicant.municipalities }} </span>
+                <span class="row">{{ selectedApplicant.street }} {{ selectedApplicant.apartment }}</span>
               </div>
             </div>
             <div class="row">
@@ -134,11 +134,11 @@ import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
-import { useOrganization } from 'src/stores/organization';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
 const statusOption = ref(statusList);
+const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
 const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(timestampToDateFormat(selectedApplicant.value['dob'])):'0')
 const openDrawer = async (data : Applicant) => {
@@ -151,6 +151,7 @@ const openDrawer = async (data : Applicant) => {
 defineExpose({ openDrawer })
 const changeApplicantStatus = () => {
   applicantStore.updateApplicant({status: selectedApplicant.value?.status})
+  emit('statusUpdated')
 }
 const chooseFiles = () => {
   fileUploadRef.value?.pickFiles()
@@ -174,10 +175,6 @@ const onFileChange = async (image) => {
       console.log(error);
     }
   }
-}
-const organization = useOrganization()
-if (organization.currentOrganizationId){
-  applicantStore.fetchUsersInChrage()
 }
 </script>
 <style lang="scss">

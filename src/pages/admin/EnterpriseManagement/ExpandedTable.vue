@@ -1,72 +1,54 @@
 <template>
-  <q-td auto-width colspan="100%" class="container">
-    <q-table flat :columns="columns" square :rows="[{}]" hide-pagination :loading="loading">
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props" class="header">
-            {{ col.label }}
-          </q-th>
-        </q-tr>
-      </template>
+  <OrganizationColspanTabel :columns="columns" :loading="loading" :table="data">
+    <template #organization="{ organizationItem }">
+      {{ organizationItem.organizationCodeAndName }}
+      <q-toggle v-model="organizationItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
+        color="accent"
+        @update:model-value="async (working) => await onWorkingChange(working, { organizationId: organizationItem.id })" />
+    </template>
 
-      <template v-slot:loading>
-        <q-inner-loading showing size="sm" color="accent" />
-      </template>
+    <template #buisneses="props">
+      <q-toggle v-model="props.buisnesesItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
+        color="accent" @update:model-value="async (working) =>
+            await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id })
+          " />
+    </template>
 
-      <template v-slot:body>
-        <template v-for="(organizationItem) in data?.organization">
-          <template v-for="(buisnesesItem, buisnesesIndex) in organizationItem.buisneses">
-            <q-tr v-for="(branchItem, branchInex) in buisnesesItem.branches" :key="branchInex">
+    <template #branch="props">
+      <div class="row justify-between full-width">
+        <q-toggle v-model="props.branchItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
+          color="accent"
+          @update:model-value="async (working) => await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id, branchId: props.branchItem.id })" />
+        <q-btn flat icon="edit" color="accent" @click="openDialog = true; organizationId=props.organizationItem.id; branchToEdit=props.branchItem" />
+      </div>
+    </template>
 
-              <q-td v-if="buisnesesIndex == 0 && branchInex == 0" v-bind:rowspan="organizationItem.totalBranches">
-                <div class="column items-start">
-                  {{ organizationItem.organizationCodeAndName }}
-                  <q-toggle v-model="organizationItem.working" :label="t('menu.admin.organizationsTable.working')"
-                    left-label color="accent"
-                    @update:model-value="async (working) => await onWorkingChange(working, { organizationId: organizationItem.id })" />
-                </div>
-              </q-td>
+  </OrganizationColspanTabel>
 
-              <q-td v-if="branchInex == 0" v-bind:rowspan="buisnesesItem.branches.length">
-                <div class="column items-start">
-                  {{ buisnesesItem.name }}
-                  <q-toggle v-model="buisnesesItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
-                    color="accent" @update:model-value="async (working) =>
-                      await onWorkingChange(working, { organizationId: organizationItem.id, businessId: buisnesesItem.id })
-                    " />
-                </div>
-              </q-td>
-
-              <q-td v-if="Object.keys(branchItem).length">
-                <div class="column items-start">
-                  {{ branchItem.name }}
-                  <q-toggle v-model="branchItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
-                    color="accent"
-                    @update:model-value="async (working) => await onWorkingChange(working, { organizationId: organizationItem.id, businessId: buisnesesItem.id, branchId: branchItem.id })" />
-                </div>
-              </q-td>
-              <q-td v-else class="emptyCell">
-              </q-td>
-
-            </q-tr>
-          </template>
-        </template>
-      </template>
-    </q-table>
-  </q-td>
+  <q-dialog v-model="openDialog">
+    <DialogWrapper>
+      <BranchCreateForm @closeDialog="openDialog = false; loadTableData()" color="accent" :defaultOrganizationid="organizationId" :editBranch="JSON.parse(JSON.stringify(branchToEdit))" @onCatchError="loadTableData"/>
+    </DialogWrapper>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { getFirestore } from '@firebase/firestore';
 import { QTableProps, QTableSlots, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Buisneses, Row, Table } from './types'
+import type { Row, Table } from './types'
 import type { Overwrite } from 'src/shared/types/Overwrite'
-import { Business, Branch } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { manageUserAvailability } from './handlers/handlers';
+import OrganizationColspanTabel from 'src/components/organization/OrganizationColspanTabel.vue';
+import { toTable } from 'src/components/organization/handlers/ToTable';
+import { useBranch } from 'src/stores/branch';
+import { useBusiness } from 'src/stores/business';
+import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
+import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
+import { Branch } from 'src/shared/model';
+
 
 type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
 
@@ -77,16 +59,18 @@ interface ExpandedTableProps {
 const $q = useQuasar();
 
 const organization = useOrganization()
-
+const branchStore = useBranch()
+const business = useBusiness()
+const openDialog = ref(false)
 const loading = ref(false)
-
-const db = getFirestore()
+const organizationId = ref<string>()
+const branchToEdit = ref<Branch>()
 
 const componentProps = defineProps<ExpandedTableProps>()
 
 const { t } = useI18n({ useScope: 'global' });
 
-const data = ref<Table>()
+const data = ref<Table[]>([])
 
 async function onWorkingChange(working: boolean, ids: { organizationId?: string, businessId?: string, branchId?: string }) {
 
@@ -96,16 +80,16 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
   try {
 
     if (organizationId && !businessId && !branchId) {
-      await organization.editOrganization(db, { working }, organizationId)
+      await organization.editOrganization({ working }, organizationId)
       await manageUserAvailability({ enabled: working, organizationId })
     }
 
     if (organizationId && businessId && !branchId) {
-      await organization.editBusiness(db, { working }, organizationId, businessId)
+      await business.editBusiness({ working }, organizationId, businessId)
     }
 
     if (organizationId && businessId && branchId) {
-      await organization.editBranch(db, { working }, organizationId, businessId, branchId)
+      await branchStore.editBranch({ working }, organizationId, businessId, branchId)
       await manageUserAvailability({ enabled: working, branchId })
     }
 
@@ -115,7 +99,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
       return
     }
 
-    const organizations = data?.value?.organization
+    const organizations = data?.value[0].organization
 
     if (!organizations) {
       loading.value = false
@@ -134,7 +118,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
         if (branchId) {
           continue
         }
-        await organization.editBusiness(db, { working }, organizationItem.id, businessItem.id)
+        await business.editBusiness({ working }, organizationItem.id, businessItem.id)
         businessItem.working = working
         for (let k = 0; k < businessItem.branches.length; k++) {
           const branchItem = businessItem.branches[k]
@@ -142,7 +126,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
             continue
           }
           branchItem.working = working
-          await organization.editBranch(db, { working }, organizationItem.id, businessItem.id, branchItem.id)
+          await branchStore.editBranch({ working }, organizationItem.id, businessItem.id, branchItem.id)
           await manageUserAvailability({ enabled: working, branchId: branchItem.id })
         }
       }
@@ -160,42 +144,12 @@ loadTableData()
 async function loadTableData() {
   loading.value = true
 
-  const businesses = await organization.getBusinesses(db, componentProps.props.row.id)
-  const branches = await organization.getBranches(db, componentProps.props.row.id)
+  const businesses = await business.getBusinesses(componentProps.props.row.id)
+  const branches = await branchStore.getBranches(componentProps.props.row.id)
 
-  data.value = toTable(businesses, branches)
+  data.value = [toTable(businesses, branches, componentProps.props.row)]
 
   loading.value = false
-}
-
-function toTable(businesses: { [id: string]: Business }, branches: { [businessId: string]: Branch[] }) {
-
-  let businessesAndbranches: Buisneses[] = []
-  const organizationKey = 'organization'
-
-  let parsedData = {}
-
-  parsedData[organizationKey] = [{}]
-  let totalBranches = Object.values(branches).reduce((prev, curr) => {
-    return prev += curr.length
-  }, 0)
-
-  parsedData[organizationKey][0] = componentProps.props.row
-  for (let key in businesses) {
-    let objToPush = JSON.parse(JSON.stringify(businesses[key]))
-    objToPush.branches = branches[key]
-
-    if (!objToPush.branches) {
-      objToPush.branches = [{}]
-      totalBranches++
-    }
-
-    businessesAndbranches.push(objToPush)
-  }
-  parsedData[organizationKey][0]['totalBranches'] = totalBranches
-  parsedData[organizationKey][0]['buisneses'] = businessesAndbranches
-
-  return parsedData as Table
 }
 
 const columns = computed<QTableProps['columns']>(() => [
@@ -223,23 +177,3 @@ const columns = computed<QTableProps['columns']>(() => [
 ])
 </script>
 
-<style scoped lang="scss">
-.header {
-  background-color: $accent;
-  color: white;
-}
-
-.container {
-  padding: 0;
-}
-
-table,
-th,
-td {
-  border: 1px solid black;
-}
-
-.emptyCell {
-  background: $grey-4;
-}
-</style>
