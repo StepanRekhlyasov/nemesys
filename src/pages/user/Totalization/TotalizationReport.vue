@@ -37,8 +37,6 @@
       />
     </div>
   </div>
-  {{ state }}
-  {{ currentOrganizationId }}
   <keep-alive>
     <component
       v-bind:is="report_componets[model_report.value]"
@@ -52,32 +50,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, computed } from 'vue';
+import { ref, Ref, watch, computed,onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user';
+import { useBranch } from 'src/stores/branch';
+
 import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport/SalesActivityIndividualReport.vue';
 import ApplicantReport from '../../../components/report/ApplicantReport/ApplicantReport.vue';
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 import { graphType } from 'src/components/report/Models';
 const UserStore = useUserStore();
+const UserBranch = useBranch();
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type = ref<graphType>('BasedOnLeftMostItemDate');
 const branch_input = ref('');
 const organizationStore = useOrganization();
 // currentOrganizationBranches: { [id: string]: Branch; },のような形をしているのでbranchをlist化するmapを使ってbranchの名前を取り出
-const {currentOrganizationId,state} = storeToRefs(organizationStore);
-const branchs = computed(() => {
-  if (!state.value.currentOrganizationBranches) {
-    return [];
-  }
-  const branchs_ = Object.values(state.value.currentOrganizationBranches).map((branch) => {
-    return branch.name;
-  });
-  return branchs_;
-});
+const {currentOrganizationId} = storeToRefs(organizationStore);
+const branchs = ref<string[]>([]);
 const branch_user_list = ref<{ id: string; name: string }[]>([]);
 const reportType = computed<{ label: string; value: number }[]>(() => {
   return [
@@ -127,6 +120,10 @@ watch(branch_input, async () => {
   branch_user_list.value = await UserStore.getAllUsersInBranch(
     branch_input.value
   );
+});
+
+onMounted(async () => {
+  branchs.value = Object.keys(await UserBranch.getBranchesInOrganization(currentOrganizationId.value))
 });
 
 </script>
