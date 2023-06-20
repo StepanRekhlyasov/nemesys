@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { i18n } from 'boot/i18n';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, doc, where } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where } from 'firebase/firestore';
 import { ref } from 'vue';
 import Quasar from 'quasar';
-import { Client } from 'src/shared/model';
+import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { ImportLog } from 'src/shared/model/ImportLog';
@@ -39,12 +39,18 @@ export const useClientFactory = defineStore('client-factory', () => {
             ))
 
             lastReflectLogsQuerySnapshot.forEach((doc) => {
-                const docData = doc.data()
-                reflectLog = {
-                    ...docData,
-                    executionDate: date.formatDate(docData.executionDate.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                    id: doc.id
-                } as ReflectLog
+                
+
+                if(doc.exists()) {
+                    const docData = doc.data()
+
+                    reflectLog = {
+                        ...docData,
+                        executionDate: date.formatDate(docData.executionDate?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        id: doc.id
+                    } as ReflectLog
+                }
+
             })
 
         } catch(e) {
@@ -52,6 +58,70 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
 
         return reflectLog
+    }
+
+    const addReflectLog = async (user: User , clientFactory: ClientFactory, isDetailChanged: boolean) => {
+        try {
+            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), {
+                userId: user.id,
+                userName: user.name,
+                clientFactoryId: clientFactory.id,
+                executionDate: serverTimestamp(),
+                isUpdated: true,
+                itemType: {
+                    isBasicChanged: true,
+                    isDetailInfoChanged: isDetailChanged
+                }
+            })
+
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data()
+
+                return {
+                    ...data,
+                    id: docSnap.id,
+                    executionDate: date.formatDate(data.executionDate?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                }
+            }
+
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
+    const addImportLog = async (user: User, clientFactory: ClientFactory, organization: Organization, isDetailChanged: boolean) => {
+        try {
+            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'importLog'), {
+                userId: user.id,
+                userName: user.name,
+                clientFactoryId: clientFactory.id,
+                organizationId: organization.id,
+                organizationName: organization.name,
+                executionDate: serverTimestamp(),
+                isUpdated: true,
+                itemType: {
+                    isBasicInfoChanged: true,
+                    isDetailInfoChanged: isDetailChanged 
+                }
+            })
+
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data()
+
+                return {
+                    ...data,
+                    id: docSnap.id,
+                    executionDate: date.formatDate(data.executionDate?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                }
+            }
+
+        } catch(e) {
+           console.log(e) 
+        }
     }
 
     const getAllImportLogs = async(clientId: string, clientFactoryId: string) => {
@@ -233,6 +303,7 @@ export const useClientFactory = defineStore('client-factory', () => {
     }
 
     const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF, $q: typeof Quasar) => {
+
         try {
             await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), {
                 ...modifiedCF,
@@ -324,15 +395,17 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateClientFactory = async(updatedClientFactory: Omit<ClientFactory, 'created_at'>, $q: typeof Quasar) => {
+    const updateClientFactory = async(updatedClientFactory: ClientFactory, $q: typeof Quasar) => {
+
         try {
 
             await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
                 ...updatedClientFactory,
+                created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
                 updated_at: serverTimestamp()
-            }, {merge: true});
+            });
 
-             Alert.success($q, t)
+            Alert.success($q, t)
         } catch(e) {
             Alert.warning($q, t)
 
@@ -377,6 +450,8 @@ export const useClientFactory = defineStore('client-factory', () => {
         getClientFactories,
         getAllImportLogs,
         getAllReflectLogs,
+        addReflectLog,
+        addImportLog,
         addClientFactory,
         updateClientFactory,
         getHeadClientFactory,

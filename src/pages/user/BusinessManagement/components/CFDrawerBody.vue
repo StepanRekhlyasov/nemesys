@@ -6,9 +6,8 @@ import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn
 import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderMainInfo } from '../types';
-import { finishEditing } from 'src/components/client-factory/hadlers';
-import { useHighlightMainInfo } from '../handlers';
+import { ChangedData, RenderMainInfo } from 'src/components/client-factory/types';
+import { useHighlightMainInfo } from 'src/components/client-factory/handlers';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -19,7 +18,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'cancelDraft'),
-    (e: 'saveDraft')
+    (e: 'saveDraft'),
+    (e: 'editDraft', changedData: ChangedData)
 }>()
 
 const cancelHandler = () => {
@@ -30,8 +30,12 @@ const saveHandler = () => {
     emit('saveDraft')
 }
 
+const editDraft = (changedData: ChangedData) => {
+
+    emit('editDraft', changedData)
+}
+
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
-const isLoading = ref(false)
 const isEditForm = ref({
     officeInfo: false,
     contactInfo: false
@@ -75,7 +79,7 @@ watchEffect(() => {
             theme="primary"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
-            @on-save="isEditForm.officeInfo = false; finishEditing(dataForUpdating.officeInfo, draft, props.clientFactory)"/>
+            @on-save="isEditForm.officeInfo = false; editDraft(dataForUpdating.officeInfo)"/>
 
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"
@@ -89,7 +93,7 @@ watchEffect(() => {
             theme="primary"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"
-            @on-save="isEditForm.contactInfo = false; finishEditing(dataForUpdating.contactInfo, draft, props.clientFactory)"/>
+            @on-save="isEditForm.contactInfo = false; editDraft(dataForUpdating.contactInfo)"/>
 
         <EditableColumnsCF v-if="isEditForm.contactInfo"
             :data="mainInfo.contactInfo"

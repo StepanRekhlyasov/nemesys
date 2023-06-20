@@ -35,3 +35,16 @@ export enum ActionsType {
     ADMIN = 'admin',
     CLIENT = 'client'
 }
+
+export type ChangedData = Array<{ label: string; value: string | number | boolean | string[]; key: string, isHighlight: boolean }>
+
+export interface RenderMainInfo {
+    officeInfo: {label: string; value: string | number | string[] | boolean; editType: string; key: string; isHighlight: boolean}[],
+    contactInfo: {label: string; value: string; key: string; editType: string; isHighlight: boolean }[]
+}
+
+export interface RenderOfficeDetails {
+    registeredInfo: { label: string; value: string | number; editType: string; key: string }[]
+    commonItems: { label: string; value: string | number; editType: string; key: string }[]
+    uniqueItems: { label: string; value: string; key: string; editType: string; }[]
+}

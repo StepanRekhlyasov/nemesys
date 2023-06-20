@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, defineEmits, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
 import CFDrawerHeadDetailsVue from './CFDrawerHeadDetails.vue';
@@ -8,11 +8,22 @@ import CFDrawerImportDetails from './CFDrawerImportDetails.vue';
 import CFDrawerReflectDetail from './CFDrawerReflectDetail.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryDetailTabs } from '../types'
+import { ChangedData } from 'src/components/client-factory/types';
 
 defineProps<{
-    clientFactory: ClientFactory
+    clientFactory: ClientFactory,
+    draft: Partial<ClientFactory>,
+    isLoading: boolean
+}>()
+
+const emit = defineEmits<{
+    (e: 'editDraft', changedData: ChangedData)
 }>()
 const { t } = useI18n({ useScope: 'global' });
+
+const editDraftHandle = (changedData: ChangedData) => {
+    emit('editDraft', changedData)
+}
 
 const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
 
@@ -45,7 +56,11 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
 
     <q-tab-panels v-model="activeTab" animated>
         <q-tab-panel :name="ClientFactoryDetailTabs.OfficeDetails">
-            <CFDrawerOfficeDetails :clientFactory="clientFactory"/>
+            <CFDrawerOfficeDetails
+                :clientFactory="clientFactory"
+                :draft="draft"
+                :is-loading="isLoading"
+                @edit-draft="editDraftHandle"/>
         </q-tab-panel>
         <q-tab-panel :name="ClientFactoryDetailTabs.CompanyWideBOHistory">
        
