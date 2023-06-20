@@ -9,12 +9,12 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <td 
+      <q-td 
         class="clickable" 
         @click="()=>{
           emit('openDrawer', props.row)
         }" 
-      >{{ props.row.name }}</td>
+      >{{ props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
@@ -71,8 +71,8 @@ const exportTable = () => {
   const csvHeaders = columns.value.map((column) => column.label);
   
   const csvContent = [
-    csvHeaders.join(';'),
-    ...csvData.map((row) => row.join(';')),
+    csvHeaders.join(','),
+    ...csvData.map((row) => row.join(',')),
   ].join('\n');
  const status = exportFile(
     'table-export.csv',

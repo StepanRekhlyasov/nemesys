@@ -1702,6 +1702,7 @@ export default {
     applicationAttribute: 'Application attribute',
     media: 'Media',
     total: 'Total',
+    location: 'Location',
     tables: {
       everyday: {
         1: 'Number of Outgoing Calls',

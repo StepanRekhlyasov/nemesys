@@ -1695,6 +1695,7 @@ export default {
     applicationAttribute: '応募属性',
     media: '媒体',
     total: '全体',
+    location: '拠点',
     tables: {
       everyday: {
         1: '架電数',

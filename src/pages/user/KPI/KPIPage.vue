@@ -70,13 +70,13 @@
         />
       </label>
       <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
-        拠点
+        {{ $t('KPI.location') }}
         <MySelect
           :width="'150px'"
         />
       </label>
       <label class="text-subtitle1" v-if="mode === 'media'">
-        媒体
+        {{ $t('KPI.media') }}
         <MySelect
           :width="'150px'"
         />
