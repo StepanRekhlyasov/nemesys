@@ -252,6 +252,8 @@ export interface ApplicantFix {
   // Job Search Info 
   inspectionStatus: boolean;
   inspectionDate: string;
+  visit: string;
+  visitRecotd: string; 
   reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   reasonJobDetal?: string;
   chargeOfFacility: string;

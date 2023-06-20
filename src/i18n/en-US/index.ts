@@ -799,6 +799,8 @@ export default {
         date: 'FIX Date',
         reason: 'FIXNG Reason',
         contactPerson: 'FIX Contact Person',
+        userInChargeVisit: 'User In Charge of VISIT',
+        visitRecotd: 'VISIT Record',
         memo: 'FIX Memo',
         info: '■FIX Information',
         jobSearchInfo: '■Job-search Information',

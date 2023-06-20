@@ -794,7 +794,9 @@ export default {
         status: 'FIXステータス',
         date: 'FIX日',
         reason: 'FIXNG理由',
-        contactPerson: 'FIX担当者',
+        contactPerson: 'FIX担当者ユーザー',
+        userInChargeVisit: '職見担当ユーザー',
+        visitRecotd: '職見記録',
         memo: 'メモ',
         info: '■FIX情報',
         jobSearchInfo: '■ 職見情報',
@@ -836,14 +838,14 @@ export default {
           status: '内定ステータス',
           date: '内定日',
           reasonNG: '内定NG理由',
-          chargeOfOffer: '内定担当者',
+          chargeOfOffer: '内定担当者ユーザー',
           memo: '内定メモ'
         },
         admission: {
           status: '入職ステータス',
           date: '入職日',
           reasonNotJoining: '入職NG理由',
-          chargeOfAdmission: '入職担当者',
+          chargeOfAdmission: '入職担当者ユーザー',
           memo: '入職メモ'
         }
       },
@@ -868,7 +870,7 @@ export default {
         qualifications: '資格',
         memo: '誘致メモ',
         invitationDate: '誘致日',
-        seduser: '誘致者',
+        seduser: '誘致担当ユーザー',
         position: '職種',
         period: '就業期間',
 
@@ -943,7 +945,7 @@ export default {
     attendant: {
       attendantStatus: 'アテンドステータス',
       day: 'アテンド日',
-      attendeeUserInCharge: 'アテンド担当者',
+      attendeeUserInCharge: 'アテンド担当者ユーザー',
       memo: 'アテンドメモ',
       desiredConditions: '希望条件',
       timeToWork: '就業可能時期',

@@ -44,6 +44,13 @@
 						emit-value map-options dense outlined
 						:options="usersListOption" :label="$t('common.pleaseSelect')" />
 			</labelField>
+			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.visitRecotd')" 
+				:value="fixData.visitRecotd? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+				<q-checkbox v-model="data['visitRecotd']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+					unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+				<q-checkbox v-model="data['visitRecotd']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
+					checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+			</labelField>
 		</div>
 		
 		<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
@@ -145,6 +152,7 @@ function resetData() {
 		inspectionStatus: props.editData['inspectionStatus'] || false,
 		inspectionDate: props.editData['inspectionDate'] || '',
 		visit: props.editData['visit'] || '',
+		visitRecotd: props.editData['visitRecotd'] || '',
 		reasonNG: props.editData['reasonNG'] || '',
 		reasonJobDetal: props.editData['reasonJobDetal'] || '',
 		chargeOfFacility: props.editData['chargeOfFacility'] || '',
