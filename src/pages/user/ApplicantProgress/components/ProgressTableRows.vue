@@ -78,12 +78,22 @@ const emit = defineEmits<{
 defineProps<{
   applicants: Applicant[]
 }>()
+function resetSortingOrder(){
+  queryDirections.value = {
+    staffRank: null,
+    occupation: null,
+    classification: null
+  }
+}
 const orderByFetch = (param : string) => {
   if(!queryDirections.value[param]){
+    resetSortingOrder()
     queryDirections.value[param] = 'desc'
-  }else if(queryDirections.value[param] == 'desc'){
+  } else if (queryDirections.value[param] == 'desc'){
+    resetSortingOrder()
     queryDirections.value[param] = 'asc'
   } else if (queryDirections.value[param] == 'asc') {
+    resetSortingOrder()
     queryDirections.value[param] = null
   }
 

@@ -16,7 +16,6 @@ import { Applicant } from 'src/shared/model';
 import ProgressTableRows from './ProgressTableRows.vue';
 import UpdateTableRows from './UpdateTableRows.vue';
 import { QueryOrderByConstraint } from 'firebase/firestore';
-import { ref } from 'vue'
 
 defineProps<{
   applicants: Applicant[],
