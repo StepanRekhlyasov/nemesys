@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, chartOptionsR, columns, columnsR ,data_names as dataNames,data_namesR as dataNamesR,chart_names as chartNames ,chart_namesR as chartNamesR } from './const';
+import { chartOptions, chartOptionsR, columns, columnsR ,dataNames,dataNamesR,chartNames ,chartNamesR } from './const';
 import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../reportUtil';
 import {graphType} from '../Models';
@@ -83,7 +83,7 @@ const rowsR: ComputedRef<
       inspection: rowData[1],
       offer: rowData[2],
       admission: rowData[3],
-    BO_total: rowData[4]
+      BO_total: rowData[4]
 
     };
   });
@@ -100,7 +100,7 @@ const props = defineProps<{
 
 const showSalesActivityReport = async (
   dateRange: { from: string; to: string },
-  organization_id: string
+  organizationId: string
 ) => {
   let target: { applicants: string; fix: string; bo: string } | undefined =
     undefined;
@@ -111,11 +111,11 @@ const showSalesActivityReport = async (
     dateRange,
     itemList,
     false,
-    organization_id,
+    organizationId,
     target
   );
   if (!dataAverage) return;
-  const data_average_R = [...dataAverage];
+  const dataAverageR = [...dataAverage];
   const dataAverageAll = await Totalizer.Totalize(
     dateRange,
     itemList,
@@ -124,28 +124,28 @@ const showSalesActivityReport = async (
     target
   );
   if (!dataAverageAll) return;
-  const data_average_all_R = [...dataAverage];
-  const BO = await Totalizer.Totalize(dateRange, ['bo'], false, organization_id, target);
+  const dataAverageAllR = [...dataAverage];
+  const BO = await Totalizer.Totalize(dateRange, ['bo'], false, organizationId, target);
   const BOAll = await Totalizer.Totalize(dateRange, ['bo'], false, undefined, target);
   if (!BO) return;
-  data_average_R.push(BO[0]);
+  dataAverageR.push(BO[0]);
   if (!BOAll) return;
-  data_average_all_R.push(BOAll[0]);
-  const data_cvr = calculateCVR(dataAverage);
-  const data_cvr_all = calculateCVR(data_average_R);
-  dataToshow.value = [dataAverage, data_cvr, data_cvr_all];
-  dataToshowR.value = [data_average_R, data_average_all_R];
+  dataAverageAllR.push(BOAll[0]);
+  const dataCvr = calculateCVR(dataAverage);
+  const dataCvrAll = calculateCVR(dataAverageR);
+  dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
+  dataToshowR.value = [dataAverageR, dataAverageAllR];
 };
 
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     await showSalesActivityReport(props.dateRangeProps, props.organization_id);
   }
 );
 onMounted(async () => {
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   await showSalesActivityReport(props.dateRangeProps, props.organization_id);
 });
 </script>

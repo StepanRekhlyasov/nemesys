@@ -84,18 +84,18 @@ const props = defineProps<{
 const showChart = async () => {
   dataToshow.value = [];
   mediaList.value = await media.getAllmedia();
-  const company_average = await budget.getUnitPricePerOrganizationPerMedia(
+  const companyAverage = await budget.getUnitPricePerOrganizationPerMedia(
     mediaList.value,
     props.dateRangeProps,
     props.organization_id
   );
-  const company_average_all = await budget.getUnitPricePerOrganizationPerMedia(
+  const companyAverageAll = await budget.getUnitPricePerOrganizationPerMedia(
     mediaList.value,
     props.dateRangeProps,
     undefined
   );
-  if (!company_average || !company_average_all) return;
-  dataToshow.value = [[...company_average], [...company_average_all]];
+  if (!companyAverage || !companyAverageAll) return;
+  dataToshow.value = [[...companyAverage], [...companyAverageAll]];
 };
 
 watch(

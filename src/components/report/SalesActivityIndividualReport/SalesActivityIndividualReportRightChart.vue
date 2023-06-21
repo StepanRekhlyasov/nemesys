@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptionsR, columnsR, data_names as dataNames } from './const';
+import { chartOptionsR, columnsR, dataNames } from './const';
 import { useBOIndividualReport } from 'src/stores/BOindividualReport';
 import { useTotalizer } from 'src/stores/totalization';
 import { graphType } from '../Models';
@@ -83,7 +83,7 @@ const showIndividualReport = async (
   userList: { id: string; name: string }[],
   dateRange?: { from: string; to: string }
 ) => {
-  if (dateRange == undefined) return;
+  if (!dateRange) return;
   const { rows: rows, series: series } =
     await BOIndividualReport.getBOIndividualReport(userList, dateRange);
   rowsIndividual.value = rows;

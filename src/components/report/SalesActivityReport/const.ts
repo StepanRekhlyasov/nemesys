@@ -3,10 +3,10 @@ import { computed ,ComputedRef} from 'vue';
 import {QTableProps} from 'quasar'
 const { t } = i18n.global;
 
-export const data_names = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
-export const data_namesR = ['report.companyTotal','report.allCVR'];
-export const chart_names = ['bar', 'line', 'line'];
-export const chart_namesR = ['bar', 'bar'];
+export const dataNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
+export const dataNamesR = ['report.companyTotal','report.allCVR'];
+export const chartNames = ['bar', 'line', 'line'];
+export const chartNamesR = ['bar', 'bar'];
 export const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },

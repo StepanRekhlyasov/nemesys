@@ -12,7 +12,7 @@ import {
   computed,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, data_names as dataNames } from './const';
+import { chartOptions, columns, dataNames } from './const';
 import { getIndividualReport } from 'src/stores/individualReport';
 import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../reportUtil';

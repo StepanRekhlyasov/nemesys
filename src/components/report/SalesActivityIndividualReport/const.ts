@@ -2,7 +2,7 @@ import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
 import { computed ,ComputedRef} from 'vue';
 const { t } = i18n.global;
-export const data_names = ['report.companyAverage', 'report.allAverage'];
+export const dataNames = ['report.companyAverage', 'report.allAverage'];
 export const chartOptions = computed(() => {
   return {
 
