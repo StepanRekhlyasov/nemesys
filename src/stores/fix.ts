@@ -50,7 +50,7 @@ export const useFix = defineStore('fix', () => {
       where('deleted', '==', false),
       ...constraints
     ))
-    const documents = docSnap.docs.map(item => {
+    return docSnap.docs.map(item => {
       const itemData = item.data()
       return {
         ...itemData,
@@ -62,7 +62,6 @@ export const useFix = defineStore('fix', () => {
         inspectionDate: toDateFormat(itemData['inspectionDate']),
       } as ApplicantFix
     })
-    return documents
   }
 
   async function saveFix (applicant_id: string, data) {

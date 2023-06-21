@@ -65,10 +65,10 @@ function getApplicant(applicant_id : string){
 watch(()=>props.applicants, async (newValue)=>{
   if(newValue.length){
     emit('onLoadingStart')
-    newValue.map((row)=>{
+    newValue.forEach((row)=>{
       applicantIDs.value.push(row.id)
     })
-    const rawFixes : ApplicantFix[] = await fixStore.getFixByApplicantIDs(applicantIDs.value)
+    const rawFixes = await fixStore.getFixByApplicantIDs(applicantIDs.value)
     
     const fortyFiveDaysMS = 3888000000;
     const fortyFiveDaysFromNow = Timestamp.fromMillis(Date.now() + fortyFiveDaysMS) 
@@ -78,7 +78,7 @@ watch(()=>props.applicants, async (newValue)=>{
     })
 
     fixes.value = terminationFixes
-    fixes.value.map((row)=>{
+    fixes.value.forEach((row)=>{
       row.applicant = getApplicant(row.applicant_id)
     })
     emit('onLoadingEnd')

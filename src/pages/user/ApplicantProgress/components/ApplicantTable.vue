@@ -9,7 +9,7 @@
     ></UpdateTableRows>
     <ProgressTableRows v-else :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
-  <q-linear-progress query v-if="loading || innerLoading" color="primary"/>
+  <q-linear-progress query v-if="loading" color="primary"/>
 </template>
 <script setup lang="ts">
 import { Applicant } from 'src/shared/model';
@@ -29,8 +29,6 @@ const emit = defineEmits<{
   (e: 'onLoadingStart'),
   (e: 'onLoadingEnd'),
 }>()
-
-const innerLoading = ref(false)
 
 </script>
 <style lang="scss">
