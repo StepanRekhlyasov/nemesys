@@ -1,18 +1,21 @@
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia'
 import Quasar, { useQuasar } from 'quasar';
 import { defineEmits, defineProps, ref, watch } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import { mergeWithDraft } from 'src/components/client-factory/hadlers';
+import { mergeWithDraft } from 'src/components/client-factory/handlers';
+import { finishEditing } from 'src/components/client-factory/handlers';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { useOrganization } from 'src/stores/organization';
 
 const { addModifiedCF, getModifiedCF, updateModifiedCF } = useClientFactory()
-const { currentOrganizationId } = useOrganization()
+const organizationStore = useOrganization()
+const { currentOrganizationId } = storeToRefs(organizationStore)
 
 const props = defineProps<{
     isDrawer: boolean,
@@ -28,7 +31,12 @@ const cancelHandler = () => {
     draft.value = {} as ClientFactory;
 }
 
+const editDraftHandler = (changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
+    draft.value = finishEditing(changedData, draft.value, modifiedCF.value ?? props.selectedItem)
+}
+
 const saveHandler = async () => {
+    isLoading.value = true
     if(modifiedCF.value) {
 
         const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
@@ -38,7 +46,7 @@ const saveHandler = async () => {
         draft.value = {} as ClientFactory;
     } else {
         const mergedData = mergeWithDraft(props.selectedItem, draft.value)
-        const res = await addModifiedCF(currentOrganizationId, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>, $q as unknown as typeof Quasar)
+        const res = await addModifiedCF(currentOrganizationId.value, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>, $q as unknown as typeof Quasar)
 
         if(res) {
             modifiedCF.value = mergedData
@@ -46,6 +54,7 @@ const saveHandler = async () => {
 
         draft.value = {} as ClientFactory;
     }
+    isLoading.value = false
 }
 
 const emit = defineEmits<{
@@ -60,7 +69,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
     if (oldProps) {
         isLoading.value = true
         draft.value = {} as ClientFactory;
-        modifiedCF.value = await getModifiedCF(currentOrganizationId, props.selectedItem, $q as unknown as typeof Quasar)
+        modifiedCF.value = await getModifiedCF(currentOrganizationId.value, props.selectedItem, $q as unknown as typeof Quasar)
         isLoading.value = false
     }
 }, { immediate: true });
@@ -70,6 +79,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
 <template>
     <q-drawer
         :model-value="props.isDrawer"
+        :key="props.selectedItem.id"
         overlay
         elevated
         bordered
@@ -84,6 +94,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                     </q-card-section>
                     <q-card-section class="bg-grey-2 q-pa-none">
                         <CFDrawerBody
+                            @edit-draft="editDraftHandler"
                             @cancel-draft="cancelHandler"
                             @save-draft="saveHandler"
                             :clientFactory="modifiedCF ?? selectedItem"
@@ -91,7 +102,11 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                             :is-loading="isLoading"/>
                     </q-card-section>
                     <q-card-section class="bg-grey-3">
-                        <CFDrawerTabs :clientFactory="modifiedCF ?? selectedItem" />
+                        <CFDrawerTabs
+                            @edit-draft="editDraftHandler"
+                            :clientFactory="modifiedCF ?? selectedItem"
+                            :draft="draft"
+                            :is-loading="isLoading"/>
                     </q-card-section>
                 </q-card>
             </q-scroll-area>

@@ -9,6 +9,7 @@
 				<div class="text-subtitle2">検索条件 / エリア：東京都全域,　詳細条件：…</div>
 				<div class="row q-mt-xs justify-between" >
 					<q-btn :label="$t('backOrder.changeSearchCriteria')" color="primary" />
+					<q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus" @click="addNewBo"/>
 				</div>
 			</q-card-section>
 			<q-separator color="white" size="2px" />
@@ -70,24 +71,36 @@
       selectedClient = clientValue
     }"/>
 	</q-drawer>
+	<q-drawer
+		v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" 
+		overlay elevated bordered>
+		<createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer=false"/>
+	</q-drawer>
   <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="showSearchByMap=false"></SearchByMapDrawer>
 </template>
 
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
-import SearchByMapDrawer from './components/info/searchByMapDrawer.vue'
+import SearchByMapDrawer from './components/info/searchByMapDrawer.vue';
+import createBO from './components/create/createBO.vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 const backOrderStore = useBackOrder();
+const $q = useQuasar();
+const { t } = useI18n({ useScope: 'global' });
 const state = backOrderStore.state;
 
 const showSearchByMap = ref(false)
 const selected = ref<BackOrderModel[]>([])
 const drawerRight = ref(false);
-const selectedBo = ref<BackOrderModel | undefined>()
+const cteateBoDrawer = ref(false);
+const typeBoCreate:Ref<'referral' | 'dispatch'> = ref('referral')
+const selectedBo = ref<BackOrderModel | undefined>();
 const selectedClient = ref<Client | undefined>(undefined);
 const pagination = ref({
 	sortBy: 'desc',
@@ -96,6 +109,21 @@ const pagination = ref({
 	rowsPerPage: 10
 	// rowsNumber: xx if getting data from a server
 });
+
+
+function addNewBo() {
+	$q.dialog({
+		title: t('backOrder.selectBOType'),
+		cancel: t('backOrder.type.dispatch'),
+		ok: t('backOrder.type.referral')
+	}).onOk(() => {
+		typeBoCreate.value = 'referral';
+		cteateBoDrawer.value = true;
+	}).onCancel(() => {
+		typeBoCreate.value = 'dispatch';
+		cteateBoDrawer.value = true;
+	})
+}
 
 function showDialog(bo: BackOrderModel){
 	selectedBo.value = bo;
