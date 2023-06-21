@@ -35,17 +35,17 @@ const rows: ComputedRef<
     admission: string|number;
   }[]
 > = computed(() => {
-  const rows_ = dataToshow.value.map((row_data) => {
+  const rowsList = dataToshow.value.map((rowData) => {
     return {
       name: t('report.companyAverage'),
-      invitations: row_data[0],
-      fix: row_data[1],
-      inspection: row_data[2],
-      offer: row_data[3],
-      admission: row_data[4],
+      invitations: rowData[0],
+      fix: rowData[1],
+      inspection: rowData[2],
+      offer: rowData[3],
+      admission: rowData[4],
     };
   });
-  return rows_;
+  return rowsList;
 });
 const props = defineProps<{
   branch_id: string;
@@ -57,11 +57,11 @@ const props = defineProps<{
 
 const showLeadtime = async (
   dateRange: { from: string; to: string } | undefined,
-  organization_id: string
+  organizationId: string
 ) => {
-  if (dateRange == undefined) return;
-  const data_average = await Leadtime.calcLeadtime(dateRange, organization_id);
-  dataToshow.value = [data_average];
+  if (!dateRange) return;
+  const dataAverage = await Leadtime.calcLeadtime(dateRange, organizationId);
+  dataToshow.value = [dataAverage];
 };
 
 watch(
@@ -72,7 +72,7 @@ watch(
 );
 
 onMounted(async () => {
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   await showLeadtime(props.dateRangeProps, props.organization_id);
 });
 </script>

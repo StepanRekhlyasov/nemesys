@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, item_list ,chartType,row_names} from './const';
+import { chartOptions, columns ,itemList ,chartType ,rowNames} from './const';
 import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from 'src/components/report/reportUtil';
 import {graphType} from '../Models';
@@ -20,7 +20,7 @@ const series: ComputedRef<
 > = computed(() => {
   const seriesList = dataToshow.value.map((rowData, index) => {
     return {
-      name: t(row_names[index]),
+      name: t(rowNames[index]),
       data: rowData,
       type: chartType[index],
     };
@@ -43,7 +43,7 @@ const rows: ComputedRef<
 > = computed(() => {
   const rowsList = dataToshow.value.map((rowData, index) => {
     return {
-      name: t(row_names[index]),
+      name: t(rowNames[index]),
       applicants: rowData[0],
       valid_applicants: rowData[1],
       contact_applicants: rowData[2],
@@ -77,7 +77,7 @@ const showData = async (
   }
   const dataAverage = await Totalizer.Totalize(
     dateRange,
-    item_list,
+    itemList,
     false,
     organizationId,
     target,
@@ -86,7 +86,7 @@ const showData = async (
   const dataCvr = calculateCVR(dataAverage);
   const dataAverageAll = await Totalizer.Totalize(
     dateRange,
-    item_list,
+    itemList,
     false,
     undefined,
     target,
