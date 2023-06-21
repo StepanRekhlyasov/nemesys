@@ -1104,6 +1104,7 @@ export default {
     dealType: 'Deal Type',
     transactionType: 'Transaction Type',
     distance: 'Distance from origin',
+    selectBOType: 'Select BO type',
     officeName: 'Office Name',
     clientName: 'Client Name',
     employmentType: 'Employment Type',

@@ -326,6 +326,8 @@ async function onSubmit() {
   data['currentStatusTimestamp'] = data['applicationDate'] ;
   data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
   data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
+
+  data['address'] = [data['prefecture'], data['municipalities'], data['street'], data['apartment']].join(' ')
   
  
   /** required fields */
