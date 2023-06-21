@@ -16,7 +16,7 @@ const Totalizer = useTotalizer();
 const BOIndividualReport = useBOIndividualReport();
 const t = useI18n({ useScope: 'global' }).t;
 const dataToShow = ref<(number | string)[][]>([]);
-const user_list = ref<{ id: string; name: string }[]>([]);
+const userList = ref<{ id: string; name: string }[]>([]);
 
 const rowsIndividual = ref<
   {
@@ -79,49 +79,49 @@ const props = defineProps<{
 }>();
 
 const showIndividualReport = async (
-  organization_id: string,
-  user_list: { id: string; name: string }[],
+  organizationId: string,
+  userList: { id: string; name: string }[],
   dateRange?: { from: string; to: string }
 ) => {
   if (dateRange == undefined) return;
-  const { rows: rows__, series: series__ } =
-    await BOIndividualReport.getBOIndividualReport(user_list, dateRange);
-  rowsIndividual.value = rows__;
-  seriesIndividual.value = series__;
+  const { rows: rows, series: series } =
+    await BOIndividualReport.getBOIndividualReport(userList, dateRange);
+  rowsIndividual.value = rows;
+  seriesIndividual.value = series;
   let target: { applicants: string; fix: string; bo: string } | undefined =
     undefined;
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
   }
-  const data_average = await Totalizer.Totalize(
+  const dataAverage = await Totalizer.Totalize(
     dateRange,
     ['bo', 'bo_isfirst', 'bo_isnotfirst'],
     true,
-    organization_id,
+    organizationId,
     target
   );
-  const all_data_average = await Totalizer.Totalize(
+  const allDataAverage = await Totalizer.Totalize(
     dateRange,
     ['bo', 'bo_isfirst', 'bo_isnotfirst'],
     true,
     undefined,
     target
   );
-  data_average.unshift(0);
-  all_data_average.unshift(0);
-  data_average.unshift(0);
-  all_data_average.unshift(0);
-  dataToShow.value = [data_average, all_data_average];
+  dataAverage.unshift(0);
+  allDataAverage.unshift(0);
+  dataAverage.unshift(0);
+  allDataAverage.unshift(0);
+  dataToShow.value = [dataAverage, allDataAverage];
 };
 watch(
   () => [props.branch_user_list, props.dateRangeProps],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     if (props.branch_user_list.length != 0) {
-      user_list.value = props.branch_user_list;
+      userList.value = props.branch_user_list;
       await showIndividualReport(
         props.organization_id,
-        user_list.value,
+        userList.value,
         props.dateRangeProps
       );
     }
@@ -129,12 +129,12 @@ watch(
 );
 
 onMounted(async () => {
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   if (props.branch_user_list.length != 0) {
-    user_list.value = props.branch_user_list;
+    userList.value = props.branch_user_list;
     await showIndividualReport(
       props.organization_id,
-      user_list.value,
+      userList.value,
       props.dateRangeProps
     );
   }
