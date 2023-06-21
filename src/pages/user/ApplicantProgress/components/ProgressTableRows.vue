@@ -1,9 +1,9 @@
 <template>
   <thead>
       <tr>
-        <th @click="orderByFetch('staffRank')" class="clickable"><span :class="{asc: queryDirections.staffRank=='asc', desc: queryDirections.staffRank=='desc'}">▼</span></th>
-        <th @click="orderByFetch('occupation')" class="clickable"><span :class="{asc: queryDirections.occupation=='asc', desc: queryDirections.occupation=='desc'}">▼</span></th>
-        <th @click="orderByFetch('classification')" class="clickable"><span :class="{asc: queryDirections.classification=='asc', desc: queryDirections.classification=='desc'}">▼</span></th>
+        <th @click="orderByFetch('staffRank')" class="clickable"><span :class="{asc: queryDirections.staffRank === 'asc', desc: queryDirections.staffRank === 'desc'}">▼</span></th>
+        <th @click="orderByFetch('occupation')" class="clickable"><span :class="{asc: queryDirections.occupation === 'asc', desc: queryDirections.occupation === 'desc'}">▼</span></th>
+        <th @click="orderByFetch('classification')" class="clickable"><span :class="{asc: queryDirections.classification === 'asc', desc: queryDirections.classification === 'desc'}">▼</span></th>
         <th>{{ $t('applicant.progress.table.fullName') }}</th>
         <th>{{ $t('applicant.progress.table.applicationDate') }}</th>
         <th>{{ $t('applicant.progress.table.nearestStation') }}</th>
@@ -89,10 +89,10 @@ const orderByFetch = (param : string) => {
   if(!queryDirections.value[param]){
     resetSortingOrder()
     queryDirections.value[param] = 'desc'
-  } else if (queryDirections.value[param] == 'desc'){
+  } else if (queryDirections.value[param] === 'desc'){
     resetSortingOrder()
     queryDirections.value[param] = 'asc'
-  } else if (queryDirections.value[param] == 'asc') {
+  } else if (queryDirections.value[param] === 'asc') {
     resetSortingOrder()
     queryDirections.value[param] = null
   }
