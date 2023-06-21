@@ -79,7 +79,16 @@ watchEffect(() => {
             theme="primary"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
-            @on-save="isEditForm.officeInfo = false; editDraft(dataForUpdating.officeInfo)"/>
+            @on-save="isEditForm.officeInfo = false; editDraft(dataForUpdating.officeInfo)">
+
+            <template #tag v-if="clientFactory.isHead">
+                <div class="bg-primary text-white q-ml-sm rounded-borders">
+                    <span class="q-pa-sm">
+                        {{ t('clientFactory.headOffice') }}
+                    </span>
+                </div>
+            </template>
+        </HighlightTwoColumn>
 
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"

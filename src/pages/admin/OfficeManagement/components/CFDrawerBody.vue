@@ -7,7 +7,7 @@ import CFDrawerBodyFooter from './CFDrawerBodyFooter.vue';
 import { useHighlightMainInfo } from 'src/components/client-factory/handlers';
 
 import { ReflectLog } from 'src/shared/model/ReflectLog';
-import { RenderMainInfo } from '../types';
+import { RenderMainInfo } from 'src/components/client-factory/types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ChangedData } from 'src/components/client-factory/types';
 import { ImportLog } from 'src/shared/model/ImportLog';
@@ -72,7 +72,16 @@ watchEffect(() => {
             theme="accent"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
-            @on-save="isEditForm.officeInfo = false; handleEditDraft(dataForUpdating.officeInfo as RenderMainInfo['officeInfo'])"/>
+            @on-save="isEditForm.officeInfo = false; handleEditDraft(dataForUpdating.officeInfo as RenderMainInfo['officeInfo'])">
+        
+                <template #tag v-if="clientFactory.isHead">
+                    <div class="bg-accent text-white q-ml-sm rounded-borders">
+                        <span class="q-pa-sm">
+                            {{ t('clientFactory.headOffice') }}
+                        </span>
+                    </div>
+                </template>
+        </HighlightTwoColumn>
         
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"

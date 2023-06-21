@@ -4,7 +4,7 @@ import { defineProps, withDefaults, computed, ref } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    data: { label: string; value: string | number | string[] | boolean, isHighlight: boolean, key?: string }[]
+    data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string }[]
     isEdit: boolean
     label: string
     isDropDown?: boolean
@@ -44,6 +44,10 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
                 <q-btn :label="t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
                   class="text-grey-9" @click="isHidden = true" v-else />
             </div>
+
+            <slot name="tag" v-if="$slots.tag">
+                
+            </slot>
         </div>
         <div class="col-3 text-right" v-if="showActions">
             <q-btn v-if="!isEdit" 

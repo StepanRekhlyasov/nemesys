@@ -5,7 +5,7 @@ import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn
 import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
 import { useOfficeDetails } from 'src/components/client-factory/handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderOfficeDetails } from '../types';
+import { RenderOfficeDetails } from 'src/components/client-factory/types';
 import { ChangedData } from 'src/components/client-factory/types';
 
 const { t } = useI18n({ useScope: 'global' });
@@ -61,7 +61,7 @@ watchEffect(() => {
         theme="accent"
         @open-edit="isEditForm.registeredInfo = true"
         @close-edit="isEditForm.registeredInfo = false"
-        @on-save="isEditForm.registeredInfo = false; handleEditDraft(dataForUpdating.registeredInfo as RenderOfficeDetails['registeredInfo'])"/>
+        @on-save="isEditForm.registeredInfo = false; handleEditDraft(dataForUpdating.registeredInfo)"/>
 
     <EditableColumnsCF
         v-if="isEditForm.registeredInfo" @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')"
@@ -77,7 +77,7 @@ watchEffect(() => {
         theme="accent"
         @open-edit="isEditForm.commonItems = true"
         @close-edit="isEditForm.commonItems = false"
-        @on-save="isEditForm.commonItems = false; handleEditDraft(dataForUpdating.commonItems as RenderOfficeDetails['commonItems'])"/>
+        @on-save="isEditForm.commonItems = false; handleEditDraft(dataForUpdating.commonItems)"/>
 
     <EditableColumnsCF
         v-if="isEditForm.commonItems"
@@ -94,7 +94,7 @@ watchEffect(() => {
         theme="accent"
         @open-edit="isEditForm.uniqueItems = true"
         @close-edit="isEditForm.uniqueItems = false"
-        @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating.uniqueItems as RenderOfficeDetails['uniqueItems'])"/>
+        @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating.uniqueItems)"/>
 
     <EditableColumnsCF
         v-if="isEditForm.uniqueItems"
