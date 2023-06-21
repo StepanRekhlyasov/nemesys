@@ -85,8 +85,8 @@
                 {{ $t('applicant.add.email') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['email']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['email']" type="email"
+                :rules="[(val) => !!val || '', (val) => validateEmail(val) || '' ]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -137,7 +137,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['dob']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space >
+                  :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -202,26 +202,15 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
-                :rules="[(val) => !!val || '']" hide-bottom-space >
-                  <template v-slot:prepend>
+                :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
+                  <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup label="Close" color="primary" flat />
                           </div>
                         </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm" format24h>
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
-                          </div>
-                        </q-time>
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -271,6 +260,7 @@ import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
+import { validateEmail, validateDate} from 'src/shared/constants/Form.const';
 
 const applicantDataSample = {
   qualification: [],
@@ -278,8 +268,8 @@ const applicantDataSample = {
   lon: 0,
   lat: 0
 };
-const organizationStore = useOrganization()
-const applicantStore = useApplicant()
+const organizationStore = useOrganization();
+const applicantStore = useApplicant();
 
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList);
