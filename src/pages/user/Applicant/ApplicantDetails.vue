@@ -149,8 +149,8 @@ const openDrawer = async (data : Applicant) => {
   setTimeout(() => drawerRight.value = true, 300);
 }
 defineExpose({ openDrawer })
-const changeApplicantStatus = () => {
-  applicantStore.updateApplicant({status: selectedApplicant.value?.status})
+const changeApplicantStatus = async () => {
+  await applicantStore.updateApplicant({status: selectedApplicant.value?.status})
   emit('statusUpdated')
 }
 const chooseFiles = () => {
