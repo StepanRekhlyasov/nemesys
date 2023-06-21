@@ -565,7 +565,6 @@ export const useApplicant = defineStore('applicant', () => {
       if (showAlert) { Alert.success($q, t); }
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
-        changeApplicantStatusByOkFields()
       } catch(error) {
         if (showAlert){  Alert.warning($q, t); }
       }
@@ -779,6 +778,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant }
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant, changeApplicantStatusByOkFields }
 })
 

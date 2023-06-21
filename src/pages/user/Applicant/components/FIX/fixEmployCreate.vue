@@ -218,9 +218,12 @@ async function save(type: string, dataR) {
         dataR,
         ['admissionStatus', 'admissionDate', 'admissionReason', 'admissionReasonDetal',
         'chargeOfAdmission', 'admissionMemo', 'endDate'])
-      if (retData['admissionDate']) {
-        retData['admissionDate'] = Timestamp.fromDate(new Date(retData['admissionDate']))
-      }
+        if (retData['admissionDate']) {
+          retData['admissionDate'] = Timestamp.fromDate(new Date(retData['admissionDate']))
+        }
+        if (retData['endDate']) {
+          retData['endDate'] = Timestamp.fromDate(new Date(retData['endDate']))
+        }
       break;
     }
     default: {

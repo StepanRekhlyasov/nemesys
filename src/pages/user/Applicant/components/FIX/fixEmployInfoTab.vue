@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
 });
 
 function mutateDatesInData(data){
-  const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate']
+  const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate', 'endDate']
   keys.map((key)=>{
     if(data[key]){
       data[key] = toDateFormat(data[key])
