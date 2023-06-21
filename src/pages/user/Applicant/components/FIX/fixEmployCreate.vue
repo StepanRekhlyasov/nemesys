@@ -189,10 +189,10 @@ async function save(type: string, dataR) {
       }
       break;
     }
-    case 'jobSearchInfo': {
+    case 'jobSearchInfo': {      
       retData = pick(
         dataR,
-        ['inspectionStatus', 'inspectionDate', 'reasonNG', 'visit', 'visitRecotd', 'reasonJobDetal', 
+        ['inspectionStatus', 'inspectionDate', 'reasonNG', 'visit', 'personalStatus',  'corporationStatus',  'businessStatus', 'reasonJobDetal', 
         'chargeOfFacility', 'jobTitle', 'contact', 'comments', 'notesInspection'])
       if (retData['inspectionDate']) {
         retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))

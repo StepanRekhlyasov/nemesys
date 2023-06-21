@@ -44,13 +44,36 @@
 						emit-value map-options dense outlined
 						:options="usersListOption" :label="$t('common.pleaseSelect')" />
 			</labelField>
+		</div>
+		
+		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.visitRecotd')" 
-				:value="fixData.visitRecotd? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
-				<q-checkbox v-model="data['visitRecotd']" label="OK" checked-icon="mdi-checkbox-intermediate" 
-					unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
-				<q-checkbox v-model="data['visitRecotd']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
-					checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
-			</labelField>
+					:value="visitRecotd" valueClass="text-uppercase col-9 q-pl-md">
+					<div class="row">
+						<div class="col-4">
+							<span class="text-blue text-weight-regular">{{ $t('applicant.list.fixEmployment.personalStatus') }}</span>
+							<q-checkbox v-model="data['personalStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+								unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+							<q-checkbox v-model="data['personalStatus']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
+								checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+						</div>
+						<div class="col-4">
+							<span class="text-blue text-weight-regular">{{ $t('applicant.list.fixEmployment.corporationStatus') }}</span>
+							<q-checkbox v-model="data['corporationStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+								unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+							<q-checkbox v-model="data['corporationStatus']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
+								checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+						</div>
+						<div class="col-4">
+							<span class="text-blue text-weight-regular">{{ $t('applicant.list.fixEmployment.businessStatus') }}</span>
+							<q-checkbox v-model="data['businessStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
+								unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+							<q-checkbox v-model="data['businessStatus']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
+								checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+						</div>
+
+					</div>
+				</labelField>
 		</div>
 		
 		<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
@@ -128,10 +151,10 @@ import labelField from 'src/components/form/LabelField.vue';
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 
 import { ApplicantFix, selectOptions } from 'src/shared/model';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-
-
+const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
   loading: boolean,
   fixData: ApplicantFix,
@@ -145,6 +168,15 @@ const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 const data = ref({});
 const statusJobOptions = ref<selectOptions[]> ();
 
+const visitRecotd = computed(() => {
+	const personalStatus = props.fixData['personalStatus']? 'OK' : 'personalStatus' in props.fixData ? 'NG' : '-' 
+	const corporationStatus = props.fixData['corporationStatus']? 'OK' : 'corporationStatus' in props.fixData ? 'NG' : '-' 
+	const businessStatus = props.fixData['businessStatus']? 'OK' : 'businessStatus' in props.fixData ? 'NG' : '-' 
+	return `${t('applicant.list.fixEmployment.personalStatus')} : ${personalStatus}  / 
+	 ${t('applicant.list.fixEmployment.corporationStatus')} : ${corporationStatus}  /  
+	 ${t('applicant.list.fixEmployment.businessStatus')} : ${businessStatus}`
+})
+
 resetData();
 
 function resetData() {
@@ -152,7 +184,9 @@ function resetData() {
 		inspectionStatus: props.editData['inspectionStatus'] || false,
 		inspectionDate: props.editData['inspectionDate'] || '',
 		visit: props.editData['visit'] || '',
-		visitRecotd: props.editData['visitRecotd'] || '',
+		personalStatus: props.editData['personalStatus'] || false,
+		corporationStatus: props.editData['corporationStatus'] || false,
+		businessStatus: props.editData['businessStatus'] || false,
 		reasonNG: props.editData['reasonNG'] || '',
 		reasonJobDetal: props.editData['reasonJobDetal'] || '',
 		chargeOfFacility: props.editData['chargeOfFacility'] || '',
