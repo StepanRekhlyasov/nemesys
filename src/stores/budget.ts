@@ -116,11 +116,11 @@ export const useBudget = defineStore('budget', () => {
   ) => {
     const mediaRef = collection(db, 'budget');
     const filters: QueryFieldFilterConstraint[] = [];
-    if (organization_id !== undefined) {
+    if (organization_id) {
       filters.push(where('organization_id', '==', organization_id));
     }
     //dateRangeProps is like {from:1900/01/01,to:1900/12/01}
-    if (dateRangeProps === undefined) return;
+    if (!dateRangeProps) return;
     const toMonth = dateRangeProps.to.split('/')[1];
     const year = dateRangeProps.to.split('/')[0];
     filters.push(where('record_year', '==', Number(year)));

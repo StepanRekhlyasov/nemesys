@@ -5,7 +5,7 @@
       :applicants="applicants" 
       @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"
       @onLoadingStart="()=>emit('onLoadingStart')"
-      @onLoadingEnds="()=>emit('onLoadingEnd')"
+      @onLoadingEnd="()=>emit('onLoadingEnd')"
     ></UpdateTableRows>
     <ProgressTableRows v-else :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>

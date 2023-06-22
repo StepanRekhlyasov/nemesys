@@ -132,9 +132,9 @@
 
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')" 
-				:value="fixData.notesInspection" valueClass="col-9 q-pl-md">
+				:value="fixData.inspectionMemo" valueClass="col-9 q-pl-md">
 				<q-input dense outlined bg-color="white"
-					v-model="data['notesInspection']" :disable="loading || disableLevel < 1" />
+					v-model="data['inspectionMemo']" :disable="loading || disableLevel < 1" />
 			</labelField>
 		</div>
 	</DropDownEditGroup>
@@ -190,7 +190,7 @@ function resetData() {
 		jobTitle: props.editData['jobTitle'] || '',
 		contact: props.editData['contact'] || '',
 		comments: props.editData['comments'] || '',
-		notesInspection: props.editData['notesInspection'] || '',
+		inspectionMemo: props.editData['inspectionMemo'] || '',
 	}
 }
 

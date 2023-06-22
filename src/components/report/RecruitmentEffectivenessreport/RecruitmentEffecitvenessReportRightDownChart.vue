@@ -91,14 +91,14 @@ const seriesAges: ComputedRef<
 const seriesDaysToWork: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshowDaysToWork.value.map((rowData, index) => {
+  const seriesList = dataToshowDaysToWork.value.map((rowData, index) => {
     return {
       name: rowNamesDaysToWork[index] + t('report.day'),
       data: rowData,
       type: chartTypeDaysToWork[index],
     };
   });
-  return series_;
+  return seriesList;
 });
 
 const props = defineProps<{
