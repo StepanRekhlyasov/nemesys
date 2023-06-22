@@ -85,7 +85,7 @@
                 {{ $t('applicant.add.email') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['email']" type="email"
+                <q-input outlined dense v-model="applicantData['email']"
                 :rules="[(val) => !!val || '', (val) => validateEmail(val) || '' ]" hide-bottom-space bg-color="white" />
               </div>
             </div>
