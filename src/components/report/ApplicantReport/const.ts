@@ -3,9 +3,9 @@ import { computed ,ComputedRef} from 'vue';
 import { QTableProps } from 'quasar';
 const { t } = i18n.global;
 
-export const row_names = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
+export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
 export const chartType = ['bar', 'line', 'line'];
-export const item_list = [
+export const itemList = [
   'applicants',
   'valid_applicants',
   'contact_applicants',
@@ -18,6 +18,7 @@ export const item_list = [
 ];
 export const chartOptions = computed(() => {
   return {
+    legend: { position: 'left' },
     chart: {},
     title: {
       text: t('report.title.applicationToAdmission'),
