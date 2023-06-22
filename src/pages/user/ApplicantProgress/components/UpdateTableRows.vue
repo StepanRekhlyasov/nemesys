@@ -80,18 +80,19 @@ watch(()=>props.applicants, async (newValue)=>{
     
     const fortyFiveDaysMS = 3888000000;
     const fortyFiveDaysFromNow = Timestamp.fromMillis(Date.now() + fortyFiveDaysMS) 
-    const terminationFixes = rawFixes.filter((row)=>{
+    const terminationFixes : ApplicantFix[] = rawFixes.filter((row : ApplicantFix)=>{
       const fixEnd = dateToTimestampFormat(new Date(row.endDate))
       return row.admissionStatus && fixEnd && (fixEnd.seconds < fortyFiveDaysFromNow.seconds)
     })
 
     fixes.value = terminationFixes
-    fixes.value.forEach(async (row)=>{
+    await Promise.all(fixes.value.map(async (row)=>{
       row.applicant = getApplicant(row.applicant_id)
       if(row.chargeOfFix){
+        emit('onLoadingStart')
         row.user = await userStore.getUserById(row.chargeOfFix)
       }
-    })
+    }))
     emit('onLoadingEnd')
   } else {
     fixes.value = []
