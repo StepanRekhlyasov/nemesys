@@ -108,11 +108,10 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { getFirestore, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { serverTimestamp, Timestamp } from 'firebase/firestore';
 import { Applicant, ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import FixInfoSection from './FixInfoSection.vue';
@@ -122,6 +121,7 @@ import EmploymentInfoSection from './EmploymentInfoSection.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { useFix } from 'src/stores/fix';
 import { QForm } from 'quasar';
+import { useUserStore } from 'src/stores/user';
 
 const props = defineProps<{
   fixData: ApplicantFix,
@@ -131,12 +131,11 @@ const props = defineProps<{
 const formRef = ref<QForm | null>(null);
 const emits = defineEmits(['updateList', 'close', 'updateDoc'])
 
-const db = getFirestore();
 const auth = getAuth();
 const organization = useOrganization();
 const applicantStore = useApplicant();
 const fixStore = useFix();
-
+const userStore = useUserStore()
 const data = ref<Partial<ApplicantFix>>({});
 const loading = ref(false);
 const edit = ref<string[]>([]);
@@ -162,20 +161,19 @@ watch(
   { deep: true, immediate: true }
 )
 
-function loadUser() {
-  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+async function loadUser() {
+  const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+  if (!users) {
+    return
+  }
 
-  usersSnapshot.then(users => {
-    let list: selectOptions[] = [];
-    users?.forEach((doc) => {
-      const user = doc.data();
-      list.push({
-        label: user.displayName,
-        value: doc.id
-      });
-    });
-    usersListOption.value = list;
-  })
+  usersListOption.value = users.map((user) => {
+    return {
+      label: user.displayName,
+      value: user.id
+    }
+  });
+
 }
 loadUser();
 

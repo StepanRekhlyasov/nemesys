@@ -1,10 +1,10 @@
-import { collection, collectionGroup, doc, documentId, endAt, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt , updateDoc, where } from 'firebase/firestore';
+import { collection, collectionGroup, doc, documentId, endAt, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
 import { i18n } from 'boot/i18n';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
+import { useUserStore } from './user';
 
 const { t } = i18n.global
 interface OrganizationState {
@@ -24,6 +24,8 @@ export const useOrganization = defineStore('organization', () => {
     currentOrganizationBranches: {},
     currentOrganizationUsers: {},
   })
+
+  const userStore = useUserStore()
 
   const currentOrganizationId = computed(() => {
     return state.value.organizations[state.value.activeOrganization]?.id
@@ -70,16 +72,16 @@ export const useOrganization = defineStore('organization', () => {
   }
 
   async function getCurrentUsersInChrage() {
-    const organization = useOrganization()
-    const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
-    const querySnapshot = await usersSnapshot
-    const users: { [id: string]: User; } = {}
-    if (querySnapshot) {
-      querySnapshot.forEach((doc) => {
-        users[doc.id] = doc.data() as User
-      })
+    const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', currentOrganizationId.value);
+    const usersObject: { [id: string]: User; } = {}
+    if (!users) {
+      return usersObject
     }
-    return users
+    users.forEach((user) => {
+      users[user.id] = user as User
+    })
+
+    return usersObject
   }
 
   async function addOrganization(organization: Organization) {
