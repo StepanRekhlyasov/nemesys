@@ -1,25 +1,22 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, defineEmits, watchEffect, ref } from 'vue';
-import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
+import { ref, defineProps, defineEmits, watchEffect } from 'vue';
 import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
+import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import { useOfficeDetails } from 'src/components/client-factory/handlers';
+
+import { ChangedData, RenderOfficeDetails } from 'src/components/client-factory/types';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderOfficeDetails } from 'src/components/client-factory/types';
-import { ChangedData } from 'src/components/client-factory/types';
 
 const { t } = useI18n({ useScope: 'global' });
-
 const props = defineProps<{
     clientFactory: ClientFactory,
     draft: Partial<ClientFactory>,
     isLoading: boolean
-}>()
+}>();
 const emit = defineEmits<{
-    (e: 'editDraft', changedData: ChangedData)
+    (e: 'editDraft', changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>)
 }>()
-
-const officeDetails = ref<RenderOfficeDetails>({} as RenderOfficeDetails)
 
 const isEditForm = ref({
     registeredInfo: false,
@@ -27,6 +24,7 @@ const isEditForm = ref({
     uniqueItems: false
 })
 
+const officeDetails = ref<RenderOfficeDetails>({} as RenderOfficeDetails)
 const dataForUpdating = ref<Record<string, Data[]>>({
     registeredInfo: officeDetails.value.registeredInfo,
     commonItems: officeDetails.value.commonItems,
@@ -37,35 +35,31 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
 }
 
-const handleEditDraft = (changedData: ChangedData) => {
+const editDraft = (changedData: ChangedData) => {
+
     emit('editDraft', changedData)
 }
 
 watchEffect(() => {
     officeDetails.value = useOfficeDetails(props.clientFactory, props.draft)
 });
-
 </script>
 
 <template>
-    <div style="height: 5px;" class="q-my-none q-pa-none">
-        <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
-    </div>
-
     <HighlightTwoColumn
         :is-drop-down="true"
         :data="officeDetails.registeredInfo"
         :is-disable-edit="isLoading"
         :is-edit="isEditForm.registeredInfo"
         :label="t('clientFactory.drawer.registeredInformation')"
-        theme="accent"
+        theme="primary"
         @open-edit="isEditForm.registeredInfo = true"
         @close-edit="isEditForm.registeredInfo = false"
-        @on-save="isEditForm.registeredInfo = false; handleEditDraft(dataForUpdating.registeredInfo)"/>
+        @on-save="isEditForm.registeredInfo = false; editDraft(dataForUpdating.registeredInfo)"/>
 
     <EditableColumnsCF
         v-if="isEditForm.registeredInfo" @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')"
-        :data="officeDetails.registeredInfo" theme="accent"/>
+        :data="officeDetails.registeredInfo" theme="primary"/>
 
 
     <HighlightTwoColumn 
@@ -74,15 +68,15 @@ watchEffect(() => {
         :is-disable-edit="isLoading"
         :is-edit="isEditForm.commonItems"
         :label="t('clientFactory.drawer.commonItems')"
-        theme="accent"
+        theme="primary"
         @open-edit="isEditForm.commonItems = true"
         @close-edit="isEditForm.commonItems = false"
-        @on-save="isEditForm.commonItems = false; handleEditDraft(dataForUpdating.commonItems)"/>
+        @on-save="isEditForm.commonItems = false; editDraft(dataForUpdating.commonItems)"/>
 
     <EditableColumnsCF
         v-if="isEditForm.commonItems"
         @data-changed="e => getNewDataToUpdate(e, 'commonItems')"
-        :data="officeDetails.commonItems" theme="accent"/>
+        :data="officeDetails.commonItems" theme="primary"/>
     
 
     <HighlightTwoColumn
@@ -91,16 +85,17 @@ watchEffect(() => {
         :is-disable-edit="isLoading"
         :is-edit="isEditForm.uniqueItems"
         :label="t('clientFactory.drawer.uniqueItems')"
-        theme="accent"
+        theme="primary"
         @open-edit="isEditForm.uniqueItems = true"
         @close-edit="isEditForm.uniqueItems = false"
-        @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating.uniqueItems)"/>
+        @on-save="isEditForm.uniqueItems = false; editDraft(dataForUpdating.uniqueItems)"/>
 
     <EditableColumnsCF
         v-if="isEditForm.uniqueItems"
         @data-changed="e => getNewDataToUpdate(e, 'uniqueItems')"
-        :data="officeDetails.uniqueItems" theme="accent"/>
+        :data="officeDetails.uniqueItems" theme="primary"/>
 </template>
 
 <style lang="scss" scoped>
+
 </style>

@@ -88,7 +88,7 @@
 						</div>
 						<div class="col-3">
 							<q-select 
-								v-if="data['reasonNG']" 
+								v-if="data['reasonNG'] && data['reasonNG'] !== 'notCovered'" 
 								v-model="data['reasonJobDetal']"
 								:options="statusJobOptions"                        
 								emit-value map-options dense outlined
@@ -117,14 +117,9 @@
 
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')" 
-				:value="usersListOption
-					.filter(user => user.value === fixData['contact'])
-					.map(user => user.label).join('')">
-          <q-select
-            v-model="data['contact']"
-            :disable="loading || disableLevel < 1"
-            emit-value map-options dense outlined
-            :options="usersListOption" :label="$t('common.pleaseSelect')" />
+				:value="fixData['contact']">
+          	<q-input dense outlined bg-color="white"
+					v-model="data['contact']" :disable="loading || disableLevel < 1" />
 			</labelField>
 			<labelField
 				:edit="edit.includes('jobSearchInfo')"
@@ -150,9 +145,11 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
 
-import { ApplicantFix, selectOptions } from 'src/shared/model';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ApplicantFix, FixJobSearchInfo, selectOptions } from 'src/shared/model';
+
+
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -165,7 +162,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 
-const data = ref({});
+const data = ref<Partial<FixJobSearchInfo>>({});
 const statusJobOptions = ref<selectOptions[]> ();
 
 const visitRecotd = computed(() => {
@@ -190,8 +187,8 @@ function resetData() {
 		reasonNG: props.editData['reasonNG'] || '',
 		reasonJobDetal: props.editData['reasonJobDetal'] || '',
 		chargeOfFacility: props.editData['chargeOfFacility'] || '',
-		contact: props.editData['contact'] || '',
 		jobTitle: props.editData['jobTitle'] || '',
+		contact: props.editData['contact'] || '',
 		comments: props.editData['comments'] || '',
 		notesInspection: props.editData['notesInspection'] || '',
 	}

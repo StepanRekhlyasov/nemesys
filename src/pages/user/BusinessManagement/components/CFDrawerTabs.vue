@@ -1,14 +1,27 @@
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, defineEmits, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
+import CFDrawerHeadDetails from './CFDrawerHeadDetails.vue';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTabs } from '../types';
 
-defineProps<{
-    clientFactory: ClientFactory
-}>()
 const { t } = useI18n({ useScope: 'global' });
+defineProps<{
+    clientFactory: ClientFactory,
+    draft: Partial<ClientFactory>,
+    isLoading: boolean
+}>()
+
+const emit = defineEmits<{
+    (e: 'editDraft', changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>)
+}>()
+
+const editDraft = (changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
+
+    emit('editDraft', changedData)
+}
 
 const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
 </script>
@@ -53,7 +66,11 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.OfficeDetails">
-            <div></div>
+            <CFDrawerOfficeDetails
+                @edit-draft="editDraft"
+                :client-factory="clientFactory"
+                :draft="draft"
+                :is-loading="isLoading"/>
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.BOHistory">
@@ -61,7 +78,7 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.HeadOffice">
-            <div></div>
+            <CFDrawerHeadDetails :client-id="clientFactory.clientID"/>
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.VariousAchievements">

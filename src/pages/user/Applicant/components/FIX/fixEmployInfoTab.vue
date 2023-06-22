@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
 });
 
 function mutateDatesInData(data){
-  const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate']
+  const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate', 'endDate']
   keys.map((key)=>{
     if(data[key]){
       data[key] = toDateFormat(data[key])
@@ -307,6 +307,7 @@ function showDeleteDialog(data) {
     updateData['deleted_at'] = serverTimestamp();
 
     await fixStore.updateFix(data.id, updateData)
+    loadContactData();
     Alert.success($q, t)
   })
 }

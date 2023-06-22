@@ -21,6 +21,7 @@ export const useFix = defineStore('fix', () => {
             fixDate: toDateFormat(data['fixDate']),
             offerDate: toDateFormat(data['offerDate']),
             admissionDate: toDateFormat(data['admissionDate']),
+            endDate: toDateFormat(data['endDate']),
             inspectionDate: toDateFormat(data['inspectionDate']),
         } as ApplicantFix)
     })
@@ -42,6 +43,27 @@ export const useFix = defineStore('fix', () => {
       ))
   }
 
+  async function getFixByApplicantIDs(ids: string[] | string){
+    const constraints = Array.isArray(ids)?[where('applicant_id', 'in', ids)]:[where('applicant_id', '==', ids)]
+    const docSnap = await getDocs(query(
+      collection(db, '/fix'), 
+      where('deleted', '==', false),
+      ...constraints
+    ))
+    return docSnap.docs.map(item => {
+      const itemData = item.data()
+      return {
+        ...itemData,
+        id: item.id,
+        fixDate: toDateFormat(itemData['fixDate']),
+        offerDate: toDateFormat(itemData['offerDate']),
+        admissionDate: toDateFormat(itemData['admissionDate']),
+        endDate: toDateFormat(itemData['endDate']),
+        inspectionDate: toDateFormat(itemData['inspectionDate']),
+      } as ApplicantFix
+    })
+  }
+
   async function saveFix (applicant_id: string, data) {
     await addDoc(
       collection(db, '/fix'),
@@ -58,5 +80,5 @@ export const useFix = defineStore('fix', () => {
       data
     );
   }
-  return { useFix, getFixData, getFixList, saveFix, updateFix }
+  return { useFix, getFixData, getFixList, saveFix, updateFix, getFixByApplicantIDs }
 })
