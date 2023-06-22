@@ -96,7 +96,7 @@
       <template v-slot:body-cell-memo="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          {{ props.row.admissionMemo || props.row.offerMemo || props.row.notesInspection || props.row.memo }}
+          {{ props.row.admissionMemo || props.row.offerMemo || props.row.inspectionMemo || props.row.fixMemo }}
         </q-td>
       </template>
 
@@ -203,8 +203,8 @@ const columns = computed(() => {
     },
     {
       name: 'memo',
-      label: t('applicant.list.fixEmployment.memo'),
-      field: 'memo',
+      label: t('applicant.list.fixEmployment.fixMemo'),
+      field: 'fixMemo',
       align: 'left',
     },
     {

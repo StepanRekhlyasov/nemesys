@@ -250,8 +250,8 @@ export interface FixMainInfo {
   fixDate: string;
   reason: string;
   reasonDetal?: string;
-  contactPerson: string;
-  memo: string;  
+  chargeOfFix: string;
+  fixMemo?: string;  
 } 
 
 export interface FixJobSearchInfo {
@@ -263,7 +263,7 @@ export interface FixJobSearchInfo {
   jobTitle?: string;
   contact: string;
   comments: string;
-  notesInspection: string;
+  inspectionMemo: string;
 }
 
 export interface FixEmploymentInfo {
