@@ -5,15 +5,15 @@
     </q-card-section>
     <q-card-section class="bg-grey-3 flex items-end gap">
       <label class="text-subtitle1">
-        {{ $t('SAA.mode') }}
+        {{ $t('KPI.aggregationMethods') }}
         <MySelect
           :options="[
             {
-              label: $t('SAA.modeIndividual'),
+              label: $t('KPI.modeIndividual'),
               value: 'user'
             },
             {
-              label: $t('SAA.modeBranch'),
+              label: $t('KPI.modeBranch'),
               value: 'branch'
             },
           ]"
@@ -24,7 +24,7 @@
         />
       </label>
       <label class="text-subtitle1">
-        {{ $t('SAA.targetPeriod') }}
+        {{ $t('KPI.targetPeriod') }}
         <DateRange
           v-model="dateRange"
           :width="'250px'"
@@ -42,7 +42,7 @@
         />
       </label>
       <label class="text-subtitle1">
-        {{ $t('SAA.username') }}
+        {{ $t('KPI.username') }}
         <MySelect
           :option-to-fetch="'usersInCharge'"
           :width="'175px'"

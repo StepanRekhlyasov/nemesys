@@ -16,77 +16,77 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
     {
       name: 'numberOfFix',
       field: 'numberOfFix',
-      label: t('SAA.numberOfFix'),
+      label: t('KPI.numberOfFix'),
       align: 'left',
       sortable: true
     },
     {
       name: 'jobs',
       field: 'jobs',
-      label: t('SAA.jobs'),
+      label: t('KPI.jobs'),
       align: 'left',
       sortable: true
     },
     {
       name: 'innerConstant',
       field: 'innerConstant',
-      label: t('SAA.innerConstant'),
+      label: t('KPI.innerConstant'),
       align: 'left',
       sortable: true
     },
     {
       name: 'entry',
       field: 'entry',
-      label: t('SAA.entry'),
+      label: t('KPI.entry'),
       align: 'left',
       sortable: true
     },
     {
       name: 'numberOfCalls',
       field: 'numberOfCalls',
-      label: t('SAA.numberOfCalls'),
+      label: t('KPI.numberOfCalls'),
       align: 'left',
       sortable: true
     },
     {
       name: 'numberOfFax',
       field: 'numberOfFax',
-      label: t('SAA.numberOfFax'),
+      label: t('KPI.numberOfFax'),
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: 'BO_介',
+      label: t('KPI.BO_NC'),
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: 'BO_看',
+      label: t('KPI.BO_N'),
       align: 'left',
       sortable: true
     },
     {
       name: 'dispatch',
       field: 'dispatch',
-      label: t('SAA.dispatch'),
+      label: t('KPI.dispatch'),
       align: 'left',
       sortable: true
     },
     {
       name: 'introduction',
       field: 'introduction',
-      label: t('SAA.introduction'),
+      label: t('KPI.introduction'),
       align: 'left',
       sortable: true
     },
     {
       name: 'occupationRate',
       field: 'occupationRate',
-      label: t('SAA.occupationRate'),
+      label: t('KPI.occupationRate'),
       align: 'left',
       sortable: true
     },
@@ -100,63 +100,63 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
     {
       name: 'occupationRate',
       field: 'occupationRate',
-      label: t('SAA.occupationRate'),
+      label: t('KPI.occupationRate'),
       align: 'left',
       sortable: true
     },
     {
       name: 'jobOfferRate',
       field: 'jobOfferRate',
-      label: t('SAA.jobOfferRate'),
+      label: t('KPI.jobOfferRate'),
       align: 'left',
       sortable: true
     },
     {
       name: 'hiringRate',
       field: 'hiringRate',
-      label: t('SAA.hiringRate'),
+      label: t('KPI.hiringRate'),
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: '本人OK',
+      label: t('KPI.Person')+'OK',
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: '本人NG',
+      label: t('KPI.Person')+'NG',
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: '本人OK率',
+      label: t('KPI.Person')+'OK'+t('KPI.Rate'),
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: '企業OK',
+      label: t('KPI.Company')+'OK',
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: '企業NG',
+      label: t('KPI.Company')+'NG',
       align: 'left',
       sortable: true
     },
     {
       name: '',
       field: '',
-      label: '企業OK率',
+      label: t('KPI.Company')+'OK'+t('KPI.Rate'),
       align: 'left',
       sortable: true
     },
