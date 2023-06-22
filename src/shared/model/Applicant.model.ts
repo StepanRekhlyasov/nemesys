@@ -258,7 +258,9 @@ export interface FixJobSearchInfo {
   inspectionStatus: boolean;
   inspectionDate: string;
   visit: string;
-  visitRecotd: string; 
+  personalStatus: string,
+  corporationStatus: string,
+  businessStatus: string,
   reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   reasonJobDetal?: string;
   chargeOfFacility: string;
