@@ -6,11 +6,8 @@
           <q-btn dense flat icon="close" class="q-mr-md " @click="emits('closeDialog')"/>
         </div>
         <div>
-          <div class="row text-subtitle2" v-if="client">
-            {{ `${client['client_name']} / ${client['companyProfile']}` }}
-          </div>
           <div class="row text-h6 text-weight-bold q-pr-xs">
-            バックオーダー新規追加／{{  $t(`backOrder.type.${type}`) }}
+            バックオーダー新規追加／{{   $t(`backOrder.type.${type}`)  }}
           </div>
         </div>
       </div>
@@ -56,10 +53,9 @@
           <div class="row text-primary text-h6" >
             {{'■ '+ $t('backOrder.create.workingType') }}
           </div>
-          <div class="row ">
-            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-              {{ $t('client.backOrder.introduction') }}
-            </labelField>
+          <div class="row">
+            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" 
+              labelClass="q-pl-md col-2"  valueClass="col-4" :value="$t(`backOrder.type.${type}`)" />
           </div>
         </q-card-section>
         <!-- BO Generation Route Section -->
@@ -105,6 +101,7 @@ import BasicInfoSection from './BasicInfoSection.vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { creationRule } from 'src/components/handlers/rules';
 import { useApplicant } from 'src/stores/applicant';
+import labelField from 'src/components/form/LabelField.vue';
 
 const emits = defineEmits(['closeDialog']);
 const backOrderStore = useBackOrder();

@@ -1,15 +1,17 @@
 import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { User } from 'src/shared/model';
+import { User, UserPermissionNames } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
 import { useOrganization } from './organization';
+import { useRole } from './role';
 
 const { t } = i18n.global
 
 export const useUserStore = defineStore('user', () => {
   const db = getFirestore()
+  const roleStore = useRole()
 
   async function getAllUsers(active_organization_id?: string, queryText?: string) {
     const constraints: ConstraintsType = [
@@ -139,5 +141,48 @@ export const useUserStore = defineStore('user', () => {
     return users
   }
 
-  return { getAllUsers, getUserById, editUser, checkUserAffiliation, searchUsers , getAllUsersInBranch, getUsersByConstrains }
+
+  async function getUsersByPermission( permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) {
+    const roles = await roleStore.getAllRoles()
+    const roleIds: string[] = [];
+
+    roles.forEach((role) => {
+      if (role.permission?.includes(permission)) {
+        roleIds.push(role.id);
+      }
+    })
+
+    if (!roleIds.length) {
+      return;
+    }
+
+    const constraints: ConstraintsType = [where('deleted', '==', false), where('role', 'in', roleIds), orderBy('displayName')]
+
+    if (active_organization_id) {
+      constraints.push(where('organization_ids', 'array-contains', active_organization_id))
+    }
+
+    if (queryText) {
+      constraints.push(startAt(queryText), endAt(queryText + '\uf8ff'),)
+    }
+
+    const users =  await getDocs(query(
+      collection(db, 'users'),
+      ...constraints,
+    ))
+    return users.docs.map((user)=>{
+      return user.data() as User
+    })
+  }
+
+  return {
+    getAllUsers,
+    getUserById,
+    editUser,
+    checkUserAffiliation,
+    searchUsers,
+    getAllUsersInBranch,
+    getUsersByConstrains,
+    getUsersByPermission
+  }
 })
