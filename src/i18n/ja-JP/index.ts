@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    BO: 'BO',
     select: '選択',
     reflect: '反映',
     capture: '取込',

@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    BO: 'BO',
     select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',

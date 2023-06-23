@@ -1,5 +1,5 @@
 export interface BackOrderModel {
-  id?: string;
+  id: string;
   type: 'dispatch' | 'referral';
   
   typeCase: TypeOfCase;
