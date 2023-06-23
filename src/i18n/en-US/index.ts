@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    BO: 'BO',
     select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',
@@ -221,6 +222,8 @@ export default {
         branchName: 'Branch name',
         systemInUse: 'System in use',
         usageCount: 'Usage Count',
+        requestType:'Request type',
+        addLicenseRequest: 'Add license request'
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',

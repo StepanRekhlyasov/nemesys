@@ -50,6 +50,13 @@
         </q-td>
       </template>
 
+      <template v-slot:body-cell-backOrder="props">
+        <q-td :props="props"
+          :class="rowColor(props.row)">
+          <span class="row">{{ props.row.backOrder }}</span>
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-workDay="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
@@ -131,7 +138,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, Ref } from 'vue';
 import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
-import { useQuasar } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
 import FixEmployCreate from './fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
@@ -162,17 +169,26 @@ const pagination = ref({
   rowsPerPage: 10
 });
 
-const columns = computed(() => {
+const columns = computed<QTableProps['columns']>(() => {
   return [
     {
       name: 'edit',
+      field: '',
       align: 'left',
+      label: '',
     },
     {
       name: 'created_at',
       required: true,
       label: t('applicant.list.fixEmployment.fixedDestination'),
       field: 'created_at',
+      align: 'left',
+    },
+    {
+      name: 'backOrder',
+      required: true,
+      label: 'BOID',
+      field: 'backOrder',
       align: 'left',
     },
     {
@@ -210,6 +226,8 @@ const columns = computed(() => {
     {
       name: 'delete',
       align: 'left',
+      field: '',
+      label: '',
     }
   ];
 });

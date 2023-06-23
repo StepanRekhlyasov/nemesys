@@ -46,6 +46,20 @@
               :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office"
               :disable="!data['client']" 
               :label="$t('applicant.list.fixEmployment.office')" />
+
+            <MySelect 
+              :option-to-fetch="'backOrder'"
+              :clientFactory="data['office']"
+              :rules="[creationRule]"
+              v-model="data['backOrder']"
+              :label="'common.BO'"
+              hide-bottom-space
+              emit-value map-options
+              :clearable="false"
+              :dense="false"
+              :outlined="false"
+              :outerLoading="loading"
+            />
         </q-card-section>
 
         <template v-if="fixData.id">
@@ -122,6 +136,7 @@ import EmploymentInfoSection from './EmploymentInfoSection.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { useFix } from 'src/stores/fix';
 import { QForm } from 'quasar';
+import MySelect from 'src/components/inputs/MySelect.vue';
 
 const props = defineProps<{
   fixData: ApplicantFix,

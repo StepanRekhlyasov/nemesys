@@ -50,7 +50,7 @@
           @update:model-value="getData()"
         />
       </label>
-      <q-btn 
+      <q-btn
         color="primary"
         style="margin-left: auto;"
         @click="downloadCSV"
@@ -93,9 +93,9 @@ const saaTableRef = ref<InstanceType<typeof SAATable> | null>(null);
 async function getData(){
   if(organizationStore.currentOrganizationId){
     loading.value = true
-    /** 
+    /**
      * here is test data.
-     * true data should be parsed here to table keys only 
+     * true data should be parsed here to table keys only
      * because of csv downloading
      */
     if(user.value){

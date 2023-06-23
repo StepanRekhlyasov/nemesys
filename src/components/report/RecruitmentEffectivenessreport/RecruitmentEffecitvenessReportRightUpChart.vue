@@ -35,7 +35,7 @@ const chartOptions = computed(() => {
 
 const showChart = async () => {
   mediaList.value = await media.getAllmedia();
-  if (props.dateRangeProps === undefined) return;
+  if (!props.dateRangeProps) return;
   const dateRange = props.dateRangeProps;
   dataToshow.value = await Promise.all(
     mediaList.value.map(async (mediaName) => {

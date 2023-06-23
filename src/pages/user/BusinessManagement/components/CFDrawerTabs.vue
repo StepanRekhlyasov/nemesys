@@ -2,6 +2,7 @@
 import { defineProps, defineEmits, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
+import CFDrawerHeadDetails from './CFDrawerHeadDetails.vue';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTabs } from '../types';
@@ -77,7 +78,7 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.HeadOffice">
-            <div></div>
+            <CFDrawerHeadDetails :client-id="clientFactory.clientID"/>
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.VariousAchievements">

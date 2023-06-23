@@ -7,7 +7,7 @@
           {{ $t('menu.branches') }}
         </div>
         <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus"
-          :label="$t('settings.branch.addBranch')" @click="openDialog = true" />
+          :label="$t('settings.branch.addBranch')" @click="openDialog = true; dialogType = 'Branch'" />
       </div>
     </q-card-section>
     <q-separator color="grey-5" size="2px" />
@@ -17,73 +17,83 @@
           <span class="row content-center">{{ $t('common.keyboard') }}</span>
           <q-input v-model="search.queryText" square outlined class="col-6 q-mr-md q-ml-md bg-grey-2 input-md" dense>
             <template v-slot:append>
-              <q-icon v-if="search.queryText" name="close" @click="search.queryText = ''; loadBranchesList();"
+              <q-icon v-if="search.queryText" name="close" @click=" search.queryText = ''; loadBranchesList();"
                 class="cursor-pointer" />
             </template>
           </q-input>
           <div class="row content-center q-pr-md">
             <span class="row content-center q-pr-md">{{ $t('settings.branch.flag') }}</span>
-            <q-select v-model=" search.flag " :options=" flagOptions " option-value="flag" option-label="label" emit-value
+            <q-select v-model="search.flag" :options="flagOptions" option-value="flag" option-label="label" emit-value
               map-options dense />
           </div>
-          <q-btn :label=" $t('common.search') " color="primary" text-color="white" size="md" unelevated
-            @click=" loadBranchesList " />
+          <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" unelevated
+            @click="loadBranchesList" />
         </q-card-section>
         <q-card-section class="q-pa-none">
-          <q-table :columns=" columns " :rows=" branches " row-key="id" :loading=" loading "
-            v-model:pagination=" pagination " hide-pagination class="no-shadow">
-            <template v-slot:body-cell-delete=" props ">
-              <q-td :props=" props " auto-width>
-                <q-btn icon="delete" flat @click=" deleteBranch(props.row) " />
+          <q-table :columns="columns" :rows="branches" row-key="id" :loading="loading" v-model:pagination="pagination"
+            hide-pagination class="no-shadow">
+            <template v-slot:body-cell-delete="props">
+              <q-td :props="props" auto-width>
+                <q-btn icon="delete" flat @click=" deleteBranch(props.row)" />
               </q-td>
             </template>
 
-            <template v-slot:body-cell-hidden=" props ">
-              <q-td :props=" props ">
-                <q-checkbox v-model=" props.row.hidden " :disable=" true " checked-icon="mdi-checkbox-intermediate"
+            <template v-slot:body-cell-hidden="props">
+              <q-td :props="props">
+                <q-checkbox v-model="props.row.hidden" :disable="true" checked-icon="mdi-checkbox-intermediate"
                   unchecked-icon="mdi-checkbox-blank-outline" class="q-pr-md" />
               </q-td>
             </template>
 
-            <template v-slot:body-cell-prefectures=" props ">
-              <q-td :props=" props ">
-                <span v-if=" props.row.prefectures ">{{ $t('prefectures.' + props.row.prefectures) }}</span>
+            <template v-slot:body-cell-prefectures="props">
+              <q-td :props="props">
+                <span v-if="props.row.prefectures">{{ $t('prefectures.' + props.row.prefectures) }}</span>
               </q-td>
             </template>
 
-            <template v-slot:body-cell-flag=" props ">
-              <q-td :props=" props ">
-                <span v-if=" props.row.flag ">{{ $t('settings.branch.flags.' + (props.row.flag)) }}</span>
+            <template v-slot:body-cell-flag="props">
+              <q-td :props="props">
+                <span v-if="props.row.flag">{{ $t('settings.branch.flags.' + (props.row.flag)) }}</span>
               </q-td>
             </template>
 
-            <template v-slot:body-cell-created_at=" props ">
-              <q-td :props=" props ">
+            <template v-slot:body-cell-created_at="props">
+              <q-td :props="props">
                 {{ props.row.created_at.date }}<br />
                 {{ props.row.created_at.time }}
               </q-td>
             </template>
 
-            <template v-slot:body-cell-updated_at=" props ">
-              <q-td :props=" props ">
+            <template v-slot:body-cell-updated_at="props">
+              <q-td :props="props">
                 {{ props.row.updated_at.date }}<br />
                 {{ props.row.updated_at.time }}
               </q-td>
             </template>
+            <template v-slot:body-cell-addLicenseRequestButton="props">
+              <q-td :props="props" auto-width>
+                <DefaultButton v-if="!props.row.hidden" size="sm" color="primary"
+                  :label-key="'menu.admin.licenseManagement.addLicenseRequest'"
+                  @click=" dialogType = 'LicenseRequest'; openDialog = true; branch = props.row" />
+              </q-td>
+            </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
-            <q-pagination v-model=" pagination.page " color="grey-8" padding="5px 16px" gutter="md"
-              :max=" (branches.length / pagination.rowsPerPage) >= 1 ? branches.length / pagination.rowsPerPage : 1 "
+            <!-- TODO add TablePagination -->
+            <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
+              :max="(branches.length / pagination.rowsPerPage) >= 1 ? branches.length / pagination.rowsPerPage : 1"
               direction-links outline />
           </div>
         </q-card-section>
       </q-card>
     </q-card-section>
   </div>
-  <q-dialog v-model=" openDialog " @hide=" editBranch = undefined ">
+  <q-dialog v-model="openDialog" @hide=" editBranch = undefined">
     <DialogWrapper>
-      <BranchCreateForm @closeDialog=" loadBranchesList(); openDialog = false; " :editBranch=" editBranch "
-        color="primary" />
+      <BranchCreateForm v-if="dialogType === 'Branch'" @closeDialog=" loadBranchesList(); openDialog = false;"
+        :editBranch="editBranch" color="primary" />
+      <AddLicenseRequestForm v-if="dialogType === 'LicenseRequest'" :branch="branch"
+        @close-dialog=" openDialog = false;" />
     </DialogWrapper>
   </q-dialog>
 </template>
@@ -101,6 +111,8 @@ import { flagOptions } from 'src/components/handlers/flagOptions';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import { useBranch } from 'src/stores/branch';
 import { columns } from './consts/BranchMasterColumns'
+import AddLicenseRequestForm from './AddLicenseRequestForm.vue';
+import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -112,11 +124,9 @@ const search: Ref<BranchesSearch> = ref({
 const branches: Ref<Branch[]> = ref([])
 const loading = ref(false);
 const editBranch: Ref<Branch | undefined> = ref(undefined)
-
-// dialog date
 const openDialog = ref(false)
-
-// table date
+const dialogType = ref<'Branch' | 'LicenseRequest'>('Branch')
+const branch = ref<Branch>()
 const pagination = ref({
   sortBy: 'desc',
   descending: false,

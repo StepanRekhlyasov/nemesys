@@ -64,7 +64,17 @@ const chartOptions = computed(() => {
     yaxis: [
       {
         min: 0,
-
+        title: { text: t('report.categories.applicationUnitPrice') },
+        labels: {
+          formatter: function (value) {
+            return value.toFixed(0) + t('report.yen');
+          },
+        },
+      },
+      {
+        opposite: true,
+        title: { text: t('report.categories.startUnitPrice') },
+        min: 0,
         labels: {
           formatter: function (value) {
             return value.toFixed(0) + t('report.yen');
