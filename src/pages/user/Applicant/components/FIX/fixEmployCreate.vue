@@ -58,6 +58,7 @@
               :clearable="false"
               :dense="false"
               :outlined="false"
+              :outerDisable="!data['office']" 
               :outerLoading="loading"
             />
         </q-card-section>
