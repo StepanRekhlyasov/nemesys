@@ -8,6 +8,7 @@ import backOrderRouter from './backOrder.router';
 import dashboardRouter from './dashboard.router';
 import { routeNames } from './routeNames';
 import { UserPermissionNames } from 'src/shared/model';
+import budgetControl from './budgetControl.router';
 
 const routes: MenuRouter[] = [{
   path: routeNames.main,
@@ -23,7 +24,8 @@ const routes: MenuRouter[] = [{
     ...businessManagementRouters,
     ...applicantRouters,
     ...backOrderRouter,
-    ...reportRouters
+    ...reportRouters,
+    ...budgetControl,
   ]
 },
 {

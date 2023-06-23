@@ -66,6 +66,10 @@ export const menuParent: MenuParentType[] = [
     title: 'menu.backOrder',
     icon: 'business',
   },{
+    type: MenuParent.BudgetControl,
+    title: 'menu.budgetControl',
+    icon: 'mdi-currency-usd',
+  },{
     type: MenuParent.SystemSettings,
     title: 'menu.system',
     icon: 'mdi-cog',

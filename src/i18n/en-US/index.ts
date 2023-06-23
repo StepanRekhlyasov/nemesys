@@ -26,7 +26,7 @@ export default {
     aroundTokio: 'around Tokio',
     area: 'area',
     searchCondition: 'Search condition',
-    searchKeyword: '検索キーワード',
+    searchKeyword: 'Search Keyword',
     add: 'Add',
     all: 'All',
     apply: 'Apply the following changes',
@@ -39,6 +39,7 @@ export default {
     save: 'Save',
     edit: 'Edit',
     export: 'Export',
+    import: 'Import',
     disable: 'Disable',
     enable: 'Enable',
     close: 'Close',
@@ -148,6 +149,7 @@ export default {
     addNewClient: 'Click here to add a new client',
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
+    budgetControl: 'Budget Control',
     SAA: 'Sales Activity Aggregation',
     KPI: 'KPI',
     admin: {
@@ -805,6 +807,14 @@ export default {
         inspectionReasonNG: 'Inspection NG Reason',
         offerReasonNG: 'Offer NG Reason',
         admissionReasonNG: 'Admission NG Reason',
+        reason: 'FIXNG Reason',
+        contactPerson: 'FIX Contact Person',
+        userInChargeVisit: 'User In Charge of VISIT', 
+        personalStatus: 'Personal Status',
+        corporationStatus: 'Corporation Status',
+        businessStatus: 'Business Status', 
+        visitRecotd: 'VISIT Record',
+        memo: 'FIX Memo',
         chargeOfFix: 'FIX User in charge',
         fixMemo: 'FIX Memo',
         info: '■FIX Information',
@@ -1784,6 +1794,21 @@ export default {
     }
   },
   errors: {
-    'BO_occupied' : 'Selected BO is occupied'
+    'BO_occupied' : 'Selected BO is occupied',
+  },
+  budget: {
+    search: 'Budget Search',
+    add: 'Budget New Registration',
+    reg: 'Budget new registration',
+    media: 'Media',
+    mediaName: 'Media Name',
+    postingStartDate: 'Posting Start Date',
+    postingEndDate: 'Posting End Date',
+    accountingMonth: 'Accounting Month',
+    amount: 'Amount',
+    numberOfSlots: 'Number Of Slots',
+    agency: 'Agency',
+    tempFile: 'Click here for the template file',
+    updatedAt: 'Last edited date',
   }
 }

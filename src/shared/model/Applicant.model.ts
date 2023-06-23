@@ -260,6 +260,12 @@ export interface FixJobSearchInfo {
   inspectionDate: string;
   inspectionReasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   inspectionReasonNGDetail?: string;
+  visit: string;
+  personalStatus: string,
+  corporationStatus: string,
+  businessStatus: string,
+  reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  reasonJobDetal?: string;
   chargeOfFacility: string;
   jobTitle?: string;
   contact: string;

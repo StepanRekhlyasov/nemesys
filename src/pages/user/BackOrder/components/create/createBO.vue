@@ -10,7 +10,7 @@
             {{ `${client['client_name']} / ${client['companyProfile']}` }}
           </div>
           <div class="row text-h6 text-weight-bold q-pr-xs">
-            バックオーダー新規追加／{{  $t(`backOrder.type.${type}`) }}
+            バックオーダー新規追加／{{   $t(`backOrder.type.${type}`)  }}
           </div>
         </div>
       </div>
@@ -29,10 +29,9 @@
           <div class="row text-primary text-h6" >
             {{'■ '+ $t('backOrder.create.workingType') }}
           </div>
-          <div class="row ">
-            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-              {{ $t('client.backOrder.introduction') }}
-            </labelField>
+          <div class="row">
+            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" 
+              labelClass="q-pl-md col-2"  valueClass="col-4" :value="$t(`backOrder.type.${type}`)" />
           </div>
         </q-card-section>
         <!-- BO Generation Route Section -->
@@ -76,6 +75,7 @@ import InHouseInfoSection from './InHouseInfoSection.vue';
 import IntroductionSection from './IntroductionSection.vue';
 import BasicInfoSection from './BasicInfoSection.vue';
 import { useBackOrder } from 'src/stores/backOrder';
+import labelField from 'src/components/form/LabelField.vue';
 
 const emits = defineEmits(['closeDialog']);
 const backOrderStore = useBackOrder();

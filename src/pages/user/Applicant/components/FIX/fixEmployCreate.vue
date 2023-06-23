@@ -22,10 +22,10 @@
         <q-card-section>       
           <div class="row" v-if="fixData?.id">            
             <div class="col-12 text-right" >
-              <q-btn 
+              <q-btn
                 :label="$t('common.save')" color="primary" type="submit" size="sm" :disable="loading"/>
             </div>
-          </div>           
+          </div>
           <q-select
               v-model="data.client"
               @update:model-value="data['office']=undefined"
@@ -48,7 +48,7 @@
               :rules="[creationRule]" 
               hide-bottom-space
               :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office"
-              :disable="!data['client']" 
+              :disable="!data['client']"
               :label="$t('applicant.list.fixEmployment.office')" />
             <q-select
               v-model="data['backOrder']"
@@ -65,10 +65,10 @@
         <template v-if="fixData && fixData.id">
           <!-- Fix Information -->
           <q-card-section>
-            <FixInfoSection 
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+            <FixInfoSection
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
@@ -80,9 +80,9 @@
           <!-- Job-search Information  -->
           <q-card-section>
             <JobSearchInfoSection
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
@@ -95,9 +95,9 @@
           <!-- Information on job offers -->
           <q-card-section>
             <JobOffersInfoSection
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
@@ -110,9 +110,9 @@
           <!-- Employment Information -->
           <q-card-section>
             <EmploymentInfoSection
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
@@ -129,11 +129,10 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import { getFirestore, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { serverTimestamp, Timestamp } from 'firebase/firestore';
 import { Applicant, ApplicantFix, BackOrderModel, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { pick } from 'src/shared/utils/utils';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
@@ -144,6 +143,7 @@ import EmploymentInfoSection from './EmploymentInfoSection.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { useFix } from 'src/stores/fix';
 import { QForm } from 'quasar';
+import { useUserStore } from 'src/stores/user';
 
 const props = defineProps<{
   fixData?: ApplicantFix,
@@ -154,12 +154,11 @@ const props = defineProps<{
 const formRef = ref<QForm | null>(null);
 const emits = defineEmits(['updateList', 'close', 'updateDoc'])
 
-const db = getFirestore();
 const auth = getAuth();
 const organization = useOrganization();
 const applicantStore = useApplicant();
 const fixStore = useFix();
-
+const userStore = useUserStore()
 const data = ref<Partial<ApplicantFix>>({});
 const loading = ref(false);
 const edit = ref<string[]>([]);
@@ -213,20 +212,19 @@ watch(
   { deep: true, immediate: true }
 )
 
-function loadUser() {
-  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+async function loadUser() {
+  const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+  if (!users) {
+    return
+  }
 
-  usersSnapshot.then(users => {
-    let list: selectOptions[] = [];
-    users?.forEach((doc) => {
-      const user = doc.data();
-      list.push({
-        label: user.displayName,
-        value: doc.id
-      });
-    });
-    usersListOption.value = list;
-  })
+  usersListOption.value = users.map((user) => {
+    return {
+      label: user.displayName,
+      value: user.id
+    }
+  });
+
 }
 loadUser();
 
@@ -244,11 +242,10 @@ async function save(type: string, dataR) {
       }
       break;
     }
-    case 'jobSearchInfo': {
+    case 'jobSearchInfo': {      
       retData = pick(
         dataR,
-        ['inspectionStatus', 'inspectionDate', 'inspectionReasonNG', 'inspectionReasonNGDetail', 'chargeOfFacility',
-        'jobTitle', 'contact', 'comments', 'inspectionMemo'])
+        ['inspectionStatus', 'inspectionDate', 'inspectionReasonNG', 'inspectionReasonNGDetail', 'chargeOfFacility', 'visit', 'personalStatus',  'corporationStatus',  'businessStatus', 'jobTitle', 'contact', 'comments', 'inspectionMemo'])
       if (retData['inspectionDate']) {
         retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
       }

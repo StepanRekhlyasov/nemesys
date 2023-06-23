@@ -8,14 +8,14 @@
 
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
-          <span class="row">{{ 
+          <span class="row">{{
             applicantStore.state.clientList?.
-            find(client => client.id == props.row.client)?.name 
+            find(client => client.id == props.row.client)?.name
           }}</span>
-          <span class="row">{{ 
+          <span class="row">{{
             applicantStore.state.clientList?.
             find(client => client.id == props.row.client)?.office?.
-            find(office => office.id == props.row.office)?.name 
+            find(office => office.id == props.row.office)?.name
           }}</span>
         </q-td>
       </template>
@@ -34,12 +34,11 @@
 <script setup  lang="ts">
 import { computed, Ref, ref} from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getFirestore } from 'firebase/firestore';
 import { ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/model';
-import { getUsersByPermission } from 'src/shared/utils/User.utils';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
+import { useUserStore } from 'src/stores/user';
 const props = defineProps({
   applicant: {
     type: Object,
@@ -47,11 +46,10 @@ const props = defineProps({
   }
 })
 const { t } = useI18n({ useScope: 'global' });
-const db = getFirestore();
 const organization = useOrganization();
 const applicantStore = useApplicant();
 const fixStore = useFix();
-
+const userStore = useUserStore()
 const list: Ref<ApplicantFix[]> = ref([])
 const usersListOption: Ref<selectOptions[]> = ref([])
 
@@ -107,7 +105,7 @@ async function loadOperationInfo() {
 
     let fixList = await fixStore.getFixData(props.applicant.id, true);
     fixList = fixList.filter(fix => {
-      return  (fix.endDate ? new Date(fix.endDate) > new Date() : true) && 
+      return  (fix.endDate ? new Date(fix.endDate) > new Date() : true) &&
               (fix.admissionDate ? new Date(fix.admissionDate) <= new Date(): true)
     })
 
@@ -120,22 +118,22 @@ async function loadOperationInfo() {
 }
 
 loadUser();
-function loadUser() {
+async function loadUser() {
   loading.value = true;
 
-  const usersSnapshot = getUsersByPermission(db, UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
-  usersSnapshot.then(users => {
-    let list: selectOptions[] = [];
-    users?.forEach((doc) => {
-      const data = doc.data();
-      list.push({
-        label: data.displayName,
-        value: doc.id
-      });
+  const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
+  if(!users){
+    return
+  }
+  usersListOption.value = users.map((user) => {
+     return {
+        label: user.displayName,
+        value: user.id
+      }
     });
-    usersListOption.value = list;
-    loading.value = false;
-  })
+
+  loading.value = false;
+
 }
 </script>
 
