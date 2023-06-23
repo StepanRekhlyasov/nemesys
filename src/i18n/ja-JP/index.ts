@@ -39,6 +39,7 @@ export default {
     save: '保存',
     edit: '編集',
     export: 'エクスポート',
+    import: 'インポート',
     disable: '無効化',
     enable: '有効化',
     close: '閉じる',
@@ -148,6 +149,7 @@ export default {
     addNewClient: '新しくクライアントを追加したい場合はこちら',
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
+    budgetControl: '予算管理',
     SAA: '営業活動集計',
     KPI: 'KPI',
     admin: {
@@ -1779,5 +1781,20 @@ export default {
         20: 'その他'
       }
     }
+  },
+  budget: {
+    search: '予算検索',
+    add: '予算新規登録',
+    reg: '予算新規登録',
+    media: '媒体',
+    mediaName: '媒体名',
+    postingStartDate: '掲載開始日',
+    postingEndDate: '掲載終了日 ',
+    accountingMonth: '計上月',
+    amount: '金額',
+    numberOfSlots: '枠数',
+    agency: '代理店',
+    tempFile: 'テンプレートファイルはこちら',
+    updatedAt: '最終編集日',
   }
 };
