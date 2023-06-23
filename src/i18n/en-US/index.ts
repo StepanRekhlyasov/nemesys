@@ -801,7 +801,10 @@ export default {
         office: 'Office',
         status: 'FIX Status',
         date: 'FIX Date',
-        reason: 'FIXNG Reason',
+        fixReasonNG: 'FIX NG Reason',
+        inspectionReasonNG: 'Inspection NG Reason',
+        offerReasonNG: 'Offer NG Reason',
+        admissionReasonNG: 'Admission NG Reason',
         chargeOfFix: 'FIX User in charge',
         fixMemo: 'FIX Memo',
         info: '■FIX Information',
@@ -817,18 +820,18 @@ export default {
         contact: 'Contact Person',
         comments: 'Comments (A-E)',
         inspectionMemo: 'Job inspection memo',
-        notApplicable: 'Not applicable',
-        decided: 'Decided by other companies',
+        notApplicable: 'Not target',
+        decided: 'No answer',
         notCovered: 'Not covered',
-        registrationDeclined: 'Registration declined',
+        registrationDeclined: 'Unregistered',
         age: 'Age',
-        antiSocial: 'Anti-social',
-        introductionsNotAllowed: 'Introductions not allowed',
-        employmentUnacceptable: 'Employment Unacceptable',
+        antiSocial: 'Criminal organization',
+        introductionsNotAllowed: 'Not eligible for referral',
+        employmentUnacceptable: 'Not employable',
         dispatch: 'Dispatch',
-        directHire: 'Direct Hire',
-        noDesiredProjects: 'No desired projects',
-        noDesireWork: 'No desire to work',
+        directHire: 'Direct Employment',
+        noDesiredProjects: 'No preferred conditions',
+        noDesireWork: 'No motivation to work',
         inspection: {
           status :'job inspection status',
           date: 'Date of visit',
@@ -895,10 +898,10 @@ export default {
     statusList: {
       unsupported: 'Unsupported',
       waitContact: 'Wait Contact',
-      excluded: 'Excluded',
-      anotherCompany: 'Another Company',
-      breakContact: 'Break Contact',
-      decline: 'Decline',
+      excluded: 'Not target',
+      anotherCompany: 'Another offer',
+      breakContact: 'No answer',
+      decline: 'Unregistered',
       waitAttend: 'Wait Attend',
       waitFIX: 'Wait FIX',
       waitVisit: 'Wait Visit',
@@ -912,10 +915,10 @@ export default {
     statusOption: {
       unsupported: 'Unsupported',
       waitingContact: 'Waiting for Contact',
-      excluded: 'Excluded',
-      anotherCompany: 'Another Company',
-      breakContact: 'Break Contact',
-      decline: 'Decline',
+      excluded: 'Not target',
+      anotherCompany: 'Another offer',
+      breakContact: 'No answer',
+      decline: 'Unregistered',
       wait_attend: 'Wait Attend',
       wait_FIX: 'Wait FIX',
       wait_visit: 'Wait Visit',
@@ -1779,5 +1782,8 @@ export default {
         20: 'Others'
       }
     }
+  },
+  errors: {
+    'BO_occupied' : 'Selected BO is occupied'
   }
 }

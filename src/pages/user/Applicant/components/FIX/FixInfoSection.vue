@@ -4,7 +4,7 @@
     :label="$t('applicant.list.fixEmployment.info')"
     @openEdit="emit('openEdit'); resetData();"
     @closeEdit="emit('closeEdit'); resetData();"
-    @onSave="emit('save', 'info', data); resetData();">
+    @onSave="saveHandler()">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
         :value="fixData.fixStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
@@ -13,7 +13,6 @@
         <q-checkbox v-model="data['fixStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
           unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
       </labelField>
-
       <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.fixDate">
         <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['fixDate']" :disable="loading">
           <template v-slot:prepend>
@@ -30,35 +29,19 @@
         </q-input>
       </labelField>
     </div>
-    
-    <template v-if="!data['fixStatus']">
-      <div class="row q-pb-sm">  
-        <labelField 
-          :edit="edit.includes('info') " 
-          :label="$t('applicant.list.fixEmployment.reason')"
-          :value="fixData.reason? $t('applicant.list.fixEmployment.'+fixData.reason) : ''"
-          valueClass="col-9 q-pl-md">
-          <div class="row">
-            <div class="col-9 q-pl-md">
-              <q-radio v-model="data['reason']" val="notApplicable" :label="$t('applicant.list.fixEmployment.notApplicable')" />
-              <q-radio v-model="data['reason']" val="decided" :label="$t('applicant.list.fixEmployment.decided')" class="q-ml-sm" />
-              <q-radio v-model="data['reason']" val="notCovered" :label="$t('applicant.list.fixEmployment.notCovered')" class="q-ml-sm" />
-              <q-radio v-model="data['reason']" val="registrationDeclined" :label="$t('applicant.list.fixEmployment.registrationDeclined')" class="q-ml-sm" />
-            </div>
-            <div class="col-3">
-              <q-select 
-                v-if="data['reason'] && data['reason'] !== 'notCovered'" 
-                v-model="data['reasonDetal']"
-                :disable="loading"
-                :options="statusOptions"                        
-                emit-value map-options dense outlined
-                :label="$t('common.pleaseSelect')" 
-              />
-            </div>
-          </div>
-        </labelField>
-      </div>
-    </template>
+    <div class="row q-pb-sm" v-if="!data['fixStatus']"> 
+      <NGReasonSelect
+        :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
+        :edit="edit.includes(tabKey)" 
+        :label="$t('applicant.list.fixEmployment.'+reasonKey)"
+        :reasonValue="data[reasonKey]"
+        @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
+        :detailedValue="data[detailKey]"
+        @update:detailedValue="(newValue : string) => data[detailKey] = newValue"
+        :disable="loading"
+        :hightlightError="hightlightError"
+      />
+    </div>
     <div class="row q-pb-sm">
       <labelField 
         :edit="edit.includes('info')"
@@ -77,7 +60,6 @@
           :label="$t('common.pleaseSelect')" />
       </labelField>
     </div>
-
     <div class="row q-pb-sm">
       <labelField 
         :edit="edit.includes('info')" 
@@ -94,10 +76,10 @@
 <script lang="ts" setup>
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
-
-import { decidedFixList, notApplicableFixList, registrationDeclinedFixList } from 'src/shared/constants/Applicant.const';
+import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { ApplicantFix, FixMainInfo, selectOptions } from 'src/shared/model';
 import { ref, watch } from 'vue';
+import { useNGWatchers, useSaveHandler } from '../../const/fixMethods'
 
 const props = defineProps<{
   loading: boolean,
@@ -107,31 +89,22 @@ const props = defineProps<{
   edit: string[]
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
-
-
 const data = ref<Partial<FixMainInfo>>({});
-const statusOptions = ref<selectOptions[]> ([]);
-resetData();
 
-watch(() => [data.value['reason']], () => {
-  if ('fixStatus' in data.value && data.value['fixStatus'] == false) {
-    switch(data.value['reason']){
-      case('notApplicable'):
-        statusOptions.value = notApplicableFixList;
-      break;
-      case('decided'):
-        statusOptions.value = decidedFixList;
-      break;
-      case('notCovered'):
-        statusOptions.value = [];
-      break;
-      case('registrationDeclined'):
-        statusOptions.value = registrationDeclinedFixList;
-      break;
-    }
-    data.value['reasonDetal'] = '';
+/** NGReasonSelect handlers */
+const reasonKey = 'fixReasonNG' /** change reason key */
+const detailKey = 'fixReasonNGDetail' /** change reason detail key */
+const tabKey = 'info' /** change tab key */
+const statusKey = 'fixStatus' /** change status key */
+const hightlightError = ref<string[]>([])
+const saveHandler = () => {
+  if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
+    emit('save', tabKey, data.value);
+    resetData();
   }
-}, {deep: true, immediate: true}) 
+}
+useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
+/** NGReasonSelect handlers */
 
 watch(
   () => [props.editData, props.fixData],
@@ -140,12 +113,13 @@ watch(
   }, {deep: true, immediate: true}
 ) 
 
+resetData();
 function resetData() {
   data.value = {
     fixStatus: props.editData['fixStatus'] || false,
     fixDate: props.editData['fixDate'] || '',
-    reason: props.editData['reason'] || '',
-    reasonDetal: props.editData['reasonDetal'] || '',
+    fixReasonNG: props.editData['fixReasonNG'] || '',
+    fixReasonNGDetail: props.editData['fixReasonNGDetail'] || '',
     chargeOfFix: props.editData['chargeOfFix'] || '',
     fixMemo: props.editData['fixMemo'] || '',
   };

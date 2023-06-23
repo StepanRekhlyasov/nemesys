@@ -249,8 +249,8 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
 export interface FixMainInfo {
   fixStatus: boolean;
   fixDate: string;
-  reason: string;
-  reasonDetal?: string;
+  fixReasonNG: string;
+  fixReasonNGDetail?: string;
   chargeOfFix: string;
   fixMemo?: string;  
 } 
@@ -258,8 +258,8 @@ export interface FixMainInfo {
 export interface FixJobSearchInfo {
   inspectionStatus: boolean;
   inspectionDate: string;
-  reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
-  reasonJobDetal?: string;
+  inspectionReasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  inspectionReasonNGDetail?: string;
   chargeOfFacility: string;
   jobTitle?: string;
   contact: string;
@@ -270,8 +270,8 @@ export interface FixJobSearchInfo {
 export interface FixEmploymentInfo {
   admissionStatus: boolean;
   admissionDate: string;
-  admissionReason: string;
-  admissionReasonDetal: string;
+  admissionReasonNG: string;
+  admissionReasonNGDetail: string;
   reasonNotJoining: string;
   chargeOfAdmission: string;
   endDate: string;
@@ -282,7 +282,7 @@ export interface FixJobOffersInfo {
   offerStatus: boolean;
   offerDate: string;
   offerReasonNG: string;
-  offerReasonDetal: string;
+  offerReasonNGDetail: string;
   chargeOfOffer: string;
   offerMemo: string;
 

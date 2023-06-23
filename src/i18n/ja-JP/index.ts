@@ -797,8 +797,11 @@ export default {
         office: '事業所',
         status: 'FIXステータス',
         date: 'FIX日',
-        reason: 'FIXNG理由',
+        fixReasonNG: 'FIXNG理由',
         chargeOfFix: 'FIX担当ユーザー',
+        inspectionReasonNG: '職見NG理由',
+        admissionReasonNG: '職見NG理由',
+        offerReasonNG: '職見NG理由',
         fixMemo: 'FIXメモ',
         info: '■FIX情報',
         jobSearchInfo: '■ 職見情報',
@@ -818,12 +821,12 @@ export default {
         notCovered: '不通',
         registrationDeclined: '登録辞退',
         age: '年齢',
-        antiSocial: '反社会的',
+        antiSocial: '反社',
         introductionsNotAllowed: '紹介不可',
         employmentUnacceptable: '就業不可',
         dispatch: '派遣',
         directHire: '直接雇用',
-        noDesiredProjects: '希望案件なし',
+        noDesiredProjects: '希望条件なし',
         noDesireWork: '就業意欲なし',
         inspection: {
           status: '職見ステータス',
@@ -1772,5 +1775,8 @@ export default {
         20: 'その他'
       }
     }
+  },
+  errors: {
+    'BO_occupied' : '選択されたBOは既に使用されています'
   }
 };
