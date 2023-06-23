@@ -8,7 +8,7 @@
       :clearable="true"
       v-bind="$attrs"
       :options="optionsList"
-      :disable="loading || outerLoading"
+      :disable="loading || outerLoading || outerDisable"
       :loading="loading || outerLoading"
       v-model="inputVal"
       bg-color="white"
@@ -46,7 +46,8 @@ const props = withDefaults(defineProps<{
   label?: string,
   dense?: boolean,
   outlined?: boolean,
-  outerLoading?: boolean
+  outerLoading?: boolean,
+  outerDisable?: boolean
 }>(),{
   width: '100%',
   height: 'auto',
