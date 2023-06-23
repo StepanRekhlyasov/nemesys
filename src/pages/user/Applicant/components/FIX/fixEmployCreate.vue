@@ -19,13 +19,13 @@
       <q-separator />
       <q-form @submit="save('main', data)" ref="formRef">
         <!-- Main Information -->
-        <q-card-section>       
-          <div class="row" v-if="fixData.id">            
+        <q-card-section>
+          <div class="row" v-if="fixData.id">
             <div class="col-12 text-right" >
-              <q-btn 
+              <q-btn
                 :label="$t('common.save')" color="primary" type="submit" size="sm" :disable="loading"/>
             </div>
-          </div>           
+          </div>
           <q-select
               v-model="data.client"
               @update:model-value="data['office']=undefined"
@@ -44,60 +44,75 @@
               option-label="name"
               :rules="[creationRule]" hide-bottom-space
               :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office"
-              :disable="!data['client']" 
+              :disable="!data['client']"
               :label="$t('applicant.list.fixEmployment.office')" />
+
+            <MySelect
+              :option-to-fetch="'backOrder'"
+              :clientFactory="data['office']"
+              :rules="[creationRule]"
+              v-model="data['backOrder']"
+              :label="'common.BO'"
+              hide-bottom-space
+              emit-value map-options
+              :clearable="false"
+              :dense="false"
+              :outlined="false"
+              :outerDisable="!data['office']"
+              :outerLoading="loading"
+            />
         </q-card-section>
 
         <template v-if="fixData.id">
           <!-- Fix Information -->
           <q-card-section>
-            <FixInfoSection 
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+            <FixInfoSection
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
-              @closeEdit="edit=edit.filter(i => i !== 'info')" 
+              @closeEdit="edit=edit.filter(i => i !== 'info')"
               @openEdit="edit.push('info')"/>
           </q-card-section>
 
           <!-- Job-search Information  -->
           <q-card-section>
             <JobSearchInfoSection
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
-              @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')" 
+              @closeEdit="edit=edit.filter(i => i !== 'jobSearchInfo')"
               @openEdit="edit.push('jobSearchInfo')" :disable-level="disableLevel" />
           </q-card-section>
 
           <!-- Information on job offers -->
           <q-card-section>
             <JobOffersInfoSection
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
-              @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')" 
+              @closeEdit="edit=edit.filter(i => i !== 'jobOffersInfo')"
               @openEdit="edit.push('jobOffersInfo')" :disable-level="disableLevel" />
           </q-card-section>
 
           <!-- Employment Information -->
           <q-card-section>
             <EmploymentInfoSection
-              :edit="edit" 
-              :loading="loading" 
-              :fix-data="fixData" 
+              :edit="edit"
+              :loading="loading"
+              :fix-data="fixData"
               :edit-data="data"
               :users-list-option="usersListOption"
               @save="save"
-              @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')" 
+              @closeEdit="edit=edit.filter(i => i !== 'employmentInfo')"
               @openEdit="edit.push('employmentInfo')" :disable-level="disableLevel"  />
           </q-card-section>
         </template>
@@ -122,6 +137,7 @@ import { creationRule } from 'src/components/handlers/rules';
 import { useFix } from 'src/stores/fix';
 import { QForm } from 'quasar';
 import { useUserStore } from 'src/stores/user';
+import MySelect from 'src/components/inputs/MySelect.vue';
 
 const props = defineProps<{
   fixData: ApplicantFix,
@@ -185,7 +201,7 @@ async function save(type: string, dataR) {
       break;
     }
     case 'info': {
-      retData = pick(dataR, ['fixStatus', 'fixDate', 'reason', 'reasonDetal', 'contactPerson', 'memo'])
+      retData = pick(dataR, ['fixStatus', 'fixDate', 'reason', 'reasonDetal', 'chargeOfFix', 'fixMemo'])
       if (retData['fixDate']) {
         retData['fixDate'] = Timestamp.fromDate(new Date(retData['fixDate']))
       }
@@ -195,7 +211,7 @@ async function save(type: string, dataR) {
       retData = pick(
         dataR,
         ['inspectionStatus', 'inspectionDate', 'reasonNG', 'reasonJobDetal', 'chargeOfFacility',
-        'jobTitle', 'contact', 'comments', 'notesInspection'])
+        'jobTitle', 'contact', 'comments', 'inspectionMemo'])
       if (retData['inspectionDate']) {
         retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
       }

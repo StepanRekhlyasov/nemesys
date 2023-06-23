@@ -54,10 +54,10 @@ export const getIndividualReport = async (
     const query_list = [
       query(
         collectionRef,
-        where('contactPerson', '==', Id),
+        where('chargeOfFix', '==', Id),
         where(DateTargets[0], '>=', targetDateFrom),
         where(DateTargets[0], '<=', targetDateTo),
-        where('status', '==', true)
+        where('fixStatus', '==', true)
       ),
       query(
         collectionRef,

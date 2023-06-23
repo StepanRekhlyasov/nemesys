@@ -242,6 +242,7 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
   created_at: Timestamp | FieldValue | string;
   client: string;
   office: string;
+  backOrder: string;
   applicant_id: string;
 }
 
@@ -250,8 +251,8 @@ export interface FixMainInfo {
   fixDate: string;
   reason: string;
   reasonDetal?: string;
-  contactPerson: string;
-  memo: string;  
+  chargeOfFix: string;
+  fixMemo?: string;  
 } 
 
 export interface FixJobSearchInfo {
@@ -263,7 +264,7 @@ export interface FixJobSearchInfo {
   jobTitle?: string;
   contact: string;
   comments: string;
-  notesInspection: string;
+  inspectionMemo: string;
 }
 
 export interface FixEmploymentInfo {

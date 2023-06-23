@@ -63,14 +63,14 @@
       <labelField 
         :edit="edit.includes('info')"
         :value="usersListOption
-          .filter(user => user.value === fixData['contactPerson'])
+          .filter(user => user.value === fixData['chargeOfFix'])
           .map(user => user.label).join('')"
-        :label="$t('applicant.list.fixEmployment.contactPerson')"
+        :label="$t('applicant.list.fixEmployment.chargeOfFix')"
         valueClass="col-9 q-pl-md">  
 
         <q-select
           v-if="edit.includes('info')"
-          v-model="data['contactPerson']"
+          v-model="data['chargeOfFix']"
           :disable="loading"
           emit-value map-options dense outlined
           :options="usersListOption" 
@@ -81,11 +81,11 @@
     <div class="row q-pb-sm">
       <labelField 
         :edit="edit.includes('info')" 
-        :label="$t('applicant.list.fixEmployment.memo')" 
-        :value="fixData['memo']" valueClass="col-9 q-pl-md">
+        :label="$t('applicant.list.fixEmployment.fixMemo')" 
+        :value="fixData['fixMemo']" valueClass="col-9 q-pl-md">
 
         <q-input dense outlined bg-color="white"
-          v-model="data['memo']" :disable="loading" />
+          v-model="data['fixMemo']" :disable="loading" />
       </labelField>
     </div>
   </DropDownEditGroup>
@@ -146,8 +146,8 @@ function resetData() {
     fixDate: props.editData['fixDate'] || '',
     reason: props.editData['reason'] || '',
     reasonDetal: props.editData['reasonDetal'] || '',
-    contactPerson: props.editData['contactPerson'] || '',
-    memo: props.editData['memo'] || '',
+    chargeOfFix: props.editData['chargeOfFix'] || '',
+    fixMemo: props.editData['fixMemo'] || '',
   };
 }
 
