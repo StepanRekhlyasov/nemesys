@@ -17,6 +17,7 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    BO: 'BO',
     select: '選択',
     reflect: '反映',
     capture: '取込',
@@ -1664,24 +1665,6 @@ export default {
     showList: 'リストを表示する',
     waitList: 'リスト'
   },
-  SAA: {
-    targetPeriod: '対象期間',
-    numberOfFix: 'FIX数',
-    jobs: '職見数',
-    innerConstant: '内定数',
-    entry: '入職数',
-    numberOfCalls: '架電数',
-    numberOfFax: 'FAX数',
-    dispatch: '派遣',
-    introduction: '紹介',
-    occupationRate: '職見率',
-    jobOfferRate: '内定率',
-    hiringRate: '入職率',
-    username: 'ユーザー名',
-    mode: '集計方法',
-    modeIndividual: '個人別データ集計',
-    modeBranch: '支店別データ集計',
-  },
   KPI: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
@@ -1696,10 +1679,11 @@ export default {
     jobOfferRate: '内定率',
     hiringRate: '入職率',
     username: 'ユーザー名',
-    mode: '集計方法',
+    aggregationMethods: '集計方法',
     modeMedia: '媒体別集客データ集計',
+    modeIndividual: '個人別データ集計',
     modeBranch: '支店別集客データ集計',
-    modeDay: '日次データ集計',
+    modeDay: '日時集計',
     item: '項目',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',
@@ -1707,6 +1691,11 @@ export default {
     media: '媒体',
     total: '全体',
     location: '拠点',
+    BO_NC: 'BO_介',
+    BO_N: 'BO_看',
+    Person: '本人',
+    Company: '企業',
+    Rate: '率',
     tables: {
       everyday: {
         1: '架電数',

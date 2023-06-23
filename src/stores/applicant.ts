@@ -551,6 +551,9 @@ export const useApplicant = defineStore('applicant', () => {
           saveData.currentStatusMonth = ''
         }
       }
+      if(!saveData.status){
+        changeApplicantStatusByOkFields()
+      }
 
       for(const [key, value] of Object.entries(saveData)){
         if(typeof value === 'undefined') delete saveData[key];
