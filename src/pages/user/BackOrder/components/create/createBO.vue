@@ -23,7 +23,34 @@
     <q-card-section class="bg-white">
       <q-form >
         <!-- Basic Info Section -->
-        <basic-info-section :backOrder="backOrderData" :loading="loading" :client="client" />
+        
+        <!-- Main Information -->
+        <q-card-section>      
+          <q-select
+            v-model="data.client_id"
+            @update:model-value="data['office']=undefined"
+            :loading="loading"
+            :options="applicantStore.state.clientList"
+            option-value="id"
+            option-label="name"
+            :rules="[creationRule]" hide-bottom-space
+            emit-value map-options
+            :label="$t('applicant.list.fixEmployment.client')"  />
+          <q-select
+            v-model="data['office_id']"
+            :loading="loading"
+            emit-value map-options
+            option-value="id"
+            option-label="name"
+            :rules="[creationRule]" hide-bottom-space
+            :options="applicantStore.state.clientList.find(client => client.id === data['client_id'])?.office"
+            :disable="!data['client_id']" 
+            :label="$t('applicant.list.fixEmployment.office')" />
+        </q-card-section>
+
+        <basic-info-section :backOrder="data" :loading="loading" 
+          :client="applicantStore.state.clientList.find(client => client.id === data['client_id'])"
+          :officeId="data['office_id']"/>
         <!-- Working Type Section -->
         <q-card-section>
           <div class="row text-primary text-h6" >
@@ -42,24 +69,24 @@
           </div>
           <div class="row ">
             <labelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-              <q-radio v-model="backOrderData['BOGenerationRoute']" :label="$t('backOrder.create.coldCall')" val="coldCall" :disable="loading"/>
-              <q-radio v-model="backOrderData['BOGenerationRoute']" :label="$t('backOrder.create.fax')" val="fax" :disable="loading"/>
+              <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.coldCall')" val="coldCall" :disable="loading"/>
+              <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.fax')" val="fax" :disable="loading"/>
             </labelField>
           </div>
         </q-card-section>
         <!-- Introduction Section -->
-        <introduction-section :backOrder="backOrderData" :loading="loading" :type="type"/>
+        <introduction-section :backOrder="data" :loading="loading" :type="type"/>
         <!-- Employment Conditions Section -->
-        <employment-conditions-section :backOrder="backOrderData" :loading="loading"  :type="type"/>
+        <employment-conditions-section :backOrder="data" :loading="loading"  :type="type"/>
         <!-- Paycheck Section -->
-        <paycheck-section :backOrder="backOrderData" :loading="loading" />
+        <paycheck-section :backOrder="data" :loading="loading" />
         <!-- Tasks Section -->
         <template v-if="type=='referral'">
-          <tasks-section :backOrder="backOrderData" :loading="loading" />
+          <tasks-section :backOrder="data" :loading="loading" />
         </template>
         <!-- In House Information Section -->
         <template v-if="type=='referral'">
-          <in-house-info-section :backOrder="backOrderData" :loading="loading"/>
+          <in-house-info-section :backOrder="data" :loading="loading"/>
         </template>
       </q-form>
     </q-card-section>
@@ -76,24 +103,24 @@ import InHouseInfoSection from './InHouseInfoSection.vue';
 import IntroductionSection from './IntroductionSection.vue';
 import BasicInfoSection from './BasicInfoSection.vue';
 import { useBackOrder } from 'src/stores/backOrder';
+import { creationRule } from 'src/components/handlers/rules';
+import { useApplicant } from 'src/stores/applicant';
 
 const emits = defineEmits(['closeDialog']);
 const backOrderStore = useBackOrder();
+const applicantStore = useApplicant();
 const props = defineProps<{
-  client?: Client,
   type: 'dispatch' | 'referral'
 }>()
 const loading = ref(false);
-const backOrderData = ref({
+const data = ref({
   working_days_week: [] as string[],
   workingDays: 'shiftSystem',
   type: props.type
 } as BackOrderModel);
 
 async function addBackOrder() {
-  if (props.client && props.client.id){
-    await backOrderStore.addBackOrder(backOrderData.value, props.client.id)
-  }
+  await backOrderStore.addBackOrder(data.value, '')
 }
 
 </script>

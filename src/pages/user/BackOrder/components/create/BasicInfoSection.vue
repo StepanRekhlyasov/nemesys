@@ -117,7 +117,8 @@ import { BackOrderModel, Client } from 'src/shared/model';
 defineProps<{
   backOrder: BackOrderModel,
   loading: boolean,
-  client?: Client
+  client?: Client,
+  officeId?:string,
 }>()
 
 </script>
