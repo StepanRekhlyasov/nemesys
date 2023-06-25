@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where ,writeBatch} from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { useQuasar } from 'quasar';
 import { BackOrderModel } from 'src/shared/model';
@@ -11,8 +11,8 @@ interface BackOrderState {
   BOList: BackOrderModel[]
 }
 
-export const useBackOrder = defineStore('backPrder', () => {
-	const db = getFirestore();  
+export const useBackOrder = defineStore('backOrder', () => {
+	const db = getFirestore();
 	const { t } = useI18n({ useScope: 'global' });
 	const $q = useQuasar();
 	const state = ref<BackOrderState>({
@@ -22,7 +22,7 @@ export const useBackOrder = defineStore('backPrder', () => {
 	async function loadBackOrder() {
 		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
 		const docs = await getDocs(query(
-			collection(db, '/BO'), 
+			collection(db, '/BO'),
 			...constraints
 		))
 
@@ -34,7 +34,7 @@ export const useBackOrder = defineStore('backPrder', () => {
 				id: fix.id
 			} as BackOrderModel)
 		})
-		state.value.BOList = list 
+		state.value.BOList = list
 	}
 
 	async function addBackOrder(backOrderData, clientId: string) {
@@ -52,7 +52,7 @@ export const useBackOrder = defineStore('backPrder', () => {
 	async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
 		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId)]
 		const docs = await getDocs(query(
-			collection(db, '/BO'), 
+			collection(db, '/BO'),
 			...constraints
 		))
 
@@ -78,17 +78,19 @@ export const useBackOrder = defineStore('backPrder', () => {
 		})
 
 	}
+  const deleteBackOrder = async (ids) => {
+		const updateData = {}
+		updateData['deleted'] = true;
+		const batch = writeBatch(db);
+		for (const id of ids) {
+			batch.update(
+				doc(db, 'BO/' + id),
+				updateData
+			);
+		}
+		await batch.commit();
+		return true;
+	};
 
-	const deleteBackOrder = async (boList) => {
-		const ret = boList.map( async (bo) => {
-			const boRef = doc(db, '/BO/'+bo.id);
-			await updateDoc(boRef, {
-				deleted: true
-			})
-		})
-		Promise.all(ret)
-	}
-	
 	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder}
 })
-  

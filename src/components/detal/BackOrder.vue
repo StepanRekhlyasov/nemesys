@@ -3,11 +3,15 @@
     :columns="columns"
     :rows="backOrderData"
     row-key="id"
-    selection="multiple"
-    v-model:selected="selected"
     v-model:pagination="pagination"
     hide-pagination
+    class="q-py-none"
   >
+  <template v-slot:body-cell-select="props">
+        <q-td :props="props">
+          <q-checkbox v-model="props.row.selected" />
+        </q-td>
+      </template>
     <template v-slot:header-cell-qualification="props">
       <q-th :props="props">
         {{$t('client.backOrder.reqQualification')}}<br/>
@@ -90,15 +94,16 @@
       </q-td>
     </template>
 
-    <template v-slot:top >
-      <q-btn color="primary" icon="mdi-plus-thick" class="no-shadow "  :label="$t('common.add')" @click="showAddBO"/>
-      <q-btn color="negative" class="no-shadow q-ml-md" v-if="selected.length >0" :label="$t('common.delete')"  @click="deleteBo"/>
+    <template v-slot:top  >
+      <q-checkbox val="xs" class="q-pt-sm" color="blue" v-model="selected" />
+      <div class="q-ml-sm q-pt-sm">{{ $t('common.numberOfSelections') }}: {{ selectedCount() }}</div>
+      <q-btn class="no-shadow q-ml-md q-mt-sm q-py-none q-px-md bg-grey-4 "  :label="$t('common.delete')"  v-if="selectedCount() > 0"  @click="deleteSelected()"/>
     </template>
 
   </q-table>
 
   <!-- add ot edit BO -->
-  <q-drawer 
+  <q-drawer
     show
     class="bg-grey-3"
     :width="1000"
@@ -113,10 +118,11 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import {  ref, computed, Ref } from 'vue';
+import {  ref, computed, Ref ,watch} from 'vue';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
 import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { useBackOrder } from 'src/stores/backOrder';
+import { useQuasar } from 'quasar';
 export default {
   name: 'BackOrder',
   components: {
@@ -131,7 +137,8 @@ export default {
   setup(props ) {
     const { t } = useI18n({ useScope: 'global' });
     const backOrderData: Ref<BackOrderModel[]> = ref([])
-    const selected: Ref<BackOrderModel[]> = ref([])
+    const selected = ref(false)
+    const $q = useQuasar();
     const openDialog: Ref<boolean> = ref(false);
     const pagination = ref({
       sortBy: 'desc',
@@ -141,9 +148,41 @@ export default {
     });
 
     const backOrderStore = useBackOrder();
+    const showDeleteDialog = async (ids) => {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('common.deleteInfo'),
+    persistent: true,
+    cancel: t('common.cancel'),
+  }).onOk(async () => {
+    const done = await backOrderStore.deleteBackOrder(ids);
+    if (done) {
+      $q.notify({
+        color: 'green-4',
+        textColor: 'white',
+        icon: 'cloud_done',
+        message: t('success'),
+      });
+    }
+  })
 
+}
+const deleteSelected = () => {
+  const BoItem = backOrderData.value.filter(row => row['selected']);
+  let items: string[] = []
+  for (const item of BoItem) {
+    items.push(item['clientId']);
+  }
+  showDeleteDialog(items)
+}
     const columns = computed(() => {
       return [
+      {
+      label: '',
+      field: 'select',
+      name: 'select',
+      align: 'left',
+    },
       {
           name: 'type',
           required: true,
@@ -194,32 +233,28 @@ export default {
 
     loanBoListData()
     async function loanBoListData() {
-      backOrderData.value = await backOrderStore.getClientBackOrder(props.client.id)
-    }
-
-    const showAddBO = () => {
-      openDialog.value =  true
-    }
-
-    const deleteBo = async () => {
-      try{
-        await backOrderStore.deleteBackOrder(selected.value)
-        await loanBoListData();
-        selected.value = [];     
-      } catch (e) {
-        console.log(e)
-      }
-    }
-
+  const data = await backOrderStore.getClientBackOrder(props.client.id);
+  backOrderData.value = data.map(row => {
+    return { ...row, selected: false };
+  });
+}
+    const selectedCount = () => {
+      return backOrderData.value.filter(row => row['selected']).length;
+}
+watch(() => selected.value, (newValue) => {
+  for (let i = 0; i < backOrderData.value.length; i++) {
+    backOrderData.value[i]['selected'] = newValue
+  }
+});
     return {
       columns,
       backOrderData,
       selected,
       pagination,
       openDialog,
-
-      showAddBO,
-      deleteBo
+      separator: ref('none'),
+      selectedCount,
+      deleteSelected
     };
   },
 };
