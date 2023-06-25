@@ -106,7 +106,7 @@
 
   <div class="row q-pt-md">
     <LabelField :label="$t('backOrder.create.numberUsers')" :edit="edit" 
-      :value="data['numberUsers'] ? `${data['numberUsers']}${$t('common.reputation')}`: ''">
+      :value="data['numberUsers'] ? `${data['numberUsers']}${$t('common.reputation')}` : ''">
       <q-input v-model="data['numberUsers']" outlined dense :disable="loading" type="number"/>
     </LabelField>
     <labelField :label="$t('backOrder.numberEmployees')" :edit="edit" 

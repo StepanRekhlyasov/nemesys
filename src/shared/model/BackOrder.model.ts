@@ -78,9 +78,8 @@ export enum TransactionType {
 
 export enum BackOrderStatus {
   FullTime = 'fullTime',
-  Dispatch = 'dispatchEm',
   PartTime = 'partTime',
-  Baito = 'baito'
+  PartTimeEmployee = 'partTimeEmployee'
 }
 
 export enum WorkingDaysWeek {
