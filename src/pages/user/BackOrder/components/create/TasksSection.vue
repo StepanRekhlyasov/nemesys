@@ -15,7 +15,7 @@
         <q-field
           borderless dense
           v-model="data['pickDrop']"
-          :rules="[creationRule]" hide-bottom-space> 
+          :rules="[() => 'pickDrop' in data || '' ]" hide-bottom-space> 
           <template v-slot:control> 
             <q-toggle v-model="data['pickDrop']" :disable="loading"/>
             <span class="q-ma-sm flex-center">{{ data['pickDrop']?$t('common.yes'):$t('common.no') }}</span>
@@ -29,7 +29,7 @@
         <q-field
           borderless dense
           v-model="data['onCallSupport']"
-          :rules="[creationRule]" hide-bottom-space>
+          :rules="[() => 'onCallSupport' in data || '' ]" hide-bottom-space>
           <template v-slot:control>
             <q-toggle v-model="data['onCallSupport']"  :disable="loading" />
             <span class="flex-center q-pr-md ">{{ data['onCallSupport']?$t('common.yes'):$t('common.no') }}</span>

@@ -1,10 +1,10 @@
 <template>
   <q-card class="no-shadow bg-grey-3">
-    <q-form ref="boForm" @submit="addBackOrder" >    
+    <q-form ref="boForm" @submit="addBackOrder" @reset="emits('closeDialog')">    
       <q-card-section class="text-white bg-primary no-border-radius" >
         <div class="row">
           <div class="flex items-end ">
-            <q-btn dense flat icon="close" class="q-mr-md " @click="emits('closeDialog')"/>
+            <q-btn dense flat icon="close" class="q-mr-md" type="reset" />
           </div>
           <div>
             <div class="row text-h6 text-weight-bold q-pr-xs">
@@ -15,8 +15,8 @@
       </q-card-section >
 
       <q-card-section class="bg-white">        
-        <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm" type="submit"/>
-        <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold" @click="emits('closeDialog')" size="sm"/>
+        <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm"  type="submit"/>
+        <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold"  type="reset" size="sm"/>
       </q-card-section>
 
       <q-separator color="grey-3" size="2px" />
@@ -132,8 +132,18 @@ const data = ref({
 } as Partial<BackOrderModel>);
 
 async function addBackOrder() {
-  console.log(123)
-  // await backOrderStore.addBackOrder(data.value, '')
+  try {
+    loading.value = true
+    if (data.value.client_id && boForm.value?.validate){
+      await backOrderStore.addBackOrder(data.value, data.value.client_id);
+      loading.value = false;
+      backOrderStore.loadBackOrder();
+      emits('closeDialog');
+    }
+  } catch (e) {
+    console.log(e)
+    loading.value = false;
+  }
 }
 
 watch([data.value.client_id, data.value.office_id], async () => {  

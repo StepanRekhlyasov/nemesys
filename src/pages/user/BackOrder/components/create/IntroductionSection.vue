@@ -6,7 +6,7 @@
     <div class="row ">
       <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
         <q-input dense outlined bg-color="white" v-model="data['dateOfRegistration']"
-          :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
+        :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
