@@ -1,13 +1,18 @@
 export interface TeleAppointmentHistory {
-  id: string;
-  name: string;
-  branch: string;
-  date: string;
-  result: TeleAppointmentResult;
+  id?: string;
+  name?: string;
+  branch?: string;
+  date?: string;
+  result?: TeleAppointmentResult;
   jobResult?: JobResult;
-  requiredService?: string;
+  requiredService?: string ;
   remark?: string;
+  updated_at?: string;
+  created_at?: string;
+  created_by?: string;
+  value?:any;
 }
+
 
 export enum TeleAppointmentResult {
   NotConnected = 'notConnected',
@@ -18,3 +23,12 @@ export enum TeleAppointmentResult {
 export enum JobResult {
   NoJobOffer = 'noJobOffer',
 }
+export interface UserList {
+  id: string;
+  name: string;
+}
+export interface UserTele{
+  id:string,
+  value?:any
+}
+
