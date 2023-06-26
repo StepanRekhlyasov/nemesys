@@ -1,3 +1,4 @@
+import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { useQuasar } from 'quasar';
@@ -40,10 +41,12 @@ export const useBackOrder = defineStore('backPrder', () => {
 	}
 
 	async function addBackOrder(backOrderData) {
+		const auth = getAuth();
 		const data = JSON.parse(JSON.stringify(backOrderData));
 		data['created_at'] = serverTimestamp();
 		data['updated_at'] = serverTimestamp();
 		data['deleted'] = false;
+		data['registrant'] = auth.currentUser?.uid
 		
 		const snapshot = await getDocs(query(collection(db, '/BO')))
 		data['boId'] = snapshot.docs.length

@@ -20,8 +20,8 @@
           </template>
         </q-input>
       </labelField>
-      <labelField :label="$t('backOrder.create.registrant')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-select v-model="data['registrant']" outlined dense  :options="usersListOption" :disable="loading || !usersListOption"/> 
+      <labelField :label="$t('backOrder.create.registrant')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md self-center">
+        {{ currentUser }}
       </labelField>
     </div>
 
@@ -102,10 +102,11 @@
 </template>
 
 <script lang="ts" setup>
+import { getAuth } from 'firebase/auth';
 import labelField from 'src/components/form/LabelField.vue';
 import { validateDate } from 'src/shared/constants/Form.const';
 import { BackOrderModel, TypeOfCase, BackOrderStatus, TypeQualifications, selectOptions } from 'src/shared/model';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
@@ -113,7 +114,15 @@ const props = defineProps<{
   type: 'dispatch' | 'referral',
   usersListOption: selectOptions[]
 }>()
+const auth = getAuth();
+
 const data = ref(props.backOrder)
+
+const currentUser = computed(() => {
+  const user = props.usersListOption.find(user => user.value === auth.currentUser?.uid)
+  if (!user)  return ''
+  return user.label
+})
 </script>
 
 <style>
