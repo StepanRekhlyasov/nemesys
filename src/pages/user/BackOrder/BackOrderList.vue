@@ -43,7 +43,7 @@
 					<template v-slot:body-cell-caseType="props">
 						<q-td :props="props" class="q-pa-none" >
 							<div> {{ props.row.caseType? $t(`applicant.add.${props.row.caseType}`): '-'}} </div>
-							<div> {{ props.row.transactionType? $t(`backOrder.${props.row.transactionType}`): '-' }} </div>
+							<div> {{ props.row.transactionType? $t(`client.backOrder.${props.row.transactionType}`): '-' }} </div>
 						</q-td>
 					</template>
 
@@ -139,7 +139,6 @@ function addNewBo() {
 }
 
 function showDialog(bo: BackOrderModel){
-	console.log(123)
   infoDrawer.value?.openDrawer(bo)
 }
 

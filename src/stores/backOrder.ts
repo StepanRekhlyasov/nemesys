@@ -91,11 +91,11 @@ export const useBackOrder = defineStore('backPrder', () => {
 		return list;
 	}
 
-	async function updateBackOrder() {
+	async function updateBackOrder(backOrder: BackOrderModel) {
 		if (!state.value.selectedBo) return ;
 
-		const boRef = doc(db, '/BO/'+state.value.selectedBo.id);
-		await updateDoc(boRef, {...state.value.selectedBo});
+		const boRef = doc(db, '/BO/'+backOrder.id);
+		await updateDoc(boRef, {...backOrder});
 
 		const changeIndex = state.value.BOList.findIndex(bo => bo.id === state.value.selectedBo?.id)
 
@@ -103,7 +103,7 @@ export const useBackOrder = defineStore('backPrder', () => {
 
 		state.value.BOList = state.value.BOList.map(bo => {
 			if (bo.id === state.value.selectedBo?.id) {
-				return state.value.selectedBo
+				return backOrder
 			}
 			return bo
 		})

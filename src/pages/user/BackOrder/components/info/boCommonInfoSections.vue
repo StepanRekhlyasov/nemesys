@@ -137,7 +137,6 @@ async function save() {
   try {
     await backOrderStore.updateBackOrder({id: props.bo.id, ...data.value} as BackOrderModel);
     edit.value = false;
-
   } catch (e) {
     console.log(e);
   }
