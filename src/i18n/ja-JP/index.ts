@@ -148,6 +148,7 @@ export default {
     addClient: 'クライアント 新規追加',
     addClientHint: '新しく事業所・クライアントを追加したい場合はこちら',
     SAA: '営業活動集計',
+    KPI:'KPI',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -1570,7 +1571,21 @@ export default {
     ageComposition:'年齢構成',
     daysToWork:'勤務日数',
     yen:'円',
+    item:'項目',
+    base:'拠点',
+    totalingMethod:'集計方法',
+    jobCategory:'職種',
     categories:{
+      totalingMethod:{
+      totallingDailyData:'日次データ集計',
+      totallingAttractionDataByBranch:'支店別集客データ集計',
+      totallingAttractionDataByMedia:'媒体別集客データ集計'
+    },
+    item:{
+      actualValue:'実績値',
+      unitPricePerLeadtime:'単価L/T',
+      applicationAttribute:'応募属性'
+    },
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
       numberOfInvitations:'誘致数',

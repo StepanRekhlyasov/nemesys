@@ -148,6 +148,7 @@ export default {
     addClient: 'Add new Client',
     addClientHint: 'Click here if you want to add a new office or client',
     SAA: 'Sales Activity Aggregation',
+    KPI: 'KPI',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -1577,7 +1578,21 @@ export default {
     ageComposition:'age composition',
     daysToWork:'days to Work',
     yen:'yen',
+    item:'item',
+    base:'base',
+    totalingMethod:'totaling method',
+    jobCategory:'job category',
     categories:{
+      totalingMethod:{
+        totallingDailyData:'totalling daily data',
+        totallingAttractionDataByBranch:'totalling attraction data by branch',
+        totallingAttractionDataByMedia:'totalling attraction data by media',
+      },
+      item:{
+        actualValue:'actual value',
+        unitPricePerLeadtime:'unitPrice L/T',
+        applicationAttribute:'application attribute',
+      },
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
       numberOfInvitations:'NumberOfInvitations',
