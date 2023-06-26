@@ -517,7 +517,6 @@ export const useApplicant = defineStore('applicant', () => {
 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
-
       /** transform strings to timestamps */
       const saveData = JSON.parse(JSON.stringify(applicantData));
       if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
@@ -569,7 +568,7 @@ export const useApplicant = defineStore('applicant', () => {
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
       } catch(error) {
-        if (showAlert){  Alert.warning($q, t); }
+        if (showAlert){ Alert.warning($q, t); }
       }
     } catch (error) {
       console.log(error)

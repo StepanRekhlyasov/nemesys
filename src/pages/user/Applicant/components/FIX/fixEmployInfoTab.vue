@@ -2,7 +2,7 @@
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-xs q-mb-none">
       <span class="text-primary text-h6 q-pt-md"> {{ $t('applicant.list.fixEmployment.fixDestinationOffice') }} </span>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true;fixData={}"
+      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true;fixData=undefined"
         class="no-shadow q-ml-lg" />
     </q-card-section>
 
@@ -126,6 +126,7 @@
   <FixEmployCreate
     v-if="drawerRight"
     :fixData="fixData"
+    :createdFixes="contactListData"
     @close="drawerRight=false"
     :applicant="applicant"
     :disableLevel="disableLevel"
@@ -161,7 +162,7 @@ const contactListData: Ref<ApplicantFix[]> = ref([]);
 const users:Ref<User[]> = ref([]);
 const drawerRight = ref(false);
 const disableLevel = ref(0);
-const fixData = ref<Partial<ApplicantFix>>({})
+const fixData = ref<ApplicantFix>()
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -276,24 +277,34 @@ async function updateData(data){
   }
   const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
   contactListData.value[updateIndex] = {...contactListData.value[updateIndex], ...fixData.value}
-  await applicantStore.saveFixDataToApplicant(fixData.value)
+  if(fixData.value){
+    await applicantStore.saveFixDataToApplicant(fixData.value)
+  }
   disableChange();
 }
 
 function disableChange() {
-  let level = 0;
   if(fixData.value){
     if (fixData.value['fixStatus']) {
-      level = 1
+      disableLevel.value = 1
+    } else {
+      disableLevel.value = 0
+      return
     }
     if (fixData.value['inspectionStatus']) {
-      level = 2
+      disableLevel.value = 2
+    } else {
+      disableLevel.value = 1
+      return
     }
     if (fixData.value['offerStatus']) {
-      level = 3
+      disableLevel.value = 3
+    } else {
+      disableLevel.value = 2
+      return
     }
   }
-  disableLevel.value = level
+  
 }
 
 function showEditDialog(data) {

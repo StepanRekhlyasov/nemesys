@@ -152,10 +152,10 @@ const onReset = (mount = false) => {
     budgetForm.value.resetValidation();
 };
 
-const checkValue = (val: string, reason: string, details: object) => {
-    if (reason === 'month') {
-        monthPicker.value[0].hide();
-    }
+const checkValue = (val: string, reason: string) => {
+  if (reason === 'month') {
+      monthPicker.value[0].hide();
+  }
 }
 </script>
   

@@ -13,7 +13,7 @@ interface BackOrderState {
   selectedBo: BackOrderModel | null,
 }
 
-export const useBackOrder = defineStore('backPrder', () => {
+export const useBackOrder = defineStore('backOrder', () => {
 	const db = getFirestore();  
 	const { t } = useI18n({ useScope: 'global' });
 	const $q = useQuasar();
