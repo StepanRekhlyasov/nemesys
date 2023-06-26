@@ -4,7 +4,7 @@
       {{'■ '+ $t(`backOrder.type.${type}`) }}
     </div>
     <div class="row ">
-      <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+      <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
         <q-input dense outlined bg-color="white" v-model="data['dateOfRegistration']"
         :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
           <template v-slot:append>
@@ -20,13 +20,13 @@
           </template>
         </q-input>
       </labelField>
-      <labelField :label="$t('backOrder.create.registrant')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+      <labelField :label="$t('backOrder.create.registrant')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
         <q-select v-model="data['registrant']" outlined dense  :options="usersListOption" :disable="loading || !usersListOption"/> 
       </labelField>
     </div>
 
     <div class="row ">
-      <labelField :label="$t('client.backOrder.caseType')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10">
+      <labelField :label="$t('client.backOrder.caseType')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
         <q-radio
           v-for="key in TypeOfCase"
           v-model="data['typeCase']"
@@ -39,7 +39,7 @@
     </div>
 
     <div class="row" v-if="type == 'referral'" >
-      <labelField :label="$t('backOrder.employmentType')" :edit="true" labelClass="q-pl-md col-2 self-center "  valueClass="col-10">
+      <labelField :label="$t('backOrder.employmentType')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10">
         <q-radio
           v-for="key in BackOrderStatus"
           v-model="data['status']"
@@ -52,13 +52,13 @@
     </div>    
 
     <div class="row ">
-      <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10">
+      <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
         <q-toggle v-model="data['requiredQualifications']" :label="$t('backOrder.create.existence')" :disable="loading" />
       </labelField>
     </div>
 
     <div class="row ">
-      <labelField :label="$t('backOrder.create.nameQualification')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10">
+      <labelField :label="$t('backOrder.create.nameQualification')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
         <q-radio
           v-for="key in TypeQualifications"
           v-model="data['qualifications']"
@@ -71,25 +71,25 @@
     </div>
 
     <div class="row ">
-      <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+      <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
         <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
       </labelField>
-      <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+      <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
         <q-input v-model="data['upperAgeLimit']"  outlined dense :disable="loading" />
       </labelField>
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+      <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
         <q-input v-model="data['invoice']"  outlined dense :disable="loading" />
       </labelField>
-      <labelField :label="$t('backOrder.payment')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+      <labelField :label="$t('backOrder.payment')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
         <q-input v-model="data['payment']"  outlined dense :disable="loading" />
       </labelField>
     </div>   
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10">
+      <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
         <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesRegular')" 
         val="yesRegular" v-model="data['travelingExpenses']" />
         <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesDaily')" 

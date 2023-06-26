@@ -11,7 +11,7 @@
 
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.status')" :edit="edit" 
-        :value="selectedBo['status']?$t(`client.backOrder.${selectedBo['status']}`) : '' ">
+        :value="selectedBo['status']?$t(`client.backOrder.${selectedBo['status']}`) : ''">
         <q-radio
           v-for="key in BackOrderStatus"
           v-model="data['status']"

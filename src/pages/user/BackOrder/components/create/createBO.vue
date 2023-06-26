@@ -57,7 +57,7 @@
           </div>
           <div class="row">
             <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" 
-              labelClass="q-pl-md col-2 self-center"  valueClass="col-4" :value="$t(`backOrder.type.${type}`)" />
+              labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md " :value="$t(`backOrder.type.${type}`)" />
           </div>
         </q-card-section>
 
@@ -67,7 +67,7 @@
             {{'■ '+ $t('backOrder.create.BOGenerationRoute') }}
           </div>
           <div class="row ">
-            <labelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-4">
+            <labelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md">
               <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.coldCall')" val="coldCall" :disable="loading"/>
               <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.fax')" val="fax" :disable="loading"/>
             </labelField>

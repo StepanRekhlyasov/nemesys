@@ -4,20 +4,20 @@
       {{ $t('backOrder.create.employmentConditions') }}
     </div>
     <div class="row">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.numberWorkingDays') }}
       </div>
-      <div class="col-10">
+      <div class="col-10 q-pl-md ">
         <q-radio v-for="day in DaysPerWeekList" :key="day.value" :disable="loading"
           :label="day.label" :val="day.value" v-model="data['daysPerWeekList']" />
       </div>
     </div>
 
     <div class="row">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.workingDays') }}
       </div>
-      <div class="col-10">
+      <div class="col-10 q-pl-md ">
         <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" 
         val="shiftSystem" v-model="data['workingDays']" />
         <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')" 
@@ -26,20 +26,20 @@
     </div>
 
     <div class="row" v-if="data['workingDays'] == 'fixed'">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.workingDays') }}
       </div>
-      <div class="col-10">
+      <div class="col-10 q-pl-md ">
         <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" :val="day.value" :disable="loading || data['workingDays'] == 'shiftSystem'"
           :label="day.label" :key="day.value" />
       </div>
     </div>
 
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('client.backOrder.workingHoursEarly') }}
       </div>
-      <div class="col-10 flex">
+      <div class="col-10 q-pl-md  flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
           :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
           <template v-slot:append>
@@ -73,10 +73,10 @@
       </div>
     </div>
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('client.backOrder.workingHoursDay') }}
       </div>
-      <div class="col-10 flex">
+      <div class="col-10 q-pl-md flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
           :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
           <template v-slot:append>
@@ -110,10 +110,10 @@
       </div>
     </div>
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('client.backOrder.workingHoursLate') }}
       </div>
-      <div class="col-10 flex">
+      <div class="col-10 q-pl-md flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
           :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
           <template v-slot:append>
@@ -147,10 +147,10 @@
       </div>
     </div>
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('client.backOrder.workingHoursNight') }}
       </div>
-      <div class="col-10 flex">
+      <div class="col-10 q-pl-md flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
           :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
           <template v-slot:append>
@@ -185,20 +185,20 @@
     </div>
 
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.shiftRemarks') }}
       </div>
-      <div class="col-10">
+      <div class="col-10 q-pl-md ">
         <q-input  dense outlined bg-color="white"
           v-model="data['shiftRemarks']" :disable="loading" />
       </div>
     </div>
     
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.overtimeWork') }} <span style="color: red">*</span>
       </div>
-      <div class="col-4 q-pl-sm">
+      <div class="col-4 q-pl-md ">
         <q-field                
           ref="toggle" borderless dense
           v-model="data['overtimeWork']"
@@ -209,19 +209,19 @@
           </template>
         </q-field>
       </div>
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.overtimeRemarks') }}
       </div>
-      <div class="col-4 flex ">
+      <div class="col-4 flex q-pl-md  ">
         <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || !data['existence']" />
       </div>
     </div>
 
     <div class="row q-pt-sm" v-if="type=='referral'">
-      <div class="q-pl-md col-2 text-blue text-weight-regular self-center">
+      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.annualHolidays') }}
       </div>
-      <div class="col-4 flex">
+      <div class="col-4 flex q-pl-md ">
         <q-input v-model="data['annualHolidays']" outlined dense type="number" :disable="loading" min="0" max="365"/>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
       </div>

@@ -4,14 +4,14 @@
       {{'■ '+ $t('backOrder.create.tasks') }}
     </div>
     <div class="row ">
-      <labelField :label="$t('backOrder.create.tasks')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10">
+      <labelField :label="$t('backOrder.create.tasks')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10">
         <q-input v-model="data['work_content']" outlined dense :disable="loading"/>
       </labelField>
     </div>
     
     <div class="row ">
       <labelField :label="$t('backOrder.create.pickDrop')" :edit="true" 
-        labelClass="q-pl-md col-2 self-center"  valueClass="col-10 flex" required>
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
         <q-field
           borderless dense
           v-model="data['pickDrop']"
@@ -25,7 +25,7 @@
     </div>
     
     <div class="row ">
-      <labelField :label="$t('backOrder.create.onCallSupport')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10 row" required>
+      <labelField :label="$t('backOrder.create.onCallSupport')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 row" required>
         <q-field
           borderless dense
           v-model="data['onCallSupport']"
@@ -41,19 +41,19 @@
     </div>
     
     <div class="row q-mt-sm">
-      <labelField :label="$t('backOrder.create.welfare')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10" required>
+      <labelField :label="$t('backOrder.create.welfare')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
         <q-input v-model="data['welfare']" outlined dense  :disable="loading" :rules="[creationRule]" hide-bottom-space/>
       </labelField>
     </div>
     
     <div class="row q-mt-sm">
-      <labelField :label="$t('backOrder.create.childcare')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10" required>
+      <labelField :label="$t('backOrder.create.childcare')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
         <q-input v-model="data['tasks_childcare']" outlined dense  :disable="loading" :rules="[creationRule]" hide-bottom-space/>
       </labelField>
     </div>
     
     <div class="row q-mt-sm">
-      <labelField :label="$t('backOrder.create.retirementAge')" :edit="true" labelClass="q-pl-md col-2 self-center"  valueClass="col-10 flex">
+      <labelField :label="$t('backOrder.create.retirementAge')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex">
         <q-input v-model="data['retirementAge_tasks']" outlined dense type="number" :disable="loading"/>
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.age') }}</span>
       </labelField>
