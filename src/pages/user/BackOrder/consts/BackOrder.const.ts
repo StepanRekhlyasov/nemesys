@@ -10,7 +10,7 @@ export const BackOrderColumns = computed(() => {
 			required: true,
 			label: 'BOID',
 			align: 'left',
-			field: 'BOID',
+			field: 'id',
 			sortable: false,
 		},
 		{
@@ -21,16 +21,16 @@ export const BackOrderColumns = computed(() => {
 			align: 'left',
 		},
 		{
-			name: 'registrationDate',
+			name: 'dateOfRegistration',
 			required: true,
 			label: t('backOrder.registrationDate') ,
-			field: 'registrationDate',
+			field: 'dateOfRegistration',
 			align: 'left',
 		},
 		{
-			name: 'dealType',
+			name: 'caseType',
 			required: true,
-			field: 'dealType',
+			field: 'caseType',
 			align: 'left',
 		},
 		{

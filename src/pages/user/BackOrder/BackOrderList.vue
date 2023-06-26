@@ -26,9 +26,9 @@
 					v-model:pagination="pagination"
 					hide-pagination>
 
-          <template v-slot:header-cell-dealType="props">
+          <template v-slot:header-cell-caseType="props">
             <q-th :props="props" class="q-pa-none" >
-              <div> {{ $t('backOrder.dealType') }} </div>
+              <div> {{ $t('backOrder.create.caseType') }} </div>
               <div> {{ $t('backOrder.transactionType') }} </div>
             </q-th>
           </template>
@@ -40,9 +40,9 @@
 						</q-th>
 					</template>
 
-					<template v-slot:body-cell-dealType="props">
+					<template v-slot:body-cell-caseType="props">
 						<q-td :props="props" class="q-pa-none" >
-							<div> {{ props.row.qualifications? $t(`applicant.add.${props.row.qualifications}`): '-'}} </div>
+							<div> {{ props.row.caseType? $t(`applicant.add.${props.row.caseType}`): '-'}} </div>
 							<div> {{ props.row.transactionType? $t(`backOrder.${props.row.transactionType}`): '-' }} </div>
 						</q-td>
 					</template>

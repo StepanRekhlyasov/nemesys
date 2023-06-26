@@ -88,6 +88,10 @@ export const useBackOrder = defineStore('backPrder', () => {
 		const boRef = doc(db, '/BO/'+backOrder.id);
 		await updateDoc(boRef, {...backOrder});
 
+		const changeIndex = state.value.BOList.findIndex(bo => bo.id === backOrder.id)
+
+		state.value.BOList[changeIndex] = backOrder;
+
 		state.value.BOList = state.value.BOList.map(bo => {
 			if (bo.id === backOrder.id) {
 				return backOrder

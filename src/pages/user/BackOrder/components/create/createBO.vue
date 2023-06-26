@@ -112,18 +112,23 @@ import { creationRule } from 'src/components/handlers/rules';
 import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { useUserStore } from 'src/stores/user';
-import { QForm } from 'quasar';
+import { QForm, useQuasar } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { useI18n } from 'vue-i18n';
+
 const emits = defineEmits(['closeDialog']);
+const props = defineProps<{
+  type: 'dispatch' | 'referral'
+}>()
+const $q = useQuasar();
+const { t } = useI18n({ useScope: 'global' });
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
 const userStore = useUserStore();
+
 const usersListOption = ref<selectOptions[]>([]);
 const boForm: Ref<QForm|null> = ref(null);
-
-const props = defineProps<{
-  type: 'dispatch' | 'referral'
-}>()
 const loading = ref(false);
 const data = ref({
   working_days_week: [] as string[],
@@ -139,11 +144,12 @@ async function addBackOrder() {
       loading.value = false;
       backOrderStore.loadBackOrder();
       emits('closeDialog');
+      Alert.success($q, t)
     }
-  } catch (e) {
-    console.log(e)
-    loading.value = false;
-  }
+  }  catch (e) {
+		console.log(e)
+		Alert.warning($q, t)
+	}
 }
 
 watch([data.value.client_id, data.value.office_id], async () => {  
