@@ -622,6 +622,7 @@ export default {
       transactionType: 'Transaction Type',
       introduction: 'Introduction',
       dispatch: 'Dispatch',
+      ttp: 'TTP',
       reqQualification: 'Required qualification',
       regularReview: 'Regular review',
       assistant: 'Assistant',

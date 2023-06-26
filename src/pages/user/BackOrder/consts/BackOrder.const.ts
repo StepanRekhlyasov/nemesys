@@ -10,7 +10,7 @@ export const BackOrderColumns = computed(() => {
 			required: true,
 			label: 'BOID',
 			align: 'left',
-			field: 'id',
+			field: 'boId',
 			sortable: false,
 		},
 		{
@@ -53,17 +53,17 @@ export const BackOrderColumns = computed(() => {
 			align: 'left',
 		},
 		{
-			name: 'hourlyRate',
+			name: 'wage',
 			required: true,
 			label: t('backOrder.hourlyRate'),
-			field: 'hourlyRate',
+			field: 'wage',
 			align: 'left',
 		},
 		{
-			name: 'monthlyWage',
+			name: 'salary',
 			required: true,
 			label: t('backOrder.monthlyWage'),
-			field: 'monthlyWage',
+			field: 'salary',
 			align: 'left',
 		},
 		{

@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 
 interface BackOrderState {
   BOList: BackOrderModel[]
+  selectedBo: BackOrderModel | null,
 }
 
 export const useBackOrder = defineStore('backPrder', () => {
@@ -16,7 +17,8 @@ export const useBackOrder = defineStore('backPrder', () => {
 	const { t } = useI18n({ useScope: 'global' });
 	const $q = useQuasar();
 	const state = ref<BackOrderState>({
-			BOList: []
+			BOList: [],
+			selectedBo: null
 	})
 
 	async function loadBackOrder() {
@@ -37,12 +39,14 @@ export const useBackOrder = defineStore('backPrder', () => {
 		state.value.BOList = list 
 	}
 
-	async function addBackOrder(backOrderData, clientId: string) {
+	async function addBackOrder(backOrderData) {
 		const data = JSON.parse(JSON.stringify(backOrderData));
 		data['created_at'] = serverTimestamp();
 		data['updated_at'] = serverTimestamp();
-		data['clientId'] = clientId;
 		data['deleted'] = false;
+		
+		const snapshot = await getDocs(query(collection(db, '/BO')))
+		data['boId'] = snapshot.docs.length
 
 		const clientRef = collection(db, '/BO');
 		await addDoc(clientRef, data);
@@ -84,17 +88,19 @@ export const useBackOrder = defineStore('backPrder', () => {
 		return list;
 	}
 
-	async function updateBackOrder(backOrder: BackOrderModel) {
-		const boRef = doc(db, '/BO/'+backOrder.id);
-		await updateDoc(boRef, {...backOrder});
+	async function updateBackOrder() {
+		if (!state.value.selectedBo) return ;
 
-		const changeIndex = state.value.BOList.findIndex(bo => bo.id === backOrder.id)
+		const boRef = doc(db, '/BO/'+state.value.selectedBo.id);
+		await updateDoc(boRef, {...state.value.selectedBo});
 
-		state.value.BOList[changeIndex] = backOrder;
+		const changeIndex = state.value.BOList.findIndex(bo => bo.id === state.value.selectedBo?.id)
+
+		state.value.BOList[changeIndex] = state.value.selectedBo;
 
 		state.value.BOList = state.value.BOList.map(bo => {
-			if (bo.id === backOrder.id) {
-				return backOrder
+			if (bo.id === state.value.selectedBo?.id) {
+				return state.value.selectedBo
 			}
 			return bo
 		})

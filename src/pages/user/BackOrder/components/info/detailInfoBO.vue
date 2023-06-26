@@ -52,13 +52,31 @@
         <q-input v-model="data['experience_req']" outlined dense :disable="loading"/>
       </LabelField>
       <LabelField :label="$t('backOrder.transactionType')" :edit="edit" 
-        :value="selectedBo['transactionType']?$t(`backOrder.${selectedBo['transactionType']}`) : ''">
-        <q-checkbox size="xs" class="q-mr-sm" v-model="data['transactionType']" val="introduction"
-          :label="$t('client.backOrder.introduction')" :disable="loading" />
-        <q-checkbox size="xs" class="q-mr-sm" v-model="data['transactionType']" val="ttp" 
-          label="TTP" :disable="loading" />
-        <q-checkbox size="xs" v-model="data['transactionType']" val="dispatch"
-          :label="$t('client.backOrder.dispatch')" :disable="loading" />
+        :value="selectedBo['transactionType']?$t(`client.backOrder.${selectedBo['transactionType']}`) : ''">
+        <q-radio
+          v-model="data['transactionType']"
+          :label="$t('client.backOrder.introduction')"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+          val="introduction"
+          key="introduction"
+          :disable="loading"
+          class="q-pr-md"/>
+        <q-radio
+          v-model="data['transactionType']"
+          label="TTP"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+          val="ttp"
+          key="ttp"
+          :disable="loading"
+          class="q-pr-md"/>
+        <q-radio
+          v-model="data['transactionType']"
+          :label="$t('client.backOrder.dispatch')"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+          val="dispatch"
+          key="dispatch"
+          :disable="loading"
+          class="q-pr-md"/>
       </LabelField>
     </div>
 

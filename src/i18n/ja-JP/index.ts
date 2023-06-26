@@ -617,6 +617,7 @@ export default {
       transactionType: '取引種別',
       introduction: '紹介',
       dispatch: '一般派遣',
+      ttp: 'TTP',
       reqQualification: '必要な資格',
       regularReview: '正看',
       assistant: '准看',

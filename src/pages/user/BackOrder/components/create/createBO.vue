@@ -137,19 +137,14 @@ const data = ref({
 } as Partial<BackOrderModel>);
 
 async function addBackOrder() {
-  try {
     loading.value = true
     if (data.value.client_id && boForm.value?.validate){
-      await backOrderStore.addBackOrder(data.value, data.value.client_id);
+      await backOrderStore.addBackOrder(data.value);
       loading.value = false;
       backOrderStore.loadBackOrder();
       emits('closeDialog');
       Alert.success($q, t)
     }
-  }  catch (e) {
-		console.log(e)
-		Alert.warning($q, t)
-	}
 }
 
 watch([data.value.client_id, data.value.office_id], async () => {  
