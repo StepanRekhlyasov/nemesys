@@ -9,7 +9,7 @@
 
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" 
-				:value="fixData.inspectionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+				:value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md">
 				<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" 
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
 				<q-checkbox v-model="data['inspectionStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
@@ -50,10 +50,10 @@
 		<div class="row q-pb-sm">
 			<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.userInChargeVisit')" 
 				:value="usersListOption
-					.filter(user => user.value === fixData['visit'])
+					.filter(user => user.value === fixData['chargeOfInspection'])
 					.map(user => user.label).join('')">
 					<q-select
-						v-model="data['visit']"
+						v-model="data['chargeOfInspection']"
 						:disable="loading || disableLevel < 1"
 						emit-value map-options dense outlined
 						:options="usersListOption" :label="$t('common.pleaseSelect')" />
@@ -186,7 +186,7 @@ function resetData() {
 		inspectionDate: props.editData['inspectionDate'] || '',
 		inspectionReasonNG: props.editData['inspectionReasonNG'] || '',
 		inspectionReasonNGDetail: props.editData['inspectionReasonNGDetail'] || '',
-		visit: props.editData['visit'] || '',
+		chargeOfInspection: props.editData['chargeOfInspection'] || '',
 		personalStatus: props.editData['personalStatus'] || false,
 		corporationStatus: props.editData['corporationStatus'] || false,
 		businessStatus: props.editData['businessStatus'] || false,

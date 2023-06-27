@@ -3,7 +3,7 @@
     <div class="col-9"></div>
     <div class="col-3 text-right">
       <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="infoEdit = true" class="no-shadow q-ml-lg" size="sm"/>
-      <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveInfo" size="sm"/>
+      <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveHandler" size="sm"/>
       <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false; resetData();" size="sm" />
     </div>
   </div>
@@ -17,6 +17,20 @@
       <q-select v-if="infoEdit" outlined dense :options="attendantStatusOption"
         emit-value map-options v-model="data['attendingStatus']" :disable="loading"/>
     </div>
+    <div class="row q-pb-sm q-pt-sm col-12" v-if="!data['attendingStatus']">
+        <NGReasonSelect
+          :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
+          :edit="infoEdit" 
+          :label="$t('applicant.list.fixEmployment.reasonNG')"
+          :reasonValue="data[reasonKey]"
+          @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
+          :detailedValue="data[detailKey]"
+          @update:detailedValue="(newValue : string) => data[detailKey] = newValue"
+          :disable="loading"
+          :hightlightError="hightlightError"
+          :labelClass="'col-2 q-pl-md text-right self-center'"
+        />
+      </div>
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
       {{ $t('applicant.attendant.day') }}
     </div>
@@ -68,6 +82,8 @@ import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
+import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 
 const props = defineProps<{
   applicant: Applicant
@@ -81,9 +97,26 @@ const usersListOption = usersInCharge.value
 const data = ref<Partial<ApplicantInputs>>({});
 const defaultData = ref<Partial<ApplicantInputs>>({})
 
+/** NGReasonSelect handlers */
+const reasonKey = 'attendingReasonNG' /** change reason key */
+const detailKey = 'attendingReasonNGDetail' /** change reason detail key */
+const statusKey = 'attendingStatus' /** change status key */
+const hightlightError = ref<string[]>([])
+const saveHandler = async () => {
+  if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
+    await saveInfo()
+    resetData();
+  }
+}
+useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
+/** NGReasonSelect handlers */
+
+
 function resetData() {
   defaultData.value = {
     attendingStatus: props?.applicant['attendingStatus'],
+    attendingReasonNG: props?.applicant['attendingReasonNG'],
+    attendingReasonNGDetail: props?.applicant['attendingReasonNGDetail'],
     attendingDate: timestampToDateFormat(props?.applicant['attendingDate']),
     attendeeUserInCharge: props?.applicant['attendeeUserInCharge'],
     memo: props?.applicant['memo'],

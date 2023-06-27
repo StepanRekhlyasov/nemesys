@@ -8,7 +8,7 @@
       :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">
       <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" 
-        :value="fixData.admissionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+        :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md">
         <q-checkbox v-model="data['admissionStatus']" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
         <q-checkbox v-model="data['admissionStatus']" label="NG" class="q-ml-sm" :disable="disableLevel < 3"

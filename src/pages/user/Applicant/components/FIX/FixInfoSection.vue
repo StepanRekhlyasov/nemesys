@@ -7,7 +7,7 @@
     @onSave="saveHandler()">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
-        :value="fixData.fixStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
+        :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md">
         <q-checkbox v-model="data['fixStatus']" label="OK" @click="data['data'] = '';emit('disableChange')"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
         <q-checkbox v-model="data['fixStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
