@@ -22,13 +22,13 @@
 
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.benefit')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-input v-model="data['benefit']" outlined dense type="number" :disable="loading"/>
+        <q-input v-model="data['benefit']" outlined dense :disable="loading"/>
       </labelField>
     </div>
     
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.bonus')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-input v-model="data['bonus']" outlined dense type="number" :disable="loading"/>
+        <q-input v-model="data['bonus']" outlined dense :disable="loading"/>
       </labelField>
     </div>
     

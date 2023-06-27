@@ -212,8 +212,8 @@
       <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.overtimeRemarks') }}
       </div>
-      <div class="col-4 flex q-pl-md  ">
-        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || !data['existence']" />
+      <div class="col-4 flex q-pl-md self-center ">
+        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || data['overtimeWork'] !== 'yes'" />
       </div>
     </div>
 
