@@ -34,14 +34,12 @@ import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useQuasar } from 'quasar';
 import { useBusiness } from 'src/stores/business';
 
 interface AddBusinessProps {
   organization: Row
 }
 
-const $q = useQuasar();
 const name = ref<string>('')
 const working = ref(true)
 const props = defineProps<AddBusinessProps>()
@@ -60,9 +58,9 @@ async function addBusiness() {
 
   try {
     await businessStore.addBusiness(db, business, props.organization.id)
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
   }
   emit('closeDialog')
   loading.value = false

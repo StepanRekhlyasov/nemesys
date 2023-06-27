@@ -156,7 +156,7 @@ async function loadBranchesList() {
   } catch (e) {
     console.log(e)
     loading.value = false;
-    Alert.warning($q, t);
+    Alert.warning(e);
   }
 }
 async function deleteBranch(branch) {
@@ -174,10 +174,10 @@ async function deleteBranch(branch) {
       loading.value = true;
       await branchStore.editBranch({ deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
       loadBranchesList();
-      Alert.success($q, t)
+      Alert.success()
     } catch (e) {
       console.log(e)
-      Alert.warning($q, t)
+      Alert.warning(e)
       loading.value = false;
     }
   })

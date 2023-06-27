@@ -9,24 +9,21 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <q-td 
-        class="clickable" 
+      <q-td
+        class="clickable"
         @click="()=>{
           emit('openDrawer', props.row)
-        }" 
+        }"
       >{{ props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
 <script setup lang="ts">
-import { QTableProps, exportFile, useQuasar } from 'quasar';
+import { QTableProps, exportFile } from 'quasar';
 import { saaTableColumns as columns } from '../const/saa.const'
 import { Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useI18n } from 'vue-i18n';
 
-const $q = useQuasar();
-const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
   rows: QTableProps['rows']
 }>()
@@ -40,7 +37,7 @@ const exportTable = () => {
   }
   const csvData = props.rows.map((row) => Object.values(row));
   const csvHeaders = columns.value.map((column) => column.label);
-  
+
   const csvContent = [
     csvHeaders.join(','),
     ...csvData.map((row) => row.join(',')),
@@ -51,7 +48,7 @@ const exportTable = () => {
     'text/csv'
   )
    if (status !== true) {
-    Alert.warning($q, t);
+    Alert.warning(status);
   }
 }
 defineExpose({ exportTable })

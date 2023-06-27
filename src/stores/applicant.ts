@@ -5,8 +5,6 @@ import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix
 import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
@@ -30,7 +28,7 @@ interface ApplicantState {
     size: number,
     total_pages: number,
     total_results: number
-  },  
+  },
   prefectureList: {label: string, value: string | number}[],
   selectedApplicant: Applicant | null,
   needsApplicantUpdateOnMounted: boolean,
@@ -84,8 +82,6 @@ export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
     //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
   const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
-  const $q = useQuasar();
-  const { t } = useI18n({ useScope: 'global' });
   const organization = useOrganization()
   const route = useRoute()
 
@@ -173,8 +169,8 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.applicantERWCount[status] = result
     return result
   }
-  
-  const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}, 
+
+  const loadApplicantData = async (searchData : ApplicantElasticSearchData = {},
     pagination = {
       page: 1,
       rowsPerPage: 10
@@ -215,7 +211,7 @@ export const useApplicant = defineStore('applicant', () => {
         'dob': { 'from': getDate(parseInt(searchData.ageMax)) }
       });
     }
-  
+
     const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
@@ -244,7 +240,7 @@ export const useApplicant = defineStore('applicant', () => {
         'daystowork': { 'to': parseInt(searchData.workPerWeekMax) }
       });
     }
-  
+
     if (searchData.mapData) {
       filters['all'].push({
         'geohash': {
@@ -254,7 +250,7 @@ export const useApplicant = defineStore('applicant', () => {
         }
       });
     }
-  
+
     if (!queryString && filters.all.length == 1) {
       const d = new Date();
       const m = d.getMonth();
@@ -285,10 +281,11 @@ export const useApplicant = defineStore('applicant', () => {
         loadFirestoreApplicantData()
       }
     }).catch((error) => {
+      Alert.warning(error)
       console.log(error)
     });
   };
-  
+
   const loadFirestoreApplicantData = async () => {
     state.value.applicantList = [];
     state.value.isLoadingProgress = true;
@@ -298,25 +295,25 @@ export const useApplicant = defineStore('applicant', () => {
     }
     state.value.isLoadingProgress = false;
   }
-  
+
   const formatDate = (dt : Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
     const day = dt.toLocaleString('en-US', { day: '2-digit' });
     if (midNight) {
       return year + '-' + month + '-' + day + 'T00:00:00+00:00';
-  
+
     }
     return year + '-' + month + '-' + day + 'T23:59:59+00:00';
   }
-  
+
   const getDate = (ageInYears : number) => {
     const calDate = new Date();
     calDate.setFullYear(calDate.getFullYear() - ageInYears);
     const year = calDate.toLocaleString('en-US', { year: 'numeric' });
     const month = calDate.toLocaleString('en-US', { month: '2-digit' });
     const day = calDate.toLocaleString('en-US', { day: '2-digit' });
-  
+
     return year + '-' + month + '-' + day + 'T00:00:00+00:00';
   }
 
@@ -506,6 +503,7 @@ export const useApplicant = defineStore('applicant', () => {
       try{
         await batch.commit()
       } catch (e){
+        Alert.warning(e)
         console.log(e)
       }
     }
@@ -564,15 +562,15 @@ export const useApplicant = defineStore('applicant', () => {
       if (applicantIndex >=0) {
         state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
       }
-      if (showAlert) { Alert.success($q, t); }
+      if (showAlert) { Alert.success(); }
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
       } catch(error) {
-        if (showAlert){ Alert.warning($q, t); }
+        if (showAlert){  Alert.warning(error); }
       }
     } catch (error) {
       console.log(error)
-      if (showAlert){  Alert.warning($q, t); }
+      if (showAlert){  Alert.warning(error); }
     }
   };
 
@@ -600,7 +598,7 @@ export const useApplicant = defineStore('applicant', () => {
         data['imagePath'] = snapshot.ref.fullPath;
         data['imageURL'] = await getDownloadURL(storageRef)
       } catch(error){
-        Alert.warning($q, t);
+        Alert.warning(error);
         return false;
       }
     }
@@ -609,10 +607,10 @@ export const useApplicant = defineStore('applicant', () => {
         docRef,
         data
       );
-      Alert.success($q, t);
+      Alert.success();
       return true;
     } catch (error) {
-      Alert.warning($q, t);
+      Alert.warning(error);
       return false;
     }
   }
@@ -675,10 +673,10 @@ export const useApplicant = defineStore('applicant', () => {
           updated_at: serverTimestamp(),
           ...saveData
         })
-        Alert.success($q, t);
+        Alert.success();
     } catch (e) {
       console.log(e)
-      Alert.warning($q, t);
+      Alert.warning(e);
     }
   }
 
@@ -756,6 +754,7 @@ export const useApplicant = defineStore('applicant', () => {
         try{
           return a.currentStatusTimestamp.toDate() > b.currentStatusTimestamp.toDate()
         } catch (error){
+          Alert.warning(error)
           console.log(error)
         }
       })

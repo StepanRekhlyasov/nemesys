@@ -30,7 +30,6 @@
 <script setup lang="ts">
 import { getAuth } from '@firebase/auth';
 import { serverTimestamp, Timestamp } from '@firebase/firestore';
-import { useQuasar } from 'quasar';
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
@@ -40,10 +39,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useLicense } from 'src/stores/license';
 import { useOrganization } from 'src/stores/organization';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar();
 const loading = ref(false)
 const organization = useOrganization()
 const requestType = ref<LicenseRequest['requestType']>()
@@ -81,10 +77,10 @@ async function addLicenseRequest() {
       requestUserId: userId
     }
     await license.createLicenseRequest(licenseRequest)
-    Alert.success($q, t)
+    Alert.success()
   } catch (error) {
     console.log(error)
-    Alert.warning($q, t)
+    Alert.warning(error)
   }
   loading.value = false
   emit('closeDialog')

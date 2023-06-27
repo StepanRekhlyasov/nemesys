@@ -272,7 +272,7 @@ async function updateData(data){
   }
   data = mutateDatesInData(data)
   fixData.value = {
-    ...fixData.value, 
+    ...fixData.value,
     ...data
   }
   const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
@@ -337,7 +337,7 @@ function showDeleteDialog(data) {
 
     await fixStore.updateFix(data.id, updateData)
     loadContactData();
-    Alert.success($q, t)
+    Alert.success()
   })
 }
 </script>

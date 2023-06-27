@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { getAuth } from 'firebase/auth';
-import Quasar, { useQuasar } from 'quasar';
 import { storeToRefs } from 'pinia'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps, watch, ref } from 'vue';
@@ -28,7 +27,6 @@ const { updateClientFactory, addReflectLog, addImportLog } = useClientFactory()
 const organizationStore = useOrganization()
 const { currentOrganizationId } = storeToRefs(organizationStore)
 const { getUserById } = useUserStore();
-const $q = useQuasar()
 const auth = getAuth();
 const user = auth.currentUser;
 
@@ -75,7 +73,7 @@ const editDraftHandler = async (changedData: ChangedData) => {
     isLoading.value.isGeneral = true
 
     localDraft.value = finishEditing(changedData, localDraft.value, localData.value)
-    await updateClientFactory({ ...localData.value, draft: localDraft.value }, $q as unknown as typeof Quasar)
+    await updateClientFactory({ ...localData.value, draft: localDraft.value })
 
     isLoading.value.isGeneral = false
 }
@@ -98,7 +96,7 @@ const onImport = async (data: ChangedData) => {
         localData.value = copyBeforeRemoveDraft
         localDraft.value = {}
 
-        await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, $q as unknown as typeof Quasar)
+        await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, )
 
         const importLog = await addImportLog(currentUser, localData.value, organizations[0], isOfficeDetailsChanged)
         newImportLog.value = importLog as ImportLog
@@ -124,7 +122,7 @@ const onReflect = async () => {
         localData.value = copyBeforeRemoreDraft
         localDraft.value = {}
 
-        await updateClientFactory({...clientFactoryToUpdate, draft: localDraft.value}, $q as unknown as typeof Quasar)
+        await updateClientFactory({...clientFactoryToUpdate, draft: localDraft.value}, )
 
         const reflectLog = await addReflectLog(currentUser, localData.value, isOfficeDetailsChanged)
         newReflectLog.value = reflectLog as ReflectLog
