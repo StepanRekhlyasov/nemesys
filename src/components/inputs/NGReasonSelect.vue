@@ -2,9 +2,9 @@
   <labelField 
     :edit="edit"
     :label="label"
-    valueClass="col-9 q-pl-md">
+    valueClass="col-9 q-pl-md" :required="required">
     <div class="row" style="gap: 15px;">
-      <q-field :error="errorReason" dense :outlined="false" class="q-pb-none">
+      <q-field :error="errorReason" dense :outlined="false" class="q-pb-none" borderless>
         <q-radio 
           v-model="inputReasonVal" 
           @update:model-value="(newVal)=>{ emit('update:reasonValue', newVal);}" 
@@ -69,9 +69,11 @@ const props = withDefaults(defineProps<{
   edit?: boolean,
   label: string,
   disable?: boolean,
-  hightlightError?: string[]
+  hightlightError?: string[],
+  required?: boolean
 }>(), {
-  edit: false
+  edit: false,
+  required: false
 })
 const inputReasonVal = ref(props.reasonValue)
 const inputDetailedVal = ref(props.detailedValue)
