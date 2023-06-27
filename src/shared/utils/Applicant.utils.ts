@@ -24,6 +24,8 @@ export const getApplicantCurrentStatusTimestampField = (status? : ApplicantStatu
       return 'inspectionDate';
     case ApplicantStatus.WAIT_ENTRY:
       return 'offerDate';
+    case ApplicantStatus.WAIT_TERMINATION:
+      return 'endDate';
     default:
       return '';
   }
