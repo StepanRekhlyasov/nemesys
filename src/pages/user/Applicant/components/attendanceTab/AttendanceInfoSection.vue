@@ -12,7 +12,7 @@
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
       {{ $t('applicant.attendant.attendantStatus') }}
     </div>
-    <div class="col-2 q-pl-md blue ">
+    <div class="col-2 q-pl-md blue self-center">
       <span v-if="!infoEdit" class="text-uppercase">{{ applicant.attendingStatus? 'OK' : 'NG' }}</span>
       <q-select v-if="infoEdit" outlined dense :options="attendantStatusOption"
         emit-value map-options v-model="data['attendingStatus']" :disable="loading"/>
@@ -20,7 +20,7 @@
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
       {{ $t('applicant.attendant.day') }}
     </div>
-    <div class="col-2 q-pl-md  blue ">
+    <div class="col-2 q-pl-md  blue self-center">
       <span v-if="!infoEdit">{{ timestampToDateFormat(applicant.attendingDate) }}</span>
       <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendingDate']"  :disable="loading">
         <template v-slot:prepend>

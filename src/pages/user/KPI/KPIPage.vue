@@ -5,7 +5,7 @@
     </q-card-section>
     <q-card-section class="bg-grey-3 flex items-end gap">
       <label class="text-subtitle1">
-        {{ $t('KPI.mode') }}
+        {{ $t('KPI.aggregationMethods') }}
         <MySelect
           :options="[
             {
@@ -82,7 +82,7 @@
         />
       </label>
       <label class="text-subtitle1" v-if="mode === 'day'">
-        {{ $t('SAA.username') }}
+        {{ $t('KPI.username') }}
         <MySelect
           :option-to-fetch="'usersInCharge'"
           :width="'175px'"

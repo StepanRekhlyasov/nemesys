@@ -4,107 +4,77 @@
       {{'■ '+ $t('backOrder.basicInfo') }}
     </div>
     <div class="row ">
-      <labelField :label="$t('client.list.client')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4" v-if="client">
-        {{ client['client_name'] }}
+      <labelField :label="$t('client.list.client')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " v-if="client" :value="client['name']">
       </labelField>
-      <labelField :label="$t('backOrder.officeName')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        {{ $t('client.backOrder.introduction') }}
-      </labelField>
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>田中　太郎</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
+      <labelField :label="$t('backOrder.officeName')" :edit="false" :value="office?.name"
+        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " v-if="office">
       </labelField>
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.approvalOrNot')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>有</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['customerRepresentative']" valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.filingRemarks')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>最短で1週間はかかる</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.approvalOrNot')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['approvalOrNot'] ? $t('common.yes') : $t('common.no')" valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.availabilityOfGarage')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>有</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
-      <labelField :label="$t('backOrder.create.commutingByCar')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>可能</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.filingRemarks')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['filingRemarks']"  valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.parkingRemarks')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>夜勤の場合のみ使用可能</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.availabilityOfGarage')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['availabilityOfGarage']"  valueClass="col-4 q-pl-md " />
+      <labelField :label="$t('backOrder.create.commutingByCar')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['commutingByCar']"  valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.uniformAvailability')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>有</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
-      <labelField :label="$t('backOrder.create.availabilityOfLunch')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>なし</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.parkingRemarks')" :edit="false"
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['parkingRemarks']"  valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.smoking')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>可能</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.uniformAvailability')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['uniformAvailability']"  valueClass="col-4 q-pl-md " />
+      <labelField :label="$t('backOrder.create.availabilityOfLunch')" :edit="false" 
+      labelClass="q-pl-md col-2 text-right" :value="backOrder['availabilityOfLunch']" valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.smokingRemarks')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>電子のみ可能</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.smoking')" :edit="false" 
+      labelClass="q-pl-md col-2 text-right" :value="backOrder['smoking'] ? $t(`smoking.${backOrder['smoking']}`) : ''" valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.vaccination')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>必須</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
-      <labelField :label="`${$t('backOrder.create.priorEmployment')}\r   ${$t('backOrder.create.medicalCheckup')}`" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>必須</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.smokingRemarks')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['smokingRemarks']"  valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.numberUsers')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>120名</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
-      <labelField :label="$t('backOrder.create.employees')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>30名</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
+      <labelField :label="$t('backOrder.create.vaccination')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['vaccination']"  valueClass="col-4 q-pl-md " />
+      <labelField :label="`${$t('backOrder.create.priorEmployment')}\r   ${$t('backOrder.create.medicalCheckup')}`" 
+        :edit="true" labelClass="q-pl-md col-2 text-right" :value="backOrder['medicalExamination']" valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.levelOfCare')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-        <span>自立の利用者が大半</span>
-        <q-btn round unelevated icon="mdi-pencil" size="xs" color="grey-4" class="q-ml-sm" text-color="primary" />
-      </labelField>
-      <labelField :label="$t('backOrder.create.memo')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-      </labelField>
+      <labelField :label="$t('backOrder.create.numberUsers')" :edit="false" labelClass="q-pl-md col-2 text-right" 
+        :value="backOrder['numberUsers'] ? `${backOrder['numberUsers']}${$t('common.reputation')}` : '' "  valueClass="col-4 q-pl-md " />
+      <labelField :label="$t('backOrder.create.employees')" :edit="false" labelClass="q-pl-md col-2 text-right" 
+        :value="backOrder['numberEmployees'] ? `${backOrder['numberEmployees']}${$t('common.reputation')}` : ''"  valueClass="col-4 q-pl-md " />
+    </div>
+
+    <div class="row q-pt-sm">
+      <labelField :label="$t('backOrder.create.levelOfCare')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['levelOfCare']"  valueClass="col-4 q-pl-md " />
+      <labelField :label="$t('backOrder.create.memo')" :edit="false" 
+        labelClass="q-pl-md col-2 text-right" :value="backOrder['memo']" valueClass="col-4 q-pl-md " />
     </div>
     
   </q-card-section>  
@@ -112,12 +82,25 @@
 
 <script lang="ts" setup>
 import labelField from 'src/components/form/LabelField.vue';
-import { BackOrderModel, Client } from 'src/shared/model';
+import { BackOrderModel, Client, ClientOffice } from 'src/shared/model';
+import { ref, watch } from 'vue';
 
-defineProps<{
-  backOrder: BackOrderModel,
+const props = defineProps<{
+  backOrder: Partial<BackOrderModel>,
   loading: boolean,
-  client?: Client
+  client?: Client,
+  officeID?: string,
 }>()
+
+const office = ref<ClientOffice>();
+
+watch(props, () => {
+  if ( props.client?.office &&  props.officeID){
+    const offices = props.client?.office.find(office => office.id == props.officeID)
+    if (offices){
+      office.value = offices
+    }
+  }
+}, {deep: true, immediate: true})
 
 </script>

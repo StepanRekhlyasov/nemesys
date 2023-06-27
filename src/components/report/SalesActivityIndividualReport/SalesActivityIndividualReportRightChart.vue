@@ -4,29 +4,21 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref,
-  Ref,
-  watch,
-  defineProps,
-  onMounted,
-  computed,
-  ComputedRef,
-} from 'vue';
+import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptionsR, columnsR ,data_names as dataNames} from './const';
+import { chartOptionsR, columnsR, dataNames } from './const';
 import { useBOIndividualReport } from 'src/stores/BOindividualReport';
 import { useTotalizer } from 'src/stores/totalization';
-import {graphType} from '../Models';
+import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 const apexchart = VueApexCharts;
 const Totalizer = useTotalizer();
 const BOIndividualReport = useBOIndividualReport();
 const t = useI18n({ useScope: 'global' }).t;
-const dataToShow: Ref<(number | string)[][]> = ref([]);
-const user_list: Ref<{ id: string; name: string }[]> = ref([]);
+const dataToShow = ref<(number | string)[][]>([]);
+const userList = ref<{ id: string; name: string }[]>([]);
 
-const rows_: Ref<
+const rowsIndividual = ref<
   {
     name: string;
     number_of_calls_per_day: number;
@@ -35,12 +27,12 @@ const rows_: Ref<
     BO_New: number;
     BO_Existing: number;
   }[]
-> = ref([]);
+>([]);
 
-const series_: Ref<
+const seriesIndividual = ref<
   { name: string; data: (number | string)[]; type: string }[]
-> = ref([]);
-const rows: ComputedRef<
+>([]);
+const rows = computed<
   {
     name: string;
     number_of_calls_per_day: number | string;
@@ -49,7 +41,7 @@ const rows: ComputedRef<
     BO_New: number | string;
     BO_Existing: number | string;
   }[]
-> = computed(() => {
+>(() => {
   return dataToShow.value
     .map((rowData, index) => {
       return {
@@ -61,21 +53,21 @@ const rows: ComputedRef<
         BO_Existing: rowData[4],
       };
     })
-    .concat(rows_.value);
+    .concat(rowsIndividual.value);
 });
 
-const series: ComputedRef<
+const series = computed<
   { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+>(() => {
   return dataToShow.value
-    .map((row_data, index) => {
+    .map((rowData, index) => {
       return {
         name: t(dataNames[index]),
-        data: row_data,
+        data: rowData,
         type: 'line',
       };
     })
-    .concat(series_.value);
+    .concat(seriesIndividual.value);
 });
 
 const props = defineProps<{
@@ -84,59 +76,67 @@ const props = defineProps<{
   organization_id: string;
   branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
-
 }>();
 
 const showIndividualReport = async (
-  dateRange: { from: string; to: string } | undefined,
-  organization_id: string
+  organizationId: string,
+  userList: { id: string; name: string }[],
+  dateRange?: { from: string; to: string }
 ) => {
-  if (dateRange == undefined) return;
-  const { rows: rows__, series: series__ } = await BOIndividualReport.getBOIndividualReport(
-    user_list.value,
-    dateRange
-  );
-  rows_.value = rows__;
-  series_.value = series__;
+  if (!dateRange) return;
+  const { rows: rows, series: series } =
+    await BOIndividualReport.getBOIndividualReport(userList, dateRange);
+  rowsIndividual.value = rows;
+  seriesIndividual.value = series;
   let target: { applicants: string; fix: string; bo: string } | undefined =
     undefined;
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
   }
-  const data_average = await Totalizer.Totalize(
+  const dataAverage = await Totalizer.Totalize(
     dateRange,
     ['bo', 'bo_isfirst', 'bo_isnotfirst'],
     true,
-    organization_id,
+    organizationId,
     target
   );
-  const all_data_average = await Totalizer.Totalize(
+  const allDataAverage = await Totalizer.Totalize(
     dateRange,
     ['bo', 'bo_isfirst', 'bo_isnotfirst'],
     true,
     undefined,
     target
   );
-  data_average.unshift(0);
-  all_data_average.unshift(0);
-  data_average.unshift(0);
-  all_data_average.unshift(0);
-  dataToShow.value = [data_average, all_data_average];
+  dataAverage.unshift(0);
+  allDataAverage.unshift(0);
+  dataAverage.unshift(0);
+  allDataAverage.unshift(0);
+  dataToShow.value = [dataAverage, allDataAverage];
 };
 watch(
   () => [props.branch_user_list, props.dateRangeProps],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     if (props.branch_user_list.length != 0) {
-      user_list.value = props.branch_user_list;
-      await showIndividualReport(props.dateRangeProps, props.organization_id);
+      userList.value = props.branch_user_list;
+      await showIndividualReport(
+        props.organization_id,
+        userList.value,
+        props.dateRangeProps
+      );
     }
   }
 );
 
 onMounted(async () => {
-  if (props.dateRangeProps == undefined) return;
-  user_list.value = props.branch_user_list;
-  await showIndividualReport(props.dateRangeProps, props.organization_id);
+  if (!props.dateRangeProps) return;
+  if (props.branch_user_list.length != 0) {
+    userList.value = props.branch_user_list;
+    await showIndividualReport(
+      props.organization_id,
+      userList.value,
+      props.dateRangeProps
+    );
+  }
 });
 </script>

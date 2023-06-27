@@ -1,43 +1,59 @@
 export interface BackOrderModel {
-  id?: string;
+  id: string;
   type: 'dispatch' | 'referral';
-  
-  typeCase: TypeOfCase;
-  qualifications: TypeQualifications;
-  experience: string;
-  moreHalfYearExp: boolean;
-  ageLimit: number;
-  status: BackOrderStatus;
-  retirementAge: string;
-  hourlywage: string;
-  monthlySalary: string;
-  buissnesDescription: string;
-  unitPrice: string;
-  payday: string;
-  transportationExpenses: string;
-  workingDays: string;
-  workingDaysWeek: WorkingDaysWeek;
-  transactionType: TransactionType;
-  daysPerWeekList?: 'one' | 'two' | 'three' | 'four' | 'five';
-  working_days_week: string[];
-  client_id: string; 
-  
+  BOGenerationRoute: 'coldCall' | 'fax';
+  client_id: string;
+  office_id: string; 
 
+  created_at: string;
+  deleted: false;
+
+  // Introduction Section 
+  dateOfRegistration: string;
+  typeCase: TypeOfCase;
+  status: BackOrderStatus;
+  requiredQualifications: boolean;
+  qualifications: TypeQualifications;
+  somethingNotQuestioned: boolean;
+  experienceRemarks: string;
+
+  // Employment Conditions Section 
+  daysPerWeekList?: 'one' | 'two' | 'three' | 'four' | 'five';
+  workingDays: 'shiftSystem' | 'fixed';
+  workingDaysWeek: WorkingDaysWeek[];
   workingHoursEarly: string;
   workingHoursDay: string;
   workingHoursLate: string;
   workingHoursNight: string;
+  shiftRemarks: string;
+  existence: boolean;
+  overtimeRemarks: string;
+  annualHolidays: string;
 
-  businessContent: string;
-  onCallPickUP: string;
-  overtimeHours: string;
-  holidaysWeekly: string;
-  holidayAnnual: string;
-  leaveChildcare: string;
-  otherNotes: string;
+  // Paycheck Section 
+  wage: 'monthlySalary' | 'hourlyWage';
+  salary: number;
+  benefit: number;
+  bonus: number;
+  travelingExpenses: 'yesRegular' | 'yesDaily' | 'none';
+  payday: number;
+  remarks: string;
 
-  created_at: string;
-  deleted: false;
+  // Tasks Section (only referal type)
+  tasks: string;
+  pickDrop: boolean;
+  onCallSupport: boolean;
+  onCallRemarks: string;
+  welfare: string;
+  tasks_childcare: string;
+  retirementAge_tasks: string;
+
+  // In House Information Section (only referal type)
+  retirementAge: string;
+  stipulatedAmount: number;
+  retirementAge_house: number;
+  memo_house: string;
+
 }
 
 
@@ -62,9 +78,8 @@ export enum TransactionType {
 
 export enum BackOrderStatus {
   FullTime = 'fullTime',
-  Dispatch = 'dispatchEm',
   PartTime = 'partTime',
-  Baito = 'baito'
+  PartTimeEmployee = 'partTimeEmployee'
 }
 
 export enum WorkingDaysWeek {

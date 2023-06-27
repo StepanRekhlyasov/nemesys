@@ -242,35 +242,42 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
   created_at: Timestamp | FieldValue | string;
   client: string;
   office: string;
+  backOrder: string;
   applicant_id: string;
 }
 
 export interface FixMainInfo {
   fixStatus: boolean;
   fixDate: string;
-  reason: string;
-  reasonDetal?: string;
-  contactPerson: string;
-  memo: string;  
+  fixReasonNG: string;
+  fixReasonNGDetail?: string;
+  chargeOfFix: string;
+  fixMemo?: string;  
 } 
 
 export interface FixJobSearchInfo {
   inspectionStatus: boolean;
   inspectionDate: string;
+  inspectionReasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  inspectionReasonNGDetail?: string;
+  visit: string;
+  personalStatus: string,
+  corporationStatus: string,
+  businessStatus: string,
   reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   reasonJobDetal?: string;
   chargeOfFacility: string;
   jobTitle?: string;
   contact: string;
   comments: string;
-  notesInspection: string;
+  inspectionMemo: string;
 }
 
 export interface FixEmploymentInfo {
   admissionStatus: boolean;
   admissionDate: string;
-  admissionReason: string;
-  admissionReasonDetal: string;
+  admissionReasonNG: string;
+  admissionReasonNGDetail: string;
   reasonNotJoining: string;
   chargeOfAdmission: string;
   endDate: string;
@@ -281,7 +288,7 @@ export interface FixJobOffersInfo {
   offerStatus: boolean;
   offerDate: string;
   offerReasonNG: string;
-  offerReasonDetal: string;
+  offerReasonNGDetail: string;
   chargeOfOffer: string;
   offerMemo: string;
 

@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, item_list ,chartType,row_names} from './const';
+import { chartOptions, columns ,itemList ,chartType ,rowNames} from './const';
 import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from 'src/components/report/reportUtil';
 import {graphType} from '../Models';
@@ -20,7 +20,7 @@ const series: ComputedRef<
 > = computed(() => {
   const seriesList = dataToshow.value.map((rowData, index) => {
     return {
-      name: t(row_names[index]),
+      name: t(rowNames[index]),
       data: rowData,
       type: chartType[index],
     };
@@ -41,21 +41,21 @@ const rows: ComputedRef<
     admission: number | string;
   }[]
 > = computed(() => {
-  const rows_ = dataToshow.value.map((row_data, index) => {
+  const rowsList = dataToshow.value.map((rowData, index) => {
     return {
-      name: t(row_names[index]),
-      applicants: row_data[0],
-      valid_applicants: row_data[1],
-      contact_applicants: row_data[2],
-      attraction_applicants: row_data[3],
-      attend_applicants: row_data[4],
-      fix: row_data[5],
-      inspection: row_data[6],
-      offer: row_data[7],
-      admission: row_data[8],
+      name: t(rowNames[index]),
+      applicants: rowData[0],
+      valid_applicants: rowData[1],
+      contact_applicants: rowData[2],
+      attraction_applicants: rowData[3],
+      attend_applicants: rowData[4],
+      fix: rowData[5],
+      inspection: rowData[6],
+      offer: rowData[7],
+      admission: rowData[8],
     };
   });
-  return rows_;
+  return rowsList;
 });
 
 const props = defineProps<{
@@ -68,38 +68,38 @@ const props = defineProps<{
 
 const showData = async (
   dateRange: { from: string; to: string },
-  organization_id: string
+  organizationId: string
 ) => {
   let target: { applicants: string; fix: string; bo: string } | undefined =
     undefined;
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'applicants', bo: 'bo' };
   }
-  const data_average = await Totalizer.Totalize(
+  const dataAverage = await Totalizer.Totalize(
     dateRange,
-    item_list,
+    itemList,
     false,
-    organization_id,
+    organizationId,
     target,
     true
   );
-  const data_cvr = calculateCVR(data_average);
-  const data_average_all = await Totalizer.Totalize(
+  const dataCvr = calculateCVR(dataAverage);
+  const dataAverageAll = await Totalizer.Totalize(
     dateRange,
-    item_list,
+    itemList,
     false,
     undefined,
     target,
     true
   );
-  const data_cvr_all = calculateCVR(data_average_all);
-  dataToshow.value = [data_average, data_cvr, data_cvr_all];
+  const dataCvrAll = calculateCVR(dataAverageAll);
+  dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
 };
 
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     await showData(
       props.dateRangeProps,
       props.organization_id
@@ -108,7 +108,7 @@ watch(
 );
 
 onMounted(async () => {
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   await showData(
     props.dateRangeProps,
     props.organization_id

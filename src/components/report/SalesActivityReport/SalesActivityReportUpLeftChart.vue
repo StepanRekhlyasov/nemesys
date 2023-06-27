@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, chartOptionsR, columns, columnsR ,data_names,data_namesR,chart_names ,chart_namesR } from './const';
+import { chartOptions, chartOptionsR, columns, columnsR ,dataNames,dataNamesR,chartNames ,chartNamesR } from './const';
 import { useTotalizer } from 'src/stores/totalization';
 import { calculateCVR } from '../reportUtil';
 import {graphType} from '../Models';
@@ -23,27 +23,27 @@ const Totalizer = useTotalizer();
 const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowR: Ref<(number | string)[][]> = ref([]);
-const item_list = ['fix', 'inspection', 'offer', 'admission'];
+const itemList = ['fix', 'inspection', 'offer', 'admission'];
 
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  return dataToshow.value.slice(0,-1).map((row_data, index) => {
+  return dataToshow.value.slice(0,-1).map((rowData, index) => {
     return {
-      name: t(data_names[index]),
-      data: row_data,
-      type: chart_names[index],
+      name: t(dataNames[index]),
+      data: rowData,
+      type: chartNames[index],
     };
   });
 });
 const seriesR: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  return dataToshowR.value.map((row_data, index) => {
+  return dataToshowR.value.map((rowData, index) => {
     return {
-      name: t(data_namesR[index]),
-      data: row_data,
-      type: chart_namesR[index],
+      name: t(dataNamesR[index]),
+      data: rowData,
+      type: chartNamesR[index],
     };
   });
 });
@@ -56,13 +56,13 @@ const rows: ComputedRef<
     admission: number | string;
   }[]
 > = computed(() => {
-  return dataToshow.value.map((row_data, index) => {
+  return dataToshow.value.map((rowData, index) => {
     return {
-      name: t(data_names[index]),
-      fix: row_data[0],
-      inspection: row_data[1],
-      offer: row_data[2],
-      admission: row_data[3],
+      name: t(dataNames[index]),
+      fix: rowData[0],
+      inspection: rowData[1],
+      offer: rowData[2],
+      admission: rowData[3],
     };
   });
 });
@@ -76,14 +76,14 @@ const rowsR: ComputedRef<
     admission: number | string;
   }[]
 > = computed(() => {
-  return dataToshowR.value.map((row_data, index) => {
+  return dataToshowR.value.map((rowData, index) => {
     return {
-      name: t(data_namesR[index]),
-      fix: row_data[0],
-      inspection: row_data[1],
-      offer: row_data[2],
-      admission: row_data[3],
-    BO_total: row_data[4]
+      name: t(dataNamesR[index]),
+      fix: rowData[0],
+      inspection: rowData[1],
+      offer: rowData[2],
+      admission: rowData[3],
+      BO_total: rowData[4]
 
     };
   });
@@ -100,52 +100,52 @@ const props = defineProps<{
 
 const showSalesActivityReport = async (
   dateRange: { from: string; to: string },
-  organization_id: string
+  organizationId: string
 ) => {
   let target: { applicants: string; fix: string; bo: string } | undefined =
     undefined;
   if (props.graph_type == 'BasedOnLeftMostItemDate') {
     target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
   }
-  const data_average = await Totalizer.Totalize(
+  const dataAverage = await Totalizer.Totalize(
     dateRange,
-    item_list,
+    itemList,
     false,
-    organization_id,
+    organizationId,
     target
   );
-  if (data_average == undefined) return;
-  const data_average_R = [...data_average];
-  const data_average_all = await Totalizer.Totalize(
+  if (!dataAverage) return;
+  const dataAverageR = [...dataAverage];
+  const dataAverageAll = await Totalizer.Totalize(
     dateRange,
-    item_list,
+    itemList,
     false,
     undefined,
     target
   );
-  if (data_average_all == undefined) return;
-  const data_average_all_R = [...data_average];
-  const BO = await Totalizer.Totalize(dateRange, ['bo'], false, organization_id, target);
-  const BO_all = await Totalizer.Totalize(dateRange, ['bo'], false, undefined, target);
-  if (BO == undefined) return;
-  data_average_R.push(BO[0]);
-  if (BO_all == undefined) return;
-  data_average_all_R.push(BO_all[0]);
-  const data_cvr = calculateCVR(data_average);
-  const data_cvr_all = calculateCVR(data_average_R);
-  dataToshow.value = [data_average, data_cvr, data_cvr_all];
-  dataToshowR.value = [data_average_R, data_average_all_R];
+  if (!dataAverageAll) return;
+  const dataAverageAllR = [...dataAverage];
+  const BO = await Totalizer.Totalize(dateRange, ['bo'], false, organizationId, target);
+  const BOAll = await Totalizer.Totalize(dateRange, ['bo'], false, undefined, target);
+  if (!BO) return;
+  dataAverageR.push(BO[0]);
+  if (!BOAll) return;
+  dataAverageAllR.push(BOAll[0]);
+  const dataCvr = calculateCVR(dataAverage);
+  const dataCvrAll = calculateCVR(dataAverageR);
+  dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
+  dataToshowR.value = [dataAverageR, dataAverageAllR];
 };
 
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
-    if (props.dateRangeProps == undefined) return;
+    if (!props.dateRangeProps) return;
     await showSalesActivityReport(props.dateRangeProps, props.organization_id);
   }
 );
 onMounted(async () => {
-  if (props.dateRangeProps == undefined) return;
+  if (!props.dateRangeProps) return;
   await showSalesActivityReport(props.dateRangeProps, props.organization_id);
 });
 </script>
