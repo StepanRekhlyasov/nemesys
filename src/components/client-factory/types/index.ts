@@ -43,10 +43,19 @@ export interface RenderMainInfo {
     contactInfo: {label: string; value: string; key: string; editType: string; isHighlight: boolean }[]
 }
 
-export interface RenderOfficeDetails {
-    registeredInfo: { label: string; value: string | number; editType: string; key: string }[]
+export interface RenderOfficeDetailsWithoutIndustryType {
+  registeredInfo: { label: string; value: string | number; editType: string; key: string }[]
+  commonItems: { label: string; value: string | number; editType: string; key: string }[]
+  uniqueItems: { label: string; value: string; key: string; editType: string; }[]
+}
+
+export type RenderOfficeDetailsWithIndustryType = {
+  registeredInfo: { label: string; value: string | number; editType: string; key: string }[]
+} & {
+  [key: string]: {
     commonItems: { label: string; value: string | number; editType: string; key: string }[]
     uniqueItems: { label: string; value: string; key: string; editType: string; }[]
+  }
 }
 
 export interface RenderHeadDetails {

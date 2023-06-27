@@ -9,9 +9,10 @@ import { ClientFactoryTabs } from '../types';
 
 const { t } = useI18n({ useScope: 'global' });
 defineProps<{
-    clientFactory: ClientFactory,
-    draft: Partial<ClientFactory>,
+    clientFactory: ClientFactory
+    draft: Partial<ClientFactory>
     isLoading: boolean
+    industryType: string
 }>()
 
 const emit = defineEmits<{
@@ -69,6 +70,7 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
             <CFDrawerOfficeDetails
                 @edit-draft="editDraft"
                 :client-factory="clientFactory"
+                :industryType="industryType"
                 :draft="draft"
                 :is-loading="isLoading"/>
         </q-tab-panel>

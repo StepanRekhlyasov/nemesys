@@ -36,7 +36,7 @@ const importHandle = () => {
 onMounted(() => {
     localLoading.value = true
 
-    locadImportData.value = props.importData.map((el) => ({ ...el, isChecked: false }))
+    locadImportData.value = props.importData.map((el) => ({ ...el, isChecked: false, isHighlight: el.isHighlight ?? false }))
 
     localLoading.value = false
 })

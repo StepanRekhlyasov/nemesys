@@ -6,8 +6,8 @@ import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn
 import ApplyImport from 'src/components/client-factory/ApplyImport.vue';
 import { useHighlightMainInfo, useOfficeDetails } from 'src/components/client-factory/handlers';
 
-import { ChangedData, RenderMainInfo, RenderOfficeDetails } from 'src/components/client-factory/types';
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ChangedData, RenderMainInfo, RenderOfficeDetailsWithIndustryType, RenderOfficeDetailsWithoutIndustryType } from 'src/components/client-factory/types';
+import { ClientFactory, Industry } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 
 const { t } = useI18n({ useScope: 'global' });
@@ -16,7 +16,7 @@ const props = defineProps<{
     isDrawer: boolean,
     clientFactory: ClientFactory,
     modifiedCF: ModifiedCF,
-    isLoading: boolean
+    isLoading: boolean,
 }>()
 
 const emit = defineEmits<{
@@ -25,8 +25,32 @@ const emit = defineEmits<{
 }>()
 
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
-const detailsInfo = ref<RenderOfficeDetails>({} as RenderOfficeDetails)
+const detailsInfo = ref<RenderOfficeDetailsWithIndustryType | RenderOfficeDetailsWithoutIndustryType>({} as RenderOfficeDetailsWithIndustryType | RenderOfficeDetailsWithoutIndustryType)
 const isImportDialog = ref(false)
+const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean, ts: string }>)
+const selectedIndustry = ref<{ value: string, isSelected: boolean, ts: string }>({} as { value: string, isSelected: boolean, ts: string })
+
+const initializeIndustry = () => {
+    dropDownIndustryValue.value = props.clientFactory.industry?.reduce((acc, industry, index) => {
+        if (industry) {
+            acc.push({
+                value: industry,
+                isSelected: index === 0,
+                ts: t(`client.add.${industry}`)
+            })
+        }
+
+        return acc
+    }, [] as Array<{ value: string, isSelected: boolean, ts: string }>)
+
+    if (!selectedIndustry.value.value) {
+        selectedIndustry.value = dropDownIndustryValue.value[0] ?? {}
+    }
+}
+
+const industryHandler = (value: { value: string, isSelected: boolean, ts: string }) => {
+    selectedIndustry.value = value
+}
 
 const hideDrawer = () => {
     emit('hideDrawer')
@@ -39,8 +63,10 @@ const importHandle = (data: ChangedData) => {
 }
 
 watchEffect(() => {
+    initializeIndustry()
+
     mainInfo.value = useHighlightMainInfo(props.clientFactory, props.modifiedCF)
-    detailsInfo.value = useOfficeDetails(props.clientFactory, props.modifiedCF)
+    detailsInfo.value = useOfficeDetails(props.clientFactory, props.modifiedCF, selectedIndustry.value.value as Industry[number])
 })
 </script>
 
@@ -59,6 +85,9 @@ watchEffect(() => {
                         <UpdatedCFDrawerTitle
                             v-if="clientFactory"
                             @import-handle="importDialogHandle(true)"
+                            @edit-industry="industryHandler"
+                            :industry-value="dropDownIndustryValue"
+                            :selected-industry="selectedIndustry"
                             :clientFactory="clientFactory"/>
                     </q-card-section>
 
@@ -88,14 +117,14 @@ watchEffect(() => {
                                 theme="accent"/>
 
                             <HighlightTwoColumn
-                                :data="detailsInfo.commonItems"
+                                :data="detailsInfo[`${selectedIndustry ? `${selectedIndustry}.commonItems` : 'commonItems'}`]"
                                 :label="t('clientFactory.drawer.commonItems')"
                                 :is-edit="false"
                                 :show-actions="false"
                                 theme="accent"/>
 
                             <HighlightTwoColumn
-                                :data="detailsInfo.uniqueItems"
+                                :data="detailsInfo[`${selectedIndustry ? `${selectedIndustry}.uniqueItems` : 'uniqueItems'}`]"
                                 :label="t('clientFactory.drawer.uniqueItems')"
                                 :is-edit="false"
                                 :show-actions="false"
@@ -107,19 +136,19 @@ watchEffect(() => {
 
     </q-drawer>
 
-    <ApplyImport
+    <!-- <ApplyImport
         @import-handle="importHandle"
         @update:is-open="(e: boolean) => importDialogHandle(e)"
         :importData="[
             ...mainInfo.officeInfo,
             ...mainInfo.contactInfo,
             ...detailsInfo.registeredInfo,
-            ...detailsInfo.commonItems,
-            ...detailsInfo.uniqueItems
+            ...detailsInfo[`${selectedIndustry ? `${selectedIndustry}.commonItems` : 'commonItems'}`],
+            ...detailsInfo[`${selectedIndustry ? `${selectedIndustry}.uniqueItems` : 'uniqueItems'}`]
         ]"
         :client-factory="clientFactory"
         :is-open="isImportDialog"
-        :is-loading="isLoading"/>
+        :is-loading="isLoading"/> -->
 </template>
 
 <style lang="scss" scoped>
