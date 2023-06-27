@@ -46,7 +46,7 @@ const openDrawer = async (data : BackOrderModel) => {
     drawerRight.value = false;
   }
   backOrderStore.state.selectedBo = data;
-  setTimeout(() => drawerRight.value = true, 300);
+  drawerRight.value = true
 }
 onMounted(async () => {
   if (selectedBo.value && selectedBo.value['clientId']){
