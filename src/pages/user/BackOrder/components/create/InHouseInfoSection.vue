@@ -5,28 +5,28 @@
     </div>
 
     <div class="row q-mt-sm">
-      <labelField :label="`${$t('backOrder.create.referralFee')} \r ${$t('backOrder.create.regulation')}`" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10 flex">
+      <labelField :label="$t('backOrder.create.referralFee')" :edit="true" labelClass="q-pl-md col-2 text-right"  valueClass="q-pl-md col-10 flex">
         <q-input v-model="data['retirementAge']" outlined dense type="number" :disable="loading"/>
         <span class="col-2 q-ma-sm flex-center">%</span>
       </labelField>
     </div>
 
     <div class="row q-mt-sm">
-      <labelField :label="`${$t('backOrder.create.referralFee')} \r ${$t('backOrder.create.stipulatedAmount')}`" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10 flex">
+      <labelField :label="$t('backOrder.create.referralFeeAmount')" :edit="true" labelClass="q-pl-md col-2 text-right"  valueClass="q-pl-md col-10 flex">
         <q-input v-model="data['stipulatedAmount']" outlined dense type="number" :disable="loading"/>
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
       
     <div class="row q-mt-sm">
-      <labelField :label="$t('backOrder.create.retirementAge')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10 flex">
+      <labelField :label="$t('backOrder.create.retirementAge')" :edit="true" labelClass="q-pl-md col-2 text-right"  valueClass="q-pl-md col-10 flex">
         <q-input v-model="data['retirementAge_house']" outlined dense type="number" :disable="loading"/>
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.age') }}</span>
       </labelField>
     </div>
       
     <div class="row q-mt-sm">
-      <labelField :label="$t('client.list.memo')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10">
+      <labelField :label="$t('client.list.memo')" :edit="true" labelClass="q-pl-md col-2 text-right"  valueClass="q-pl-md col-10">
         <q-input v-model="data['memo_house']" outlined dense :disable="loading"/>
       </labelField>
     </div>
@@ -39,7 +39,7 @@ import { BackOrderModel } from 'src/shared/model';
 import { ref } from 'vue';
 
 const props = defineProps<{
-  backOrder: BackOrderModel,
+  backOrder: Partial<BackOrderModel>,
   loading: boolean
 }>()
 
