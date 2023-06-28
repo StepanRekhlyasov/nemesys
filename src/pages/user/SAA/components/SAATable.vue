@@ -9,19 +9,13 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <q-td 
-        class="clickable" 
-        @click="()=>{
-          emit('openDrawer', props.row)
-        }" 
-      >{{ props.row.name }}</q-td>
+      <q-td>{{ props.row.displayName?props.row.displayName:props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
 <script setup lang="ts">
 import { QTableProps, exportFile, useQuasar } from 'quasar';
 import { saaTableColumns as columns } from '../const/saa.const'
-import { Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 
@@ -29,9 +23,6 @@ const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
   rows: QTableProps['rows']
-}>()
-const emit = defineEmits<{
-  (e: 'openDrawer', applicant: Applicant | null)
 }>()
 
 const exportTable = () => {
