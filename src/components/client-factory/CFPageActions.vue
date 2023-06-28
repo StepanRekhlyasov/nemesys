@@ -14,7 +14,8 @@ withDefaults(defineProps<{
 
 const emit = defineEmits<{
     (e: 'openClientDrawer'),
-    (e: 'openClientFactoryDrawer')
+    (e: 'openClientFactoryDrawer'),
+    (e:'openFaxDrawer')
 }>()
 
 const openNewClientDrawer = () => {
@@ -24,6 +25,9 @@ const openNewClientDrawer = () => {
 const openNewClientFactoryDrawer = () => {
     emit('openClientFactoryDrawer')
 }
+const openNewFaxDrawer=()=>{
+  emit('openFaxDrawer')
+}
 
 </script>
 
@@ -31,9 +35,9 @@ const openNewClientFactoryDrawer = () => {
     <q-card-section class="bg-white">
         <div class="row items-center justify-between">
             <div v-if="actionsType === ActionsType.ADMIN" class="text-subtitle1">
-                {{ t('common.searchCondition') }} / 
-                {{ t('common.area') }} : 
-                {{ t('common.aroundTokio') }}, 
+                {{ t('common.searchCondition') }} /
+                {{ t('common.area') }} :
+                {{ t('common.aroundTokio') }},
                 {{ t('common.detailedConditions') }}
             </div>
 
@@ -47,7 +51,7 @@ const openNewClientFactoryDrawer = () => {
                 </a>
             </div>
         </div>
-        
+
         <div class="row items-center justify-between q-mt-sm">
             <q-btn v-if="actionsType === ActionsType.ADMIN" class="action_btn" :color="theme">
                 {{ t('actions.searchConditionChange') }}
@@ -67,6 +71,9 @@ const openNewClientFactoryDrawer = () => {
                         <q-select outlined dense class="bg-white" model-value="Test">
 
                         </q-select>
+                    </div>
+                    <div class="q-gutter-md q-ml-sm">
+                      <q-btn class="action_btn"  @click="openNewFaxDrawer" :color="theme">FAX一括送信</q-btn>
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from 'src/components/client-factory/NewClientDrawer.vue';
 import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFactoryDrawer.vue';
+import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue'
 import ClientFactoryTable from 'src/components/client-factory/ClientFactoryTable.vue';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -29,6 +30,7 @@ const fetchData = ref(false)
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
 const isNewClientFactoryDrawer = ref(false)
+const isNewFaxDrawer = ref(false)
 
 const pagination = ref({
     sortBy: 'desc',
@@ -62,7 +64,7 @@ watch([clients], () => {
     clientFactoryStore.getClientFactories(clients.value).then(() => {
         tableRows.value.length ? fetchData.value = false : fetchData.value = true
     })
-    
+
 }, { deep: true, immediate: true });
 
 watch([clientFactories], () => {
@@ -98,6 +100,16 @@ const openNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = true
 }
 
+// new fax-drawer
+
+const hideNewFaxDrawer = () => {
+    isNewFaxDrawer.value = false
+}
+
+const openNewFaxDrawer = () => {
+  isNewFaxDrawer.value = true
+}
+
 </script>
 
 <template>
@@ -110,6 +122,7 @@ const openNewClientFactoryDrawer = () => {
             <CFPageActions
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
+                @open-Fax-drawer="openNewFaxDrawer"
                 :actions-type="ActionsType.ADMIN"
                 theme="accent"/>
             <q-card-section class="table no-padding">
@@ -139,10 +152,16 @@ const openNewClientFactoryDrawer = () => {
         theme="accent"
         :is-drawer="isNewClientDrawer"/>
 
-        <NewClientFactoryDrawer 
+        <NewClientFactoryDrawer
         @hide-drawer="hideNewClientFactoryDrawer"
         theme="accent"
         :is-drawer="isNewClientFactoryDrawer"/>
+
+        <FaxDrawer
+        @hide-drawer="hideNewFaxDrawer"
+        theme="accent"
+        :is-drawer="isNewFaxDrawer"
+        />
     </div>
 </template>
 
