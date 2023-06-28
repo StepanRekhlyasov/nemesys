@@ -41,30 +41,30 @@
       </div>
       <div class="col-10 q-pl-md  flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursEarly_min']" default-view="Years" >
+                <q-time v-model="data['workingHoursEarly_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursEarly_max']" default-view="Years" >
+                <q-time v-model="data['workingHoursEarly_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -78,30 +78,30 @@
       </div>
       <div class="col-10 q-pl-md flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursDay_min']" default-view="Years" >
+                <q-time v-model="data['workingHoursDay_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursDay_max']" default-view="Years" >
+                <q-time v-model="data['workingHoursDay_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -115,30 +115,30 @@
       </div>
       <div class="col-10 q-pl-md flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursLate_min']" default-view="Years" >
+                <q-time v-model="data['workingHoursLate_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_max']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursLate_max']" default-view="Years" >
+                <q-time v-model="data['workingHoursLate_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -152,30 +152,30 @@
       </div>
       <div class="col-10 q-pl-md flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursNight_min']" default-view="Years" >
+                <q-time v-model="data['workingHoursNight_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_max']"
-          :rules="[(val) => val ? validateDate(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
+            <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['workingHoursNight_max']" default-view="Years" >
+                <q-time v-model="data['workingHoursNight_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
-                </q-date>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -212,8 +212,8 @@
       <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.overtimeRemarks') }}
       </div>
-      <div class="col-4 flex q-pl-md  ">
-        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || !data['existence']" />
+      <div class="col-4 flex q-pl-md self-center ">
+        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || data['overtimeWork'] !== 'yes'" />
       </div>
     </div>
 
@@ -235,7 +235,7 @@ import { BackOrderModel } from 'src/shared/model';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { ref } from 'vue';
 import { daysList } from 'src/shared/constants/Applicant.const';
-import { validateDate } from 'src/shared/constants/Form.const';
+import { validateTime } from 'src/shared/constants/Form.const';
 import { creationRule } from 'src/components/handlers/rules';
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,

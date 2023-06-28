@@ -5,4 +5,7 @@ export const validateEmail = (email: string): boolean =>{
 export const validateDate = (val: string): boolean =>{
   return /[0-9]{4}\/[0-9]{2}\/[0-9]{2}/.test(val);
 }
+export const validateTime = (val: string): boolean =>{
+  return /[0-9]{2}:[0-9]{2}/.test(val);
+}
 

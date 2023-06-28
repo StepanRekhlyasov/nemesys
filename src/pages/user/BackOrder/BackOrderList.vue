@@ -109,7 +109,6 @@ const state = backOrderStore.state;
 
 const showSearchByMap = ref(false)
 const selected = ref<BackOrderModel[]>([])
-const drawerRight = ref(false);
 const cteateBoDrawer = ref(false);
 const typeBoCreate:Ref<'referral' | 'dispatch'> = ref('referral')
 const selectedBo = ref<BackOrderModel | undefined>();

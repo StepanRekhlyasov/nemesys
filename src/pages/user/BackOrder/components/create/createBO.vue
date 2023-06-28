@@ -1,6 +1,6 @@
 <template>
   <q-card class="no-shadow bg-grey-3">
-    <q-form ref="boForm" @submit="addBackOrder" @reset="emits('closeDialog')">    
+    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog">    
       <q-card-section class="text-white bg-primary no-border-radius" >
         <div class="row">
           <div class="flex items-end ">
@@ -47,7 +47,7 @@
 
         <!-- Basic Info Section -->
         <basic-info-section :backOrder="data" :loading="loading" 
-          :client="applicantStore.state.clientList.find(client => client.id === data['client_id'])"
+          :client="data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id']) : undefined"
           :officeID="data['office_id']"/>
 
         <!-- Working Type Section -->
@@ -81,12 +81,12 @@
         <employment-conditions-section :backOrder="data" :loading="loading"  :type="type"/>
 
         <!-- Paycheck Section -->
-        <paycheck-section :backOrder="data" :loading="loading" />
+        <template v-if="type=='referral'">
+          <paycheck-section :backOrder="data" :loading="loading" />
+        </template>
 
         <!-- Tasks Section -->
-        <template v-if="type=='referral'">
           <tasks-section :backOrder="data" :loading="loading" />
-        </template>
         
         <!-- In House Information Section -->
         <template v-if="type=='referral'">
@@ -130,11 +130,7 @@ const userStore = useUserStore();
 const usersListOption = ref<selectOptions[]>([]);
 const boForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
-const data = ref({
-  working_days_week: [] as string[],
-  workingDays: 'shiftSystem',
-  type: props.type
-} as Partial<BackOrderModel>);
+const data = ref<Partial<BackOrderModel>>({});
 
 async function addBackOrder() {
     loading.value = true
@@ -142,10 +138,24 @@ async function addBackOrder() {
       await backOrderStore.addBackOrder(data.value);
       loading.value = false;
       backOrderStore.loadBackOrder();
-      emits('closeDialog');
+      closeDialog();
       Alert.success($q, t)
     }
 }
+
+function closeDialog() {
+  emits('closeDialog');
+  resetData();
+}
+
+function resetData() {
+  data.value = {
+  working_days_week: [] as string[],
+  workingDays: 'shiftSystem',
+  type: props.type
+} as Partial<BackOrderModel>
+}
+resetData();
 
 watch([data.value.client_id, data.value.office_id], async () => {  
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
