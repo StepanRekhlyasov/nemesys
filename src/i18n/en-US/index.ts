@@ -59,6 +59,7 @@ export default {
     possible: 'Possible',
     impossible: 'Impossible',
     yesShort: 'Yes',
+    noShort: 'No',
     above: 'Above',
     moreThan: 'or More',
     pleaseSelect: 'Please Select',

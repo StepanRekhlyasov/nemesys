@@ -4,44 +4,43 @@
       {{ $t('backOrder.create.employmentConditions') }}
     </div>
     <div class="row">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('backOrder.create.numberWorkingDays') }}
-      </div>
-      <div class="col-10 q-pl-md ">
-        <q-radio v-for="day in DaysPerWeekList" :key="day.value" :disable="loading"
-          :label="day.label" :val="day.value" v-model="data['daysPerWeekList']" />
-      </div>
+      <labelField :label="$t('backOrder.create.numberWorkingDays')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
+        <q-field v-model="data['daysPerWeekList']" borderless hide-bottom-space :rules="[creationRule]">
+          <q-radio v-for="day in DaysPerWeekList" :key="day.value" :disable="loading"
+            :label="day.label" :val="day.value" v-model="data['daysPerWeekList']" />
+        </q-field>
+      </labelField>
     </div>
 
-    <div class="row">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('backOrder.create.workingDays') }}
-      </div>
-      <div class="col-10 q-pl-md ">
-        <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" 
-        val="shiftSystem" v-model="data['workingDays']" />
-        <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')" 
-        val="fixed" v-model="data['workingDays']" />
-      </div>
+    <div class="row">      
+      <labelField :label="$t('backOrder.create.workingDays')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
+        <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationRule]">
+          <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" 
+          val="shiftSystem" v-model="data['workingDays']" />
+          <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')" 
+          val="fixed" v-model="data['workingDays']" />
+        </q-field>
+      </labelField>
     </div>
 
-    <div class="row" v-if="data['workingDays'] == 'fixed'">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('backOrder.create.workingDays') }}
-      </div>
-      <div class="col-10 q-pl-md ">
-        <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" :val="day.value" :disable="loading || data['workingDays'] == 'shiftSystem'"
-          :label="day.label" :key="day.value" />
-      </div>
+    <div class="row" v-if="data['workingDays'] == 'fixed'">      
+      <labelField :label="$t('backOrder.create.workingDays')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
+        <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationRule]">
+          <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" 
+            :val="day.value" :disable="loading || data['workingDays'] == 'shiftSystem'"
+            :label="day.label" :key="day.value" />
+        </q-field>
+      </labelField>
     </div>
 
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('client.backOrder.workingHoursEarly') }}
-      </div>
-      <div class="col-10 q-pl-md  flex">
+      <labelField :label="$t('client.backOrder.workingHoursEarly')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -56,7 +55,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -70,15 +69,13 @@
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
-      </div>
+      </labelField>
     </div>
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('client.backOrder.workingHoursDay') }}
-      </div>
-      <div class="col-10 q-pl-md flex">
+      <labelField :label="$t('client.backOrder.workingHoursDay')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -93,7 +90,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -107,15 +104,13 @@
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
-      </div>
+      </labelField>
     </div>
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('client.backOrder.workingHoursLate') }}
-      </div>
-      <div class="col-10 q-pl-md flex">
+      <labelField :label="$t('client.backOrder.workingHoursLate')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -130,7 +125,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -144,15 +139,14 @@
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
-      </div>
+      </labelField>
     </div>
     <div class="row q-pt-sm">
-      <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
-        {{ $t('client.backOrder.workingHoursNight') }}
-      </div>
-      <div class="col-10 q-pl-md flex">
+      
+      <labelField :label="$t('client.backOrder.workingHoursNight')" :edit="true" 
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -167,7 +161,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -181,7 +175,7 @@
           </template>
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
-      </div>
+      </labelField>
     </div>
 
     <div class="row q-pt-sm">
@@ -194,7 +188,7 @@
       </div>
     </div>
     
-    <div class="row q-pt-sm">
+    <div class="row q-pt-sm" v-if="type === 'referral'">
       <div class="q-pl-md col-2 text-right text-blue text-weight-regular self-center">
         {{ $t('backOrder.create.overtimeWork') }} <span style="color: red">*</span>
       </div>
@@ -233,7 +227,8 @@
 <script lang="ts" setup>
 import { BackOrderModel } from 'src/shared/model';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
-import { ref } from 'vue';
+import { ref, watch} from 'vue';
+import labelField from 'src/components/form/LabelField.vue';
 import { daysList } from 'src/shared/constants/Applicant.const';
 import { validateTime } from 'src/shared/constants/Form.const';
 import { creationRule } from 'src/components/handlers/rules';
@@ -243,6 +238,10 @@ const props = defineProps<{
   type: 'dispatch' | 'referral'
 }>()
 const data = ref(props.backOrder)
+
+watch([props], () => {
+  data.value = props.backOrder
+}, { deep: true })
 </script>
 
 <style>

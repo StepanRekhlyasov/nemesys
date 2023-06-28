@@ -59,6 +59,7 @@ export default {
     possible: '可能',
     impossible: '無り',
     yesShort: '有',
+    noShort: '無',
     above: '以上',
     moreThan: '件以上',
     pleaseSelect: '選択してください',

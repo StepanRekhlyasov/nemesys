@@ -6,12 +6,28 @@ import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
 import { useOrganization } from './organization';
 import { useRole } from './role';
+import { ref } from 'vue';
+import { getAuth } from 'firebase/auth';
 
 const { t } = i18n.global
 
+interface userStore { 
+  currentUser?: User
+}
+
 export const useUserStore = defineStore('user', () => {
-  const db = getFirestore()
-  const roleStore = useRole()
+  const db = getFirestore();
+  const roleStore = useRole();
+  const auth = getAuth();
+  const state = ref<userStore>({})
+
+  async function getCurrentUser(){
+    let user: User | undefined = undefined;
+    if (auth.currentUser?.uid) {
+      user = await getUserById(auth.currentUser.uid)
+      state.value.currentUser = user;
+    }
+  }
 
   async function getAllUsers(active_organization_id?: string, queryText?: string) {
     const constraints: ConstraintsType = [
@@ -43,7 +59,6 @@ export const useUserStore = defineStore('user', () => {
 
     return users
   }
-
 
   async function getUserById(id: string) {
 
@@ -176,6 +191,8 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    state,
+    getCurrentUser,
     getAllUsers,
     getUserById,
     editUser,
