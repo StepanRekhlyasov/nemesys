@@ -17,9 +17,8 @@ export function getMostCompletedFix(fixes : ApplicantFix[]){
       result.sort((a, b)=>{
         if(new Date(a[getApplicantCurrentStatusTimestampField(value)]) < new Date(b[getApplicantCurrentStatusTimestampField(value)])){
           return 1
-        } else {
-          return -1
         }
+        return -1
       })
       return result[0]
     } 
@@ -27,9 +26,8 @@ export function getMostCompletedFix(fixes : ApplicantFix[]){
   fixes.sort((a, b)=>{
     if(new Date(a[getApplicantCurrentStatusTimestampField(ApplicantStatus.WAIT_FIX)]) < new Date(b[getApplicantCurrentStatusTimestampField(ApplicantStatus.WAIT_FIX)])){
       return 1
-    } else {
-      return -1
-    }
+    } 
+    return -1
   })
   return fixes[0]
 }

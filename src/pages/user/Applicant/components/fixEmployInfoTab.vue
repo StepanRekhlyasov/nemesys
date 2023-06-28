@@ -128,13 +128,13 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount, Ref, onMounted } from 'vue';
-import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
+import { ref, computed, onBeforeUnmount, onMounted } from 'vue';
+import { serverTimestamp } from 'firebase/firestore';
 import { QTableProps, useQuasar } from 'quasar';
 import FixEmployCreate from './FIX/fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
-import { User, ApplicantFix, Applicant } from 'src/shared/model';
+import { ApplicantFix, Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 
@@ -146,14 +146,12 @@ const { t } = useI18n({ useScope: 'global' });
 
 const applicantStore = useApplicant();
 const fixStore = useFix();
-const db = getFirestore();
 const $q = useQuasar();
 
 const applicantFixData = computed<ApplicantFix[]>(()=>{
   return fixStore.state.selectedApplicantFixes
 });
 
-const users:Ref<User[]> = ref([]);
 const drawerRight = ref(false);
 const disableLevel = ref(0);
 const fixData = ref<ApplicantFix>()
@@ -231,18 +229,6 @@ const unsubscribeUsers = ref();
 onMounted(async () =>{
   await fixStore.getFixData(props.applicant.id)
 })
-
-loadUsers()
-function loadUsers() {
-  const q = query(collection(db, 'users/'), where('deleted', '==', false));
-  unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
-    let userList: User[] = [];
-    querySnapshot.forEach((doc) => {
-      userList.push({ id: doc.id, ...doc.data() } as User);
-    });
-    users.value = userList;
-  });
-}
 
 onBeforeUnmount(() => {
   unsubscribeUsers.value();
