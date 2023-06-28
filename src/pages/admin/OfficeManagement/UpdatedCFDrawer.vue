@@ -48,6 +48,43 @@ const initializeIndustry = () => {
     }
 }
 
+const getDetailsInfo = (key: string, industry?: { value: string, isSelected: boolean, ts: string }, industryOfficeDetails?: ChangedData) => {
+    let items: ChangedData = [];
+    if (!industry) {
+
+        items = detailsInfo.value[key] || [];
+        items = items.map(item => ({ ...item, industry: null }));
+    } else {
+
+        items = industryOfficeDetails || [];
+        items = items.map(item => ({ ...item, industry: industry.ts }));
+    }
+    return items;
+}
+
+const generateIndustryData = () => {
+    let data: ChangedData = [];
+    if (dropDownIndustryValue.value && dropDownIndustryValue.value.length > 0) {
+
+        dropDownIndustryValue.value.forEach(industry => {
+            const industryOfficeDetails = useOfficeDetails(props.clientFactory, props.modifiedCF, industry.value as Industry[number])
+
+            data.push(
+                ...getDetailsInfo('commonItems', industry, industryOfficeDetails[`${industry.value}.commonItems`] as ChangedData),
+                ...getDetailsInfo('uniqueItems', industry, industryOfficeDetails[`${industry.value}.uniqueItems`] as ChangedData)
+            )
+        })
+
+    } else {
+
+        data.push(
+            ...getDetailsInfo('commonItems'),
+            ...getDetailsInfo('uniqueItems')
+        )
+    }
+    return data;
+}
+
 const industryHandler = (value: { value: string, isSelected: boolean, ts: string }) => {
     selectedIndustry.value = value
 }
@@ -63,7 +100,9 @@ const importHandle = (data: ChangedData) => {
 }
 
 watchEffect(() => {
-    initializeIndustry()
+    if(props.clientFactory.industry.length) {
+        initializeIndustry();
+    }
 
     mainInfo.value = useHighlightMainInfo(props.clientFactory, props.modifiedCF)
     detailsInfo.value = useOfficeDetails(props.clientFactory, props.modifiedCF, selectedIndustry.value.value as Industry[number])
@@ -98,7 +137,7 @@ watchEffect(() => {
                             :data="mainInfo.officeInfo"
                             theme="accent"
                             :label="t('client.add.officeInfo')"/>
-
+ 
                         <HighlightTwoColumn
                             :is-edit="false"
                             :show-actions="false"
@@ -117,14 +156,14 @@ watchEffect(() => {
                                 theme="accent"/>
 
                             <HighlightTwoColumn
-                                :data="detailsInfo[`${selectedIndustry ? `${selectedIndustry}.commonItems` : 'commonItems'}`]"
+                                :data="detailsInfo[`${selectedIndustry.value ? `${selectedIndustry.value}.commonItems` : 'commonItems'}`]"
                                 :label="t('clientFactory.drawer.commonItems')"
                                 :is-edit="false"
                                 :show-actions="false"
                                 theme="accent"/>
 
                             <HighlightTwoColumn
-                                :data="detailsInfo[`${selectedIndustry ? `${selectedIndustry}.uniqueItems` : 'uniqueItems'}`]"
+                                :data="detailsInfo[`${selectedIndustry.value ? `${selectedIndustry.value}.uniqueItems` : 'uniqueItems'}`]"
                                 :label="t('clientFactory.drawer.uniqueItems')"
                                 :is-edit="false"
                                 :show-actions="false"
@@ -136,19 +175,19 @@ watchEffect(() => {
 
     </q-drawer>
 
-    <!-- <ApplyImport
+    <ApplyImport
+        :key="modifiedCF.id"
         @import-handle="importHandle"
         @update:is-open="(e: boolean) => importDialogHandle(e)"
         :importData="[
             ...mainInfo.officeInfo,
             ...mainInfo.contactInfo,
             ...detailsInfo.registeredInfo,
-            ...detailsInfo[`${selectedIndustry ? `${selectedIndustry}.commonItems` : 'commonItems'}`],
-            ...detailsInfo[`${selectedIndustry ? `${selectedIndustry}.uniqueItems` : 'uniqueItems'}`]
+            ...generateIndustryData()
         ]"
         :client-factory="clientFactory"
         :is-open="isImportDialog"
-        :is-loading="isLoading"/> -->
+        :is-loading="isLoading"/>
 </template>
 
 <style lang="scss" scoped>

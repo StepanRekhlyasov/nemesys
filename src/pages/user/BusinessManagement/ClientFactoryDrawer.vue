@@ -97,6 +97,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
     if (oldProps) {
         isLoading.value = true
         draft.value = {} as ClientFactory;
+        console.log(currentOrganizationId.value)
         modifiedCF.value = await getModifiedCF(currentOrganizationId.value, props.selectedItem, $q as unknown as typeof Quasar)
         isLoading.value = false
     }

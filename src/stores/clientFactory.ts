@@ -324,7 +324,7 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory, $q: typeof Quasar) => {
         let modifiedCF: ModifiedCF | undefined
-
+        
         try {
             const foundModifiedCF = await getDocs(query(
                 collection(db, 'clients', originalClientFactory.clientID, 'client-factory', originalClientFactory.id, 'modifiedCF'),

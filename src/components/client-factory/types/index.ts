@@ -36,7 +36,7 @@ export enum ActionsType {
     CLIENT = 'client'
 }
 
-export type ChangedData = Array<{ label: string; value: string | number | boolean | string[]; key: string, isHighlight?: boolean }>
+export type ChangedData = Array<{ label: string; value: string | number | boolean | string[]; key: string, isHighlight?: boolean, industry?: string | null }>
 
 export interface RenderMainInfo {
     officeInfo: {label: string; value: string | number | string[] | boolean; editType: string; key: string; isHighlight: boolean}[],

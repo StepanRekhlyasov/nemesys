@@ -8,7 +8,7 @@ import { ChangedData } from './types';
 
 const { t } = useI18n({ useScope: 'global' });
 
-type LocalImportData = { label: string; value: string | number | boolean | string[]; key: string, isHighlight: boolean, isChecked: boolean }[]
+type LocalImportData = { label: string; value: string | number | boolean | string[]; key: string, isHighlight: boolean, isChecked: boolean, industry?: string | null }[]
 
 const props = defineProps<{
     isOpen: boolean,
@@ -18,9 +18,9 @@ const props = defineProps<{
 }>()
 
 const localLoading = ref(false)
-const locadImportData = ref<LocalImportData>()
+const localImportData = ref<LocalImportData>()
 const checkedRows = computed(() => {
-    return locadImportData.value?.filter(row => row.isChecked)
+    return localImportData.value?.filter(row => row.isChecked)
 })
 
 const emit = defineEmits<{
@@ -29,6 +29,11 @@ const emit = defineEmits<{
 }>()
 
 const importHandle = () => {
+    if(!checkedRows.value?.length) {
+        emit('update:isOpen', false)
+        return
+    }
+
     emit('importHandle', checkedRows.value as ChangedData)
     emit('update:isOpen', false)
 }
@@ -36,7 +41,7 @@ const importHandle = () => {
 onMounted(() => {
     localLoading.value = true
 
-    locadImportData.value = props.importData.map((el) => ({ ...el, isChecked: false, isHighlight: el.isHighlight ?? false }))
+    localImportData.value = props.importData.map((el) => ({ ...el, isChecked: false, isHighlight: el.isHighlight || false }))
 
     localLoading.value = false
 })
@@ -69,12 +74,12 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div v-for="row in locadImportData" class="q-mt-sm" :key="row.key">
+                <div v-for="row in localImportData" class="q-mt-sm" :key="row.key">
 
                     <div v-if="row.isHighlight" class="flex-container items-center">
                         <div class="flex-column row items-center text-accent">
                             <q-checkbox v-model="row.isChecked" color="accent" :disable="isLoading || localLoading"/>
-                            {{ row.label }}
+                            {{ row.label + (row.industry ? `(${row.industry})` : '')}}
                         </div>
 
                         <div class="flex-column q-ml-xs bg-grey-2 q-pa-xs">
