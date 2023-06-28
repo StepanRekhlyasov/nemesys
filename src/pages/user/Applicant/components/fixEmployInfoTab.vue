@@ -7,7 +7,7 @@
         class="no-shadow q-ml-lg" v-if="applicant.attendingStatus && applicant.attractionsStatus"/>
     </q-card-section>
 
-    <q-table :columns="columns" :rows="contactListData" row-key="id" v-model:pagination="pagination" hide-pagination>
+    <q-table :columns="columns" :rows="applicantFixData" row-key="id" v-model:pagination="pagination" hide-pagination>
 
       <template v-slot:body-cell-contactMethod="props">
         <q-td :props="props"
@@ -43,6 +43,13 @@
         </q-td>
       </template>
 
+      <template v-slot:body-cell-backOrder="props">
+        <q-td :props="props"
+          :class="rowColor(props.row)">
+          <span class="row">{{ props.row.backOrder }}</span>
+        </q-td>
+      </template>
+
       <template v-slot:body-cell-fixDate="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
@@ -51,45 +58,27 @@
         </q-td>
       </template>
 
-      <template v-slot:body-cell-backOrder="props">
-        <q-td :props="props"
-          :class="rowColor(props.row)">
-          <span class="row">{{ props.row.backOrder }}</span>
-        </q-td>
-      </template>
-
       <template v-slot:body-cell-workDay="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <template v-if="props.row.fixStatus">
-            <span class="row" v-if="props.row.inspectionStatus">{{ props.row.inspectionDate }}</span>
-            <span class="row text-uppercase">
-              {{ props.row.inspectionStatus? 'OK' : 'inspectionStatus' in props.row ? 'NG' : '-' }}
-            </span>
-          </template>
-          <span v-if="!props.row.fixStatus">-</span>
+          <span class="row" v-if="props.row.inspectionStatus">{{ props.row.inspectionDate }}</span>
+          <span class="row text-uppercase">{{ props.row.inspectionStatus? 'OK' : 'inspectionStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
       <template v-slot:body-cell-informalOfferDate="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <template v-if="props.row.offerStatus">
-            <span class="row">{{ props.row.offerDate }}</span>
-            <span class="row text-uppercase">{{ props.row.offerStatus? 'OK' : 'NG'  }}</span>
-          </template>
-          <span v-if="!props.row.offerStatus">-</span>
+          <span class="row" v-if="props.row.offerStatus">{{ props.row.offerDate }}</span>
+          <span class="row text-uppercase">{{ props.row.offerStatus? 'OK' : 'offerStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
       <template v-slot:body-cell-hiringDate="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <template v-if="props.row.admissionStatus">
-            <span class="row">{{ props.row.admissionDate }}</span>
-            <span class="row text-uppercase">{{ props.row.admissionStatus? 'OK' : 'NG'  }}</span>
-          </template>
-          <span v-if="!props.row.admissionStatus">-</span>
+          <span class="row" v-if="props.row.admissionStatus">{{ props.row.admissionDate }}</span>
+          <span class="row text-uppercase">{{ props.row.admissionDate? 'OK' : 'admissionStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
@@ -127,24 +116,26 @@
   <FixEmployCreate
     v-if="drawerRight"
     :fixData="fixData"
-    :createdFixes="contactListData"
+    :createdFixes="applicantFixData"
     @close="drawerRight=false"
     :applicant="applicant"
     :disableLevel="disableLevel"
-    @updateList="loadContactData"
+    @updateList="()=>{
+      fixStore.getFixData(props.applicant.id)
+    }"
     @updateDoc="updateData"/>
 </q-drawer>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount, Ref } from 'vue';
-import { collection, serverTimestamp, getFirestore, query, onSnapshot, where } from 'firebase/firestore';
+import { ref, computed, onMounted } from 'vue';
+import { serverTimestamp } from 'firebase/firestore';
 import { QTableProps, useQuasar } from 'quasar';
-import FixEmployCreate from './fixEmployCreate.vue'
+import FixEmployCreate from './FIX/fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
-import { User, ApplicantFix, Applicant } from 'src/shared/model';
+import { ApplicantFix, Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 
@@ -156,11 +147,12 @@ const { t } = useI18n({ useScope: 'global' });
 
 const applicantStore = useApplicant();
 const fixStore = useFix();
-const db = getFirestore();
 const $q = useQuasar();
 
-const contactListData: Ref<ApplicantFix[]> = ref([]);
-const users:Ref<User[]> = ref([]);
+const applicantFixData = computed<ApplicantFix[]>(()=>{
+  return fixStore.state.selectedApplicantFixes
+});
+
 const drawerRight = ref(false);
 const disableLevel = ref(0);
 const fixData = ref<ApplicantFix>()
@@ -233,28 +225,10 @@ const columns = computed<QTableProps['columns']>(() => {
     }
   ];
 });
-const unsubscribeUsers = ref();
 
-loadContactData()
-async function loadContactData() {
-  contactListData.value  = await fixStore.getFixData(props.applicant.id)
-}
-
-loadUsers()
-function loadUsers() {
-  const q = query(collection(db, 'users/'), where('deleted', '==', false));
-  unsubscribeUsers.value = onSnapshot(q, (querySnapshot) => {
-    let userList: User[] = [];
-    querySnapshot.forEach((doc) => {
-      userList.push({ id: doc.id, ...doc.data() } as User);
-    });
-    users.value = userList;
-  });
-}
-
-onBeforeUnmount(() => {
-  unsubscribeUsers.value();
-});
+onMounted(async () =>{
+  await fixStore.getFixData(props.applicant.id)
+})
 
 function mutateDatesInData(data){
   const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate', 'endDate']
@@ -273,14 +247,11 @@ async function updateData(data){
   }
   data = mutateDatesInData(data)
   fixData.value = {
-    ...fixData.value, 
+    ...fixData.value,
     ...data
   }
-  const updateIndex = contactListData.value.findIndex((contact => contact.id == fixData.value?.id))
-  contactListData.value[updateIndex] = {...contactListData.value[updateIndex], ...fixData.value}
-  if(fixData.value){
-    await applicantStore.saveFixDataToApplicant(fixData.value)
-  }
+  await fixStore.getFixData(props.applicant.id);
+  await applicantStore.saveFixDataToApplicant()
   disableChange();
 }
 
@@ -305,7 +276,7 @@ function disableChange() {
       return
     }
   }
-  
+
 }
 
 function showEditDialog(data) {
@@ -337,8 +308,8 @@ function showDeleteDialog(data) {
     updateData['deleted_at'] = serverTimestamp();
 
     await fixStore.updateFix(data.id, updateData)
-    loadContactData();
-    Alert.success($q, t)
+    await fixStore.getFixData(props.applicant.id);
+    Alert.success()
   })
 }
 </script>

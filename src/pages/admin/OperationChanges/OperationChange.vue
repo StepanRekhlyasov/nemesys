@@ -166,11 +166,11 @@
 
         if (res.id) {
           openDialog.value = false
-          Alert.success($q, t)
+          Alert.success()
           store.setMaintainModeEnabled()
         }
-      } catch {
-        Alert.warning($q, t)
+      } catch(e) {
+        Alert.warning(e)
       }
     }
 
@@ -189,11 +189,11 @@
 
           if (res.id) {
             openDialog.value = false
-            Alert.success($q, t)
+            Alert.success()
             store.setMaintainModeDisabled()
           }
-        } catch {
-          Alert.warning($q, t)
+        } catch(e) {
+          Alert.warning(e)
         }
     }
   }

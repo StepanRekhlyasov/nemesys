@@ -116,7 +116,7 @@
 
 <script lang="ts" setup>
 import { ref, nextTick } from 'vue';
-import { QInput, useQuasar } from 'quasar';
+import { QInput } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
@@ -154,8 +154,6 @@ const dialogType = ref<DialogType>('Business')
 const editableRowNumber = ref(-1);
 
 const search = ref('')
-
-const $q = useQuasar();
 
 const { t } = useI18n({ useScope: 'global' });
 const loading = ref(true)
@@ -207,9 +205,9 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
     await organizationStore.editOrganization(organization, row.id)
     await refresh()
     loading.value = false;
-    Alert.success($q, t)
+    Alert.success()
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
     console.log(error)
     loading.value = false;
   }

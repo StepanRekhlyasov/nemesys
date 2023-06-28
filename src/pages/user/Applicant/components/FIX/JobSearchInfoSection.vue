@@ -57,10 +57,10 @@
 				<labelField :edit="edit.includes('jobSearchInfo')" required
 					:label="$t('applicant.list.fixEmployment.userInChargeVisit')" 
 					:value="usersListOption
-						.filter(user => user.value === fixData['visit'])
+						.filter(user => user.value === fixData['chargeOfInspection'])
 						.map(user => user.label).join('')">
 						<q-select
-							v-model="data['visit']"
+							v-model="data['chargeOfInspection']"
 							:rules="[creationRule]" hide-bottom-space
 							:disable="loading || disableLevel < 1"
 							emit-value map-options dense outlined
@@ -203,7 +203,7 @@ function resetData() {
 		inspectionDate: props.editData['inspectionDate'] || '',
 		inspectionReasonNG: props.editData['inspectionReasonNG'] || '',
 		inspectionReasonNGDetail: props.editData['inspectionReasonNGDetail'] || '',
-		visit: props.editData['visit'] || '',
+		chargeOfInspection: props.editData['chargeOfInspection'] || '',
 		personalStatus: props.editData['personalStatus'] || false,
 		corporationStatus: props.editData['corporationStatus'] || false,
 		businessStatus: props.editData['businessStatus'] || false,

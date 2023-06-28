@@ -9,7 +9,7 @@
     <q-form ref="form">
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" 
-          :value="fixData.offerStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3  q-pl-md" required>
+          :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3  q-pl-md" required>
           <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['offerStatus']" :rules="[() => 'offerStatus' in data || '']">
             <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange');data['offerDate'] = '';"

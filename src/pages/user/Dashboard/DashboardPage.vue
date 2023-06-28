@@ -28,7 +28,7 @@ import { storeToRefs } from 'pinia';
 
 const applicantStore = useApplicant()
 const { state } = storeToRefs(applicantStore)
-const { attendeeUserInCharge, prefecture, currentStatusMonth } = state.value.applicantProgressFilter
+const { userInCharge, prefecture, currentStatusMonth } = state.value.applicantProgressFilter
 const updateOnMounted = ref(false)
 const onBranchChange = async () => {
   COLUMN_STATUSES.map(async (status)=>{
@@ -37,12 +37,12 @@ const onBranchChange = async () => {
 }
 onBeforeMount(()=>{
   if(
-    attendeeUserInCharge ||
+    userInCharge ||
     prefecture ||
     currentStatusMonth ||
     applicantStore.state.needsApplicantUpdateOnMounted
   ) {
-    state.value.applicantProgressFilter.attendeeUserInCharge = ''
+    state.value.applicantProgressFilter.userInCharge = ''
     state.value.applicantProgressFilter.prefecture = ''
     state.value.applicantProgressFilter.currentStatusMonth= ''
     applicantStore.state.needsApplicantUpdateOnMounted = false
