@@ -28,8 +28,9 @@ export enum EmploymentStatus {
 }
 export interface ApplicantDates {
   invitationDate?: Timestamp;
-  created_at: Timestamp;
-  currentStatusTimestamp: Timestamp;
+  created_at: Timestamp | FieldValue;
+  updated_at: Timestamp | FieldValue;
+  currentStatusTimestamp: Timestamp | '';
   applicationDate?: Timestamp;
   dob?: Timestamp;
   attendingDate?: Timestamp;
@@ -42,6 +43,7 @@ export interface ApplicantDates {
 export interface ApplicantInputDates {
   invitationDate?: string;
   created_at: string;
+  updated_at: string;
   currentStatusTimestamp: string;
   applicationDate?: string;
   dob?: string;
@@ -61,7 +63,7 @@ export interface ApplicantBase {
   street?: string;
   apartment?: string;
   status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp}[]
+  statusChangeTimestamp?: {[key: string] : Timestamp}
   staffRank?: number;
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
@@ -73,6 +75,8 @@ export interface ApplicantBase {
   deleted?: boolean;
   imageURL?: string;
   attractionsStatus?: boolean;
+  attractionsReasonNG?: string;
+  attractionsReasonNGDetail?: string;
   seduser?: string;
   employmentStatus?: string;
   period?: string;
@@ -81,6 +85,12 @@ export interface ApplicantBase {
   inspectionStatus?: boolean;
   offerStatus?: boolean;
   admissionStatus?: boolean;
+  userInCharge?: string; 
+  chargeOfFix?: string; 
+  chargeOfInspection?: string; 
+  chargeOfAdmission?: string; 
+  chargeOfOffer?: string;
+  bestFix?: ApplicantFix;
 }
 export interface Applicant extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantDates {
 }
@@ -126,6 +136,8 @@ export interface DesiredConditions {
 
 export interface Attendance { 
   attendingStatus?: boolean;
+  attendingReasonNG?: string;
+  attendingReasonNGDetail?: string;
   attendeeUserInCharge?: string;
   memo?: string;
 }
@@ -258,13 +270,13 @@ export interface FixMainInfo {
 export interface FixJobSearchInfo {
   inspectionStatus: boolean;
   inspectionDate: string;
-  inspectionReasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  inspectionReasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   inspectionReasonNGDetail?: string;
-  visit: string;
+  chargeOfInspection?: string;
   personalStatus: string,
   corporationStatus: string,
   businessStatus: string,
-  reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  reasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   reasonJobDetal?: string;
   chargeOfFacility: string;
   jobTitle?: string;

@@ -61,7 +61,7 @@ export const getIndividualReport = async (
       ),
       query(
         collectionRef,
-        where('chargeOfInspection', '==', Id),
+        where('chargeOfFacility', '==', Id),
         where(DateTargets[1], '>=', targetDateFrom),
         where(DateTargets[1], '<=', targetDateTo),
         where('inspectionStatus', '==', true)

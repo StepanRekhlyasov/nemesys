@@ -8,14 +8,14 @@
         <q-radio 
           v-model="inputReasonVal" 
           @update:model-value="(newVal)=>{ emit('update:reasonValue', newVal);}" 
-          val="notApplicable" 
+          val="excluded" 
           :label="$t('applicant.list.fixEmployment.notApplicable')"
           :error="errorReason"
         />
         <q-radio 
           v-model="inputReasonVal" 
           @update:model-value="(newVal)=>{ emit('update:reasonValue', newVal);}"  
-          val="decided" 
+          val="anotherCompany" 
           :label="$t('applicant.list.fixEmployment.decided')" 
           class="q-ml-sm" 
           :error="errorReason"
@@ -23,7 +23,7 @@
         <q-radio 
           v-model="inputReasonVal" 
           @update:model-value="(newVal)=>{ emit('update:reasonValue', newVal);}"  
-          val="notCovered" 
+          val="break_contact" 
           :label="$t('applicant.list.fixEmployment.notCovered')"
           class="q-ml-sm" 
           :error="errorReason"
@@ -31,7 +31,7 @@
         <q-radio 
           v-model="inputReasonVal" 
           @update:model-value="(newVal)=>{ emit('update:reasonValue', newVal);}"  
-          val="registrationDeclined" 
+          val="decline" 
           :label="$t('applicant.list.fixEmployment.registrationDeclined')" 
           class="q-ml-sm" 
           :error="errorReason"
@@ -40,7 +40,7 @@
       <div class="col-3">
         <q-select 
           :disable="disable"
-          v-if="reasonValue && reasonValue !== 'notCovered'" 
+          v-if="reasonValue && reasonValue !== 'break_contact'" 
           v-model="inputDetailedVal"                       
           emit-value map-options dense outlined
           :options="statusOptions"
@@ -82,13 +82,13 @@ const errorDetail = computed(()=>props.hightlightError?.includes('detail'))
 
 const statusOptions = computed<selectOptions[]>(() => {
   switch(props.reasonValue){
-    case('notApplicable'):
+    case('excluded'):
         return notApplicableFixList.value;
-    case('decided'):
+    case('anotherCompany'):
       return decidedFixList.value;
-    case('notCovered'):
+    case('break_contact'):
       return [];  
-    case('registrationDeclined'):
+    case('decline'):
       return registrationDeclinedFixList.value;
     default:
       return []
