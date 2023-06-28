@@ -11,7 +11,7 @@
 
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.status')" :edit="edit" 
-        :value="selectedBo['status']?$t(`client.backOrder.${selectedBo['status']}`) : '' ">
+        :value="selectedBo['status']?$t(`client.backOrder.${selectedBo['status']}`) : ''">
         <q-radio
           v-for="key in BackOrderStatus"
           v-model="data['status']"
@@ -52,13 +52,31 @@
         <q-input v-model="data['experience_req']" outlined dense :disable="loading"/>
       </LabelField>
       <LabelField :label="$t('backOrder.transactionType')" :edit="edit" 
-        :value="selectedBo['transactionType']?$t(`backOrder.${selectedBo['transactionType']}`) : ''">
-        <q-checkbox size="xs" class="q-mr-sm" v-model="data['transaction_type']" val="introduction"
-          :label="$t('client.backOrder.introduction')" :disable="loading" />
-        <q-checkbox size="xs" class="q-mr-sm" v-model="data['transaction_type']" val="ttp" 
-          label="TTP" :disable="loading" />
-        <q-checkbox size="xs" v-model="data['transaction_type']" val="dispatch"
-          :label="$t('client.backOrder.dispatch')" :disable="loading" />
+        :value="selectedBo['transactionType']?$t(`client.backOrder.${selectedBo['transactionType']}`) : ''">
+        <q-radio
+          v-model="data['transactionType']"
+          :label="$t('client.backOrder.introduction')"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+          val="introduction"
+          key="introduction"
+          :disable="loading"
+          class="q-pr-md"/>
+        <q-radio
+          v-model="data['transactionType']"
+          label="TTP"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+          val="ttp"
+          key="ttp"
+          :disable="loading"
+          class="q-pr-md"/>
+        <q-radio
+          v-model="data['transactionType']"
+          :label="$t('client.backOrder.dispatch')"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
+          val="dispatch"
+          key="dispatch"
+          :disable="loading"
+          class="q-pr-md"/>
       </LabelField>
     </div>
 
@@ -108,9 +126,10 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.numberWorkingDays')" :edit="edit" :value="selectedBo['numberWorkingDays'] ? selectedBo['numberWorkingDays'].join('') : ''">
+      <LabelField :label="$t('backOrder.create.numberWorkingDays')" :edit="edit" 
+        :value="selectedBo['numberWorkingDays'] ? $t(`backOrder.daysPerWeek.${selectedBo['numberWorkingDays']}`)  : ''">
         <q-radio v-for="day in DaysPerWeekList" :key="day.value" :disable="loading"
-          :label="day.label" :val="day.value" v-model="data['daysPerWeekList']" />
+          :label="day.label" :val="day.value" v-model="data['numberWorkingDays']" />
       </LabelField>
       <LabelField :label="`${$t('office.workingHours')} : ${$t('office.earlyShift')}`" :edit="edit" :value="selectedBo['earlyShift'] ? selectedBo['earlyShift'] : '-'">
 

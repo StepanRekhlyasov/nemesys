@@ -1,23 +1,28 @@
 <template>
-    <DropDownEditGroup
-      :isEdit="edit.includes('jobOffersInfo')"
-      :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
-      @openEdit="emit('openEdit');resetData();"
-      @closeEdit="emit('closeEdit');resetData();"
-      @onSave="saveHandler()"
-      :isDisabledButton="disableLevel < 2">
-
+  <DropDownEditGroup
+    :isEdit="edit.includes('jobOffersInfo')"
+    :label="$t('applicant.list.fixEmployment.jobOffersInfo')"
+    @openEdit="emit('openEdit');resetData();"
+    @closeEdit="emit('closeEdit');resetData();"
+    @onSave="saveHandler()"
+    :isDisabledButton="disableLevel < 2">
+    <q-form ref="form">
       <div class="row q-pb-sm">
         <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.status')" 
-          :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3  q-pl-md">
-          <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange');data['offerDate'] = '';"
-            checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
-          <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
-            unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
+          :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3  q-pl-md" required>
+          <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
+            v-model="data['offerStatus']" :rules="[() => 'offerStatus' in data || '']">
+            <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange');data['offerDate'] = '';"
+              checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
+            <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
+              unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
+          </q-field>
         </labelField>
 
-        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.date')" :value="fixData.offerDate" >
-          <q-input dense outlined bg-color="white" v-model="data['offerDate']"  :disable="loading || disableLevel < 2">
+        <labelField :edit="edit.includes('jobOffersInfo')" :label="$t('applicant.list.fixEmployment.offer.date')" 
+          :value="fixData.offerDate" required>
+          <q-input dense outlined bg-color="white" v-model="data['offerDate']"  
+            :disable="loading || disableLevel < 2" :rules="[creationRule, validateDate]" hide-bottom-space>
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -34,7 +39,7 @@
       </div>
       <div class="row q-pb-sm" v-if="!data['offerStatus']">
         <NGReasonSelect
-          :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
+          :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')' : '') : ''"
           :edit="edit.includes(tabKey)" 
           :label="$t('applicant.list.fixEmployment.'+reasonKey)"
           :reasonValue="data[reasonKey]"
@@ -50,9 +55,10 @@
           :value="usersListOption
             .filter(user => user.value === fixData['chargeOfOffer'])
             .map(user => user.label).join('')"
-          valueClass="col-9 q-pl-md">
+          required valueClass="col-9 q-pl-md">
           <q-select
             v-model="data['chargeOfOffer']"
+						:rules="[creationRule]" hide-bottom-space
             :disable="loading || disableLevel < 2"
             emit-value map-options dense outlined
             :options="usersListOption" :label="$t('common.pleaseSelect')" />
@@ -66,17 +72,21 @@
             v-model="data['offerMemo']" :disable="loading || disableLevel < 2" />
         </labelField>
       </div>
-    </DropDownEditGroup>  
+    </q-form>
+  </DropDownEditGroup>  
 </template>
 
 <script lang="ts" setup>
+import { QForm } from 'quasar';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 
 import { ApplicantFix, FixJobOffersInfo, selectOptions } from 'src/shared/model'
-import { ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
+import { creationRule } from 'src/components/handlers/rules';
+import { validateDate } from 'src/shared/constants/Form.const';
 
 const props = defineProps<{
   loading: boolean,
@@ -88,6 +98,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
 const data = ref<Partial<FixJobOffersInfo>>({})
+const form: Ref<QForm|null> = ref(null);
 
 resetData();
 
@@ -109,10 +120,14 @@ const tabKey = 'jobOffersInfo' /** change tab key */
 const statusKey = 'offerStatus' /** change status key */
 const hightlightError = ref<string[]>([])
 const saveHandler = () => {
-  if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
-    emit('save', tabKey, data.value);
-    resetData();
-  }
+  form.value?.validate().then(success => {
+    if (success) {
+      if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
+        emit('save', tabKey, data.value);
+        resetData();
+      }
+    }
+  })
 }
 useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
 /** NGReasonSelect handlers */

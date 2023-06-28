@@ -171,7 +171,7 @@ export const useUserStore = defineStore('user', () => {
       ...constraints,
     ))
     return users.docs.map((user)=>{
-      return user.data() as User
+      return {...user.data(), id: user.id} as User
     })
   }
 
