@@ -806,6 +806,10 @@ export default {
         status: 'FIX Status',
         date: 'FIX Date',
         fixReasonNG: 'FIX NG Reason',
+        break_contact: 'No answer',
+        anotherCompany: 'Another offer',
+        excluded: 'Not target',
+        decline: 'Unregistered',
         inspectionReasonNG: 'Inspection NG Reason',
         offerReasonNG: 'Offer NG Reason',
         admissionReasonNG: 'Admission NG Reason',
@@ -833,8 +837,8 @@ export default {
         comments: 'Comments (A-E)',
         inspectionMemo: 'Job inspection memo',
         notApplicable: 'Not target',
-        decided: 'No answer',
-        notCovered: 'Not covered',
+        decided: 'Another offer',
+        notCovered: 'No answer',
         registrationDeclined: 'Unregistered',
         age: 'Age',
         antiSocial: 'Criminal organization',
@@ -865,7 +869,6 @@ export default {
         admission: {
           status: 'Employment Status',
           date: 'Date of Entry',
-          reasonNotJoining: 'Reason for Not Joining',
           chargeOfAdmission: 'Person in Charge of Admission',
           memo: 'Admission memo'
         }

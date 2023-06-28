@@ -5,10 +5,10 @@
     </div>
     <div class="row ">
       <labelField :label="$t('client.list.client')" :edit="false" 
-        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " v-if="client" :value="client['name']">
+        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " :value="backOrder['client_id'] && client ? client['name']  : ''">
       </labelField>
-      <labelField :label="$t('backOrder.officeName')" :edit="false" :value="office?.name"
-        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " v-if="office">
+      <labelField :label="$t('backOrder.officeName')" :edit="false" :value="backOrder['client_id'] && office ? office?.name : ''"
+        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " >
       </labelField>
     </div>
 
@@ -19,7 +19,7 @@
 
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.approvalOrNot')" :edit="false" 
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['approvalOrNot'] ? $t('common.yes') : $t('common.no')" valueClass="col-4 q-pl-md " />
+        labelClass="q-pl-md col-2 text-right" :value=" 'approvalOrNot' in backOrder ?(backOrder['approvalOrNot'] ? $t('common.yes') : $t('common.no')) : ''" valueClass="col-4 q-pl-md " />
     </div>
 
     <div class="row q-pt-sm">
@@ -98,9 +98,11 @@ watch(props, () => {
   if ( props.client?.office &&  props.officeID){
     const offices = props.client?.office.find(office => office.id == props.officeID)
     if (offices){
-      office.value = offices
-    }
+      office.value = offices;
+      return
+    } 
   }
+  office.value = undefined
 }, {deep: true, immediate: true})
 
 </script>

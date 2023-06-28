@@ -28,7 +28,7 @@ export const useSaveHandler = (data : Ref<Partial<ApplicantFix>>, hightlightErro
     if(!data.value[reasonKey]){
       hightlightError.value.push('reason')
     }
-    if(!data.value[detailKey] && data.value[reasonKey] !== 'notCovered'){
+    if(!data.value[detailKey] && data.value[reasonKey] !== 'break_contact'){
       hightlightError.value.push('detail')
     }
   }

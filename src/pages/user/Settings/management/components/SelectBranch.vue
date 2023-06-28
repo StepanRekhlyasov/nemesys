@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { QSelectProps, useQuasar } from 'quasar';
+import { QSelectProps } from 'quasar';
 import { Branch, selectOptions } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
@@ -62,7 +62,6 @@ defineExpose({ availableSlots })
 
 const usersInBranch = ref<{ [branchId: string]: number; }>({})
 const branches = ref<{ [id: string]: Branch; }>({})
-const $q = useQuasar();
 async function display(organizationId: string) {
   loading.value = true
   try {
@@ -75,7 +74,7 @@ async function display(organizationId: string) {
     options.value = mapToSelectOptions(branches.value)
   } catch (error) {
     console.log(error)
-    Alert.warning($q, t)
+    Alert.warning(error)
   }
   loading.value = false
 }

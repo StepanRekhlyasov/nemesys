@@ -18,7 +18,7 @@
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
+            v-model="applicantStore.state.applicantProgressFilter.userInCharge"
             :optionToFetch="'usersInCharge'"
           />
         </div>

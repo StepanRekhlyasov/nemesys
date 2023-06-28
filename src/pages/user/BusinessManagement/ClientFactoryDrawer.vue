@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia'
-import Quasar, { useQuasar } from 'quasar';
 import { defineEmits, defineProps, ref, watch, watchEffect } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
@@ -24,7 +23,6 @@ const props = defineProps<{
     selectedItem: ClientFactory
 }>()
 
-const $q = useQuasar()
 const modifiedCF = ref<ModifiedCF | undefined>()
 const draft = ref<Partial<ClientFactory>>({})
 const isLoading = ref(false)
@@ -64,13 +62,13 @@ const saveHandler = async () => {
     if(modifiedCF.value) {
 
         const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
-        
-        await updateModifiedCF(props.selectedItem.id, mergedData, $q as unknown as typeof Quasar)
+
+        await updateModifiedCF(props.selectedItem.id, mergedData, )
         modifiedCF.value = mergedData
         draft.value = {} as ClientFactory;
     } else {
         const mergedData = mergeWithDraft(props.selectedItem, draft.value)
-        const res = await addModifiedCF(currentOrganizationId.value, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>, $q as unknown as typeof Quasar)
+        const res = await addModifiedCF(currentOrganizationId.value, mergedData as Omit<ClientFactory, 'importLog' | 'reflectLog'>, )
 
         if(res) {
             modifiedCF.value = mergedData
@@ -97,8 +95,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
     if (oldProps) {
         isLoading.value = true
         draft.value = {} as ClientFactory;
-        console.log(currentOrganizationId.value)
-        modifiedCF.value = await getModifiedCF(currentOrganizationId.value, props.selectedItem, $q as unknown as typeof Quasar)
+        modifiedCF.value = await getModifiedCF(currentOrganizationId.value, props.selectedItem, )
         isLoading.value = false
     }
 }, { immediate: true });

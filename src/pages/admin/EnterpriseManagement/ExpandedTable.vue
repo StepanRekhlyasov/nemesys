@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { QTableProps, QTableSlots, useQuasar } from 'quasar';
+import { QTableProps, QTableSlots } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Row, Table } from './types'
@@ -55,8 +55,6 @@ type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
 interface ExpandedTableProps {
   props: Props
 }
-
-const $q = useQuasar();
 
 const organization = useOrganization()
 const branchStore = useBranch()
@@ -95,7 +93,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
 
     if (working) {
       loading.value = false
-      Alert.success($q, t);
+      Alert.success();
       return
     }
 
@@ -103,7 +101,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
 
     if (!organizations) {
       loading.value = false
-      Alert.success($q, t);
+      Alert.success();
       return
     }
 
@@ -131,9 +129,9 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
         }
       }
     }
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
   }
 
   loading.value = false

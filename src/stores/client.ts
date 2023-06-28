@@ -1,15 +1,11 @@
-import Quasar, { date } from 'quasar';
-import { i18n } from 'boot/i18n';
 import { defineStore } from 'pinia';
 import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
+import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClient = defineStore('client', () => {
-
-    // translation
-    const { t } = i18n.global
 
     // db
     const db = getFirestore();
@@ -18,7 +14,7 @@ export const useClient = defineStore('client', () => {
     const clients = ref<Client[]>([])
 
     // methods
-    const addNewClient = async (client: Client, $q: typeof Quasar) => {
+    const addNewClient = async (client: Client) => {
         const newClient = {
             ...client,
             created_at: serverTimestamp(),
@@ -28,14 +24,16 @@ export const useClient = defineStore('client', () => {
 
         try {
             const docRef =  await addDoc(collection(db, 'clients'), newClient);
-
-            Alert.success($q, t)
+            Alert.createAlert({
+              color: 'green-4',
+              textColor: 'white',
+              icon: 'cloud_done',
+              message: 'Client wass added',
+          })
 
             return docRef
         } catch(e) {
-            Alert.warning($q, t)
-
-            console.log(e)
+           Alert.warning(e)
         }
     }
 
@@ -48,6 +46,7 @@ export const useClient = defineStore('client', () => {
             }, {merge: true});
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
         }
     }

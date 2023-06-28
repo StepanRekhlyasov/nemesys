@@ -246,10 +246,10 @@ async function editUser(user: User) {
     })
     await refresh();
     loading.value = false
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
     console.log(error)
-    Alert.warning($q, t);
+    Alert.warning(error);
     loading.value = false;
   }
 
@@ -274,10 +274,10 @@ async function deleteAccount(user: User) {
         updated_at: serverTimestamp()
       })
       refresh();
-      Alert.success($q, t)
+      Alert.success()
     } catch (e) {
       console.log(e)
-      Alert.warning($q, t)
+      Alert.warning(e)
       loading.value = false;
     }
   })
