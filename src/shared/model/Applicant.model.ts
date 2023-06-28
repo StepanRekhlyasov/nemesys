@@ -290,7 +290,6 @@ export interface FixEmploymentInfo {
   admissionDate: string;
   admissionReasonNG: string;
   admissionReasonNGDetail: string;
-  reasonNotJoining: string;
   chargeOfAdmission: string;
   endDate: string;
   admissionMemo: string;

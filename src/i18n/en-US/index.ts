@@ -869,7 +869,6 @@ export default {
         admission: {
           status: 'Employment Status',
           date: 'Date of Entry',
-          reasonNotJoining: 'Reason for Not Joining',
           chargeOfAdmission: 'Person in Charge of Admission',
           memo: 'Admission memo'
         }
