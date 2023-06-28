@@ -128,7 +128,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { serverTimestamp } from 'firebase/firestore';
 import { QTableProps, useQuasar } from 'quasar';
 import FixEmployCreate from './FIX/fixEmployCreate.vue'
