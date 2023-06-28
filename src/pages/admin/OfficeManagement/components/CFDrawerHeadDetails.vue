@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import Quasar, { useQuasar } from 'quasar';
 import { defineProps, ref, watchEffect, watch } from 'vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
@@ -10,7 +9,6 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from 'src/components/client-factory/types'
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar()
 
 const props = defineProps<{
     clientId: string
@@ -38,7 +36,7 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 const fetchHeadClientFactory = async () => {
     isLoading.value = true
 
-    headClientFactory.value = await getHeadClientFactory(props.clientId, $q as unknown as typeof Quasar) as ClientFactory
+    headClientFactory.value = await getHeadClientFactory(props.clientId, ) as ClientFactory
 
     isLoading.value = false
 }

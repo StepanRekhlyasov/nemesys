@@ -106,16 +106,12 @@ import { doc, getDoc, getFirestore, updateDoc } from '@firebase/firestore';
 import { getDownloadURL, getStorage, ref as refStorage } from '@firebase/storage';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { useRole } from 'src/stores/role';
 import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'EditProfile',
   setup(){
-    const $q = useQuasar();
-    const { t } = useI18n({ useScope: 'global' });
     const auth = getAuth();
     const db = getFirestore();
     const storage = getStorage();
@@ -144,8 +140,13 @@ export default {
         urlImage.value = await getDownloadURL(storageRef)
         return;
       }
-      const storageRef = refStorage(storage, 'users/default.png');
-      urlImage.value = await getDownloadURL(storageRef)
+
+      try {
+        const storageRef = refStorage(storage, 'users/default.png');
+        urlImage.value = await getDownloadURL(storageRef)
+      } catch (error) {
+        Alert.warning(error)
+      }
     }
 
     async function resetData() {
@@ -159,9 +160,9 @@ export default {
       const userRef = doc(db, 'users/'+user.value.uid);
       try {
         await updateDoc(userRef, profileData.value)
-        Alert.success($q, t)
-      } catch {
-        Alert.warning($q, t)
+        Alert.success()
+      } catch(e) {
+        Alert.warning(e)
       }
     }
 

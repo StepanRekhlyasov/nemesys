@@ -188,10 +188,10 @@
             });
             await loadCurrentNotifications();
             loading.value = false
-            Alert.success($q, t);
+            Alert.success();
         } catch (error) {
             console.error(error)
-            Alert.warning($q, t);
+            Alert.warning(error);
             loading.value = false;
         }
     }
@@ -214,10 +214,10 @@
             await releaseNoteStore.deleteNotificationData(notificationId)
             await loadCurrentNotifications();
             loading.value = false;
-            Alert.success($q, t)
+            Alert.success()
         } catch (e) {
             console.error(e)
-            Alert.warning($q, t)
+            Alert.warning(e)
             loading.value = false;
         }
     })

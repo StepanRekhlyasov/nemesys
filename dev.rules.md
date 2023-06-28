@@ -79,3 +79,18 @@ stores/
     return { users, getPieceOfUsers, getUsers, deleteUser }
   })
   ```
+
+## Error handling
+When you want to show an error message in the frontend, use Alert.warning from  `src\shared\utils\Alert.utils.ts`
+it handles all Firebase errors:
+```
+try{
+	await batch.commit()
+} catch (e){
+	Alert.warning(e, {textColor:'red'}) // first argument can be also a string, second is options
+}
+```
+To send an error from cloud functions to frontend:
+Node.JS:  `throw  new  functions.https.HttpsError('unavailable', 'Transaction failure');`
+Python: `return  jsonify({'message': 'Request does not exists'}), 404, headers`
+then, pass the error from catch to Alert.warning

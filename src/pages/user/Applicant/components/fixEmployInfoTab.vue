@@ -246,7 +246,7 @@ async function updateData(data){
   }
   data = mutateDatesInData(data)
   fixData.value = {
-    ...fixData.value, 
+    ...fixData.value,
     ...data
   }
   await fixStore.getFixData(props.applicant.id);
@@ -275,7 +275,7 @@ function disableChange() {
       return
     }
   }
-  
+
 }
 
 function showEditDialog(data) {
@@ -308,7 +308,7 @@ function showDeleteDialog(data) {
 
     await fixStore.updateFix(data.id, updateData)
     await fixStore.getFixData(props.applicant.id);
-    Alert.success($q, t)
+    Alert.success()
   })
 }
 </script>
