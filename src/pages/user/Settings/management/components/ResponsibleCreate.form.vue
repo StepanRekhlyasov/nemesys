@@ -55,8 +55,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
@@ -74,9 +72,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['closeDialog'])
-
-const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar();
 const auth = getAuth();
 const accountData = ref({
   hidden: false
@@ -124,16 +119,16 @@ async function addAccount() {
     .then((response) => {
       if (response.status === 200) {
         emit('closeDialog');
-        Alert.success($q, t);
+        Alert.success();
         loading.value = false;
       } else {
-        Alert.warning($q, t);
+        Alert.warning(response);
         loading.value = false;
         console.error(response.statusText)
       }
     })
     .catch((error) => {
-      Alert.warning($q, t);
+      Alert.warning(error);
       loading.value = false;
       console.error('Failed to create user', error);
     });

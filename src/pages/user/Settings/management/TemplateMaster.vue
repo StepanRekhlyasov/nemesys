@@ -183,7 +183,7 @@ export default {
       } catch (e) {
         console.log(e)
         loading.value = false;
-        Alert.warning($q, t)
+        Alert.warning(e)
       }
     }
 
@@ -216,10 +216,10 @@ export default {
               deleted: true
             })
 
-            Alert.success($q, t)
+            Alert.success()
             loadTemplateList()
           } catch {
-            Alert.success($q, t)
+            Alert.success()
             loading.value = false;
           }
         })

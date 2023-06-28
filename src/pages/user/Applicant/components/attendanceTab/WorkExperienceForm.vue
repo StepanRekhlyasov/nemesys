@@ -114,14 +114,12 @@
 
 <script lang="ts" setup>
 import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
-import { useQuasar } from 'quasar';
 import { employmentStatus } from 'src/shared/constants/Applicant.const';
 import { ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
 import { useApplicant } from 'src/stores/applicant';
 import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
   editExperience?: ApplicantExperience,
@@ -146,10 +144,6 @@ if(props.editExperience){
 
 const loading = ref(false);
 const employmentStatusOption = ref(employmentStatus);
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 const db = getFirestore();
 async function save() {
   if(!props.applicantId) return;
@@ -157,6 +151,7 @@ async function save() {
   try {
       await applicantStore.saveWorkExperience(data.value, props.applicantId)
   } catch (e) {
+    Alert.warning(e)
     console.log(e)
   }
   loading.value = false;
@@ -169,15 +164,15 @@ async function addExperience() {
       newData['created_at'] = serverTimestamp();
       newData['updated_at'] = serverTimestamp();
       newData['deleted'] = false;
-      if(newData.startMonth) newData.startMonth = dateToTimestampFormat(new Date(newData.startMonth)) 
-      if(newData.endMonth) newData.endMonth = dateToTimestampFormat(new Date(newData.endMonth)) 
+      if(newData.startMonth) newData.startMonth = dateToTimestampFormat(new Date(newData.startMonth))
+      if(newData.endMonth) newData.endMonth = dateToTimestampFormat(new Date(newData.endMonth))
       const clientRef = collection(db, 'applicants/'+props.applicantId+'/experience/');
       await addDoc(clientRef, newData);
       emit('closeDialog');
-      Alert.success($q, t);
+      Alert.success();
   } catch (e) {
     console.log(e)
-    Alert.warning($q, t);
+    Alert.warning(e);
   }
   loading.value = false;
 }

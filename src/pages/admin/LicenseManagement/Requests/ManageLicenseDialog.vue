@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { QDialogProps, useQuasar } from 'quasar';
+import { QDialogProps } from 'quasar';
 import { LicenseRequest } from '../types/LicenseRequest';
 import { useI18n } from 'vue-i18n';
 import { ref, onMounted } from 'vue';
@@ -62,7 +62,6 @@ interface ManageLicenseDialogProps extends QDialogProps {
     priceForOneUserInYen: number
   }
 }
-const $q = useQuasar()
 const { t } = useI18n({ useScope: 'global' });
 const branchStore = useBranch()
 const props = defineProps<ManageLicenseDialogProps>()
@@ -92,9 +91,9 @@ async function execute() {
 
   try {
     await licenceStore.execute(props.licenseRequest)
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
   }
   loading.value = false
   emit('onDialogHide', false)

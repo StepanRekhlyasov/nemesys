@@ -7,11 +7,9 @@ import { useClientFactory } from 'src/stores/clientFactory';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { useImportCandidatesLabels } from './handlers';
-import Quasar, { useQuasar } from 'quasar';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar()
 
 const clientFactoryStore = useClientFactory()
 const { modifiedCFs } = storeToRefs(clientFactoryStore)
@@ -37,7 +35,7 @@ const updatedInfoHandle = (modifiedCF: ModifiedCF) => {
 }
 
 const setIgnoredStatus = async (modifiedCFId: string) => {
-    await clientFactoryStore.setIgnoredStatus(props.clientFactory.clientID, props.clientFactory.id, modifiedCFId, $q as unknown as typeof Quasar)
+    await clientFactoryStore.setIgnoredStatus(props.clientFactory.clientID, props.clientFactory.id, modifiedCFId, )
     isLoading.value = false
 }
 
