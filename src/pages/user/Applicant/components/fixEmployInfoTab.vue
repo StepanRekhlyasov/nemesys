@@ -224,15 +224,10 @@ const columns = computed<QTableProps['columns']>(() => {
     }
   ];
 });
-const unsubscribeUsers = ref();
 
 onMounted(async () =>{
   await fixStore.getFixData(props.applicant.id)
 })
-
-onBeforeUnmount(() => {
-  unsubscribeUsers.value();
-});
 
 function mutateDatesInData(data){
   const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate', 'endDate']
