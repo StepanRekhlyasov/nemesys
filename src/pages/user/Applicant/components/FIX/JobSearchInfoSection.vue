@@ -1,17 +1,17 @@
 <template>
-  <DropDownEditGroup
+  <DropDownEditGroup 
 		:isEdit="edit.includes('jobSearchInfo')"
 		:label="$t('applicant.list.fixEmployment.jobSearchInfo')"
 		@openEdit="emit('openEdit');resetData();"
 		@closeEdit="emit('closeEdit');resetData();"
 		@onSave="saveHandler()"
 		:isDisabledButton="disableLevel < 1">
-    <q-form ref="form">
+		<q-form ref="form">
 
 			<div class="row q-pb-sm">
 				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" 
 					:value="fixData.inspectionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md" required>
-          <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
+					<q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['inspectionStatus']" :rules="[() => 'inspectionStatus' in data || '']">
 						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" 
 							checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
@@ -176,14 +176,14 @@ const statusKey = 'inspectionStatus' /** change status key */
 const hightlightError = ref<string[]>([]);
 const form: Ref<QForm|null> = ref(null);
 const saveHandler = () => {
-  form.value?.validate().then(success => {
-    if (success) {
+	form.value?.validate().then(success => {
+		if (success) {
 			if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
 				emit('save', tabKey, data.value);
 				resetData();
 			}
     }
-  })
+	})
 }
 useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
 
@@ -225,7 +225,3 @@ watch(
   }, {deep: true, immediate: true}
 ) 
 </script>
-
-<style>
-
-</style>

@@ -69,7 +69,7 @@
             .map(user => user.label).join('')" required>
           <q-select
             v-model="data['chargeOfAdmission']"
-						:rules="[creationRule]" hide-bottom-space
+            :rules="[creationRule]" hide-bottom-space
             :disable="loading || disableLevel < 3"
             emit-value map-options dense outlined
             :options="usersListOption" :label="$t('common.pleaseSelect')" />
