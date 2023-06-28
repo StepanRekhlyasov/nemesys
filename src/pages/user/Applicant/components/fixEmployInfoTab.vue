@@ -128,7 +128,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onBeforeUnmount, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { serverTimestamp } from 'firebase/firestore';
 import { QTableProps, useQuasar } from 'quasar';
 import FixEmployCreate from './FIX/fixEmployCreate.vue'
@@ -224,15 +224,10 @@ const columns = computed<QTableProps['columns']>(() => {
     }
   ];
 });
-const unsubscribeUsers = ref();
 
 onMounted(async () =>{
   await fixStore.getFixData(props.applicant.id)
 })
-
-onBeforeUnmount(() => {
-  unsubscribeUsers.value();
-});
 
 function mutateDatesInData(data){
   const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate', 'endDate']
