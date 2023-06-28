@@ -52,15 +52,6 @@
         />
       </div>
 
-      <div class="row q-pb-sm">
-        <labelField 
-          :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.reasonNotJoining')" 
-          :value="fixData.reasonNotJoining" valueClass="col-9 q-pl-md">
-          <q-input dense outlined bg-color="white"
-            v-model="data['reasonNotJoining']" :disable="loading || disableLevel < 3" />
-        </labelField>
-      </div>
-
       <div class="row q-pb-sm self-center">
         <labelField 
           :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.chargeOfAdmission')"
@@ -154,7 +145,6 @@ function resetData() {
     admissionDate: props.editData['admissionDate'] || '',
     admissionReasonNG: props.editData['admissionReasonNG'] || '',
     admissionReasonNGDetail: props.editData['admissionReasonNGDetail'] || '',
-		reasonNotJoining: props.editData['reasonNotJoining'] || '',
     chargeOfAdmission: props.editData['chargeOfAdmission'] || '',
     endDate: props.editData['endDate'] || '',
     admissionMemo: props.editData['admissionMemo'] || '',

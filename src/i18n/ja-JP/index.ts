@@ -865,7 +865,6 @@ export default {
         admission: {
           status: '入職ステータス',
           date: '入職日',
-          reasonNotJoining: '入職NG理由',
           chargeOfAdmission: '入職担当者ユーザー',
           memo: '入職メモ'
         }
