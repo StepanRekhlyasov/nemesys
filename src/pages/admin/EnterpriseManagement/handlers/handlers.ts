@@ -18,11 +18,18 @@ const auth = getAuth();
 export async function mapOrganizationsToRow(organizations: Organization[]) {
   return await Promise.all(
     organizations.map(async (organization, index) => {
-      const user = await store.getUserById(organization.operatorUser)
+      let displayName = ''
+      try {
+        const user = await store.getUserById(organization.operatorUser)
+        displayName = user.displayName
+      } catch (error) {
+        /* TODO add reactivity */
+        displayName = t('common.userNotFound')
+      }
       return {
         number: index + 1,
         organizationCodeAndName: organization.code + ' ' + organization.name,
-        operatorName: user?.displayName,
+        operatorName: displayName,
         ...organization
       }
     })
