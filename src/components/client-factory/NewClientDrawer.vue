@@ -45,7 +45,7 @@ const onSubmit = async (newClientData: Client | null) => {
     emit('hideDrawer')
 
     if(newClientData) {
-        const clientRef = await addNewClient(newClientData, $q as unknown as typeof Quasar)
+        const clientRef = await addNewClient(newClientData)
 
         if (clientRef) {
             await addClientFactory({

@@ -9,6 +9,7 @@ import { useHighlightMainInfo, useOfficeDetails } from 'src/components/client-fa
 import { ChangedData, RenderMainInfo, RenderOfficeDetailsWithIndustryType, RenderOfficeDetailsWithoutIndustryType } from 'src/components/client-factory/types';
 import { ClientFactory, Industry } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
+import { CustomIndustry } from './types';
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -27,8 +28,8 @@ const emit = defineEmits<{
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
 const detailsInfo = ref<RenderOfficeDetailsWithIndustryType | RenderOfficeDetailsWithoutIndustryType>({} as RenderOfficeDetailsWithIndustryType | RenderOfficeDetailsWithoutIndustryType)
 const isImportDialog = ref(false)
-const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean, ts: string }>)
-const selectedIndustry = ref<{ value: string, isSelected: boolean, ts: string }>({} as { value: string, isSelected: boolean, ts: string })
+const dropDownIndustryValue = ref([] as Array<CustomIndustry>)
+const selectedIndustry = ref<CustomIndustry>({} as CustomIndustry)
 
 const initializeIndustry = () => {
     dropDownIndustryValue.value = props.clientFactory.industry?.reduce((acc, industry, index) => {
@@ -41,14 +42,14 @@ const initializeIndustry = () => {
         }
 
         return acc
-    }, [] as Array<{ value: string, isSelected: boolean, ts: string }>)
+    }, [] as Array<CustomIndustry>)
 
     if (!selectedIndustry.value.value) {
         selectedIndustry.value = dropDownIndustryValue.value[0] ?? {}
     }
 }
 
-const getDetailsInfo = (key: string, industry?: { value: string, isSelected: boolean, ts: string }, industryOfficeDetails?: ChangedData) => {
+const getDetailsInfo = (key: string, industry?: CustomIndustry, industryOfficeDetails?: ChangedData) => {
     let items: ChangedData = [];
     if (!industry) {
 
@@ -85,7 +86,7 @@ const generateIndustryData = () => {
     return data;
 }
 
-const industryHandler = (value: { value: string, isSelected: boolean, ts: string }) => {
+const industryHandler = (value: CustomIndustry) => {
     selectedIndustry.value = value
 }
 
