@@ -667,6 +667,7 @@ import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import teleAppointmentReg from './teleAppointmentReg.vue';
 import backOrderReg from './backOrderReg.vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'clientDetail',
@@ -1106,12 +1107,7 @@ export default {
       const clientRef = collection(db, 'clients/' + route.params.id + '/office');
       await addDoc(clientRef, data);
       officeDialog.value = false;
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success()
     };
     const checkIfExist = (key: string) => {
       return Object.keys(editofficeData.value).includes(key)

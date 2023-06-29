@@ -188,8 +188,7 @@
 <script lang="ts">
 import { watch, reactive, SetupContext } from 'vue'; //ref,
 import { addDoc, collection, serverTimestamp, getFirestore } from 'firebase/firestore';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 interface Props {
   clientId: string
@@ -211,7 +210,6 @@ export default {
   },
 
   setup(props: Props, context: SetupContext) {
-    const { t } = useI18n({ useScope: 'global' });
     const teleAppointmentData = reactive({
       tele_appoint_result: false,
       tele_job_offer: false,
@@ -222,7 +220,6 @@ export default {
       reason_no_job_offer_detail: '',
     });
     const db = getFirestore();
-    const $q = useQuasar();
 
     watch(
       () => (teleAppointmentData.tele_appoint_result),
@@ -262,12 +259,7 @@ export default {
       await addDoc(clientRef, data);
       //officeDialog.value = false;
       context.emit('closeDialog')
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success()
     };
 
     return {
