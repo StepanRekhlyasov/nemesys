@@ -11,18 +11,18 @@
 
         <InputWrapper :text-key="'settings.users.email'">
           <q-input v-model="accountData['email']" name="email" :disable="loading" outlined dense :color="color"
-            :rules="[creationRule]" type="email" hide-bottom-space />
+            :rules="[creationRule]" type="email" hide-bottom-space autocomplete="new-password" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.name'">
           <q-input v-model="accountData['name']" name="name" :disable="loading" outlined dense :color="color"
-            :rules="[creationRule]" hide-bottom-space />
+            :rules="[creationRule]" hide-bottom-space autocomplete="new-password" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.password'">
           <q-input v-model="accountData['password']" name="password" :disable="loading" outlined
-            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color" type="password"
-            hide-bottom-space />
+            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color"
+            hide-bottom-space autocomplete="new-password" :input-style="'-webkit-text-security: disc;'"/>
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.role'">
