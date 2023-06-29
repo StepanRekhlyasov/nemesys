@@ -697,7 +697,6 @@ export const useApplicant = defineStore('applicant', () => {
           }
         }
         if(Object.keys(saveBooleans).length){
-          // const bestFix = getMostCompletedFix(fixStore.state.selectedApplicantFixes)
           await changeApplicantStatusByOkFields( saveBooleans )
         }
       } catch(error) {
@@ -717,6 +716,7 @@ export const useApplicant = defineStore('applicant', () => {
     const { fixStatus, inspectionStatus, offerStatus, admissionStatus, fixDate, inspectionDate, offerDate, admissionDate, chargeOfFix, chargeOfInspection, chargeOfAdmission, chargeOfOffer, fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG, id } = bestFix
     const saveBooleans = { fixStatus, inspectionStatus, offerStatus, admissionStatus }
     const saveDates = { fixDate, inspectionDate, offerDate, admissionDate }
+    const chargeOfStatus = { chargeOfAdmission, chargeOfOffer, chargeOfInspection, chargeOfFix }
     const NGReasons = { fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG }
     const userInCharge = admissionStatus?chargeOfAdmission:undefined || offerStatus?chargeOfOffer:undefined || inspectionStatus?chargeOfInspection:undefined || fixStatus?chargeOfFix:undefined || ''
 
@@ -726,7 +726,7 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
 
-    const saveData = {...saveBooleans, ...saveDates, ...NGReasons, userInCharge, bestFixID: id}
+    const saveData = {...saveBooleans, ...saveDates, ...NGReasons, ...chargeOfStatus, userInCharge, bestFixID: id}
     await updateApplicant(saveData, true)
   }
 

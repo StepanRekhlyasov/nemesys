@@ -74,49 +74,66 @@ import DateRange from 'src/components/inputs/DateRange.vue';
 import SAATable from './components/SAATable.vue';
 import { ref, onMounted, watch } from 'vue'
 import { useOrganization } from 'src/stores/organization';
-import { User } from 'src/shared/model';
+import { ApplicantFix } from 'src/shared/model';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
-import { where } from 'firebase/firestore';
+
+interface RowData {
+  name: string,
+  chargeOfFix: number,
+  chargeOfInspection: number,
+  chargeOfOffer: number,
+  chargeOfAdmission: number,
+}
 
 const dateRange = ref('')
 const branch = ref('')
 const user = ref('')
 const method = ref('user')
 const loading = ref(false)
-const rowData = ref<User[]>([])
+const rowData = ref<RowData[]>([]) /** typeme please */
 const userStore = useUserStore()
 const organizationStore = useOrganization()
+const fixList = ref<ApplicantFix[]>([])
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 const saaTableRef = ref<InstanceType<typeof SAATable> | null>(null);
 
 async function getData(){
-  if(organizationStore.currentOrganizationId){
-    loading.value = true
-    /**
-     * here is test data.
-     * true data should be parsed here to table keys only
-     * because of csv downloading
-     */
-    if(user.value){
-      rowData.value = await userStore.getUsersByConstrains([where('id', '==', user.value), where('deleted', '==', false), where('organization_ids', 'array-contains', organizationStore.currentOrganizationId)])
-    } else if (branch.value) {
-      rowData.value = await userStore.getUsersByConstrains([where('branch_id', '==', branch.value), where('deleted', '==', false), where('organization_ids', 'array-contains', organizationStore.currentOrganizationId)])
-    } else {
-      rowData.value = await userStore.getAllUsers(organizationStore.currentOrganizationId)
-    }
-    loading.value = false
-  }
+  fixList.value = await userStore.getSAAFixList(organizationStore.state.currentOrganizationUsers)
+  rowData.value = mapFixDataForTable(fixList.value)
 }
-watch(()=>organizationStore.currentOrganizationId, ()=>{
-  getData()
-})
+
 function downloadCSV(){
   saaTableRef.value?.exportTable()
 }
 onMounted(()=>{
+  loading.value = true
   getData()
+  loading.value = false
 })
+
+watch(()=>organizationStore.currentOrganizationId, ()=>{
+  loading.value = true
+})
+watch(()=>organizationStore.state.currentOrganizationUsers, async ()=>{
+  await getData()
+  loading.value = false
+})
+
+function mapFixDataForTable(data : ApplicantFix[]) {
+  const result : RowData[] = []
+  for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
+    const row : Partial<RowData> = {}
+    row['name'] = value.displayName? value.displayName : value.name
+    const statusCountFields = ['chargeOfFix', 'chargeOfInspection', 'chargeOfOffer', 'chargeOfAdmission']
+    statusCountFields.forEach((field)=>{
+      row[field] = data.reduce((accumulator, currentValue)=> currentValue[field] === key ? accumulator + 1 : accumulator, 0)
+    })
+    result.push(row as RowData)
+  }
+  return result
+}
+
 </script>
 <style scoped lang="scss">
 .gap{

@@ -1683,9 +1683,9 @@ export default {
   KPI: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
-    jobs: '職見数',
-    innerConstant: '内定数',
-    entry: '入職数',
+    numberOfVisit: '職見数',
+    numberOfOffer: '内定数',
+    numberOFEntry: '入職数',
     numberOfCalls: '架電数',
     numberOfFax: 'FAX数',
     dispatch: '派遣',

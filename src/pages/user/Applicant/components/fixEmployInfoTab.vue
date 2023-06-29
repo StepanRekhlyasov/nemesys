@@ -78,7 +78,7 @@
         <q-td :props="props"
           :class="rowColor(props.row)">
           <span class="row" v-if="props.row.admissionStatus">{{ props.row.admissionDate }}</span>
-          <span class="row text-uppercase">{{ props.row.admissionDate? 'OK' : 'admissionStatus' in props.row ? 'NG' : '-' }}</span>
+          <span class="row text-uppercase">{{ props.row.admissionStatus? 'OK' : 'admissionStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
