@@ -10,7 +10,7 @@
         {{ $t('applicant.list.info.attractionsStatus') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant?.attractionsStatus? 'OK' : 'NG'}}</span>
+        <span v-if="!edit">{{ applicant?.attractionsStatus === true ? 'OK' : applicant?.attractionsStatus === false ? 'NG' : '-'}}</span>
         <template v-if="edit">
           <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate"
             unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
@@ -22,7 +22,7 @@
         <NGReasonSelect
           :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
           :edit="edit" 
-          :label="$t('applicant.list.fixEmployment.reasonNG')"
+          :label="$t('applicant.list.fixEmployment.'+reasonKey)"
           :reasonValue="data[reasonKey]"
           @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
           :detailedValue="data[detailKey]"
