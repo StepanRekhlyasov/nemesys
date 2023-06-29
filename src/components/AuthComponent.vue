@@ -10,13 +10,13 @@
         </div>
         <div class="full-width">
 
-          <q-form @submit="submitForm">
+          <q-form @submit="submitForm" autocomplete="false">
 
-            <q-input outlined class="q-mb-md" :label="$t('menu.admin.organizationsTable.organizationCode')"
+            <q-input outlined class="q-mb-md" :label="$t('menu.admin.organizationsTable.organizationCode')" autocomplete="false"
               v-model="formData.code" dense :rules="[organizationCodeRule]" />
-            <q-input outlined class="q-mb-md" type="email" :label="$t('login.email')" v-model="formData.email" dense
+            <q-input outlined class="q-mb-md" type="email" :label="$t('login.email')" v-model="formData.email" dense autocomplete="false"
               :error="showError" error-message="Please enter a valid email address." />
-            <q-input outlined class="q-mb-md" type="password" :label="$t('login.password')" v-model="formData.password"
+            <q-input outlined class="q-mb-md" id="removeAuto" type="password" :label="$t('login.password')" v-model="formData.password" autocomplete="false"
               dense :rules="[(val) => val != '' || 'Password is required']" />
             <div class="row q-pt-xs">
               <q-btn type="submit" color="primary" :label="$t('login.button')" unelevated />
@@ -32,7 +32,7 @@
 <script lang="ts">
 //import router from '../router';
 import { useRouter } from 'vue-router';
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, onMounted, reactive, ref } from 'vue';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useI18n } from 'vue-i18n';
 import { FirebaseError } from '@firebase/util';
@@ -52,7 +52,14 @@ export default defineComponent({
       accept: false,
       code: '',
     });
-
+    onMounted(()=>{
+      setTimeout(()=>{
+        const test = document.getElementById('f_94e02157-ba7a-4983-a46d-035ffcc3167f')
+        test?.removeAttribute('autocomplete');
+        console.log(test)
+      }, 2000)
+      
+    })
     const title = 'Sign in';
     const resetPwdDialog = ref(false);
     const showError = ref(false);
