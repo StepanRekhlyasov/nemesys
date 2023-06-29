@@ -1364,6 +1364,7 @@ export default {
   actions: {
     clickToAddNewClient: 'Click here to add a new client',
     searchConditionChange: 'Search condition change',
+    faxBatchTransmission: 'Fax batch transmission',
   },
   failed: 'Action failed',
   success: 'Action was successful',
@@ -1549,6 +1550,23 @@ export default {
         basicInfoChanged: 'Changed Basic Info',
         officeInfoChanged: 'Changed Office Info'
       }
+    },
+    fax: {
+      transmissionConfirmation: 'Transmission Confirmation',
+      applicantLinkage: 'Applicant Linkage',
+      clientCategoryNG: 'NG client category',
+      clientFacilityNG: 'NG client/facility',
+      previousEmploymentClient: 'Previous employment client',
+      transmissionContentSettings: 'Transmission content settings',
+      prSheet: 'PR sheet',
+      attachPRSheet: 'Attach PR sheet',
+      setTransmissionDateTime: 'Set transmission date and time',
+      set: 'Set',
+      transmissionDateTime: 'Transmission date and time',
+      destinationSettings: 'Destination settings',
+      clientNG: 'NG client',
+      refinementConditions: 'Refinement conditions',
+      maxTransmissions: 'Maximum Transmissions',
     }
   },
   inquiry: {

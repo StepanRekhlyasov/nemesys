@@ -73,10 +73,10 @@ const openNewFaxDrawer=()=>{
                         </q-select>
                     </div>
                     <div class="q-gutter-md q-ml-sm">
-                      <q-btn class="action_btn"  @click="openNewFaxDrawer" :color="theme">FAX一括送信</q-btn>
+                      <q-btn class="action_btn"  @click="openNewFaxDrawer" :color="theme"> {{ t('actions.faxBatchTransmission') }}</q-btn>
                     </div>
                 </div>
-            </div>
+            </div> 
 
             <q-btn icon="add" class="action_btn" @click="openNewClientFactoryDrawer" :color="theme">
                 {{ t('menu.addOffice') }}
