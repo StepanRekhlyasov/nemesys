@@ -56,6 +56,7 @@ export default {
     preview: 'Preview',
     yes: 'Yes',
     no: 'No',
+    without: 'Without',
     possible: 'Possible',
     impossible: 'Impossible',
     yesShort: 'Yes',

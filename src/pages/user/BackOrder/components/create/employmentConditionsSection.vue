@@ -199,7 +199,7 @@
           :rules="[creationRule]" hide-bottom-space> 
           <template v-slot:control>                    
             <q-radio v-model="data['overtimeWork']" val="yes" :label="$t('common.yes')" />
-            <q-radio v-model="data['overtimeWork']" val="no" :label="$t('common.no')" />
+            <q-radio v-model="data['overtimeWork']" val="no" :label="$t('common.without')" />
           </template>
         </q-field>
       </div>

@@ -56,6 +56,7 @@ export default {
     preview: '確認',
     yes: '有り',
     no: '否能',
+    without: '無し',
     possible: '可能',
     impossible: '無り',
     yesShort: '有',
