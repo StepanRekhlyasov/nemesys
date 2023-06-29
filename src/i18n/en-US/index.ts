@@ -1688,9 +1688,9 @@ export default {
   KPI: {
     targetPeriod: 'Period',
     numberOfFix: 'FIX Qty.',
-    jobs: 'Visit Qty.',
-    innerConstant: 'Offer Qty.',
-    entry: 'Entry Qty.',
+    numberOfVisit: 'Visit Qty.',
+    numberOfOffer: 'Offer Qty.',
+    numberOFEntry: 'Entry Qty.',
     numberOfCalls: 'Call Qty.',
     numberOfFax: 'FAX Qty.',
     dispatch: 'Dispatch',
