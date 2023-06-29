@@ -49,17 +49,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
 import { ref, computed } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useI18n } from 'vue-i18n';
 import { useInquiry } from 'src/stores/inquiry';
 import { INQUIRY_MESSAGE_TYPE, INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { Timestamp } from 'firebase/firestore';
 import { InquiryData } from 'src/shared/model';
-
-const $q = useQuasar();
-const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
   inquiryData: InquiryData
@@ -84,12 +79,12 @@ const sendResponse = async () => {
         data: {status: INQUIRY_STATUS.unanswered}
       })
       emit('inquiryUpdated')
-      Alert.success($q, t)
+      Alert.success()
       clearAllValues()
       loading.value = false;
     } catch(e) {
       console.log(e)
-      Alert.warning($q, t)
+      Alert.warning(e)
       loading.value = false;
     }
   }

@@ -78,7 +78,7 @@ export const useOrganization = defineStore('organization', () => {
       return usersObject
     }
     users.forEach((user) => {
-      users[user.id] = user as User
+      usersObject[user.id] = user as User
     })
 
     return usersObject

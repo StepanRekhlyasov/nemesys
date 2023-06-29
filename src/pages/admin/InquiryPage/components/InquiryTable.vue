@@ -153,10 +153,10 @@
             await inquiryStore.deleteInquiryData(inquiryId)
             await loadCurrentInquires();
             loading.value = false;
-            Alert.success($q, t)
+            Alert.success()
         } catch (e) {
             console.error(e)
-            Alert.warning($q, t)
+            Alert.warning(e)
             loading.value = false;
         }
     })

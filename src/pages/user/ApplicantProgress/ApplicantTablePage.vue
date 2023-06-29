@@ -26,7 +26,7 @@
               paginationRef?.setConstraints(paginationConstraints);
               paginationRef?.queryFirstPage()
             }" 
-            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
+            v-model="applicantStore.state.applicantProgressFilter.userInCharge"
             :optionToFetch="'usersInCharge'"
           />
         </div>
@@ -143,7 +143,7 @@ watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (n
 watch(()=>organization.currentOrganizationId, (newVal)=>{
   applicantStore.state.applicantProgressFilter.organizationId = newVal
   applicantStore.state.applicantProgressFilter.branchIncharge = ''
-  applicantStore.state.applicantProgressFilter.attendeeUserInCharge = ''
+  applicantStore.state.applicantProgressFilter.userInCharge = ''
   paginationRef.value?.setConstraints(paginationConstraints.value);
   paginationRef.value?.queryFirstPage()
 })

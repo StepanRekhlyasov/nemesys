@@ -1,10 +1,9 @@
 import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, collectionGroup, DocumentData, where, Timestamp, doc, getDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import { getStorage, ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { defineStore } from 'pinia';
-import { useQuasar, exportFile, date } from 'quasar';
+import { exportFile, date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { occupationList } from 'src/shared/constants/Applicant.const';
-import { useI18n } from 'vue-i18n';
 import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
@@ -12,8 +11,6 @@ import { dateToTimestampFormat } from 'src/shared/utils/utils';
 
 export const useBudget = defineStore('budget', () => {
 	const db = getFirestore();
-	const { t } = useI18n({ useScope: 'global' });
-	const $q = useQuasar();
 	const options = ref({ occupation: occupationList });
 	const budgetList = ref(<DocumentData[]>[]);
 	const unsubscribe = ref();
@@ -22,7 +19,7 @@ export const useBudget = defineStore('budget', () => {
 	async function saveBudget(budgetData) {
 		const data = JSON.parse(JSON.stringify(budgetData));
 		if (data['postingStartDate'] > data['postingEndDate']) {
-			Alert.warning($q, t);
+			Alert.warning('Posting start date > Posting end date');
 			return false
 		}
 		if(data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
@@ -42,7 +39,7 @@ export const useBudget = defineStore('budget', () => {
 		}
 
 
-		Alert.success($q, t)
+		Alert.success()
 		return true
 	}
 	async function getOptionData() {
@@ -132,11 +129,7 @@ export const useBudget = defineStore('budget', () => {
 				'text/csv'
 			)
 			if (status !== true) {
-				$q.notify({
-					message: 'Browser denied file download...',
-					color: 'negative',
-					icon: 'warning'
-				})
+        Alert.warning('Browser denied file download...', { color: 'negative' })
 			}
 		};
 		xhr.open('GET', url);
@@ -178,11 +171,7 @@ export const useBudget = defineStore('budget', () => {
 			}
 		)
 		if (status !== true) {
-			$q.notify({
-				message: 'Browser denied file download...',
-				color: 'negative',
-				icon: 'warning'
-			})
+      Alert.warning('Browser denied file download...', { color: 'negative' })
 		}
 	}
 

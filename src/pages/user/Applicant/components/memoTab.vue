@@ -38,7 +38,7 @@
             {{ props.row.user.displayName }}
           </q-td>
         </template>
-        
+
         <template v-slot:body-cell-content="props">
           <q-td :props="props">
             <q-input v-if="isRowSelected(props.rowIndex) " outlined dense v-model="editableContect['content']" />
@@ -150,6 +150,7 @@ const loadMemoData = async () =>{
     Promise.all(data).then(ret => memoListData.value=ret)
     loadData.value = false
   } catch (e) {
+    Alert.warning(e)
     console.log(e)
   }
 }
@@ -174,14 +175,14 @@ async function onSubmit() {
     loading.value = false;
     data.value = {};
     await loadMemoData();
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
     console.log(error);
     loading.value = false;
-    Alert.warning($q, t)
+    Alert.warning(error)
   }
 }
-async function onUpdate(index) {       
+async function onUpdate(index) {
   try {
     if (!editableContect.value) {
       return;
@@ -199,7 +200,8 @@ async function onUpdate(index) {
     memoListData.value[index] = editableContect.value as ApplicantMemo;
     loading.value = false;
   } catch (e) {
-    console.log(e) 
+    Alert.warning(e)
+    console.log(e)
     loading.value = false;
   }
 }

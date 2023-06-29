@@ -4,17 +4,25 @@ import { ConstraintsType, toDateFormat } from 'src/shared/utils/utils';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { ref } from 'vue'
 
 export interface FixOption {
   operationFilter?: boolean;
+}
+export interface FixState {
+  selectedApplicantFixes: ApplicantFix[];
 }
 
 export const useFix = defineStore('fix', () => {
   const db = getFirestore();  
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
+  const state = ref<FixState>({
+    selectedApplicantFixes: []
+  })
 
   async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
+    state.value.selectedApplicantFixes = []
     const fixData = await getFixList(applicant_id, {operationFilter})
     const list: ApplicantFix[] = [];
     fixData.forEach(fix => {
@@ -29,7 +37,7 @@ export const useFix = defineStore('fix', () => {
             inspectionDate: toDateFormat(data['inspectionDate']),
         } as ApplicantFix)
     })
-
+    state.value.selectedApplicantFixes = list
     return list
   }
 
@@ -116,10 +124,15 @@ export const useFix = defineStore('fix', () => {
         return;
       }
     }
+    for (const [key, value] of Object.entries(data)){
+      if(typeof value === 'undefined'){
+        delete data[key]
+      }
+    }
     await updateDoc(
       doc(db, '/fix/'+ fix_id ),
       data
     );
   }
-  return { useFix, getFixData, getFixList, saveFix, updateFix, getFixByApplicantIDs }
+  return { useFix, state, getFixData, getFixList, saveFix, updateFix, getFixByApplicantIDs }
 })

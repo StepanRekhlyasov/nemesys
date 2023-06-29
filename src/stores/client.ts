@@ -1,13 +1,11 @@
-import { useQuasar } from 'quasar';
 import { defineStore } from 'pinia';
 import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClient = defineStore('client', () => {
-    //quasar
-    const $q = useQuasar();
 
     // db
     const db = getFirestore();
@@ -26,22 +24,16 @@ export const useClient = defineStore('client', () => {
 
         try {
             const docRef =  await addDoc(collection(db, 'clients'), newClient);
-
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: 'Client wass added',
-            });
+            Alert.createAlert({
+              color: 'green-4',
+              textColor: 'white',
+              icon: 'cloud_done',
+              message: 'Client wass added',
+          })
 
             return docRef
         } catch(e) {
-            $q.notify({
-                textColor: 'white',
-                color: 'red-5',
-                icon: 'warning',
-                message: 'Unexpected error',
-            });
+           Alert.warning(e)
         }
     }
 
@@ -54,6 +46,7 @@ export const useClient = defineStore('client', () => {
             }, {merge: true});
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
         }
     }
