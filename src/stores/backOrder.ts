@@ -118,4 +118,3 @@ export const useBackOrder = defineStore('backOrder', () => {
 
 	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder}
 })
-
