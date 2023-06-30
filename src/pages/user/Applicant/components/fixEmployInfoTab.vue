@@ -150,7 +150,7 @@ const fixStore = useFix();
 const $q = useQuasar();
 
 const applicantFixData = computed<ApplicantFix[]>(()=>{
-  return fixStore.state.selectedApplicantFixes
+  return applicantStore.state.applicantFixes[props.applicant.id]
 });
 
 const drawerRight = ref(false);

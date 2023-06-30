@@ -62,15 +62,15 @@
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.seduser') }}
+        {{ $t('applicant.list.info.chargeOfAttraction') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
         <span v-if="!edit">{{
             usersListOption
-              .filter(user => user.value === data['seduser'])
+              .filter(user => user.value === data['chargeOfAttraction'])
               .map(user => user.label).join('')
         }}</span>
-        <q-select v-if="edit" outlined dense :options="usersListOption" v-model="data['seduser']"
+        <q-select v-if="edit" outlined dense :options="usersListOption" v-model="data['chargeOfAttraction']"
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
     </div>
@@ -202,7 +202,7 @@ async function resetData() {
     attractionsReasonNGDetail: props?.applicant['attractionsReasonNGDetail'] || '',
     invitationDate: timestampToDateFormat(props?.applicant['invitationDate']),
     employmentStatus: props?.applicant['employmentStatus'],
-    seduser: props?.applicant['seduser'],
+    chargeOfAttraction: props?.applicant['chargeOfAttraction'],
     classification: props?.applicant['classification'],
     occupation: props?.applicant['occupation'],
     position: props?.applicant['position'],

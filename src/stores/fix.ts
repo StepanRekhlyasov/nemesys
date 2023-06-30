@@ -4,25 +4,28 @@ import { ConstraintsType, toDateFormat } from 'src/shared/utils/utils';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue'
+// import { ref } from 'vue'
+import { useApplicant } from './applicant';
 
 export interface FixOption {
   operationFilter?: boolean;
 }
-export interface FixState {
-  selectedApplicantFixes: ApplicantFix[];
-}
+// export interface FixState {
+//   selectedApplicantFixes: ApplicantFix[];
+// }
 
 export const useFix = defineStore('fix', () => {
   const db = getFirestore();  
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
-  const state = ref<FixState>({
-    selectedApplicantFixes: []
-  })
+  const applicantStore = useApplicant()
+  // const state = ref<FixState>({
+  //   selectedApplicantFixes: []
+  // })
 
   async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
-    state.value.selectedApplicantFixes = []
+    // state.value.selectedApplicantFixes = []
+    
     const fixData = await getFixList(applicant_id, {operationFilter})
     const list: ApplicantFix[] = [];
     fixData.forEach(fix => {
@@ -37,7 +40,7 @@ export const useFix = defineStore('fix', () => {
             inspectionDate: toDateFormat(data['inspectionDate']),
         } as ApplicantFix)
     })
-    state.value.selectedApplicantFixes = list
+    applicantStore.state.applicantFixes[applicant_id] = list
     return list
   }
 
@@ -62,7 +65,7 @@ export const useFix = defineStore('fix', () => {
       where('deleted', '==', false),
       ...constraints
     ))
-    return docSnap.docs.map(item => {
+    const result = docSnap.docs.map(item => {
       const itemData = item.data()
       return {
         ...itemData,
@@ -74,6 +77,16 @@ export const useFix = defineStore('fix', () => {
         inspectionDate: toDateFormat(itemData['inspectionDate']),
       } as ApplicantFix
     })
+    if(Array.isArray(ids)){
+      ids.forEach((id)=>{
+        applicantStore.state.applicantFixes[id] = result.filter((row)=>{
+          return row.applicant_id === id
+        })
+      })
+    } else {
+      applicantStore.state.applicantFixes[ids] = result
+    }
+    return result
   }
 
   /** when BO quotas will be added use this function to check quotas */
@@ -134,5 +147,5 @@ export const useFix = defineStore('fix', () => {
       data
     );
   }
-  return { useFix, state, getFixData, getFixList, saveFix, updateFix, getFixByApplicantIDs }
+  return { useFix, getFixData, getFixList, saveFix, updateFix, getFixByApplicantIDs }
 })
