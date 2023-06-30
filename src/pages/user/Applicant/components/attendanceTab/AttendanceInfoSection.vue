@@ -2,7 +2,8 @@
   <div class="row q-pb-md">
     <div class="col-9"></div>
     <div class="col-3 text-right">
-      <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" @click="infoEdit = true" class="no-shadow q-ml-lg" size="sm"/>
+      <q-btn v-if="!infoEdit" :label="$t('common.edit')" color="primary" outline  icon="edit" 
+        @click="infoEdit = true" class="no-shadow q-ml-lg" size="sm" :disable="!applicant.attractionsStatus"/>
       <q-btn v-if="infoEdit" :label="$t('common.save')" color="primary" @click="saveHandler" size="sm"/>
       <q-btn v-if="infoEdit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="infoEdit=false; resetData();" size="sm" />
     </div>
@@ -14,8 +15,12 @@
     </div>
     <div class="col-2 q-pl-md blue self-center">
       <span v-if="!infoEdit" class="text-uppercase">{{ applicant.attendingStatus? 'OK' : 'NG' }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="attendantStatusOption"
-        emit-value map-options v-model="data['attendingStatus']" :disable="loading"/>
+      <template v-if="infoEdit">
+        <q-checkbox v-model="data['attendingStatus']" label="OK" checked-icon="mdi-checkbox-intermediate"
+          unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="loading"/>
+        <q-checkbox v-model="data['attendingStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate"
+          checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="loading"/>
+      </template>
     </div>
     <div class="row q-pb-sm q-pt-sm col-12" v-if="!data['attendingStatus']">
         <NGReasonSelect
@@ -76,7 +81,7 @@
 </template>
 
 <script lang="ts" setup>
-import { attendantStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
+import { usersInCharge } from 'src/shared/constants/Applicant.const';
 import { ref } from 'vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -92,7 +97,6 @@ const props = defineProps<{
 const applicantStore = useApplicant();
 const infoEdit = ref(false);
 const loading = ref(false);
-const attendantStatusOption = ref(attendantStatus);
 const usersListOption = usersInCharge.value
 const data = ref<Partial<ApplicantInputs>>({});
 const defaultData = ref<Partial<ApplicantInputs>>({})

@@ -13,3 +13,9 @@ export enum ClientFactoryDetailTabs {
     ReflectionHistory = 'ReflectionHistory',
     ImportHistory = 'ImportHistory'
 }
+
+export interface CustomIndustry {
+    value: string
+    isSelected: boolean
+    ts: string
+}
