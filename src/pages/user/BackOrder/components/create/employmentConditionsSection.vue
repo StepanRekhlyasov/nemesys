@@ -217,7 +217,7 @@
       </div>
       <div class="col-4 flex q-pl-md ">
         <q-input v-model="data['annualHolidays']" outlined dense type="number" :disable="loading" min="0" max="365"/>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
+        <span class="q-ma-sm flex-center">{{ $t('weekDay.sunday') }}</span>
       </div>
     </div>
 

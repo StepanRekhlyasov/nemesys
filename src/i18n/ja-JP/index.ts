@@ -1178,7 +1178,7 @@ export default {
       day: '日',
       tasks: '業務内容',
       pickDrop: '送迎の有無',
-      onCallSupport: 'オンコール 対応の有無',
+      onCallSupport: 'オンコール \r 対応の有無',
       onCallRemarks: 'オンコール備考',
       welfare: '福利厚生',
       retirementAge: '定年',
