@@ -143,6 +143,7 @@ const openNewFaxDrawer = () => {
 
         <ClientFactoryDrawer
         v-if="activeClientFactoryItem"
+        :key="activeClientFactoryItem.id"
         v-model:selectedItem="activeClientFactoryItem"
         :isDrawer="isClientFactoryDrawer"
         @hide-drawer="hideClientFactoryDrawer"/>

@@ -4,7 +4,7 @@
     :label="$t('applicant.list.info.attraction')"
     @openEdit="edit = true"
     @closeEdit="resetData(); edit = false;"
-    @onSave="save">
+    @onSave="saveHandler">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.attractionsStatus') }}
@@ -17,6 +17,19 @@
           <q-checkbox v-model="data['attractionsStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate"
             checked-icon="mdi-checkbox-blank-outline" color="primary"/>
         </template>
+      </div>
+      <div class="row q-pb-sm q-pt-sm col-12" v-if="!data['attractionsStatus']">
+        <NGReasonSelect
+          :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
+          :edit="edit" 
+          :label="$t('applicant.list.fixEmployment.reasonNG')"
+          :reasonValue="data[reasonKey]"
+          @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
+          :detailedValue="data[detailKey]"
+          @update:detailedValue="(newValue : string) => data[detailKey] = newValue"
+          :disable="loading"
+          :hightlightError="hightlightError"
+        />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.invitationDate') }}
@@ -149,6 +162,8 @@ import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useBranch } from 'src/stores/branch';
+import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
+import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 
 const props = defineProps<{
   applicant: Applicant
@@ -166,10 +181,25 @@ const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
 const usersListOption = usersInCharge.value
 
+/** NGReasonSelect handlers */
+const reasonKey = 'attractionsReasonNG' /** change reason key */
+const detailKey = 'attractionsReasonNGDetail' /** change reason detail key */
+const statusKey = 'attractionsStatus' /** change status key */
+const hightlightError = ref<string[]>([])
+const saveHandler = async () => {
+  if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
+    await save()
+    resetData();
+  }
+}
+useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
+/** NGReasonSelect handlers */
 
 async function resetData() {
   defaultData.value = {
     attractionsStatus: props?.applicant['attractionsStatus'] || false,
+    attractionsReasonNG: props?.applicant['attractionsReasonNG'] || '',
+    attractionsReasonNGDetail: props?.applicant['attractionsReasonNGDetail'] || '',
     invitationDate: timestampToDateFormat(props?.applicant['invitationDate']),
     employmentStatus: props?.applicant['employmentStatus'],
     seduser: props?.applicant['seduser'],

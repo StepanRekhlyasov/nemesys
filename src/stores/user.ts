@@ -1,6 +1,6 @@
 import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { User, UserPermissionNames } from 'src/shared/model';
+import { ApplicantFix, User, UserPermissionNames } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
@@ -171,8 +171,35 @@ export const useUserStore = defineStore('user', () => {
       ...constraints,
     ))
     return users.docs.map((user)=>{
-      return user.data() as User
+      return {...user.data(), id: user.id} as User
     })
+  }
+
+  async function getSAAFixList(users : { [id: string]: User; }){
+    const userIDs = Object.keys(users)
+    const applicantRef = collection(db, 'fix');
+    const isFix = query(applicantRef, where('chargeOfFix', 'in', userIDs), where('fixStatus', '==', true))
+    const isInspection = query(applicantRef, where('chargeOfInspection', 'in', userIDs), where('inspectionStatus', '==', true))
+    const isOffer = query(applicantRef, where('chargeOfOffer', 'in', userIDs), where('offerStatus', '==', true))
+    const isAdmission = query(applicantRef, where('chargeOfAdmission', 'in', userIDs), where('admissionStatus', '==', true))
+
+    const [admissionQuerySnapshot, offerQuerySnapshot, inspectionQuerySnapshot, fixQuerySnapshot] = await Promise.all([
+      getDocs(isAdmission),
+      getDocs(isOffer),
+      getDocs(isInspection),
+      getDocs(isFix)
+    ]);
+    const admissionFixes = admissionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const offerFixes = offerQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const inspectionFixes = inspectionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const fixFixes = fixQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const list = [...admissionFixes, ...offerFixes, ...inspectionFixes, ...fixFixes]
+
+    const fixList : { [id: string]: ApplicantFix } = {};
+    list.forEach((fix)=>{
+      fixList[fix.id] = fix
+    })
+    return Object.values(fixList);
   }
 
   return {
@@ -183,6 +210,7 @@ export const useUserStore = defineStore('user', () => {
     searchUsers,
     getAllUsersInBranch,
     getUsersByConstrains,
-    getUsersByPermission
+    getUsersByPermission,
+    getSAAFixList
   }
 })

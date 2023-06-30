@@ -150,10 +150,10 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
         })
 
           if (res.id) {
-            Alert.success($q, t)
+            Alert.success()
           }
-        } catch {
-          Alert.warning($q, t)
+        } catch(e) {
+          Alert.warning(e)
         }
       }
 
@@ -175,10 +175,10 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
         })
 
         if (res.id) {
-          Alert.success($q, t)
+          Alert.success()
         }
-      } catch {
-        Alert.warning($q, t)
+      } catch(e) {
+        Alert.warning(e)
       }
     }
   }

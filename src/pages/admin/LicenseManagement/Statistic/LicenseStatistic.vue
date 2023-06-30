@@ -35,7 +35,7 @@ import PageHeader from 'src/components/PageHeader.vue';
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { columns } from '../consts/LicenseStatisticColumns'
-import { date, useQuasar } from 'quasar'
+import { date } from 'quasar'
 import { Table } from 'src/pages/admin/EnterpriseManagement/types/index'
 import { useOrganization } from 'src/stores/organization';
 import OrganizationColspanTabel from 'src/components/organization/OrganizationColspanTabel.vue';
@@ -46,7 +46,6 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useBranch } from 'src/stores/branch';
 import { useBusiness } from 'src/stores/business';
 
-const $q = useQuasar()
 const { t } = useI18n({ useScope: 'global' });
 const currentDate = date.formatDate(Date.now(), 'YYYY-MM')
 const selectedDate = ref(currentDate)
@@ -86,9 +85,9 @@ onMounted(async () => {
   loading.value = true;
   try {
     await loadCurrentData()
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
   }
   loading.value = false
 })
@@ -134,9 +133,9 @@ async function onDateChange(date: string) {
       const month = parseInt(monthString)
       await loadDataInMonth(year, month)
     }
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
   }
 
   loading.value = false

@@ -802,6 +802,10 @@ export default {
         status: 'FIXステータス',
         date: 'FIX日',
         fixReasonNG: 'FIXNG理由',
+        break_contact: '不通',
+        anotherCompany: '他社決定',
+        excluded: '対象外',
+        decline: '登録辞退',
         reason: 'FIXNG理由',
         contactPerson: 'FIX担当者ユーザー',
         userInChargeVisit: '職見担当ユーザー',
@@ -861,7 +865,6 @@ export default {
         admission: {
           status: '入職ステータス',
           date: '入職日',
-          reasonNotJoining: '入職NG理由',
           chargeOfAdmission: '入職担当者ユーザー',
           memo: '入職メモ'
         }
@@ -1696,9 +1699,9 @@ export default {
   KPI: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
-    jobs: '職見数',
-    innerConstant: '内定数',
-    entry: '入職数',
+    numberOfVisit: '職見数',
+    numberOfOffer: '内定数',
+    numberOFEntry: '入職数',
     numberOfCalls: '架電数',
     numberOfFax: 'FAX数',
     dispatch: '派遣',

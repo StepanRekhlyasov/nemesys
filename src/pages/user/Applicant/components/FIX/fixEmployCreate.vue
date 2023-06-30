@@ -245,7 +245,7 @@ async function save(type: string, dataR) {
     case 'jobSearchInfo': {      
       retData = pick(
         dataR,
-        ['inspectionStatus', 'inspectionDate', 'inspectionReasonNG', 'inspectionReasonNGDetail', 'chargeOfFacility', 'visit', 'personalStatus',  'corporationStatus',  'businessStatus', 'jobTitle', 'contact', 'comments', 'inspectionMemo'])
+        ['inspectionStatus', 'inspectionDate', 'inspectionReasonNG', 'inspectionReasonNGDetail', 'chargeOfFacility', 'chargeOfInspection', 'personalStatus',  'corporationStatus',  'businessStatus', 'jobTitle', 'contact', 'comments', 'inspectionMemo'])
       if (retData['inspectionDate']) {
         retData['inspectionDate'] = Timestamp.fromMillis(Date.parse(retData['inspectionDate']))
       }
@@ -278,7 +278,6 @@ async function save(type: string, dataR) {
     }
   }
   emits('updateDoc', retData)
-  emits('updateList')
   edit.value=edit.value.filter(i => i !== type)
 }
 watch(() => props.fixData, () => {

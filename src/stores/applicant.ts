@@ -1,12 +1,10 @@
-import { QueryDocumentSnapshot, Timestamp, collection, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField } from 'src/shared/utils/Applicant.utils';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
+import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField, getApplicantNGStatus } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
@@ -14,6 +12,8 @@ import { applicantStatusOkFields, requiredFields } from 'src/shared/constants/Ap
 import { useOrganization } from './organization';
 import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/ApplicantProgress/const/applicantColumns';
 import { useRoute } from 'vue-router';
+import { useFix } from './fix';
+import { getMostCompletedFix } from 'src/shared/utils/Fix.utils';
 
 interface ApplicantState {
   clientList: Client[],
@@ -30,7 +30,7 @@ interface ApplicantState {
     size: number,
     total_pages: number,
     total_results: number
-  },  
+  },
   prefectureList: {label: string, value: string | number}[],
   selectedApplicant: Applicant | null,
   needsApplicantUpdateOnMounted: boolean,
@@ -84,9 +84,8 @@ export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
     //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
   const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
-  const $q = useQuasar();
-  const { t } = useI18n({ useScope: 'global' });
   const organization = useOrganization()
+  const fixStore = useFix()
   const route = useRoute()
 
   const state = ref<ApplicantState>({
@@ -125,7 +124,7 @@ export const useApplicant = defineStore('applicant', () => {
     },
     applicantProgressFilter: {
       branchIncharge: '',
-      attendeeUserInCharge: '',
+      userInCharge: '',
       prefecture: '',
       currentStatusMonth: '',
       organizationId: organization.currentOrganizationId
@@ -173,8 +172,8 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.applicantERWCount[status] = result
     return result
   }
-  
-  const loadApplicantData = async (searchData : ApplicantElasticSearchData = {}, 
+
+  const loadApplicantData = async (searchData : ApplicantElasticSearchData = {},
     pagination = {
       page: 1,
       rowsPerPage: 10
@@ -215,7 +214,7 @@ export const useApplicant = defineStore('applicant', () => {
         'dob': { 'from': getDate(parseInt(searchData.ageMax)) }
       });
     }
-  
+
     const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
@@ -244,7 +243,7 @@ export const useApplicant = defineStore('applicant', () => {
         'daystowork': { 'to': parseInt(searchData.workPerWeekMax) }
       });
     }
-  
+
     if (searchData.mapData) {
       filters['all'].push({
         'geohash': {
@@ -254,7 +253,7 @@ export const useApplicant = defineStore('applicant', () => {
         }
       });
     }
-  
+
     if (!queryString && filters.all.length == 1) {
       const d = new Date();
       const m = d.getMonth();
@@ -285,10 +284,11 @@ export const useApplicant = defineStore('applicant', () => {
         loadFirestoreApplicantData()
       }
     }).catch((error) => {
+      Alert.warning(error)
       console.log(error)
     });
   };
-  
+
   const loadFirestoreApplicantData = async () => {
     state.value.applicantList = [];
     state.value.isLoadingProgress = true;
@@ -298,25 +298,25 @@ export const useApplicant = defineStore('applicant', () => {
     }
     state.value.isLoadingProgress = false;
   }
-  
+
   const formatDate = (dt : Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
     const day = dt.toLocaleString('en-US', { day: '2-digit' });
     if (midNight) {
       return year + '-' + month + '-' + day + 'T00:00:00+00:00';
-  
+
     }
     return year + '-' + month + '-' + day + 'T23:59:59+00:00';
   }
-  
+
   const getDate = (ageInYears : number) => {
     const calDate = new Date();
     calDate.setFullYear(calDate.getFullYear() - ageInYears);
     const year = calDate.toLocaleString('en-US', { year: 'numeric' });
     const month = calDate.toLocaleString('en-US', { month: '2-digit' });
     const day = calDate.toLocaleString('en-US', { day: '2-digit' });
-  
+
     return year + '-' + month + '-' + day + 'T00:00:00+00:00';
   }
 
@@ -506,75 +506,14 @@ export const useApplicant = defineStore('applicant', () => {
       try{
         await batch.commit()
       } catch (e){
+        Alert.warning(e)
         console.log(e)
       }
     }
     return fire.value
   }
 
-  async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
-    if (!state.value.selectedApplicant) return;
 
-    const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
-    try {
-      /** transform strings to timestamps */
-      const saveData = JSON.parse(JSON.stringify(applicantData));
-      if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
-      if(applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
-      if(applicantData.invitationDate) saveData.invitationDate = dateToTimestampFormat(new Date(applicantData.invitationDate));
-      if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
-      if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
-      if(applicantData.fixDate) saveData.fixDate = dateToTimestampFormat(new Date(applicantData.fixDate));
-      if(applicantData.inspectionDate) saveData.inspectionDate = dateToTimestampFormat(new Date(applicantData.inspectionDate));
-      if(applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
-      if(applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
-
-      /** control current date change */
-      const status = saveData.status || state.value.selectedApplicant.status
-      if (status){
-        const dateField = getApplicantCurrentStatusTimestampField(status)
-        if(saveData[dateField] instanceof Timestamp) {
-          saveData.currentStatusTimestamp = saveData[dateField]
-          saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
-          saveData.statusChangeTimestamp[status] = saveData[dateField]
-          state.value.selectedApplicant.currentStatusTimestamp = saveData[dateField]
-          saveData.currentStatusMonth = toMonthYear(saveData[dateField])
-        } else if (state.value.selectedApplicant[dateField] instanceof Timestamp) {
-          saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
-          saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
-          saveData.statusChangeTimestamp[status] = state.value.selectedApplicant[dateField]
-          state.value.selectedApplicant.currentStatusTimestamp = state.value.selectedApplicant[dateField]
-          saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
-        } else {
-          saveData.currentStatusTimestamp = ''
-          saveData.currentStatusMonth = ''
-        }
-      }
-      if(!saveData.status){
-        changeApplicantStatusByOkFields()
-      }
-
-      for(const [key, value] of Object.entries(saveData)){
-        if(typeof value === 'undefined') delete saveData[key];
-      }
-      saveData['updated_at'] = serverTimestamp();
-
-      await updateDoc(applicantRef, saveData)
-      const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
-      if (applicantIndex >=0) {
-        state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
-      }
-      if (showAlert) { Alert.success($q, t); }
-      try {
-        state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
-      } catch(error) {
-        if (showAlert){ Alert.warning($q, t); }
-      }
-    } catch (error) {
-      console.log(error)
-      if (showAlert){  Alert.warning($q, t); }
-    }
-  };
 
   async function getApplicantByID(id : string, validate = false){
     const applicantRef = doc(db, 'applicants/' + id);
@@ -600,7 +539,7 @@ export const useApplicant = defineStore('applicant', () => {
         data['imagePath'] = snapshot.ref.fullPath;
         data['imageURL'] = await getDownloadURL(storageRef)
       } catch(error){
-        Alert.warning($q, t);
+        Alert.warning(error);
         return false;
       }
     }
@@ -609,10 +548,10 @@ export const useApplicant = defineStore('applicant', () => {
         docRef,
         data
       );
-      Alert.success($q, t);
+      Alert.success();
       return true;
     } catch (error) {
-      Alert.warning($q, t);
+      Alert.warning(error);
       return false;
     }
   }
@@ -675,55 +614,141 @@ export const useApplicant = defineStore('applicant', () => {
           updated_at: serverTimestamp(),
           ...saveData
         })
-        Alert.success($q, t);
+        Alert.success();
     } catch (e) {
       console.log(e)
-      Alert.warning($q, t);
+      Alert.warning(e);
     }
   }
 
-  const saveFixDataToApplicant = async(fixData: Partial<ApplicantFix>) => {
-    const {fixStatus, inspectionStatus, offerStatus, admissionStatus, fixDate, inspectionDate, offerDate, admissionDate} = fixData
+  /** Applicant status should be awlays changed here! */
+  async function updateApplicantStatus(status : ApplicantStatus){
+    if (!state.value.selectedApplicant) return;
+    const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
+    const dateField = getApplicantCurrentStatusTimestampField(status)
+    const saveData : Partial<Applicant> = {}
+
+    if(state.value.selectedApplicant[dateField] instanceof Timestamp){
+      saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
+      saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
+      saveData.statusChangeTimestamp[status] = state.value.selectedApplicant[dateField]
+      saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
+    }
+
+    saveData['updated_at'] = serverTimestamp();
+    saveData.status = status
+    await updateDoc(applicantRef, saveData)
+    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant.id)
+  }
+
+
+  async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
+    if (!state.value.selectedApplicant) return;
+
+    const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
+    try {
+      /** transform strings to timestamps */
+      const saveData = JSON.parse(JSON.stringify(applicantData));
+
+      if (saveData.status){
+        await updateApplicantStatus(saveData.status);
+        return;
+      }
+
+      if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
+      if(applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
+      if(applicantData.invitationDate) saveData.invitationDate = dateToTimestampFormat(new Date(applicantData.invitationDate));
+      if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
+      if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
+      if(applicantData.fixDate) saveData.fixDate = dateToTimestampFormat(new Date(applicantData.fixDate));
+      if(applicantData.inspectionDate) saveData.inspectionDate = dateToTimestampFormat(new Date(applicantData.inspectionDate));
+      if(applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
+      if(applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
+
+      if(state.value.selectedApplicant.status){
+        const dateField = getApplicantCurrentStatusTimestampField(state.value.selectedApplicant.status)
+        if(saveData[dateField] instanceof Timestamp){
+          saveData.currentStatusTimestamp = saveData[dateField]
+          saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
+          saveData.statusChangeTimestamp[state.value.selectedApplicant.status] = saveData[dateField]
+          saveData.currentStatusMonth = toMonthYear(saveData[dateField])
+        }
+      }
+
+      for(const [key, value] of Object.entries(saveData)){
+        if(typeof value === 'undefined') delete saveData[key];
+      }
+      saveData['updated_at'] = serverTimestamp();
+
+      await updateDoc(applicantRef, saveData)
+      const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
+      if (applicantIndex >=0) {
+        state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
+      }
+      if (showAlert) { Alert.success(); }
+      try {
+        state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+
+        /** status change by OK fields */
+        const saveBooleans = {}
+        for ( const [key, value] of Object.entries(saveData)){
+          if(['fixStatus', 'inspectionStatus', 'offerStatus', 'admissionStatus', 'attendingStatus', 'attractionsStatus'].includes(key)){
+            saveBooleans[key] = value
+          }
+        }
+        if(Object.keys(saveBooleans).length){
+          await changeApplicantStatusByOkFields( saveBooleans )
+        }
+      } catch(error) {
+        if (showAlert){ Alert.warning(error); }
+      }
+    } catch (error) {
+      console.log(error)
+      if (showAlert){  Alert.warning(error); }
+    }
+  };
+
+  const saveFixDataToApplicant = async() => {
+    const bestFix = getMostCompletedFix(fixStore.state.selectedApplicantFixes)
+    if ( !bestFix ) return;
+    if ( !state.value.selectedApplicant ) return;
+
+    const { fixStatus, inspectionStatus, offerStatus, admissionStatus, fixDate, inspectionDate, offerDate, admissionDate, chargeOfFix, chargeOfInspection, chargeOfAdmission, chargeOfOffer, fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG, id } = bestFix
     const saveBooleans = { fixStatus, inspectionStatus, offerStatus, admissionStatus }
     const saveDates = { fixDate, inspectionDate, offerDate, admissionDate }
+    const chargeOfStatus = { chargeOfAdmission, chargeOfOffer, chargeOfInspection, chargeOfFix }
+    const NGReasons = { fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG }
+    const userInCharge = admissionStatus?chargeOfAdmission:undefined || offerStatus?chargeOfOffer:undefined || inspectionStatus?chargeOfInspection:undefined || fixStatus?chargeOfFix:undefined || ''
+
     for(const [key, value] of Object.entries(saveBooleans)){
       if(typeof value === 'undefined'){
-        saveBooleans[key] = false
+        saveBooleans[key] = deleteField()
       }
     }
-    const saveData = {...saveBooleans, ...saveDates}
-    for(const [key, value] of Object.entries(saveData)){
-      if(key === 'fixStatus' && value){
-        saveData['status'] = ApplicantStatus.WAIT_VISIT
-      }
-      if(key === 'inspectionStatus' && value){
-        saveData['status'] = ApplicantStatus.WAIT_OFFER
-      }
-      if(key === 'offerStatus' && value){
-        saveData['status'] = ApplicantStatus.WAIT_ENTRY
-      }
-      if(key === 'admissionStatus' && value){
-        saveData['status'] = ApplicantStatus.WORKING
-      }
-    }
-    await updateApplicant(saveData)
+
+    const saveData = {...saveBooleans, ...saveDates, ...NGReasons, ...chargeOfStatus, userInCharge, bestFixID: id}
+    await updateApplicant(saveData, true)
   }
 
-  const changeApplicantStatusByOkFields = async () => {
+
+  const changeApplicantStatusByOkFields = async (saveBooleans: Partial<Applicant>) => {
     if(!state.value.selectedApplicant){
       return
     }
     const initStatus = state.value.selectedApplicant.status
     let newStatus : ApplicantStatus | null = null
+
     for (const [key, value] of Object.entries(applicantStatusOkFields)){
-      if(state.value.selectedApplicant[key]){
+      if(saveBooleans[key] === true){
         newStatus = value
+      } else if (saveBooleans[key] === false){
+        const NGStatus = getApplicantNGStatus(applicantStatusOkFields[key], state.value.selectedApplicant)
+        newStatus = NGStatus
+        break;
       }
     }
     if(newStatus && newStatus !== initStatus){
-      updateApplicant({
-        status: newStatus
-      })
+      updateApplicantStatus(newStatus)
     }
   }
 
@@ -754,8 +779,11 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
       state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
         try{
-          return a.currentStatusTimestamp.toDate() > b.currentStatusTimestamp.toDate()
+          if(a.currentStatusTimestamp instanceof Timestamp && b.currentStatusTimestamp instanceof Timestamp){
+            return a.currentStatusTimestamp.toDate() > b.currentStatusTimestamp.toDate()
+          }
         } catch (error){
+          Alert.warning(error)
           console.log(error)
         }
       })
@@ -766,7 +794,7 @@ export const useApplicant = defineStore('applicant', () => {
   watch(()=>organization.currentOrganizationId, (newValue)=>{
     state.value.applicantProgressFilter.organizationId = newValue
     state.value.applicantProgressFilter.branchIncharge = ''
-    state.value.applicantProgressFilter.attendeeUserInCharge = ''
+    state.value.applicantProgressFilter.userInCharge = ''
     state.value.selectedApplicant = null
     if ( route.meta.applicantsUpdateOnOrganizationChange ) {
       COLUMN_STATUSES.map(async (status)=>{

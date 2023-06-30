@@ -1,12 +1,10 @@
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { useQuasar } from 'quasar';
 import { BackOrderModel } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
-import { useI18n } from 'vue-i18n';
 
 interface BackOrderState {
   BOList: BackOrderModel[]
@@ -14,9 +12,7 @@ interface BackOrderState {
 }
 
 export const useBackOrder = defineStore('backOrder', () => {
-	const db = getFirestore();  
-	const { t } = useI18n({ useScope: 'global' });
-	const $q = useQuasar();
+	const db = getFirestore();
 	const state = ref<BackOrderState>({
 			BOList: [],
 			selectedBo: null
@@ -25,7 +21,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 	async function loadBackOrder() {
 		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
 		const docs = await getDocs(query(
-			collection(db, '/BO'), 
+			collection(db, '/BO'),
 			...constraints
 		))
 
@@ -37,7 +33,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 				id: fix.id
 			} as BackOrderModel)
 		})
-		state.value.BOList = list 
+		state.value.BOList = list
 	}
 
 	async function addBackOrder(backOrderData) {
@@ -47,19 +43,19 @@ export const useBackOrder = defineStore('backOrder', () => {
 		data['updated_at'] = serverTimestamp();
 		data['deleted'] = false;
 		data['registrant'] = auth.currentUser?.uid
-		
+
 		const snapshot = await getDocs(query(collection(db, '/BO')))
 		data['boId'] = snapshot.docs.length
 
 		const clientRef = collection(db, '/BO');
 		await addDoc(clientRef, data);
-		Alert.success($q, t)
+		Alert.success()
 	}
 
 	async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
 		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId)]
 		const docs = await getDocs(query(
-			collection(db, '/BO'), 
+			collection(db, '/BO'),
 			...constraints
 		))
 
@@ -72,11 +68,11 @@ export const useBackOrder = defineStore('backOrder', () => {
 		})
 		return list;
 	}
-  
+
 	async function getClientFactoryBackOrder(id_clientFactory: string): Promise<BackOrderModel[]> {
 		const constraints: ConstraintsType = [where('deleted', '==', false), where('id_clientFactory', '==', id_clientFactory)]
 		const docs = await getDocs(query(
-			collection(db, '/BO'), 
+			collection(db, '/BO'),
 			...constraints
 		))
 
@@ -119,7 +115,6 @@ export const useBackOrder = defineStore('backOrder', () => {
 		})
 		Promise.all(ret)
 	}
-	
+
 	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder}
 })
-  

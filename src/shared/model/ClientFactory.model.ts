@@ -3,7 +3,7 @@ import { ImportLog } from './ImportLog'
 import { Client } from './Client.model'
 export interface ClientFactory {
     id: string
-    industry: string[]
+    industry: Industry
     isHead: boolean
     name: string
     clientID: string
@@ -39,21 +39,35 @@ export interface ClientFactory {
     draft: Partial<ClientFactory> | Record<string, never>
 }
 
-interface OfficeDetails {
-    registeredInfo: {
-        prefecture: string
-        officeName: string
-        parentClient: string
-        municipality: string
-        city: string
-        tel: string
-        street: string
-        building: string
-        fax: string
-        others: string
-        latitude: number
-        longitude: number
-    },
+export type Industry = Array<'nurse' | 'nursing'>
+
+type OfficeDetails = {
+    [key in Industry[number]]: {
+        commonItems: {
+            referralFeePer: number
+            referralFeeFix: number
+            salaryHour: number
+            salaryMonth: number
+            salaryAdditional: string
+            payday: string
+            disabilityTime: string
+            yearFixed: string
+            welfareHealth: string
+            leisureSpecial: string
+            contentWork: string
+            canSmoke: boolean
+            dayOffYear: string
+            dayOffWeek: string
+            workingHourEarly: string
+            workingHourDay: string
+            workingHourLate: string
+            workingHourNight: string
+        }
+        uniqueItems: {
+            [key: string]: string
+        }
+    }
+} | {
     commonItems: {
         referralFeePer: number
         referralFeeFix: number
@@ -72,10 +86,25 @@ interface OfficeDetails {
         workingHourEarly: string
         workingHourDay: string
         workingHourLate: string
-        workingHourNight: string 
-    },
+        workingHourNight: string
+    }
     uniqueItems: {
         [key: string]: string
+    }
+} & {
+    registeredInfo: {
+        prefecture: string
+        officeName: string
+        parentClient: string
+        municipality: string
+        city: string
+        tel: string
+        street: string
+        building: string
+        fax: string
+        others: string
+        latitude: number
+        longitude: number
     }
 }
 

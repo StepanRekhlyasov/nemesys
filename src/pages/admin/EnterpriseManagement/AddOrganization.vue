@@ -48,7 +48,6 @@
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import { creationRule, organizationCodeRule, isCodeUniqueRule } from 'src/components/handlers/rules';
@@ -56,7 +55,6 @@ import DialogItemContainer from 'src/components/organization/DialogItemContainer
 import { Organization, User } from 'src/shared/model';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import SelectUser from './SelectUser.vue'
 import { useMail } from 'src/stores/email';
@@ -66,8 +64,6 @@ import { invoiceRequestOptions } from './handlers/handlers';
 const organization = ref<Organization>({ working: true } as Organization)
 const loading = ref(false)
 const emit = defineEmits<{ (e: 'closeDialog'), (e: 'onOrganizationAdded') }>()
-const $q = useQuasar();
-const { t } = useI18n({ useScope: 'global' });
 const organizationStore = useOrganization()
 const user = ref<User>()
 const email = useMail()
@@ -82,9 +78,9 @@ async function addOrganization() {
       html: `Organization name: ${organization.value.name} <br/> Organization code: ${organization.value.code} <br/> Created at: ${createdAt}`
     }
     await email.send(organization.value.mailaddress, subject, content)
-    Alert.success($q, t);
+    Alert.success();
   } catch (error) {
-    Alert.warning($q, t);
+    Alert.warning(error);
   }
 
   loading.value = false

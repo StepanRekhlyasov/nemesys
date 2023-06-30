@@ -87,8 +87,6 @@ import { ref, SetupContext} from 'vue';
 import { TemplateType } from 'src/shared/model/Template.model'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { addDoc, collection, doc, getFirestore, serverTimestamp, updateDoc } from '@firebase/firestore';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import { useOrganization } from 'src/stores/organization';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
@@ -105,9 +103,7 @@ export default {
     }
   },
   setup(props, context: SetupContext) {
-    const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
-    const $q = useQuasar();
     const auth = getAuth();
 
     const loading = ref(false);
@@ -130,10 +126,10 @@ export default {
           await addDoc(clientRef, data);
 
           context.emit('closeDialog');
-          Alert.success($q, t);
+          Alert.success();
           loading.value = false;
-        } catch {
-          Alert.warning($q, t);
+        } catch(e) {
+          Alert.warning(e);
           loading.value = false;
         }
       },
@@ -152,11 +148,11 @@ export default {
             })
 
             context.emit('closeDialog');
-            Alert.success($q, t);
+            Alert.success();
             loading.value = false;
         } catch (e) {
           console.log(e)
-          Alert.warning($q, t);
+          Alert.warning(e);
           loading.value = false;
         }
       }

@@ -15,29 +15,29 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: 'numberOfFix',
-      field: 'numberOfFix',
+      field: 'chargeOfFix',
       label: t('KPI.numberOfFix'),
       align: 'left',
       sortable: true
     },
     {
-      name: 'jobs',
-      field: 'jobs',
-      label: t('KPI.jobs'),
+      name: 'numberOfVisit',
+      field: 'chargeOfInspection',
+      label: t('KPI.numberOfVisit'),
       align: 'left',
       sortable: true
     },
     {
-      name: 'innerConstant',
-      field: 'innerConstant',
-      label: t('KPI.innerConstant'),
+      name: 'numberOfOffer',
+      field: 'chargeOfOffer',
+      label: t('KPI.numberOfOffer'),
       align: 'left',
       sortable: true
     },
     {
-      name: 'entry',
-      field: 'entry',
-      label: t('KPI.entry'),
+      name: 'numberOFEntry',
+      field: 'chargeOfAdmission',
+      label: t('KPI.numberOFEntry'),
       align: 'left',
       sortable: true
     },
