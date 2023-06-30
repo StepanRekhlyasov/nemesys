@@ -12,6 +12,7 @@ interface OrganizationState {
   activeOrganization: number,
   currentOrganizationBranches: { [id: string]: Branch; },
   currentOrganizationUsers: { [id: string]: User; },
+  userAndBranchesUpdated: boolean
 }
 
 const organization = 'organization'
@@ -23,6 +24,7 @@ export const useOrganization = defineStore('organization', () => {
     activeOrganization: 0,
     currentOrganizationBranches: {},
     currentOrganizationUsers: {},
+    userAndBranchesUpdated: true
   })
 
   const userStore = useUserStore()
@@ -43,8 +45,10 @@ export const useOrganization = defineStore('organization', () => {
     { deep: true }
   )
   watch(() => currentOrganizationId.value, async () => {
+    state.value.userAndBranchesUpdated = false
     state.value.currentOrganizationBranches = await getCurrentOrganizationBranches()
     state.value.currentOrganizationUsers = await getCurrentUsersInChrage()
+    state.value.userAndBranchesUpdated = true
   })
 
   async function getAllOrganizationsIds() {

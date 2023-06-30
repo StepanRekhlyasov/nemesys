@@ -273,9 +273,9 @@ export interface FixJobSearchInfo {
   inspectionReasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   inspectionReasonNGDetail?: string;
   chargeOfInspection?: string;
-  personalStatus: string,
-  corporationStatus: string,
-  businessStatus: string,
+  personalStatus: boolean,
+  corporationStatus: boolean,
+  businessStatus: boolean,
   reasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   reasonJobDetal?: string;
   chargeOfFacility: string;
