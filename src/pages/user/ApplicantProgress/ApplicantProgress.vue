@@ -160,9 +160,6 @@ onMounted( async ()=>{
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
 })
-// watch(()=> applicantStore.state.applicantFixes, ()=>{
-//   console.log(applicantStore.state.applicantFixes)
-// }, {deep : true})
 </script>
 <style lang="scss">
 .applicant__inputWrapper{

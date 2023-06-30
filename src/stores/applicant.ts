@@ -655,7 +655,6 @@ export const useApplicant = defineStore('applicant', () => {
 
     saveData['updated_at'] = serverTimestamp();
     saveData.status = status
-    console.log(saveData)
     await updateDoc(applicantRef, saveData)
     state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
   }
