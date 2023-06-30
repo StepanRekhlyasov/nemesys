@@ -18,7 +18,7 @@ withDefaults(
 )
 
 const faxDataDataSample = { setTransmissionDateTime: true, transmissionDateTime: '' };
-const faxData = ref(faxDataDataSample);
+const faxData = ref(JSON.parse(JSON.stringify(faxDataDataSample)));
 const faxFile = ref<FileList | []>([]);
 const applicantList = ref(<{ value: string; label: string }[]>[]);
 const applicantStore = useApplicant();
