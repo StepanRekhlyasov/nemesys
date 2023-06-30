@@ -2,8 +2,9 @@
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-xs q-mb-none">
       <span class="text-primary text-h6 q-pt-md"> {{ $t('applicant.list.fixEmployment.fixDestinationOffice') }} </span>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true;fixData=undefined"
-        class="no-shadow q-ml-lg" />
+      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick"
+        size="sm" @click="drawerRight = true;fixData=undefined"
+        class="no-shadow q-ml-lg" v-if="applicant.attendingStatus && applicant.attractionsStatus"/>
     </q-card-section>
 
     <q-table :columns="columns" :rows="applicantFixData" row-key="id" v-model:pagination="pagination" hide-pagination>
