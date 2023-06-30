@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
-import { i18n } from 'boot/i18n';
 import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where } from 'firebase/firestore';
 import { ref } from 'vue';
-import Quasar from 'quasar';
 import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
@@ -12,9 +10,6 @@ import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClientFactory = defineStore('client-factory', () => {
-
-    // translation
-    const { t } = i18n.global
 
     // db
     const db = getFirestore();
@@ -39,7 +34,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             ))
 
             lastReflectLogsQuerySnapshot.forEach((doc) => {
-                
+
 
                 if(doc.exists()) {
                     const docData = doc.data()
@@ -54,6 +49,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             })
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
         }
 
@@ -87,6 +83,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
         }
     }
@@ -103,7 +100,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isUpdated: true,
                 itemType: {
                     isBasicInfoChanged: true,
-                    isDetailInfoChanged: isDetailChanged 
+                    isDetailInfoChanged: isDetailChanged
                 }
             })
 
@@ -120,7 +117,8 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
 
         } catch(e) {
-           console.log(e) 
+           Alert.warning(e)
+           console.log(e)
         }
     }
 
@@ -146,6 +144,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             })
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
             return []
         }
@@ -162,7 +161,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 orderBy('executionDate', 'desc'),
                 limit(1)
             ))
-            
+
 
             lastImportLogQuerySnapshot.forEach((doc) => {
                 const docData = doc.data()
@@ -174,6 +173,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             })
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
         }
 
@@ -202,6 +202,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             })
 
         } catch(e) {
+            Alert.warning(e)
             console.log(e)
             return []
         }
@@ -237,7 +238,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                             updated_at: date.formatDate(clientFactoryData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                             created_at: date.formatDate(clientFactoryData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                             client } as ClientFactory;
-                            
+
                         const reflectRes = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
 
                         if(reflectRes) {
@@ -262,8 +263,8 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
         }));
     };
- 
-    const addClientFactory = async (clientFactory: ClientFactory, $q: typeof Quasar) => {
+
+    const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
 
             await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory'), {
@@ -272,15 +273,15 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            Alert.success($q, t)
+            Alert.success()
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
             console.log(e)
         }
     }
 
-    const addModifiedCF = async (organizationId: string, modifiedClientFactory: ClientFactory, $q: typeof Quasar) => {
+    const addModifiedCF = async (organizationId: string, modifiedClientFactory: ClientFactory) => {
         try {
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
@@ -292,17 +293,17 @@ export const useClientFactory = defineStore('client-factory', () => {
                 created_at: Timestamp.fromDate(new Date(modifiedClientFactory.created_at))
             })
 
-            Alert.success($q, t)
+            Alert.success()
 
             return res.id
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
             console.log(e)
         }
     }
 
-    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF, $q: typeof Quasar) => {
+    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
 
         try {
             await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), {
@@ -314,17 +315,17 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp(),
             })
 
-            Alert.success($q, t)
+            Alert.success()
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
             console.log(e)
         }
     }
 
-    const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory, $q: typeof Quasar) => {
+    const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory) => {
         let modifiedCF: ModifiedCF | undefined
-
+        
         try {
             const foundModifiedCF = await getDocs(query(
                 collection(db, 'clients', originalClientFactory.clientID, 'client-factory', originalClientFactory.id, 'modifiedCF'),
@@ -344,12 +345,12 @@ export const useClientFactory = defineStore('client-factory', () => {
                 })
             }
 
-            Alert.success($q, t)
+            Alert.success()
 
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
-            console.log(e) 
+            console.log(e)
         }
 
         return modifiedCF
@@ -379,23 +380,23 @@ export const useClientFactory = defineStore('client-factory', () => {
         });
     }
 
-    const setIgnoredStatus = async (clientId: string, clientFactoryId: string, modifiedCFId: string, $q: typeof Quasar) => {
+    const setIgnoredStatus = async (clientId: string, clientFactoryId: string, modifiedCFId: string) => {
         try {
             const modifiedCFDoc = doc(db, 'clients', clientId, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCFId);
 
             await setDoc(modifiedCFDoc, {
                 isIgnored: true
             }, {merge: true});
-             
-            Alert.success($q, t)
+
+            Alert.success()
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
             console.log(e)
         }
     }
 
-    const updateClientFactory = async(updatedClientFactory: ClientFactory, $q: typeof Quasar) => {
+    const updateClientFactory = async(updatedClientFactory: ClientFactory) => {
 
         try {
 
@@ -405,15 +406,15 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            Alert.success($q, t)
+            Alert.success()
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
             console.log(e)
         }
     }
 
-    const getHeadClientFactory = async(clientId: string, $q: typeof Quasar) => {
+    const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
 
         try {
@@ -433,10 +434,10 @@ export const useClientFactory = defineStore('client-factory', () => {
                 } as ClientFactory
             })
 
-            Alert.success($q, t)
+            Alert.success()
 
         } catch(e) {
-            Alert.warning($q, t)
+            Alert.warning(e)
 
             console.log(e)
         }

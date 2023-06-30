@@ -35,7 +35,7 @@ const menu = computed(() => {
             name: t('menu.advancedSearch'),
             right: require('assets/admin-office-managment/advanced-search-image.png'),
             click() {
-                router.push('client-factories');
+                router.push('advancedSearch');
             },
         },
         {

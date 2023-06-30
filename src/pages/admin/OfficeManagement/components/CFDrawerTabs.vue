@@ -11,9 +11,10 @@ import { ClientFactoryDetailTabs } from '../types'
 import { ChangedData } from 'src/components/client-factory/types';
 
 defineProps<{
-    clientFactory: ClientFactory,
-    draft: Partial<ClientFactory>,
+    clientFactory: ClientFactory
+    draft: Partial<ClientFactory>
     isLoading: boolean
+    industryType: string
 }>()
 
 const emit = defineEmits<{
@@ -60,6 +61,7 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
                 :clientFactory="clientFactory"
                 :draft="draft"
                 :is-loading="isLoading"
+                :industryType="industryType"
                 @edit-draft="editDraftHandle"/>
         </q-tab-panel>
         <q-tab-panel :name="ClientFactoryDetailTabs.CompanyWideBOHistory">

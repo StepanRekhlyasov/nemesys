@@ -53,16 +53,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { useQuasar } from 'quasar';
   import { ref, computed } from 'vue'
   import { Alert } from 'src/shared/utils/Alert.utils';
-  import { useI18n } from 'vue-i18n';
   import { useInquiry } from 'src/stores/inquiry';
   import { INQUIRY_MESSAGE_TYPE, INQUIRY_STATUS } from '../types/inquiryTypes'
-
-  const $q = useQuasar();
-  const { t } = useI18n({ useScope: 'global' });
-
 
   const inquiryStore = useInquiry()
 
@@ -84,7 +78,7 @@
           },
          data: {status: INQUIRY_STATUS.answered}
         })
-        Alert.success($q, t)
+        Alert.success()
         await inquiryStore.getAllInquires()
         inquiryStore.updateCurrentRowDataMessages({message: {
             date: new Date(),
@@ -95,8 +89,8 @@
 
          responseContent.value = ''
         loading.value = false;
-      } catch {
-        Alert.warning($q, t)
+      } catch(e) {
+        Alert.warning(e)
 
         loading.value = false;
       }

@@ -29,6 +29,11 @@ export interface Data {
     key: string
 }
 
+export type DataWithIndustry = Data[] | {
+    commonItems: Data[];
+    uniqueItems: Data[];
+};
+
 const props = withDefaults(defineProps<{
     data: Data[],
     theme?: string

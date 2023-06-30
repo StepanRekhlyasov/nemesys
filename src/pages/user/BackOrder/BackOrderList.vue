@@ -69,8 +69,8 @@
 					<template v-slot:body-cell-name="props">
 						<q-td :props="props" class="q-pa-none" >
 							<div> {{ props.row['client_id'] ? applicantStore.state.clientList.find(client => client.id === props.row['client_id'])?.name : ''}} </div>
-							<div> {{ props.row['client_id'] && props.row['office_id'] ? 
-									applicantStore.state.clientList.find(client => client.id === props.row['client_id'])?.office?.find(office => office.id === props.row['office_id'])?.name : 
+							<div> {{ props.row['client_id'] && props.row['office_id'] ?
+									applicantStore.state.clientList.find(client => client.id === props.row['client_id'])?.office?.find(office => office.id === props.row['office_id'])?.name :
 								'' }} </div>
 						</q-td>
 					</template>
@@ -82,7 +82,7 @@
 		selectedClient = clientValue
 	}"/>
 	<q-drawer
-		v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" 
+		v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right"
 		overlay elevated bordered>
 		<createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer=false;"/>
 	</q-drawer>

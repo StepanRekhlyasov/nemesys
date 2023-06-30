@@ -51,8 +51,6 @@ import { serverTimestamp } from '@firebase/firestore';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { getAuth } from '@firebase/auth';
 import { useOrganization } from 'src/stores/organization';
 import SelectBusinesses from 'src/pages/user/Settings/management/components/SelectBusinesses.vue'
@@ -62,8 +60,6 @@ import DialogHeader from '../dialog/DialogHeader.vue';
 import { useBranch } from 'src/stores/branch';
 import { Branch } from 'src/shared/model';
 
-const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar();
 const auth = getAuth();
 const props = defineProps<{
   editBranch?: Branch,
@@ -98,11 +94,11 @@ async function addBranch() {
     data['licensesSlots'] = 0
     await branchStore.createBranch(data, currentOrganizationId, businessId.value)
     emit('closeDialog');
-    Alert.success($q, t);
+    Alert.success();
     loading.value = false;
   } catch (e) {
     console.log(e)
-    Alert.warning($q, t);
+    Alert.warning(e);
     loading.value = false;
   }
 }
@@ -123,12 +119,12 @@ async function saveBranch() {
     }
     await branchStore.editBranch(branch, currentOrganizationId, props?.editBranch?.businessId, props.editBranch?.id)
     emit('closeDialog');
-    Alert.success($q, t);
+    Alert.success();
     loading.value = false;
   } catch (e) {
     emit('onCatchError')
     console.log(e)
-    Alert.warning($q, t);
+    Alert.warning(e);
     loading.value = false;
   }
 }

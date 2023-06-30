@@ -251,7 +251,7 @@ export default {
     const addOffice = async () => {
       let data = officeData.value;
       if (!data['headquarterClient']) {
-        Alert.warning($q, t)
+        Alert.warning()
         return false
       }
       try {
@@ -340,7 +340,7 @@ export default {
             addOffice()
           }
           else {
-            Alert.warning($q, t);
+            Alert.warning();
           }
         })
       },

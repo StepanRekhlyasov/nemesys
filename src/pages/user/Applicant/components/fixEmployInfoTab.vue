@@ -2,8 +2,9 @@
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-xs q-mb-none">
       <span class="text-primary text-h6 q-pt-md"> {{ $t('applicant.list.fixEmployment.fixDestinationOffice') }} </span>
-      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" size="sm" @click="drawerRight = true;fixData=undefined"
-        class="no-shadow q-ml-lg" />
+      <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick"
+        size="sm" @click="drawerRight = true;fixData=undefined"
+        class="no-shadow q-ml-lg" v-if="applicant.attendingStatus && applicant.attractionsStatus"/>
     </q-card-section>
 
     <q-table :columns="columns" :rows="applicantFixData" row-key="id" v-model:pagination="pagination" hide-pagination>
@@ -77,7 +78,7 @@
         <q-td :props="props"
           :class="rowColor(props.row)">
           <span class="row" v-if="props.row.admissionStatus">{{ props.row.admissionDate }}</span>
-          <span class="row text-uppercase">{{ props.row.admissionDate? 'OK' : 'admissionStatus' in props.row ? 'NG' : '-' }}</span>
+          <span class="row text-uppercase">{{ props.row.admissionStatus? 'OK' : 'admissionStatus' in props.row ? 'NG' : '-' }}</span>
         </q-td>
       </template>
 
@@ -246,7 +247,7 @@ async function updateData(data){
   }
   data = mutateDatesInData(data)
   fixData.value = {
-    ...fixData.value, 
+    ...fixData.value,
     ...data
   }
   await fixStore.getFixData(props.applicant.id);
@@ -275,7 +276,7 @@ function disableChange() {
       return
     }
   }
-  
+
 }
 
 function showEditDialog(data) {
@@ -308,7 +309,7 @@ function showDeleteDialog(data) {
 
     await fixStore.updateFix(data.id, updateData)
     await fixStore.getFixData(props.applicant.id);
-    Alert.success($q, t)
+    Alert.success()
   })
 }
 </script>

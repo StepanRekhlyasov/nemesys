@@ -54,17 +54,13 @@
 
 <script lang="ts" setup>
 import { serverTimestamp } from 'firebase/firestore';
-import { useQuasar } from 'quasar';
 import { InquiryData } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useInquiry } from 'src/stores/inquiry';
 import { useOrganization } from 'src/stores/organization';
 import { ref, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const isEdit = ref(false)
-const $q = useQuasar();
-const { t } = useI18n({ useScope: 'global' });
 const inquiryStore = useInquiry()
 const organization = useOrganization()
 const emit = defineEmits(['closeDrawer', 'inquiryAdded'])
@@ -80,14 +76,14 @@ function saveInquiryData(){
   isEdit.value = false
 }
 async function submitInquiry(){
-  const submitData = JSON.parse(JSON.stringify(inquiryData.value)) 
+  const submitData = JSON.parse(JSON.stringify(inquiryData.value))
   submitData.status = 'unanswered'
   submitData.messages = []
   submitData.organization = organization.currentOrganizationId
   submitData.recievedDate = serverTimestamp()
   try{
     await inquiryStore.addInquiry(submitData)
-    Alert.success($q, t);
+    Alert.success();
     inquiryData.value = {
       category: '',
       subject: '',
@@ -96,7 +92,7 @@ async function submitInquiry(){
     resetChanges()
     emit('inquiryAdded')
   } catch (e) {
-    Alert.warning($q, t);
+    Alert.warning(e);
     console.log(e)
   }
 }
