@@ -69,24 +69,37 @@
           class="q-pr-md"/>
       </labelField>
     </div>
-
-    <div class="row ">
-      <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
+    <div class="row">
+      <labelField :label="$t('client.backOrder.experienceReq')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4">
+        <q-toggle v-model="data['experienceReq']"  :disable="loading" 
+          :label="data['experienceReq']?$t('common.yes'):$t('common.no')"/>
       </labelField>
-      <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input v-model="data['upperAgeLimit']"  outlined dense :disable="loading" />
+      <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
+        <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" />
       </labelField>
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input v-model="data['invoice']"  outlined dense :disable="loading" />
+      <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" 
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
+        <q-input v-model="data['upperAgeLimit']"  type="number"  outlined dense :disable="loading" />
+        <span class="q-pl-md self-center">{{ $t('common.ageShort') }}</span>
       </labelField>
-      <labelField :label="$t('backOrder.payment')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input v-model="data['payment']"  outlined dense :disable="loading" />
+    </div>
+
+    <div class="row q-pt-sm">
+      <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
+        <q-input v-model="data['invoice']"  outlined dense :disable="loading" type="number"  />
+        <span class="q-pl-md self-center">{{ $t('common.yen') }}</span>
       </labelField>
     </div>   
+
+    <div class="row q-pt-sm">
+    <labelField :label="$t('backOrder.payment')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
+        <q-input v-model="data['payment']"  outlined dense :disable="loading" type="number"  />
+        <span class="q-pl-md self-center">{{ $t('common.yen') }}</span>
+      </labelField>
+    </div>
 
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">

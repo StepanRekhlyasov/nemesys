@@ -42,17 +42,17 @@ export const useFix = defineStore('fix', () => {
   }
 
   async function getFixList(applicant_id: string, option?: FixOption) {
-      const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
-    
-      if (option && option.operationFilter) {
-        constraints.push(where('admissionStatus', '==', 'ok'))
-      }
-    
-      return getDocs(query(
-        collection(db, '/fix'), 
-        where('applicant_id', '==', applicant_id),
-        ...constraints
-      ))
+    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
+  
+    if (option && option.operationFilter) {
+      constraints.push(orderBy('admissionDate'), orderBy('endDate'))
+    }
+  
+    return getDocs(query(
+      collection(db, '/fix'), 
+      where('applicant_id', '==', applicant_id),
+      ...constraints
+    ))
   }
 
   async function getFixByApplicantIDs(ids: string[] | string){
