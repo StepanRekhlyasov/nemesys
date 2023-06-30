@@ -165,6 +165,14 @@ export const useOrganization = defineStore('organization', () => {
 
   }
 
+  async function getAllOrganizations() {
+    const organizationsQuery = query(collection(db, 'organization/'), where('deleted', '==', false));
+    const querySnapshot = await getDocs(organizationsQuery);
+    return querySnapshot.docs.map((org)=>{
+      return org.data() as Organization
+    })
+  }
+
   return {
     state,
     currentOrganizationId,
@@ -175,5 +183,6 @@ export const useOrganization = defineStore('organization', () => {
     getAllOrganizationsIds,
     getOrganizationsByName,
     getDataById,
+    getAllOrganizations,
   }
 })

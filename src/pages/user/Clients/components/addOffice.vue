@@ -227,6 +227,7 @@ import { addDoc, collection, serverTimestamp, getFirestore, query, where, orderB
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { geohashForLocation } from 'geofire-common';
+import { QForm } from 'quasar';
 
 export default {
   name: 'addOffice',
