@@ -4,7 +4,8 @@ export interface BackOrderModel {
   BOGenerationRoute: 'coldCall' | 'fax';
   client_id: string;
   office_id: string; 
-
+  boId: string;
+  
   created_at: string;
   deleted: false;
 
