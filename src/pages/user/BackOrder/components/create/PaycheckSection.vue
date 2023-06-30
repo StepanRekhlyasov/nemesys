@@ -4,17 +4,21 @@
       {{ '■ '+ $t('backOrder.create.paycheck') }}
     </div>
     <div class="row">      
-      <labelField :label="$t('backOrder.create.hourlyMonthly')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')" 
-        val="monthlySalary" v-model="data['wage']" />
-        <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" 
-        val="hourlyWage" v-model="data['wage']" />
+      <labelField :label="$t('backOrder.create.hourlyMonthly')" :edit="true" required
+        labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
+        <q-field v-model="data['wage']" borderless hide-bottom-space :rules="[creationRule]">
+          <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')" 
+          val="monthlySalary" v-model="data['wage']" />
+          <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" 
+          val="hourlyWage" v-model="data['wage']" />
+        </q-field>
       </labelField>
     </div>  
 
     <div class="row ">
-      <labelField :label="$t('backOrder.create.salary')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md flex">
-        <q-input v-model="data['salary']" outlined dense type="number" :disable="loading"/>
+      <labelField :label="$t('backOrder.create.salary')" :edit="true" required
+        labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md flex">
+        <q-input v-model="data['salary']" outlined dense type="number" :disable="loading" :rules="[creationRule]" hide-bottom-space/>
         <span v-if="data['wage'] == 'monthlySalary'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenMonth') }}</span>
         <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
       </labelField>
@@ -61,8 +65,9 @@
 
 <script lang="ts" setup>
 import { BackOrderModel } from 'src/shared/model';
-import { ref } from 'vue';
-import LabelField from 'src/components/form/LabelField.vue';
+import { ref, watch } from 'vue';
+import labelField from 'src/components/form/LabelField.vue';
+import { creationRule } from 'src/components/handlers/rules';
 
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
@@ -70,4 +75,8 @@ const props = defineProps<{
 }>()
 
 const data = ref(props.backOrder)
+
+watch([props], () => {
+  data.value = props.backOrder
+}, { deep: true })
 </script>
