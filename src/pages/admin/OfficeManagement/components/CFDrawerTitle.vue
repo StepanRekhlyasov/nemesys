@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
-    selectedItem: ClientFactory
+    selectedItem: ClientFactory,
+    industryValue: Array<{ value: string, isSelected: boolean, ts: string }>,
+    selectedIndustry: { value: string, isSelected: boolean, ts: string } | undefined
 }>();
 
-const dropDownValue = ref([
-    t('client.add.nurse'),
-    t('client.add.nursing')
-])
-const selectedDropDown = ref<string>(dropDownValue.value[0])
+const emit = defineEmits<{
+    (e: 'editIndustry', value: { value: string, isSelected: boolean, ts: string })
+}>()
 
-const dropDownHandler = (item: string) => {
-    selectedDropDown.value = item
+const dropDownHandler = (item: { value: string, isSelected: boolean, ts: string }) => {
+    emit('editIndustry', item)
 }
 </script>
 
@@ -27,13 +27,14 @@ const dropDownHandler = (item: string) => {
                 <div>
                     {{ props.selectedItem.client?.representativeName }}
                     <q-btn-dropdown
+                        v-if="selectedItem.isHead && selectedItem.industry?.length && selectedIndustry"
                         rounded
                         unelevated
                         dense
                         no-caps
                         push
                         auto-close
-                        :label="selectedDropDown"
+                        :label="selectedIndustry.ts ?? ''"
                         color="white"
                         text-color="accent">
                         <q-list>
@@ -42,12 +43,12 @@ const dropDownHandler = (item: string) => {
                                 clickable
                                 dense
                                 v-close-popup
-                                :key="item"
+                                :key="item.value ?? 1"
                                 @click="dropDownHandler(item)"
-                                v-for="item in dropDownValue.filter(el => el !== selectedDropDown)">
+                                v-for="item in industryValue.filter(el => el.value !== selectedIndustry?.value)">
                                 
                                 <q-item-label>
-                                    {{ item }}
+                                    {{ item.ts }}
                                 </q-item-label>
                             </q-item>
                         </q-list>
