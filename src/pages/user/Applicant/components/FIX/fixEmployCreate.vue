@@ -173,7 +173,7 @@ const backOrderOptions = computed(()=>{
     }) && row.id !== props.fixData?.backOrder
     return {
       value: row.id,
-      label: row.id,
+      label: row.boId,
       disable: disable
     }
   }) || []

@@ -1,7 +1,7 @@
-import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { ApplicantFix, User, UserPermissionNames } from 'src/shared/model';
-import { ConstraintsType } from 'src/shared/utils/utils';
+import { Applicant, ApplicantFix, User, UserPermissionNames } from 'src/shared/model';
+import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
 import { useOrganization } from './organization';
@@ -190,30 +190,81 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
-  async function getSAAFixList(users : { [id: string]: User; }){
-    const userIDs = Object.keys(users)
-    const applicantRef = collection(db, 'fix');
-    const isFix = query(applicantRef, where('chargeOfFix', 'in', userIDs), where('fixStatus', '==', true))
-    const isInspection = query(applicantRef, where('chargeOfInspection', 'in', userIDs), where('inspectionStatus', '==', true))
-    const isOffer = query(applicantRef, where('chargeOfOffer', 'in', userIDs), where('offerStatus', '==', true))
-    const isAdmission = query(applicantRef, where('chargeOfAdmission', 'in', userIDs), where('admissionStatus', '==', true))
+  async function getSAAFixList(users : { [id: string]: User; }, dateRange : string | { from: string; to: string; } | null){
+    let to : Timestamp | undefined, from: Timestamp | undefined
 
+    if(dateRange){
+      if(typeof dateRange === 'string'){
+        const fromDate = new Date(dateRange)
+        const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
+        from = dateToTimestampFormat(fromDate)
+        to = dateToTimestampFormat(toDate)
+      } else if (dateRange.from && dateRange.to){
+        const fromDate = new Date(dateRange.from)
+        const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
+        from = dateToTimestampFormat(fromDate)
+        to = dateToTimestampFormat(toDate)
+      }
+    }
+    const userIDs = Object.keys(users)
+    const fixRef = collection(db, 'fix');
+
+    const dateConstaings : {
+      fixStatus : ConstraintsType,
+      inspectionStatus : ConstraintsType,
+      offerStatus : ConstraintsType,
+      admissionStatus : ConstraintsType,
+    } = {
+      fixStatus : [],
+      inspectionStatus : [],
+      offerStatus : [],
+      admissionStatus : [],
+    }
+    if(from && to){
+      dateConstaings.fixStatus = [where('fixDate', '>=', from), where('fixDate', '<=', to)]
+      dateConstaings.inspectionStatus = [where('inspectionDate', '>=', from), where('inspectionDate', '<=', to)]
+      dateConstaings.offerStatus = [where('offerDate', '>=', from), where('offerDate', '<=', to)]
+      dateConstaings.admissionStatus = [where('admissionDate', '>=', from), where('admissionDate', '<=', to)]
+    }
+    const qFix = query(fixRef, where('chargeOfFix', 'in', userIDs), where('fixStatus', '==', true), ...dateConstaings['fixStatus'])
+    const qInspection = query(fixRef, where('chargeOfInspection', 'in', userIDs), where('inspectionStatus', '==', true), ...dateConstaings['inspectionStatus'])
+    const qOffer = query(fixRef, where('chargeOfOffer', 'in', userIDs), where('offerStatus', '==', true), ...dateConstaings['offerStatus'])
+    const qAdmission = query(fixRef, where('chargeOfAdmission', 'in', userIDs), where('admissionStatus', '==', true), ...dateConstaings['admissionStatus'])
+
+    
     const [admissionQuerySnapshot, offerQuerySnapshot, inspectionQuerySnapshot, fixQuerySnapshot] = await Promise.all([
-      getDocs(isAdmission),
-      getDocs(isOffer),
-      getDocs(isInspection),
-      getDocs(isFix)
+      getDocs(qFix),
+      getDocs(qInspection),
+      getDocs(qOffer),
+      getDocs(qAdmission)
     ]);
     const admissionFixes = admissionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
     const offerFixes = offerQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
     const inspectionFixes = inspectionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
     const fixFixes = fixQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+   
+    interface fixWithApplicant extends ApplicantFix {
+      applicant? : Applicant
+    }
     const list = [...admissionFixes, ...offerFixes, ...inspectionFixes, ...fixFixes]
-
-    const fixList : { [id: string]: ApplicantFix } = {};
-    list.forEach((fix)=>{
+    const fixList : { [id: string]: fixWithApplicant } = {};
+    const applicantIds : string[] = []
+    list.forEach(async (fix)=>{
       fixList[fix.id] = fix
+      applicantIds.push(fix.applicant_id)
     })
+    if(applicantIds.length){
+      const applicantRef = collection(db, 'applicants')
+      const applicantQuery = query(applicantRef, where('id', 'in', applicantIds))
+      const applicantSnapshot = await getDocs(applicantQuery)
+      const applicantList : { [id: string]: Applicant } = {};
+      applicantSnapshot.docs.forEach((row)=>{
+        applicantList[row.id] = row.data() as Applicant
+      })
+      for(const fix of Object.values(fixList)){
+        fix.applicant = applicantList[fix.applicant_id]
+      }
+    }
     return Object.values(fixList);
   }
 

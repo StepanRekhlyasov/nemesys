@@ -808,6 +808,8 @@ export default {
         status: 'FIX Status',
         date: 'FIX Date',
         fixReasonNG: 'FIX NG Reason',
+        attractionsReasonNG: 'Attraction NG Reason',
+        attendingReasonNG: 'Attending NG Reason',
         break_contact: 'No answer',
         anotherCompany: 'Another offer',
         excluded: 'Not target',
