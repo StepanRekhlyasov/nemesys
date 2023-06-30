@@ -39,6 +39,7 @@ import { useI18n } from 'vue-i18n';
 import { FirebaseError } from '@firebase/util';
 import { useUserStore } from 'src/stores/user';
 import { organizationCodeRule } from './handlers/rules';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default defineComponent({
   name: 'AuthComponent',
@@ -66,12 +67,7 @@ export default defineComponent({
     };
 
     const createErrorAlert = (message: string) => {
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message,
-      });
+      Alert.warning(message)
     }
 
     const signInExistingUser = async (email = '', password = '') => {
