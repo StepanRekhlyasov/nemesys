@@ -286,7 +286,7 @@ export const qualificationList = computed(() => {
     },
   ]
 })
- 
+
 export const availableShiftList = computed(() => {
   return [
     {
@@ -307,7 +307,7 @@ export const availableShiftList = computed(() => {
     },
   ]
 })
- 
+
 export const sexList = computed(() => {
   return [
     {
@@ -320,7 +320,7 @@ export const sexList = computed(() => {
     },
   ]
 })
- 
+
 export const rankList = computed(() => {
   return [
     {
@@ -349,7 +349,7 @@ export const rankList = computed(() => {
     },
   ]
 })
- 
+
 export const applicantListColumn = computed(() => {
   return [
     {
@@ -381,7 +381,7 @@ export const applicantListColumn = computed(() => {
       field: 'qualification',
       align: 'left',
     },
- 
+
   ];
 })
 

@@ -896,7 +896,7 @@ export default {
 
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
-        classiffication: 'Classiffication',
+        classiffication: 'Classification',
         qualifications: 'Qualifications',
         memo: 'Attraction Memo',
         invitationDate: 'Invitation Date',
@@ -944,6 +944,7 @@ export default {
       wait_visit: 'Wait Visit',
       wait_offer: 'Wait Offer',
       wait_entry: 'Wait Entry',
+      wait_contact: 'Waiting for Contact',
       working: 'Working',
       wait_termination: 'Wait Termination',
       wait_retire: 'Wait Retire',

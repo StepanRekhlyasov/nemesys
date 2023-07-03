@@ -64,8 +64,8 @@
     </div>
   <q-table
   :columns="destinationApplicant"
-  hide-pagination
   :rows="row"
+  hide-pagination
   row-key="id"
   class="no-shadow"
   table-class="text-grey-8"
@@ -80,7 +80,7 @@
 
   <template v-slot:header-cell-occupationAdress="props">
     <q-th :props="props" class="q-pa-none">
-      <div> {{ $t('applicant.add.occupation') }} </div>
+      <div> {{ $t('applicant.add.occupation') }}/ {{ t('applicant.list.info.classiffication') }} </div>
       <div> {{ $t('applicant.list.info.addres') }} </div>
     </q-th>
   </template>
@@ -104,15 +104,26 @@
 
   <template v-slot:body-cell-staffApplication="props">
     <q-td :props="props" class="no-wrap q-pa-none">
-      {{ props.row.staffName }}
+      {{ props.row.name }}
       <br />
       {{ props.row.applicationDate }}
     </q-td>
   </template>
 
-  <template v-slot:body-cell-occupationAdress="props">
+  <template v-slot:body-cell-status="props">
     <q-td :props="props" class="no-wrap q-pa-none">
-      {{ props.row.occupation }}
+      {{t(`applicant.statusOption.${props.row.status}`)}}
+    </q-td>
+  </template>
+
+  <template v-slot:body-cell-occupationAdress="props">
+    <q-td v-if="props.row.classification" :props="props" class="no-wrap q-pa-none">
+      {{ t(`applicant.add.${props.row.occupation}`) }}/ {{t(`applicant.list.info.classification.${props.row.classification}`) }}
+      <br />
+      {{ props.row.address }}
+    </q-td>
+    <q-td v-else :props="props" class="no-wrap q-pa-none">
+      {{t(`applicant.add.${props.row.occupation}`) }}
       <br />
       {{ props.row.address }}
     </q-td>
@@ -120,10 +131,21 @@
 
   <template v-slot:body-cell-qualificationExp="props">
     <q-td :props="props" class="no-wrap q-pa-none">
-      {{ props.row.qualification }}/{{ props.row.experience }}
+      <div v-for="qua in props.row.qualification" :key="qua">
+        {{ t(`applicant.add.${qua}`) }}
+      </div>
+      {{ props.row.experience }}
     </q-td>
   </template>
 
+  <template v-slot:body-cell-station="props">
+    <q-td v-if="props.row.nearestStation" :props="props" class="no-wrap q-pa-none">
+      {{props.row.route}}/ {{ props.row.nearestStation }}
+    </q-td>
+    <q-td v-else :props="props" class="no-wrap q-pa-none">
+      {{props.row.route}}
+    </q-td>
+  </template>
 </q-table>
 
 </div>
@@ -132,72 +154,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref,computed,set } from 'vue';
+import { ref,onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant,options } from 'src/pages/user/BackOrder/consts/BackOrder.const';
+import { collection, query, where, getDocs,getFirestore } from 'firebase/firestore';
 
 const selected = ref([])
 const msg = ref('')
-const row = ref([
-  {
-    'staffName':'name1',
-    'applicationDate':'2021/10/11',
-    'staffRank':'A',
-    'applicationStatus':'Unsupported',
-    'qualification':'Registered Nurse',
-    'experience':'3 years',
-    'occupation':'Nursing',
-    'address':'Shibuya-ku, Tokyo',
-    'station':'Shinsen station',
-  },
-  {
-    'staffName':'name2',
-    'applicationDate':'2021/10/11',
-    'staffRank':'A',
-    'applicationStatus':'Unsupported',
-    'qualification':'Registered Nurse',
-    'experience':'3 years',
-    'occupation':'Nursing',
-    'address':'Shibuya-ku, Tokyo',
-    'station':'Shinsen station',
-  },
-  {
-    'staffName':'name3',
-    'applicationDate':'2021/10/11',
-    'staffRank':'A',
-    'applicationStatus':'Unsupported',
-    'qualification':'Registered Nurse',
-    'experience':'3 years',
-    'occupation':'Nursing',
-    'address':'Shibuya-ku, Tokyo',
-    'station':'Shinsen station',
-  },
-  {
-    'staffName':'name3',
-    'applicationDate':'2021/10/11',
-    'staffRank':'A',
-    'applicationStatus':'Unsupported',
-    'qualification':'Registered Nurse',
-    'experience':'3 years',
-    'occupation':'Nursing',
-    'address':'Shibuya-ku, Tokyo',
-    'station':'Shinsen station',
-  },
-  {
-    'staffName':'name3',
-    'applicationDate':'2021/10/11',
-    'staffRank':'A',
-    'applicationStatus':'Unsupported',
-    'qualification':'Registered Nurse',
-    'experience':'3 years',
-    'occupation':'Nursing',
-    'address':'Shibuya-ku, Tokyo',
-    'station':'Shinsen station',
-  },
-])
+const row = ref([])
 
+const db = getFirestore()
 const template = ref(null)
 
 const $q = useQuasar();
@@ -228,6 +196,26 @@ const search = ()=>{
 const clear = ()=>{
   //
 }
+
+onMounted(async () => {
+  const collectionRef = collection(db, 'applicants');
+  const q = query(collectionRef, where('phone', '!=', null));
+  const querySnapshot = await getDocs(q);
+
+  row.value = querySnapshot.docs.map((doc) => {
+    const data = doc.data();
+    if (data.applicationDate) {
+      const timestamp = data.applicationDate;
+      const date = timestamp.toDate();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      data.applicationDate = `${year}/${month}/${day}`;
+    }
+    return data;
+  });
+  console.log(row.value)
+});
 
 </script>
 

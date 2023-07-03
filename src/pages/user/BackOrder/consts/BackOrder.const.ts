@@ -154,10 +154,10 @@ export const destinationApplicant = computed(() => {
 			align: 'left',
 		},
     {
-			name: 'applicationStatus',
+			name: 'status',
 			required: true,
 			label: t('applicant.list.status'),
-			field: 'applicationStatus',
+			field: 'status',
 			align: 'left',
 		},
 		{

@@ -940,6 +940,7 @@ export default {
       wait_visit: '職見待ち',
       wait_offer: '内定待ち',
       wait_entry: '入職待ち',
+      wait_contact: '接触待ち',
       working: '稼働中',
       wait_termination: '終了待ち',
       wait_retire: '退職待ち',
