@@ -49,27 +49,28 @@
     </div>
     <div class="row">
       <div class="col-4">
-        <q-input class="bg-white" dense :label="t('common.searchKeyword')"/>
+        <q-input v-model="keyword" class="bg-white" dense :label="t('common.searchKeyword')"/>
       </div>
       <div class="col-4 q-pl-sm">
-        <q-select class="bg-white" outlined v-model="template" :options="options" dense />
+        <q-select class="bg-white" outlined v-model="status" dense clearable emit-value map-options :options="statusOption" />
       </div>
       <div class="col-4 q-pl-sm">
-        <q-input v-model="date" outlined type="date" class="bg-white"/>
+        <q-input v-model="date" :mask="yyyy/mm/dd" dense outlined type="date" class="bg-white"/>
       </div>
     </div>
-    <div class="row q-mb-sm">
+    <div class="row q-mb-sm q-mt-sm">
       <q-btn @click="search" :label="t('common.search')" class="bg-primary text-white"></q-btn>
       <q-btn @click="clear" :label="t('common.clear')" class="text-primary q-ml-md"></q-btn>
     </div>
   <q-table
   :columns="destinationApplicant"
+  :loading="loading"
+  :rows-per-page="row.length"
   :rows="row"
-  hide-pagination
   row-key="id"
   class="no-shadow"
   table-class="text-grey-8"
-  table-header-class="text-grey-9">\
+  table-header-class="text-grey-9">
 
   <template v-slot:header-cell-staffApplication="props">
     <q-th :props="props" class="q-pa-none">
@@ -134,7 +135,7 @@
       <div v-for="qua in props.row.qualification" :key="qua">
         {{ t(`applicant.add.${qua}`) }}
       </div>
-      {{ props.row.experience }}
+      {{ props.row.totalYear }}
     </q-td>
   </template>
 
@@ -147,7 +148,6 @@
     </q-td>
   </template>
 </q-table>
-
 </div>
 </q-card-section>
 
@@ -160,11 +160,16 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant,options } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import { collection, query, where, getDocs,getFirestore } from 'firebase/firestore';
+import { statusList} from 'src/shared/constants/Applicant.const';
 
+const loading = ref(false)
+const statusOption = ref(statusList)
 const selected = ref([])
 const msg = ref('')
 const row = ref([])
-
+const keyword = ref(null)
+const status = ref(null)
+const date = ref(null)
 const db = getFirestore()
 const template = ref(null)
 
@@ -186,18 +191,44 @@ const updateSelected = (rowItem) => {
   //     set(selected.value, index, null);
   //   }
   // }
-  console.log(rowItem);
 };
 
+const formatDate= (date,filteredData)=> {
+date = date.split('-').join('/')
+return filteredData.value.filter((item) => item.applicationDate === date);
+}
+
 const search = ()=>{
-  //
+  loading.value = true;
+  if(status.value || keyword.value || date.value){
+
+    let filteredData = row;
+
+  if(status.value)
+    filteredData.value = filteredData.value.filter((item) => item.status === status.value);
+
+  if(date.value)
+    filteredData.value = formatDate(date.value,filteredData)
+
+  if(keyword.value)
+    filteredData.value = filteredData.value.filter((item) => item.name === keyword.value);
+
+  row.value = filteredData.value
+  }
+
+    loading.value = false
 }
 
 const clear = ()=>{
-  //
+    loading.value = true;
+    status.value = null
+  keyword.value = null
+  date.value = null
+  getApplicant()
+  loading.value = false;
 }
 
-onMounted(async () => {
+const getApplicant =async()=>{
   const collectionRef = collection(db, 'applicants');
   const q = query(collectionRef, where('phone', '!=', null));
   const querySnapshot = await getDocs(q);
@@ -214,7 +245,12 @@ onMounted(async () => {
     }
     return data;
   });
-  console.log(row.value)
+}
+
+onMounted(async () => {
+  loading.value = true;
+await getApplicant();
+loading.value = false
 });
 
 </script>
