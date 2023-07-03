@@ -229,7 +229,9 @@ export default defineComponent({
             permissions.value = role.permission
           }
           // get user organization
-          if (data.organization_ids?.length) {
+          if (permissions.value.includes(UserPermissionNames.AdminPageAccess)) {
+            organization.state.organizations = await organization.getAllOrganizations()
+          } else if (data.organization_ids?.length) {
             let ss = data.organization_ids.reduce((organization_list, organization_id) => {
               let organizationRef = getDoc(doc(db, 'organization/'+organization_id));
               return [...organization_list, organizationRef]
@@ -242,9 +244,7 @@ export default defineComponent({
             })
           }
 
-          if (permissions.value.includes(UserPermissionNames.AdminPageAccess)) {
-            organization.state.organizations = await organization.getAllOrganizations()
-          }
+          
         }
       }
     });
