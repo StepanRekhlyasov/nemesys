@@ -65,12 +65,13 @@ const searchClients = async () => {
     isLoadingProgress.value = false
 
     console.error('Failed to create user', error);
+    Alert.warning(error)
   }
 };
 
 const setLocation = () => {
   if (!searchInput.value) {
-    return false
+    return
   }
   isLoadingProgress.value = true
   const geocoder = new google.maps.Geocoder();
