@@ -34,7 +34,6 @@
 import { useRouter } from 'vue-router';
 import { defineComponent, reactive, ref } from 'vue';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { FirebaseError } from '@firebase/util';
 import { useUserStore } from 'src/stores/user';
@@ -45,7 +44,6 @@ export default defineComponent({
   name: 'AuthComponent',
   components: {},
   setup() {
-    const $q = useQuasar();
     const { t, te } = useI18n({ useScope: 'global' });
     const formData = reactive({
       name: '',
