@@ -669,7 +669,12 @@ export const useApplicant = defineStore('applicant', () => {
       const saveData = JSON.parse(JSON.stringify(applicantData));
 
       if (saveData.status){
-        await updateApplicantStatus(saveData.status);
+        try {
+          await updateApplicantStatus(saveData.status);
+          Alert.success();
+        } catch(e){
+          Alert.warning
+        }
         return;
       }
 
