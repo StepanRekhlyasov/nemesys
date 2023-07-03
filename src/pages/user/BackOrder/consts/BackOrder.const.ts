@@ -112,3 +112,57 @@ export const BackOrderStaff = computed(() => {
 			align: 'left',
 		},]
 })
+
+export const destinationApplicant = computed(() => {
+	const { t } = i18n.global
+	return [
+    {
+      name: 'selected',
+			field: 'selected',
+			align: 'left',
+    },
+		{
+			name: 'keyword',
+			required: true,
+			label: t('backOrder.name') ,
+			field: 'keyword',
+			align: 'left',
+		},
+		{
+			name: 'distanceBusiness',
+			required: true,
+			label: t('backOrder.distanceBusiness') ,
+			field: 'distanceBusiness',
+			align: 'left',
+		},
+		{
+			name: 'matchDegree',
+			required: true,
+			label: t('backOrder.matchDegree') ,
+			field: 'matchDegree',
+			align: 'left',
+		},
+		{
+			name: 'matchDegree',
+			required: true,
+			label: t('backOrder.matchDegree') ,
+			field: 'matchDegree',
+			align: 'left',
+		},
+		{
+			name: 'matchDegree',
+			required: true,
+			label: t('backOrder.matchDegree') ,
+			field: 'matchDegree',
+			align: 'left',
+		},
+		{
+			name: 'matchDegree',
+			required: true,
+			label: t('backOrder.matchDegree') ,
+			field: 'matchDegree',
+			align: 'left',
+		},
+
+  ]
+})
