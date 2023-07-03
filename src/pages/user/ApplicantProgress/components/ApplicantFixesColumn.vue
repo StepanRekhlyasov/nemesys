@@ -1,7 +1,7 @@
 <template>
   <div class='column ' style='width: 170px'>
     <div class='flex q-mx-xs items-center text-bold text-primary q-mx-auto'>
-      <span class='text-h5'>●</span><router-link :to="'/applicant-progress/'+link" :class="{'disable-link':loading}" class="applicant-link">{{ $t(label, 'en') }} </router-link>
+      <span class='text-h5'>●</span><router-link :to="'/applicant-progress/'+link" :class="{'disable-link':loading}" class="applicant-link">{{ $t(label) }} </router-link>
     </div>
     <div class='row column bg-white q-py-md q-px-xs  items-start'>
       <ApplicantFixesCard v-for='fix in fixes' :key='fix.id' :fix="fix" @select-applicant="(applicant)=>{emit('selectApplicant', applicant)}" :status="status"/>
@@ -12,7 +12,7 @@
         v-if="loading"
       />
       <q-btn class="full-width" @click="emit('showMore', status)" v-else-if="continueFromDoc">
-        {{ $t('common.more', 'en') }}
+        {{ $t('common.more') }}
       </q-btn>
     </div>
   </div>
