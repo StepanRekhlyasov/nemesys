@@ -149,6 +149,7 @@ import { ref, computed, onBeforeUnmount, watch } from 'vue';
 import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 //import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
 //import { teleAppointmentData } from 'src/shared/constants/TeleAppoint.const';
@@ -316,12 +317,7 @@ export default {
         loading.value = true;
         let data = teleData.value;
         if (!data['result']){
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
+          Alert.warning()
           return
 
         }
@@ -355,12 +351,7 @@ export default {
           }
 
           loading.value = false;
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
+          Alert.success()
           teleData.value = {
             requiredService: []
           };
@@ -370,12 +361,7 @@ export default {
         } catch (error) {
           console.log(error);
           loading.value = false;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
+          Alert.warning(e)
         }
       },
 
