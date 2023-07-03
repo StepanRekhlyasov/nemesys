@@ -1,8 +1,8 @@
 import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField, getApplicantNGStatus } from 'src/shared/utils/Applicant.utils';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
+import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField, getApplicantNGStatus, getApplicantCurrentUserInChargeField } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
@@ -52,6 +52,9 @@ interface ApplicantState {
     'wait_entry': number | undefined,
     'wait_termination': number | undefined,
   },
+  applicantFixes: { [id: string]: ApplicantFix[]; }
+  applicants: { [id: string]: Applicant; }
+  highlightedApplicant?: string
 }
 
 type ContinueFromDoc = {
@@ -82,7 +85,6 @@ type ApplicantERWCount = {
 
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
-    //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
   const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const organization = useOrganization()
   const fixStore = useFix()
@@ -151,6 +153,8 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': undefined,
       'wait_termination': undefined,
     },
+    applicantFixes: {},
+    applicants: {}
   })
 
   const countApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter) => {
@@ -285,7 +289,6 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }).catch((error) => {
       Alert.warning(error)
-      console.log(error)
     });
   };
 
@@ -428,8 +431,8 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.applicantCount[status] = 0
       return []
     }
-
     state.value.columnsLoading[status] = true
+
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
     if(filterData){
@@ -439,6 +442,7 @@ export const useApplicant = defineStore('applicant', () => {
         }
       }
     }
+
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
     const querys = query(applicantRef, ...orderQuery, ...filters, ...start, limit(perQuery+1))
 
@@ -447,8 +451,11 @@ export const useApplicant = defineStore('applicant', () => {
     const docSnap = await getDocs(querys)
     state.value.applicantCount[status] = countSnapshot.data().count
     if (!docSnap.empty) {
+      const applicantIds : string[] = []
       const documents = docSnap.docs.map(item => {
-        return item.data() as Applicant
+        const result = {...item.data(), id: item.id} as Applicant
+        state.value.applicants[item.id] = result
+        return result
       })
 
       if(perQuery+1 === docSnap.docs.length){
@@ -457,9 +464,15 @@ export const useApplicant = defineStore('applicant', () => {
       } else {
         state.value.continueFromDoc[status] = null
       }
+      documents.forEach((row)=>{
+        applicantIds.push(row.id)
+      })
       const result = state.value.applicantsByColumn[status].concat(documents)
       state.value.applicantsByColumn[status] = result
       state.value.columnsLoading[status] = false
+    
+      await fixStore.getFixByApplicantIDs(applicantIds);
+
       return result
     }
     state.value.continueFromDoc[status] = null
@@ -507,7 +520,6 @@ export const useApplicant = defineStore('applicant', () => {
         await batch.commit()
       } catch (e){
         Alert.warning(e)
-        console.log(e)
       }
     }
     return fire.value
@@ -616,29 +628,35 @@ export const useApplicant = defineStore('applicant', () => {
         })
         Alert.success();
     } catch (e) {
-      console.log(e)
       Alert.warning(e);
     }
   }
 
   /** Applicant status should be awlays changed here! */
-  async function updateApplicantStatus(status : ApplicantStatus){
+  async function updateApplicantStatus(status : ApplicantStatus , NGStatus?: ApplicantStatus){
+    
     if (!state.value.selectedApplicant) return;
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
+
     const dateField = getApplicantCurrentStatusTimestampField(status)
     const saveData : Partial<Applicant> = {}
-
-    if(state.value.selectedApplicant[dateField] instanceof Timestamp){
-      saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
+    if(saveData[dateField] instanceof Timestamp){
+      saveData.currentStatusTimestamp = saveData[dateField]
       saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
-      saveData.statusChangeTimestamp[status] = state.value.selectedApplicant[dateField]
-      saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
+      saveData.statusChangeTimestamp[status] = saveData[dateField]
+      saveData.currentStatusMonth = toMonthYear(saveData[dateField])
+    }
+
+    const userInCharge = getApplicantCurrentUserInChargeField(NGStatus?NGStatus:status)
+    
+    if(userInCharge && typeof userInCharge === 'string'){
+      saveData.userInCharge = state.value.selectedApplicant[userInCharge]
     }
 
     saveData['updated_at'] = serverTimestamp();
     saveData.status = status
     await updateDoc(applicantRef, saveData)
-    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant.id)
+    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
   }
 
 
@@ -665,29 +683,20 @@ export const useApplicant = defineStore('applicant', () => {
       if(applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
       if(applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
 
-      if(state.value.selectedApplicant.status){
-        const dateField = getApplicantCurrentStatusTimestampField(state.value.selectedApplicant.status)
-        if(saveData[dateField] instanceof Timestamp){
-          saveData.currentStatusTimestamp = saveData[dateField]
-          saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
-          saveData.statusChangeTimestamp[state.value.selectedApplicant.status] = saveData[dateField]
-          saveData.currentStatusMonth = toMonthYear(saveData[dateField])
-        }
-      }
-
       for(const [key, value] of Object.entries(saveData)){
         if(typeof value === 'undefined') delete saveData[key];
       }
       saveData['updated_at'] = serverTimestamp();
 
       await updateDoc(applicantRef, saveData)
+      state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
       const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
       if (applicantIndex >=0) {
         state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
       }
       if (showAlert) { Alert.success(); }
       try {
-        state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+        
 
         /** status change by OK fields */
         const saveBooleans = {}
@@ -699,26 +708,26 @@ export const useApplicant = defineStore('applicant', () => {
         if(Object.keys(saveBooleans).length){
           await changeApplicantStatusByOkFields( saveBooleans )
         }
+        
+
       } catch(error) {
         if (showAlert){ Alert.warning(error); }
       }
     } catch (error) {
-      console.log(error)
       if (showAlert){  Alert.warning(error); }
     }
   };
 
   const saveFixDataToApplicant = async() => {
-    const bestFix = getMostCompletedFix(fixStore.state.selectedApplicantFixes)
-    if ( !bestFix ) return;
     if ( !state.value.selectedApplicant ) return;
+    const bestFix = getMostCompletedFix(state.value.applicantFixes[state.value.selectedApplicant.id])
+    if ( !bestFix ) return;
 
     const { fixStatus, inspectionStatus, offerStatus, admissionStatus, fixDate, inspectionDate, offerDate, admissionDate, chargeOfFix, chargeOfInspection, chargeOfAdmission, chargeOfOffer, fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG, id } = bestFix
     const saveBooleans = { fixStatus, inspectionStatus, offerStatus, admissionStatus }
     const saveDates = { fixDate, inspectionDate, offerDate, admissionDate }
     const chargeOfStatus = { chargeOfAdmission, chargeOfOffer, chargeOfInspection, chargeOfFix }
     const NGReasons = { fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG }
-    const userInCharge = admissionStatus?chargeOfAdmission:undefined || offerStatus?chargeOfOffer:undefined || inspectionStatus?chargeOfInspection:undefined || fixStatus?chargeOfFix:undefined || ''
 
     for(const [key, value] of Object.entries(saveBooleans)){
       if(typeof value === 'undefined'){
@@ -726,7 +735,7 @@ export const useApplicant = defineStore('applicant', () => {
       }
     }
 
-    const saveData = {...saveBooleans, ...saveDates, ...NGReasons, ...chargeOfStatus, userInCharge, bestFixID: id}
+    const saveData = {...saveBooleans, ...saveDates, ...NGReasons, ...chargeOfStatus, bestFixID: id}
     await updateApplicant(saveData, true)
   }
 
@@ -735,20 +744,22 @@ export const useApplicant = defineStore('applicant', () => {
     if(!state.value.selectedApplicant){
       return
     }
-    const initStatus = state.value.selectedApplicant.status
-    let newStatus : ApplicantStatus | null = null
+    
+    let newStatus : ApplicantStatus | undefined,
+    NGStatus : ApplicantStatus | undefined
 
     for (const [key, value] of Object.entries(applicantStatusOkFields)){
       if(saveBooleans[key] === true){
         newStatus = value
       } else if (saveBooleans[key] === false){
-        const NGStatus = getApplicantNGStatus(applicantStatusOkFields[key], state.value.selectedApplicant)
-        newStatus = NGStatus
+        const NGField = getApplicantNGStatus(applicantStatusOkFields[key])
+        NGStatus = newStatus
+        newStatus = state.value.selectedApplicant[NGField]
         break;
       }
     }
-    if(newStatus && newStatus !== initStatus){
-      updateApplicantStatus(newStatus)
+    if(newStatus){
+      await updateApplicantStatus(newStatus, NGStatus)
     }
   }
 
@@ -760,6 +771,11 @@ export const useApplicant = defineStore('applicant', () => {
     if(changingApplicantIndex>=0){
       state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
     }
+  }, {deep: true})
+
+  /** reset fixes on filter change */
+  watch(() => state.value.applicantProgressFilter, () => {
+    state.value.applicantFixes = {}
   }, {deep: true})
 
   /** update columns */
@@ -784,7 +800,6 @@ export const useApplicant = defineStore('applicant', () => {
           }
         } catch (error){
           Alert.warning(error)
-          console.log(error)
         }
       })
     }

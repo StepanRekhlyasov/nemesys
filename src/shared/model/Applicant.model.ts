@@ -77,7 +77,7 @@ export interface ApplicantBase {
   attractionsStatus?: boolean;
   attractionsReasonNG?: string;
   attractionsReasonNGDetail?: string;
-  seduser?: string;
+  chargeOfAttraction?: string;
   employmentStatus?: string;
   period?: string;
   position?: string[];
@@ -138,7 +138,7 @@ export interface Attendance {
   attendingStatus?: boolean;
   attendingReasonNG?: string;
   attendingReasonNGDetail?: string;
-  attendeeUserInCharge?: string;
+  chargeOfAttending?: string;
   memo?: string;
 }
 
