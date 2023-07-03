@@ -1,6 +1,15 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 
+export const options = computed(() => {
+  const { t } = i18n.global
+  return [
+    {
+      label: t('common.pleaseSelect'),
+      value: 'Select',
+    },
+  ];
+});
 
 export const BackOrderColumns = computed(() => {
 	const { t } = i18n.global
@@ -116,53 +125,54 @@ export const BackOrderStaff = computed(() => {
 export const destinationApplicant = computed(() => {
 	const { t } = i18n.global
 	return [
-    {
-      name: 'selected',
+		{
+			name: 'selected',
+			required: true,
+			label: '' ,
 			field: 'selected',
 			align: 'left',
-    },
+		},
 		{
-			name: 'keyword',
+			name: 'staffApplication',
 			required: true,
-			label: t('backOrder.name') ,
-			field: 'keyword',
+			label: '' ,
+			field: 'staffApplication',
 			align: 'left',
 		},
 		{
-			name: 'distanceBusiness',
+			name: 'occupationAdress',
 			required: true,
-			label: t('backOrder.distanceBusiness') ,
-			field: 'distanceBusiness',
+			label: '' ,
+			field: 'occupationAdress',
+			align: 'left',
+		},
+    {
+			name: 'staffRank',
+			required: true,
+			label: t('applicant.list.rank') ,
+			field: 'staffRank',
+			align: 'left',
+		},
+    {
+			name: 'applicationStatus',
+			required: true,
+			label: t('applicant.list.status'),
+			field: 'applicationStatus',
 			align: 'left',
 		},
 		{
-			name: 'matchDegree',
+			name: 'qualificationExp',
 			required: true,
-			label: t('backOrder.matchDegree') ,
-			field: 'matchDegree',
+			label: '' ,
+			field: 'qualificationExp',
 			align: 'left',
 		},
 		{
-			name: 'matchDegree',
+			name: 'station',
 			required: true,
-			label: t('backOrder.matchDegree') ,
-			field: 'matchDegree',
+			label: t('applicant.list.station') ,
+			field: 'station',
 			align: 'left',
 		},
-		{
-			name: 'matchDegree',
-			required: true,
-			label: t('backOrder.matchDegree') ,
-			field: 'matchDegree',
-			align: 'left',
-		},
-		{
-			name: 'matchDegree',
-			required: true,
-			label: t('backOrder.matchDegree') ,
-			field: 'matchDegree',
-			align: 'left',
-		},
-
   ]
 })

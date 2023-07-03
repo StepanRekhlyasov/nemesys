@@ -785,6 +785,7 @@ export default {
       operationInfo: 'Operation Info',
       yearsExperience: 'Years of Experience',
       availableShift: 'Available Shift',
+      station:'station',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
