@@ -97,7 +97,7 @@
     <createBO :client="client" @closeDialog="openDialog = false" :type="'dispatch'" />
   </q-drawer>
 </template>
- 
+
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, Ref } from 'vue';

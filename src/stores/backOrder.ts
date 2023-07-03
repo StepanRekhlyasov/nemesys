@@ -53,7 +53,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 	}
 
 	async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
-		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId)]
+		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('z', '==', clientId)]
 		const docs = await getDocs(query(
 			collection(db, '/BO'),
 			...constraints
@@ -69,8 +69,8 @@ export const useBackOrder = defineStore('backOrder', () => {
 		return list;
 	}
 
-	async function getClientFactoryBackOrder(id_clientFactory: string): Promise<BackOrderModel[]> {
-		const constraints: ConstraintsType = [where('deleted', '==', false), where('id_clientFactory', '==', id_clientFactory)]
+	async function getClientFactoryBackOrder(office_id: string): Promise<BackOrderModel[]> {
+		const constraints: ConstraintsType = [where('deleted', '==', false), where('office_id', '==', office_id)]
 		const docs = await getDocs(query(
 			collection(db, '/BO'),
 			...constraints

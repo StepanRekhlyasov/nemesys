@@ -10,7 +10,7 @@
         {{ $t('applicant.list.info.attractionsStatus') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant?.attractionsStatus? 'OK' : 'NG'}}</span>
+        <span v-if="!edit">{{ applicant?.attractionsStatus === true ? 'OK' : applicant?.attractionsStatus === false ? 'NG' : '-'}}</span>
         <template v-if="edit">
           <q-checkbox v-model="data['attractionsStatus']" label="OK" checked-icon="mdi-checkbox-intermediate"
             unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
@@ -22,7 +22,7 @@
         <NGReasonSelect
           :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
           :edit="edit" 
-          :label="$t('applicant.list.fixEmployment.reasonNG')"
+          :label="$t('applicant.list.fixEmployment.'+reasonKey)"
           :reasonValue="data[reasonKey]"
           @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
           :detailedValue="data[detailKey]"
@@ -62,15 +62,15 @@
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.seduser') }}
+        {{ $t('applicant.list.info.chargeOfAttraction') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
         <span v-if="!edit">{{
             usersListOption
-              .filter(user => user.value === data['seduser'])
+              .filter(user => user.value === data['chargeOfAttraction'])
               .map(user => user.label).join('')
         }}</span>
-        <q-select v-if="edit" outlined dense :options="usersListOption" v-model="data['seduser']"
+        <q-select v-if="edit" outlined dense :options="usersListOption" v-model="data['chargeOfAttraction']"
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
     </div>
@@ -202,7 +202,7 @@ async function resetData() {
     attractionsReasonNGDetail: props?.applicant['attractionsReasonNGDetail'] || '',
     invitationDate: timestampToDateFormat(props?.applicant['invitationDate']),
     employmentStatus: props?.applicant['employmentStatus'],
-    seduser: props?.applicant['seduser'],
+    chargeOfAttraction: props?.applicant['chargeOfAttraction'],
     classification: props?.applicant['classification'],
     occupation: props?.applicant['occupation'],
     position: props?.applicant['position'],

@@ -17,28 +17,28 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
       name: 'numberOfFix',
       field: 'chargeOfFix',
       label: t('KPI.numberOfFix'),
-      align: 'left',
+      align: 'center',
       sortable: true
     },
     {
       name: 'numberOfVisit',
       field: 'chargeOfInspection',
       label: t('KPI.numberOfVisit'),
-      align: 'left',
+      align: 'center',
       sortable: true
     },
     {
       name: 'numberOfOffer',
       field: 'chargeOfOffer',
       label: t('KPI.numberOfOffer'),
-      align: 'left',
+      align: 'center',
       sortable: true
     },
     {
       name: 'numberOFEntry',
       field: 'chargeOfAdmission',
       label: t('KPI.numberOFEntry'),
-      align: 'left',
+      align: 'center',
       sortable: true
     },
     {
@@ -98,64 +98,64 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
       sortable: true
     },
     {
-      name: 'occupationRate',
-      field: 'occupationRate',
+      name: 'chargeOfInspectionRate',
+      field: 'chargeOfInspectionRate',
       label: t('KPI.occupationRate'),
       align: 'left',
       sortable: true
     },
     {
-      name: 'jobOfferRate',
-      field: 'jobOfferRate',
+      name: 'chargeOfOfferRate',
+      field: 'chargeOfOfferRate',
       label: t('KPI.jobOfferRate'),
       align: 'left',
       sortable: true
     },
     {
-      name: 'hiringRate',
-      field: 'hiringRate',
+      name: 'chargeOfAdmissionRate',
+      field: 'chargeOfAdmissionRate',
       label: t('KPI.hiringRate'),
       align: 'left',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'personOK',
+      field: 'personOK',
       label: t('KPI.Person')+'OK',
       align: 'left',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'personNG',
+      field: 'personNG',
       label: t('KPI.Person')+'NG',
       align: 'left',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'personOKRate',
+      field: 'personOKRate',
       label: t('KPI.Person')+'OK'+t('KPI.Rate'),
       align: 'left',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'companyOK',
+      field: 'companyOK',
       label: t('KPI.Company')+'OK',
       align: 'left',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'companyNG',
+      field: 'companyNG',
       label: t('KPI.Company')+'NG',
       align: 'left',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'companyOKRate',
+      field: 'companyOKRate',
       label: t('KPI.Company')+'OK'+t('KPI.Rate'),
       align: 'left',
       sortable: true

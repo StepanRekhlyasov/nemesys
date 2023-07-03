@@ -14,19 +14,19 @@
       {{ $t('applicant.attendant.attendantStatus') }}
     </div>
     <div class="col-2 q-pl-md blue self-center">
-      <span v-if="!infoEdit" class="text-uppercase">{{ applicant.attendingStatus? 'OK' : 'NG' }}</span>
+      <span v-if="!infoEdit" class="text-uppercase">{{ applicant?.attendingStatus === true ? 'OK' : applicant?.attendingStatus === false ? 'NG' : '-'}}</span>
       <template v-if="infoEdit">
         <q-checkbox v-model="data['attendingStatus']" label="OK" checked-icon="mdi-checkbox-intermediate"
-          unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="loading"/>
+            unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
         <q-checkbox v-model="data['attendingStatus']" label="NG" unchecked-icon="mdi-checkbox-intermediate"
-          checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="loading"/>
+          checked-icon="mdi-checkbox-blank-outline" color="primary"/>
       </template>
     </div>
     <div class="row q-pb-sm q-pt-sm col-12" v-if="!data['attendingStatus']">
         <NGReasonSelect
           :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
           :edit="infoEdit" 
-          :label="$t('applicant.list.fixEmployment.reasonNG')"
+          :label="$t('applicant.list.fixEmployment.'+reasonKey)"
           :reasonValue="data[reasonKey]"
           @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
           :detailedValue="data[detailKey]"
@@ -55,16 +55,16 @@
         </template>
       </q-input>
     </div>
-    <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
-      {{ $t('applicant.attendant.attendeeUserInCharge') }}
+    <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center" style="white-space: nowrap;">
+      {{ $t('applicant.attendant.chargeOfAttending') }}
     </div>
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit">{{
           usersListOption
-            .filter(user => user.value === data['attendeeUserInCharge'])
+            .filter(user => user.value === data['chargeOfAttending'])
             .map(user => user.label).join('')
       }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendeeUserInCharge']"
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['chargeOfAttending']"
         bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
@@ -118,11 +118,11 @@ useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
 
 function resetData() {
   defaultData.value = {
-    attendingStatus: props?.applicant['attendingStatus'],
+    attendingStatus: props?.applicant['attendingStatus'] || false,
     attendingReasonNG: props?.applicant['attendingReasonNG'],
     attendingReasonNGDetail: props?.applicant['attendingReasonNGDetail'],
     attendingDate: timestampToDateFormat(props?.applicant['attendingDate']),
-    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'],
+    chargeOfAttending: props?.applicant['chargeOfAttending'],
     memo: props?.applicant['memo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));

@@ -808,6 +808,8 @@ export default {
         status: 'FIX Status',
         date: 'FIX Date',
         fixReasonNG: 'FIX NG Reason',
+        attractionsReasonNG: 'Attraction NG Reason',
+        attendingReasonNG: 'Attending NG Reason',
         break_contact: 'No answer',
         anotherCompany: 'Another offer',
         excluded: 'Not target',
@@ -897,7 +899,7 @@ export default {
         qualifications: 'Qualifications',
         memo: 'Attraction Memo',
         invitationDate: 'Invitation Date',
-        seduser: 'Seduser',
+        chargeOfAttraction: 'Charge Of Attraction',
         position: 'Position',
         period: 'Employment Period',
 
@@ -971,7 +973,7 @@ export default {
     attendant: {
       attendantStatus: 'Attendant Status',
       day: 'Attending Day',
-      attendeeUserInCharge: 'User in charge',
+      chargeOfAttending: 'User in charge',
       memo: 'Attendance Memo',
       desiredConditions: 'Desired Conditions',
       timeToWork: 'Possible Employment Period',
