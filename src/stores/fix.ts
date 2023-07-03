@@ -2,29 +2,20 @@ import { defineStore } from 'pinia';
 import { ApplicantFix } from 'src/shared/model';
 import { ConstraintsType, toDateFormat } from 'src/shared/utils/utils';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc, where } from 'firebase/firestore';
-import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-// import { ref } from 'vue'
 import { useApplicant } from './applicant';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export interface FixOption {
   operationFilter?: boolean;
 }
-// export interface FixState {
-//   selectedApplicantFixes: ApplicantFix[];
-// }
 
 export const useFix = defineStore('fix', () => {
-  const db = getFirestore();  
-  const $q = useQuasar();
+  const db = getFirestore();
   const { t } = useI18n({ useScope: 'global' });
   const applicantStore = useApplicant()
-  // const state = ref<FixState>({
-  //   selectedApplicantFixes: []
-  // })
 
   async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
-    // state.value.selectedApplicantFixes = []
     
     const fixData = await getFixList(applicant_id, {operationFilter})
     const list: ApplicantFix[] = [];
@@ -46,13 +37,13 @@ export const useFix = defineStore('fix', () => {
 
   async function getFixList(applicant_id: string, option?: FixOption) {
       const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
-    
+
       if (option && option.operationFilter) {
         constraints.push(where('admissionStatus', '==', 'ok'))
       }
-    
+
       return getDocs(query(
-        collection(db, '/fix'), 
+        collection(db, '/fix'),
         where('applicant_id', '==', applicant_id),
         ...constraints
       ))
@@ -61,7 +52,7 @@ export const useFix = defineStore('fix', () => {
   async function getFixByApplicantIDs(ids: string[] | string){
     const constraints = Array.isArray(ids)?[where('applicant_id', 'in', ids)]:[where('applicant_id', '==', ids)]
     const docSnap = await getDocs(query(
-      collection(db, '/fix'), 
+      collection(db, '/fix'),
       where('deleted', '==', false),
       ...constraints
     ))
@@ -92,7 +83,7 @@ export const useFix = defineStore('fix', () => {
   /** when BO quotas will be added use this function to check quotas */
   async function preventFixFromSaving(applicant_id: string, backOrder_id: string, fix_id?: string){
     const checkFix = await getDocs(query(
-      collection(db, '/fix'), 
+      collection(db, '/fix'),
       where('applicant_id', '==', applicant_id),
       where('deleted', '==', false),
       where('backOrder', '==', backOrder_id)
@@ -105,12 +96,7 @@ export const useFix = defineStore('fix', () => {
       }
     })
     if(isOccupied){
-      $q.notify({
-        color: 'red-5',
-        textColor: 'white',
-        icon: 'warning',
-        message: t('errors.BO_occupied'),
-      });
+      Alert.warning(t('errors.BO_occupied'))
     }
     return isOccupied
   }

@@ -61,6 +61,7 @@ import { Role, User } from 'src/shared/model/Account.model';
 import  AdminMenu  from 'src/components/AdminMenu.vue'
 import { useMaintainModeStore } from 'src/stores/maintainMode';
 import { getMaintainEnabledEvent } from 'src/shared/utils/Admin.utils';
+import { Alert } from 'src/shared/utils/Alert.utils';
 //import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -118,7 +119,7 @@ export default defineComponent({
       router
         .push('/auth/login')
         .then(() => {
-          $q.notify({ message: 'Sign Out Success.' });
+          Alert.success()
         })
         .catch((error) => console.log('error', error));
     };

@@ -1,13 +1,34 @@
 <template>
   <q-card class="no-shadow full-width">
-
-    <q-card-section class="bg-grey-3 q-ma-sm q-pa-xs" v-if="!showAddForm">
+    <q-card-section style="background-color: #E3ECF0;" class="q-ma-sm q-pa-none">
+      <div class="row">
+        <div class="col-2 text-right self-center q-pa-sm">
+          {{ $t('client.list.personIncharge') }}
+        </div>
+        <div class="col-2 q-pa-sm rightBorder">
+          {{ client.manager }}
+        </div>
+        <div class="col-2 text-right self-center q-pa-sm">
+          {{ $t('client.list.position') }}
+        </div>
+        <div class="col-2 q-pa-sm rightBorder">
+          {{ client.manager }}
+        </div>
+        <div class="col-2 text-right self-center q-pa-sm">
+          TEL
+        </div>
+        <div class="col-2 q-pa-sm">
+          {{ client.office_tel }}
+        </div>
+      </div>
+    </q-card-section>
+    <q-card-section class="bg-grey-2 q-ma-sm q-pa-xs" v-if="!showAddForm">
       <q-btn
         :label="$t('client.tele.openTeleAppointForm')"
         :icon="'mdi-arrow-down-bold-circle-outline'"
         flat
         size="md"
-        class="text-grey-9 "
+        class="text-grey-9"
         @click="showAddForm = true"/>
     </q-card-section>
     <q-card-section class="q-ma-sm q-pa-sm bg-grey-2 " v-if="showAddForm">
@@ -71,12 +92,10 @@
       </q-form>
     </q-card-section>
 
-    <q-table :columns="columns" :rows="historyData" row-key="id"
-      v-model:pagination="pagination" hide-pagination class="q-pl-sm " :loading="loading"   :separator="separator" >
-      <template v-slot:body-cell-edit="props">
-        <q-td :props="props">
-          <q-btn icon="mdi-pencil-outline" size="sm" round color="grey-8" flat @click="showEditDialog(props.row)" />
-        </q-td>
+    <q-table :columns="columns" :rows="historyData" row-key="id" selection="multiple" v-model:selected="selected"
+      v-model:pagination="pagination" hide-pagination>
+      <template v-slot:top v-if="selected.length > 0">
+        <q-btn color="red" icon="delete" :label="$t('common.delete')" @click="deleteItem"/>
       </template>
 
       <template v-slot:body-cell-result="props">
@@ -113,12 +132,12 @@
           {{ getUserName(props.value) }}
         </q-td>
       </template>
-      <template v-slot:body-cell-action="props">
-        <q-td :props="props" class="no-wrap q-pa-none">
-          <q-btn size="sm" icon="delete" flat @click="deleteItem([props.row.id])"  />
+
+      <template v-slot:body-cell-edit="props">
+        <q-td :props="props">
+          <q-btn icon="mdi-pencil-outline" size="sm" round color="grey-8" flat @click="showEditDialog(props.row)" />
         </q-td>
       </template>
-
 
     </q-table>
   </q-card>
@@ -127,9 +146,10 @@
 <script>
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onBeforeUnmount, watch } from 'vue';
-import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy,writeBatch } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, getFirestore, query, onSnapshot, where, updateDoc, doc, orderBy } from 'firebase/firestore';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 //import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
 //import { teleAppointmentData } from 'src/shared/constants/TeleAppoint.const';
@@ -149,7 +169,7 @@ export default {
   setup(props) {
     const { t } = useI18n({ useScope: 'global' });
     const historyData = ref([])
-    const selected = ref([]);
+    const selected = ref([])
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -159,12 +179,6 @@ export default {
 
     const columns = computed(() => {
       return [
-      {
-        label:'',
-          name: 'edit',
-          align: 'left',
-          field:'edit'
-        },
         {
           name: 'created_by',
           required: true,
@@ -206,11 +220,9 @@ export default {
           align: 'left',
         },
         {
-      label: '',
-      field: 'action',
-      name: 'action',
-      align: 'left',
-    },
+          name: 'edit',
+          align: 'left',
+        }
       ];
     });
 
@@ -254,6 +266,7 @@ export default {
       });
     }
 
+
     onBeforeUnmount(() => {
       unsubscribe.value();
       unsubscribeUsers.value();
@@ -288,32 +301,15 @@ export default {
           }
         },
       )
-      const Tele = async (Teleid) => {
-        const user = $q.localStorage.getItem('user');
-		const updateData = {}
-		updateData['deleted'] = true;
-		updateData['deleted_by'] = user?.uid;
-		updateData['deleted_at'] = serverTimestamp();
-		const batch = writeBatch(db);
-		for (const id of Teleid) {
-			batch.update(
-        doc(db, 'clients/' + props.client.clientId + '/teleAppointments/' + id),
-        updateData
-      );
-      console.log(id);
-    }
-    await batch.commit();
-		return true;
-	};
+
 
     return {
       columns,
       historyData,
-      separator: ref('none'),
       selected,
       pagination,
+
       teleData,
-      Tele,
       showAddForm,
       loading,
 
@@ -321,12 +317,7 @@ export default {
         loading.value = true;
         let data = teleData.value;
         if (!data['result']){
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
+          Alert.warning()
           return
 
         }
@@ -360,12 +351,7 @@ export default {
           }
 
           loading.value = false;
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
+          Alert.success()
           teleData.value = {
             requiredService: []
           };
@@ -375,36 +361,32 @@ export default {
         } catch (error) {
           console.log(error);
           loading.value = false;
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
+          Alert.warning(e)
         }
       },
 
- async deleteItem(Teleid) {
-  $q.dialog({
-    title: t('common.delete'),
-    message: t('common.deleteInfo'),
-    persistent: true,
-    cancel: t('common.cancel'),
-  }).onOk(async () => {
-    loading.value=true
-    const done = await Tele(Teleid);
-    loading.value=false
-    if(done){
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: t('success'),
-    });
-  }
-  });
-},
+      async deleteItem(){
+        const user = $q.localStorage.getItem('user');
 
+        let updateData = {}
+        updateData['deleted'] = true;
+        updateData['deleted_by'] = user.uid;
+        updateData['deleted_at'] = serverTimestamp();
+
+        for(let i = 0; i < selected.value.length; i++){
+          await updateDoc(
+              doc(db, 'clients/' + props.client.clientId + '/teleAppointments/' + selected.value[i].id),
+              updateData
+            );
+        }
+        $q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: t('success'),
+        });
+        selected.value = [];
+      },
       onReset() {
         //teleData.value = JSON.parse(JSON.stringify(applicantDataSample));
         //applicantForm.value.resetValidation();
@@ -413,11 +395,6 @@ export default {
         };
         dialogType.value = 'create';
       },
-      showEditDialog(data) {
-        dialogType.value = 'update';
-        teleData.value = JSON.parse(JSON.stringify(data));
-        showAddForm.value = true;
-      },
       getUserName(uid) {
         const value = users.value.find(x => x['id'] === uid)
         if (value) {
@@ -425,17 +402,19 @@ export default {
         }
         return '';
       },
+      showEditDialog(data) {
+        dialogType.value = 'update';
+        teleData.value = JSON.parse(JSON.stringify(data));
+      }
+
     };
   },
 };
 </script>
 
-<style lang="scss">
+<style>
 .rightBorder {
   border-right: 2px solid white;
-}
-tbody{
-  background-color: #efeded
 }
 </style>
 
