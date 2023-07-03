@@ -7,20 +7,7 @@
         <ToolbarLanguage />
 
         <div class="flex">
-          <q-btn-dropdown
-            v-if="organization.state.organizations && (organization.state.activeOrganization || organization.state.activeOrganization === 0)"
-            :label="organization.state.organizations[organization.state.activeOrganization]?.name"
-            flat color="black"
-            >
-            <q-list>
-              <q-item clickable v-close-popup v-for="item in organization.state.organizations" :key="item.code" @click="switchOrganization(item.id)">
-                <q-item-section>
-                  <q-item-label>{{'name' in item ? item['name'] : ''}}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-
+          <OrganizationDropdown/>
           <q-btn-dropdown
             flat
             color="blue"
@@ -177,7 +164,9 @@ import { useMaintainModeStore } from 'src/stores/maintainMode'
 import routes from 'src/router/routes';
 import { routeNames } from 'src/router/routeNames'
 import { useOrganization } from 'src/stores/organization';
-//import { useI18n } from 'vue-i18n';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import OrganizationDropdown from 'src/pages/user/components/OrganizationDropdown.vue';
+
 
 export default defineComponent({
   name: 'MainLayout',
@@ -185,7 +174,8 @@ export default defineComponent({
   components: {
     EssentialLink,
     ToolbarLanguage,
-  },
+    OrganizationDropdown
+},
 
   setup() {
     //const { t, te } = useI18n({ useScope: 'global' });
@@ -251,6 +241,10 @@ export default defineComponent({
               }
             })
           }
+
+          if (permissions.value.includes(UserPermissionNames.AdminPageAccess)) {
+            organization.state.organizations = await organization.getAllOrganizations()
+          }
         }
       }
     });
@@ -266,24 +260,12 @@ export default defineComponent({
       }
     }
 
-    const switchOrganization = (organizationId: string) =>{
-      const organizations = organization.state.organizations
-      if(!organizations.length){
-        return
-      }
-      organization.state.organizations.forEach((org, index)=>{
-        if(org.id == organizationId){
-          organization.state.activeOrganization = index;
-        }
-      })
-    }
-
     const logout = () => {
       getAuth().signOut();
       router
         .push('/auth/login')
         .then(() => {
-          $q.notify({ message: 'Sign Out Success.' });
+          Alert.success()
         })
         .catch((error) => console.log('error', error));
     };
@@ -312,7 +294,6 @@ export default defineComponent({
       onChangeMenu,
       permissionMenuItem,
       isPermission,
-      switchOrganization,
       isDevMode
     };
   },
