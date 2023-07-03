@@ -1,59 +1,36 @@
 <script lang="ts" setup>
-import { watch, ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, computed } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { Client } from 'src/shared/model';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{theme: string}>()
 const emit = defineEmits<{(e: 'getClients', clients: Client[])}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
-const radius = ref<number>(500);
 const officeData = ref<Client[]>([]);
 const isLoadingProgress = ref(false)
 
-const circleOption = ref({
-  center: center,
-  radius: radius,
-  strokeColor: '#FF0000',
-  strokeOpacity: 0.8,
-  strokeWeight: 2,
-  fillColor: '#FF0000',
-  fillOpacity: 0.05,
-});
-
-watch(radius, (newVal) => {
-  let center = circleOption.value.center;
-  if (!newVal) {
-    newVal = 0
-  }
-  if (typeof newVal != 'number') {
-    newVal = parseInt(newVal);
-  }
-  circleOption.value = {
-    center: center,
-    radius: radius.value,
+const radiusKm = ref<number>(10);
+const radiusInM = computed(() => radiusKm.value * 1000);
+const searchInput = ref('');
+const circleOption = computed(() => {
+  return {
+    center: center.value,
+    radius: radiusInM.value,
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: '#FF0000',
     fillOpacity: 0.05,
-  }
+  };
 });
 
 const markerDrag = (event) => {
   center.value = { lat: event.latLng.lat(), lng: event.latLng.lng() }
-  circleOption.value = {
-    center: center.value,
-    radius: radius.value,
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.05,
-  }
 }
 
 const searchClients = async () => {
@@ -66,7 +43,7 @@ const searchClients = async () => {
   }
   const token = await user.getIdToken();
 
-  let data = { ...center.value, 'radiusInM': radius.value }
+  let data = { ...center.value, 'radiusInM': radiusInM.value }
 
   try {
     const response = await api.post(
@@ -90,6 +67,28 @@ const searchClients = async () => {
     console.error('Failed to create user', error);
   }
 };
+
+const setLocation = () => {
+  if (!searchInput.value) {
+    return false
+  }
+  isLoadingProgress.value = true
+  const geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: searchInput.value }, (results, status) => {
+    if (status === 'OK' && results[0]) {
+      const place = results[0];
+      center.value = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+      // mapCenter.value = location.value;
+    } else {
+      Alert.warning()
+    }
+  });
+  isLoadingProgress.value = false
+}
+
 </script>
 
 <template>
@@ -102,9 +101,18 @@ const searchClients = async () => {
         <q-separator v-if="!isLoadingProgress"/>
         <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
+    <div class='row flex q-pl-md'>
+      <q-input type='text' v-model="searchInput" style="width:30vw" outlined dense>
+        <template v-slot:prepend>
+          <q-btn color='primary' flat icon='place'></q-btn>
+        </template>
+      </q-input>
+      <q-btn color='primary' @click='setLocation' :label="$t('common.search')" class="q-ml-sm" />
+      <q-btn @click="() => { searchInput = '' }" style="margin-left:10px" :label="$t('common.clear')" />
+    </div>
 
     <q-card-section>
-      <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
+      <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="10">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
         <CustomMarker 
           :key="office.geohash"
@@ -128,9 +136,9 @@ const searchClients = async () => {
           {{ $t('client.list.distanceFromOrigin') }}
         </div>
         <div class="col-2">
-          <q-input outlined dense type="number" v-model.number="radius">
+          <q-input outlined dense type="number" v-model.number="radiusKm">
             <template v-slot:after>
-              m
+              Km
             </template>
           </q-input>
         </div>
