@@ -73,6 +73,10 @@ export const fixesByStatus = computed(()=>{
     [ApplicantStatus.WAIT_OFFER] : [] as ApplicantFix[],
     [ApplicantStatus.WAIT_ENTRY] : [] as ApplicantFix[],
     [ApplicantStatus.WORKING] : [] as ApplicantFix[],
+    [ApplicantStatus.WAIT_TERMINATION] : [] as ApplicantFix[],
+  }
+  if(!applicantStore.state){
+    return result
   }
   Object.values(applicantStore.state.applicantFixes).forEach((row)=>{
     let fixStatus : string | undefined
@@ -82,6 +86,9 @@ export const fixesByStatus = computed(()=>{
         if(fix[key] === true){
           fixStatus = value
         }
+      }
+      if(fix.waitUpdate === true){
+        fixStatus = ApplicantStatus.WAIT_TERMINATION
       }
       if(fixStatus){
         result[fixStatus].push(fix)

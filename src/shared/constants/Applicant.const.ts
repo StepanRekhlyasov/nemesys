@@ -517,3 +517,13 @@ export const applicantStatusOkFields = {
   'offerStatus' : ApplicantStatus.WAIT_ENTRY,
   'admissionStatus' : ApplicantStatus.WORKING,
 }
+
+export const applicantStatusDates = {
+  [ApplicantStatus.WAIT_CONTACT] : 'applicationDate',
+  [ApplicantStatus.WAIT_ATTEND] : 'invitationDate',
+  [ApplicantStatus.WAIT_FIX] : 'attendingDate',
+  [ApplicantStatus.WAIT_VISIT] : 'fixDate',
+  [ApplicantStatus.WAIT_OFFER] : 'inspectionDate',
+  [ApplicantStatus.WAIT_ENTRY] : 'offerDate',
+  [ApplicantStatus.WAIT_TERMINATION] : 'endDate',
+}

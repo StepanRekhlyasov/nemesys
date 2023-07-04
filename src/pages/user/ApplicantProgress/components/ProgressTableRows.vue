@@ -27,7 +27,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="applicant in applicants" :key="applicant.id">
+      <tr v-for="applicant in tableRows" :key="applicant.id">
         <td>{{ RankCount.getRank(applicant.staffRank) }}</td>
         <td>{{ applicant.occupation && $t('applicant.add.' + applicant.occupation) }}</td>
         <td>{{ applicant.classification && $t('applicant.list.info.classification.' + applicant.classification) }}</td>
@@ -60,11 +60,12 @@
     </tbody>
 </template>
 <script setup lang="ts">
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantFix } from 'src/shared/model';
 import { dayMonthFromDate, timestampToDateFormat } from 'src/shared/utils/utils';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { QueryOrderByConstraint, orderBy } from 'firebase/firestore';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useApplicant } from 'src/stores/applicant';
 
 const queryDirections = ref({
   staffRank: null,
@@ -75,9 +76,22 @@ const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
   (e: 'sortQuery', orderBy: QueryOrderByConstraint[])
 }>()
-defineProps<{
-  applicants: Applicant[]
+const props = defineProps<{
+  applicants: Applicant[],
+  fixes?: ApplicantFix[]
 }>()
+const applicantStore = useApplicant()
+const tableRows = computed(()=>{
+  if(props.applicants.length){
+    return props.applicants
+  }
+  if(props.fixes?.length){
+    return props.fixes.map((row)=>{
+      return applicantStore.state.applicants[row.applicant_id]
+    })
+  }
+  return []
+})
 function resetSortingOrder(){
   queryDirections.value = {
     staffRank: null,

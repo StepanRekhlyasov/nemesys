@@ -1,16 +1,25 @@
 <template>
   <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;" class="applicantTable" :loading="loading">
-    <ProgressTableRows :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
+    <UpdateTableRows 
+      v-if="status=='wait_termination'" 
+      :fixes="fixes" 
+      :applicants="[]"
+      @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"
+      @onLoadingStart="()=>emit('onLoadingStart')"
+      @onLoadingEnd="()=>emit('onLoadingEnd')"
+    ></UpdateTableRows>
+    <ProgressTableRows v-else :fixes="fixes" :applicants="[]" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
   <q-linear-progress query v-if="loading" color="primary"/>
 </template>
 <script setup lang="ts">
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantFix } from 'src/shared/model';
 import ProgressTableRows from './ProgressTableRows.vue';
+import UpdateTableRows from './UpdateTableRows.vue';
 import { QueryOrderByConstraint } from 'firebase/firestore';
 
 defineProps<{
-  applicants: Applicant[],
+  fixes: ApplicantFix[],
   loading: boolean,
   status: string
 }>()

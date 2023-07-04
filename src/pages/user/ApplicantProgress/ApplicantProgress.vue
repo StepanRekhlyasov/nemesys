@@ -57,7 +57,7 @@
           <div class="row no-wrap justify-between">
             <template v-for="column in columns">
               <ApplicantColumn
-                v-if="[ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX, ApplicantStatus.WAIT_TERMINATION].includes(column.status as ApplicantStatus)"
+                v-if="[ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(column.status as ApplicantStatus)"
                 :key="column.id"
                 :column="column"
                 :loading="columnsLoading[column.status]"
@@ -146,7 +146,7 @@ const fetchResults = async () => {
 }
 onMounted( async ()=>{
   COLUMN_STATUSES.map(async (status)=>{
-    if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
+    if(typeof applicantStore.state.applicantRowsCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
       fetchResultsHandler(status, false)
     }
   })

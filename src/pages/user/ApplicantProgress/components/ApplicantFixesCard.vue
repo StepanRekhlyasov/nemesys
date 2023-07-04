@@ -16,9 +16,10 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1' v-html="statusDateName[status]"></div>
-      <div class='col'>{{ fix[statusDateField(status)] ? fix[statusDateField(status)].replaceAll('/', '.') : '—' }}</div>
+      <div class='col'>{{ fix[applicantStatusDates[status]] ? fix[applicantStatusDates[status]].replaceAll('/', '.') : '—' }}</div>
     </div>
     <q-btn
+      v-if="countFixes>1"
       @click="()=>{
         if(applicantStore.state.highlightedApplicant === applicant.id){
           applicantStore.state.highlightedApplicant = undefined
@@ -37,9 +38,9 @@ import { Timestamp } from 'firebase/firestore'
 import { Applicant, ApplicantFix, ApplicantStatus } from 'src/shared/model'
 import { computed } from 'vue'
 import { RankCount } from 'src/shared/utils/RankCount.utils'
-import { getApplicantCurrentStatusTimestampField as statusDateField } from 'src/shared/utils/Applicant.utils'
 import { i18n } from 'boot/i18n'
 import { useApplicant } from 'src/stores/applicant'
+import { applicantStatusDates } from 'src/shared/constants/Applicant.const'
 
 const props = defineProps<{
   fix: ApplicantFix,
@@ -63,7 +64,10 @@ const applicant = computed(()=>{
   return applicantStore.state.applicants[props.fix.applicant_id]
 })
 const countFixes = computed(()=>{
-  return applicantStore.state.applicantFixes[props.fix.applicant_id].length
+  const notWorkingFix = applicantStore.state.applicantFixes[props.fix.applicant_id].filter((row)=>{
+    return row['admissionStatus'] !== true || row['waitUpdate'] === true
+  })
+  return notWorkingFix.length
 })
 
 const emit = defineEmits<{

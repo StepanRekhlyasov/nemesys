@@ -2,15 +2,15 @@ import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCoun
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientFactoriesList, getApplicantCurrentStatusTimestampField, getApplicantNGStatus, getApplicantCurrentUserInChargeField } from 'src/shared/utils/Applicant.utils';
+import { getClientList, getClientFactoriesList, getApplicantNGStatus, getApplicantCurrentUserInChargeField } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
-import { applicantStatusOkFields, requiredFields } from 'src/shared/constants/Applicant.const';
+import { applicantStatusDates, applicantStatusOkFields, requiredFields } from 'src/shared/constants/Applicant.const';
 import { useOrganization } from './organization';
-import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/ApplicantProgress/const/applicantColumns';
+import { COLUMN_STATUSES, COUNT_STATUSES, fixesByStatus, limitQuery } from 'src/pages/user/ApplicantProgress/const/applicantColumns';
 import { useRoute } from 'vue-router';
 import { useFix } from './fix';
 import { getMostCompletedFix } from 'src/shared/utils/Fix.utils';
@@ -43,7 +43,7 @@ interface ApplicantState {
     'wait_entry': boolean,
     'wait_termination': boolean,
   },
-  applicantCount: {
+  applicantRowsCount: {
     'wait_contact': number | undefined,
     'wait_attend': number | undefined,
     'wait_FIX': number | undefined,
@@ -144,7 +144,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_entry': false,
       'wait_termination': false,
     },
-    applicantCount: {
+    applicantRowsCount: {
       'wait_contact': undefined,
       'wait_attend': undefined,
       'wait_FIX': undefined,
@@ -428,7 +428,7 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.continueFromDoc[status] = null
     }
     if(!organization.currentOrganizationId){
-      state.value.applicantCount[status] = 0
+      state.value.applicantRowsCount[status] = 0
       return []
     }
     state.value.columnsLoading[status] = true
@@ -445,11 +445,8 @@ export const useApplicant = defineStore('applicant', () => {
 
     const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
     const querys = query(applicantRef, ...orderQuery, ...filters, ...start, limit(perQuery+1))
-
-    const countSnapshot = await getCountFromServer(query(applicantRef, ...orderQuery, ...filters))
-
     const docSnap = await getDocs(querys)
-    state.value.applicantCount[status] = countSnapshot.data().count
+    
     if (!docSnap.empty) {
       const applicantIds : string[] = []
       const documents = docSnap.docs.map(item => {
@@ -470,11 +467,15 @@ export const useApplicant = defineStore('applicant', () => {
       const result = state.value.applicantsByColumn[status].concat(documents)
       state.value.applicantsByColumn[status] = result
       state.value.columnsLoading[status] = false
-    
+      
       await fixStore.getFixByApplicantIDs(applicantIds);
-
+      if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(status as ApplicantStatus)){
+        const countSnapshot = await getCountFromServer(query(applicantRef, ...orderQuery, ...filters))
+        state.value.applicantRowsCount[status] = countSnapshot.data().count
+      }
       return result
     }
+    
     state.value.continueFromDoc[status] = null
     state.value.columnsLoading[status] = false
     return []
@@ -638,13 +639,13 @@ export const useApplicant = defineStore('applicant', () => {
     if (!state.value.selectedApplicant) return;
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
 
-    const dateField = getApplicantCurrentStatusTimestampField(status)
+    const dateField = applicantStatusDates[status]
     const saveData : Partial<Applicant> = {}
-    if(saveData[dateField] instanceof Timestamp){
-      saveData.currentStatusTimestamp = saveData[dateField]
+    if(state.value.selectedApplicant[dateField] instanceof Timestamp){
+      saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
       saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
-      saveData.statusChangeTimestamp[status] = saveData[dateField]
-      saveData.currentStatusMonth = toMonthYear(saveData[dateField])
+      saveData.statusChangeTimestamp[status] = state.value.selectedApplicant[dateField]
+      saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
     }
 
     const userInCharge = getApplicantCurrentUserInChargeField(NGStatus?NGStatus:status)
@@ -655,8 +656,12 @@ export const useApplicant = defineStore('applicant', () => {
 
     saveData['updated_at'] = serverTimestamp();
     saveData.status = status
-    await updateDoc(applicantRef, saveData)
-    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+    try{
+      await updateDoc(applicantRef, saveData)
+      state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+    } catch(e){
+      console.log(e)
+    }
   }
 
 
@@ -825,6 +830,14 @@ export const useApplicant = defineStore('applicant', () => {
       })
     } else {
       state.value.needsApplicantUpdateOnMounted = true
+    }
+  })
+
+  watch(()=>fixesByStatus.value, (newValue)=>{
+    for(const [key, value] of Object.entries(newValue)){
+      if(![ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(key as ApplicantStatus)){
+        state.value.applicantRowsCount[key] = value.length
+      }
     }
   })
 

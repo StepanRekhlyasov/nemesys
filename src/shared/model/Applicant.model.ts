@@ -256,6 +256,7 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
   office: string;
   backOrder: string;
   applicant_id: string;
+  waitUpdate?: boolean;
 }
 
 export interface FixMainInfo {
