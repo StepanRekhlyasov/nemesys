@@ -200,7 +200,7 @@
 
   const SendMsg = async () => {
     try {
-      const selectedItems = Object.values(selected.value).filter((item: any) => item.selected === true);
+      const selectedItems = Object.values(selected.value).filter((item) => item.selected === true);
       if(selectedItems.length==0){
         Alert.warning($q, t)
         return;
