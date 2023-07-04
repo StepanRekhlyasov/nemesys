@@ -1,15 +1,17 @@
 <template>
     <PageHader>
-        {{ t('menu.admin.aggregateDataDisplayTable.dataOutput') }}
+        {{ t('menu.admin.dataOutputDisplay') }}
     </PageHader>
     <div class="q-pt-lg q-pl-sm custom-color" v-for="(item, idx) in Listitem" :key="idx">
-        <div class="bold-text" >
-            <span v-if="!item.required">{{ t('menu.admin.aggregateDataDisplayTable.companyWide') }}</span> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataOutput') }}
+        <div class="bold-text">
+            <q-avatar square size="10px" color="purple" class="q-mr-sm"/>
+            <span v-if="!item.required">{{ t('menu.admin.dataOutputDisplayTable.companyWide') }}</span> {{ item.label }} {{
+                t('menu.admin.dataOutputDisplay') }}
         </div>
         <div class="box1">
-            <div class="row q-pt-sm"  v-if="item.required">
-                <div class="col-2 q-pt-sm q-pl-sm" >
-                    {{ t('menu.admin.aggregateDataDisplayTable.outputMonth') }}
+            <div class="row q-pt-sm" v-if="item.required">
+                <div class="col-2 q-pt-sm q-pl-sm">
+                    {{ t('menu.admin.dataOutputDisplayTable.outputMonth') }}
                 </div>
                 <div class="col-3 q-pl-sm">
                     <q-input v-model="timeperiod[idx].date" outlined dense mask="####/##" hide-bottom-space>
@@ -30,11 +32,12 @@
             </div>
             <div class="row q-pt-sm">
                 <div class="col-2 q-pt-sm q-pl-sm">
-                    CSV {{ t('menu.admin.aggregateDataDisplayTable.output') }}
+                    CSV {{ t('menu.admin.dataOutputDisplayTable.output') }}
                 </div>
-                <div class="col-3 q-pl-sm" >
-                    <q-btn color="purple" text-color="white" @click="downloadCSV(item.collectionName,timeperiod[idx].date)">{{
-                        t('menu.admin.aggregateDataDisplayTable.output') }}</q-btn>
+                <div class="col-3 q-pl-sm">
+                    <q-btn color="purple" text-color="white"
+                        @click="downloadCSV(item.collectionName, timeperiod[idx].date)">{{
+                            t('menu.admin.dataOutputDisplayTable.output') }}</q-btn>
                 </div>
             </div>
         </div>
@@ -42,26 +45,26 @@
 </template>
 
 <script lang="ts" setup>
-import {ref,Ref} from 'vue';
-import {Alert} from 'src/shared/utils/Alert.utils';
+import { ref, Ref } from 'vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import PageHader from 'src/components/PageHeader.vue';
-import Listitem from './const/AggregateData.const'
-import {useAggregatedData} from 'src/stores/aggregateData'
+import Listitem from './const/DataOutput.const'
+import { useDataOutput } from 'src/stores/dataOutput'
 const { t } = useI18n({ useScope: 'global' });
 const triggerURL = process.env.downloadCSVUrl;
-const monthPicker: Ref<{value: string}> = ref({
-  value: '',
+const monthPicker: Ref<{ value: string }> = ref({
+    value: '',
 });
-const timeperiod = ref([{date:''},{date:''},{date:''}])
-const aggregateData = useAggregatedData();
+const timeperiod = ref([{ date: '' }, { date: '' }, { date: '' }])
+const dataOutput = useDataOutput();
 const checkValue = (val: string, reason: string) => {
-if (reason === 'month') {
-      monthPicker.value[0].hide();
-      monthPicker.value[1].hide();
-  }
+    if (reason === 'month') {
+        monthPicker.value[0].hide();
+        monthPicker.value[1].hide();
+    }
 }
-const downloadCSV = async(collectionName:string,date:string) => {
+const downloadCSV = async (collectionName: string, date: string) => {
     let fetchURL = `${triggerURL}?collection=${collectionName}`
     if (collectionName != 'BO') {
         if (date.length === 0) {
@@ -71,13 +74,13 @@ const downloadCSV = async(collectionName:string,date:string) => {
         const [year, month] = date.split('/');
         fetchURL = `${fetchURL}&year=${year}&month=${month}`
     }
-    const name = aggregateData.getFileName(collectionName)
-    await aggregateData.downloadCSV(fetchURL,name)
+    const name = dataOutput.getFileName(collectionName)
+    await dataOutput.downloadCSV(fetchURL, name)
     onReset();
 }
-const onReset = () =>{
+const onReset = () => {
     timeperiod.value.filter(item => {
-        item.date=''
+        item.date = ''
     });
 }
 </script>
@@ -85,10 +88,11 @@ const onReset = () =>{
 .bold-text {
     font-weight: bold;
 }
-.box1{
+
+.box1 {
     margin-left: 10vw;
 }
-.custom-color{
-    color:purple
-}
-</style>
+
+.custom-color {
+    color: purple
+}</style>

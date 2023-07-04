@@ -233,11 +233,11 @@ export default {
       variousFeeAggregates: '各種料金集計',
       billingHistory: '請求履歴',
       aggregateDataDisplay:'集計データ表示',
-      aggregateDataDisplayTable:{
-        dataOutput:'データ出力',
+      dataOutputDisplay:'データ出力',
+      dataOutputDisplayTable:{
         outputMonth:'出力月',
         output:'出力',
-        companyWide:'会社的に',
+        companyWide:'全社',
       },
     }
   },

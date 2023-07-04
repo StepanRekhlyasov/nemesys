@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { Alert } from 'src/shared/utils/Alert.utils';
-export const useAggregatedData = defineStore('aggregatedData', () => {
+export const useDataOutput = defineStore('dataOutput', () => {
     const downloadCSV = async(triggerURL: string,name:string) => {
         try {
             await axios.get(triggerURL)

@@ -233,8 +233,8 @@ export default {
       variousFeeAggregates: 'Various fee aggregates',
       billingHistory: 'Billing history',
       aggregateDataDisplay:'Aggregated Data Display',
-      aggregateDataDisplayTable:{
-        dataOutput:'Data Output',
+      dataOutputDisplay:'Data Output',
+      dataOutputDisplayTable:{
         outputMonth:'Output month',
         output:'output',
         companyWide:'Company-wide',
