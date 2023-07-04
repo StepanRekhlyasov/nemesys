@@ -70,7 +70,7 @@
             :options="statusOption" />
         </div>
         <div class="col-4 q-pl-sm">
-          <q-input v-model="date" :mask="yyyy / mm / dd" dense outlined type="date" class="bg-white" />
+          <q-input v-model="date"  dense outlined type="date" class="bg-white" />
         </div>
       </div>
       <div class="row q-mb-sm q-mt-sm">
@@ -164,7 +164,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, ComputedRef } from 'vue';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
@@ -176,14 +176,14 @@ import { statusList, StatusOption } from 'src/shared/constants/Applicant.const';
 import { Applicant } from 'src/shared/model/Applicant.model'
 
 const loading = ref<boolean>(false)
-const statusOption = ref<StatusOption>(statusList)
-const selected = ref<string, { selected: boolean; Number: string }>({})
+const statusOption = ref<StatusOption | ComputedRef>(statusList)
+const selected = ref<Record<string, { selected: boolean; Number: string | undefined}>>({})
 const messsage = ref<string>('')
-const row = ref<Applicant>([])
-const keyword = ref<string>(null)
-const status = ref<string>(null)
-const date = ref<string>(null)
-const template = ref<string>(null)
+const row = ref<Applicant[]>([])
+const keyword = ref<string | null>(null)
+const status = ref<string | null>(null)
+const date = ref<string | null>(null)
+const template = ref<string | null>(null)
 const getApplicant = useApplicant();
 
 const $q = useQuasar();
@@ -204,7 +204,6 @@ const updateSelected = (rowItem) => {
 };
 
 const search = async () => {
-  console.log(status.value)
   loading.value = true
   row.value = await useSMS().filterData(status.value, keyword.value, date.value);
   loading.value = false

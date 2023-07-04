@@ -2,11 +2,13 @@
 import { defineStore } from 'pinia';
 import { collection, where, getFirestore, doc, serverTimestamp, DocumentData, writeBatch } from 'firebase/firestore';
 import { useApplicant } from 'src/stores/applicant'
+import { Applicant } from 'src/shared/model/Applicant.model'
+import { ref } from 'vue';
 
 export const useSMS = defineStore('sms', () => {
   const db = getFirestore();
 
-  async function Send(msg: string, selected: Record<string, { selected: boolean; Number: string }>) {
+  async function Send(msg: string, selected: Record<string, { selected: boolean; Number: string | undefined }>) {
     try {
       const selectedItems = Object.values(selected).filter((item) => item.selected === true);
       if (selectedItems.length === 0) {
@@ -34,7 +36,7 @@ export const useSMS = defineStore('sms', () => {
     return filteredData.filter((item) => item.applicationDate === date);
   }
 
-  async function filterData(status: string, keyword: string, date: string) {
+  async function filterData(status: string | null, keyword: string | null, date: string | null) {
     let filteredData = await useApplicant().getApplicantsByConstraints([where('deleted', '==', false)]);
     filteredData = getApplicantWithFormatedDate(filteredData)
     if (status || keyword || date) {
@@ -52,7 +54,6 @@ export const useSMS = defineStore('sms', () => {
 
   function getApplicantWithFormatedDate(applicantData) {
     const rowData = applicantData;
-    console.log(rowData)
     rowData.forEach(element => {
       if (element.applicationDate) {
         const timestamp = element.applicationDate;
