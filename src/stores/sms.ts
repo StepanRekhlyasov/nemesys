@@ -2,8 +2,6 @@
 import { defineStore } from 'pinia';
 import { collection, where, getFirestore, doc, serverTimestamp, DocumentData, writeBatch } from 'firebase/firestore';
 import { useApplicant } from 'src/stores/applicant'
-import { Applicant } from 'src/shared/model/Applicant.model'
-import { ref } from 'vue';
 
 export const useSMS = defineStore('sms', () => {
   const db = getFirestore();
