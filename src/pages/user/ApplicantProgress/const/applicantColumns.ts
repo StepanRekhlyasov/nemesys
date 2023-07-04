@@ -23,43 +23,43 @@ export const APPLICANT_COLUMNS: ApplicantCol[] = [
   {
     id: 0,
     label: 'applicant.progress.status.waitContact',
-    status: 'wait_contact',
+    status: ApplicantStatus.WAIT_CONTACT,
     items: []
   },
   {
     id: 1,
     label: 'applicant.progress.status.waitAttent',
-    status: 'wait_attend',
+    status: ApplicantStatus.WAIT_ATTEND,
     items: []
   },
   {
     id: 2,
     label: 'applicant.progress.status.waitFix',
-    status: 'wait_FIX',
+    status: ApplicantStatus.WAIT_FIX,
     items: []
   },
   {
     id: 3,
     label: 'applicant.progress.status.waitVisit',
-    status: 'wait_visit',
+    status: ApplicantStatus.WAIT_VISIT,
     items: []
   },
   {
     id: 4,
     label: 'applicant.progress.status.waitOffer',
-    status: 'wait_offer',
+    status: ApplicantStatus.WAIT_OFFER,
     items: []
   },
   {
     id: 5,
     label: 'applicant.progress.status.waitEntry',
-    status: 'wait_entry',
+    status: ApplicantStatus.WAIT_ENTRY,
     items: []
   },
   {
     id: 6,
     label: 'applicant.progress.status.waitTermination',
-    status: 'wait_termination',
+    status: ApplicantStatus.WAIT_TERMINATION,
     items: []
   },
 ]

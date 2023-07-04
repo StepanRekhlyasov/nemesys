@@ -53,7 +53,6 @@
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
-        <template v-if="[ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(statusParams.firestore)">
           <applicant-table 
             :status="statusParams.firestore" 
             :applicants="applicantsForTable" 
@@ -76,17 +75,6 @@
               applicantsForTable = newData as Applicant[]
             }"
           />
-        </template>
-        <template v-else>
-          <applicantFixesTable 
-            :status="statusParams.firestore" 
-            :fixes="fixesByStatus[statusParams.firestore]?fixesByStatus[statusParams.firestore]:[]" 
-            :loading="loading" 
-            @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
-            @onLoadingStart="loading = true"
-            @onLoadingEnd="loading = false"
-          />
-        </template>
       </q-scroll-area>
     </div>
     </q-card-section>
@@ -99,9 +87,8 @@ import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
 import { useApplicant } from 'src/stores/applicant';
-import { fixesByStatus, limitQuery } from './const/applicantColumns';
+import { limitQuery } from './const/applicantColumns';
 import applicantTable from './components/ApplicantTable.vue'
-import applicantFixesTable from './components/ApplicantFixesTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
@@ -137,11 +124,13 @@ const paginationConstraints = computed(()=>{
       result.push(where(key, '==', value))
     }
   }
-  return [where('status', '==', statusParams.firestore)].concat(result)
+  return [where('status', '==', statusParams.firestore), where('deleted', '==', false)].concat(result)
 })
+
+const path = [ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(statusParams.firestore)?'applicants':'fix'
 const pagination = ref({
   rowsPerPage: limitQuery,
-  path: 'applicants',
+  path: path,
   order: orderBy('currentStatusTimestamp', 'asc'),
   constraints: paginationConstraints.value
 });

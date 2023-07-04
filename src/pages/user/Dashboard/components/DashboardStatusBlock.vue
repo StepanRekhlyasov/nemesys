@@ -10,7 +10,7 @@
       <q-card-section class="number">
         <q-inner-loading showing color="primary" v-if="applicantStore.state.columnsLoading[status]"/>
         <template v-else>
-          <q-btn unelevated square :label="applicantStore.state.applicantRowsCount[status]" :disabled="applicantStore.state.columnsLoading[status]" :size="'25px'">
+          <q-btn unelevated square :label="applicantStore.state.applicantRowsCount[status] || 0" :disabled="applicantStore.state.columnsLoading[status]" :size="'25px'">
             <DashboardChooseBanner
               :link="'/applicant-progress/'"
               :offset="[0,-220]"

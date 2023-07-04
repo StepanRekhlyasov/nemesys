@@ -46,7 +46,8 @@
       <template v-slot:body-cell-backOrder="props">
         <q-td :props="props"
           :class="rowColor(props.row)">
-          <span class="row">{{ props.row.backOrder }}</span>
+          <q-spinner color="primary" class="row" v-if="backOrderLoading[props.row.backOrder]"></q-spinner>
+          <span class="row" v-else>{{ backOrderId[props.row.backOrder]?.boId?backOrderId[props.row.backOrder]?.boId:'-' }}</span>
         </q-td>
       </template>
 
@@ -129,7 +130,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { serverTimestamp } from 'firebase/firestore';
 import { QTableProps, useQuasar } from 'quasar';
 import FixEmployCreate from './FIX/fixEmployCreate.vue'
@@ -138,6 +139,7 @@ import { useFix } from 'src/stores/fix';
 import { ApplicantFix, Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
+import { useBackOrder } from 'src/stores/backOrder';
 
 const props = defineProps<{
   applicant: Applicant
@@ -145,14 +147,30 @@ const props = defineProps<{
 
 const { t } = useI18n({ useScope: 'global' });
 
+const backOrderStore = useBackOrder()
 const applicantStore = useApplicant();
 const fixStore = useFix();
 const $q = useQuasar();
+
+const backOrderId = ref({})
+const backOrderLoading = ref({})
+
+const getBoId = async (id : string) => {
+  backOrderLoading.value[id] = true
+  const bo = await backOrderStore.getBoById(id)
+  backOrderId.value[bo.id] = bo
+  backOrderLoading.value[id] = false
+}
 
 const applicantFixData = computed<ApplicantFix[]>(()=>{
   return applicantStore.state.applicantFixes[props.applicant.id]
 });
 
+watch(()=>applicantFixData.value, (newValue)=>{
+  newValue.forEach((row)=>{
+    getBoId(row.backOrder)
+  })
+})
 const drawerRight = ref(false);
 const disableLevel = ref(0);
 const fixData = ref<ApplicantFix>()
