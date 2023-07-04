@@ -28,7 +28,7 @@
           <p>46 {{t('backOrder.sms.characters')}}</p>
         </div>
         <div class="row">
-          <q-btn @click="SendMsg" :label="t('backOrder.sms.send')" class="bg-primary text-white"></q-btn>
+          <q-btn :disable="msg==''" @click="SendMsg" :label="t('backOrder.sms.send')" class="bg-primary text-white"></q-btn>
           <q-btn @click="msg=''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
         </div>
     </div>
@@ -159,12 +159,12 @@ import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant,options } from 'src/pages/user/BackOrder/consts/BackOrder.const';
-import { collection, query, where, getDocs,getFirestore } from 'firebase/firestore';
+import { collection, query, where, getDocs,getFirestore ,addDoc} from 'firebase/firestore';
 import { statusList} from 'src/shared/constants/Applicant.const';
 
 const loading = ref(false)
 const statusOption = ref(statusList)
-const selected = ref([])
+const selected = ref({})
 const msg = ref('')
 const row = ref([])
 const keyword = ref(null)
@@ -177,20 +177,27 @@ const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 
 
-const SendMsg = ()=>{
-  console.log(msg.value)
-  console.log(selected.value)
-}
+const SendMsg = async () => {
+  try {
+    const selectedItems = Object.values(selected.value).filter((item: any) => item.selected === true);
+    if(selectedItems.length==0){
+      Alert.warning($q, t)
+      return;
+    }
+    for (const item of selectedItems) {
+        await addDoc(collection(db, 'sms'), {
+          'to':item.Number,
+          'body':msg.value,
+        });
+    }
+    Alert.success($q, t)
+  } catch (error) {
+    Alert.warning($q, t)
+  }
+};
 
 const updateSelected = (rowItem) => {
-  // const index = row.value.findIndex((r) => r === rowItem);
-  // if (index !== -1) {
-  //   if (rowItem.selected) {
-  //     set(selected.value, index, rowItem);
-  //   } else {
-  //     set(selected.value, index, null);
-  //   }
-  // }
+  selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
 };
 
 const formatDate= (date,filteredData)=> {
@@ -243,8 +250,13 @@ const getApplicant =async()=>{
       const day = String(date.getDate()).padStart(2, '0');
       data.applicationDate = `${year}/${month}/${day}`;
     }
+    selected.value[data.id] = {
+      'Number':data.phone,
+      'selected':false,
+    }
     return data;
   });
+
 }
 
 onMounted(async () => {
