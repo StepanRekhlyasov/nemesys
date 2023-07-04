@@ -32,7 +32,7 @@ const routes: MenuRouter[] = [{
   path: routeNames.admin,
   component: () => import('layouts/AdminLayout.vue'),
   meta:{
-    permission: [UserPermissionNames.AdminPageAccess],
+    permissions: [UserPermissionNames.AdminPageAccess],
     requiresAuth: true,
   },
   children: [

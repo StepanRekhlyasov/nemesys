@@ -55,16 +55,32 @@
       <div class="q-pt-md">
         <q-scroll-area style="height: 80vh; max-width: 90vw">
           <div class="row no-wrap justify-between">
-            <ApplicantColumn
-              v-for="column in columns"
-              :key="column.id"
-              :column="column"
-              :loading="columnsLoading[column.status]"
-              @showMore="(status)=>{fetchResultsHandler(status, true)}"
-              @select-applicant="(applicant)=>{
-                detailsDrawer?.openDrawer(applicant)
-              }"
-            />
+            <template v-for="column in columns">
+              <ApplicantColumn
+                v-if="[ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX, ApplicantStatus.WAIT_TERMINATION].includes(column.status as ApplicantStatus)"
+                :key="column.id"
+                :column="column"
+                :loading="columnsLoading[column.status]"
+                @showMore="(status)=>{fetchResultsHandler(status, true)}"
+                @select-applicant="(applicant)=>{
+                  detailsDrawer?.openDrawer(applicant)
+                }"
+              />
+              <template v-else>
+                <ApplicantFixesColumn
+                  :key="column.id+1"
+                  :fixes="fixesByStatus[column.status]?fixesByStatus[column.status]:[]"
+                  :status="(column.status as ApplicantStatus)"
+                  :label="column.label"
+                  :loading="columnsLoading[column.status]"
+                  @showMore="(status)=>{fetchResultsHandler(status, true)}"
+                  @select-applicant="(applicant)=>{
+                    detailsDrawer?.openDrawer(applicant)
+                  }"
+                />
+              </template>
+
+              </template>
           </div>
         </q-scroll-area>
       </div>
@@ -76,14 +92,16 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import ApplicantColumn from './components/ApplicantColumn.vue';
+import ApplicantFixesColumn from './components/ApplicantFixesColumn.vue';
 import { APPLICANT_COLUMNS } from './const/applicantColumns';
 import { useApplicant } from 'src/stores/applicant';
-import { COLUMN_STATUSES, COUNT_STATUSES } from './const/applicantColumns';
+import { COLUMN_STATUSES, COUNT_STATUSES, fixesByStatus } from './const/applicantColumns';
 import { limitQuery } from './const/applicantColumns';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { ApplicantStatus } from 'src/shared/model';
 
 /** consts */
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)

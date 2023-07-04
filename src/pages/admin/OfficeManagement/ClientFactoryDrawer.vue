@@ -1,8 +1,9 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import { getAuth } from 'firebase/auth';
 import { storeToRefs } from 'pinia'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { defineEmits, defineProps, watch, ref } from 'vue';
+import { defineEmits, defineProps, watch, ref, watchEffect } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
 import CFDrawerBody from './components/CFDrawerBody.vue';
 import CFDrawerTabs from './components/CFDrawerTabs.vue';
@@ -17,6 +18,7 @@ import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { ChangedData } from 'src/components/client-factory/types';
 import { ImportLog } from 'src/shared/model/ImportLog';
+const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
     isDrawer: boolean,
@@ -39,8 +41,32 @@ const isLoading = ref({
 const localData = ref<ClientFactory>(deepCopy(props.selectedItem))
 const localDraft = ref<Partial<ClientFactory>>(deepCopy(props.selectedItem.draft))
 const selectedModifiedCF = ref<ModifiedCF>()
+const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean, ts: string }>)
+const selectedIndustry = ref<{ value: string, isSelected: boolean, ts: string }>({} as { value: string, isSelected: boolean, ts: string })
+
+const initializeIndustry = () => {
+    dropDownIndustryValue.value = props.selectedItem.industry?.reduce((acc, industry, index) => {
+        if (industry) {
+            acc.push({
+                value: industry,
+                isSelected: index === 0,
+                ts: t(`client.add.${industry}`)
+            })
+        }
+
+        return acc
+    }, [] as Array<{ value: string, isSelected: boolean, ts: string }>)
+
+    selectedIndustry.value = dropDownIndustryValue.value[0] ?? {}
+}
+
+const industryHandler = (value: { value: string, isSelected: boolean, ts: string }) => {
+    selectedIndustry.value = value
+}
+
 const newReflectLog = ref<ReflectLog>()
 const newImportLog = ref<ImportLog>()
+
 const modifiedCFsDrawer = ref(false)
 const updatedCFDrawer = ref(false)
 
@@ -131,6 +157,10 @@ const onReflect = async () => {
     isLoading.value.isReflecting = false
 }
 
+watchEffect(() => {
+    initializeIndustry()
+})
+
 watch([() => props.selectedItem], (newProps, oldProps) => {
     if (oldProps) {
         modifiedCFsDrawer.value = false
@@ -144,7 +174,6 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
 <template>
     <q-drawer
     :model-value="props.isDrawer"
-    :key="props.selectedItem.id"
     overlay
     elevated
     bordered
@@ -155,7 +184,12 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
             <q-card class="no-shadow bg-grey-2">
                 <q-card-section class="text-white bg-accent row items-end" >
                     <q-btn dense flat icon="close" @click="hideDrawer" />
-                    <CFDrawerTitle v-if="localData" :selectedItem="localData"/>
+                    <CFDrawerTitle
+                        v-if="localData"
+                        :selectedItem="localData"
+                        :industry-value="dropDownIndustryValue"
+                        :selected-industry="selectedIndustry"
+                        @edit-industry="industryHandler"/>
                 </q-card-section>
                 <q-card-section class="bg-grey-2 q-pa-none">
                     <CFDrawerBody
@@ -175,6 +209,7 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                         :clientFactory="localData"
                         :draft="localDraft"
                         :is-loading="isLoading.isGeneral"
+                        :industryType="selectedIndustry.value ?? ''"
                         @edit-draft="editDraftHandler" />
                 </q-card-section>
             </q-card>

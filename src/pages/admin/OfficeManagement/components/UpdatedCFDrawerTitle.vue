@@ -7,14 +7,21 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 const { t } = useI18n({ useScope: 'global' });
 defineProps<{
     clientFactory: ClientFactory,
+    industryValue: Array<{ value: string, isSelected: boolean, ts: string }>,
+    selectedIndustry: { value: string, isSelected: boolean, ts: string } | undefined
 }>();
 
 const emit = defineEmits<{
-    (e: 'importHandle')
+    (e: 'importHandle'),
+    (e: 'editIndustry', value: { value: string, isSelected: boolean, ts: string })
 }>()
 
 const importHandle = () => {
     emit('importHandle')
+}
+
+const dropDownHandler = (item: { value: string, isSelected: boolean, ts: string }) => {
+    emit('editIndustry', item)
 }
 
 </script>
@@ -23,6 +30,34 @@ const importHandle = () => {
     <div class="wrapper q-ml-md row justify-between items-center">
         <div>
             {{ clientFactory.client?.representativeName }}
+            <q-btn-dropdown
+                v-if="clientFactory.isHead && clientFactory.industry?.length && selectedIndustry"
+                rounded
+                unelevated
+                dense
+                no-caps
+                push
+                auto-close
+                :label="selectedIndustry.ts ?? ''"
+                color="white"
+                text-color="accent">
+
+                <q-list>
+                    <q-item
+                        class="row justify-center items-center"
+                        clickable
+                        dense
+                        v-close-popup
+                        :key="item.value ?? 1"
+                        @click="dropDownHandler(item)"
+                        v-for="item in industryValue.filter(el => el.value !== selectedIndustry?.value)">
+                                
+                            <q-item-label>
+                                {{ item.ts }}
+                            </q-item-label>
+                    </q-item>
+                </q-list>
+            </q-btn-dropdown>
 
             <div class="text-bold text-h5">
                 {{ clientFactory.name }}

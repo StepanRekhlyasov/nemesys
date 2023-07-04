@@ -4,7 +4,7 @@
       <q-card-section class="text-white bg-primary no-border-radius" >
         <div class="row">
           <div class="flex items-end ">
-            <q-btn dense flat icon="close" class="q-mr-md" type="reset" />
+            <q-btn dense flat icon="close" class="q-mr-md" type="reset" @click="closeDialog" />
           </div>
           <div>
             <div class="row text-h6 text-weight-bold q-pr-xs">
@@ -16,7 +16,7 @@
 
       <q-card-section class="bg-white">        
         <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm"  type="submit"/>
-        <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold"  type="reset" size="sm"/>
+        <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold"  type="reset" size="sm" @click="closeDialog"/>
       </q-card-section>
 
       <q-separator color="grey-3" size="2px" />
@@ -56,7 +56,7 @@
             {{'■ '+ $t('backOrder.create.workingType') }}
           </div>
           <div class="row">
-            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" 
+            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" required
               labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md " :value="$t(`backOrder.type.${type}`)" />
           </div>
         </q-card-section>
@@ -67,9 +67,12 @@
             {{'■ '+ $t('backOrder.create.BOGenerationRoute') }}
           </div>
           <div class="row ">
-            <labelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md">
-              <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.coldCall')" val="coldCall" :disable="loading"/>
-              <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.fax')" val="fax" :disable="loading"/>
+            <labelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="true" required
+              labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md">
+              <q-field v-model="data['BOGenerationRoute']" :rules="[creationRule]"  hide-bottom-space borderless>
+                <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.coldCall')" val="coldCall" :disable="loading"/>
+                <q-radio v-model="data['BOGenerationRoute']" :label="$t('backOrder.create.fax')" val="fax" :disable="loading"/>
+              </q-field>
             </labelField>
           </div>
         </q-card-section>
@@ -86,7 +89,7 @@
         </template>
 
         <!-- Tasks Section -->
-          <tasks-section :backOrder="data" :loading="loading" />
+        <tasks-section :backOrder="data" :loading="loading" :type="type"/>
         
         <!-- In House Information Section -->
         <template v-if="type=='referral'">
@@ -145,15 +148,15 @@ async function addBackOrder() {
 
 function closeDialog() {
   emits('closeDialog');
+  boForm.value?.resetValidation()
   resetData();
 }
 
 function resetData() {
   data.value = {
-  working_days_week: [] as string[],
-  workingDays: 'shiftSystem',
-  type: props.type
-} as Partial<BackOrderModel>
+    working_days_week: [] as string[],
+    type: props.type
+  } as Partial<BackOrderModel>
 }
 resetData();
 

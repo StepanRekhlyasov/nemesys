@@ -1,13 +1,17 @@
 import { ApplicantCol } from 'src/pages/user/Applicant/types/applicant.types';
+import { applicantStatusOkFields } from 'src/shared/constants/Applicant.const';
+import { ApplicantFix, ApplicantStatus } from 'src/shared/model';
+import { useApplicant } from 'src/stores/applicant';
+import { computed } from 'vue';
 
 export const COLUMN_STATUSES = [
-  'wait_contact',
-  'wait_attend',
-  'wait_FIX',
-  'wait_visit',
-  'wait_offer',
-  'wait_entry',
-  'wait_termination',
+  ApplicantStatus.WAIT_CONTACT,
+  ApplicantStatus.WAIT_ATTEND,
+  ApplicantStatus.WAIT_FIX,
+  ApplicantStatus.WAIT_VISIT,
+  ApplicantStatus.WAIT_OFFER,
+  ApplicantStatus.WAIT_ENTRY,
+  ApplicantStatus.WAIT_TERMINATION,
 ]
 export const COUNT_STATUSES = [
   'entry',
@@ -59,3 +63,30 @@ export const APPLICANT_COLUMNS: ApplicantCol[] = [
     items: []
   },
 ]
+
+export const fixesByStatus = computed(()=>{
+  const applicantStore = useApplicant()
+  const result = {
+    [ApplicantStatus.WAIT_ATTEND] : [] as ApplicantFix[],
+    [ApplicantStatus.WAIT_FIX] : [] as ApplicantFix[],
+    [ApplicantStatus.WAIT_VISIT] : [] as ApplicantFix[],
+    [ApplicantStatus.WAIT_OFFER] : [] as ApplicantFix[],
+    [ApplicantStatus.WAIT_ENTRY] : [] as ApplicantFix[],
+    [ApplicantStatus.WORKING] : [] as ApplicantFix[],
+  }
+  Object.values(applicantStore.state.applicantFixes).forEach((row)=>{
+    let fixStatus : string | undefined
+    row.forEach((fix)=>{
+      fixStatus = undefined
+      for (const [key, value] of Object.entries(applicantStatusOkFields)){
+        if(fix[key] === true){
+          fixStatus = value
+        }
+      }
+      if(fixStatus){
+        result[fixStatus].push(fix)
+      }
+    })
+  })
+  return result
+})

@@ -483,8 +483,7 @@
 <script lang="ts">
 import { reactive, SetupContext } from 'vue'; //ref,
 import { addDoc, collection, serverTimestamp, getFirestore } from 'firebase/firestore';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 interface Props {
     clientId: string
@@ -506,7 +505,6 @@ export default {
     },
 
   setup(props: Props, context: SetupContext) {
-        const { t } = useI18n({ useScope: 'global' });
         const backOrderData = reactive({
             tele_appoint_result: false,
             tele_job_offer: false,
@@ -523,7 +521,6 @@ export default {
             working_days_week: [],
         });
         const db = getFirestore();
-        const $q = useQuasar();
 
         const addBackOrder = async () => {
             let data = JSON.parse(JSON.stringify(backOrderData));
@@ -534,12 +531,7 @@ export default {
             const clientRef = collection(db, 'clients/' + props.clientId + '/office/' + props.officeId + '/backorders');
             await addDoc(clientRef, data);
             context.emit('closeDialog')
-            $q.notify({
-                color: 'green-4',
-                textColor: 'white',
-                icon: 'cloud_done',
-                message: t('success'),
-            });
+            Alert.success()
         };
 
         return {
