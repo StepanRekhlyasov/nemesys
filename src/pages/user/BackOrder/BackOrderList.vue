@@ -3,7 +3,6 @@
 		<q-card class="no-shadow full-width bg-grey-1">
 			<q-card-section class="bg-grey-3">
 				<div class="text-h6 text-primary">{{ $t('menu.backOrderSearch') }}</div>
-				<q-btn :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer=true"/>
 			</q-card-section>
 			<q-separator color="white" size="2px" />
 			<q-card-section class="bg-grey-3">
@@ -80,26 +79,6 @@
 		</q-card>
 	</div>
 
-  <q-drawer v-model="sendSMSDrawer" show class="bg-white" :width="1000" :breakpoint="500" side="right" overlay
-  elevated bordered>
-  <q-scroll-area class="fit text-left">
-      <q-card class="no-shadow">
-          <q-card-section class="text-white bg-primary rounded-borders">
-              <div class="row">
-                  <q-btn dense flat icon="close" @click="sendSMSDrawer = false" class="q-mr-md" />
-                  <span class="text-h6 q-pr-xs">
-                      <div style="color:white" >
-                          {{ $t('backOrder.sms.sendSMS') }}
-                      </div>
-                  </span>
-              </div>
-          </q-card-section>
-            <sendSMS/>
-
-      </q-card>
-  </q-scroll-area>
-</q-drawer>
-
 	<InfoBO ref="infoDrawer"  @openSearchByMap="showSearchByMap=true" @passClientToMapSearch="(clientValue)=>{
 		selectedClient = clientValue
 	}"/>
@@ -119,7 +98,6 @@ import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.cons
 import InfoBO from './components/info/InfoBO.vue';
 import SearchByMapDrawer from './components/info/searchByMapDrawer.vue';
 import createBO from './components/create/createBO.vue';
-import sendSMS from './components/sendSMS.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from 'src/stores/applicant';
@@ -129,8 +107,6 @@ const applicantStore = useApplicant();
 const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 const state = backOrderStore.state;
-
-const sendSMSDrawer = ref(false);
 
 const showSearchByMap = ref(false)
 const selected = ref<BackOrderModel[]>([])

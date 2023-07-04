@@ -11,9 +11,11 @@
         <searchForm @load-search-staff="loadSearchStaff" />
       </q-card-section>
 
+      <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer=true"/>
+
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
-        <q-table :columns="columns" :rows="applicantStore.state.applicantList" row-key="id" selection="multiple" class="no-shadow" 
+        <q-table :columns="columns" :rows="applicantStore.state.applicantList" row-key="id" selection="multiple" class="no-shadow"
           v-model:pagination="paginationTable" hide-pagination :loading="applicantStore.state.isLoadingProgress">
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
@@ -58,8 +60,28 @@
     </q-card>
   </div>
   <ApplicantDetails ref="detailsDrawer" />
+
+  <q-drawer v-model="sendSMSDrawer" show class="bg-white" :width="1000" :breakpoint="500" side="right" overlay
+  elevated bordered>
+  <q-scroll-area class="fit text-left">
+      <q-card class="no-shadow">
+          <q-card-section class="text-white bg-primary rounded-borders">
+              <div class="row">
+                  <q-btn dense flat icon="close" @click="sendSMSDrawer = false" class="q-mr-md" />
+                  <span class="text-h6 q-pr-xs">
+                      <div style="color:white" >
+                          {{ $t('backOrder.sms.sendSMS') }}
+                      </div>
+                  </span>
+              </div>
+          </q-card-section>
+            <sendSMS/>
+      </q-card>
+  </q-scroll-area>
+</q-drawer>
+
 </template>
- 
+
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, watch, ComputedRef } from 'vue';
@@ -70,9 +92,10 @@ import { QTableProps } from 'quasar';
 import { ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
+import sendSMS from './components/sendSMS.vue';
 
 const { t } = useI18n({ useScope: 'global' });
-
+const sendSMSDrawer = ref(false);
 const applicantStore = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const pagination = ref({
@@ -150,7 +173,7 @@ const getClassification = (classification : string) => {
 const openDrawer = (data : Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
- 
+
 const preventWatch = ref(false)
 const loadSearchStaff = async (data : ApplicantElasticSearchData) => {
   preventWatch.value = true
