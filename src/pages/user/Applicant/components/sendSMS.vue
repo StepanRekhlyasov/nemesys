@@ -214,7 +214,6 @@
       }
       Alert.success($q, t)
     } catch (error) {
-      console.log(error.message)
       Alert.warning($q, t)
     }
   };
