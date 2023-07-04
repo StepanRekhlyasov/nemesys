@@ -8,7 +8,7 @@
         </div>
         <div class="box1">
             <div class="row q-pt-sm"  v-if="item.required">
-                <div class="col-1-5 q-pt-sm q-pl-sm" >
+                <div class="col-2 q-pt-sm q-pl-sm" >
                     {{ t('menu.admin.aggregateDataDisplayTable.outputMonth') }}
                 </div>
                 <div class="col-3 q-pl-sm">
@@ -29,10 +29,10 @@
                 </div>
             </div>
             <div class="row q-pt-sm">
-                <div class="col-1-5 q-pt-sm q-pl-sm">
+                <div class="col-2 q-pt-sm q-pl-sm">
                     CSV {{ t('menu.admin.aggregateDataDisplayTable.output') }}
                 </div>
-                <div class="col-3 q-pl-lg" >
+                <div class="col-3 q-pl-sm" >
                     <q-btn color="purple" text-color="white" @click="downloadCSV(item.collectionName,timeperiod[idx].date)">{{
                         t('menu.admin.aggregateDataDisplayTable.output') }}</q-btn>
                 </div>
