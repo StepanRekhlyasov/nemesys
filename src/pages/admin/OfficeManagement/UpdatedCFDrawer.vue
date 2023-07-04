@@ -7,7 +7,7 @@ import ApplyImport from 'src/components/client-factory/ApplyImport.vue';
 import { useHighlightMainInfo, useOfficeDetails } from 'src/components/client-factory/handlers';
 
 import { ChangedData, RenderMainInfo, RenderOfficeDetailsWithIndustryType, RenderOfficeDetailsWithoutIndustryType } from 'src/components/client-factory/types';
-import { ClientFactory, Industry } from 'src/shared/model/ClientFactory.model';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { CustomIndustry } from './types';
 
@@ -68,7 +68,7 @@ const generateIndustryData = () => {
     if (dropDownIndustryValue.value && dropDownIndustryValue.value.length > 0) {
 
         dropDownIndustryValue.value.forEach(industry => {
-            const industryOfficeDetails = useOfficeDetails(props.clientFactory, props.modifiedCF, industry.value as Industry[number])
+            const industryOfficeDetails = useOfficeDetails(props.clientFactory, props.modifiedCF, industry.value)
 
             data.push(
                 ...getDetailsInfo('commonItems', industry, industryOfficeDetails[`${industry.value}.commonItems`] as ChangedData),
@@ -106,7 +106,7 @@ watchEffect(() => {
     }
 
     mainInfo.value = useHighlightMainInfo(props.clientFactory, props.modifiedCF)
-    detailsInfo.value = useOfficeDetails(props.clientFactory, props.modifiedCF, selectedIndustry.value.value as Industry[number])
+    detailsInfo.value = useOfficeDetails(props.clientFactory, props.modifiedCF, selectedIndustry.value.value)
 })
 </script>
 

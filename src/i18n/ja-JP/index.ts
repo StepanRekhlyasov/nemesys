@@ -168,6 +168,7 @@ export default {
       userSearch: 'ユーザー検索',
       operationChange: '稼働変更',
       organizationsList: '企業一覧表示',
+      occupationSpecificItems: '職種独自項目設定',
       organizationsTable: {
         number: 'No.',
         organizationId: '企業ID',

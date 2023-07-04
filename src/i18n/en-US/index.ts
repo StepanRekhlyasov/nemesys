@@ -168,6 +168,7 @@ export default {
       userSearch: 'User search',
       operationChange: 'Operation Change',
       organizationsList: 'Organization List',
+      occupationSpecificItems: 'Occupation-specific item settings',
       organizationsTable: {
         number: 'No.',
         organizationId: 'Organization ID',

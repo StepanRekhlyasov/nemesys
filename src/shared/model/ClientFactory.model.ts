@@ -3,7 +3,7 @@ import { ImportLog } from './ImportLog'
 import { Client } from './Client.model'
 export interface ClientFactory {
     id: string
-    industry: Industry
+    industry: string[]
     isHead: boolean
     name: string
     clientID: string
@@ -39,10 +39,8 @@ export interface ClientFactory {
     draft: Partial<ClientFactory> | Record<string, never>
 }
 
-export type Industry = Array<'nurse' | 'nursing'>
-
 type OfficeDetails = {
-    [key in Industry[number]]: {
+    [key: string]: {
         commonItems: {
             referralFeePer: number
             referralFeeFix: number

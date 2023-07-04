@@ -4,7 +4,7 @@ import { defineProps, defineEmits, watchEffect, ref } from 'vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import EditableColumnsCF, { Data, DataWithIndustry } from 'src/components/client-factory/EditableColumnsCF.vue';
 import { useOfficeDetails } from 'src/components/client-factory/handlers';
-import { ClientFactory, Industry } from 'src/shared/model/ClientFactory.model';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderOfficeDetailsWithIndustryType, RenderOfficeDetailsWithoutIndustryType } from 'src/components/client-factory/types';
 import { ChangedData } from 'src/components/client-factory/types';
 
@@ -49,7 +49,7 @@ const handleEditDraft = (changedData: ChangedData) => {
 }
 
 watchEffect(() => {
-    officeDetails.value = useOfficeDetails(props.clientFactory, props.draft, props.industryType as Industry[number])
+    officeDetails.value = useOfficeDetails(props.clientFactory, props.draft, props.industryType)
 });
 
 </script>
