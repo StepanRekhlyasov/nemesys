@@ -3,6 +3,17 @@ import { MenuRouter, MenuParent } from 'src/shared/model/Menu.model';
 
 const admin_router: MenuRouter[] = [
   {
+    path: 'aggregateddata',
+    title: 'menu.admin.aggregateDataDisplay',
+    component: () => import('src/pages/admin/AdminAggregationData/AggregatedData.vue'),
+    meta: {
+      requiresAuth: true,
+      permissions: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
+    },
+    menuParent: MenuParent.AdminAggregationData
+  },
+  {
     path: 'release-notes',
     title: 'menu.admin.releaseNotes',
     component: () => import('src/pages/admin/ReleaseNotes/ReleaseNotes.vue'),

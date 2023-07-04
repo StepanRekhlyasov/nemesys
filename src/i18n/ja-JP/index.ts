@@ -231,7 +231,14 @@ export default {
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
-      billingHistory: '請求履歴'
+      billingHistory: '請求履歴',
+      aggregateDataDisplay:'集計データ表示',
+      aggregateDataDisplayTable:{
+        dataoutput:'データ出力',
+        outputmonth:'出力月',
+        output:'出力',
+        companywise:'会社的に',
+      },
     }
   },
   settings: {

@@ -231,7 +231,14 @@ export default {
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
-      billingHistory: 'Billing history'
+      billingHistory: 'Billing history',
+      aggregateDataDisplay:'Aggregated Data Display',
+      aggregateDataDisplayTable:{
+        dataoutput:'Data Output',
+        outputmonth:'output month',
+        output:'output',
+        companywide:'company-wide',
+      },
     }
   },
   settings: {
