@@ -4,12 +4,12 @@
     </PageHader>
     <div class="q-pt-lg q-pl-sm custom-color" v-for="(item, idx) in Listitem" :key="idx">
         <div class="bold-text" >
-            <span><span v-if="!item.required">{{ t('menu.admin.aggregateDataDisplayTable.companyWide') }}</span> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataOutput') }}</span>
+            <span v-if="!item.required">{{ t('menu.admin.aggregateDataDisplayTable.companyWide') }}</span> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataOutput') }}
         </div>
         <div class="box1">
-            <div class="row q-pt-sm q-pl-sm"  v-if="item.required">
-                <div class="col-1.5 q-pt-sm q-pl-sm" >
-                    <span>{{ t('menu.admin.aggregateDataDisplayTable.outputMonth') }}</span>
+            <div class="row q-pt-sm"  v-if="item.required">
+                <div class="col-1-5 q-pt-sm q-pl-sm" >
+                    {{ t('menu.admin.aggregateDataDisplayTable.outputMonth') }}
                 </div>
                 <div class="col-3 q-pl-sm">
                     <q-input v-model="timeperiod[idx].date" outlined dense mask="####/##" hide-bottom-space>
@@ -28,9 +28,9 @@
                     </q-input>
                 </div>
             </div>
-            <div class="row q-pt-sm q-pl-sm">
-                <div class="col-1.5 q-pt-sm q-pl-sm">
-                    <span> CSV {{ t('menu.admin.aggregateDataDisplayTable.output') }}</span>
+            <div class="row q-pt-sm">
+                <div class="col-1-5 q-pt-sm q-pl-sm">
+                    CSV {{ t('menu.admin.aggregateDataDisplayTable.output') }}
                 </div>
                 <div class="col-3 q-pl-lg" >
                     <q-btn color="purple" text-color="white" @click="downloadCSV(item.collectionName,timeperiod[idx].date)">{{
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue';
+import {ref,Ref} from 'vue';
 import {Alert} from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import PageHader from 'src/components/PageHeader.vue';
@@ -50,7 +50,9 @@ import Listitem from './const/AggregateData.const'
 import {useAggregatedData} from 'src/stores/aggregateData'
 const { t } = useI18n({ useScope: 'global' });
 const triggerURL = process.env.downloadCSVUrl;
-const monthPicker = ref();
+const monthPicker: Ref<{value: string}> = ref({
+  value: '',
+});
 const timeperiod = ref([{date:''},{date:''},{date:''}])
 const aggregateData = useAggregatedData();
 const checkValue = (val: string, reason: string) => {
