@@ -234,10 +234,10 @@ export default {
       billingHistory: '請求履歴',
       aggregateDataDisplay:'集計データ表示',
       aggregateDataDisplayTable:{
-        dataoutput:'データ出力',
-        outputmonth:'出力月',
+        dataOutput:'データ出力',
+        outputMonth:'出力月',
         output:'出力',
-        companywide:'会社的に',
+        companyWide:'会社的に',
       },
     }
   },

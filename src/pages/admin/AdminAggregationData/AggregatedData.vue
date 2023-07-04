@@ -1,17 +1,17 @@
 <template>
     <PageHader>
-        {{ t('menu.admin.aggregateDataDisplayTable.dataoutput') }}
+        {{ t('menu.admin.aggregateDataDisplayTable.dataOutput') }}
     </PageHader>
-    <div class="q-pt-lg q-pl-sm" v-for="(item, idx) in Listitem" :key="idx" style="color:purple;">
-        <div style="font-weight:bold">
-            <span><span v-if="!item.required">{{ t('menu.admin.aggregateDataDisplayTable.companywide') }}</span> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataoutput') }}</span>
+    <div class="q-pt-lg q-pl-sm custom-color" v-for="(item, idx) in Listitem" :key="idx">
+        <div class="bold-text" >
+            <span><span v-if="!item.required">{{ t('menu.admin.aggregateDataDisplayTable.companyWide') }}</span> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataOutput') }}</span>
         </div>
-        <div style="margin-left:10vw">
-            <div class="q-pt-sm q-pl-sm" style="display:flex" v-if="item.required">
-                <div class="q-pt-sm q-pl-sm" style="width:104px">
-                    <span>{{ t('menu.admin.aggregateDataDisplayTable.outputmonth') }}</span>
+        <div class="box1">
+            <div class="row q-pt-sm q-pl-sm"  v-if="item.required">
+                <div class="col-1.5 q-pt-sm q-pl-sm" >
+                    <span>{{ t('menu.admin.aggregateDataDisplayTable.outputMonth') }}</span>
                 </div>
-                <div style="margin-left:5px">
+                <div class="col-3 q-pl-sm">
                     <q-input v-model="timeperiod[idx].date" outlined dense mask="####/##" hide-bottom-space>
                         <template v-slot:prepend>
                             <q-icon name="event" class="cursor-pointer">
@@ -28,11 +28,11 @@
                     </q-input>
                 </div>
             </div>
-            <div class="q-pt-sm q-pl-sm" style="display: flex;">
-                <div class="q-pt-sm q-pl-sm" style="width:89px">
+            <div class="row q-pt-sm q-pl-sm">
+                <div class="col-1.5 q-pt-sm q-pl-sm">
                     <span> CSV {{ t('menu.admin.aggregateDataDisplayTable.output') }}</span>
                 </div>
-                <div style="margin-left:20px">
+                <div class="col-3 q-pl-lg" >
                     <q-btn color="purple" text-color="white" @click="downloadCSV(item.collectionName,timeperiod[idx].date)">{{
                         t('menu.admin.aggregateDataDisplayTable.output') }}</q-btn>
                 </div>
@@ -62,14 +62,14 @@ if (reason === 'month') {
 const downloadCSV = async(collectionName:string,date:string) => {
     let fetchURL = `${triggerURL}?collection=${collectionName}`
     if (collectionName != 'BO') {
-        if (date.length == 0) {
+        if (date.length === 0) {
             Alert.warning('Please enter input field', { color: 'negative' })
             return
         }
         const [year, month] = date.split('/');
         fetchURL = `${fetchURL}&year=${year}&month=${month}`
     }
-    let name = aggregateData.getFileName(collectionName)
+    const name = aggregateData.getFileName(collectionName)
     await aggregateData.downloadCSV(fetchURL,name)
     onReset();
 }
@@ -77,6 +77,16 @@ const onReset = () =>{
     timeperiod.value.filter(item => {
         item.date=''
     });
-    console.log(timeperiod.value)
 }
 </script>
+<style lang="scss">
+.bold-text {
+    font-weight: bold;
+}
+.box1{
+    margin-left: 10vw;
+}
+.custom-color{
+    color:purple
+}
+</style>

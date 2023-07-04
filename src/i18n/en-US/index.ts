@@ -234,10 +234,10 @@ export default {
       billingHistory: 'Billing history',
       aggregateDataDisplay:'Aggregated Data Display',
       aggregateDataDisplayTable:{
-        dataoutput:'Data Output',
-        outputmonth:'Output month',
+        dataOutput:'Data Output',
+        outputMonth:'Output month',
         output:'output',
-        companywide:'Company-wide',
+        companyWide:'Company-wide',
       },
     }
   },
