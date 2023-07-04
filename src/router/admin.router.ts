@@ -55,6 +55,16 @@ const admin_router: MenuRouter[] = [
     title: 'menu.savedSearchList',
   },
   {
+    path: 'occupation-specific-items',
+    component: () => import('src/pages/admin/OfficeManagement/UniqueItemsForm.vue'),
+    meta: {
+      requiresAuth: true,
+      isAdmin: true
+    },
+    menuParent: MenuParent.AdminOfficeManagement,
+    title: 'menu.admin.occupationSpecificItems'
+  },
+  {
     path: 'users-list',
     title: 'menu.admin.usersList',
     component: () => import('src/pages/user/Settings/management/ResponsibleMaster.vue'),
