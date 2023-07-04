@@ -31,7 +31,7 @@ interface ApplicantState {
     total_pages: number,
     total_results: number
   },
-  prefectureList: {label: string, value: string | number}[],
+  prefectureList: { label: string, value: string | number }[],
   selectedApplicant: Applicant | null,
   needsApplicantUpdateOnMounted: boolean,
   columnsLoading: {
@@ -82,7 +82,7 @@ type ApplicantERWCount = {
 
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
-    //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
+  //what is 31536000000? 1000ms * 60s * 60m * 24h * 365d
   const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const organization = useOrganization()
   const fixStore = useFix()
@@ -153,14 +153,14 @@ export const useApplicant = defineStore('applicant', () => {
     },
   })
 
-  const countApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter) => {
+  const countApplicantsByStatus = async (status: string, filterData?: ApplicantProgressFilter) => {
     const filters = [
       where('status', '==', status)
     ]
 
-    if(filterData){
-      for(const [key, value] of Object.entries(filterData)){
-        if(value){
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        if (value) {
           filters.push(where(key, '==', value))
         }
       }
@@ -173,7 +173,7 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const loadApplicantData = async (searchData : ApplicantElasticSearchData = {},
+  const loadApplicantData = async (searchData: ApplicantElasticSearchData = {},
     pagination = {
       page: 1,
       rowsPerPage: 10
@@ -181,7 +181,7 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.applicantList = []
     state.value.isLoadingProgress = true;
 
-    const filters : ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
+    const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
     const queryString = searchData['keyword'] ? searchData['keyword'] : ''
 
     if (searchData['status']) {
@@ -299,7 +299,7 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.isLoadingProgress = false;
   }
 
-  const formatDate = (dt : Date, midNight = false) => {
+  const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
     const day = dt.toLocaleString('en-US', { day: '2-digit' });
@@ -310,7 +310,7 @@ export const useApplicant = defineStore('applicant', () => {
     return year + '-' + month + '-' + day + 'T23:59:59+00:00';
   }
 
-  const getDate = (ageInYears : number) => {
+  const getDate = (ageInYears: number) => {
     const calDate = new Date();
     calDate.setFullYear(calDate.getFullYear() - ageInYears);
     const year = calDate.toLocaleString('en-US', { year: 'numeric' });
@@ -320,7 +320,7 @@ export const useApplicant = defineStore('applicant', () => {
     return year + '-' + month + '-' + day + 'T00:00:00+00:00';
   }
 
-  const countApplicantsBySex = async (sex : 'female'|'male', dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
+  const countApplicantsBySex = async (sex: 'female' | 'male', dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
     const filters = [
@@ -329,9 +329,9 @@ export const useApplicant = defineStore('applicant', () => {
       where('applicationDate', '<=', targetDateTo)
     ]
 
-    if(filterData){
-      for(const [key, value] of Object.entries(filterData)){
-        if(value){
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        if (value) {
           filters.push(where(key, '==', value))
         }
       }
@@ -343,21 +343,21 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const countApplicantsdaysToWork = async ( dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
+  const countApplicantsdaysToWork = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
 
-    const result:number[][] = []
-    for(let i = 1; i <= 7; i++){
+    const result: number[][] = []
+    for (let i = 1; i <= 7; i++) {
 
       const filters = [
         where('applicationDate', '>=', targetDateFrom),
         where('applicationDate', '<=', targetDateTo)
       ]
       filters.push(where('daysToWork', '==', i))
-      if(filterData){
-        for(const [key, value] of Object.entries(filterData)){
-          if(value){
+      if (filterData) {
+        for (const [key, value] of Object.entries(filterData)) {
+          if (value) {
             filters.push(where(key, '==', value))
           }
         }
@@ -370,7 +370,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
     return result
   }
-  const countApplicantsByMedia = async (media:string, dateRange: { from: string; to: string }) => {
+  const countApplicantsByMedia = async (media: string, dateRange: { from: string; to: string }) => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
     const filters = [
@@ -387,16 +387,16 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
 
-  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?:ApplicantProgressFilter):Promise<number[] | undefined>=> {
+  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter): Promise<number[] | undefined> => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
     const filters = [
       where('applicationDate', '>=', targetDateFrom),
       where('applicationDate', '<=', targetDateTo)
     ]
-    if(filterData){
-      for(const [key, value] of Object.entries(filterData)){
-        if(value){
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        if (value) {
           filters.push(where(key, '==', value))
         }
       }
@@ -405,26 +405,26 @@ export const useApplicant = defineStore('applicant', () => {
     const querys = query(applicantRef, ...filters)
     const docSnap = await getDocs(querys)
     const applicants = docSnap.docs.map((doc) => {
-    if(!doc.data().dob) return undefined
-    const dob = doc.data().dob
-    const now = new Date()
-    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
-    return age
+      if (!doc.data().dob) return undefined
+      const dob = doc.data().dob
+      const now = new Date()
+      const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
+      return age
     })
     if (applicants.length === 0) return undefined
     //remove undefined in applicants
-    const filteredApplicants = applicants.filter((applicant):applicant is number  => typeof applicant =='number' )
+    const filteredApplicants = applicants.filter((applicant): applicant is number => typeof applicant == 'number')
     return filteredApplicants
 
   }
 
 
-  const getApplicantsByStatus = async (status : string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
-    if(!showMore){
+  const getApplicantsByStatus = async (status: string, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
+    if (!showMore) {
       state.value.applicantsByColumn[status] = []
       state.value.continueFromDoc[status] = null
     }
-    if(!organization.currentOrganizationId){
+    if (!organization.currentOrganizationId) {
       state.value.applicantCount[status] = 0
       return []
     }
@@ -432,15 +432,15 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.columnsLoading[status] = true
     const applicantRef = collection(db, 'applicants')
     const filters = [where('status', '==', status)]
-    if(filterData){
-      for(const [key, value] of Object.entries(filterData)){
-        if(value){
+    if (filterData) {
+      for (const [key, value] of Object.entries(filterData)) {
+        if (value) {
           filters.push(where(key, '==', value))
         }
       }
     }
-    const start = showMore?[startAt(state.value.continueFromDoc[status])]:[]
-    const querys = query(applicantRef, ...orderQuery, ...filters, ...start, limit(perQuery+1))
+    const start = showMore ? [startAt(state.value.continueFromDoc[status])] : []
+    const querys = query(applicantRef, ...orderQuery, ...filters, ...start, limit(perQuery + 1))
 
     const countSnapshot = await getCountFromServer(query(applicantRef, ...orderQuery, ...filters))
 
@@ -451,8 +451,8 @@ export const useApplicant = defineStore('applicant', () => {
         return item.data() as Applicant
       })
 
-      if(perQuery+1 === docSnap.docs.length){
-        state.value.continueFromDoc[status] = docSnap.docs[docSnap.docs.length-1]
+      if (perQuery + 1 === docSnap.docs.length) {
+        state.value.continueFromDoc[status] = docSnap.docs[docSnap.docs.length - 1]
         documents.pop()
       } else {
         state.value.continueFromDoc[status] = null
@@ -467,14 +467,14 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function validateAllApplicants(){
+  async function validateAllApplicants() {
     const applicantRef = collection(db, 'applicants')
     const applicantQuery = query(applicantRef)
     const docSnap = await getDocs(applicantQuery)
     if (!docSnap.empty) {
       const documents = docSnap.docs.map(item => {
         const id = item.id
-        return {id, ...item.data()}
+        return { id, ...item.data() }
       })
       return validateApplicants(documents as Applicant[])
     }
@@ -482,30 +482,30 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   /** this function checks and creates reqiured fields if they would not exist for some reason */
-  async function validateApplicants(applicants : Applicant[]){
+  async function validateApplicants(applicants: Applicant[]) {
     const fire = ref(false)
     const batch = writeBatch(db);
-    const forUpdate : Record<string, string | number>[] = []
-    applicants.map((applicant)=>{
-      const needsUpdate : { [key : string]: string | number; } = {}
-      for(const [key, value] of Object.entries(requiredFields.value)){
-        if(typeof applicant[key] === 'undefined'){
+    const forUpdate: Record<string, string | number>[] = []
+    applicants.map((applicant) => {
+      const needsUpdate: { [key: string]: string | number; } = {}
+      for (const [key, value] of Object.entries(requiredFields.value)) {
+        if (typeof applicant[key] === 'undefined') {
           needsUpdate[key] = value
         }
       }
-      if(Object.keys(needsUpdate).length > 0){
+      if (Object.keys(needsUpdate).length > 0) {
         forUpdate[applicant.id] = needsUpdate
       }
     })
-    for(const [key, value] of Object.entries(forUpdate)){
+    for (const [key, value] of Object.entries(forUpdate)) {
       fire.value = true
       const docRef = doc(db, 'applicants/' + key);
-      batch.update(docRef, {...value})
+      batch.update(docRef, { ...value })
     }
-    if(fire.value){
-      try{
+    if (fire.value) {
+      try {
         await batch.commit()
-      } catch (e){
+      } catch (e) {
         Alert.warning(e)
         console.log(e)
       }
@@ -515,20 +515,20 @@ export const useApplicant = defineStore('applicant', () => {
 
 
 
-  async function getApplicantByID(id : string, validate = false){
+  async function getApplicantByID(id: string, validate = false) {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
-    if(validate){
+    if (validate) {
       validateApplicants([result.data() as Applicant])
     }
     return result.data() as Applicant
   }
 
-  async function createApplicant(data : Applicant, applicantImage? : FileList | []){
+  async function createApplicant(data: Applicant, applicantImage?: FileList | []) {
     const docRef = doc(collection(db, 'applicants'));
     data['id'] = docRef.id;
-    for (const [key, value] of Object.entries(data)){
-      if(typeof value === 'undefined') delete data[key];
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === 'undefined') delete data[key];
     }
     if (applicantImage && applicantImage.length > 0) {
       const file = applicantImage[0];
@@ -538,7 +538,7 @@ export const useApplicant = defineStore('applicant', () => {
         const snapshot = await uploadBytes(storageRef, file)
         data['imagePath'] = snapshot.ref.fullPath;
         data['imageURL'] = await getDownloadURL(storageRef)
-      } catch(error){
+      } catch (error) {
         Alert.warning(error);
         return false;
       }
@@ -556,7 +556,7 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }
 
-  async function getApplicantsByConstraints(constraints : ConstraintsType){
+  async function getApplicantsByConstraints(constraints: ConstraintsType) {
     const q = query(collection(db, 'applicants'), ...constraints);
     const snapshot = await getDocs(q);
     return snapshot?.docs.map((doc) => {
@@ -564,31 +564,31 @@ export const useApplicant = defineStore('applicant', () => {
     })
   }
 
-  async function getApplicantContactData(applicantId, constraints : ConstraintsType){
+  async function getApplicantContactData(applicantId, constraints: ConstraintsType) {
     const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
     const snapshot = await getDocs(q);
-    const result =  snapshot?.docs.map((doc) => {
-      return {id: doc.id, ...doc.data()}
+    const result = snapshot?.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() }
     })
     return result
   }
 
-  async function getClients( active_organization_id?: string ): Promise<Client[]> {
-    const clientsData = await getClientList(db, {active_organization_id})
-    const list: Client[] = [] ;
+  async function getClients(active_organization_id?: string): Promise<Client[]> {
+    const clientsData = await getClientList(db, { active_organization_id })
+    const list: Client[] = [];
     clientsData?.forEach((doc) => {
       const data = doc.data();
-      list.push({id: doc.id, ...data} as Client);
+      list.push({ id: doc.id, ...data } as Client);
     });
     return list;
   }
 
-  async function getClientFactories(client_id: string): Promise<ClientOffice[]>{
+  async function getClientFactories(client_id: string): Promise<ClientOffice[]> {
     const officeData = await getClientFactoriesList(db, client_id)
     const list: ClientOffice[] = []
 
     officeData.forEach(office => {
-        list.push({id: office.id, ...office.data()} as ClientOffice)
+      list.push({ id: office.id, ...office.data() } as ClientOffice)
     })
 
     return list
@@ -597,24 +597,24 @@ export const useApplicant = defineStore('applicant', () => {
   getClients().then(clients => {
     state.value.clientList = clients
     state.value.clientList.map(async (client) => {
-        if (client.id) {
-            client.office = await getClientFactories(client.id)
-        }
+      if (client.id) {
+        client.office = await getClientFactories(client.id)
+      }
     })
   })
 
-  const saveWorkExperience = async (rawData : Partial<ApplicantExperienceInputs>, applicantId : string) => {
-    const saveData : Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
-    if(rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth))
-    if(rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth))
+  const saveWorkExperience = async (rawData: Partial<ApplicantExperienceInputs>, applicantId: string) => {
+    const saveData: Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
+    if (rawData.startMonth) saveData.startMonth = dateToTimestampFormat(new Date(rawData.startMonth))
+    if (rawData.endMonth) saveData.endMonth = dateToTimestampFormat(new Date(rawData.endMonth))
 
     try {
-        const boRef = doc(db, 'applicants/'+applicantId+'/experience/'+saveData.id);
-        await updateDoc(boRef, {
-          updated_at: serverTimestamp(),
-          ...saveData
-        })
-        Alert.success();
+      const boRef = doc(db, 'applicants/' + applicantId + '/experience/' + saveData.id);
+      await updateDoc(boRef, {
+        updated_at: serverTimestamp(),
+        ...saveData
+      })
+      Alert.success();
     } catch (e) {
       console.log(e)
       Alert.warning(e);
@@ -622,13 +622,13 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   /** Applicant status should be awlays changed here! */
-  async function updateApplicantStatus(status : ApplicantStatus){
+  async function updateApplicantStatus(status: ApplicantStatus) {
     if (!state.value.selectedApplicant) return;
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     const dateField = getApplicantCurrentStatusTimestampField(status)
-    const saveData : Partial<Applicant> = {}
+    const saveData: Partial<Applicant> = {}
 
-    if(state.value.selectedApplicant[dateField] instanceof Timestamp){
+    if (state.value.selectedApplicant[dateField] instanceof Timestamp) {
       saveData.currentStatusTimestamp = state.value.selectedApplicant[dateField]
       saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
       saveData.statusChangeTimestamp[status] = state.value.selectedApplicant[dateField]
@@ -642,7 +642,7 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
 
-  async function updateApplicant(applicantData : Partial<ApplicantInputs>, showAlert = true) {
+  async function updateApplicant(applicantData: Partial<ApplicantInputs>, showAlert = true) {
     if (!state.value.selectedApplicant) return;
 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
@@ -650,24 +650,24 @@ export const useApplicant = defineStore('applicant', () => {
       /** transform strings to timestamps */
       const saveData = JSON.parse(JSON.stringify(applicantData));
 
-      if (saveData.status){
+      if (saveData.status) {
         await updateApplicantStatus(saveData.status);
         return;
       }
 
-      if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
-      if(applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
-      if(applicantData.invitationDate) saveData.invitationDate = dateToTimestampFormat(new Date(applicantData.invitationDate));
-      if(applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
-      if(applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
-      if(applicantData.fixDate) saveData.fixDate = dateToTimestampFormat(new Date(applicantData.fixDate));
-      if(applicantData.inspectionDate) saveData.inspectionDate = dateToTimestampFormat(new Date(applicantData.inspectionDate));
-      if(applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
-      if(applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
+      if (applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
+      if (applicantData.dob) saveData.dob = dateToTimestampFormat(new Date(applicantData.dob));
+      if (applicantData.invitationDate) saveData.invitationDate = dateToTimestampFormat(new Date(applicantData.invitationDate));
+      if (applicantData.attendingDate) saveData.attendingDate = dateToTimestampFormat(new Date(applicantData.attendingDate));
+      if (applicantData.timeToWork) saveData.timeToWork = dateToTimestampFormat(new Date(applicantData.timeToWork));
+      if (applicantData.fixDate) saveData.fixDate = dateToTimestampFormat(new Date(applicantData.fixDate));
+      if (applicantData.inspectionDate) saveData.inspectionDate = dateToTimestampFormat(new Date(applicantData.inspectionDate));
+      if (applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
+      if (applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
 
-      if(state.value.selectedApplicant.status){
+      if (state.value.selectedApplicant.status) {
         const dateField = getApplicantCurrentStatusTimestampField(state.value.selectedApplicant.status)
-        if(saveData[dateField] instanceof Timestamp){
+        if (saveData[dateField] instanceof Timestamp) {
           saveData.currentStatusTimestamp = saveData[dateField]
           saveData.statusChangeTimestamp = state.value.selectedApplicant.statusChangeTimestamp || {}
           saveData.statusChangeTimestamp[state.value.selectedApplicant.status] = saveData[dateField]
@@ -675,15 +675,15 @@ export const useApplicant = defineStore('applicant', () => {
         }
       }
 
-      for(const [key, value] of Object.entries(saveData)){
-        if(typeof value === 'undefined') delete saveData[key];
+      for (const [key, value] of Object.entries(saveData)) {
+        if (typeof value === 'undefined') delete saveData[key];
       }
       saveData['updated_at'] = serverTimestamp();
 
       await updateDoc(applicantRef, saveData)
       const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
-      if (applicantIndex >=0) {
-        state.value.applicantList[applicantIndex] = {...state.value.applicantList[applicantIndex], ...saveData}
+      if (applicantIndex >= 0) {
+        state.value.applicantList[applicantIndex] = { ...state.value.applicantList[applicantIndex], ...saveData }
       }
       if (showAlert) { Alert.success(); }
       try {
@@ -691,76 +691,76 @@ export const useApplicant = defineStore('applicant', () => {
 
         /** status change by OK fields */
         const saveBooleans = {}
-        for ( const [key, value] of Object.entries(saveData)){
-          if(['fixStatus', 'inspectionStatus', 'offerStatus', 'admissionStatus', 'attendingStatus', 'attractionsStatus'].includes(key)){
+        for (const [key, value] of Object.entries(saveData)) {
+          if (['fixStatus', 'inspectionStatus', 'offerStatus', 'admissionStatus', 'attendingStatus', 'attractionsStatus'].includes(key)) {
             saveBooleans[key] = value
           }
         }
-        if(Object.keys(saveBooleans).length){
-          await changeApplicantStatusByOkFields( saveBooleans )
+        if (Object.keys(saveBooleans).length) {
+          await changeApplicantStatusByOkFields(saveBooleans)
         }
-      } catch(error) {
-        if (showAlert){ Alert.warning(error); }
+      } catch (error) {
+        if (showAlert) { Alert.warning(error); }
       }
     } catch (error) {
       console.log(error)
-      if (showAlert){  Alert.warning(error); }
+      if (showAlert) { Alert.warning(error); }
     }
   };
 
-  const saveFixDataToApplicant = async() => {
+  const saveFixDataToApplicant = async () => {
     const bestFix = getMostCompletedFix(fixStore.state.selectedApplicantFixes)
-    if ( !bestFix ) return;
-    if ( !state.value.selectedApplicant ) return;
+    if (!bestFix) return;
+    if (!state.value.selectedApplicant) return;
 
     const { fixStatus, inspectionStatus, offerStatus, admissionStatus, fixDate, inspectionDate, offerDate, admissionDate, chargeOfFix, chargeOfInspection, chargeOfAdmission, chargeOfOffer, fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG, id } = bestFix
     const saveBooleans = { fixStatus, inspectionStatus, offerStatus, admissionStatus }
     const saveDates = { fixDate, inspectionDate, offerDate, admissionDate }
     const chargeOfStatus = { chargeOfAdmission, chargeOfOffer, chargeOfInspection, chargeOfFix }
     const NGReasons = { fixReasonNG, inspectionReasonNG, offerReasonNG, admissionReasonNG }
-    const userInCharge = admissionStatus?chargeOfAdmission:undefined || offerStatus?chargeOfOffer:undefined || inspectionStatus?chargeOfInspection:undefined || fixStatus?chargeOfFix:undefined || ''
+    const userInCharge = admissionStatus ? chargeOfAdmission : undefined || offerStatus ? chargeOfOffer : undefined || inspectionStatus ? chargeOfInspection : undefined || fixStatus ? chargeOfFix : undefined || ''
 
-    for(const [key, value] of Object.entries(saveBooleans)){
-      if(typeof value === 'undefined'){
+    for (const [key, value] of Object.entries(saveBooleans)) {
+      if (typeof value === 'undefined') {
         saveBooleans[key] = deleteField()
       }
     }
 
-    const saveData = {...saveBooleans, ...saveDates, ...NGReasons, ...chargeOfStatus, userInCharge, bestFixID: id}
+    const saveData = { ...saveBooleans, ...saveDates, ...NGReasons, ...chargeOfStatus, userInCharge, bestFixID: id }
     await updateApplicant(saveData, true)
   }
 
 
   const changeApplicantStatusByOkFields = async (saveBooleans: Partial<Applicant>) => {
-    if(!state.value.selectedApplicant){
+    if (!state.value.selectedApplicant) {
       return
     }
     const initStatus = state.value.selectedApplicant.status
-    let newStatus : ApplicantStatus | null = null
+    let newStatus: ApplicantStatus | null = null
 
-    for (const [key, value] of Object.entries(applicantStatusOkFields)){
-      if(saveBooleans[key] === true){
+    for (const [key, value] of Object.entries(applicantStatusOkFields)) {
+      if (saveBooleans[key] === true) {
         newStatus = value
-      } else if (saveBooleans[key] === false){
+      } else if (saveBooleans[key] === false) {
         const NGStatus = getApplicantNGStatus(applicantStatusOkFields[key], state.value.selectedApplicant)
         newStatus = NGStatus
         break;
       }
     }
-    if(newStatus && newStatus !== initStatus){
+    if (newStatus && newStatus !== initStatus) {
       updateApplicantStatus(newStatus)
     }
   }
 
   /** update Applicant in tables after details changes */
   watch(() => state.value.selectedApplicant, (newValue) => {
-    if(!newValue?.status) return;
-    if(!state.value.applicantsByColumn[newValue.status]) return;
-    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row : Applicant)=>row.id===newValue?.id)
-    if(changingApplicantIndex>=0){
+    if (!newValue?.status) return;
+    if (!state.value.applicantsByColumn[newValue.status]) return;
+    const changingApplicantIndex = state.value.applicantsByColumn[newValue.status].findIndex((row: Applicant) => row.id === newValue?.id)
+    if (changingApplicantIndex >= 0) {
       state.value.applicantsByColumn[newValue?.status][changingApplicantIndex] = state.value.selectedApplicant
     }
-  }, {deep: true})
+  }, { deep: true })
 
   /** update columns */
   watch(() => [state.value.selectedApplicant?.id, state.value.selectedApplicant?.status], async (newValue, oldValue) => {
@@ -770,37 +770,37 @@ export const useApplicant = defineStore('applicant', () => {
     if (newValue[1] === oldValue[1]) return;
     if (!newValue[1]) return;
     if (oldValue[1] && state.value.applicantsByColumn[oldValue[1]]) {
-      state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item : Applicant)=>item.id!=state.value.selectedApplicant?.id)
+      state.value.applicantsByColumn[oldValue[1]] = state.value.applicantsByColumn[oldValue[1]].filter((item: Applicant) => item.id != state.value.selectedApplicant?.id)
     }
     state.value.needsApplicantUpdateOnMounted = true
     if (state.value.applicantsByColumn[newValue[1]]) {
-      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item : Applicant)=>item.id === state.value.selectedApplicant?.id)
-      if (index>-1) return;
+      const index = state.value.applicantsByColumn[newValue[1]].findIndex((item: Applicant) => item.id === state.value.selectedApplicant?.id)
+      if (index > -1) return;
       state.value.applicantsByColumn[newValue[1]].push(state.value.selectedApplicant)
-      state.value.applicantsByColumn[newValue[1]].sort((a : Applicant, b: Applicant) => {
-        try{
-          if(a.currentStatusTimestamp instanceof Timestamp && b.currentStatusTimestamp instanceof Timestamp){
+      state.value.applicantsByColumn[newValue[1]].sort((a: Applicant, b: Applicant) => {
+        try {
+          if (a.currentStatusTimestamp instanceof Timestamp && b.currentStatusTimestamp instanceof Timestamp) {
             return a.currentStatusTimestamp.toDate() > b.currentStatusTimestamp.toDate()
           }
-        } catch (error){
+        } catch (error) {
           Alert.warning(error)
           console.log(error)
         }
       })
     }
-  }, { deep: true})
+  }, { deep: true })
 
   /** reload applicants by status */
-  watch(()=>organization.currentOrganizationId, (newValue)=>{
+  watch(() => organization.currentOrganizationId, (newValue) => {
     state.value.applicantProgressFilter.organizationId = newValue
     state.value.applicantProgressFilter.branchIncharge = ''
     state.value.applicantProgressFilter.userInCharge = ''
     state.value.selectedApplicant = null
-    if ( route.meta.applicantsUpdateOnOrganizationChange ) {
-      COLUMN_STATUSES.map(async (status)=>{
+    if (route.meta.applicantsUpdateOnOrganizationChange) {
+      COLUMN_STATUSES.map(async (status) => {
         await getApplicantsByStatus(status, state.value.applicantProgressFilter, limitQuery, false)
       })
-      COUNT_STATUSES.map(async (status)=>{
+      COUNT_STATUSES.map(async (status) => {
         state.value.applicantERWCount[status] = await countApplicantsByStatus(status, state.value.applicantProgressFilter)
       })
     } else {
@@ -808,6 +808,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant, changeApplicantStatusByOkFields }
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, createApplicant, countApplicantsBySex, getApplicantContactData, saveWorkExperience, agesListOfApplicants, countApplicantsdaysToWork, countApplicantsByMedia, getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant, changeApplicantStatusByOkFields }
 })
 

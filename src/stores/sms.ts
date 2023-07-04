@@ -1,12 +1,12 @@
 
 import { defineStore } from 'pinia';
-import { collection, where, getFirestore,doc, serverTimestamp, DocumentData,writeBatch } from 'firebase/firestore';
-import {useApplicant} from 'src/stores/applicant'
+import { collection, where, getFirestore, doc, serverTimestamp, DocumentData, writeBatch } from 'firebase/firestore';
+import { useApplicant } from 'src/stores/applicant'
 
 export const useSMS = defineStore('sms', () => {
   const db = getFirestore();
 
-  async function Send(msg:string, selected:Record<string, { selected: boolean; Number: string }>) {
+  async function Send(msg: string, selected: Record<string, { selected: boolean; Number: string }>) {
     try {
       const selectedItems = Object.values(selected).filter((item) => item.selected === true);
       if (selectedItems.length === 0) {
@@ -47,25 +47,25 @@ export const useSMS = defineStore('sms', () => {
       if (keyword)
         filteredData = filteredData.filter((item) => item.name === keyword);
     }
-      return filteredData
+    return filteredData
   }
 
-  function getApplicantWithFormatedDate(applicantData){
+  function getApplicantWithFormatedDate(applicantData) {
     const rowData = applicantData;
     console.log(rowData)
-    rowData.forEach(element=>{
-            if (element.applicationDate) {
-          const timestamp = element.applicationDate;
-          const date = timestamp.toDate();
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          element.applicationDate = `${year}/${month}/${day}`;
+    rowData.forEach(element => {
+      if (element.applicationDate) {
+        const timestamp = element.applicationDate;
+        const date = timestamp.toDate();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        element.applicationDate = `${year}/${month}/${day}`;
       }
     })
 
     return rowData;
   }
 
-  return {  Send, filterData, getApplicantWithFormatedDate }
+  return { Send, filterData, getApplicantWithFormatedDate }
 })

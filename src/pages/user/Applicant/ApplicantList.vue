@@ -70,7 +70,7 @@
           <div class="row">
             <q-btn dense flat icon="close" @click="sendSMSDrawer = false" class="q-mr-md" />
             <span class="text-h6 q-pr-xs">
-              <div style="color:white">
+              <div class="test-white">
                 {{ $t('backOrder.sms.sendSMS') }}
               </div>
             </span>

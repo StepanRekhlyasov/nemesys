@@ -170,10 +170,10 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant, options } from 'src/pages/user/Applicant/const/sms';
 import { useSMS } from 'src/stores/sms'
-import {useApplicant} from 'src/stores/applicant'
-import {where} from 'firebase/firestore';
-import { statusList,StatusOption } from 'src/shared/constants/Applicant.const';
-import {Applicant} from 'src/shared/model/Applicant.model'
+import { useApplicant } from 'src/stores/applicant'
+import { where } from 'firebase/firestore';
+import { statusList, StatusOption } from 'src/shared/constants/Applicant.const';
+import { Applicant } from 'src/shared/model/Applicant.model'
 
 const loading = ref<boolean>(false)
 const statusOption = ref<StatusOption>(statusList)
@@ -203,14 +203,14 @@ const updateSelected = (rowItem) => {
   selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
 };
 
-const search = async() => {
+const search = async () => {
   console.log(status.value)
   loading.value = true
   row.value = await useSMS().filterData(status.value, keyword.value, date.value);
   loading.value = false
 }
 
-const getFormatedData = async ()=>{
+const getFormatedData = async () => {
   const data = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]);
   return useSMS().getApplicantWithFormatedDate(data)
 }
