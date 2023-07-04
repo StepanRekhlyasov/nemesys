@@ -235,9 +235,9 @@ export default {
       aggregateDataDisplay:'Aggregated Data Display',
       aggregateDataDisplayTable:{
         dataoutput:'Data Output',
-        outputmonth:'output month',
+        outputmonth:'Output month',
         output:'output',
-        companywide:'company-wide',
+        companywide:'Company-wide',
       },
     }
   },

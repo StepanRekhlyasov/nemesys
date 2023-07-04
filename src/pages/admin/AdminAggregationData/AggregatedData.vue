@@ -4,11 +4,11 @@
     </PageHader>
     <div class="q-pt-lg q-pl-sm" v-for="(item, idx) in Listitem" :key="idx" style="color:purple;">
         <div style="font-weight:bold">
-            <span class=""> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataoutput') }}</span>
+            <span><span v-if="!item.required">{{ t('menu.admin.aggregateDataDisplayTable.companywide') }}</span> {{ item.label }} {{ t('menu.admin.aggregateDataDisplayTable.dataoutput') }}</span>
         </div>
         <div style="margin-left:10vw">
             <div class="q-pt-sm q-pl-sm" style="display:flex" v-if="item.required">
-                <div class="q-pt-sm q-pl-sm">
+                <div class="q-pt-sm q-pl-sm" style="width:104px">
                     <span>{{ t('menu.admin.aggregateDataDisplayTable.outputmonth') }}</span>
                 </div>
                 <div style="margin-left:5px">
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="q-pt-sm q-pl-sm" style="display: flex;">
-                <div class="q-pt-sm q-pl-sm">
+                <div class="q-pt-sm q-pl-sm" style="width:89px">
                     <span> CSV {{ t('menu.admin.aggregateDataDisplayTable.output') }}</span>
                 </div>
                 <div style="margin-left:20px">
@@ -69,6 +69,23 @@ const downloadCSV = async(collectionName:string,date:string) => {
         const [year, month] = date.split('/');
         fetchURL = `${fetchURL}&year=${year}&month=${month}`
     }
-    await aggregateData.downloadCSV(fetchURL)
+    let name = aggregateData.getFileName(collectionName)
+    await aggregateData.downloadCSV(fetchURL,name)
+    onReset();
 }
+const onReset = () =>{
+    timeperiod.value = timeperiod.value.map(item => {
+        return { date: '' };
+    });
+}
+function getFileName(exportName: string): string {
+  const now: Date = new Date();
+  const timezoneOffset: number = now.getTimezoneOffset() * 60000; // Offset in milliseconds
+  const localTime: number = now.getTime() - timezoneOffset;
+  const localDate: Date = new Date(localTime + 9 * 3600000); // Adding 9 hours for UTC+9 timezone
+  
+  const formattedDate: string = localDate.toISOString().replace(/[-:.]/g, '').replace('T', '_').slice(0, -5);
+  return `export_${exportName}_${formattedDate}.csv`;
+}
+
 </script>

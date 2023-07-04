@@ -10,7 +10,7 @@ const Listitem = [
         collectionName: 'fax' 
     },
     { 
-        label: 'Company-wide BO output', 
+        label: 'BO', 
         required: false, 
         collectionName: 'BO' 
     }
