@@ -10,9 +10,8 @@ export const useSMS = defineStore('sms', () => {
     try {
       const selectedItems = Object.values(selected).filter((item) => item.selected === true);
       if (selectedItems.length === 0) {
-        return false;
+        throw new Error('No selected Applicants');
       }
-
       const batch = writeBatch(db);
       for (const item of selectedItems) {
         const docRef = doc(collection(db, 'sms'));
