@@ -78,14 +78,4 @@ const onReset = () =>{
         return { date: '' };
     });
 }
-function getFileName(exportName: string): string {
-  const now: Date = new Date();
-  const timezoneOffset: number = now.getTimezoneOffset() * 60000; // Offset in milliseconds
-  const localTime: number = now.getTime() - timezoneOffset;
-  const localDate: Date = new Date(localTime + 9 * 3600000); // Adding 9 hours for UTC+9 timezone
-  
-  const formattedDate: string = localDate.toISOString().replace(/[-:.]/g, '').replace('T', '_').slice(0, -5);
-  return `export_${exportName}_${formattedDate}.csv`;
-}
-
 </script>
