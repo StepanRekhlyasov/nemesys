@@ -33,6 +33,21 @@
           </div>
       </div>
     </div>
+
+    <div class="notes">
+      <ol>
+        <li><strong style="color: red;">{{t('applicant.smsNotes.note')}}</strong></li>
+        <div class="q-ml-sm">
+          <li><strong>{{t('applicant.smsNotes.note1')}}</strong></li>
+          <li><strong>{{t('applicant.smsNotes.note2')}}</strong></li>
+          <li><strong>{{t('applicant.smsNotes.note3')}}</strong></li>
+          <li><strong>{{t('applicant.smsNotes.note4')}}</strong></li>
+          <li><strong>{{t('applicant.smsNotes.note5')}}</strong></li>
+        </div>
+      </ol>
+    </div>
+
+
     <div class="destination">
       <div class="row bg-white">
         <p class="text-h7 text-primary">■{{ t('client.list.destination') }} {{ t('report.categories.applicant') }}</p>
@@ -164,8 +179,8 @@
   import { useQuasar } from 'quasar';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
-  import { destinationApplicant,options } from 'src/pages/user/Applicant/const/fixMethods';
-  import { collection, query, where, getDocs,getFirestore ,addDoc} from 'firebase/firestore';
+  import { destinationApplicant,options } from 'src/pages/user/Applicant/const/sms';
+  import { collection, query, where, getDocs,getFirestore ,addDoc,serverTimestamp} from 'firebase/firestore';
   import { statusList} from 'src/shared/constants/Applicant.const';
 
   const loading = ref(false)
@@ -194,10 +209,12 @@
           await addDoc(collection(db, 'sms'), {
             'to':item.Number,
             'body':msg.value,
+            'created_at':serverTimestamp(),
           });
       }
       Alert.success($q, t)
     } catch (error) {
+      console.log(error.message)
       Alert.warning($q, t)
     }
   };

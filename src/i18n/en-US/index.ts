@@ -723,6 +723,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※Notes for SMS transmission:',
+      note1:'・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',
+      note2:'・Please input within a maximum of 70 characters in both full-width and half-width characters. (If the limit is exceeded, the message may be sent in multiple parts.)',
+      note3:'・Line breaks count as 2 characters.',
+      note4:'・Please include URLs within 50 characters.',
+      note5:'・Each message will incur a cost of 8 yen.'
+    },
     add: {
       name: 'Name',
       kanaName: 'Kana Name',
