@@ -237,7 +237,7 @@ export default {
         dataoutput:'データ出力',
         outputmonth:'出力月',
         output:'出力',
-        companywise:'会社的に',
+        companywide:'会社的に',
       },
     }
   },

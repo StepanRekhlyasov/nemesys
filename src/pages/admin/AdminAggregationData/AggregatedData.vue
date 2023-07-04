@@ -43,53 +43,32 @@
 
 <script lang="ts" setup>
 import {ref} from 'vue';
+import {Alert} from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
+import PageHader from 'src/components/PageHeader.vue';
+import Listitem from './const/AggregateData.const'
+import {useAggregatedData} from 'src/stores/aggregateData'
 const { t } = useI18n({ useScope: 'global' });
-import PageHader from 'src/components/PageHeader.vue'
-import axios from 'axios';
+const triggerURL = process.env.downloadCSVUrl;
 const monthPicker = ref();
 const timeperiod = ref([{date:''},{date:''},{date:''}])
+const aggregateData = useAggregatedData();
 const checkValue = (val: string, reason: string) => {
-  if (reason === 'month') {
+if (reason === 'month') {
       monthPicker.value[0].hide();
       monthPicker.value[1].hide();
   }
 }
-const downloadCSV = (collectionName:string,date:string) => {
-    let triggerURL = `https://asia-northeast1-dev-nemesys-firebase.cloudfunctions.net/download_csv?collection=${collectionName}`
-    if(collectionName!='BO'){
-        if(date.length==0){
-            alert('please fill input field')
+const downloadCSV = async(collectionName:string,date:string) => {
+    let fetchURL = `${triggerURL}?collection=${collectionName}`
+    if (collectionName != 'BO') {
+        if (date.length == 0) {
+            Alert.warning('Please enter input field', { color: 'negative' })
             return
         }
         const [year, month] = date.split('/');
-        triggerURL = `${triggerURL}&year=${year}&month=${month}`
-        console.log(triggerURL);
+        fetchURL = `${fetchURL}&year=${year}&month=${month}`
     }
-    try {
-        axios.get(triggerURL)
-            .then(response => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'downloaded_data.csv');
-                document.body.appendChild(link);
-                link.click();
-                console.log('CSV file downloaded successfully.');
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
-    catch (error) {
-        console.error('An error occurred:', error);
-    }
-
+    await aggregateData.downloadCSV(fetchURL)
 }
-const Listitem = [
-    { label: 'SMS ', required: true,collectionName: 'sms' },
-    { label: 'FAX ', required: true,collectionName: 'fax' },
-    { label: 'Company-wide BO output', required: false, date:'',collectionName: 'BO' }
-]
-
 </script>
