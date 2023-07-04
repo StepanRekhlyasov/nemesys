@@ -6,7 +6,6 @@ import { getAuth } from 'firebase/auth';
 
 import { config } from '../helpers/firebaseConfig';
 import { getUserPermissions } from 'src/shared/utils/User.utils';
-import { UserPermissionNames } from 'src/shared/model/Account.model';
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files
@@ -23,9 +22,9 @@ export default boot(async ({ router }) => {
           next('/auth/login');
         } else if (user) {
           const permissions = getUserPermissions();
-          if (to.meta && 'permissions' in to.meta) {
-            const routePermission = to.meta['permission'] as UserPermissionNames[];
-            if (routePermission && !routePermission.some(permission => permissions.includes(permission))) {
+          if (to.meta.permissions) {
+            const routePermission = to.meta.permissions
+            if (!routePermission.some(permission => permissions.includes(permission))) {
               next('/')
             }
           }

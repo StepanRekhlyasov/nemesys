@@ -30,7 +30,7 @@ export const RouterToMemuItem = (router: MenuRouter): MenuItem => {
     menuParent: router.menuParent,
     title: router.title,
     icon: router.icon,
-    permissions: router.meta?.permission,
+    permissions: router.meta?.permissions,
     hideInMenu: router.meta?.hideInMenu
   } as MenuItem;
 }

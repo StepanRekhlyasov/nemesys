@@ -1077,7 +1077,7 @@ export default {
         waitVisit: 'Wait-Visit',
         waitOffer: 'Wait-Offer',
         waitEntry: 'Wait-Entry',
-        waitTermination: 'Wait-Termination',
+        waitTermination: 'Update Check List',
       },
       card: {
         applicationDate: 'I',

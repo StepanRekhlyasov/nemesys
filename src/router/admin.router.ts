@@ -8,7 +8,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/ReleaseNotes/ReleaseNotes.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess],
+      permissions: [UserPermissionNames.AdminPageAccess],
       isAdmin: true
     },
     menuParent: MenuParent.AdminReleaseNotes
@@ -19,7 +19,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/InquiryPage/InquiryPage.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess],
+      permissions: [UserPermissionNames.AdminPageAccess],
       isAdmin: true
     },
     menuParent: MenuParent.AdminReleaseNotes,
@@ -61,7 +61,7 @@ const admin_router: MenuRouter[] = [
     meta: {
       isAdmin: true,
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permissions: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminEnterpriseManagement
 
@@ -73,7 +73,7 @@ const admin_router: MenuRouter[] = [
     meta: {
       requiresAuth: true,
       isAdmin: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permissions: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
 
@@ -83,7 +83,7 @@ const admin_router: MenuRouter[] = [
     title: 'menu.admin.organizationsList',
     component: () => import('src/pages/admin/EnterpriseManagement/OrganizationsList.vue'),
     meta: {
-      permission: [UserPermissionNames.AdminPageAccess],
+      permissions: [UserPermissionNames.AdminPageAccess],
       requiresAuth: true,
       isAdmin: true
     },
@@ -95,7 +95,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/OperationHistoryTable/OperationHistory.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess],
+      permissions: [UserPermissionNames.AdminPageAccess],
       isAdmin: true
     },
     menuParent: MenuParent.AdminSystemsOperationManagement,
@@ -106,7 +106,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/BillingManagement/VariousFeeAggregatesPage.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess],
+      permissions: [UserPermissionNames.AdminPageAccess],
       isAdmin: true
     },
     menuParent: MenuParent.AdminBillingInformation,
@@ -117,7 +117,7 @@ const admin_router: MenuRouter[] = [
     component: () => import('src/pages/admin/BillingManagement/BillingHistoryPage.vue'),
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess],
+      permissions: [UserPermissionNames.AdminPageAccess],
       isAdmin: true
     },
     menuParent: MenuParent.AdminBillingInformation,
@@ -127,7 +127,7 @@ const admin_router: MenuRouter[] = [
     title: 'menu.admin.licenseManagement.licenseRequest',
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permissions: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminLicenseManagement,
     component: () => import('src/pages/admin/LicenseManagement/Requests/LicenseRequests.vue')
@@ -137,7 +137,7 @@ const admin_router: MenuRouter[] = [
     title: 'menu.admin.licenseManagement.licenseHistory',
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permissions: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminLicenseManagement,
     component: () => import('src/pages/admin/LicenseManagement/History/LicenseHistory.vue')
@@ -147,7 +147,7 @@ const admin_router: MenuRouter[] = [
     title: 'menu.admin.licenseManagement.licenseStatistic',
     meta: {
       requiresAuth: true,
-      permission: [UserPermissionNames.AdminPageAccess]
+      permissions: [UserPermissionNames.AdminPageAccess]
     },
     menuParent: MenuParent.AdminLicenseManagement,
     component: () => import('src/pages/admin/LicenseManagement/Statistic/LicenseStatistic.vue')
