@@ -74,8 +74,9 @@ const downloadCSV = async(collectionName:string,date:string) => {
     onReset();
 }
 const onReset = () =>{
-    timeperiod.value = timeperiod.value.map(item => {
-        return { date: '' };
+    timeperiod.value.filter(item => {
+        item.date=''
     });
+    console.log(timeperiod.value)
 }
 </script>
