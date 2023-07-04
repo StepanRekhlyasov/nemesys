@@ -90,7 +90,8 @@ export default {
       '12' : '12月',
     },
     more: 'もっと',
-    downloadCSV: 'CSVダウンロード'
+    downloadCSV: 'CSVダウンロード',
+    branch: '支店',
   },
   smoking: {
     no: '無',
@@ -805,7 +806,7 @@ export default {
         userInChargeVisit: '職見担当ユーザー',
         personalStatus: '本人状況',
         corporationStatus: '法人状況',
-        businessStatus: '営業状況', 
+        businessStatus: '営業状況',
         visitRecotd: '職見記録',
         memo: 'メモ',
         chargeOfFix: 'FIX担当ユーザー',
@@ -1689,7 +1690,7 @@ export default {
     modeMedia: '媒体別集客データ集計',
     modeIndividual: '個人別データ集計',
     modeBranch: '支店別集客データ集計',
-    modeDay: '日時集計',
+    dailyTotal: '日次集計',
     item: '項目',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',

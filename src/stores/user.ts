@@ -38,6 +38,8 @@ export const useUserStore = defineStore('user', () => {
     usersData.forEach((user) => {
       if (user.exists()) {
         users.push(user.data() as User)
+        users[users.length - 1].id = user.id
+
       }
     })
 
@@ -136,6 +138,7 @@ export const useUserStore = defineStore('user', () => {
     usersData.forEach((user) => {
       if (user.exists()) {
         users.push(user.data() as User)
+        users[users.length - 1].id = user.id
       }
     })
     return users

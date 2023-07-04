@@ -57,19 +57,19 @@ const Totalize = async (
   is_average = false,
   organization_id: string | undefined = undefined,
   target: { [key: string]: string } | undefined = undefined,
-  ignore_fix = false
+  ignoreFix = false
 ): Promise<number[]> => {
   const db = getFirestore();
-  const data_average: number[] = Array(item_list.length).fill(0);
+  const dataAverage: number[] = Array(item_list.length).fill(0);
   const targetDateFrom = new Date(dateRange.from);
   const targetDateTo = new Date(dateRange.to);
-  let number_of_member = 1;
+  let numOfMember = 1;
   if (is_average) {
     const filter_ =
       organization_id == undefined
         ? []
         : [where('organization_ids', 'array-contains', organization_id)];
-    number_of_member = (
+    numOfMember = (
       await getCountFromServer(query(collection(db, 'users'), ...filter_))
     ).data().count;
   }
@@ -90,7 +90,7 @@ const Totalize = async (
       }
     } else if (fix_db.includes(item)) {
       ref = collection(db, 'fix');
-      if (ignore_fix) filter.push(where('ignore', '==', false));
+      if (ignoreFix) filter.push(where('ignore', '==', false));
       if (target != undefined) {
         filter.push(where(date_dict[target['fix']], '>=', targetDateFrom));
         filter.push(where(date_dict[target['fix']], '<=', targetDateTo));
@@ -104,12 +104,12 @@ const Totalize = async (
     } else {
       return [];
     }
-    data_average[index] = (
+    dataAverage[index] = (
       await getCountFromServer(query(ref, ...filter))
     ).data().count;
-    data_average[index] /= number_of_member;
+    dataAverage[index] /= numOfMember;
   }
-  return data_average;
+  return dataAverage;
 };
 return {Totalize}
 })

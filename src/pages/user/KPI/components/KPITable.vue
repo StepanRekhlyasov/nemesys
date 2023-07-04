@@ -9,11 +9,11 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <q-td 
-        class="clickable" 
+      <q-td
+        class="clickable"
         @click="()=>{
           emit('openDrawer', props.row)
-        }" 
+        }"
       >{{ props.row.name }}</q-td>
     </template>
   </q-table>
@@ -34,11 +34,22 @@ const props = defineProps<{
   item: string
 }>()
 
+const calculateTotal = (rows: QTableProps['rows']|undefined) => {
+  if(!rows||rows.length==0) return {name:t('KPI.total')}
+  const total = (JSON.parse(JSON.stringify(rows))).reduce((acc, row) => {
+    Object.keys(row).forEach((key) => {
+      if (key === 'name') return;
+      acc[key] += row[key];
+    });
+    return acc;
+  });
+  total['name'] = t('KPI.total');
+  return total;
+};
+
 const rowsCalculated = computed(()=>{
   const firstRow : QTableProps['rows'] = [
-    {
-      name: t('KPI.total'),
-    }
+    calculateTotal(props.rows)
   ]
   return firstRow.concat(props.rows)
 })
@@ -69,7 +80,7 @@ const exportTable = () => {
   }
   const csvData = props.rows.map((row) => Object.values(row));
   const csvHeaders = columns.value.map((column) => column.label);
-  
+
   const csvContent = [
     csvHeaders.join(','),
     ...csvData.map((row) => row.join(',')),
