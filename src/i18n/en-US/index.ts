@@ -1170,9 +1170,9 @@ export default {
     sms:{
       send:'Send',
       sendSMS:'Send SMS',
-      SendContent:'Contents of transmission',
+      sendContent:'Contents of transmission',
       characters:'Characters',
-      Content:'Content',
+      content:'Content',
       template:'Template',
       form:'Submission form',
     },

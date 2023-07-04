@@ -1,73 +1,72 @@
 
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { collection, query, where, getDocs,getFirestore ,addDoc,serverTimestamp, DocumentData} from 'firebase/firestore';
+import { collection, where, getFirestore,doc, serverTimestamp, DocumentData,writeBatch } from 'firebase/firestore';
+import {useApplicant} from 'src/stores/applicant'
 
-  export const useSMS = defineStore('sms',()=>{
+export const useSMS = defineStore('sms', () => {
   const db = getFirestore();
 
-    async function getApplicant(){
-      const collectionRef = collection(db, 'applicants');
-      const q = query(collectionRef, where('phone', '!=', null));
-      const querySnapshot = await getDocs(q);
-      const row = ref<DocumentData>([]);
-      row.value = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        if (data.applicationDate) {
-          const timestamp = data.applicationDate;
+  async function Send(msg:string, selected:Record<string, { selected: boolean; Number: string }>) {
+    try {
+      const selectedItems = Object.values(selected).filter((item) => item.selected === true);
+      if (selectedItems.length === 0) {
+        return false;
+      }
+
+      const batch = writeBatch(db);
+      for (const item of selectedItems) {
+        const docRef = doc(collection(db, 'sms'));
+        const docData = {
+          to: item.Number,
+          body: msg,
+          created_at: serverTimestamp(),
+        };
+        batch.set(docRef, docData);
+      }
+      batch.commit()
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  const formatDate = (date: string, filteredData: DocumentData) => {
+    date = date.split('-').join('/')
+    return filteredData.filter((item) => item.applicationDate === date);
+  }
+
+  async function filterData(status: string, keyword: string, date: string) {
+    let filteredData = await useApplicant().getApplicantsByConstraints([where('deleted', '==', false)]);
+    filteredData = getApplicantWithFormatedDate(filteredData)
+    if (status || keyword || date) {
+      if (status)
+        filteredData = filteredData.filter((item) => item.status === status);
+
+      if (date)
+        filteredData = formatDate(date, filteredData)
+
+      if (keyword)
+        filteredData = filteredData.filter((item) => item.name === keyword);
+    }
+      return filteredData
+  }
+
+  function getApplicantWithFormatedDate(applicantData){
+    const rowData = applicantData;
+    console.log(rowData)
+    rowData.forEach(element=>{
+            if (element.applicationDate) {
+          const timestamp = element.applicationDate;
           const date = timestamp.toDate();
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, '0');
           const day = String(date.getDate()).padStart(2, '0');
-          data.applicationDate = `${year}/${month}/${day}`;
-        }
-        return data;
-      });
-      return row.value;
-    }
-
-    async function Send(msg: string, selected: Record<string, { selected: boolean; Number: string }>) {
-      try {
-        const selectedItems = Object.values(selected).filter((item) => item.selected === true);
-        if(selectedItems.length==0){
-          return false;
-        }
-        for (const item of selectedItems) {
-            await addDoc(collection(db, 'sms'),{
-              'to':item.Number,
-              'body':msg,
-              'created_at':serverTimestamp(),
-            });
-        }
-        return true;
-      } catch (error) {
-        return false
+          element.applicationDate = `${year}/${month}/${day}`;
       }
-    };
-
-    const formatDate= (date:string,filteredData:DocumentData)=> {
-      date = date.split('-').join('/')
-      return filteredData.value.filter((item) => item.applicationDate === date);
-      }
-
-    function filterData(status:string,keyword:string,date:string,row:DocumentData){
-      if(status || keyword || date){
-
-        const filteredData = row;
-
-      if(status)
-        filteredData.value = filteredData.value.filter((item) => item.status === status);
-
-      if(date)
-        filteredData.value = formatDate(date,filteredData)
-
-      if(keyword)
-        filteredData.value = filteredData.value.filter((item) => item.name === keyword);
-
-      return filteredData.value
-      }
-      else return row.value
-    }
-
-      return {getApplicant,Send,filterData}
     })
+
+    return rowData;
+  }
+
+  return {  Send, filterData, getApplicantWithFormatedDate }
+})

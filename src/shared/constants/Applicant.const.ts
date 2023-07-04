@@ -7,6 +7,10 @@ import { mapToSelectOptions } from '../utils/User.utils';
 
 const { t } = i18n.global
 
+export interface StatusOption {
+  label: string;
+  value: string;
+}
 export const statusList = computed(() => {
   return [
     {

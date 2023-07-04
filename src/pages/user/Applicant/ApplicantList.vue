@@ -11,12 +11,13 @@
         <searchForm @load-search-staff="loadSearchStaff" />
       </q-card-section>
 
-      <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer=true"/>
+      <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer = true" />
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
-        <q-table :columns="columns" :rows="applicantStore.state.applicantList" row-key="id" selection="multiple" class="no-shadow"
-          v-model:pagination="paginationTable" hide-pagination :loading="applicantStore.state.isLoadingProgress">
+        <q-table :columns="columns" :rows="applicantStore.state.applicantList" row-key="id" selection="multiple"
+          class="no-shadow" v-model:pagination="paginationTable" hide-pagination
+          :loading="applicantStore.state.isLoadingProgress">
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.name') }} </div>
@@ -61,25 +62,24 @@
   </div>
   <ApplicantDetails ref="detailsDrawer" />
 
-  <q-drawer v-model="sendSMSDrawer" show class="bg-white" :width="1000" :breakpoint="500" side="right" overlay
-  elevated bordered>
-  <q-scroll-area class="fit text-left">
+  <q-drawer v-model="sendSMSDrawer" show class="bg-white" :width="1000" :breakpoint="500" side="right" overlay elevated
+    bordered>
+    <q-scroll-area class="fit text-left">
       <q-card class="no-shadow">
-          <q-card-section class="text-white bg-primary rounded-borders">
-              <div class="row">
-                  <q-btn dense flat icon="close" @click="sendSMSDrawer = false" class="q-mr-md" />
-                  <span class="text-h6 q-pr-xs">
-                      <div style="color:white" >
-                          {{ $t('backOrder.sms.sendSMS') }}
-                      </div>
-                  </span>
+        <q-card-section class="text-white bg-primary rounded-borders">
+          <div class="row">
+            <q-btn dense flat icon="close" @click="sendSMSDrawer = false" class="q-mr-md" />
+            <span class="text-h6 q-pr-xs">
+              <div style="color:white">
+                {{ $t('backOrder.sms.sendSMS') }}
               </div>
-          </q-card-section>
-            <sendSMS/>
+            </span>
+          </div>
+        </q-card-section>
+        <SmsDrawer />
       </q-card>
-  </q-scroll-area>
-</q-drawer>
-
+    </q-scroll-area>
+  </q-drawer>
 </template>
 
 <script setup lang="ts">
@@ -87,15 +87,15 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, watch, ComputedRef } from 'vue';
 import searchForm from './components/search/searchForm.vue';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
-import { statusList, occupationList, applicantClassification} from 'src/shared/constants/Applicant.const';
+import { statusList, occupationList, applicantClassification } from 'src/shared/constants/Applicant.const';
 import { QTableProps } from 'quasar';
 import { ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import sendSMS from './components/sendSMS.vue';
+import SmsDrawer from './components/SmsDrawer.vue';
 
 const { t } = useI18n({ useScope: 'global' });
-const sendSMSDrawer = ref(false);
+const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const pagination = ref({
@@ -111,7 +111,7 @@ const paginationTable = ref({
   rowsPerPage: 10
 });
 
-const columns : ComputedRef<QTableProps['columns']> = computed(() => {
+const columns: ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
@@ -145,13 +145,13 @@ const columns : ComputedRef<QTableProps['columns']> = computed(() => {
   ];
 });
 
-const getStatus = (status : string) => {
+const getStatus = (status: string) => {
   const item = statusList.value.find(x => x.value === status);
   if (item) {
     return item.label;
   }
 };
-const getOccupation = (occupation : ApplicantOccupation) => {
+const getOccupation = (occupation: ApplicantOccupation) => {
   if (!occupation) {
     return ''
   }
@@ -160,7 +160,7 @@ const getOccupation = (occupation : ApplicantOccupation) => {
     return occupationList.value[occupationIndex].label
   }
 };
-const getClassification = (classification : string) => {
+const getClassification = (classification: string) => {
   if (!classification) {
     return ''
   }
@@ -170,12 +170,12 @@ const getClassification = (classification : string) => {
   }
 };
 
-const openDrawer = (data : Applicant) => {
+const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
 
 const preventWatch = ref(false)
-const loadSearchStaff = async (data : ApplicantElasticSearchData) => {
+const loadSearchStaff = async (data: ApplicantElasticSearchData) => {
   preventWatch.value = true
   pagination.value.page = 1
   await applicantStore.loadApplicantData(data, pagination.value)
@@ -185,7 +185,7 @@ const loadSearchStaff = async (data : ApplicantElasticSearchData) => {
 watch(
   () => (pagination.value.page),
   () => {
-    if(!preventWatch.value) {
+    if (!preventWatch.value) {
       applicantStore.loadApplicantData({}, pagination.value);
     }
   },

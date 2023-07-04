@@ -1166,9 +1166,9 @@ export default {
     sms:{
       send:'送信',
       sendSMS:'SMS送信',
-      SendContent:'送信内容',
+      sendContent:'送信内容',
       characters:'キャラクター',
-      Content:'コンテンツ',
+      content:'コンテンツ',
       template:'レンプレート',
       form:'提出フォーム',
     },
