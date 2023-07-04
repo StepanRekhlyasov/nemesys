@@ -180,7 +180,7 @@
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
   import { destinationApplicant,options } from 'src/pages/user/Applicant/const/sms';
-  import { collection, query, where, getDocs,getFirestore ,addDoc,serverTimestamp} from 'firebase/firestore';
+  import {useSMS} from 'src/stores/sms'
   import { statusList} from 'src/shared/constants/Applicant.const';
 
   const loading = ref(false)
@@ -191,99 +191,47 @@
   const keyword = ref(null)
   const status = ref(null)
   const date = ref(null)
-  const db = getFirestore()
   const template = ref(null)
 
   const $q = useQuasar();
   const { t } = useI18n({ useScope: 'global' });
 
 
-  const SendMsg = async () => {
-    try {
-      const selectedItems = Object.values(selected.value).filter((item) => item.selected === true);
-      if(selectedItems.length==0){
-        Alert.warning($q, t)
-        return;
-      }
-      for (const item of selectedItems) {
-          await addDoc(collection(db, 'sms'), {
-            'to':item.Number,
-            'body':msg.value,
-            'created_at':serverTimestamp(),
-          });
-      }
+const SendMsg = async()=>{
+    const isSend =  await useSMS().Send(msg.value,selected.value)
+    if(isSend)
       Alert.success($q, t)
-    } catch (error) {
+    else
       Alert.warning($q, t)
-    }
-  };
-
+}
   const updateSelected = (rowItem) => {
     selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
   };
 
-  const formatDate= (date,filteredData)=> {
-  date = date.split('-').join('/')
-  return filteredData.value.filter((item) => item.applicationDate === date);
-  }
+const search = ()=>{
+  loading.value = true
+  row.value = useSMS().filterData(status.value,keyword.value,date.value,row);
+  loading.value = false
+}
 
-  const search = ()=>{
+  const clear =async ()=>{
     loading.value = true;
-    if(status.value || keyword.value || date.value){
-
-      let filteredData = row;
-
-    if(status.value)
-      filteredData.value = filteredData.value.filter((item) => item.status === status.value);
-
-    if(date.value)
-      filteredData.value = formatDate(date.value,filteredData)
-
-    if(keyword.value)
-      filteredData.value = filteredData.value.filter((item) => item.name === keyword.value);
-
-    row.value = filteredData.value
-    }
-
-      loading.value = false
-  }
-
-  const clear = ()=>{
-      loading.value = true;
-      status.value = null
+    status.value = null
     keyword.value = null
     date.value = null
-    getApplicant()
+    row.value = await useSMS().getApplicant()
     loading.value = false;
-  }
-
-  const getApplicant =async()=>{
-    const collectionRef = collection(db, 'applicants');
-    const q = query(collectionRef, where('phone', '!=', null));
-    const querySnapshot = await getDocs(q);
-
-    row.value = querySnapshot.docs.map((doc) => {
-      const data = doc.data();
-      if (data.applicationDate) {
-        const timestamp = data.applicationDate;
-        const date = timestamp.toDate();
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        data.applicationDate = `${year}/${month}/${day}`;
-      }
-      selected.value[data.id] = {
-        'Number':data.phone,
-        'selected':false,
-      }
-      return data;
-    });
-
   }
 
   onMounted(async () => {
     loading.value = true;
-  await getApplicant();
+    row.value = await useSMS().getApplicant()
+    row.value.forEach(element => {
+        selected.value[element['id']]={
+          'Number':element['phone'],
+          'selected':false,
+        }
+    });
   loading.value = false
   });
 
