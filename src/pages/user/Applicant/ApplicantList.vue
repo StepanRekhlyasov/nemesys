@@ -11,6 +11,7 @@
         <searchForm @load-search-staff="loadSearchStaff" />
       </q-card-section>
 
+      <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer=true"/>
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
@@ -79,7 +80,6 @@
   </q-scroll-area>
 </q-drawer>
 
-<q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer=true"/>
 </template>
 
 <script setup lang="ts">
