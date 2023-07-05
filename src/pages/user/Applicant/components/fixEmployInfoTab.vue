@@ -47,7 +47,7 @@
         <q-td :props="props"
           :class="rowColor(props.row)">
           <q-spinner color="primary" class="row" v-if="backOrderLoading[props.row.backOrder]"></q-spinner>
-          <span class="row" v-else>{{ backOrderId[props.row.backOrder]?.boId?backOrderId[props.row.backOrder]?.boId:'-' }}</span>
+          <span class="row" v-else>{{ backOrderList[props.row.backOrder]?.boId?backOrderList[props.row.backOrder]?.boId:'-' }}</span>
         </q-td>
       </template>
 
@@ -136,7 +136,7 @@ import { QTableProps, useQuasar } from 'quasar';
 import FixEmployCreate from './FIX/fixEmployCreate.vue'
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
-import { ApplicantFix, Applicant } from 'src/shared/model';
+import { ApplicantFix, Applicant, BackOrderModel } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { toDateFormat } from 'src/shared/utils/utils';
 import { useBackOrder } from 'src/stores/backOrder';
@@ -152,13 +152,13 @@ const applicantStore = useApplicant();
 const fixStore = useFix();
 const $q = useQuasar();
 
-const backOrderId = ref({})
-const backOrderLoading = ref({})
+const backOrderList = ref<{[id: string] : BackOrderModel}>({})
+const backOrderLoading = ref<{[id: string] : boolean}>({})
 
 const getBoId = async (id : string) => {
   backOrderLoading.value[id] = true
   const bo = await backOrderStore.getBoById(id)
-  backOrderId.value[bo.id] = bo
+  backOrderList.value[bo.id] = bo
   backOrderLoading.value[id] = false
 }
 

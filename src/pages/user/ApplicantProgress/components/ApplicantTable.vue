@@ -1,15 +1,16 @@
 <template>
   <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;" class="applicantTable" :loading="loading">
-    <ProgressTableRows :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
+    <ProgressTableRows v-if="showRow" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
   <q-linear-progress query v-if="loading" color="primary"/>
 </template>
 <script setup lang="ts">
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantStatus } from 'src/shared/model';
 import ProgressTableRows from './ProgressTableRows.vue';
 import { QueryOrderByConstraint } from 'firebase/firestore';
+import { computed } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   applicants: Applicant[],
   loading: boolean,
   status: string
@@ -20,6 +21,16 @@ const emit = defineEmits<{
   (e: 'onLoadingStart'),
   (e: 'onLoadingEnd'),
 }>()
+
+const showRow = computed(()=>{
+  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
+    return 'applicant'
+  } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
+    return 'update'
+  } else {
+    return 'fix'
+  }
+})
 
 </script>
 <style lang="scss">

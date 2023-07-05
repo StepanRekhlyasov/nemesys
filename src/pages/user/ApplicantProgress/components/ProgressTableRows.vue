@@ -37,7 +37,7 @@
           }" 
           class="applicant-clickable"
         >{{ applicant.name }}</td>
-        <td>{{dayMonthFromDate(applicant.applicationDate)}}</td>
+        <td>{{ myDateFormat(applicant.applicationDate, 'MM/DD') }}</td>
         <td>{{ applicant.nearestStation }}</td>
         <td><p v-for="q, index in applicant.qualification" :key="index" style="margin:0;">{{ q }}</p></td>
         <td>{{ timestampToDateFormat(applicant.timeToWork) }}</td>
@@ -61,7 +61,7 @@
 </template>
 <script setup lang="ts">
 import { Applicant, ApplicantFix } from 'src/shared/model';
-import { dayMonthFromDate, timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat, timestampToDateFormat } from 'src/shared/utils/utils';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { QueryOrderByConstraint, orderBy } from 'firebase/firestore';
 import { ref, computed } from 'vue';
@@ -100,6 +100,7 @@ function resetSortingOrder(){
   }
 }
 const orderByFetch = (param : string) => {
+  if(1) return;
   if(!queryDirections.value[param]){
     resetSortingOrder()
     queryDirections.value[param] = 'desc'
