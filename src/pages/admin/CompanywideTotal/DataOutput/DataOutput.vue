@@ -68,14 +68,17 @@ const downloadCSV = async (collectionName: string, date: string) => {
     let fetchURL = `${triggerURL}?collection=${collectionName}`
     if (collectionName != 'BO') {
         if (date.length === 0) {
-            Alert.warning('Please enter input field', { color: 'negative' })
+            Alert.warning()
             return
         }
         const [year, month] = date.split('/');
+        if(year.length!==4 || month.length!==2){
+            Alert.warning()
+            return
+        }
         fetchURL = `${fetchURL}&year=${year}&month=${month}`
     }
-    const name = dataOutput.getFileName(collectionName)
-    await dataOutput.downloadCSV(fetchURL, name)
+    await dataOutput.downloadCSV(fetchURL,collectionName)
     onReset();
 }
 const onReset = () => {
