@@ -20,7 +20,7 @@ const loading = ref<boolean>(false)
 const searchKeyword = ref<string | null>(null);
 const pagination = ref<DocumentData>({
   page: 1,
-  rowsPerPage: 5,
+  rowsPerPage: 100,
   path: 'applicantSaveSearch',
   order: orderBy('created_at', 'asc'),
 });
