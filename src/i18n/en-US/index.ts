@@ -970,7 +970,6 @@ export default {
       wait_visit: 'Wait Visit',
       wait_offer: 'Wait Offer',
       wait_entry: 'Wait Entry',
-      wait_contact: 'Waiting for Contact',
       working: 'Working',
       wait_termination: 'Wait Termination',
       wait_retire: 'Wait Retire',
