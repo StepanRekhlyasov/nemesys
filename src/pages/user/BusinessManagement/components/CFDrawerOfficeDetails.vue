@@ -6,7 +6,7 @@ import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn
 import { useOfficeDetails } from 'src/components/client-factory/handlers';
 import { RenderOfficeDetailsWithIndustryType, RenderOfficeDetailsWithoutIndustryType } from 'src/components/client-factory/types';
 import { ChangedData } from 'src/components/client-factory/types';
-import { ClientFactory, Industry } from 'src/shared/model/ClientFactory.model';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -48,7 +48,7 @@ const editDraft = (changedData: ChangedData) => {
 }
 
 watchEffect(() => {
-    officeDetails.value = useOfficeDetails(props.clientFactory, props.draft, props.industryType as Industry[number])
+    officeDetails.value = useOfficeDetails(props.clientFactory, props.draft, props.industryType)
 });
 </script>
 
