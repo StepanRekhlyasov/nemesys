@@ -53,9 +53,9 @@
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
-          <applicant-table 
+          <ApplicantTable 
             :status="statusParams.firestore" 
-            :applicants="applicantsForTable" 
+            :rows="applicantsForTable" 
             :loading="loading" 
             @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
             @sortQuery="(param)=>{
@@ -72,7 +72,7 @@
             :pagination="pagination"
             @on-loading-state-change="(v : boolean) => loading = v"
             @on-data-update="async (newData) => {
-              applicantsForTable = newData as Applicant[]
+              applicantOrFixData = newData as Applicant[] | ApplicantFix[]
             }"
           />
       </q-scroll-area>
@@ -82,21 +82,21 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
 import { useApplicant } from 'src/stores/applicant';
 import { limitQuery } from './const/applicantColumns';
-import applicantTable from './components/ApplicantTable.vue'
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
-import { Applicant, ApplicantStatus } from 'src/shared/model';
+import { Applicant, ApplicantFix, ApplicantStatus, ApplicantWithFix } from 'src/shared/model';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useOrganization } from 'src/stores/organization';
+import ApplicantTable from './components/ApplicantTable.vue';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
@@ -116,7 +116,8 @@ const applicantStore = useApplicant();
 const organization = useOrganization()
 
 /** getters */
-const applicantsForTable = ref<Applicant[]>([])
+const applicantsForTable = ref<ApplicantWithFix[]>([])
+const applicantOrFixData = ref<Applicant[] | ApplicantFix[]>([])
 const paginationConstraints = computed(()=>{
   let result = <QueryFieldFilterConstraint[]>[]
   for (const [key, value] of Object.entries(applicantStore.state.applicantProgressFilter)){
@@ -134,13 +135,6 @@ const pagination = ref({
   order: orderBy('currentStatusTimestamp', 'asc'),
   constraints: paginationConstraints.value
 });
-const router = useRouter()
-
-onMounted(()=>{
-  if(!applicantStore.state.applicantRowsCount[statusParams.firestore]){
-    router.push('/applicant-progress')
-  }
-})
 
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {
@@ -155,6 +149,23 @@ watch(()=>organization.currentOrganizationId, (newVal)=>{
   applicantStore.state.applicantProgressFilter.userInCharge = ''
   paginationRef.value?.setConstraints(paginationConstraints.value);
   paginationRef.value?.queryFirstPage()
+})
+watch(()=>applicantOrFixData.value, async (newVal)=>{
+  loading.value = true
+  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(statusParams.firestore as ApplicantStatus)){
+    applicantsForTable.value = newVal as Applicant[]
+    return
+  }
+  const newResult : ApplicantWithFix[] = await Promise.all((newVal as ApplicantFix[]).map(async (row)=>{
+    if(applicantStore.state.applicants[row.applicant_id]){
+      return {...applicantStore.state.applicants[row.applicant_id], fix: row}
+    } else {
+      return {...await applicantStore.getApplicantById(row.applicant_id), fix: row}
+    }
+  }))
+  applicantsForTable.value = []
+  applicantsForTable.value = newResult
+  loading.value = false
 })
 </script>
 <style scoped>
