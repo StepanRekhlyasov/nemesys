@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { tableColumnsSavedCriteriaList,searchData, checkValidity } from './const/index';
 import { collection, getDocs, getFirestore, orderBy, doc, deleteDoc } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import TablePagination from 'src/components/pagination/TablePagination.vue';
+import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
 import { useQuasar } from 'quasar';
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
@@ -22,7 +22,7 @@ const loading = ref(false)
 const searchKeyword = ref(null);
 const pagination = ref({
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 5,
   path: 'applicantSaveSearch',
   order: orderBy('created_at', 'asc'),
 });
@@ -55,9 +55,9 @@ const dltSearch = async (id) => {
     const docRef = doc(db, 'applicantSaveSearch', id);
     await deleteDoc(docRef);
     await getSearchData()
-    Alert.success($q, t)
+    Alert.success()
   } catch (error) {
-    Alert.warning($q, t)
+    Alert.warning(error)
   }
   loading.value = false;
   loadPagination.value = loadPagination.value == 0 ? 1 : 0
@@ -73,15 +73,14 @@ const Save = async () => {
   let edit_data = searchData.value
 
  if(!checkValidity(edit_data)){
-  console.log('sdcds')
-  Alert.warning($q,t);
+  Alert.warning();
  }
   else {
     const save = await saveSearch.saveSearch(searchData.value);
     getSearchData();
     drawerRight.value = false;
     if (save)
-      Alert.success($q, t)
+      Alert.success()
   }
   isSaving.value = false;
 }
