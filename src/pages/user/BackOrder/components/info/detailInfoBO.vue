@@ -507,8 +507,6 @@ const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
 const data = ref(props.selectedBo)
-console.log(props.selectedBo)
-
 
 async function save() {
   loading.value = true;
