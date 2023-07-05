@@ -78,6 +78,7 @@
 			</q-card-section>
 		</q-card>
 	</div>
+
 	<InfoBO ref="infoDrawer"  @openSearchByMap="showSearchByMap=true" @passClientToMapSearch="(clientValue)=>{
 		selectedClient = clientValue
 	}"/>

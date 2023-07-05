@@ -1,6 +1,6 @@
 <template>
     <q-card class="no-shadow full-height">
-        <q-form class="q-gutter-none" @submit="searchStaff" @reset="Reset">
+        <q-form class="q-gutter-none" @submit="searchStaff" @reset="reset">
             <div class="row">
                 <div class="col-3"></div>
                 <div class="col-2"> {{ $t('applicant.add.status') }}</div>
@@ -26,11 +26,12 @@
                     <q-input type="date" v-model="searchData['applicationDateMax']" outlined dense mask="YYYY/MM/DD"
                         class="q-mr-xs q-ml-xs" />
                 </div>
-                <div class="col-2">
-                    <q-btn :label="$t('client.list.search')" type="submit" color="primary" />
+                <div class="col-6 q-my-sm">
+                    <q-btn :label="$t('client.list.search')" type="submit" color="primary q-ml-sm" />
                     <q-btn :label="$t('common.reset')" type="reset" color="primary" outline class="q-ml-sm" />
+                    <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save" color="primary q-ml-sm"/>
                 </div>
-                <div class="col-1">
+                <div class="col-2">
                     <q-expansion-item v-model="expanded" dense dense-toggle :label="$t('common.detailedConditions')"
                         header-class="q-pa-none" switch-toggle-side />
                 </div>
@@ -101,7 +102,7 @@
                             </div>
                             <div class="col-3 q-pl-sm">
                                 <q-select outlined v-model="searchData['municipalities']"
-                                    :options="prefectureData[prefJP[searchData['prefecture']]]"
+                                    :options="prefectureData[searchData['prefecture']]"
                                     :disable="!searchData['prefecture']" dense />
                             </div>
                             <div class="col-3 q-pl-sm">
@@ -369,10 +370,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, defineEmits, watch } from 'vue'; //ref,
-// import { useI18n } from 'vue-i18n';
-import { statusList, applicantClassification, occupationList, qualificationList, availableShiftList, daysList, sexList, rankList } from 'src/shared/constants/Applicant.const';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { ref, onMounted, defineEmits, watch, ComputedRef } from 'vue'; //ref,
+import { statusList,StatusOption, applicantClassification, occupationList, qualificationList, availableShiftList, daysList, sexList, rankList } from 'src/shared/constants/Applicant.const';
+import { DocumentData, doc, getDoc, getFirestore } from 'firebase/firestore';
 import AreaSearch from './AreaSearch.vue';
 import MapSearch from './MapSearch.vue';
 import { getAuth } from '@firebase/auth';
@@ -382,42 +382,44 @@ import { prefectureList as prefList } from 'src/shared/constants/Prefecture.cons
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from './components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import {useApplicantSaveSearch} from 'src/stores/applicantSaveSearch'
+import {checkValidity} from 'src/pages/user/Applicant/const/index'
 
-
-// const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
-
+const saveSearch = useApplicantSaveSearch()
 const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
 
-const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
-const prefectureList = ref(prefList);
-const prefectureData = ref({});
-const stationData = ref([]);
+const searchData = ref<DocumentData>(JSON.parse(JSON.stringify(searchDataSample)));
+const prefectureList = ref<ComputedRef>(prefList);
+const prefectureData = ref<DocumentData>({});
+const stationData = ref<DocumentData>([]);
 //const selectedPref = ref({lable: ''})
 
-const statusOption = ref(statusList)
-const expanded = ref(false)
-const expandedAdvance = ref(true)
-const expandedArea = ref(true)
-const drawerRight = ref(false);
-const drawerType = ref('')
-const prefJP = ref({})
-const routeData = ref([]);
+const statusOption = ref<StatusOption | ComputedRef>(statusList)
+const expanded = ref<boolean>(false)
+const expandedAdvance = ref<boolean>(true)
+const expandedArea = ref<boolean>(true)
+const drawerRight = ref<boolean>(false);
+const drawerType = ref<string>('')
+const prefJP = ref<DocumentData>({})
+const routeData = ref<DocumentData>([]);
 
 const emit = defineEmits<{
     (e: 'loadSearchStaff', staffList)
     (e: 'isLoading', flag)
 }>()
 
-const sexOption = ref(sexList);
-const classificationOption = ref(applicantClassification);
+const isSaving = ref<boolean>(false);
 
-const rankOption = ref(rankList);
+const sexOption = ref<ComputedRef>(sexList);
+const classificationOption = ref<ComputedRef>(applicantClassification);
 
-const occupationOption = ref(occupationList);
-const qualificationOption = ref(qualificationList);
-const availableShiftOption = ref(availableShiftList);
-const workingDaysOption = ref(daysList);
+const rankOption = ref<ComputedRef>(rankList);
+
+const occupationOption = ref<ComputedRef>(occupationList);
+const qualificationOption = ref<ComputedRef>(qualificationList);
+const availableShiftOption = ref<ComputedRef>(availableShiftList);
+const workingDaysOption = ref<ComputedRef>(daysList);
 
 watch(
     () => (searchData.value.route),
@@ -511,9 +513,51 @@ const searchStaff = async () => {
     emit('isLoading', false)
 };
 
-const Reset = () => {
+const reset = () => {
     searchData.value = JSON.parse(JSON.stringify(searchDataSample));
     //searchStaff();
+}
+
+const save=  async ()=>{
+  isSaving.value = true;
+  let data = searchData.value
+    data['created_at'] = null;
+    data['id'] = null;
+    let valid = true;
+    try{
+      checkValidity(data)
+    }
+    catch(error){
+      valid = false
+      Alert.warning(error)
+    }
+    if(valid){
+        if(!data['keyword']) data['keyword'] = null;
+        if(!data['ageMin']) data['ageMin'] = null;
+        if(!data['ageMax']) data['ageMax'] = null;
+        if(!data['sex']) data['sex'] = null;
+        if(!data['staffrank']) data['staffrank'] = null;
+        if(!data['classification']) data['classification'] = null;
+        if(!data['occupation']) data['occupation'] = null;
+        if(!data['prefecture']) data['prefecture'] = null;
+        if(!data['municipalities']) data['municipalities'] = null;
+        if(!data['route']) data['route'] = null;
+        if(!data['neareststation']) data['neareststation'] = null;
+        if(!data['qualification']) data['qualification'] = null;
+        if(!data['yearsExperienceMin']) data['yearsExperienceMin'] = null;
+        if(!data['yearsExperienceMax']) data['yearsExperienceMax'] = null;
+        if(!data['availableShift']) data['availableShift'] = null;
+        if(!data['daysperweek']) data['daysperweek'] = null;
+        if(!data['workPerWeekMin']) data['workPerWeekMin'] = null;
+        if(!data['workPerWeekMax']) data['workPerWeekMax'] = null;
+        if(!data['applicationDateMin']) data['applicationDateMin'] = null;
+        if(!data['applicationDateMax']) data['applicationDateMax'] = null;
+        if(!data['status']) data['status'] = null;
+        const save =  await saveSearch.saveSearch(data);
+        if(save)
+        Alert.success()
+      }
+      isSaving.value = false;
 }
 
 </script>

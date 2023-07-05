@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    minimum:'最小',
+    maximum:'最大',
     BO: 'BO',
     select: '選択',
     reflect: '反映',
@@ -726,6 +728,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※SMS送信時の注意事項',
+      note1:'・SMS送信の際に送付元電話番号の指定はできません。受信者側の混乱をさける為にも、本文の最初に会社名を記載することをお勧めします。',
+      note2:'・最大全半角70文字以内で入力してください。（超える場合は、複数回に渡って送信される場合があります。）',
+      note3:'・改行は2文字分としてカウントされます。',
+      note4:'・50文字以内にURLを差し込んでください。',
+      note5:'・1通あたり8円の費用が発生します。'
+    },
     add: {
       name: '氏名',
       kanaName: 'フリガナ',
@@ -769,6 +779,12 @@ export default {
       applicationMetod: '応募方法',
       image: '応募者画像',
     },
+    shift:{
+      workinghoursearly: '早番',
+      workinghoursday: '日勤',
+      workinghourslate: '遅番',
+      workinghoursnight: '夜勤',
+    },
     list: {
       name: 'スタッフ名 ',
       category: '区分',
@@ -788,6 +804,7 @@ export default {
       operationInfo: '稼働情報',
       yearsExperience: '経験年数',
       availableShift: '勤務可能シフト',
+      station:'駅',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -823,7 +840,7 @@ export default {
         userInChargeVisit: '職見担当ユーザー',
         personalStatus: '本人状況',
         corporationStatus: '法人状況',
-        businessStatus: '営業状況', 
+        businessStatus: '営業状況',
         visitRecotd: '職見記録',
         memo: 'メモ',
         chargeOfFix: 'FIX担当ユーザー',
@@ -938,9 +955,11 @@ export default {
     statusOption: {
       unsupported: '未対応',
       waitingContact: '接触待ち',
+      wait_contact: '接触待ち',
       excluded: '対象外',
       anotherCompany: '他社決定',
       breakContact: '不通',
+      break_contact: '不通',
       decline: '登録辞退',
       wait_attend: 'アテンド待ち',
       wait_FIX: 'FIX待ち',
@@ -1161,6 +1180,15 @@ export default {
     distanceBusiness: '事業所との距離',
     matchDegree: 'マッチ度',
     statusThisTime: '現時点での状況',
+    sms:{
+      send:'送信',
+      sendSMS:'SMS送信',
+      sendContent:'送信内容',
+      characters:'キャラクター',
+      content:'コンテンツ',
+      template:'レンプレート',
+      form:'提出フォーム',
+    },
     create: {
       employmentConditions: '■就業条件',
       numberWorkingDays: '就業日数',
