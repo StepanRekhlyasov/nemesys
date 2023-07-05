@@ -33,6 +33,12 @@
         </q-td>
       </template>
 
+      <template v-slot:body-cell-author="props">
+        <q-td :props="props">
+          {{ props.row.author || t('common.userNotFound') }}
+        </q-td>
+      </template>
+
     </q-table>
     <div class="row justify-start q-mt-md q-mb-md pagination q-mx-md">
       <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
@@ -146,20 +152,17 @@
       if (!docWholeSnap.empty) {
           docWholeSnap.docs.forEach(async (item, index) => {
               const author = await userStore.getUserById(item.data().author)
-
-              if (author?.id) {
-                  notificationTableRows.value = [...notificationTableRows.value, {
-                      number: index + 1,
-                      id: item.id,
-                      status: t('releaseNotes.' + item.data().status),
-                      category: t('releaseNotes.form.options.' + item.data().category),
-                      subject: item.data().subject,
-                      content: item.data().content,
-                      author: author?.name,
-                      creationDate: date.formatDate(item.data().dateCreation.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                      deliveryDate: date.formatDate(item.data().dateDelivery.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                  }]
-              }
+              notificationTableRows.value = [...notificationTableRows.value, {
+                  number: index + 1,
+                  id: item.id,
+                  status: t('releaseNotes.' + item.data().status),
+                  category: t('releaseNotes.form.options.' + item.data().category),
+                  subject: item.data().subject,
+                  content: item.data().content,
+                  author: author?.name ?? '',
+                  creationDate: date.formatDate(item.data().dateCreation.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                  deliveryDate: date.formatDate(item.data().dateDelivery.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+              }]
           })
 
       }

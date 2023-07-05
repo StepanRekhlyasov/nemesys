@@ -232,7 +232,14 @@ export default {
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
-      billingHistory: 'Billing history'
+      billingHistory: 'Billing history',
+      aggregateDataDisplay:'Aggregated Data Display',
+      dataOutputDisplay:'Data Output',
+      dataOutputDisplayTable:{
+        outputMonth:'Output month',
+        output:'output',
+        companyWide:'Company-wide',
+      },
     }
   },
   settings: {
@@ -1099,7 +1106,7 @@ export default {
         appointmentDate: 'O',
       },
       table: {
-        'fullName': 'Name',
+        'fullName': 'Full Name',
         'applicationDate': 'Application Date',
         'nearestStation': 'Nearest Station',
         'qualificationsExperience': 'Qualifications and Experience',

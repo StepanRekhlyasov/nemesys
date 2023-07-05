@@ -256,6 +256,14 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
   office: string;
   backOrder: string;
   applicant_id: string;
+  waitUpdate?: boolean;
+  currentStatusTimestamp?: Timestamp;
+  currentStatusMonth?: string;
+  userInCharge?: string;
+  status?: ApplicantStatus;
+  prefecture?: string;
+  branchIncharge?: string;
+  organizationId?: string;
 }
 
 export interface FixMainInfo {
