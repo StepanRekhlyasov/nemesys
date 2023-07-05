@@ -5,8 +5,7 @@ import { addDoc, collection, deleteField, doc, getDoc, getDocs, getFirestore, or
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from './applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { applicantStatusCharge, applicantStatusDates, applicantStatusOkFields } from 'src/shared/constants/Applicant.const';
-import { getApplicantNGStatus } from 'src/shared/utils/Applicant.utils';
+import { applicantNGStatusField, applicantStatusCharge, applicantStatusDates, applicantStatusOkFields } from 'src/shared/constants/Applicant.const';
 import { useRoute } from 'vue-router';
 
 export interface FixOption {
@@ -137,7 +136,7 @@ export const useFix = defineStore('fix', () => {
       if(data[key] === true){
         newStatus = value
       } else if (data[key] === false){
-        const NGField = getApplicantNGStatus(applicantStatusOkFields[key])
+        const NGField = applicantNGStatusField[applicantStatusOkFields[key]]
         newStatus = data[NGField]
         break;
       }
