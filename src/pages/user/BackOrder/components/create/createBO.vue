@@ -138,7 +138,7 @@ const data = ref<Partial<BackOrderModel>>({});
 async function addBackOrder() {
     loading.value = true
     if (data.value.client_id && boForm.value?.validate){
-      await backOrderStore.addBackOrder(data.value);
+      await backOrderStore.addBackOrder({...data.value, type: props.type });
       loading.value = false;
       backOrderStore.loadBackOrder();
       closeDialog();

@@ -13,7 +13,7 @@
       </labelField>
     </div>
 
-    <div class="row">      
+    <div class="row">
       <labelField :label="$t('backOrder.create.workingDays')" :edit="true" 
         labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationRule]">

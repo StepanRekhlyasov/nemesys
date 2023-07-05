@@ -46,10 +46,10 @@
     <div class="row" v-if="type == 'referral'" >
       <labelField :label="$t('backOrder.employmentType')" :edit="true" required 
         labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10">
-        <q-field v-model="data['status']" borderless hide-bottom-space :rules="[creationRule]">
+        <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio
             v-for="key in BackOrderStatus"
-            v-model="data['status']"
+            v-model="data['employmentType']"
             :label="$t('client.backOrder.'+key)"
             :val="key"
             :key="key"
