@@ -89,7 +89,7 @@
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center ">
         <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
           <q-toggle v-model="data['experienceReq']"  :disable="loading" 
-            :label="data['experienceReq']?$t('common.yes'):$t('common.no')"/>
+            :label="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned'):$t('backOrder.create.required')"/>
         </q-field>
       </labelField>
       <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true"
