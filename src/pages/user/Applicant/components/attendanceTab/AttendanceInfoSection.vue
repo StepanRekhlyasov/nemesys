@@ -56,15 +56,15 @@
       </q-input>
     </div>
     <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center" style="white-space: nowrap;">
-      {{ $t('applicant.attendant.attendeeUserInCharge') }}
+      {{ $t('applicant.attendant.chargeOfAttending') }}
     </div>
     <div class="col-2 q-pl-md blue ">
       <span v-if="!infoEdit">{{
           usersListOption
-            .filter(user => user.value === data['attendeeUserInCharge'])
+            .filter(user => user.value === data['chargeOfAttending'])
             .map(user => user.label).join('')
       }}</span>
-      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['attendeeUserInCharge']"
+      <q-select v-if="infoEdit" outlined dense :options="usersListOption" v-model="data['chargeOfAttending']"
         bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
     </div>
   </div>
@@ -122,7 +122,7 @@ function resetData() {
     attendingReasonNG: props?.applicant['attendingReasonNG'],
     attendingReasonNGDetail: props?.applicant['attendingReasonNGDetail'],
     attendingDate: timestampToDateFormat(props?.applicant['attendingDate']),
-    attendeeUserInCharge: props?.applicant['attendeeUserInCharge'],
+    chargeOfAttending: props?.applicant['chargeOfAttending'],
     memo: props?.applicant['memo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));

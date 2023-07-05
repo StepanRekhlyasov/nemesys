@@ -168,6 +168,7 @@ export default {
       userSearch: 'ユーザー検索',
       operationChange: '稼働変更',
       organizationsList: '企業一覧表示',
+      occupationSpecificItems: '職種独自項目設定',
       organizationsTable: {
         number: 'No.',
         organizationId: '企業ID',
@@ -903,7 +904,7 @@ export default {
         qualifications: '資格',
         memo: '誘致メモ',
         invitationDate: '誘致日',
-        seduser: '誘致担当ユーザー',
+        chargeOfAttraction: '誘致担当ユーザー',
         position: '職種',
         period: '就業期間',
 
@@ -979,7 +980,7 @@ export default {
     attendant: {
       attendantStatus: 'アテンドステータス',
       day: 'アテンド日',
-      attendeeUserInCharge: 'アテンド担当者ユーザー',
+      chargeOfAttending: 'アテンド担当者ユーザー',
       memo: 'アテンドメモ',
       desiredConditions: '希望条件',
       timeToWork: '就業可能時期',

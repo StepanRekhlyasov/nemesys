@@ -1,6 +1,6 @@
 import { collection, Firestore,  getDocs, orderBy, query, where } from 'firebase/firestore';
 import { ConstraintsType } from './utils';
-import { Applicant, ApplicantStatus } from '../model';
+import { ApplicantStatus } from '../model';
 
 export const getApplicantContactsList = (db: Firestore, applicant_id: string) => {
   return getDocs(query(
@@ -30,21 +30,39 @@ export const getApplicantCurrentStatusTimestampField = (status? : ApplicantStatu
       return '';
   }
 }
-
-export const getApplicantNGStatus = (status : ApplicantStatus, applicant : Applicant) => {
+export const getApplicantCurrentUserInChargeField = (status? : ApplicantStatus) => {
   switch (status){
     case ApplicantStatus.WAIT_ATTEND:
-      return applicant['attractionsReasonNG'];
+      return 'chargeOfAttraction';
     case ApplicantStatus.WAIT_FIX:
-      return applicant['attendingReasonNG'];
+      return 'chargeOfAttending';
     case ApplicantStatus.WAIT_VISIT:
-        return applicant['fixReasonNG'];
+      return 'chargeOfFix';
+    case ApplicantStatus.WAIT_OFFER:
+      return 'chargeOfInspection';
+    case ApplicantStatus.WAIT_ENTRY:
+      return 'chargeOfOffer';
+    case ApplicantStatus.WORKING:
+      return 'chargeOfAdmission';
+    default:
+      return '';
+  }
+}
+
+export const getApplicantNGStatus = (status : ApplicantStatus) => {
+  switch (status){
+    case ApplicantStatus.WAIT_ATTEND:
+      return 'attractionsReasonNG';
+    case ApplicantStatus.WAIT_FIX:
+      return 'attendingReasonNG';
+    case ApplicantStatus.WAIT_VISIT:
+        return 'fixReasonNG';
       case ApplicantStatus.WAIT_OFFER:
-        return applicant['inspectionReasonNG'];
+        return 'inspectionReasonNG';
       case ApplicantStatus.WAIT_ENTRY:
-        return applicant['offerReasonNG'];
+        return 'offerReasonNG';
       case ApplicantStatus.WORKING:
-      return applicant['admissionReasonNG'];
+      return 'admissionReasonNG';
     default:
       return '';
   }
