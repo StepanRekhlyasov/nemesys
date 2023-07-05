@@ -705,6 +705,7 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
+      temptoperm:'Temp to Perm'
     },
     contractUnit: {
       corporateBulk: 'Corporate Bulk',
