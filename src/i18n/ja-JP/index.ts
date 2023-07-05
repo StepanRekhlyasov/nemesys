@@ -234,7 +234,14 @@ export default {
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
-      billingHistory: '請求履歴'
+      billingHistory: '請求履歴',
+      aggregateDataDisplay:'集計データ表示',
+      dataOutputDisplay:'データ出力',
+      dataOutputDisplayTable:{
+        outputMonth:'出力月',
+        output:'出力',
+        companyWide:'全社',
+      },
     }
   },
   settings: {
@@ -721,6 +728,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※SMS送信時の注意事項',
+      note1:'・SMS送信の際に送付元電話番号の指定はできません。受信者側の混乱をさける為にも、本文の最初に会社名を記載することをお勧めします。',
+      note2:'・最大全半角70文字以内で入力してください。（超える場合は、複数回に渡って送信される場合があります。）',
+      note3:'・改行は2文字分としてカウントされます。',
+      note4:'・50文字以内にURLを差し込んでください。',
+      note5:'・1通あたり8円の費用が発生します。'
+    },
     add: {
       name: '氏名',
       kanaName: 'フリガナ',
@@ -789,6 +804,7 @@ export default {
       operationInfo: '稼働情報',
       yearsExperience: '経験年数',
       availableShift: '勤務可能シフト',
+      station:'駅',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -950,6 +966,7 @@ export default {
       wait_visit: '職見待ち',
       wait_offer: '内定待ち',
       wait_entry: '入職待ち',
+      wait_contact: '接触待ち',
       working: '稼働中',
       wait_termination: '終了待ち',
       wait_retire: '退職待ち',
@@ -1164,6 +1181,15 @@ export default {
     distanceBusiness: '事業所との距離',
     matchDegree: 'マッチ度',
     statusThisTime: '現時点での状況',
+    sms:{
+      send:'送信',
+      sendSMS:'SMS送信',
+      sendContent:'送信内容',
+      characters:'キャラクター',
+      content:'コンテンツ',
+      template:'レンプレート',
+      form:'提出フォーム',
+    },
     create: {
       employmentConditions: '■就業条件',
       numberWorkingDays: '就業日数',

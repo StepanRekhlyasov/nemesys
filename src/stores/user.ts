@@ -70,8 +70,6 @@ export const useUserStore = defineStore('user', () => {
       return userSnap.data() as User
     }
 
-    throw new Error(t('common.userNotFound'))
-
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
@@ -83,6 +81,10 @@ export const useUserStore = defineStore('user', () => {
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
     const user = await getUserById(userId)
+
+    if(!user){
+      throw new Error(t('common.userNotFound'))
+    }
 
     if (adminRolesIds.includes(user.role)) {
       if (organizationCode == ADMIN_ORGANIZATION_CODE) {

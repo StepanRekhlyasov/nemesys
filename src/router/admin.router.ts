@@ -3,6 +3,28 @@ import { MenuRouter, MenuParent } from 'src/shared/model/Menu.model';
 
 const admin_router: MenuRouter[] = [
   {
+    path: 'dataoutput',
+    title: 'menu.admin.dataOutputDisplay',
+    component: () => import('src/pages/admin/CompanywideTotal/DataOutput/DataOutput.vue'),
+    meta: {
+      requiresAuth: true,
+      permissions: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
+    },
+    menuParent: MenuParent.AdminAggregationData
+  },
+  {
+    path: 'aggregateddata',
+    title: 'menu.admin.aggregateDataDisplay',
+    component: () => import('src/pages/admin/CompanywideTotal/AggregationData/AggregatedData.vue'),
+    meta: {
+      requiresAuth: true,
+      permissions: [UserPermissionNames.AdminPageAccess],
+      isAdmin: true
+    },
+    menuParent: MenuParent.AdminAggregationData
+  },
+  {
     path: 'release-notes',
     title: 'menu.admin.releaseNotes',
     component: () => import('src/pages/admin/ReleaseNotes/ReleaseNotes.vue'),

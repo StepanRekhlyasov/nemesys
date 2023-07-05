@@ -15,9 +15,9 @@
     <DashboardInquiryDrawer v-model="drawerDetails" @closeDrawer="drawerDetails=false">
       <DashboardInquiryDetails :id="openId" />
     </DashboardInquiryDrawer>
-    <q-table 
-      :columns="columns" 
-      :rows="inqueries" 
+    <q-table
+      :columns="columns"
+      :rows="inqueries"
       class="dashboardTable"
       :separator="'none'"
       hide-pagination
@@ -41,9 +41,9 @@
         dense
         @click="handleExpand()"
       >
-        <q-icon v-if="pagination.rowsPerPage > 0" color="primary" :name="'arrow_drop_down'" :size="'25px'"  /> 
-        <q-icon v-else color="primary" :name="'arrow_drop_up'" :size="'25px'"  /> 
-        {{ $t('dashboard.openList') }} 
+        <q-icon v-if="pagination.rowsPerPage > 0" color="primary" :name="'arrow_drop_down'" :size="'25px'"  />
+        <q-icon v-else color="primary" :name="'arrow_drop_up'" :size="'25px'"  />
+        {{ $t('dashboard.openList') }}
       </q-btn>
     </div>
 </template>

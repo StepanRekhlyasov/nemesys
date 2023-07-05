@@ -1,5 +1,6 @@
 <template>
   <q-card
+    v-if="applicant"
     bordered
     class='cursor-move q-mb-md text-caption full-width applicant-card'
     square
@@ -16,14 +17,16 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1' v-html="statusDateName[status]"></div>
-      <div class='col'>{{ fix[statusDateField(status)] ? fix[statusDateField(status)].replaceAll('/', '.') : '—' }}</div>
+      <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ timestampToDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
+      <div class='col' v-else>{{ fix[applicantStatusDates[status]]?fix[applicantStatusDates[status]]:'-' }}</div>
     </div>
     <q-btn
+      v-if="countFixes>1"
       @click="()=>{
-        if(applicantStore.state.highlightedApplicant === applicant.id){
+        if(applicantStore.state.highlightedApplicant === applicant?.id){
           applicantStore.state.highlightedApplicant = undefined
         } else {
-          applicantStore.state.highlightedApplicant = applicant.id
+          applicantStore.state.highlightedApplicant = applicant?.id
         }
       }"
       class="countFixesBtn"
@@ -37,9 +40,10 @@ import { Timestamp } from 'firebase/firestore'
 import { Applicant, ApplicantFix, ApplicantStatus } from 'src/shared/model'
 import { computed } from 'vue'
 import { RankCount } from 'src/shared/utils/RankCount.utils'
-import { getApplicantCurrentStatusTimestampField as statusDateField } from 'src/shared/utils/Applicant.utils'
 import { i18n } from 'boot/i18n'
 import { useApplicant } from 'src/stores/applicant'
+import { applicantStatusDates } from 'src/shared/constants/Applicant.const'
+import { timestampToDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   fix: ApplicantFix,
@@ -60,10 +64,13 @@ const statusDateName = computed(()=>{
 
 const applicantStore = useApplicant()
 const applicant = computed(()=>{
-  return applicantStore.state.applicants[props.fix.applicant_id]
+  return applicantStore.state.applicants[props.fix.applicant_id]?applicantStore.state.applicants[props.fix.applicant_id]:undefined
 })
 const countFixes = computed(()=>{
-  return applicantStore.state.applicantFixes[props.fix.applicant_id].length
+  const notWorkingFix = applicantStore.state.applicantFixes[props.fix.applicant_id].filter((row)=>{
+    return row['status'] !== 'working'
+  })
+  return notWorkingFix.length
 })
 
 const emit = defineEmits<{
@@ -71,6 +78,9 @@ const emit = defineEmits<{
 }>()
 
 const redAlert = computed(()=>{
+  if(!applicant.value){
+    return false
+  }
   if(!(applicant.value.currentStatusTimestamp instanceof Timestamp)){
     return false
   }

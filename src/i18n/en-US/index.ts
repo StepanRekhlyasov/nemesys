@@ -234,7 +234,14 @@ export default {
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
-      billingHistory: 'Billing history'
+      billingHistory: 'Billing history',
+      aggregateDataDisplay:'Aggregated Data Display',
+      dataOutputDisplay:'Data Output',
+      dataOutputDisplayTable:{
+        outputMonth:'Output month',
+        output:'output',
+        companyWide:'Company-wide',
+      },
     }
   },
   settings: {
@@ -726,6 +733,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※Notes for SMS transmission:',
+      note1:'・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',
+      note2:'・Please input within a maximum of 70 characters in both full-width and half-width characters. (If the limit is exceeded, the message may be sent in multiple parts.)',
+      note3:'・Line breaks count as 2 characters.',
+      note4:'・Please include URLs within 50 characters.',
+      note5:'・Each message will incur a cost of 8 yen.'
+    },
     add: {
       name: 'Name',
       kanaName: 'Kana Name',
@@ -794,6 +809,7 @@ export default {
       operationInfo: 'Operation Info',
       yearsExperience: 'Years of Experience',
       availableShift: 'Available Shift',
+      station:'station',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -904,7 +920,7 @@ export default {
 
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
-        classiffication: 'Classiffication',
+        classiffication: 'Classification',
         qualifications: 'Qualifications',
         memo: 'Attraction Memo',
         invitationDate: 'Invitation Date',
@@ -954,6 +970,7 @@ export default {
       wait_visit: 'Wait Visit',
       wait_offer: 'Wait Offer',
       wait_entry: 'Wait Entry',
+      wait_contact: 'Waiting for Contact',
       working: 'Working',
       wait_termination: 'Wait Termination',
       wait_retire: 'Wait Retire',
@@ -1099,7 +1116,7 @@ export default {
         appointmentDate: 'O',
       },
       table: {
-        'fullName': 'Name',
+        'fullName': 'Full Name',
         'applicationDate': 'Application Date',
         'nearestStation': 'Nearest Station',
         'qualificationsExperience': 'Qualifications and Experience',
@@ -1168,6 +1185,15 @@ export default {
     distanceBusiness: 'Distance from Business',
     matchDegree: 'Match degree',
     statusThisTime: 'Status at this time',
+    sms:{
+      send:'Send',
+      sendSMS:'Send SMS',
+      sendContent:'Contents of transmission',
+      characters:'Characters',
+      content:'Content',
+      template:'Template',
+      form:'Submission form',
+    },
     create: {
       employmentConditions: '■ Employment Conditions',
       numberWorkingDays: 'Number of working days',
