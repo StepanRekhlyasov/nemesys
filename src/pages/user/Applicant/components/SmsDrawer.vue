@@ -26,7 +26,7 @@
           <p>46 {{ t('backOrder.sms.characters') }}</p>
         </div>
         <div class="row">
-          <q-btn :disable="messsage == ''" @click="sendMsg" :label="t('backOrder.sms.send')"
+          <q-btn :disable="messsage === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
             class="bg-primary text-white"></q-btn>
           <q-btn @click="messsage = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
         </div>
@@ -165,7 +165,6 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, ComputedRef } from 'vue';
-import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant, options } from 'src/pages/user/Applicant/const/sms';
@@ -177,7 +176,7 @@ import { Applicant } from 'src/shared/model/Applicant.model'
 
 const loading = ref<boolean>(false)
 const statusOption = ref<StatusOption | ComputedRef>(statusList)
-const selected = ref<Record<string, { selected: boolean; Number: string | undefined}>>({})
+const selected = ref<Record<string, { selected: boolean; phoneNumber: string | undefined}>>({})
 const messsage = ref<string>('')
 const row = ref<Applicant[]>([])
 const keyword = ref<string | null>(null)
@@ -186,19 +185,18 @@ const date = ref<string | null>(null)
 const template = ref<string | null>(null)
 const getApplicant = useApplicant();
 
-const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 
 const sendMsg = async () => {
-  const isSend = await useSMS().Send(messsage.value, selected.value)
-  if (isSend) {
-    Alert.success($q, t)
+  try {
+    await useSMS().send(messsage.value, selected.value)
+    Alert.success()
     messsage.value = ''
-  }
-  else {
-    Alert.warning($q, t)
+  } catch (error) {
+    Alert.warning(error)
   }
 }
+
 const updateSelected = (rowItem) => {
   selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
 };
@@ -228,7 +226,7 @@ onMounted(async () => {
   row.value = await getFormatedData();
   row.value.forEach(data => {
     selected.value[data['id']] = {
-      'Number': data['phone'],
+      'phoneNumber': data['phone'],
       'selected': false,
     }
   });

@@ -6,8 +6,7 @@ import { useApplicant } from 'src/stores/applicant'
 export const useSMS = defineStore('sms', () => {
   const db = getFirestore();
 
-  async function Send(msg: string, selected: Record<string, { selected: boolean; Number: string | undefined }>) {
-    try {
+  async function send(msg: string, selected: Record<string, { selected: boolean; phoneNumber: string | undefined }>) {
       const selectedItems = Object.values(selected).filter((item) => item.selected === true);
       if (selectedItems.length === 0) {
         throw new Error('No selected Applicants');
@@ -16,17 +15,13 @@ export const useSMS = defineStore('sms', () => {
       for (const item of selectedItems) {
         const docRef = doc(collection(db, 'sms'));
         const docData = {
-          to: item.Number,
+          to: item.phoneNumber,
           body: msg,
           created_at: serverTimestamp(),
         };
         batch.set(docRef, docData);
       }
-      batch.commit()
-      return true;
-    } catch (error) {
-      return false;
-    }
+      await batch.commit()
   }
 
   const formatDate = (date: string, filteredData: DocumentData) => {
@@ -66,5 +61,5 @@ export const useSMS = defineStore('sms', () => {
     return rowData;
   }
 
-  return { Send, filterData, getApplicantWithFormatedDate }
+  return { send, filterData, getApplicantWithFormatedDate }
 })
