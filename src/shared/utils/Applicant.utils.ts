@@ -10,26 +10,6 @@ export const getApplicantContactsList = (db: Firestore, applicant_id: string) =>
   ))
 }
 
-export const getApplicantCurrentStatusTimestampField = (status? : ApplicantStatus) => {
-  switch (status){
-    case ApplicantStatus.WAIT_CONTACT:
-      return 'applicationDate';
-    case ApplicantStatus.WAIT_ATTEND:
-      return 'invitationDate';
-    case ApplicantStatus.WAIT_FIX:
-      return 'attendingDate';
-    case ApplicantStatus.WAIT_VISIT:
-      return 'fixDate';
-    case ApplicantStatus.WAIT_OFFER:
-      return 'inspectionDate';
-    case ApplicantStatus.WAIT_ENTRY:
-      return 'offerDate';
-    case ApplicantStatus.WAIT_TERMINATION:
-      return 'endDate';
-    default:
-      return '';
-  }
-}
 export const getApplicantCurrentUserInChargeField = (status? : ApplicantStatus) => {
   switch (status){
     case ApplicantStatus.WAIT_ATTEND:

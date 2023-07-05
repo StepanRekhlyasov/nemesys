@@ -1,6 +1,5 @@
-import { applicantStatusOkFields } from '../constants/Applicant.const';
+import { applicantStatusDates, applicantStatusOkFields } from '../constants/Applicant.const';
 import { ApplicantFix, ApplicantStatus } from '../model';
-import { getApplicantCurrentStatusTimestampField } from './Applicant.utils';
 
 export function getMostCompletedFix(fixes : ApplicantFix[]){
   if(fixes.length === 1){
@@ -15,7 +14,7 @@ export function getMostCompletedFix(fixes : ApplicantFix[]){
     })
     if(result.length){
       result.sort((a, b)=>{
-        if(new Date(a[getApplicantCurrentStatusTimestampField(value)]) < new Date(b[getApplicantCurrentStatusTimestampField(value)])){
+        if(new Date(a[applicantStatusDates[value]]) < new Date(b[applicantStatusDates[value]])){
           return 1
         }
         return -1
@@ -24,7 +23,7 @@ export function getMostCompletedFix(fixes : ApplicantFix[]){
     } 
   }
   fixes.sort((a, b)=>{
-    if(new Date(a[getApplicantCurrentStatusTimestampField(ApplicantStatus.WAIT_FIX)]) < new Date(b[getApplicantCurrentStatusTimestampField(ApplicantStatus.WAIT_FIX)])){
+    if(new Date(a[applicantStatusDates[ApplicantStatus.WAIT_FIX]]) < new Date(b[applicantStatusDates[ApplicantStatus.WAIT_FIX]])){
       return 1
     } 
     return -1

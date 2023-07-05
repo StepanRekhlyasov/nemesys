@@ -1096,7 +1096,7 @@ export default {
         appointmentDate: 'O',
       },
       table: {
-        'fullName': 'Name',
+        'fullName': 'Full Name',
         'applicationDate': 'Application Date',
         'nearestStation': 'Nearest Station',
         'qualificationsExperience': 'Qualifications and Experience',
