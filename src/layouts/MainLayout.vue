@@ -18,11 +18,6 @@
                   {{ name }}
                 </q-item-section>
               </q-item>
-              <q-item clickable v-close-popup to='/system'  class=" q-pt-none  q-pb-none">
-                <q-item-section>
-                  <q-item-label>{{$t('settings.title')}}</q-item-label>
-                </q-item-section>
-              </q-item>
               <q-item clickable v-close-popup to='/system/editProfile'  class=" q-pt-none  q-pb-none">
                 <q-item-section>
                   <q-item-label>{{$t('settings.users.accauntSettings')}}</q-item-label>
