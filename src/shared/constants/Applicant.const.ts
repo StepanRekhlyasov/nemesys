@@ -7,6 +7,10 @@ import { mapToSelectOptions } from '../utils/User.utils';
 
 const { t } = i18n.global
 
+export interface StatusOption {
+  label: string;
+  value: string;
+}
 export const statusList = computed(() => {
   return [
     {
@@ -286,7 +290,7 @@ export const qualificationList = computed(() => {
     },
   ]
 })
- 
+
 export const availableShiftList = computed(() => {
   return [
     {
@@ -307,7 +311,7 @@ export const availableShiftList = computed(() => {
     },
   ]
 })
- 
+
 export const sexList = computed(() => {
   return [
     {
@@ -320,7 +324,7 @@ export const sexList = computed(() => {
     },
   ]
 })
- 
+
 export const rankList = computed(() => {
   return [
     {
@@ -349,7 +353,7 @@ export const rankList = computed(() => {
     },
   ]
 })
- 
+
 export const applicantListColumn = computed(() => {
   return [
     {
@@ -381,7 +385,7 @@ export const applicantListColumn = computed(() => {
       field: 'qualification',
       align: 'left',
     },
- 
+
   ];
 })
 
@@ -517,6 +521,7 @@ export const applicantStatusOkFields = {
   'offerStatus' : ApplicantStatus.WAIT_ENTRY,
   'admissionStatus' : ApplicantStatus.WORKING,
 }
+
 
 export const applicantUserInChargeField = {
   [ApplicantStatus.WAIT_ATTEND] : 'chargeOfAttraction',
