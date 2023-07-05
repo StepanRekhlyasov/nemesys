@@ -1171,6 +1171,8 @@ export default {
     distanceBusiness: '事業所との距離',
     matchDegree: 'マッチ度',
     statusThisTime: '現時点での状況',
+    wanted: '募集中',
+    inactive: '休止中',
     sms:{
       send:'送信',
       sendSMS:'SMS送信',
@@ -1221,6 +1223,7 @@ export default {
       caseType: '案件種別',
       requiredQualifications: '必要な資格',
       somethingNotQuestioned: '不問',
+      required: '必須',
       experienceRemarks: '経験備考',
       typeOfEmployment: '就業形態',
       BOGenerationRoute: 'BO発生経路',

@@ -49,7 +49,7 @@
 
 					<template v-slot:body-cell-employmentType="props">
 						<q-td :props="props" class="q-pa-none" >
-							<div> {{ props.row.status? $t(`client.backOrder.${props.row.status}`): '-'}} </div>
+							<div> {{ props.row.status? $t(`backOrder.${props.row.status}`): '-'}} </div>
 						</q-td>
 					</template>
 

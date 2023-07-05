@@ -1175,6 +1175,8 @@ export default {
     distanceBusiness: 'Distance from Business',
     matchDegree: 'Match degree',
     statusThisTime: 'Status at this time',
+    wanted: 'Wanted',
+    inactive: 'Inactive',
     sms:{
       send:'Send',
       sendSMS:'Send SMS',
@@ -1225,6 +1227,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
+      required: 'Required', 
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',

@@ -50,7 +50,7 @@
           <q-radio
             v-for="key in BackOrderStatus"
             v-model="data['employmentType']"
-            :label="$t('client.backOrder.'+key)"
+            :label="$t('backOrder.'+key)"
             :val="key"
             :key="key"
             :disable="loading"

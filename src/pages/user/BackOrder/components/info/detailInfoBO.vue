@@ -11,11 +11,11 @@
 
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.status')" :edit="edit" 
-        :value="selectedBo['status']?$t(`client.backOrder.${selectedBo['status']}`) : ''">
+        :value="selectedBo['status']?$t(`backOrder.${selectedBo['status']}`) : ''">
         <q-radio
           v-for="key in BackOrderStatus"
           v-model="data['status']"
-          :label="$t('client.backOrder.'+key)"
+          :label="$t('backOrder.'+key)"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
           :val="key"
           :key="key"
@@ -117,9 +117,14 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('client.backOrder.experienceReq')" :edit="edit" :value="selectedBo['experience_req']">
-        <q-input v-model="data['experience_req']" outlined dense :disable="loading"/>
-      </LabelField>
+      
+      <labelField :label="$t('client.backOrder.experienceReq')" :edit="edit"
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center ">
+        <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
+          <q-toggle v-model="data['experienceReq']"  :disable="loading" 
+            :label="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned'):$t('backOrder.create.required')"/>
+        </q-field>
+      </labelField>
       <LabelField :label="$t('client.backOrder.caseType')" :edit="edit"  v-if="selectedBo['type'] == 'dispatch'"
         :value="selectedBo['caseType']?$t(`applicant.add.${selectedBo['caseType']}`) : ''">
           <q-radio
@@ -217,14 +222,14 @@
 
     <div class="row q-pb-sm">
       <labelField :label="$t('backOrder.create.numberWorkingDays')" :edit="edit" labelClass="q-pl-md col-3 text-right self-center"
-        valueClass="q-pl-md col-3 flex" :value="selectedBo['daysPerWeekList']? data['daysPerWeekList'] : ''" v-if="selectedBo['type'] == 'dispatch'">
+        valueClass="q-pl-md col-3 flex" :value="selectedBo['daysPerWeekList']? $t('backOrder.daysPerWeek.' + data['daysPerWeekList']) : ''" v-if="selectedBo['type'] == 'dispatch'">
         <q-field v-model="data['daysPerWeekList']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio v-for="day in DaysPerWeekList" :key="day.value" :disable="loading"
             :label="day.label" :val="day.value" v-model="data['daysPerWeekList']" />
         </q-field>
       </labelField>
       <LabelField :label="`${$t('office.workingHours')}  ${$t('office.earlyShift')}`" :edit="edit" valueClass="q-pl-md col-3 flex"
-        :value="`${selectedBo['workingHoursEarly_min'] || ''} : ${selectedBo['workingHoursEarly_max'] || ''}`">
+        :value="`${selectedBo['workingHoursEarly_min'] || ''} ~ ${selectedBo['workingHoursEarly_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -273,7 +278,7 @@
         </q-field>
       </labelField>
       <LabelField :label="`${$t('office.workingHours')}  ${$t('office.dayShift')}`" :edit="edit" 
-        :value="`${selectedBo['workingHoursDay_min'] || ''} : ${selectedBo['workingHoursDay_max'] || ''}`">
+        :value="`${selectedBo['workingHoursDay_min'] || ''} ~ ${selectedBo['workingHoursDay_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -316,7 +321,7 @@
         <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" v-if="selectedBo['type'] == 'dispatch'"/>
       </LabelField>
       <LabelField :label="`${$t('office.workingHours')}  ${$t('office.lateShift')}`" :edit="edit" valueClass="q-pl-md col-3 flex"
-        :value="`${selectedBo['workingHoursLate_min'] || ''} : ${selectedBo['workingHoursLate_max'] || ''}`">
+        :value="`${selectedBo['workingHoursLate_min'] || ''} ~ ${selectedBo['workingHoursLate_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -359,7 +364,7 @@
 
       </div>
       <LabelField :label="`${$t('office.workingHours')}  ${$t('office.nightShift')}`" :edit="edit" 
-        :value="`${selectedBo['workingHoursNight_min'] || ''} : ${selectedBo['workingHoursNight_max'] || ''}`">
+        :value="`${selectedBo['workingHoursNight_min'] || ''} ~ ${selectedBo['workingHoursNight_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
