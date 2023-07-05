@@ -6,11 +6,11 @@
           <q-btn dense flat icon="close" class="q-mr-md " @click="emits('closeDialog')"/>
         </div>
         <div>
-          <div class="row text-subtitle2">
+          <div class="row text-subtitle2" v-if="client">
             {{ `${client['client_name']} / ${client['companyProfile']}` }}
           </div>
           <div class="row text-h6 text-weight-bold q-pr-xs">
-            バックオーダー新規追加／{{  $t(`backOrder.type.${type}`) }}
+            バックオーダー新規追加／{{   $t(`backOrder.type.${type}`)  }}
           </div>
         </div>
       </div>
@@ -29,10 +29,9 @@
           <div class="row text-primary text-h6" >
             {{'■ '+ $t('backOrder.create.workingType') }}
           </div>
-          <div class="row ">
-            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-4">
-              {{ $t('client.backOrder.introduction') }}
-            </labelField>
+          <div class="row">
+            <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" 
+              labelClass="q-pl-md col-2"  valueClass="col-4" :value="$t(`backOrder.type.${type}`)" />
           </div>
         </q-card-section>
         <!-- BO Generation Route Section -->
@@ -72,16 +71,16 @@ import { ref } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
 import TasksSection from './TasksSection.vue';
-import LabelField from 'src/components/form/LabelField.vue';
 import InHouseInfoSection from './InHouseInfoSection.vue';
 import IntroductionSection from './IntroductionSection.vue';
 import BasicInfoSection from './BasicInfoSection.vue';
 import { useBackOrder } from 'src/stores/backOrder';
+import labelField from 'src/components/form/LabelField.vue';
 
 const emits = defineEmits(['closeDialog']);
 const backOrderStore = useBackOrder();
 const props = defineProps<{
-  client: Client,
+  client?: Client,
   type: 'dispatch' | 'referral'
 }>()
 const loading = ref(false);
@@ -92,7 +91,7 @@ const backOrderData = ref({
 } as BackOrderModel);
 
 async function addBackOrder() {
-  if (props.client.id){
+  if (props.client && props.client.id){
     await backOrderStore.addBackOrder(backOrderData.value, props.client.id)
   }
 }

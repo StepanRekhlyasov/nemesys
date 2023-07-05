@@ -105,10 +105,11 @@ import { getAuth } from '@firebase/auth';
 import { doc, getDoc, getFirestore, updateDoc } from '@firebase/firestore';
 import { getDownloadURL, getStorage, ref as refStorage } from '@firebase/storage';
 import { ref } from 'vue';
-import { getRole, getUserOrganizationList } from 'src/shared/utils/User.utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { useRole } from 'src/stores/role';
+import { useOrganization } from 'src/stores/organization';
 
 export default {
   name: 'EditProfile',
@@ -118,28 +119,26 @@ export default {
     const auth = getAuth();
     const db = getFirestore();
     const storage = getStorage();
-
+    const roleStore = useRole()
     const showDeleteDialog = ref(false);
     const urlImage = ref('');
     const user = ref(auth.currentUser);
     const profileData = ref({})
     const organizations = ref([]);
-
+    const organizationStore = useOrganization()
     loadUserData()
     async function loadUserData() {
       const currentUser = (await getDoc(doc(db, 'users/',auth.currentUser.uid))).data()
-      const role = await getRole(db, currentUser.role)
+      const role = await roleStore.getRole(currentUser.role)
 
       user.value = {
         ...user.value,
         ...currentUser,
-        roleName: role.data().displayName
+        roleName: role.displayName
       }
       resetData();
-
-      Promise.all(getUserOrganizationList(db, currentUser.organization_ids))
-      .then(list => organizations.value = list.map(item => item.data().name))
-
+      const userOrganizations = await organizationStore.getDataById(currentUser.organization_ids, 'Organization')
+      organizations.value = userOrganizations.map((org)=> org.name)
       if (user.value.photoURL){
         const storageRef = refStorage(storage, 'users/' + user.value.uid + '/profile/' + user.value.photoURL);
         urlImage.value = await getDownloadURL(storageRef)

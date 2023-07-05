@@ -1,13 +1,22 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });
 defineProps<{
-    clientFactory: ClientFactory
+    clientFactory: ClientFactory,
 }>();
+
+const emit = defineEmits<{
+    (e: 'importHandle')
+}>()
+
+const importHandle = () => {
+    emit('importHandle')
+}
+
 </script>
 
 <template>
@@ -24,7 +33,14 @@ defineProps<{
             {{ clientFactory.client?.companyProfile }}
 
             <div>
-                {{ t('clientFactory.drawer.updateData') }}
+                <q-btn
+                    class="bg-white"
+                    text-color="accent"
+                    dense padding="xs md" size="sm"
+                    @click="importHandle">
+                    <q-icon name="mdi-tray-arrow-down" color="accent" size="xs" left/>
+                    {{ t('common.capture') }}
+                </q-btn>
             </div>
         </div>
     </div>

@@ -1,10 +1,8 @@
 import { MenuRouter, MenuParent} from 'src/shared/model/Menu.model';
 
 const report_router: MenuRouter[] = [
-
-
   {
-    path: 'totalization/SAA',
+    path: 'totalization/saa',
     title: 'menu.SAA',
     component: () => import('src/pages/user/SAA/SAAPage.vue'),
     meta: {

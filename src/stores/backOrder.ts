@@ -11,7 +11,7 @@ interface BackOrderState {
   BOList: BackOrderModel[]
 }
 
-export const useBackOrder = defineStore('backPrder', () => {
+export const useBackOrder = defineStore('backOrder', () => {
 	const db = getFirestore();  
 	const { t } = useI18n({ useScope: 'global' });
 	const $q = useQuasar();
@@ -65,6 +65,24 @@ export const useBackOrder = defineStore('backPrder', () => {
 		})
 		return list;
 	}
+  
+	async function getClientFactoryBackOrder(id_clientFactory: string): Promise<BackOrderModel[]> {
+		const constraints: ConstraintsType = [where('deleted', '==', false), where('id_clientFactory', '==', id_clientFactory)]
+		const docs = await getDocs(query(
+			collection(db, '/BO'), 
+			...constraints
+		))
+
+		const list:BackOrderModel[] = []
+		docs.forEach(fix => {
+			const data = fix.data()
+			list.push({
+				...data,
+        id: fix.id
+			} as BackOrderModel)
+		})
+		return list;
+	}
 
 	async function updateBackOrder(backOrder: BackOrderModel) {
 		const boRef = doc(db, '/BO/'+backOrder.id);
@@ -89,6 +107,6 @@ export const useBackOrder = defineStore('backPrder', () => {
 		Promise.all(ret)
 	}
 	
-	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder}
+	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder}
 })
   

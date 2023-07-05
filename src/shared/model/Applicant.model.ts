@@ -236,42 +236,62 @@ export enum ApplicantStatus {
   RETIRED = 'retired'
 }
 
-export interface ApplicantFix { 
+export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffersInfo, FixEmploymentInfo { 
   id: string;
   created_user?: string;
   created_at: Timestamp | FieldValue | string;
-  // Fix Info 
-  fixStatus: boolean;
-  reason: string;
-  reasonDetal?: string;
   client: string;
   office: string;
+  backOrder: string;
+  applicant_id: string;
+}
+
+export interface FixMainInfo {
+  fixStatus: boolean;
   fixDate: string;
-  contactPerson: string;
-  memo: string;
-  // Job Search Info 
+  fixReasonNG: string;
+  fixReasonNGDetail?: string;
+  chargeOfFix: string;
+  fixMemo?: string;  
+} 
+
+export interface FixJobSearchInfo {
   inspectionStatus: boolean;
   inspectionDate: string;
+  inspectionReasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
+  inspectionReasonNGDetail?: string;
+  visit: string;
+  personalStatus: string,
+  corporationStatus: string,
+  businessStatus: string,
   reasonNG: 'notApplicable' | 'decided' | 'notCovered' | 'registrationDeclined';
   reasonJobDetal?: string;
   chargeOfFacility: string;
   jobTitle?: string;
   contact: string;
   comments: string;
-  notesInspection: string;
-  // Job Offers Info
-  offerStatus: boolean;
-  offerDate: string;
-  offerReasonNG: string;
-  chargeOfOffer: string;
-  offerMemo: string;
-  // Employment Info
+  inspectionMemo: string;
+}
+
+export interface FixEmploymentInfo {
   admissionStatus: boolean;
   admissionDate: string;
+  admissionReasonNG: string;
+  admissionReasonNGDetail: string;
   reasonNotJoining: string;
   chargeOfAdmission: string;
   endDate: string;
   admissionMemo: string;
+}
+
+export interface FixJobOffersInfo {
+  offerStatus: boolean;
+  offerDate: string;
+  offerReasonNG: string;
+  offerReasonNGDetail: string;
+  chargeOfOffer: string;
+  offerMemo: string;
+
 }
 
 export interface ApplicantMemo {

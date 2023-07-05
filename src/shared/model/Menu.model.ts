@@ -29,6 +29,7 @@ export enum MenuParent{
   ApplicantManagement = 'APPLICANT_MANAGEMENT',
   TotalizationManagement = 'TOTALIZATION_MANAGEMENT',
   BackOrder = 'BACK_ORDER',
+  BudgetControl = 'BUDGET_CONTROL',
 
   AdminOfficeManagement = 'SYSTEMS_OFFICE_MANAGEMENT',
   AdminEnterpriseManagement = 'ENTERPRISE_MANAGEMENT',

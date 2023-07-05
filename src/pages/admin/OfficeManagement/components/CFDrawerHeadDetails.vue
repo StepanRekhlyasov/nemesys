@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
+import Quasar, { useQuasar } from 'quasar';
 import { defineProps, ref, watchEffect, watch } from 'vue';
-import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
+import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableColumnsCF.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
-import { useHeadDetails, updateClientFactoryHangler, updateClientHandler } from '../handlers';
+import { useHeadDetails } from 'src/components/client-factory//handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderHeadDetails } from '../types'
-import Quasar, { useQuasar } from 'quasar';
+import { RenderHeadDetails } from 'src/components/client-factory/types'
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar()
@@ -17,14 +16,14 @@ const props = defineProps<{
     clientId: string
 }>()
 
-const {getHeadClientFactory} = useClientFactory()
+const { getHeadClientFactory } = useClientFactory()
 
 const headDetails = ref<RenderHeadDetails>({} as RenderHeadDetails)
 const headClientFactory = ref<ClientFactory>({} as ClientFactory)
 const localClientId = ref(props.clientId)
 const isLoading = ref(false)
 
-const isOpedEditDropDown = ref({
+const isOpenEditDropDown = ref({
     headOfficeInfo: false,
     clientInfo: false,
     contractInfo: false
@@ -54,52 +53,39 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
 
 <template>
     <div style="height: 5px;" class="q-my-none q-pa-none">
-        <q-separator v-if="!isLoading"/>
         <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
     </div>
 
     <div v-if="!isLoading">
-        <DropDownEditGroup
-        :label="t('clientFactory.drawer.headOfficeInfo')"
-        :isEdit="isOpedEditDropDown.headOfficeInfo"
-        :isLabelSquare="true"
-        theme="accent"
-        @openEdit="isOpedEditDropDown.headOfficeInfo = true"
-        @closeEdit="isOpedEditDropDown.headOfficeInfo = false"
-        @onSave="isOpedEditDropDown.headOfficeInfo = false; updateClientFactoryHangler(dataForUpdating.headOfficeInfo, headClientFactory, $q as unknown as typeof Quasar)">
-            <TwoColumnLayout :data="headDetails.headOfficeInfo" theme="accent"
-                v-if="!isOpedEditDropDown.headOfficeInfo"/>
+        <HighlightTwoColumn 
+            :data="headDetails.headOfficeInfo"
+            :label="t('clientFactory.drawer.headOfficeInfo')"
+            :is-edit="false"
+            :show-actions="false"
+            :is-drop-down="true"
+            theme="accent"/>
 
-            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
-        </DropDownEditGroup>
+        <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo" @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
 
-        <DropDownEditGroup
-        :label="t('clientFactory.drawer.clientInfo')"
-        :isEdit="isOpedEditDropDown.clientInfo"
-        :isLabelSquare="true"
-        theme="accent"
-        @openEdit="isOpedEditDropDown.clientInfo = true"
-        @closeEdit="isOpedEditDropDown.clientInfo = false"
-        @onSave="isOpedEditDropDown.clientInfo = false; updateClientHandler(dataForUpdating.clientInfo, headClientFactory)">
-            <TwoColumnLayout :data="headDetails.clientInfo" theme="accent"
-                v-if="!isOpedEditDropDown.clientInfo"/>
+        <HighlightTwoColumn 
+            :data="headDetails.clientInfo"
+            :label="t('clientFactory.drawer.clientInfo')"
+            :is-edit="false"
+            :show-actions="false"
+            :is-drop-down="true"
+            theme="accent"/>
 
-            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
-        </DropDownEditGroup>
+        <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
 
-        <DropDownEditGroup
-        :label="t('clientFactory.drawer.contractInfo')"
-        :isEdit="isOpedEditDropDown.contractInfo"
-        :isLabelSquare="true"
-        theme="accent"
-        @openEdit="isOpedEditDropDown.contractInfo = true"
-        @closeEdit="isOpedEditDropDown.contractInfo = false"
-        @onSave="isOpedEditDropDown.contractInfo = false; updateClientFactoryHangler(dataForUpdating.contractInfo, headClientFactory, $q as unknown as typeof Quasar)">
-            <TwoColumnLayout :data="headDetails.contractInfo" theme="accent"
-                v-if="!isOpedEditDropDown.contractInfo"/>
+        <HighlightTwoColumn 
+            :data="headDetails.contractInfo"
+            :label="t('clientFactory.drawer.contractInfo')"
+            :is-edit="false"
+            :show-actions="false"
+            :is-drop-down="true"
+            theme="accent"/>
 
-            <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
-        </DropDownEditGroup>
+        <EditableColumnsCF v-if="isOpenEditDropDown.contractInfo" @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
 
     </div>
 </template>

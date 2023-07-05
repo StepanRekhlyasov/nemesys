@@ -111,12 +111,12 @@
 </template>
 
 <script setup lang="ts">
-import { getFirestore, orderBy, serverTimestamp, Timestamp } from '@firebase/firestore';
+import { orderBy, serverTimestamp, Timestamp } from '@firebase/firestore';
 import { onBeforeMount, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Role, User } from 'src/shared/model/Account.model';
 import { toDateObject } from 'src/shared/utils/utils';
-import { getRoles, mapToSelectOptions } from 'src/shared/utils/User.utils';
+import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import ResponsibleCreateForm from './components/ResponsibleCreate.form.vue';
@@ -132,9 +132,9 @@ import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { PaginationExposedMethods } from 'src/components/pagination/types';
 import { ResponsibleMasterColumns as columns, sortable } from './consts/ResponsibleMasterColumns'
 import { useBranch } from 'src/stores/branch';
+import { useRole } from 'src/stores/role';
 
 const { t } = useI18n({ useScope: 'global' });
-const db = getFirestore();
 const $q = useQuasar();
 const route = useRoute()
 const search = ref('');
@@ -143,10 +143,10 @@ const branches = ref({})
 const loading = ref(false)
 const organization = useOrganization()
 const branchStore = useBranch()
+const roleStore = useRole()
 const usersListData: Ref<User[]> = ref([]);
 const copyUsersListData: Ref<User[]> = ref([]);
 const isAdmin = route.meta.isAdmin
-// dialog data
 const openDialog = ref(false)
 const editableUser: Ref<User | undefined> = ref(undefined)
 const editableRow = ref(-1);
@@ -166,7 +166,7 @@ const rolesData = ref<Role[]>([])
 const visibleColumns = ref<string[]>()
 onBeforeMount(async () => {
   visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
-  rolesData.value = await getRoles(db)
+  rolesData.value = await roleStore.getAllRoles()
   if (!isAdmin) {
     branches.value = await branchStore.getBranchesInOrganization(organization.currentOrganizationId)
   }

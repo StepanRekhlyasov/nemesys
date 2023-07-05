@@ -4,7 +4,7 @@
       :label="$t('applicant.list.fixEmployment.employmentInfo')"
       @openEdit="emit('openEdit'); resetData();"
       @closeEdit="emit('closeEdit'); resetData();"
-      @onSave="emit('save', 'employmentInfo', data)"
+      @onSave="saveHandler()"
       :isDisabledButton="disableLevel < 3">
     <div class="row q-pb-sm">
       <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.status')" 
@@ -31,6 +31,20 @@
         </q-input>
       </labelField>
     </div>
+    
+    <div class="row q-pb-sm" v-if="!data['admissionStatus']">
+      <NGReasonSelect
+        :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
+        :edit="edit.includes(tabKey)" 
+        :label="$t('applicant.list.fixEmployment.'+reasonKey)"
+        :reasonValue="data[reasonKey]"
+        @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
+        :detailedValue="data[detailKey]"
+        @update:detailedValue="(newValue : string) => data[detailKey] = newValue"
+        :disable="loading"
+        :hightlightError="hightlightError"
+      />
+    </div>
 
     <div class="row q-pb-sm">
       <labelField 
@@ -41,7 +55,7 @@
       </labelField>
     </div>
 
-    <div class="row q-pb-sm">
+    <div class="row q-pb-sm self-center">
       <labelField 
         :edit="edit.includes('employmentInfo')" :label="$t('applicant.list.fixEmployment.admission.chargeOfAdmission')"
         :value="usersListOption
@@ -85,9 +99,10 @@
 <script lang="ts" setup>
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
-
-import { ApplicantFix, selectOptions } from 'src/shared/model'
+import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
+import { ApplicantFix, FixEmploymentInfo, selectOptions } from 'src/shared/model'
 import { ref, watch } from 'vue';
+import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 
 const props = defineProps<{
   loading: boolean,
@@ -97,16 +112,32 @@ const props = defineProps<{
   edit: string[],
 	disableLevel: number
 }>()
-const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit'])
+const emit = defineEmits(['save', 'disableChange', 'openEdit', 'closeEdit']);
+const data = ref<Partial<FixEmploymentInfo>>({});
 
-const data = ref({})
+/** NGReasonSelect handlers */
+const reasonKey = 'admissionReasonNG' /** change reason key */
+const detailKey = 'admissionReasonNGDetail' /** change reason detail key */
+const tabKey = 'employmentInfo' /** change tab key */
+const statusKey = 'admissionStatus' /** change status key */
+const hightlightError = ref<string[]>([])
+const saveHandler = () => {
+  if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
+    emit('save', tabKey, data.value);
+    resetData();
+  }
+}
+useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
+/** NGReasonSelect handlers */
+
 resetData();
-
 function resetData() {
   data.value = {
-    admissionStatus: props.editData['admissionStatus'] || '',
+    admissionStatus: props.editData['admissionStatus'] || false,
     admissionDate: props.editData['admissionDate'] || '',
-    reasonNotJoining: props.editData['reasonNotJoining'] || '',
+    admissionReasonNG: props.editData['admissionReasonNG'] || '',
+    admissionReasonNGDetail: props.editData['admissionReasonNGDetail'] || '',
+		reasonNotJoining: props.editData['reasonNotJoining'] || '',
     chargeOfAdmission: props.editData['chargeOfAdmission'] || '',
     endDate: props.editData['endDate'] || '',
     admissionMemo: props.editData['admissionMemo'] || '',
@@ -120,7 +151,3 @@ watch(
   }, {deep: true, immediate: true}
 ) 
 </script>
-
-<style>
-
-</style>

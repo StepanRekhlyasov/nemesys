@@ -1,144 +1,286 @@
 <template>
-  <div class="q-pt-lg q-pl-lg">
-    <div class="q-gutter-md row">
-      <q-select
-        outlined
-        v-model="branchInput"
-        :options="branchs"
-        :hint="t('report.base')"
-      />
-      <q-select
-        outlined
-        v-model="item"
-        :options="items"
-        :hint="t('report.item')"
+  <q-page class="bg-grey-3">
+    <q-card-section class="bg-grey-3 flex items-center q-pb-none">
+      <div class="text-h6 text-primary">
+        <span style="font-size: 28px">■</span>{{ $t('menu.KPI') }}
+      </div>
+    </q-card-section>
+    <q-card-section class="bg-grey-3 flex items-end gap">
+      <label class="text-subtitle1">
+        {{ $t('KPI.aggregationMethods') }}
+        <MySelect
+          :options="[
+            {
+              label: $t('KPI.dailyTotal'),
+              value: 'day',
+            },
+            {
+              label: $t('KPI.modeBranch'),
+              value: 'branch',
+            },
+            {
+              label: $t('KPI.modeMedia'),
+              value: 'media',
+            },
+          ]"
+          :width="'175px'"
+          v-model="mode"
+          :clearable="false"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label
+        class="text-subtitle1"
+        v-if="mode === 'branch' || mode === 'media'"
       >
-      </q-select>
-      <q-input
-        filled
-        :model-value="
-          dateRange !== null ? `${dateRange.from} - ${dateRange.to}` : ``
-        "
+        {{ $t('KPI.item') }}
+        <MySelect
+          :options="[
+            {
+              label: $t('KPI.actualFigures'),
+              value: 'actualFigures',
+            },
+            {
+              label: $t('KPI.unitPrice'),
+              value: 'unitPrice',
+            },
+            {
+              label: $t('KPI.applicationAttribute'),
+              value: 'applicationAttribute',
+            },
+          ]"
+          :width="'175px'"
+          v-model="item"
+          :clearable="false"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label
+        class="text-subtitle1"
+        v-if="mode === 'branch' || mode === 'media'"
       >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-date v-model="dateRange" range>
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-      <q-select
-        outlined
-        v-model="totalingMethod"
-        :options="totalingMethods"
-        :hint="t('report.totalingMethod')"
-      />
-      <q-select
-        outlined
-        v-model="totalingMethod"
-        :options="jobCategory"
-        :hint="t('report.jobCategory')"
-      />
-    </div>
-  </div>
+        {{ $t('KPI.targetPeriod') }}
+        <DateRange
+          v-model="dateRange"
+          :width="'250px'"
+          :height="'40px'"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'day'">
+        {{ $t('applicant.progress.filters.month') }}
+        <DateRange
+          v-model="day"
+          :width="'150px'"
+          :height="'40px'"
+          @update:model-value="getData()"
+          :range="false"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
+        {{ $t('common.branch') }}
+        <MySelect
+          :width="'150px'"
+          v-model="branch"
+          :options="branchs"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'media'">
+        {{ $t('KPI.media') }}
+        <MySelect :width="'150px'" />
+      </label>
+      <label class="text-subtitle1" v-if="mode === 'day'">
+        {{ $t('KPI.username') }}
+        <MySelect
+          :options="userListToShow"
+          :width="'175px'"
+          v-model="user"
+          @update:model-value="getData()"
+        />
+      </label>
+      <label
+        class="text-subtitle1"
+        v-if="mode === 'branch' || mode === 'media'"
+      >
+        {{ $t('applicant.add.occupation') }}
+        <MySelect
+          :options="occupationList"
+          :width="'100px'"
+          v-model="occupation"
+          :clearable="false"
+          @update:model-value="getData()"
+        />
+      </label>
+      <q-btn color="primary" style="margin-left: auto" @click="downloadCSV">
+        {{ $t('common.downloadCSV') }}
+      </q-btn>
+    </q-card-section>
+    <q-card-section class="bg-grey-3 flex items-center">
+      <KpiTable :rows="rowData" :mode="mode" :item="item" ref="kpiTableRef" />
+      <q-linear-progress query v-if="loading" color="primary" />
+    </q-card-section>
+    <ApplicantDetails ref="detailsDrawer" />
+  </q-page>
 </template>
-
 <script setup lang="ts">
-import { ref, Ref, watch, computed, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import MySelect from 'src/components/inputs/MySelect.vue';
+import DateRange from 'src/components/inputs/DateRange.vue';
+import KpiTable from './components/KPITable.vue';
+import { ref, onMounted, watch } from 'vue';
 import { useOrganization } from 'src/stores/organization';
-import { storeToRefs } from 'pinia';
+import { User } from 'src/shared/model';
+import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
+import { where } from 'firebase/firestore';
+import { occupationList } from 'src/shared/constants/Applicant.const';
+import { getIndividualReport } from 'src/stores/individualReport';
 import { useBranch } from 'src/stores/branch';
-const UserStore = useUserStore();
 const UserBranch = useBranch();
-const t = useI18n({ useScope: 'global' }).t;
-const branchInput = ref('');
+const day = ref('');
+const dateRange = ref('');
+const branch = ref('');
+const occupation = ref('');
+const user = ref('');
+const userListToShow = ref<{ value: string; label: string }[]>([]);
+const mode = ref('day');
+const item = ref('actualFigures');
+const branchs = ref<{ value: string; label: string }[]>([]);
+const resetData = () => {
+  user.value = '';
+  day.value = '';
+  dateRange.value = '';
+  branch.value = '';
+  occupation.value = '';
+};
+
+
+const loading = ref(false);
+const rowData = ref<{[key:string]:(number|string)}[]>([]);
+const userStore = useUserStore();
 const organizationStore = useOrganization();
-const { currentOrganizationId } = storeToRefs(organizationStore);
-const branchs = ref<string[]>([]);
-const branch_user_list = ref<{ id: string; name: string }[]>([]);
+const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
+const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
-const item = ref('');
+const convertDateRange = (dateRange: string) => {
+  const [from, to] = dateRange.split('-');
+  return { from, to };
+};
 
-const items = computed<{ label: string; value: number }[]>(() => {
-  return [
-    { label: t('report.applicantReport'), value: 0 },
-    { label: t('report.salesActivityReport'), value: 1 },
-    { label: t('report.salesActivityIndividualReport'), value: 2 },
-    { label: t('report.recruitmentEffectivenessReport'), value: 3 },
-  ];
-});
+const convertDay = (day: string) => {
+  if (!day) return;
+  const [year, month] = day.split('/');
+  const from = `${year}/${month}/01`;
+  const to = `${year}/${month}/${new Date(
+    Number(year),
+    Number(month),
+    0
+  ).getDate()}`;
+  return { from: from, to: to };
+};
 
-const totalingMethod = ref('');
+const convertUserList = (users: User[]) => {
+  return users.map((user) => {
+    return {
+      id: user.id,
+      name: user.name,
+    };
+  });
+};
 
-const totalingMethods = computed<{ label: string; value: number }[]>(() => {
-  return [
-    {
-      label: t('report.categories.totalingMethod.totallingDailyData'),
-      value: 0,
-    },
-    {
-      label: t(
-        'report.categories.totalingMethod.totallingAttractionDataByBranch'
-      ),
-      value: 1,
-    },
-    {
-      label: t(
-        'report.categories.totalingMethod.totallingAttractionDataByMedia'
-      ),
-      value: 2,
-    },
-  ];
-});
+const convertUserListToShow = (users: User[]) => {
+  return users.map((user) => {
+    return {
+      value: user.id,
+      label: user.name,
+    };
+  });
+};
 
-const jobCategory = computed<{ label: string; value: number }[]>(() => {
-  return [];
-});
 
-//defalt dateRnage is { from: Today - 1manth to:Today} but now set { from: 1900/01/01 to:1900/12/31} for dummy data,
+const getBranchList = async () => {
+  branchs.value = Object.values(
+    await UserBranch.getBranchesInOrganization(
+      organizationStore.currentOrganizationId
+    )
+  ).map((branch) => {
+    return {
+      value: branch.id,
+      label: branch.name,
+    };
+  });
+};
 
-// const get_date=()=>{
-//   const today = new Date();
-//   const year = today.getFullYear();
-//   const month = today.getMonth() + 1;
-//   const day = today.getDate();
-//   const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-//   const from_year = from.getFullYear();
-//   const from_month = from.getMonth() + 1;
-//   const from_day = from.getDate();
-//   const dateRange = {
-//     from: `${from_year}/${from_month}/${from_day}`,
-//     to: `${year}/${month}/${day}`,
-//   };
-//   return dateRange;
-// }
-// const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
+async function getData() {
+  if (organizationStore.currentOrganizationId) {
+    loading.value = true;
+    let users;
+    if (user.value) {
+      users = [await userStore.getUserById(user.value)];
+    } else if (branch.value) {
+      users = await userStore.getUsersByConstrains([
+        where('branch_id', '==', branch.value),
+        where('deleted', '==', false),
+        where(
+          'organization_ids',
+          'array-contains',
+          organizationStore.currentOrganizationId
+        ),
+      ]);
+      userListToShow.value = convertUserListToShow(users);
+    } else {
+      users = await userStore.getAllUsers(
+        organizationStore.currentOrganizationId
+      );
+      userListToShow.value = convertUserListToShow(users);
+    }
 
-const dateRange: Ref<{ from: string; to: string } | null> = ref({
-  from: '1900/01/01',
-  to: '1900/12/31',
-});
+    if (mode.value == 'day') {
+      // const range = convertDay(day.value);
+      const range = { from: '1900/01/01', to: '1900/12/31' };
+      const { rows: rows } = await getIndividualReport(
+        convertUserList(users),
+        range,
+        'BasedOnLeftMostItemDate',
+        false
+      );
+      rowData.value = rows;
+    }
 
-watch(branchInput, async () => {
-  branch_user_list.value = await UserStore.getAllUsersInBranch(
-    branchInput.value
-  );
-});
+    loading.value = false;
+  }
+}
+watch(
+  () => organizationStore.currentOrganizationId,
+  async () => {
+    await getBranchList()
+    getData();
+  }
+);
+watch(
+  () => mode.value,
+  () => {
+    resetData();
+  }
+);
+watch(
+  () => branch.value,
+  () => {
+    resetData();
+  }
+);
+function downloadCSV() {
+  kpiTableRef.value?.exportTable();
+}
 
 onMounted(async () => {
-  branchs.value = Object.keys(
-    await UserBranch.getBranchesInOrganization(currentOrganizationId.value)
-  );
+  await getBranchList()
+  getData();
+
 });
 </script>
+<style scoped lang="scss">
+.gap {
+  gap: 10px;
+}
+</style>

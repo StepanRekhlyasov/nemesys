@@ -63,14 +63,16 @@
             paginationRef?.setConstraints(paginationConstraints);
             paginationRef?.queryFirstPage()
           }"
+          @onLoadingStart="loading = true"
+          @onLoadingEnd="loading = false"
         />
         <TablePagination
           :isAdmin="false"
           ref="paginationRef"
           :pagination="pagination"
           @on-loading-state-change="(v : boolean) => loading = v"
-          @on-data-update="async (newData : Applicant[]) => {
-            applicantsForTable = newData
+          @on-data-update="async (newData) => {
+            applicantsForTable = newData as Applicant[]
           }"
         />
       </q-scroll-area>

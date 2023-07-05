@@ -6,9 +6,9 @@
     <div class="row">      
       <labelField :label="$t('backOrder.create.hourlyMonthly')" :edit="true" labelClass="q-pl-md col-2"  valueClass="col-10">
         <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')" 
-        val="shiftSystem" v-model="data['monthlySalary']" />
+        val="monthlySalary" v-model="data['wage']" />
         <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" 
-        val="fixed" v-model="data['hourlyWage']" />
+        val="hourlyWage" v-model="data['wage']" />
       </labelField>
     </div>  
 

@@ -1,6 +1,12 @@
 <template>
   <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;" class="applicantTable" :loading="loading">
-    <UpdateTableRows v-if="status=='wait_termination'" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"></UpdateTableRows>
+    <UpdateTableRows 
+      v-if="status=='wait_termination'" 
+      :applicants="applicants" 
+      @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}"
+      @onLoadingStart="()=>emit('onLoadingStart')"
+      @onLoadingEnd="()=>emit('onLoadingEnd')"
+    ></UpdateTableRows>
     <ProgressTableRows v-else :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
   </q-markup-table>
   <q-linear-progress query v-if="loading" color="primary"/>
@@ -17,8 +23,10 @@ defineProps<{
   status: string
 }>()
 const emit = defineEmits<{
-  (e: 'openDrawer', applicant: Applicant)
-  (e: 'sortQuery', param: QueryOrderByConstraint[])
+  (e: 'openDrawer', applicant: Applicant),
+  (e: 'sortQuery', param: QueryOrderByConstraint[]),
+  (e: 'onLoadingStart'),
+  (e: 'onLoadingEnd'),
 }>()
 
 </script>

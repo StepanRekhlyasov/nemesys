@@ -1,6 +1,6 @@
 <template>
   <q-table
-    class="kpiTable"
+    class="saaTable"
     :columns="columns"
     :rows="rows"
     separator="cell"
@@ -9,19 +9,18 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <td 
+      <q-td 
         class="clickable" 
         @click="()=>{
-          emit('openDrawer', null)
-          //** null is temporary */
+          emit('openDrawer', props.row)
         }" 
-      >{{ props.row.name }}</td>
+      >{{ props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
 <script setup lang="ts">
 import { QTableProps, exportFile, useQuasar } from 'quasar';
-import { kpiTableColumns as columns } from '../const/saa.const'
+import { saaTableColumns as columns } from '../const/saa.const'
 import { Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
@@ -43,8 +42,8 @@ const exportTable = () => {
   const csvHeaders = columns.value.map((column) => column.label);
   
   const csvContent = [
-    csvHeaders.join(';'),
-    ...csvData.map((row) => row.join(';')),
+    csvHeaders.join(','),
+    ...csvData.map((row) => row.join(',')),
   ].join('\n');
  const status = exportFile(
     'table-export.csv',
@@ -58,7 +57,7 @@ const exportTable = () => {
 defineExpose({ exportTable })
 </script>
 <style lang="scss">
-.kpiTable{
+.saaTable{
   overflow: auto;
   th {
     background-color: $primary;

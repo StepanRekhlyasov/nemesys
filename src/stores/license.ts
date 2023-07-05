@@ -1,5 +1,5 @@
 import { getApp } from 'firebase/app';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { collection, doc, getDocs, getFirestore, query, setDoc, where } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { defineStore } from 'pinia';
 import { toTable } from 'src/components/organization/handlers/ToTable';
@@ -155,5 +155,13 @@ export const useLicense = defineStore('license', () => {
 
   }
 
-  return { search, execute, getLicensesInMonth }
+  async function createLicenseRequest(request: Omit<LicenseRequest, 'id'>) {
+    const requestRef = doc(collection(db, 'licenseRequests'))
+    await setDoc(requestRef, {
+      ...request,
+      id: requestRef.id
+    })
+  }
+
+  return { search, execute, getLicensesInMonth, createLicenseRequest }
 })

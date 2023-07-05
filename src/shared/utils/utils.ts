@@ -45,7 +45,7 @@ export const toDateFormat = (time?: Timestamp):string => {
 		return ''
 	}
 	const dateFormat = new Date(time['seconds']*1000);
-	return date.formatDate(dateFormat, 'YYYY-MM-DD')
+	return date.formatDate(dateFormat, 'YYYY/MM/DD')
 }
 
 export const toMonthYear = (time?: Timestamp) => {
@@ -158,6 +158,10 @@ export const getTemplates = (db: Firestore, organization_id: string, queryText?:
   ))
 }
 
+export const remainingDays = (date1 : Date, date2 : Date) => {
+  const millisecondsInDay = 1000 * 3600 * 24
+  return Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / millisecondsInDay) 
+}
 
 // rules intut textfield
 

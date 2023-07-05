@@ -1,24 +1,27 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, watchEffect, ref } from 'vue';
-import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import TwoColumnLayout from 'src/components/TwoColumnLayout.vue';
+import { defineProps, defineEmits, watchEffect, ref } from 'vue';
+import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
-import { useOfficeDetails, updateClientFactoryHangler } from '../handlers';
+import { useOfficeDetails } from 'src/components/client-factory/handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderOfficeDetails } from '../types';
-import Quasar, { useQuasar } from 'quasar';
+import { RenderOfficeDetails } from 'src/components/client-factory/types';
+import { ChangedData } from 'src/components/client-factory/types';
 
 const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar()
 
 const props = defineProps<{
-    clientFactory: ClientFactory
+    clientFactory: ClientFactory,
+    draft: Partial<ClientFactory>,
+    isLoading: boolean
+}>()
+const emit = defineEmits<{
+    (e: 'editDraft', changedData: ChangedData)
 }>()
 
-const officeDetails = ref<RenderOfficeDetails>(useOfficeDetails(props.clientFactory))
+const officeDetails = ref<RenderOfficeDetails>({} as RenderOfficeDetails)
 
-const isOpedEditDropDown = ref({
+const isEditForm = ref({
     registeredInfo: false,
     commonItems: false,
     uniqueItems: false
@@ -34,52 +37,69 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
     dataForUpdating.value[key] = data
 }
 
+const handleEditDraft = (changedData: ChangedData) => {
+    emit('editDraft', changedData)
+}
+
 watchEffect(() => {
-    officeDetails.value = useOfficeDetails(props.clientFactory)
+    officeDetails.value = useOfficeDetails(props.clientFactory, props.draft)
 });
 
 </script>
 
 <template>
-    <DropDownEditGroup
-    :label="t('clientFactory.drawer.registeredInformation')"
-    theme="accent"
-    :isEdit="isOpedEditDropDown.registeredInfo"
-    :isLabelSquare="true"
-    @openEdit="isOpedEditDropDown.registeredInfo = true"
-    @closeEdit="isOpedEditDropDown.registeredInfo = false"
-    @onSave="isOpedEditDropDown.registeredInfo = false; updateClientFactoryHangler(dataForUpdating.registeredInfo, clientFactory, $q as unknown as typeof Quasar)">
-        <TwoColumnLayout
-            v-if="!isOpedEditDropDown.registeredInfo" :data="officeDetails.registeredInfo" theme="accent"/>
+    <div style="height: 5px;" class="q-my-none q-pa-none">
+        <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
+    </div>
 
-        <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')" :data="officeDetails.registeredInfo" theme="accent"/>
-    </DropDownEditGroup>
+    <HighlightTwoColumn
+        :is-drop-down="true"
+        :data="officeDetails.registeredInfo"
+        :is-disable-edit="isLoading"
+        :is-edit="isEditForm.registeredInfo"
+        :label="t('clientFactory.drawer.registeredInformation')"
+        theme="accent"
+        @open-edit="isEditForm.registeredInfo = true"
+        @close-edit="isEditForm.registeredInfo = false"
+        @on-save="isEditForm.registeredInfo = false; handleEditDraft(dataForUpdating.registeredInfo)"/>
 
-    <DropDownEditGroup
-    :label="t('clientFactory.drawer.commonItems')"
-    theme="accent"
-    :isEdit="isOpedEditDropDown.commonItems"
-    :isLabelSquare="true"
-    @openEdit="isOpedEditDropDown.commonItems = true"
-    @closeEdit="isOpedEditDropDown.commonItems = false"
-    @onSave="isOpedEditDropDown.commonItems = false; updateClientFactoryHangler(dataForUpdating.commonItems, clientFactory, $q as unknown as typeof Quasar)">
-        <TwoColumnLayout v-if="!isOpedEditDropDown.commonItems" :data="officeDetails.commonItems" theme="accent"/>
+    <EditableColumnsCF
+        v-if="isEditForm.registeredInfo" @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')"
+        :data="officeDetails.registeredInfo" theme="accent"/>
 
-        <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'commonItems')" :data="officeDetails.commonItems" theme="accent"/>
-    </DropDownEditGroup>
 
-    <DropDownEditGroup
-    :label="t('clientFactory.drawer.uniqueItems')"
-    theme="accent"
-    :isEdit="isOpedEditDropDown.uniqueItems"
-    :isLabelSquare="true"
-    @openEdit="isOpedEditDropDown.uniqueItems = true"
-    @closeEdit="isOpedEditDropDown.uniqueItems = false"
-    @onSave="isOpedEditDropDown.uniqueItems = false; updateClientFactoryHangler(dataForUpdating.uniqueItems, clientFactory, $q as unknown as typeof Quasar)">
-        <TwoColumnLayout v-if="!isOpedEditDropDown.uniqueItems" :data="officeDetails.uniqueItems" theme="accent"/>
+    <HighlightTwoColumn 
+        :is-drop-down="true"
+        :data="officeDetails.commonItems"
+        :is-disable-edit="isLoading"
+        :is-edit="isEditForm.commonItems"
+        :label="t('clientFactory.drawer.commonItems')"
+        theme="accent"
+        @open-edit="isEditForm.commonItems = true"
+        @close-edit="isEditForm.commonItems = false"
+        @on-save="isEditForm.commonItems = false; handleEditDraft(dataForUpdating.commonItems)"/>
 
-        <EditableColumnsCF v-else @data-changed="e => getNewDataToUpdate(e, 'uniqueItems')" :data="officeDetails.uniqueItems" theme="accent"/>
-    </DropDownEditGroup>
+    <EditableColumnsCF
+        v-if="isEditForm.commonItems"
+        @data-changed="e => getNewDataToUpdate(e, 'commonItems')"
+        :data="officeDetails.commonItems" theme="accent"/>
+    
+
+    <HighlightTwoColumn
+        :is-drop-down="true"
+        :data="officeDetails.uniqueItems"
+        :is-disable-edit="isLoading"
+        :is-edit="isEditForm.uniqueItems"
+        :label="t('clientFactory.drawer.uniqueItems')"
+        theme="accent"
+        @open-edit="isEditForm.uniqueItems = true"
+        @close-edit="isEditForm.uniqueItems = false"
+        @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating.uniqueItems)"/>
+
+    <EditableColumnsCF
+        v-if="isEditForm.uniqueItems"
+        @data-changed="e => getNewDataToUpdate(e, 'uniqueItems')"
+        :data="officeDetails.uniqueItems" theme="accent"/>
 </template>
 
 <style lang="scss" scoped>

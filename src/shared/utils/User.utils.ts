@@ -1,8 +1,6 @@
-import { collection, doc, endAt, Firestore, getDoc, getDocs, orderBy, query, startAt, where } from 'firebase/firestore';
 import { LocalStorage } from 'quasar';
 import { selectOptions } from '../model';
 import { Role, UserPermissionNames } from '../model/Account.model';
-import { ConstraintsType } from './utils';
 
 export const isPermission = (permissions: UserPermissionNames[], permission: UserPermissionNames) => permissions?.includes(permission);
 
@@ -13,25 +11,6 @@ export const getUserPermissions = (): UserPermissionNames[] => {
   }
   return [];
 };
-
-export const getRole = (db: Firestore, roleid: string) => {
-  return getDoc(doc(db, 'roles/' + roleid))
-}
-
-export const getUserOrganization = (db: Firestore, organizationId: string) => {
-  return getDoc(doc(db, 'organization/' + organizationId))
-}
-
-export const getUserOrganizationList = (db: Firestore, organizationIds: string[]) => {
-  return organizationIds.map(id => getUserOrganization(db, id))
-}
-
-export const getRoles = async (db: Firestore) => {
-  const roles = await getDocs(collection(db, 'roles'))
-  return roles.docs.map((doc) => {
-    return doc.data() as Role
-  })
-}
 
 export const mapToSelectOptions = (values: Record<string, { name: string, displayName?: string }>) => {
   const list: selectOptions[] = []
@@ -45,37 +24,3 @@ export const mapToSelectOptions = (values: Record<string, { name: string, displa
   })
   return list
 }
-
-export const getUsersByPermission = async (db: Firestore, permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) => {
-
-  const roles = await getRoles(db)
-  const roleIds: string[] = [];
-
-  roles.forEach((role) => {
-    if (role.permission?.includes(permission)) {
-      roleIds.push(role.id);
-    }
-  })
-
-  if (!roleIds.length) {
-    return;
-  }
-
-  const constraints: ConstraintsType = [where('deleted', '==', false), where('role', 'in', roleIds), orderBy('displayName')]
-
-  if (active_organization_id) {
-    constraints.push(where('organization_ids', 'array-contains', active_organization_id))
-  }
-
-  if (queryText) {
-    constraints.push(startAt(queryText), endAt(queryText + '\uf8ff'),)
-  }
-
-  return getDocs(query(
-    collection(db, 'users'),
-    ...constraints,
-  ))
-
-}
-
-

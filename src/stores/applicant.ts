@@ -517,7 +517,6 @@ export const useApplicant = defineStore('applicant', () => {
 
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     try {
-
       /** transform strings to timestamps */
       const saveData = JSON.parse(JSON.stringify(applicantData));
       if(applicantData.applicationDate) saveData.applicationDate = dateToTimestampFormat(new Date(applicantData.applicationDate));
@@ -551,6 +550,9 @@ export const useApplicant = defineStore('applicant', () => {
           saveData.currentStatusMonth = ''
         }
       }
+      if(!saveData.status){
+        changeApplicantStatusByOkFields()
+      }
 
       for(const [key, value] of Object.entries(saveData)){
         if(typeof value === 'undefined') delete saveData[key];
@@ -565,9 +567,8 @@ export const useApplicant = defineStore('applicant', () => {
       if (showAlert) { Alert.success($q, t); }
       try {
         state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
-        changeApplicantStatusByOkFields()
       } catch(error) {
-        if (showAlert){  Alert.warning($q, t); }
+        if (showAlert){ Alert.warning($q, t); }
       }
     } catch (error) {
       console.log(error)
@@ -779,6 +780,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant }
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant, changeApplicantStatusByOkFields }
 })
 

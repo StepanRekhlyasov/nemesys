@@ -1,16 +1,24 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, withDefaults, computed } from 'vue';
+import { defineProps, withDefaults, computed, ref } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    data: { label: string; value: string | number | string[] | boolean, isHighlight: boolean, key?: string }[]
+    data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string }[]
     isEdit: boolean
     label: string
+    isDropDown?: boolean
+    isDisableEdit?: boolean
+    showActions?: boolean
     theme?: string
 }>(), {
+    isDropDown: false,
+    isDisableEdit: false,
+    showActions: true,
     theme: 'primary'
 })
+
+const isHidden = ref(false)
 
 const emit = defineEmits<{
     (e: 'closeEdit'),
@@ -29,9 +37,21 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
                 <div :class="`bg-${theme} square`"></div>
                 <span :class="`text-${theme} subtitle`">{{ label }}</span>
             </div>
+
+            <div v-if="isDropDown">
+                <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
+                  class="text-grey-9" @click="isHidden = false" v-if="isHidden" />
+                <q-btn :label="t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
+                  class="text-grey-9" @click="isHidden = true" v-else />
+            </div>
+
+            <slot name="tag" v-if="$slots.tag">
+                
+            </slot>
         </div>
-        <div class="col-3 text-right">
+        <div class="col-3 text-right" v-if="showActions">
             <q-btn v-if="!isEdit" 
+                :disable="isDisableEdit"
                 :label="t('common.edit')" :color="theme" 
                 outline  icon="edit" @click="emit('openEdit')" 
                 class="no-shadow q-ml-lg" size="sm" />
@@ -45,7 +65,7 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
         </div>
     </div>
 
-    <div v-if="!isEdit" class="row justify-between">
+    <div v-if="(!isHidden && !isEdit)" class="row justify-between">
         <div class="column">
             <div v-for="row in leftColumn" :key="row.label" class="line">
                 <span :class="`text-${theme} line__label`">

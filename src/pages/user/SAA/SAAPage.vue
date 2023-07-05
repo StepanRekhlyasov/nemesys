@@ -3,17 +3,17 @@
    <q-card-section class="bg-grey-3 flex items-center q-pb-none">
       <div class="text-h6 text-primary"><span style="font-size:28px;">■</span>{{ $t('menu.SAA') }}</div>
     </q-card-section>
-    <q-card-section class="bg-grey-3 flex items-end">
-      <label class="text-subtitle1 q-mr-md">
-        {{ $t('SAA.mode') }}
+    <q-card-section class="bg-grey-3 flex items-end gap">
+      <label class="text-subtitle1">
+        {{ $t('KPI.aggregationMethods') }}
         <MySelect
           :options="[
             {
-              label: $t('SAA.modeIndividual'),
+              label: $t('KPI.modeIndividual'),
               value: 'user'
             },
             {
-              label: $t('SAA.modeBranch'),
+              label: $t('KPI.modeBranch'),
               value: 'branch'
             },
           ]"
@@ -23,8 +23,8 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1 q-mr-md">
-        {{ $t('SAA.targetPeriod') }}
+      <label class="text-subtitle1">
+        {{ $t('KPI.targetPeriod') }}
         <DateRange
           v-model="dateRange"
           :width="'250px'"
@@ -32,7 +32,7 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1 q-mr-md">
+      <label class="text-subtitle1">
         {{ $t('applicant.progress.filters.branch') }}
         <MySelect
           :option-to-fetch="'branchIncharge'"
@@ -42,7 +42,7 @@
         />
       </label>
       <label class="text-subtitle1">
-        {{ $t('SAA.username') }}
+        {{ $t('KPI.username') }}
         <MySelect
           :option-to-fetch="'usersInCharge'"
           :width="'175px'"
@@ -50,7 +50,7 @@
           @update:model-value="getData()"
         />
       </label>
-      <q-btn 
+      <q-btn
         color="primary"
         style="margin-left: auto;"
         @click="downloadCSV"
@@ -59,10 +59,9 @@
       </q-btn>
     </q-card-section>
     <q-card-section class="bg-grey-3 flex items-center">
-      <KpiTable
+      <SAATable
         :rows="rowData"
-        @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)"
-        ref="kpiTableRef"
+        ref="saaTableRef"
       />
       <q-linear-progress query v-if="loading" color="primary"/>
     </q-card-section>
@@ -72,10 +71,10 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import DateRange from 'src/components/inputs/DateRange.vue';
-import KpiTable from './components/SAATable.vue';
+import SAATable from './components/SAATable.vue';
 import { ref, onMounted, watch } from 'vue'
 import { useOrganization } from 'src/stores/organization';
-import { Applicant, User } from 'src/shared/model';
+import { User } from 'src/shared/model';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
 import { where } from 'firebase/firestore';
@@ -89,14 +88,14 @@ const rowData = ref<User[]>([])
 const userStore = useUserStore()
 const organizationStore = useOrganization()
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
-const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
+const saaTableRef = ref<InstanceType<typeof SAATable> | null>(null);
 
 async function getData(){
   if(organizationStore.currentOrganizationId){
     loading.value = true
-    /** 
+    /**
      * here is test data.
-     * true data should be parsed here to table keys only 
+     * true data should be parsed here to table keys only
      * because of csv downloading
      */
     if(user.value){
@@ -113,9 +112,14 @@ watch(()=>organizationStore.currentOrganizationId, ()=>{
   getData()
 })
 function downloadCSV(){
-  kpiTableRef.value?.exportTable()
+  saaTableRef.value?.exportTable()
 }
 onMounted(()=>{
   getData()
 })
 </script>
+<style scoped lang="scss">
+.gap{
+  gap: 10px;
+}
+</style>
