@@ -10,7 +10,11 @@
       color="primary"
       table-header-style="background-color: #ffffff"
       :loading="loading">
-
+      <template v-slot:body-cell-performer="props">
+        <q-td :props="props">
+          {{ props.row.executor || t('common.userNotFound') }}
+        </q-td>
+      </template>
     </q-table>
     <div class="row justify-start q-mt-md q-mb-md pagination q-mx-md">
       <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
@@ -83,16 +87,13 @@ import { useUserStore } from 'src/stores/user';
     if (!Array.isArray(docWholeSnap.value)) {
       docWholeSnap.value.docs.forEach( async (item, index) => {
         const executor = await userStore.getUserById(item.data().executor)
-
-        if (executor?.id) {
-          historyTableRows.value = [...historyTableRows.value, {
+        historyTableRows.value = [...historyTableRows.value, {
             number: index + 1,
             typeOperation: t('operationHistory.' + [item.data().typeOperation]),
             date: date.formatDate(item.data().date.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-            executor:  executor?.name,
+            executor:  executor?.name ??  '',
             note: item.data().note,
           }]
-        }
       })
 
     }
