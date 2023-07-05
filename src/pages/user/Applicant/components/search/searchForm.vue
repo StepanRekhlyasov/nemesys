@@ -26,11 +26,12 @@
                     <q-input type="date" v-model="searchData['applicationDateMax']" outlined dense mask="YYYY/MM/DD"
                         class="q-mr-xs q-ml-xs" />
                 </div>
-                <div class="col-2">
-                    <q-btn :label="$t('client.list.search')" type="submit" color="primary" />
+                <div class="col-6 q-my-sm">
+                    <q-btn :label="$t('client.list.search')" type="submit" color="primary q-ml-sm" />
                     <q-btn :label="$t('common.reset')" type="reset" color="primary" outline class="q-ml-sm" />
+                    <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="Save" color="primary q-ml-sm"/>
                 </div>
-                <div class="col-1">
+                <div class="col-2">
                     <q-expansion-item v-model="expanded" dense dense-toggle :label="$t('common.detailedConditions')"
                         header-class="q-pa-none" switch-toggle-side />
                 </div>
@@ -101,7 +102,7 @@
                             </div>
                             <div class="col-3 q-pl-sm">
                                 <q-select outlined v-model="searchData['municipalities']"
-                                    :options="prefectureData[prefJP[searchData['prefecture']]]"
+                                    :options="prefectureData[searchData['prefecture']]"
                                     :disable="!searchData['prefecture']" dense />
                             </div>
                             <div class="col-3 q-pl-sm">
@@ -370,7 +371,8 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, defineEmits, watch } from 'vue'; //ref,
-// import { useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n';
+import  { useQuasar } from 'quasar';
 import { statusList, applicantClassification, occupationList, qualificationList, availableShiftList, daysList, sexList, rankList } from 'src/shared/constants/Applicant.const';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import AreaSearch from './AreaSearch.vue';
@@ -382,11 +384,13 @@ import { prefectureList as prefList } from 'src/shared/constants/Prefecture.cons
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from './components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import {useApplicantSaveSearch} from 'src/stores/applicantSaveSearch'
+import {checkValidity} from 'src/pages/user/Applicant/const/index'
 
-
-// const { t } = useI18n({ useScope: 'global' });
+const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
-
+const $q = useQuasar();
+const saveSearch = useApplicantSaveSearch()
 const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
 
 const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
@@ -408,6 +412,8 @@ const emit = defineEmits<{
     (e: 'loadSearchStaff', staffList)
     (e: 'isLoading', flag)
 }>()
+
+const isSaving = ref(false);
 
 const sexOption = ref(sexList);
 const classificationOption = ref(applicantClassification);
@@ -514,6 +520,43 @@ const searchStaff = async () => {
 const Reset = () => {
     searchData.value = JSON.parse(JSON.stringify(searchDataSample));
     //searchStaff();
+}
+
+const Save=  async ()=>{
+  isSaving.value = true;
+  let data = searchData.value
+    data['created_at'] = null;
+    data['id'] = null;
+    if(!checkValidity(data)){
+      Alert.warning($q, t);
+    }
+    else {
+        if(!data['keyword']) data['keyword'] = null;
+        if(!data['ageMin']) data['ageMin'] = null;
+        if(!data['ageMax']) data['ageMax'] = null;
+        if(!data['sex']) data['sex'] = null;
+        if(!data['staffrank']) data['staffrank'] = null;
+        if(!data['classification']) data['classification'] = null;
+        if(!data['occupation']) data['occupation'] = null;
+        if(!data['prefecture']) data['prefecture'] = null;
+        if(!data['municipalities']) data['municipalities'] = null;
+        if(!data['route']) data['route'] = null;
+        if(!data['neareststation']) data['neareststation'] = null;
+        if(!data['qualification']) data['qualification'] = null;
+        if(!data['yearsExperienceMin']) data['yearsExperienceMin'] = null;
+        if(!data['yearsExperienceMax']) data['yearsExperienceMax'] = null;
+        if(!data['availableShift']) data['availableShift'] = null;
+        if(!data['daysperweek']) data['daysperweek'] = null;
+        if(!data['workPerWeekMin']) data['workPerWeekMin'] = null;
+        if(!data['workPerWeekMax']) data['workPerWeekMax'] = null;
+        if(!data['applicationDateMin']) data['applicationDateMin'] = null;
+        if(!data['applicationDateMax']) data['applicationDateMax'] = null;
+        if(!data['status']) data['status'] = null;
+        const save =  await saveSearch.saveSearch(data);
+        if(save)
+        Alert.success($q,t)
+      }
+      isSaving.value = false;
 }
 
 </script>

@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    minimum:'最小',
+    maximum:'最大',
     BO: 'BO',
     select: '選択',
     reflect: '反映',
@@ -762,6 +764,12 @@ export default {
       applicationMetod: '応募方法',
       image: '応募者画像',
     },
+    shift:{
+      workinghoursearly: '早番',
+      workinghoursday: '日勤',
+      workinghourslate: '遅番',
+      workinghoursnight: '夜勤',
+    },
     list: {
       name: 'スタッフ名 ',
       category: '区分',
@@ -816,7 +824,7 @@ export default {
         userInChargeVisit: '職見担当ユーザー',
         personalStatus: '本人状況',
         corporationStatus: '法人状況',
-        businessStatus: '営業状況', 
+        businessStatus: '営業状況',
         visitRecotd: '職見記録',
         memo: 'メモ',
         chargeOfFix: 'FIX担当ユーザー',
@@ -931,9 +939,11 @@ export default {
     statusOption: {
       unsupported: '未対応',
       waitingContact: '接触待ち',
+      wait_contact: '接触待ち',
       excluded: '対象外',
       anotherCompany: '他社決定',
       breakContact: '不通',
+      break_contact: '不通',
       decline: '登録辞退',
       wait_attend: 'アテンド待ち',
       wait_FIX: 'FIX待ち',

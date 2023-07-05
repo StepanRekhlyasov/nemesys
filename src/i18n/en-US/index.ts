@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    minimum:'min',
+    maximum:'max',
     BO: 'BO',
     select: 'Please, choose',
     reflect: 'reflect',
@@ -767,6 +769,12 @@ export default {
       applicationMetod: 'Application Metod',
       image: 'Applicant Image',
     },
+    shift:{
+      workinghoursearly: 'Early Shift',
+      workinghoursday: 'Day Shift',
+      workinghourslate: 'Late Shift',
+      workinghoursnight: 'Night Shift',
+    },
     list: {
       name: 'Staff Name ',
       category: 'Category',
@@ -820,10 +828,10 @@ export default {
         admissionReasonNG: 'Admission NG Reason',
         reason: 'FIXNG Reason',
         contactPerson: 'FIX Contact Person',
-        userInChargeVisit: 'User In Charge of VISIT', 
+        userInChargeVisit: 'User In Charge of VISIT',
         personalStatus: 'Personal Status',
         corporationStatus: 'Corporation Status',
-        businessStatus: 'Business Status', 
+        businessStatus: 'Business Status',
         visitRecotd: 'VISIT Record',
         memo: 'FIX Memo',
         chargeOfFix: 'FIX User in charge',
@@ -935,9 +943,11 @@ export default {
     statusOption: {
       unsupported: 'Unsupported',
       waitingContact: 'Waiting for Contact',
+      wait_contact: 'Waiting for Contact',
       excluded: 'Not target',
       anotherCompany: 'Another offer',
       breakContact: 'No answer',
+      break_contact: 'No answer',
       decline: 'Unregistered',
       wait_attend: 'Wait Attend',
       wait_FIX: 'Wait FIX',
