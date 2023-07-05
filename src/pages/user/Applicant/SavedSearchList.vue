@@ -2,10 +2,9 @@
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { tableColumnsSavedCriteriaList,searchData, checkValidity } from './const/index';
-import { collection, getDocs, getFirestore, orderBy, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, orderBy, doc, deleteDoc, DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
-import { useQuasar } from 'quasar';
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
 import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
@@ -16,7 +15,6 @@ const rowForEdit = ref({})
 const isSaving = ref(false)
 const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
-const $q = useQuasar()
 const drawerRight = ref(false);
 const loading = ref(false)
 const searchKeyword = ref(null);
@@ -35,7 +33,7 @@ onMounted(async () => {
 
 const getSearchData = async () => {
   loading.value = true;
-  let newData = ref([]);
+  let newData = <DocumentData>([]);
   const collectionRef = collection(db, 'applicantSaveSearch');
   const querySnapshot = await getDocs(collectionRef);
   querySnapshot.forEach((doc) => {
@@ -68,14 +66,18 @@ const callRow = (row) => {
       rowForEdit.value = row
     };
 
-const Save = async () => {
+const save = async () => {
   isSaving.value = true;
   let edit_data = searchData.value
-
- if(!checkValidity(edit_data)){
-  Alert.warning();
- }
-  else {
+  let valid = true;
+  try{
+      checkValidity(edit_data)
+    }
+    catch(error){
+      valid = false
+      Alert.warning(error)
+    }
+  if(valid) {
     const save = await saveSearch.saveSearch(searchData.value);
     getSearchData();
     drawerRight.value = false;
@@ -88,7 +90,7 @@ const Save = async () => {
 const filterData = ()=>{
   if(searchKeyword.value){
     loading.value = true;
-    const filteredData = tableData.value.filter((item) => item.keyword === searchKeyword.value);
+    const filteredData = tableData.value.filter((item:DocumentData) => item.keyword === searchKeyword.value);
     tableData.value = filteredData
     loading.value = false;
   }
@@ -240,7 +242,7 @@ const clearSearch = ()=>{
     </q-card>
     <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
       bordered>
-        <q-card flat style="height:100%">
+        <q-card flat class="cover">
           <q-card-section class="text-white bg-primary rounded-borders">
             <div class="row">
               <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md" />
@@ -249,7 +251,7 @@ const clearSearch = ()=>{
 
           <searchEditDrawer v-if="drawerRight" :rowForEdit="rowForEdit"/>
 
-          <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="Save"
+          <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save"
           color="primary q-ml-sm" />
         </q-card>
     </q-drawer>
@@ -260,6 +262,9 @@ const clearSearch = ()=>{
 @import "src/css/imports/colors";
 @import "src/css/animate-left-border.scss";
 
+.cover{
+  height:100%
+}
 .table {
   &__column {}
 

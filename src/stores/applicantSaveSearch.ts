@@ -1,12 +1,12 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp,doc} from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp,doc, DocumentData,DocumentReference} from 'firebase/firestore';
 import { defineStore } from 'pinia';
 
 export const useApplicantSaveSearch = defineStore('applicantSaveSearch',()=>{
 
 const db = getFirestore();
 
-  async function saveSearch(data) {
-    let docRef;
+  async function saveSearch(data:DocumentData) {
+    let docRef:DocumentReference<DocumentData>;
     if (!data['id']){
       data['created_at'] = serverTimestamp();
       data['deleted'] = false;

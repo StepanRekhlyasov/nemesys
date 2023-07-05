@@ -12,20 +12,18 @@ export const checkValidity = (data)=>{
   checkArr.forEach(val=>{
     if(data[val]==0) data[val] = null;
   })
-
   if (data['ageMin'] && data['ageMax'] && Number(data['ageMin']) > Number(data['ageMax']) ) {
-      return false;
-  }
-  else if (data['applicationDateMin'] && data['applicationDateMax'] && (data['applicationDateMin']) > (data['applicationDateMax'])) {
-    return false
-  }
-  else if (data['workPerWeekMin'] && data['workPerWeekMax'] && Number(data['workPerWeekMin']) > Number(data['workPerWeekMax'])) {
-    return false
-  }
-  else if (data['yearsExperienceMin'] && data['yearsExperienceMax'] && Number(data['yearsExperienceMin']) > Number(data['yearsExperienceMax'])) {
-    return false
-  }
-  else return true
+    throw new Error('Min Age must be lesser than Max Age');
+}
+else if (data['applicationDateMin'] && data['applicationDateMax'] && (data['applicationDateMin']) > (data['applicationDateMax'])) {
+  throw new Error('Min Application Date must be lesser than Max Application Date');
+}
+else if (data['workPerWeekMin'] && data['workPerWeekMax'] && Number(data['workPerWeekMin']) > Number(data['workPerWeekMax'])) {
+  throw new Error('Min Days per week must be lesser than Max Days per week');
+}
+else if (data['yearsExperienceMin'] && data['yearsExperienceMax'] && Number(data['yearsExperienceMin']) > Number(data['yearsExperienceMax'])) {
+  throw new Error('Min Experience must be lesser than Max Experience');
+}
 }
 
 export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn[]> = computed(() => [
