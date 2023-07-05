@@ -6,9 +6,10 @@ import { getAuth } from '@firebase/auth';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { Client } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const props = defineProps<{theme: string}>()
-const emit = defineEmits<{(e: 'getClients', clients: Client[])}>()
+const emit = defineEmits<{(e: 'getClients', clients: Client[]), (e: 'openCFDrawer', ClientFactoryData: ClientFactory)}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
 const officeData = ref<Client[]>([]);
@@ -90,6 +91,10 @@ const setLocation = () => {
   isLoadingProgress.value = false
 }
 
+const openDrawer = (office: ClientFactory) => {
+  emit('openCFDrawer', office)
+}
+
 </script>
 
 <template>
@@ -103,13 +108,13 @@ const setLocation = () => {
         <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <div class='row flex q-pl-md'>
-      <q-input type='text' v-model="searchInput" style="width:30vw" outlined dense>
+      <q-input type='text' v-model="searchInput" style="width:30vw" outlined dense :color="props.theme">
         <template v-slot:prepend>
-          <q-btn color='primary' flat icon='place'></q-btn>
+          <q-btn flat icon='place' :color="props.theme"></q-btn>
         </template>
       </q-input>
-      <q-btn color='primary' @click='setLocation' :label="$t('common.search')" class="q-ml-sm" />
-      <q-btn @click="() => { searchInput = '' }" style="margin-left:10px" :label="$t('common.clear')" />
+      <q-btn :color="props.theme" @click='setLocation' :label="$t('common.search')" class="q-ml-sm" />
+      <q-btn @click="() => { searchInput = '' }" style="margin-left:10px" :label="$t('common.clear')" :color="props.theme" outline/>
     </div>
 
     <q-card-section>
@@ -125,7 +130,7 @@ const setLocation = () => {
             },
           }"
           v-for="office in officeData">
-            <q-icon :color="theme" size="lg" name="place"/>
+            <q-icon :color="theme" size="lg" name="place" @click="openDrawer(office)"/>
         </CustomMarker>
         <Circles :options="circleOption" />
       </GoogleMap>
