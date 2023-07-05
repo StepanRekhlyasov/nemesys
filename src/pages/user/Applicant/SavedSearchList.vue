@@ -10,22 +10,22 @@ import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
 import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
 
 const saveSearch = useApplicantSaveSearch()
-const tableData = ref([])
-const rowForEdit = ref({})
-const isSaving = ref(false)
+const tableData = ref<DocumentData>([])
+const rowForEdit = ref<DocumentData>({})
+const isSaving = ref<boolean>(false)
 const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
-const drawerRight = ref(false);
-const loading = ref(false)
-const searchKeyword = ref(null);
-const pagination = ref({
+const drawerRight = ref<boolean>(false);
+const loading = ref<boolean>(false)
+const searchKeyword = ref<string | null>(null);
+const pagination = ref<DocumentData>({
   page: 1,
   rowsPerPage: 5,
   path: 'applicantSaveSearch',
   order: orderBy('created_at', 'asc'),
 });
 
-const loadPagination = ref(0);
+const loadPagination = ref<number>(0);
 
 onMounted(async () => {
   await getSearchData();
@@ -33,7 +33,7 @@ onMounted(async () => {
 
 const getSearchData = async () => {
   loading.value = true;
-  let newData = <DocumentData>([]);
+  let newData = ref<DocumentData>([]);
   const collectionRef = collection(db, 'applicantSaveSearch');
   const querySnapshot = await getDocs(collectionRef);
   querySnapshot.forEach((doc) => {
