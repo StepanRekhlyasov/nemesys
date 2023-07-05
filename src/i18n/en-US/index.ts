@@ -232,7 +232,14 @@ export default {
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
-      billingHistory: 'Billing history'
+      billingHistory: 'Billing history',
+      aggregateDataDisplay:'Aggregated Data Display',
+      dataOutputDisplay:'Data Output',
+      dataOutputDisplayTable:{
+        outputMonth:'Output month',
+        output:'output',
+        companyWide:'Company-wide',
+      },
     }
   },
   settings: {
