@@ -94,7 +94,9 @@
     border-color: $warning;
   }
 }
-
+.q-drawer .q-drawer{
+  top: 0 !important;
+}
 
 // reset default css
 
