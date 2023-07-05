@@ -2,13 +2,13 @@ import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCoun
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientFactoriesList, getApplicantNGStatus, getApplicantCurrentUserInChargeField } from 'src/shared/utils/Applicant.utils';
+import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
 import { getStorage, ref as refStorage, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { api } from 'src/boot/axios';
-import { applicantStatusDates, applicantStatusOkFields, requiredFields } from 'src/shared/constants/Applicant.const';
+import { applicantNGStatusField, applicantStatusDates, applicantStatusOkFields, applicantUserInChargeField, requiredFields } from 'src/shared/constants/Applicant.const';
 import { useOrganization } from './organization';
 import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/ApplicantProgress/const/applicantColumns';
 import { useRoute } from 'vue-router';
@@ -663,7 +663,7 @@ export const useApplicant = defineStore('applicant', () => {
       saveData.currentStatusMonth = toMonthYear(state.value.selectedApplicant[dateField])
     }
 
-    const userInCharge = getApplicantCurrentUserInChargeField(NGStatus?NGStatus:status)
+    const userInCharge = applicantUserInChargeField[NGStatus?NGStatus:status]
     
     if(userInCharge && typeof userInCharge === 'string'){
       saveData.userInCharge = state.value.selectedApplicant[userInCharge]
@@ -794,7 +794,7 @@ export const useApplicant = defineStore('applicant', () => {
       if(saveBooleans[key] === true){
         newStatus = value
       } else if (saveBooleans[key] === false){
-        const NGField = getApplicantNGStatus(applicantStatusOkFields[key])
+        const NGField = applicantNGStatusField[applicantStatusOkFields[key]]
         NGStatus = newStatus
         newStatus = state.value.selectedApplicant[NGField]
         break;
