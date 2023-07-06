@@ -1,5 +1,5 @@
 export interface TeleAppointmentHistory {
-  id?: string;
+  id: string;
   name?: string;
   branch?: string;
   date?: string;

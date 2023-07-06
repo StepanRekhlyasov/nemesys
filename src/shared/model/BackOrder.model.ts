@@ -3,13 +3,13 @@ export interface BackOrderModel {
   type: 'dispatch' | 'referral';
   BOGenerationRoute: 'coldCall' | 'fax';
   client_id: string;
-  office_id: string; 
+  office_id: string;
   boId: string;
-  
+
   created_at: string;
   deleted: false;
 
-  // Introduction Section 
+  // Introduction Section
   dateOfRegistration: string;
   typeCase: TypeOfCase;
   status: BackOrderStatus;
@@ -18,7 +18,7 @@ export interface BackOrderModel {
   somethingNotQuestioned: boolean;
   experienceRemarks: string;
 
-  // Employment Conditions Section 
+  // Employment Conditions Section
   daysPerWeekList?: 'one' | 'two' | 'three' | 'four' | 'five';
   workingDays: 'shiftSystem' | 'fixed';
   workingDaysWeek: WorkingDaysWeek[];
@@ -31,7 +31,7 @@ export interface BackOrderModel {
   overtimeRemarks: string;
   annualHolidays: string;
 
-  // Paycheck Section 
+  // Paycheck Section
   wage: 'monthlySalary' | 'hourlyWage';
   salary: number;
   benefit: number;
@@ -56,7 +56,10 @@ export interface BackOrderModel {
   memo_house: string;
 
 }
-
+export interface BackOrderState {
+  BOList: BackOrderModel[]
+  selectedBo: BackOrderModel | null,
+}
 
 export enum TypeOfCase {
   Nurse = 'nurse',
@@ -75,7 +78,7 @@ export enum TransactionType {
   Introduction = 'introduction',
   TTP = 'ttp',
   GeneralDispatch = 'generalDispatch'
-} 
+}
 
 export enum BackOrderStatus {
   FullTime = 'fullTime',
@@ -92,3 +95,5 @@ export enum WorkingDaysWeek {
   Saturday = 'saturday',
   Holiday = 'holiday',
 }
+
+

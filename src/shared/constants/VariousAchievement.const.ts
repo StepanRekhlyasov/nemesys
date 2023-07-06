@@ -34,7 +34,7 @@ export const empRecordColumns = computed(() => {
     {
       name: 'TemptoPerm',
       required: true,
-      label: t('client.variousAchievement.temptoperm'),
+      label: t('client.variousAchievement.tempToPerm'),
       align: 'center',
       field: 'TemptoPerm',
       classes: 'bg-white',

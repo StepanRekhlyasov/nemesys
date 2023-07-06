@@ -1,15 +1,10 @@
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where,writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel,BackOrderState } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
-export const done = ref (false)
-interface BackOrderState {
-  BOList: BackOrderModel[]
-  selectedBo: BackOrderModel | null,
-}
 
 export const useBackOrder = defineStore('backOrder', () => {
 	const db = getFirestore();

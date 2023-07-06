@@ -66,20 +66,18 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
 
     <q-tab-panels v-model="activeTab" animated>
         <q-tab-panel :name="ClientFactoryTabs.TeleAppointmentHistory">
-
-            <div></div>
           <CFDrawerTeleAppointment
-		        :is-loading="isLoading"
-            :client-id="clientFactory.clientID"/>
+		          :is-loading="isLoading"
+              :client-id="clientFactory.clientID"/>
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.OfficeDetails">
           <CFDrawerOfficeDetails
-                @edit-draft="editDraft"
-                :client-factory="clientFactory"
-                :industryType="industryType"
-                :draft="draft"
-                :is-loading="isLoading"/>
+              @edit-draft="editDraft"
+              :client-factory="clientFactory"
+              :industryType="industryType"
+              :draft="draft"
+              :is-loading="isLoading"/>
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.BOHistory">
@@ -96,9 +94,8 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
 
         <q-tab-panel :name="ClientFactoryTabs.Memo">
           <CFDrawerMemo
-          :is-loading="isLoading"
-		      :client-id="clientFactory.clientID"
-          />
+              :is-loading="isLoading"
+		          :client-id="clientFactory.clientID"/>
         </q-tab-panel>
     </q-tab-panels>
 </template>

@@ -15,15 +15,15 @@ import { defineStore } from 'pinia';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
 import { TeleAppointmentHistory, UserList } from 'src/shared/model/TeleAppoint.model';
-import { addDays } from 'date-fns';
 
 export const useTele = defineStore('TeleAppoint', () => {
   const db = getFirestore();
   const $q = useQuasar();
   const user: { uid: string } | null = $q.localStorage.getItem('user');
-  const ninetyDaysAgo = addDays(new Date(), -90);
   const loadTeleAppointmentData = async (clientId: string) => {
     const teleAppointmentData: TeleAppointmentHistory[] = [];
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
     const q = await getDocs(
       query(
         collection(db, 'clients', clientId, 'teleAppointments'),

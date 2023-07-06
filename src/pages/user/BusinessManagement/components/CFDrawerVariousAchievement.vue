@@ -46,14 +46,14 @@
       {{ $t('client.list.referralResults') }}
     </q-card-section>
     <q-card-section class="q-ma-none q-pa-none">
-      <q-table :rows="dispatchRecord" :columns="dispatchColumns" row-key="name" hide-pagination class="no-shadow  rowBorder"  />
+      <q-table :rows="dispatchRecord" :columns="columnsdispatch" row-key="name" hide-pagination class="no-shadow  rowBorder"  />
     </q-card-section>
 
     <q-card-section class="text-h6 q-ma-none q-pa-none text-primary q-pt-sm q-mt-sm">
       {{ $t('office.employmentRecord') }}
     </q-card-section>
     <q-card-section class="q-ma-none q-pa-none">
-      <q-table :rows="empRecord" :columns="empRecordColumns" row-key="name" hide-pagination style="max-width: 500px;" class="no-shadow  rowBorder"  />
+      <q-table :rows="empRecord" :columns="columnsemp" row-key="name" hide-pagination style="max-width: 500px;" class="no-shadow  rowBorder"  />
     </q-card-section>
 
 
@@ -63,9 +63,10 @@
 <script lang="ts" setup>
 import { ref , Ref , onMounted } from 'vue';
 import { today, lastMonth } from 'src/shared/utils/utils';
-import { dispatchColumns } from 'src/shared/constants/VariousAchievement.const'
-import { empRecordColumns } from 'src/shared/constants/VariousAchievement.const'
+import { dispatchColumns, empRecordColumns } from 'src/shared/constants/VariousAchievement.const'
 import { dispatch , emp } from 'src/shared/model/VariousAchievement.model'
+const columnsdispatch :Ref<never[]>= ref(dispatchColumns)
+const columnsemp :Ref<never[]> = ref(empRecordColumns)
 const filter = ref({
 startDate: lastMonth(),
 endDate: today()

@@ -105,7 +105,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, onBeforeUnmount, onMounted, watch, defineProps, Ref } from 'vue';
+import { ref, onBeforeUnmount, onMounted, watch, Ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
 import { useTele } from 'src/stores/TeleAppoint';
@@ -182,7 +182,7 @@ const getUserName = (uid: string) => {
   return '';
 };
 
-const formatDate = (dateTime, type) => {
+const formatDate = (dateTime: Date | string, type: 'date' | 'time') => {
   const dateObj = new Date(dateTime);
   let formattedDate = '';
   if (type === 'date') {
@@ -198,7 +198,7 @@ const onSubmit = async () => {
   loading.value = true;
   let data: TeleAppointmentHistory[] = teleData.value;
   if (!data['result']) {
-   Alert.warning($q,t)
+   Alert.warning()
     return;
   }
 
@@ -223,7 +223,7 @@ const onSubmit = async () => {
     dialogType.value = 'create';
   } catch (error) {
     loading.value = false;
-    Alert.warning()
+    Alert.warning(error)
   }
 };
 

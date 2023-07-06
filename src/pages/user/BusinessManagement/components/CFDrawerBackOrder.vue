@@ -114,7 +114,6 @@
     :rows="backOrderData"
      @updatePage="pagination.page = $event"
      v-model:pagination="pagination"/>
-
 <q-drawer
 		v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right"
 		overlay elevated bordered>
@@ -128,7 +127,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { BackOrderModel,Client } from 'src/shared/model/BackOrder.model';
+import { BackOrderModel } from 'src/shared/model/BackOrder.model';
 import { ref, Ref, watch, onMounted, defineProps } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useQuasar } from 'quasar';
@@ -138,7 +137,6 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
-import {done} from 'src/stores/backOrder'
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{ clientId: string }>();
@@ -170,7 +168,6 @@ const showDeleteDialog = async (ids: string[]) => {
   }).onOk(async () => {
     loading.value=true
     const done = await backOrderStore.deleteBO(ids);
-    debugger
     loading.value=false
 
     if (done) {
@@ -187,9 +184,9 @@ const showAddBO = () => {
       cteateBoDrawer.value =  true
     }
 const deleteSelected = () => {
-  const BoItem = backOrderData.value.filter(row => row['selected']);
+  const boItem = backOrderData.value.filter(row => row['selected']);
   let items: string[] = [];
-  for (const item of BoItem) {
+  for (const item of boItem) {
     items.push(item['id']);
   }
   showDeleteDialog(items);
@@ -215,11 +212,6 @@ watch(() => selected.value, (newValue) => {
     backOrderData.value[i]['selected'] = newValue;
   }
 });
-watch(done, async () => {
- await fetchBOData()
-  done.value=false
-  }
-);
 onMounted(async() => {
   fetchBOData();
 });

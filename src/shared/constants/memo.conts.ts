@@ -2,20 +2,20 @@ import { computed } from 'vue'
 import { i18n } from 'boot/i18n'
 
 const { t } = i18n.global
-export const columns = computed(() => {
+export const columnsMemo = computed(() => {
   return [
     {
       label: '',
       field: 'select',
       name: 'select',
       align: 'left',
-    },
-  {
-      name: 'displayName',
+   },
+   {
+      name: 'created_user',
       required: true,
       label: t('detal.memo.registredUser'),
       align: 'left',
-      field: 'displayName',
+      field: 'created_user',
       sortable: false,
     },{
       name: 'content',

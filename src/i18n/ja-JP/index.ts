@@ -700,7 +700,7 @@ export default {
       joiningAnotherCompany: '他社入職',
       referralResults: '紹介実績',
       partTimeJob: 'パート・アルバイト',
-      temptoperm:'紹介予定派遣'
+      tempToPerm:'紹介予定派遣'
     },
     contractUnit: {
       corporateBulk: '法人一括',

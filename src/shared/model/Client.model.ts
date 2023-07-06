@@ -1,7 +1,7 @@
 import { User } from 'firebase/auth';
 
 export interface ClientMemo {
-  id?: string;
+  id: string;
   created_user?: string;
   content?: string;
   created_date?: string;
