@@ -35,7 +35,7 @@ defineProps({
   },
   valueClass: {
     type: String,
-    default: 'col-3 q-pl-md '
+    default: 'col-3 q-pl-md self-center'
   },
   labelClass: {
     type: String,
