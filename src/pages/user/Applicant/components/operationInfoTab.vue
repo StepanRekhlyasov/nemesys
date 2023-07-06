@@ -71,6 +71,13 @@ const columns = computed(() => {
       align: 'left',
     },
     {
+      name: 'backOrder',
+      required: true,
+      label: 'BOID',
+      field: 'boId',
+      align: 'left',
+    },
+    {
       name: 'admissionDate',
       required: true,
       label: t('applicant.attendant.startDate'),

@@ -200,7 +200,7 @@ const columns = computed<QTableProps['columns']>(() => {
       name: 'backOrder',
       required: true,
       label: 'BOID',
-      field: 'backOrder',
+      field: 'boId',
       align: 'left',
     },
     {
