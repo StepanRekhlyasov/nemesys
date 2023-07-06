@@ -16,7 +16,7 @@
       </template>
       <template v-slot:body-cell-distanceBusiness="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ props.row.distanceBusiness }} m
+          {{ props.row.distanceBusiness }} Km
         </q-td>
       </template>
       <template v-slot:body-cell-matchDegree="props">
@@ -30,13 +30,14 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, ExtendedApplicant } from 'src/shared/model';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { BackOrderStaff } from '../../consts/BackOrder.const';
 import { useBO } from '../../consts/index';
 import { useApplicant } from 'src/stores/applicant'
 import { useClient } from 'src/stores/client'
 import { where } from 'firebase/firestore';
 import { useI18n } from 'vue-i18n';
+import { radius } from '../../consts/BackOrder.const';
 
 const pagination = ref({
   sortBy: 'desc',
@@ -53,6 +54,19 @@ const props = withDefaults(defineProps<{
   hideMapButton: false
 }
 )
+
+watch(()=>radius.value,async (newVal)=>{
+  await getFormatedData();
+  if(radius.value){
+      staffList.value = staffList.value.filter((staff)=>staff.distanceBusiness<=radius.value)
+      staffList.value.sort((a, b) => a.distanceBusiness - b.distanceBusiness);
+  }
+  else{
+    loading.value = true;
+  await getFormatedData();
+  loading.value = false;
+  }
+})
 
 const calculateDistance = async () => {
   const client = await getClient.fetchClientsById(props.bo.client_id);
@@ -86,11 +100,16 @@ const getClient = useClient();
 
 onMounted(async () => {
   loading.value = true;
+  await getFormatedData();
+  console.log(staffList.value)
+  loading.value = false;
+})
+
+const getFormatedData = async()=>{
   staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ExtendedApplicant[];
   await calculateDistance();
   calculateMatchDegree();
-  loading.value = false;
-})
+}
 
 const emit = defineEmits(['openSearchByMap']);
 const staffList = ref<ExtendedApplicant[]>([])

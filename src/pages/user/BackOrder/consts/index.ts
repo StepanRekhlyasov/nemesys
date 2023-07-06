@@ -3,7 +3,7 @@ import {ref} from 'vue';
 
 export const useBO = defineStore('BO', () => {
   function getDistance(loc1, loc2){
-    const R = 6371000;
+    const R = 6371;
     const dLat = degToRad(loc2.lat - loc1.lat);
     const dLon = degToRad(loc2.lon - loc1.lon);
     const a =

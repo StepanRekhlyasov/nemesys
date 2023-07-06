@@ -2,17 +2,18 @@
 import { watch, ref, defineProps, defineEmits } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
+import {radius} from '../consts/BackOrder.const'
 
 const props = defineProps<{theme: string}>()
 const emit = defineEmits<{(e: 'updateMap', mapData)}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
-const radius = ref<number>(500);
+const radius1 = ref<number>(0);
 const isLoadingProgress = ref(false)
 
 const circleOption = ref({
   center: center,
-  radius: radius,
+  radius: radius1,
   strokeColor: '#FF0000',
   strokeOpacity: 0.8,
   strokeWeight: 2,
@@ -20,7 +21,8 @@ const circleOption = ref({
   fillOpacity: 0.05,
 });
 
-watch(radius, (newVal) => {
+watch(radius1, (newVal) => {
+  radius.value = radius1.value
   let center = circleOption.value.center;
   if (!newVal) {
     newVal = 0
@@ -30,7 +32,7 @@ watch(radius, (newVal) => {
   }
   circleOption.value = {
     center: center,
-    radius: radius.value,
+    radius: radius1.value*1000,
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -38,25 +40,24 @@ watch(radius, (newVal) => {
     fillOpacity: 0.05,
   }
 
-  emit('updateMap', { ...center, 'radiusInM': radius.value })
+  emit('updateMap', { ...center, 'radiusInM': radius1.value*1000 })
 });
 
 const markerDrag = (event) => {
-  console.log('sdsdasdsaddsadds')
   center.value = { lat: event.latLng.lat(), lng: event.latLng.lng() }
   circleOption.value = {
     center: center.value,
-    radius: radius.value,
+    radius: radius1.value*1000,
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: '#FF0000',
     fillOpacity: 0.05,
   }
-  console.log(circleOption.value)
 
-  emit('updateMap', { ...center.value, 'radiusInM': radius.value })
+  emit('updateMap', { ...center.value, 'radiusInM': radius1.value*1000 })
 }
+
 
 </script>
 
@@ -70,18 +71,6 @@ const markerDrag = (event) => {
     <q-card-section>
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
-        <!-- <CustomMarker
-          :key="office.geohash"
-          :options="{
-            position: {
-              lat: office.lat,
-              lng: office.lon,
-              anchorPoint: 'BOTTOM_CENTER'
-            },
-          }"
-          v-for="office in officeData">
-            <q-icon :color="theme" size="lg" name="place"/>
-        </CustomMarker> -->
         <Circles :options="circleOption" />
       </GoogleMap>
     </q-card-section>
@@ -91,10 +80,10 @@ const markerDrag = (event) => {
         <div class="col-1 flex justify-end q-pa-sm">
           {{ $t('client.list.distanceFromOrigin') }}
         </div>
-        <div class="col-2">
-          <q-input outlined dense type="number" v-model.number="radius">
+        <div class="col-3 row">
+          <q-input outlined dense type="number" v-model="radius1">
             <template v-slot:after>
-              m
+              Km
             </template>
           </q-input>
         </div>

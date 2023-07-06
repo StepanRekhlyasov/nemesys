@@ -1,5 +1,5 @@
 <template>
-  <q-drawer v-model="showDrawer" show class="bg-grey-3" :width="800" :breakpoint="500" side="right" overlay elevated bordered v-if="selectedBo" :class="'my-drawer-aside'">
+  <q-drawer v-model="showDrawer" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated bordered v-if="selectedBo" :class="'my-drawer-aside'">
     <q-scroll-area class="fit text-left">
     <q-card class="no-shadow bg-grey-3">
       <q-card-section class="text-white bg-primary no-border-radius">
@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { BackOrderModel, Client } from 'src/shared/model';
 import { ref, watch } from 'vue';
-import MapSearchs from 'src/pages/user/Applicant/components/search/MapSearch.vue';
+import MapSearchs from 'src/pages/user/BackOrder/components/MapSearch.vue';
 import CandidateStaffBoSection from './candidateStaffBoSection.vue';
 
 const props = defineProps<{

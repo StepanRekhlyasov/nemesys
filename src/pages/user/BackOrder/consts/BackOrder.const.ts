@@ -1,5 +1,7 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { i18n } from 'boot/i18n';
+
+export const radius = ref<number>(0);
 
 export const BackOrderColumns = computed(() => {
 	const { t } = i18n.global
