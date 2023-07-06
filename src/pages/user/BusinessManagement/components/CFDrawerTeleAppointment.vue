@@ -131,7 +131,7 @@ const pagination = ref({
 });
 const loading = ref(false);
 const showAddForm = ref(false);
-const teleData = ref({
+const teleData:DocumentData = ref({
       requiredService: [],
       result:'',
       jobResult:'',
