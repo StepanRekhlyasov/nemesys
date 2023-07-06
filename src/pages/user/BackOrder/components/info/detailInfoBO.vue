@@ -99,7 +99,7 @@
       </labelField>
     </div>
 
-    <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'"  >
+    <div class="row q-pb-sm"  >
       <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
         :value="selectedBo['qualifications']? $t('backOrder.qualification.'+data['qualifications']) : ''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationRule(val) : true]">
@@ -113,7 +113,7 @@
             class="q-pr-md"/>
         </q-field>
       </labelField>
-      <labelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center"
+      <labelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center"  v-if="selectedBo['type'] == 'referral'"
         :value="selectedBo['payday']? `${selectedBo['payday']} ${$t('backOrder.create.day')}` : ''" labelClass="q-pl-md col-2 text-right self-center" >
         <q-input v-model="data['payday']" outlined dense type="number" :disable="loading"/>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.create.day') }}</span>
