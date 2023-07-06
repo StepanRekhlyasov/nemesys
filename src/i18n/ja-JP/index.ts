@@ -1594,7 +1594,7 @@ export default {
       clientFacilityNG: 'NGクライアント・施設',
       previousEmploymentClient: '過去就業先クライアント',
       transmissionContentSettings: '送信内容設定',
-      OnlyPdfFomratCanBeAttached:'※ 添付可能な様式はPDFのみとなります。',
+      onlyPdfFomratCanBeAttached:'※ 添付可能な様式はPDFのみとなります。',
       prSheet: 'PRシート',
       attachPRSheet: 'PRシート添付',
       setTransmissionDateTime: '送信日時を設定する',
@@ -1604,6 +1604,7 @@ export default {
       clientNG: 'NGクライアント',
       refinementConditions: '絞り込み条件',
       maxTransmissions: '最大送信件数',
+      faxPRSheet: 'PRシートをFAX送信します。',
     }
   },
   inquiry: {

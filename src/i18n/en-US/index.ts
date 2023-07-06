@@ -1601,7 +1601,7 @@ export default {
       clientFacilityNG: 'NG client/facility',
       previousEmploymentClient: 'Previous employment client',
       transmissionContentSettings: 'Transmission content settings',
-      OnlyPdfFomratCanBeAttached:'Only PDF fomat can be attached',
+      onlyPdfFomratCanBeAttached:'Only PDF fomat can be attached',
       prSheet: 'PR sheet',
       attachPRSheet: 'Attach PR sheet',
       setTransmissionDateTime: 'Set transmission date and time',
@@ -1611,6 +1611,7 @@ export default {
       clientNG: 'NG client',
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
+      faxPRSheet: 'Fax the PR Sheet'
     }
   },
   inquiry: {

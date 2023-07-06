@@ -4,9 +4,11 @@ import { withDefaults, defineEmits, defineProps, ref, watch } from 'vue';
 import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { useFax } from 'src/stores/fax';
+import { useQuasar } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
+const $q = useQuasar();
 
 withDefaults(
     defineProps<{
@@ -72,10 +74,17 @@ const filterFn = (val: string, update) => {
     })
 }
 const save = async () => {
-    await faxStore.saveFax(faxData.value, faxFile.value);
-    faxData.value = JSON.parse(JSON.stringify(faxDataDataSample));
-    faxForm.value.resetValidation();
+    $q.dialog({
+        message: t('clientFactory.fax.faxPRSheet'),
+        persistent: true,
+        cancel: t('common.cancel'),
+    }).onOk(async () => {
+        await faxStore.saveFax(faxData.value, faxFile.value);
+        faxData.value = JSON.parse(JSON.stringify(faxDataDataSample));
+        faxForm.value.resetValidation();
+    })
 }
+
 </script>
 
 <template>
@@ -136,10 +145,10 @@ const save = async () => {
                             </span>
                         </div>
                         <div class="row q-mt-sm q-mb-xs q-pl-xl q-ml-xl">
-                          <div class="col-6 text-negative q-pl-xl q-ml-xl">
-                            <div class="q-pl-lg">
-                              {{$t('clientFactory.fax.OnlyPdfFomratCanBeAttached')}}
-                            </div>
+                            <div class="col-6 text-negative q-pl-xl q-ml-xl">
+                                <div class="q-pl-lg">
+                                    {{ $t('clientFactory.fax.onlyPdfFomratCanBeAttached') }}
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -209,9 +218,10 @@ const save = async () => {
                                 {{ $t('clientFactory.fax.maxTransmissions') }}
                             </div>
                             <div class="col-9 flex inline">
-                              <q-select dense outlined emit-value map-options v-model="faxData['maxTransmissions']" use-input
-                              use-chips input-debounce="0" :options="[50, 100, 150, 200,300,500,1000,1500,2000]" @filter="filterFn"
-                              :loading="loading" :rules="[(val) => !!val || '']" hide-bottom-space />
+                                <q-select dense outlined emit-value map-options v-model="faxData['maxTransmissions']"
+                                    use-input use-chips input-debounce="0"
+                                    :options="[50, 100, 150, 200, 300, 500, 1000, 1500, 2000]" @filter="filterFn"
+                                    :loading="loading" :rules="[(val) => !!val || '']" hide-bottom-space />
                                 <span class="q-mt-sm q-ml-sm">{{ $t('applicant.attendant.items') }}</span>
                             </div>
                         </div>
