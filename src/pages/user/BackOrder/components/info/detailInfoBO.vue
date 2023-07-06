@@ -162,7 +162,7 @@
         <q-input v-model="data['invoice']"  outlined dense :disable="loading" hide-bottom-space  />
       </labelField>
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
-        valueClass="col-4 q-pl-md flex" :value="selectedBo['upperAgeLimit'] + $t('common.ageShort')">
+        valueClass="col-4 q-pl-md flex" :value="selectedBo['upperAgeLimit'] ? selectedBo['upperAgeLimit'] + $t('common.ageShort') : ''">
         <q-input v-model="data['upperAgeLimit']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </labelField>
@@ -481,7 +481,7 @@
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
-        valueClass="col-4 q-pl-md flex" :value="selectedBo['upperAgeLimit'] + $t('common.ageShort')">
+        valueClass="col-4 q-pl-md flex" :value="selectedBo['upperAgeLimit'] ? selectedBo['upperAgeLimit'] + $t('common.ageShort') : ''">
         <q-input v-model="data['upperAgeLimit']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </labelField>
