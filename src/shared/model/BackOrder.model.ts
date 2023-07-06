@@ -82,6 +82,12 @@ export enum BackOrderStatus {
   Inactive = 'inactive'
 }
 
+export enum EmploymentBOStatus {
+  FullTime = 'fullTime',
+  PartTime = 'partTime',
+  PartTimeEmployee = 'partTimeEmployee'
+}
+
 export enum WorkingDaysWeek {
   Monday = 'monday',
   Tuesday = 'tuesday',

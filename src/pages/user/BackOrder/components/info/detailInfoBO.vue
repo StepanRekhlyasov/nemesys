@@ -170,7 +170,7 @@
     
     <div class="row q-pb-sm"  v-if="selectedBo['type'] == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right" 
-        valueClass="col-4 q-pl-md flex " :value="`${data['payment']}  ${$t('common.yen')}`">
+        valueClass="col-4 q-pl-md flex " :value="data['payment'] ? `${data['payment']}  ${$t('common.yen')}`: ''">
         <q-input v-model="data['payment']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
@@ -219,7 +219,7 @@
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <labelField :label="$t('backOrder.create.workingDays')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="q-pl-md col-4" 
-        :value="`${selectedBo['workingDays']? $t('backOrder.workingDays.'+data['workingDays']) :''} / ${selectedBo['workingDays'] == 'fixed'?data['working_days_week'].map(day => $t('weekDay.'+day)).join(', ') : ''}`">
+        :value="`${selectedBo['workingDays']? $t('backOrder.workingDays.'+data['workingDays']) :''} ${selectedBo['workingDays'] == 'fixed'?'/'+data['working_days_week'].map(day => $t('weekDay.'+day)).join(', ') : ''}`">
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" 
           val="shiftSystem" v-model="data['workingDays']" />
@@ -491,7 +491,7 @@
       <LabelField :label="$t('backOrder.create.overtimeRemarks')" 
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
         :edit="edit" :value="selectedBo['overtimeRemarks']" >
-        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || data['overtimeWork'] !== 'yes'" />
+        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading " />
       </LabelField>
       
       <labelField :label="$t('client.list.memo')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"  
@@ -515,8 +515,8 @@
   </q-card-section>
 </template>
 <script lang="ts" setup>
-import { BackOrderModel, BackOrderStatus, Client, TypeOfCase, TypeQualifications } from 'src/shared/model';
-import { ref } from 'vue';
+import { BackOrderModel, BackOrderStatus, TypeOfCase, TypeQualifications } from 'src/shared/model';
+import { computed, ref, watch } from 'vue';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import LabelField from 'src/components/form/LabelField.vue';
@@ -524,21 +524,18 @@ import detalInfoTab from './detalInfoTab.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateTime } from 'src/shared/constants/Form.const';
 
-const props = defineProps<{
-  selectedBo: BackOrderModel,
-  client?: Client
-}>()
 const emit = defineEmits(['openSearchByMap']);
 
 const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
-const data = ref(props.selectedBo)
+const data = ref(backOrderStore.state?.selectedBo as BackOrderModel)
+const selectedBo = computed(() => backOrderStore.state?.selectedBo as BackOrderModel)
 
 async function save() {
   loading.value = true;
   try {
-    await backOrderStore.updateBackOrder({id: props.selectedBo.id, ...data.value} as BackOrderModel);
+    await backOrderStore.updateBackOrder({...data.value} as BackOrderModel);
     edit.value = false;
 
   } catch (e) {
@@ -546,6 +543,9 @@ async function save() {
   }
   loading.value = false;
 }
+watch([backOrderStore.state.selectedBo], () => {
+  data.value = backOrderStore.state?.selectedBo as BackOrderModel
+}, {deep: true})
 </script>
 
 <style>

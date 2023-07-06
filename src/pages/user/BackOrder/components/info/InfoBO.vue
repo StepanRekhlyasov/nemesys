@@ -18,7 +18,7 @@
             </div>
           </div>
         </q-card-section>
-        <detailInfoBO :selectedBo="selectedBo" :client="client" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO @openSearchByMap="emit('openSearchByMap')"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -30,7 +30,7 @@ import { BackOrderModel, Client } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import detailInfoBO from './detailInfoBO.vue';
 

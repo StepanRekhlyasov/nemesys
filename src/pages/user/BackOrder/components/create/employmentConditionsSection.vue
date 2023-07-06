@@ -53,7 +53,7 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
+        <span class="q-ma-sm flex-center">{{ '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -68,7 +68,6 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
       </labelField>
     </div>
     <div class="row q-pt-sm">
@@ -88,7 +87,7 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
+        <span class="q-ma-sm flex-center">{{ '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -103,7 +102,6 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
       </labelField>
     </div>
     <div class="row q-pt-sm">
@@ -123,7 +121,7 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
+        <span class="q-ma-sm flex-center">{{'  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_max']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -138,7 +136,6 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
       </labelField>
     </div>
     <div class="row q-pt-sm">
@@ -159,7 +156,7 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + '  ~' }}</span>
+        <span class="q-ma-sm flex-center">{{'  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_max']"
           :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
           <template v-slot:append>
@@ -174,7 +171,6 @@
             </q-icon>
           </template>
         </q-input>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.time') }}</span>
       </labelField>
     </div>
 

@@ -48,9 +48,9 @@
         labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10">
         <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio
-            v-for="key in BackOrderStatus"
+            v-for="key in EmploymentBOStatus"
             v-model="data['employmentType']"
-            :label="$t('backOrder.'+key)"
+            :label="$t('client.backOrder.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
@@ -89,7 +89,7 @@
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center ">
         <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
           <q-toggle v-model="data['experienceReq']"  :disable="loading" 
-            :label="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned'):$t('backOrder.create.required')"/>
+            :label="data['experienceReq']?$t('backOrder.create.required'):$t('backOrder.create.somethingNotQuestioned')"/>
         </q-field>
       </labelField>
       <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true"
@@ -141,7 +141,7 @@
 import labelField from 'src/components/form/LabelField.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateDate } from 'src/shared/constants/Form.const';
-import { BackOrderModel, TypeOfCase, BackOrderStatus, TypeQualifications, selectOptions } from 'src/shared/model';
+import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
 import { useUserStore } from 'src/stores/user';
 import { ref, watch } from 'vue';
 
