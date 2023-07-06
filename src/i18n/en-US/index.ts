@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    minimum:'min',
+    maximum:'max',
     BO: 'BO',
     select: 'Please, choose',
     reflect: 'reflect',
@@ -782,6 +784,12 @@ export default {
       applicationMetod: 'Application Metod',
       image: 'Applicant Image',
     },
+    shift:{
+      workinghoursearly: 'Early Shift',
+      workinghoursday: 'Day Shift',
+      workinghourslate: 'Late Shift',
+      workinghoursnight: 'Night Shift',
+    },
     list: {
       name: 'Staff Name ',
       category: 'Category',
@@ -951,16 +959,17 @@ export default {
     statusOption: {
       unsupported: 'Unsupported',
       waitingContact: 'Waiting for Contact',
+      wait_contact: 'Waiting for Contact',
       excluded: 'Not target',
       anotherCompany: 'Another offer',
       breakContact: 'No answer',
+      break_contact: 'No answer',
       decline: 'Unregistered',
       wait_attend: 'Wait Attend',
       wait_FIX: 'Wait FIX',
       wait_visit: 'Wait Visit',
       wait_offer: 'Wait Offer',
       wait_entry: 'Wait Entry',
-      wait_contact: 'Waiting for Contact',
       working: 'Working',
       wait_termination: 'Wait Termination',
       wait_retire: 'Wait Retire',

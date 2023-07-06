@@ -523,6 +523,7 @@ export const applicantStatusOkFields = {
 }
 
 
+
 export const applicantUserInChargeField = {
   [ApplicantStatus.WAIT_ATTEND] : 'chargeOfAttraction',
   [ApplicantStatus.WAIT_FIX] : 'chargeOfAttending',
