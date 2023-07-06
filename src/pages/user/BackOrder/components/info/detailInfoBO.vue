@@ -158,7 +158,7 @@
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'dispatch'">
       <labelField :label="$t('backOrder.request')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
-        valueClass="col-4 q-pl-md flex" :value="selectedBo['invoice']">
+        valueClass="col-4 q-pl-md flex" :value="selectedBo['invoice']? selectedBo['invoice'] + $t('common.yen') : ''">
         <q-input v-model="data['invoice']"  outlined dense :disable="loading" hide-bottom-space  />
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
