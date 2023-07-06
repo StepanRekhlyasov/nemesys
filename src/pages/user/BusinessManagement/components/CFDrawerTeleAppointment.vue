@@ -147,9 +147,6 @@ const users: Ref<UserTele[]> = ref([]);
 const fetchTeleData = async () => {
   loading.value = true;
   historyData.value = await teleStore.loadTeleAppointmentData(props.clientId);
-  historyData.value.forEach((item, index) => {
-    item.boid = index + 1;
-  });
   users.value = await teleStore.loadUsers();
   loading.value = false;
 };
@@ -176,7 +173,7 @@ const showEditDialog = async (data: TeleAppointmentHistory[]) => {
 };
 
 const getUserName = (uid: string) => {
-  const value = users.value.find(x => x['id'] === uid);
+const value = users.value.find(x => x['id'] === uid);
   if (value) {
     return value['name'];
   }
@@ -184,16 +181,21 @@ const getUserName = (uid: string) => {
 };
 
 const formatDate = (dateTime: Date | string, type: 'date' | 'time') => {
-  const dateObj = new Date(dateTime);
-  let formattedDate = '';
-  if (type === 'date') {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    formattedDate = dateObj.toLocaleDateString(undefined, options);
-  } else if (type === 'time') {
-    const options = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false };
-    formattedDate = dateObj.toLocaleTimeString(undefined, options);
+  if (dateTime instanceof Date) {
+    if (type === 'date') {
+      return dateTime.toLocaleDateString();
+    } else if (type === 'time') {
+      return dateTime.toLocaleTimeString(undefined, { hour12: false });
+    }
+  } else if (typeof dateTime === 'string') {
+    const date = new Date(dateTime);
+    if (type === 'date') {
+      return date.toLocaleDateString();
+    } else if (type === 'time') {
+      return date.toLocaleTimeString(undefined, { hour12: false });
+    }
   }
-  return formattedDate;
+  return '';
 };
 const onSubmit = async () => {
   loading.value = true;

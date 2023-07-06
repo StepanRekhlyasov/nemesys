@@ -128,6 +128,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
+import { Client } from 'src/shared/model/Client.model'
 import { ref, Ref, watch, onMounted, defineProps } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useQuasar } from 'quasar';
