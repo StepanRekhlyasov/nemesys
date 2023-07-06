@@ -20,6 +20,7 @@ const activeItem = ref<null | OfficeMenuItem>(null)
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 // drawers
 const isClientFactoryDrawer = ref(false)
+const mapSearchKey = ref<number>(0);
 
 const menu = computed(() => {
     return [
@@ -27,7 +28,8 @@ const menu = computed(() => {
             name: t('menu.mapSearch'),
             right: require('assets/admin-office-managment/map-search-image.png'),
             click() {
-                isDrawer.value.mapSearchDrawer = true
+                isDrawer.value.mapSearchDrawer = true,
+                mapSearchKey.value = mapSearchKey.value === 0 ? 1 : 0
             },
         },
         {
@@ -127,7 +129,7 @@ const hideClientFactoryDrawer = () => {
             </q-card-section>
         </q-card>
 
-        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" @open-c-f-drawer="openCFDrawer" />
+        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" @open-c-f-drawer="openCFDrawer" :key="mapSearchKey"/>
         <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" />
         <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
             :isDrawer="isClientFactoryDrawer" @hide-drawer="hideClientFactoryDrawer" />

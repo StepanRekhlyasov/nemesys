@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, computed } from 'vue';
+import { ref, defineProps, defineEmits, computed, watch } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
@@ -7,14 +7,23 @@ import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { Client } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { storeToRefs } from 'pinia'
+import { useClient } from 'src/stores/client';
+import { useClientFactory } from 'src/stores/clientFactory';
 
-const props = defineProps<{theme: string}>()
-const emit = defineEmits<{(e: 'getClients', clients: Client[]), (e: 'openCFDrawer', ClientFactoryData: ClientFactory)}>()
+const props = defineProps<{ theme: string }>()
+const emit = defineEmits<{ (e: 'getClients', clients: Client[]), (e: 'openCFDrawer', ClientFactoryData: ClientFactory) }>()
 
-const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
+const center = ref<{ lat: number, lng: number }>({ lat: 36.0835255, lng: 140.0 });
 const officeData = ref<Client[]>([]);
 const isLoadingProgress = ref(false)
 
+const clientFactoryStore = useClientFactory()
+const { clientFactories } = storeToRefs(clientFactoryStore)
+const clientStore = useClient()
+const { clients } = storeToRefs(clientStore)
+
+const clientFactoriesList = ref<ClientFactory[]>([]);
 const radiusKm = ref<number>(10);
 const radiusInM = computed(() => radiusKm.value * 1000);
 const searchInput = ref('');
@@ -62,7 +71,7 @@ const searchClients = async () => {
     officeData.value = response.data
     isLoadingProgress.value = false
     emit('getClients', response.data)
-  } catch(error) {
+  } catch (error) {
     isLoadingProgress.value = false
 
     console.error('Failed to create user', error);
@@ -94,18 +103,49 @@ const setLocation = () => {
 const openDrawer = (office: ClientFactory) => {
   emit('openCFDrawer', office)
 }
+const getColor = (clientFactoryId: string) => {
+  const found = officeData.value.find(x => x.id === clientFactoryId);
+  if (found) {
+    return props.theme
+  }
+  return 'white'
+}
+
+watch([clientFactories], () => {
+  clientFactoriesList.value = []
+  clientFactories.value.forEach((clientFactory) => {
+    if (clientFactory.geohash) {
+      clientFactoriesList.value.push(clientFactory)
+    }
+  })
+}, { deep: true, immediate: true })
+
+watch([clients], () => {
+  isLoadingProgress.value = true
+  clientFactoryStore.getClientFactories(clients.value).then(() => {
+    isLoadingProgress.value = false
+  })
+}, { deep: true, immediate: true });
+
+
+watch([center], () => {
+  searchClients()
+}, { deep: true, immediate: true });
+
 
 </script>
 
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-card-actions>
-      <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme" class="no-shadow text-weight-bold" icon="add" />
-      <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold" @click="searchClients" />
+      <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme"
+        class="no-shadow text-weight-bold" icon="add" />
+      <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
+        @click="searchClients" />
     </q-card-actions>
     <div style="height: 5px;">
-        <q-separator v-if="!isLoadingProgress"/>
-        <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
+      <q-separator v-if="!isLoadingProgress" />
+      <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <div class='row flex q-pl-md'>
       <q-input type='text' v-model="searchInput" style="width:30vw" outlined dense :color="props.theme">
@@ -114,23 +154,22 @@ const openDrawer = (office: ClientFactory) => {
         </template>
       </q-input>
       <q-btn :color="props.theme" @click='setLocation' :label="$t('common.search')" class="q-ml-sm" />
-      <q-btn @click="() => { searchInput = '' }" style="margin-left:10px" :label="$t('common.clear')" :color="props.theme" outline/>
+      <q-btn @click="() => { searchInput = '' }" style="margin-left:10px" :label="$t('common.clear')" :color="props.theme"
+        outline />
     </div>
 
     <q-card-section>
-      <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="10">
+      <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
+        :zoom="10">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
-        <CustomMarker 
-          :key="office.geohash"
-          :options="{
-            position: {
-              lat: office.lat,
-              lng: office.lon,
-              anchorPoint: 'BOTTOM_CENTER'
-            },
-          }"
-          v-for="office in officeData">
-            <q-icon :color="theme" size="lg" name="place" @click="openDrawer(office)"/>
+        <CustomMarker :key="clientFactory.geohash" :options="{
+          position: {
+            lat: clientFactory.lat,
+            lng: clientFactory.lon,
+            anchorPoint: 'BOTTOM_CENTER'
+          },
+        }" v-for="clientFactory in clientFactoriesList">
+          <q-icon :color="getColor(clientFactory.id)" size="lg" name="place" @click="openDrawer(clientFactory)" />
         </CustomMarker>
         <Circles :options="circleOption" />
       </GoogleMap>
