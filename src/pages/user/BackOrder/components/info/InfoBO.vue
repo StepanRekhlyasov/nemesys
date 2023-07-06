@@ -9,11 +9,11 @@
               <q-btn dense flat icon="close" class="q-mr-md " @click="drawerRight=!drawerRight"/>
             </div>
             <div>
-              <div class="row text-subtitle2" v-if="client">
-                {{ `${client['client_name']} / ${client['companyProfile']}` }}
+              <div class="row text-subtitle2" v-if="selectedBo">
+                {{ nameBo }}
               </div>
               <div class="row text-h6 text-weight-bold q-pr-xs">
-                バックオーダー詳細／{{ selectedBo.type? $t(`backOrder.type.${selectedBo.type}`):'' }}
+                {{ `${$t('backOrder.backOrderDetails')} ／ ${selectedBo.type? $t(`backOrder.type.${selectedBo.type}`):''}` }}
               </div>
             </div>
           </div>
@@ -28,18 +28,33 @@
 import { getFirestore } from 'firebase/firestore';
 import { BackOrderModel, Client } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
+import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import detailInfoBO from './detailInfoBO.vue';
 
 const backOrderStore = useBackOrder();
 const db = getFirestore();  
+const applicantStore = useApplicant();
+const { t } = useI18n({ useScope: 'global' });
 const emit = defineEmits(['closeDialog', 'openSearchByMap', 'passClientToMapSearch'])
 
 const client = ref<Client | undefined>(undefined);
 const selectedBo = computed(()=>backOrderStore.state.selectedBo);
 const drawerRight = ref(false);
-
+const nameBo = computed(() => {
+  let clientName = t('backOrder.clientName');
+  let officeName = t('backOrder.officeName');
+  if (selectedBo.value?.client_id) {
+    clientName = applicantStore.state.clientList.find(client => client.id === selectedBo.value?.client_id)?.name || '';
+    const offices = applicantStore.state.clientList.find(client => client.id === selectedBo.value?.client_id)?.office
+    if (selectedBo.value?.office_id){
+      officeName = offices?.find(office => office.id === selectedBo.value?.office_id)?.name || ''
+    }
+  }
+  return `${clientName} / ${officeName} / ${selectedBo.value?.boId}`
+})
 
 const openDrawer = async (data : BackOrderModel) => {
   if (selectedBo.value?.id && selectedBo.value.id !== data.id) {
@@ -48,9 +63,10 @@ const openDrawer = async (data : BackOrderModel) => {
   backOrderStore.state.selectedBo = data;
   drawerRight.value = true
 }
+
 onMounted(async () => {
-  if (selectedBo.value && selectedBo.value['clientId']){
-    client.value = await getClient(db, selectedBo.value['clientId'])
+  if (selectedBo.value && selectedBo.value['client_id']){
+    client.value = await getClient(db, selectedBo.value['client_id'])
     emit('passClientToMapSearch', client.value)
   }  
 })

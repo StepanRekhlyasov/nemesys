@@ -30,7 +30,7 @@
         labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
         <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationRule]">
           <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" 
-            :val="day.value" :disable="loading || data['workingDays'] == 'shiftSystem'"
+            :val="day.value" :disable="loading"
             :label="day.label" :key="day.value" />
         </q-field>
       </labelField>

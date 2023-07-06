@@ -1157,6 +1157,7 @@ export default {
     transactionType: 'Transaction Type',
     distance: 'Distance from origin',
     selectBOType: 'Select BO type',
+    backOrderDetails: 'Back Order Details',
     officeName: 'Office Name',
     clientName: 'Client Name',
     employmentType: 'Employment Status',
