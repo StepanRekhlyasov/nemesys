@@ -123,11 +123,11 @@
     <div class="row q-pb-sm">
       
       <labelField :label="$t('client.backOrder.experienceReq')" :edit="edit" 
-        :value="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned'):$t('backOrder.create.required')"
+        :value="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned') :$t('backOrder.create.required')"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
         <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
           <q-toggle v-model="data['experienceReq']"  :disable="loading" 
-            :label="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned'):$t('backOrder.create.required')"/>
+            :label="data['experienceReq']?$t('backOrder.create.required'):$t('backOrder.create.somethingNotQuestioned')"/>
         </q-field>
       </labelField>
       <LabelField :label="$t('client.backOrder.caseType')" :edit="edit"  v-if="selectedBo['type'] == 'dispatch'"
@@ -160,6 +160,7 @@
       <labelField :label="$t('backOrder.request')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
         valueClass="col-4 q-pl-md flex" :value="selectedBo['invoice']">
         <q-input v-model="data['invoice']"  outlined dense :disable="loading" hide-bottom-space  />
+        <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
         valueClass="col-4 q-pl-md flex" :value="selectedBo['upperAgeLimit'] ? selectedBo['upperAgeLimit'] + $t('common.ageShort') : ''">
@@ -170,7 +171,7 @@
     
     <div class="row q-pb-sm"  v-if="selectedBo['type'] == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right" 
-        valueClass="col-4 q-pl-md flex " :value="data['payment'] ? `${data['payment']}  ${$t('common.yen')}`: ''">
+        valueClass="col-4 q-pl-md flex " :value="data['payment'] ? `${data['payment']}  ${$t('common.yen')}` : ''">
         <q-input v-model="data['payment']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
@@ -529,7 +530,7 @@ const emit = defineEmits(['openSearchByMap']);
 const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
-const data = ref(backOrderStore.state?.selectedBo as BackOrderModel)
+const data = ref({...backOrderStore.state?.selectedBo} as BackOrderModel )
 const selectedBo = computed(() => backOrderStore.state?.selectedBo as BackOrderModel)
 
 async function save() {
