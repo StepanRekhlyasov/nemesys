@@ -81,6 +81,7 @@ const save = async () => {
     }).onOk(async () => {
         await faxStore.saveFax(faxData.value, faxFile.value);
         faxData.value = JSON.parse(JSON.stringify(faxDataDataSample));
+        faxFile.value = [];
         faxForm.value.resetValidation();
     })
 }
@@ -220,8 +221,7 @@ const save = async () => {
                             <div class="col-9 flex inline">
                                 <q-select dense outlined emit-value map-options v-model="faxData['maxTransmissions']"
                                     use-input use-chips input-debounce="0"
-                                    :options="[50, 100, 150, 200, 300, 500, 1000, 1500, 2000]" @filter="filterFn"
-                                    :loading="loading" :rules="[(val) => !!val || '']" hide-bottom-space />
+                                    :options="[50, 100, 150, 200, 300, 500, 1000, 1500, 2000]" />
                                 <span class="q-mt-sm q-ml-sm">{{ $t('applicant.attendant.items') }}</span>
                             </div>
                         </div>
