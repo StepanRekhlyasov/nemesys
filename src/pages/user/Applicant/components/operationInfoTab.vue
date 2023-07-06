@@ -74,7 +74,7 @@ const columns = computed(() => {
       name: 'backOrder',
       required: true,
       label: 'BOID',
-      field: 'boId',
+      field: 'backOrder',
       align: 'left',
     },
     {
