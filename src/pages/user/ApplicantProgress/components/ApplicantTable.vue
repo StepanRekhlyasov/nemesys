@@ -1,17 +1,13 @@
 <template>
-  <q-markup-table :separator="'cell'" flat bordered style="overflow:hidden;" class="applicantTable" :loading="loading">
-    <ProgressTableRows v-if="showRow" :applicants="applicants" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
-  </q-markup-table>
-  <q-linear-progress query v-if="loading" color="primary"/>
+  <ProgressTableRows :status="status" :loading="loading" :rows="rows" @openDrawer="(applicant : Applicant)=>{emit('openDrawer', applicant)}" @sortQuery="(param : QueryOrderByConstraint[])=>{emit('sortQuery', param)}"></ProgressTableRows>
 </template>
 <script setup lang="ts">
-import { Applicant, ApplicantStatus } from 'src/shared/model';
+import { Applicant, ApplicantWithFix } from 'src/shared/model';
 import ProgressTableRows from './ProgressTableRows.vue';
 import { QueryOrderByConstraint } from 'firebase/firestore';
-import { computed } from 'vue';
 
-const props = defineProps<{
-  applicants: Applicant[],
+defineProps<{
+  rows: ApplicantWithFix[],
   loading: boolean,
   status: string
 }>()
@@ -22,43 +18,4 @@ const emit = defineEmits<{
   (e: 'onLoadingEnd'),
 }>()
 
-const showRow = computed(()=>{
-  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
-    return 'applicant'
-  } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
-    return 'update'
-  } else {
-    return 'fix'
-  }
-})
-
 </script>
-<style lang="scss">
-@import "src/css/imports/colors";
-@import "src/css/imports/variables";
-.applicantTable{
-  table{
-    thead{
-      background-color: $main-primary;
-    }
-    th{
-      font-size: 15px;
-      background-color: $main-primary;
-      color: #fff;
-      border-color: #fff;
-      padding: 0 3px;
-      white-space: break-spaces;
-    }
-    td{
-      text-align: center;
-    }
-  }
-  .applicant-clickable{
-    color: $primary;
-    cursor: pointer;
-    &:hover{
-      text-decoration: underline;
-    }
-  }
-}
-</style>

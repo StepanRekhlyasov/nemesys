@@ -334,3 +334,7 @@ export enum ContactMethod {
   SMS = 'sms',
   PHONE = 'phone'
 }
+
+export interface ApplicantWithFix extends Applicant {
+  fix?: ApplicantFix
+}
