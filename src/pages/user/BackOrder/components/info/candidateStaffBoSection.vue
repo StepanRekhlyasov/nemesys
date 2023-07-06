@@ -7,7 +7,7 @@
     </div>
   </div>
   <q-card-section class=" q-pa-none">
-    <q-table :columns="BackOrderStaff" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
+    <q-table :columns="coloumns" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
       <template v-slot:body-cell-statusThisTime="props">
         <q-td :props="props" class="no-wrap q-pa-none">
@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, ExtendedApplicant } from 'src/shared/model';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, ComputedRef } from 'vue';
 import { BackOrderStaff } from '../../consts/BackOrder.const';
 import { useBO } from '../../consts/index';
 import { useApplicant } from 'src/stores/applicant'
@@ -38,6 +38,7 @@ import { useClient } from 'src/stores/client'
 import { where } from 'firebase/firestore';
 import { useI18n } from 'vue-i18n';
 import { radius } from '../../consts/BackOrder.const';
+import { QTableProps } from 'quasar';
 
 const pagination = ref({
   sortBy: 'desc',
@@ -46,6 +47,8 @@ const pagination = ref({
   rowsPerPage: 5
   // rowsNumber: xx if getting data from a server
 });
+
+const coloumns = ref<QTableProps | ComputedRef>(BackOrderStaff)
 
 const props = withDefaults(defineProps<{
   bo: BackOrderModel,

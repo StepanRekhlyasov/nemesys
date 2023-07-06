@@ -15,7 +15,7 @@
 			<q-separator color="white" size="2px" />
 			<q-card-section class=" q-pa-none">
 				<q-table
-					:columns="BackOrderColumns"
+					:columns="columns"
 					:rows="state.BOList"
 					row-key="id"
 					selection="multiple"
@@ -93,7 +93,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { Ref, ref,computed } from 'vue';
+import { Ref, ref,computed, ComputedRef } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
 import SearchByMapDrawer from './components/info/searchByMapDrawer.vue';
@@ -102,18 +102,19 @@ import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from 'src/stores/applicant';
 import {radius} from './consts/BackOrder.const'
+import { QTableProps } from 'quasar';
 
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
 const state = backOrderStore.state;
-
+const columns = ref<QTableProps | Ref>(BackOrderColumns)
 const showSearchByMap = ref(false)
 const selected = ref<BackOrderModel[]>([])
 const cteateBoDrawer = ref(false);
 const typeBoCreate:Ref<'referral' | 'dispatch'> = ref('referral')
-const selectedBo = computed(()=>backOrderStore.state.selectedBo)
+const selectedBo = ref<BackOrderModel | ComputedRef>(computed(()=>backOrderStore.state.selectedBo))
 const selectedClient = ref<Client | undefined>(undefined);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const pagination = ref({
