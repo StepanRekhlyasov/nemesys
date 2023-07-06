@@ -118,7 +118,6 @@ export const useBackOrder = defineStore('backOrder', () => {
       batch.update(doc(db, 'BO' , id), updateData);
     }
     await batch.commit();
-    return true;
   };
 	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById,deleteBO }
 })

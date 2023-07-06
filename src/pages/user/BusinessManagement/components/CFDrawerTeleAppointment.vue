@@ -112,9 +112,11 @@ import { useTele } from 'src/stores/TeleAppoint';
 import {  TeleAppointmentHistory, UserTele  } from 'src/shared/model/TeleAppoint.model';
 import { DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { QTableProps } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
+  columns: QTableProps['columns'];
   clientId: string;
 }>();
 const historyData: DocumentData = ref([]);
@@ -159,12 +161,10 @@ const showDeleteDialog = async (Teleid: string[]) => {
     cancel: t('common.cancel'),
   }).onOk(async () => {
     loading.value = true;
-    const done = await teleStore.DeleteTele(Teleid, props.clientId);
+    await teleStore.deleteTele(Teleid, props.clientId);
     loading.value = false;
-    if (done) {
-      historyData.value = fetchTeleData();
-      Alert.success();
-    }
+    historyData.value = fetchTeleData();
+    Alert.success();
   });
 };
 
@@ -204,17 +204,12 @@ const onSubmit = async () => {
 
   try {
     if (dialogType.value == 'update') {
-      const done = await teleStore.UpdateData(props.clientId, data);
-      if (done) {
+       await teleStore.updateData(props.clientId, data);
         historyData.value = fetchTeleData();
-      }
     } else {
-      const done = await teleStore.AddData(props.clientId, data);
-      if (done) {
+       await teleStore.addData(props.clientId, data);
         historyData.value = fetchTeleData();
-      }
     }
-
     loading.value = false;
     Alert.success()
     teleData.value = {

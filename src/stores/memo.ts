@@ -62,7 +62,6 @@ export const useMemo = defineStore('Memo', () => {
       batch.update(docRef, updateData);
     }
     await batch.commit();
-    return true;
   };
 
   const updateMemo = async (clientId: string, content,id) => {
@@ -71,7 +70,6 @@ export const useMemo = defineStore('Memo', () => {
     updateData['updated_by'] = auth.currentUser?.uid;
     updateData['content'] = content
     await updateDoc(doc(db, 'clients', clientId, 'memo', id), updateData);
-    return true;
   };
 
   const addNewMemo = async (clientId:string,content:string) => {
@@ -82,7 +80,6 @@ export const useMemo = defineStore('Memo', () => {
     data['deleted'] = false;
     data['created_user'] = auth.currentUser?.uid;
     await addDoc(collection(db, 'clients', clientId, 'memo'), data);
-    return true;
   }
 
  return {

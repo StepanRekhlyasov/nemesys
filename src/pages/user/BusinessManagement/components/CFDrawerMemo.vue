@@ -65,6 +65,7 @@ import {  Ref, ref ,onMounted,watch} from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useQuasar } from 'quasar';
 import EditButton from 'src/components/EditButton.vue';
+import { QTableProps } from 'quasar';
 import { ClientMemo } from 'src/shared/model/Client.model';
 import { UserMemo  } from 'src/shared/model/Client.model';
 import { columnsMemo } from 'src/shared/constants/memo.conts'
@@ -72,6 +73,7 @@ import {useMemo} from 'src/stores/memo'
 import { useI18n } from 'vue-i18n';
 const props = defineProps<{
   clientId: string;
+  columns: QTableProps['columns']
 }>();
 const memoStore = useMemo()
 const columns = ref(columnsMemo)
@@ -114,19 +116,16 @@ const showDeleteDialog = async (ids: string[]) => {
     cancel: t('common.cancel')
   }).onOk(async () => {
     loading.value=true
-    const done = await memoStore.deleteMemo(ids,props.clientId);
+    await memoStore.deleteMemo(ids,props.clientId);
     loading.value=false
-
-    if (done) {
-      const data=await memoStore.loadMemoData(props.clientId)
+    const data = await memoStore.loadMemoData(props.clientId)
       memoListData.value = data.map(row => {
     return { ...row, selected: false };
   });
      Alert.success()
-    }
   });
 };
-const deleteSelected = () => {
+ const deleteSelected = () => {
   const boItem = memoListData.value.filter(row => row['selected']);
   let items: string[] = [];
   for (const item of boItem) {
@@ -134,16 +133,14 @@ const deleteSelected = () => {
   }
   showDeleteDialog(items);
 };
-const onSubmit = async () => {
+ const onSubmit = async () => {
   loading.value = true;
   try{
- const done = await memoStore.addNewMemo(props.clientId,data.value['content'] || '')
- if(done){
+    await memoStore.addNewMemo(props.clientId,data.value['content'] || '')
     loading.value = false;
     data.value = {};
     await fetchMemoData()
     Alert.success();
- }
   } catch (error) {
     console.log(error);
     loading.value = false;
@@ -156,12 +153,10 @@ const onUpdate = async(index:number)=> {
       return;
     }
     loading.value = true;
-   const done = await memoStore.updateMemo(props.clientId,editableContect.value['content'],editableContect.value['id'])
-   if(done){
+    await memoStore.updateMemo(props.clientId,editableContect.value['content'],editableContect.value['id'])
      memoListData.value[index] = editableContect.value as ClientMemo;
      await fetchMemoData()
     loading.value = false;
-   }
   } catch (e) {
     Alert.warning(e)
     console.log(e)

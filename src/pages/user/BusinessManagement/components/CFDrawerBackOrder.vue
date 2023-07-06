@@ -137,9 +137,10 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
+import { QTableProps } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string }>();
+const props = defineProps<{ clientId: string;columns: QTableProps['columns']; }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
@@ -167,17 +168,13 @@ const showDeleteDialog = async (ids: string[]) => {
     cancel: t('common.cancel')
   }).onOk(async () => {
     loading.value=true
-    const done = await backOrderStore.deleteBO(ids);
+    await backOrderStore.deleteBO(ids);
     loading.value=false
-
-    if (done) {
       const data=await backOrderStore.getClientBackOrder(props.clientId)
-      let boid = data.length;
       backOrderData.value = data.map(row => {
-    return { ...row, selected: false, boid: boid-- };
+    return { ...row, selected: false};
   });
      Alert.success()
-    }
   });
 };
 const showAddBO = () => {

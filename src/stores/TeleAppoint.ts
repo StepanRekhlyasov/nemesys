@@ -53,7 +53,7 @@ export const useTele = defineStore('TeleAppoint', () => {
     return userList;
   };
 
-  const DeleteTele = async (Teleid: string[], clientId: string) => {
+  const deleteTele = async (Teleid: string[], clientId: string) => {
     const updateData = {
       deleted: true,
       deleted_by: user?.uid,
@@ -66,10 +66,9 @@ export const useTele = defineStore('TeleAppoint', () => {
       batch.update(docRef, updateData);
     }
     await batch.commit();
-    return true;
   };
 
-  const UpdateData = async (clientId: string, data: TeleAppointmentHistory[]) => {
+  const updateData = async (clientId: string, data: TeleAppointmentHistory[]) => {
     const updateData = {};
     updateData['updated_at'] = serverTimestamp();
     updateData['updated_by'] = user?.uid;
@@ -79,25 +78,22 @@ export const useTele = defineStore('TeleAppoint', () => {
     updateData['remark'] = data['remark'];
 
     await updateDoc(doc(db, 'clients', clientId, 'teleAppointments', data['id']), updateData);
-    return true;
   };
 
-  const AddData = async (clientId: string, data: TeleAppointmentHistory[]) => {
+  const addData = async (clientId: string, data: TeleAppointmentHistory[]) => {
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = user?.uid;
 
     await addDoc(collection(db, 'clients', clientId, 'teleAppointments'), data);
-
-    return true;
   };
 
   return {
     loadTeleAppointmentData,
     loadUsers,
-    DeleteTele,
-    AddData,
-    UpdateData
+    deleteTele,
+    addData,
+    updateData
   };
 });

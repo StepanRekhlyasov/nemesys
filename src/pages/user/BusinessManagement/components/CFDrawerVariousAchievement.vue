@@ -65,12 +65,18 @@ import { ref , Ref , onMounted } from 'vue';
 import { today, lastMonth } from 'src/shared/utils/utils';
 import { dispatchColumns, empRecordColumns } from 'src/shared/constants/VariousAchievement.const'
 import { dispatch , emp } from 'src/shared/model/VariousAchievement.model'
-const columnsdispatch :Ref<never[]>= ref(dispatchColumns)
-const columnsemp :Ref<never[]> = ref(empRecordColumns)
+import { QTableProps } from 'quasar';
+const columnsdispatch = ref(dispatchColumns)
+const columnsemp  = ref(empRecordColumns)
 const filter = ref({
 startDate: lastMonth(),
 endDate: today()
 });
+defineProps<{
+  columnsemp: QTableProps['columns']
+  columnsdispatch: QTableProps['columns']
+  dispatchColumns: QTableProps['columns']
+}>()
 const dispatchRecord : Ref<dispatch[]> = ref([]);
 const empRecord : Ref<emp[]>= ref([]);
 const loadData = () => {
