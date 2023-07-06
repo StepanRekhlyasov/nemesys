@@ -2,7 +2,6 @@
 import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MapSearchVue from 'src/components/client-factory/MapSearch.vue';
-import { Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const props = defineProps<{
@@ -17,10 +16,6 @@ const { t } = useI18n({ useScope: 'global' });
 
 const hideDrawer = () => {
     emit('hideDrawer')
-}
-
-const getClients = (clients: Client[]) => {
-    console.log(clients)
 }
 
 const openCFDrawer = (clientFactoryData: ClientFactory) => {
@@ -41,7 +36,7 @@ const openCFDrawer = (clientFactoryData: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <MapSearchVue theme="primary" @get-clients="getClients" @open-c-f-drawer="openCFDrawer" />
+                    <MapSearchVue theme="primary" @open-c-f-drawer="openCFDrawer" />
                 </q-card-section>
             </q-card>
         </q-scroll-area>

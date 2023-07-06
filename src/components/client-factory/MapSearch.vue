@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
@@ -70,7 +70,6 @@ const searchClients = async () => {
 
     officeData.value = response.data
     isLoadingProgress.value = false
-    emit('getClients', response.data)
   } catch (error) {
     isLoadingProgress.value = false
 
