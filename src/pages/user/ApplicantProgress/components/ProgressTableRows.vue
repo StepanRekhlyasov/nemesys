@@ -140,11 +140,9 @@ function chooseMemo(fix : ApplicantFix){
 }
 const columns = mode.value==='update'?updateFixesTableColumns:applicantFixesTableColumns
 watch(()=>props.rows, ()=>{
-  props.rows.forEach(async (row)=>{
-    if(row.fix?.backOrder){
-      if(boIdList.value[row.fix.backOrder]){
-        return;
-      } else {
+  props.rows.forEach(async (row) => {
+    if (row.fix?.backOrder) {
+      if (!boIdList.value[row.fix.backOrder]) {
         boIdList.value[row.fix.backOrder] = await backOrderStore.getBoById(row.fix.backOrder)
       }
     }

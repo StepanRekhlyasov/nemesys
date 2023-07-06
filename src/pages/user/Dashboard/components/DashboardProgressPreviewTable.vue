@@ -61,18 +61,16 @@ const mode = computed(()=>{
     return 'applicant'
   } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
     return 'update'
-  } else {
-    return 'fix'
   }
+  return 'fix'
 })
 const tableRows = computed(()=>{
   if(mode.value === 'applicant'){
     return applicantStore.state.applicantsByColumn[props.status]
-  } else {
-    return applicantStore.state.applicantsByColumn[props.status].map((row : ApplicantFix)=>{
-      return applicantStore.state.applicants[row.applicant_id]
-    })
   }
+  return applicantStore.state.applicantsByColumn[props.status].map((row : ApplicantFix)=>{
+    return applicantStore.state.applicants[row.applicant_id]
+  })
 })
 </script>
 <style lang="scss">
