@@ -159,9 +159,8 @@ watch(()=>applicantOrFixData.value, async (newVal)=>{
   const newResult : ApplicantWithFix[] = await Promise.all((newVal as ApplicantFix[]).map(async (row)=>{
     if(applicantStore.state.applicants[row.applicant_id]){
       return {...applicantStore.state.applicants[row.applicant_id], fix: row}
-    } else {
-      return {...await applicantStore.getApplicantById(row.applicant_id), fix: row}
     }
+    return {...await applicantStore.getApplicantById(row.applicant_id), fix: row}
   }))
   applicantsForTable.value = []
   applicantsForTable.value = newResult

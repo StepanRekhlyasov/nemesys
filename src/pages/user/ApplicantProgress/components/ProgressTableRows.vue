@@ -132,9 +132,8 @@ const mode = computed(()=>{
     return 'applicant'
   } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
     return 'update'
-  } else {
-    return 'fix'
-  }
+  } 
+  return 'fix'
 })
 function chooseMemo(fix : ApplicantFix){
   return fix.offerMemo || fix.inspectionMemo || fix.admissionMemo || fix.fixMemo || '-'
