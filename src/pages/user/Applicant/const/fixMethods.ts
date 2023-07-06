@@ -1,7 +1,7 @@
-import { ApplicantFix } from 'src/shared/model';
+import { ApplicantFix, ApplicantInputs } from 'src/shared/model';
 import { Ref, watch } from 'vue';
 
-export const useNGWatchers = (data: Ref<Partial<ApplicantFix>>, hightlightError: Ref<string[]>, reasonKey: string, detailKey: string, statusKey: string) => {
+export const useNGWatchers = (data: Ref<Partial<ApplicantFix>> | Ref<Partial<ApplicantInputs>>, hightlightError: Ref<string[]>, reasonKey: string, detailKey: string, statusKey: string) => {
   watch(() => data.value[reasonKey], (newVal) => {
     if (newVal) {
       hightlightError.value = hightlightError.value.filter((row) => {
@@ -23,7 +23,7 @@ export const useNGWatchers = (data: Ref<Partial<ApplicantFix>>, hightlightError:
     }
   })
 }
-export const useSaveHandler = (data: Ref<Partial<ApplicantFix>>, hightlightError: Ref<string[]>, reasonKey: string, detailKey: string, statusKey: string) => {
+export const useSaveHandler = (data: Ref<Partial<ApplicantFix>> | Ref<Partial<ApplicantInputs>>, hightlightError: Ref<string[]>, reasonKey: string, detailKey: string, statusKey: string) => {
   hightlightError.value = []
   if (!data.value[statusKey]) {
     if (!data.value[reasonKey]) {

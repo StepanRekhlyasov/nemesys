@@ -15,9 +15,8 @@ export const COLUMN_STATUSES = [
   ApplicantStatus.WAIT_TERMINATION,
 ]
 export const COUNT_STATUSES = [
-  'entry',
-  'retired',
-  'working'
+  ApplicantStatus.RETIRED,
+  ApplicantStatus.WORKING
 ]
 export const limitQuery = 20
 export const APPLICANT_COLUMNS: ApplicantCol[] = [

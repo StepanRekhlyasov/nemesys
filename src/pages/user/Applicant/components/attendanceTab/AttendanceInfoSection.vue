@@ -89,6 +89,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -134,8 +135,9 @@ async function saveInfo() {
   try {
     await applicantStore.updateApplicant(data.value);
     infoEdit.value = false;
+    Alert.success()
   } catch (error) {
-    console.log(error);
+    Alert.warning(error)
   }
   loading.value = false
 }
