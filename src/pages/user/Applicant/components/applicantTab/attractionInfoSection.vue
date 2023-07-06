@@ -164,6 +164,7 @@ import { mapToSelectOptions } from 'src/shared/utils/User.utils';
 import { useBranch } from 'src/stores/branch';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -221,8 +222,9 @@ async function save() {
   try {
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
+    Alert.success()
   } catch (error) {
-    console.log(error);
+    Alert.warning(error)
   }
   loading.value = false
 }

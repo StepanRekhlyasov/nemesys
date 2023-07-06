@@ -61,6 +61,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { useApplicant } from 'src/stores/applicant';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -89,8 +90,9 @@ async function save() {
   try {
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
+    Alert.success()
   } catch (error) {
-    console.log(error);
+    Alert.warning(error)
   }
   loading.value = false
 }

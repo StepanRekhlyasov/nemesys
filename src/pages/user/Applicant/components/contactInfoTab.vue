@@ -202,7 +202,6 @@ async function onSubmit() {
     await updateContactList()
     Alert.success()
   } catch (error) {
-    console.log(error);
     loading.value = false;
     Alert.warning(error)
   }
