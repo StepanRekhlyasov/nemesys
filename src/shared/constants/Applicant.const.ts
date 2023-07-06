@@ -137,9 +137,6 @@ export const registrationDeclinedFixList = computed(()=>[{
 }])
 
 export const daysList = computed(() => [{
-  label: t('weekDay.sunday'),
-  value: 'sunday'
-},{
   label: t('weekDay.monday'),
   value: 'monday'
 },{
@@ -158,8 +155,8 @@ export const daysList = computed(() => [{
   label: t('weekDay.saturday'),
   value: 'saturday'
 },{
-  label: t('weekDay.holiday'),
-  value: 'holiday'
+  label: t('weekDay.sunday'),
+  value: 'sunday'
 }])
 
 export const specialDaysList = computed(() => [{

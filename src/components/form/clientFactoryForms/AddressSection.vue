@@ -84,20 +84,16 @@ watch(prefecture, async () => {
                 <div class="col-6 q-pr-sm">
                         <q-item-label class="q-pb-xs">
                                 {{ t('client.add.longitude') }}
-                            <span class="text-red-5">*</span>
                         </q-item-label>
                         <q-input outlined dense type="number" v-model.number="addressData['lon']"
-                            :placeholder="t('client.add.latitudeLabel')" step="any" lazy-rules
-                            :rules="[(val) => (val && val > 0) || '']" hide-bottom-space />
+                            :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
                 </div>
                 <div class="col-6 q-pl-sm ">
                         <q-item-label class="q-pb-xs">
                             {{ t('client.add.latitude') }}
-                            <span class="text-red-5">*</span>
                         </q-item-label>
                         <q-input outlined dense type="number" v-model.number="addressData['lat']"
-                            :placeholder="t('client.add.latitudeLabel')" step="any" lazy-rules
-                            :rules="[(val) => (val && val > 0) || '']" hide-bottom-space />
+                            :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
                 </div>
             </div>
 

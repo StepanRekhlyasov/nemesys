@@ -170,6 +170,7 @@ import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -209,8 +210,9 @@ async function save() {
   try {
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
+    Alert.success()
   } catch (error) {
-    loading.value = false;
+    Alert.warning(error)
   }
   loading.value = false
 }

@@ -71,6 +71,13 @@ const columns = computed(() => {
       align: 'left',
     },
     {
+      name: 'backOrder',
+      required: true,
+      label: 'BOID',
+      field: 'backOrder',
+      align: 'left',
+    },
+    {
       name: 'admissionDate',
       required: true,
       label: t('applicant.attendant.startDate'),
@@ -102,14 +109,7 @@ loadOperationInfo()
 async function loadOperationInfo() {
   try {
     loading.value = true;
-
-    let fixList = await fixStore.getFixData(props.applicant.id, true);
-    fixList = fixList.filter(fix => {
-      return  (fix.endDate ? new Date(fix.endDate) > new Date() : true) &&
-              (fix.admissionDate ? new Date(fix.admissionDate) <= new Date(): true)
-    })
-
-    list.value = fixList
+    list.value = await fixStore.getFixData(props.applicant.id, true);
     loading.value = false;
   } catch (e) {
     console.log(e)
