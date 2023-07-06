@@ -1,7 +1,7 @@
 import { i18n } from 'boot/i18n';
 import { computed } from 'vue';
 import {arraysAreEqual, deepMerge } from 'src/shared/utils';
-import { ClientFactory, Industry } from 'src/shared/model/ClientFactory.model';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderMainInfo, RenderOfficeDetailsWithoutIndustryType, RenderOfficeDetailsWithIndustryType, RenderHeadDetails } from '../types';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { deepCopy, safeGet } from 'src/shared/utils';
@@ -84,7 +84,7 @@ export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draf
   return mainInfo
 }
 
-export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<ClientFactory>, industryType?: Industry[number]): RenderOfficeDetailsWithoutIndustryType | RenderOfficeDetailsWithIndustryType => {
+export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<ClientFactory>, industryType?: string): RenderOfficeDetailsWithoutIndustryType | RenderOfficeDetailsWithIndustryType => {
   const officeDetails = {} as RenderOfficeDetailsWithIndustryType | RenderOfficeDetailsWithoutIndustryType;
 
   officeDetails.registeredInfo = computed(() => {

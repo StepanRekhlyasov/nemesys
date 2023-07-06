@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -36,6 +36,11 @@ export const useBackOrder = defineStore('backOrder', () => {
 		state.value.BOList = list
 	}
 
+  async function getBoById(id: string){
+    const docSnap = await getDoc(doc(db, 'BO/'+id))
+    return {...docSnap.data(), id: docSnap.id} as BackOrderModel
+  }
+
 	async function addBackOrder(backOrderData) {
 		const auth = getAuth();
 		const data = JSON.parse(JSON.stringify(backOrderData));
@@ -53,7 +58,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 	}
 
 	async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
-		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId)]
+		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('z', '==', clientId)]
 		const docs = await getDocs(query(
 			collection(db, '/BO'),
 			...constraints
@@ -69,8 +74,8 @@ export const useBackOrder = defineStore('backOrder', () => {
 		return list;
 	}
 
-	async function getClientFactoryBackOrder(id_clientFactory: string): Promise<BackOrderModel[]> {
-		const constraints: ConstraintsType = [where('deleted', '==', false), where('id_clientFactory', '==', id_clientFactory)]
+	async function getClientFactoryBackOrder(office_id: string): Promise<BackOrderModel[]> {
+		const constraints: ConstraintsType = [where('deleted', '==', false), where('office_id', '==', office_id)]
 		const docs = await getDocs(query(
 			collection(db, '/BO'),
 			...constraints
@@ -116,5 +121,5 @@ export const useBackOrder = defineStore('backOrder', () => {
 		Promise.all(ret)
 	}
 
-	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder}
+	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById }
 })

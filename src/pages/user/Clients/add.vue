@@ -368,7 +368,6 @@
 </template>
 
 <script lang="ts">
-import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 //import { doc, setDoc, getFirestore, serverTimestamp, getDoc, addDoc } from "firebase/firestore";
@@ -378,6 +377,7 @@ import {
   getFirestore,
   serverTimestamp,
 } from 'firebase/firestore';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'clientAdd',
@@ -385,7 +385,6 @@ export default {
     const { t } = useI18n({
       useScope: 'global',
     });
-    const $q = useQuasar();
     const db = getFirestore();
     const clientDataSample = {
       office_priority_flag: false,
@@ -440,22 +439,12 @@ export default {
           );
           console.log('Document written with ID: ', docRef.id);
 
-          $q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: t('success'),
-          });
+          Alert.success()
           clientData.value = JSON.parse(JSON.stringify(clientDataSample));
           //clientForm.value.resetValidation();
         } catch (error) {
           console.log(error);
-          $q.notify({
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: t('failed'),
-          });
+          Alert.warning(error)
         }
       },
 

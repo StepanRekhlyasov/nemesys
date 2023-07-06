@@ -11,18 +11,18 @@
 
         <InputWrapper :text-key="'settings.users.email'">
           <q-input v-model="accountData['email']" name="email" :disable="loading" outlined dense :color="color"
-            :rules="[creationRule]" type="email" hide-bottom-space />
+            :rules="[creationRule]" type="email" hide-bottom-space autocomplete="new-password" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.name'">
           <q-input v-model="accountData['name']" name="name" :disable="loading" outlined dense :color="color"
-            :rules="[creationRule]" hide-bottom-space />
+            :rules="[creationRule]" hide-bottom-space autocomplete="new-password" />
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.password'">
           <q-input v-model="accountData['password']" name="password" :disable="loading" outlined
-            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color" type="password"
-            hide-bottom-space />
+            :rules="[val => val.length >= 6 || 'Please use minimum 6 characters']" dense :color="color"
+            hide-bottom-space autocomplete="new-password" :input-style="'-webkit-text-security: disc;'"/>
         </InputWrapper>
 
         <InputWrapper :text-key="'settings.users.role'">
@@ -46,7 +46,7 @@
       </q-card-section>
       <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
         <q-btn :label="$t('common.addNew')" :color="color" class="no-shadow" type="submit" :loading="loading"
-          :disable="!branchRef?.availableSlots || branchRef?.availableSlots <= 0" />
+          :disable="disableAdd()" />
       </q-card-actions>
     </q-form>
   </DialogWrapper>
@@ -87,6 +87,13 @@ const color: 'accent' | 'primary' = props.isAdmin ? 'accent' : 'primary'
 
 function showBranch() {
   return !adminRolesIds.includes(accountData.value['role']) && !props.isAdmin
+}
+
+function disableAdd(){
+  if(props.isAdmin){
+    return false
+  }
+  return !branchRef.value?.availableSlots || branchRef.value?.availableSlots <= 0
 }
 
 async function addAccount() {

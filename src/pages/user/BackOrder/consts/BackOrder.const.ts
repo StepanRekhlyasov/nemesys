@@ -1,7 +1,6 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 
-
 export const BackOrderColumns = computed(() => {
 	const { t } = i18n.global
 	return [
@@ -112,3 +111,4 @@ export const BackOrderStaff = computed(() => {
 			align: 'left',
 		},]
 })
+

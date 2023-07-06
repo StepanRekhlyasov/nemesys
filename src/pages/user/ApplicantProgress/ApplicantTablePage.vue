@@ -53,28 +53,28 @@
       </div>
     <div class="q-pt-md">
       <q-scroll-area style="height: 80vh; max-width: 90vw">
-        <applicant-table 
-          :status="statusParams.firestore" 
-          :applicants="applicantsForTable" 
-          :loading="loading" 
-          @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
-          @sortQuery="(param)=>{
-            paginationRef?.setOrder(param);
-            paginationRef?.setConstraints(paginationConstraints);
-            paginationRef?.queryFirstPage()
-          }"
-          @onLoadingStart="loading = true"
-          @onLoadingEnd="loading = false"
-        />
-        <TablePagination
-          :isAdmin="false"
-          ref="paginationRef"
-          :pagination="pagination"
-          @on-loading-state-change="(v : boolean) => loading = v"
-          @on-data-update="async (newData) => {
-            applicantsForTable = newData as Applicant[]
-          }"
-        />
+          <applicant-table 
+            :status="statusParams.firestore" 
+            :applicants="applicantsForTable" 
+            :loading="loading" 
+            @openDrawer="(applicant : Applicant)=>detailsDrawer?.openDrawer(applicant)" 
+            @sortQuery="(param)=>{
+              paginationRef?.setOrder(param);
+              paginationRef?.setConstraints(paginationConstraints);
+              paginationRef?.queryFirstPage()
+            }"
+            @onLoadingStart="loading = true"
+            @onLoadingEnd="loading = false"
+          />
+          <TablePagination
+            :isAdmin="false"
+            ref="paginationRef"
+            :pagination="pagination"
+            @on-loading-state-change="(v : boolean) => loading = v"
+            @on-data-update="async (newData) => {
+              applicantsForTable = newData as Applicant[]
+            }"
+          />
       </q-scroll-area>
     </div>
     </q-card-section>
@@ -82,7 +82,7 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { statusStringMask } from './const/applicantStatuses'
 import { useRouter } from 'vue-router';
@@ -93,7 +93,7 @@ import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { QueryFieldFilterConstraint, orderBy, where } from 'firebase/firestore';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantStatus } from 'src/shared/model';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useOrganization } from 'src/stores/organization';
@@ -124,14 +124,23 @@ const paginationConstraints = computed(()=>{
       result.push(where(key, '==', value))
     }
   }
-  return [where('status', '==', statusParams.firestore)].concat(result)
+  return [where('status', '==', statusParams.firestore), where('deleted', '==', false)].concat(result)
 })
+
+const path = [ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(statusParams.firestore)?'applicants':'fix'
 const pagination = ref({
   rowsPerPage: limitQuery,
-  path: 'applicants',
+  path: path,
   order: orderBy('currentStatusTimestamp', 'asc'),
   constraints: paginationConstraints.value
 });
+const router = useRouter()
+
+onMounted(()=>{
+  if(!applicantStore.state.applicantRowsCount[statusParams.firestore]){
+    router.push('/applicant-progress')
+  }
+})
 
 watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
   if(newVal!=oldVal) {

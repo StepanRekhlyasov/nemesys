@@ -59,7 +59,7 @@
 
         <q-td>
           <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.operatorName }}
+            {{ props.row.operatorName || t('common.userNotFound') }}
           </template>
           <SelectUser v-else :model-value="editableRow!.operatorName"
             @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName }" />

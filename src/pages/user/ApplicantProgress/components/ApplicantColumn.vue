@@ -1,10 +1,15 @@
 <template>
   <div class='column ' style='width: 170px'>
     <div class='flex q-mx-xs items-center text-bold text-primary q-mx-auto'>
-      <span class='text-h5'>●</span><router-link :to="'/applicant-progress/'+link" :class="{'disable-link':loading}" class="applicant-link">{{ $t(column.label, 'en') }} </router-link>
+      <span class='text-h5'>●</span><router-link :to="'/applicant-progress/'+link" :class="{'disable-link':loading}" class="applicant-link">{{ $t(column.label) }} </router-link>
     </div>
     <div class='row column bg-white q-py-md q-px-xs  items-start'>
-      <ApplicantCard v-for='item in column.items' :key='item.id' :item="item" @select-applicant="(applicant)=>{emit('selectApplicant', applicant)}"/>
+      <template v-if="[ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(column.status as ApplicantStatus)">
+        <ApplicantCard v-for='item in column.items' :key='item.id' :item="(item as Applicant)" @select-applicant="(applicant)=>{emit('selectApplicant', applicant)}"/>
+      </template>
+      <template v-else>
+        <ApplicantFixesCard v-for='item in column.items' :status="(column.status as ApplicantStatus)" :key='item.id' :fix="(item as ApplicantFix)" @select-applicant="(applicant)=>{emit('selectApplicant', applicant)}"/>
+      </template>
       <q-spinner
         color="primary"
         size="1em"
@@ -12,7 +17,7 @@
         v-if="loading"
       />
       <q-btn class="full-width" @click="emit('showMore', column.status)" v-else-if="continueFromDoc">
-        {{ $t('common.more', 'en') }}
+        {{ $t('common.more') }}
       </q-btn>
     </div>
   </div>
@@ -23,7 +28,8 @@ import { ApplicantCol } from 'src/pages/user/Applicant/types/applicant.types';
 import { useApplicant } from 'src/stores/applicant';
 import { computed } from 'vue';
 import ApplicantCard from './ApplicantCard.vue'
-import { Applicant } from 'src/shared/model';
+import { Applicant, ApplicantFix, ApplicantStatus } from 'src/shared/model';
+import ApplicantFixesCard from './ApplicantFixesCard.vue';
 
 const emit = defineEmits<{
   (e: 'showMore', status: string),
@@ -36,7 +42,7 @@ const props = defineProps<{
   loading: boolean,
 }>()
 
-const link = props.column.status.replace(/_/g,'-').toLowerCase()
+const link = props.column.status.replaceAll('_','-').toLowerCase()
 const applicantStore = useApplicant()
 const continueFromDoc = computed(() => applicantStore.state.continueFromDoc[props.column.status]);
 </script>

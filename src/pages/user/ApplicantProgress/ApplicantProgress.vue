@@ -55,16 +55,16 @@
       <div class="q-pt-md">
         <q-scroll-area style="height: 80vh; max-width: 90vw">
           <div class="row no-wrap justify-between">
-            <ApplicantColumn
-              v-for="column in columns"
-              :key="column.id"
-              :column="column"
-              :loading="columnsLoading[column.status]"
-              @showMore="(status)=>{fetchResultsHandler(status, true)}"
-              @select-applicant="(applicant)=>{
-                detailsDrawer?.openDrawer(applicant)
-              }"
-            />
+            <template v-for="column in columns" :key="column.id">
+              <ApplicantColumn
+                :column="column"
+                :loading="columnsLoading[column.status]"
+                @showMore="(status)=>{fetchResultsHandler(status, true)}"
+                @select-applicant="(applicant)=>{
+                  detailsDrawer?.openDrawer(applicant)
+                }"
+              />
+              </template>
           </div>
         </q-scroll-area>
       </div>
@@ -128,7 +128,7 @@ const fetchResults = async () => {
 }
 onMounted( async ()=>{
   COLUMN_STATUSES.map(async (status)=>{
-    if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
+    if(typeof applicantStore.state.applicantRowsCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
       fetchResultsHandler(status, false)
     }
   })
@@ -139,7 +139,7 @@ onMounted( async ()=>{
     }
   })
 })
-watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
+watch(()=>applicantStore.state.applicantProgressFilter.currentStatusMonth, (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
 })
 </script>

@@ -46,11 +46,11 @@
       </q-form>
     </q-card-section>
 
-    <q-table :columns="columns" :rows="contactListData" row-key="id" 
+    <q-table :columns="columns" :rows="contactListData" row-key="id"
       v-model:pagination="pagination" hide-pagination>
       <template v-slot:body-cell-contactMethod="props">
         <q-td :props="props">
-          <template v-if="isRowSelected(props.rowIndex)">            
+          <template v-if="isRowSelected(props.rowIndex)">
             <q-radio v-model="editableContect.contactMethod" val="phone" :label="$t('applicant.list.contacts.phone')" />
             <q-radio v-model="editableContect.contactMethod" val="sms" label="SMS" class="q-ml-sm" />
           </template>
@@ -97,15 +97,15 @@
       <template v-slot:body-cell-edit="props">
         <EditButton :props="props" color="primary"
           :disable="loading"
-          :on-edit="() => { 
+          :on-edit="() => {
             editableContect = JSON.parse(JSON.stringify(props.row))
             editableContect.created_at = props.row.created_at
           }"
-          :on-save="() => onUpdate(props.rowIndex)" 
+          :on-save="() => onUpdate(props.rowIndex)"
           @onEditableRowChange="(row) => {
             editableRow = row
           }"
-          :editable-row="editableRow" 
+          :editable-row="editableRow"
           :key="props.rowIndex"
         />
       </template>
@@ -131,6 +131,7 @@ import { getAuth } from '@firebase/auth';
 import { Applicant, ApplicantStatus } from 'src/shared/model';
 import { usersInCharge, contactColumns as columns } from 'src/shared/constants/Applicant.const';
 import { useApplicant } from 'src/stores/applicant';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -175,12 +176,7 @@ async function onSubmit() {
   loading.value = true;
   let data = contactData.value;
   if (!data['contactMethod']) {
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: t('failed'),
-    });
+    Alert.warning('Contact method is not found')
     loading.value = false;
     return
   }
@@ -202,30 +198,20 @@ async function onSubmit() {
         status: ApplicantStatus.WAIT_CONTACT
       })
     }
-    
+
     await updateContactList()
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: t('success'),
-    });
+    Alert.success()
   } catch (error) {
     console.log(error);
     loading.value = false;
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: t('failed'),
-    });
+    Alert.warning(error)
   }
 }
 function resetData() {
   contactData.value = {};
   showAddForm.value = false;
 }
-async function onUpdate(index : number) {     
+async function onUpdate(index : number) {
   try {
     loading.value = true;
     const updateData = {}
@@ -241,7 +227,8 @@ async function onUpdate(index : number) {
     contactListData.value[index] = editableContect.value;
     loading.value = false;
   } catch (e) {
-    console.log(e) 
+    console.log(e)
+    Alert.warning(e)
     loading.value = false;
   }
 }
@@ -268,12 +255,7 @@ function showDeleteDialog(id : string) {
       updateData
     );
     await updateContactList()
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: t('success'),
-    });
+    Alert.success()
   })
 }
 </script>
