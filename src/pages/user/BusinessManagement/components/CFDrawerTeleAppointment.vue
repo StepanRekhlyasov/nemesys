@@ -117,6 +117,7 @@ import { QTableProps } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
   columns: QTableProps['columns'];
+  historyData:QTableProps['rows']
   clientId: string;
 }>();
 const historyData: DocumentData = ref([]);
