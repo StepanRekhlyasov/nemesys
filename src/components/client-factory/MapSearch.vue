@@ -132,6 +132,10 @@ watch([center], () => {
   searchClients()
 }, { deep: true, immediate: true });
 
+watch([radiusKm], () => {
+  searchClients()
+});
+
 
 </script>
 
