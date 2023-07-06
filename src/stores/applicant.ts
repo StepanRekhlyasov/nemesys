@@ -463,6 +463,7 @@ export const useApplicant = defineStore('applicant', () => {
       } else {
         state.value.continueFromDoc[status] = null
       }
+      
       if(queryCollection==='applicants'){
         documents.forEach((item)=>{
           state.value.applicants[item.id] = item as Applicant
@@ -592,7 +593,13 @@ export const useApplicant = defineStore('applicant', () => {
     })
   }
 
-  async function getApplicantContactData(applicantId, constraints: ConstraintsType) {
+  async function getApplicantById(id : string){
+    const applicantRef = doc(db, 'applicants/' + id);
+    const result = await getDoc(applicantRef)
+    return {...result.data(), id: result.id} as Applicant
+  }
+
+  async function getApplicantContactData(applicantId : string, constraints : ConstraintsType){
     const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
     const snapshot = await getDocs(q);
     const result = snapshot?.docs.map((doc) => {
@@ -855,6 +862,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant, createApplicant, countApplicantsBySex, getApplicantContactData, saveWorkExperience, agesListOfApplicants, countApplicantsdaysToWork, countApplicantsByMedia, getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant, changeApplicantStatusByOkFields }
+  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByStatus, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, validateAllApplicants, saveFixDataToApplicant, changeApplicantStatusByOkFields, getApplicantById }
 })
 

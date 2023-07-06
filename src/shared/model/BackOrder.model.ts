@@ -5,7 +5,8 @@ export interface BackOrderModel {
   client_id: string;
   office_id: string; 
   boId: string;
-  
+  payment?: string;
+  invoice?: string;
   created_at: string;
   deleted: false;
 

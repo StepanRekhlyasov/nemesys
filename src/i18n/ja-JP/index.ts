@@ -1464,7 +1464,7 @@ export default {
       subject: '件名',
       content: '内容',
       date: '配信日時',
-      send: '即時配信',
+      send: '送信',
       delay: '+ 新規追加',
       cancel: 'キャンセル'
     },
@@ -1610,8 +1610,8 @@ export default {
       replyContent: '返答内容'
     },
     message: {
-      issueDate: '受信日',
-      responseDate: '送信日'
+      issueDate: '送信日',
+      responseDate: '受信日'
     }
   },
   industry: {
