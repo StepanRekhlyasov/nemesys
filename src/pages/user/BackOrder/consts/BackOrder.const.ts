@@ -95,6 +95,7 @@ export const BackOrderStaff = computed(() => {
 			label: t('backOrder.distanceBusiness') ,
 			field: 'distanceBusiness',
 			align: 'left',
+      sortable:true
 		},
 		{
 			name: 'matchDegree',
@@ -102,6 +103,7 @@ export const BackOrderStaff = computed(() => {
 			label: t('backOrder.matchDegree') ,
 			field: 'matchDegree',
 			align: 'left',
+      sortable:true
 		},
 		{
 			name: 'statusThisTime',
