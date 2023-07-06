@@ -94,3 +94,8 @@ To send an error from cloud functions to frontend:
 Node.JS:  `throw  new  functions.https.HttpsError('unavailable', 'Transaction failure');`
 Python: `return  jsonify({'message': 'Request does not exists'}), 404, headers`
 then, pass the error from catch to Alert.warning
+
+## Naming convention
+1. lowerCamelCase for variables, function names
+2. UpperCamelCase for interfaces, types, component names, classes 
+3. UPPER_SNAKE_CASE for global consts

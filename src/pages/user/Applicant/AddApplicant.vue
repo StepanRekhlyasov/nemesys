@@ -261,6 +261,7 @@ import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate} from 'src/shared/constants/Form.const';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const applicantDataSample = {
   qualification: [],
@@ -329,10 +330,13 @@ async function onSubmit() {
   /** required fields */
   data['dob'] = Timestamp.fromDate(new Date(data.dob));
   data['deleted'] = false;
-  const success = await applicantStore.createApplicant(data, applicantImage.value)
-  if(success){
+  try{
+    await applicantStore.createApplicant(data, applicantImage.value)
+    Alert.success();
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
+  } catch(error){
+    Alert.warning(error);
   }
   loading.value = false;
 }

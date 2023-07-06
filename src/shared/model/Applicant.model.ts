@@ -30,7 +30,7 @@ export interface ApplicantDates {
   invitationDate?: Timestamp;
   created_at: Timestamp | FieldValue;
   updated_at: Timestamp | FieldValue;
-  currentStatusTimestamp: Timestamp | '';
+  currentStatusTimestamp: Timestamp | '' | FieldValue;
   applicationDate?: Timestamp;
   dob?: Timestamp;
   attendingDate?: Timestamp;
@@ -63,7 +63,7 @@ export interface ApplicantBase {
   street?: string;
   apartment?: string;
   status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp}
+  statusChangeTimestamp?: {[key: string] : Timestamp | FieldValue}
   staffRank?: number;
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
@@ -333,4 +333,8 @@ export interface ContactInfo {
 export enum ContactMethod {
   SMS = 'sms',
   PHONE = 'phone'
+}
+
+export interface ApplicantWithFix extends Applicant {
+  fix?: ApplicantFix
 }

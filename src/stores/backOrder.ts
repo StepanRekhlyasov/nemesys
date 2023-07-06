@@ -87,9 +87,9 @@ export const useBackOrder = defineStore('backOrder', () => {
 
 		const boRef = doc(db, '/BO/'+backOrder.id);
 		await updateDoc(boRef, {...backOrder});
+		state.value.selectedBo = {...state.value.selectedBo, ...backOrder}
 
 		const changeIndex = state.value.BOList.findIndex(bo => bo.id === state.value.selectedBo?.id)
-
 		state.value.BOList[changeIndex] = state.value.selectedBo;
 
 		state.value.BOList = state.value.BOList.map(bo => {

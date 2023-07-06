@@ -5,7 +5,8 @@ export interface BackOrderModel {
   client_id: string;
   office_id: string;
   boId: string;
-
+  payment?: string;
+  invoice?: string;
   created_at: string;
   deleted: false;
 
@@ -81,6 +82,11 @@ export enum TransactionType {
 }
 
 export enum BackOrderStatus {
+  Wanted = 'wanted',
+  Inactive = 'inactive'
+}
+
+export enum EmploymentBOStatus {
   FullTime = 'fullTime',
   PartTime = 'partTime',
   PartTimeEmployee = 'partTimeEmployee'
