@@ -12,10 +12,10 @@
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.status')" :edit="edit" 
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
-        :value="selectedBo['employmentType']?$t(`backOrder.${selectedBo['employmentType']}`) : ''">
+        :value="selectedBo['status']?$t(`backOrder.${selectedBo['status']}`) : ''">
         <q-radio
           v-for="key in BackOrderStatus"
-          v-model="data['employmentType']"
+          v-model="data['status']"
           :label="$t('backOrder.'+key)"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
           :val="key"
@@ -25,7 +25,7 @@
       </LabelField>
       <LabelField :label="$t('backOrder.create.hourlyMonthly')" v-if="selectedBo['type'] == 'referral'"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
-        :edit="edit" :value="`${$t('backOrder.create.'+selectedBo['wage'])}  ${selectedBo['salary']} ${selectedBo['wage'] == 'monthlySalary' ? $t('backOrder.create.yenMonth')  : $t('backOrder.create.yenHour')}`">
+        :edit="edit" :value="`${selectedBo['salary']} ${selectedBo['wage'] == 'monthlySalary' ? $t('backOrder.create.yenMonth')  : $t('backOrder.create.yenHour')}`">
         <q-field v-model="data['wage']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')" 
           val="monthlySalary" v-model="data['wage']" />
@@ -99,8 +99,9 @@
       </labelField>
     </div>
 
-    <div class="row q-pb-sm"  >
-      <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
+    <div class="row "  >
+      <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" 
+        valueClass="self-center q-pl-md col-4" v-if="selectedBo['requiredQualifications']"
         :value="selectedBo['qualifications']? $t('backOrder.qualification.'+data['qualifications']) : ''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationRule(val) : true]">
           <q-radio
@@ -123,7 +124,7 @@
     <div class="row q-pb-sm">
       
       <labelField :label="$t('client.backOrder.experienceReq')" :edit="edit" 
-        :value="data['experienceReq']?$t('backOrder.create.somethingNotQuestioned') :$t('backOrder.create.required')"
+        :value="data['experienceReq']?$t('backOrder.create.required') : $t('backOrder.create.somethingNotQuestioned')"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
         <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
           <q-toggle v-model="data['experienceReq']"  :disable="loading" 
@@ -191,12 +192,12 @@
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <labelField :label="$t('backOrder.employmentType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" 
-        valueClass="self-center q-pl-md col-4" :value="selectedBo['employmentType']? $t('backOrder.'+selectedBo['employmentType']) : ''">
+        valueClass="self-center q-pl-md col-4" :value="selectedBo['employmentType']? $t('client.backOrder.'+selectedBo['employmentType']) : ''">
         <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio
-            v-for="key in BackOrderStatus"
+            v-for="key in EmploymentBOStatus"
             v-model="data['employmentType']"
-            :label="$t('backOrder.'+key)"
+            :label="$t('client.backOrder.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
@@ -220,7 +221,7 @@
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <labelField :label="$t('backOrder.create.workingDays')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="q-pl-md col-4" 
-        :value="`${selectedBo['workingDays']? $t('backOrder.workingDays.'+data['workingDays']) :''} ${selectedBo['workingDays'] == 'fixed'?'/'+data['working_days_week'].map(day => $t('weekDay.'+day)).join(', ') : ''}`">
+        :value="`${selectedBo['workingDays']? $t('backOrder.workingDays.'+selectedBo['workingDays']) :''} ${selectedBo['workingDays'] == 'fixed' && selectedBo['working_days_week']?'('+selectedBo['working_days_week'].map(day => $t('weekDay.'+day)).join(', ')+ ')' : ''}`">
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" 
           val="shiftSystem" v-model="data['workingDays']" />
@@ -516,7 +517,7 @@
   </q-card-section>
 </template>
 <script lang="ts" setup>
-import { BackOrderModel, BackOrderStatus, TypeOfCase, TypeQualifications } from 'src/shared/model';
+import { BackOrderModel, EmploymentBOStatus, BackOrderStatus, TypeOfCase, TypeQualifications } from 'src/shared/model';
 import { computed, ref, watch } from 'vue';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
@@ -536,7 +537,7 @@ const selectedBo = computed(() => backOrderStore.state?.selectedBo as BackOrderM
 async function save() {
   loading.value = true;
   try {
-    await backOrderStore.updateBackOrder({...data.value} as BackOrderModel);
+    await backOrderStore.updateBackOrder({id: backOrderStore.state?.selectedBo.id ,...data.value} as BackOrderModel);
     edit.value = false;
 
   } catch (e) {
