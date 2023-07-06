@@ -42,7 +42,7 @@
 
     <div class="row q-pb-sm">
       <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" v-if="selectedBo['type'] == 'dispatch'" valueClass="self-center q-pl-md col-4" 
-        :value="`${selectedBo['requiredQualifications']? $t('common.yes') : $t('common.no')}`" labelClass="q-pl-md col-2 text-right self-center" >
+        :value="`${selectedBo['requiredQualifications']?$t('common.yesShort') : $t('common.noShort')}`" labelClass="q-pl-md col-2 text-right self-center" >
         <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space :rules="[() => 'requiredQualifications' in data || '']" flat >
           <q-toggle v-model="data['requiredQualifications']" 
             :label="$t('backOrder.create.existence')" :disable="loading" />
