@@ -104,7 +104,7 @@ const save = async () => {
                             </div>
                             <div class="col-9">
                                 <q-select dense outlined emit-value map-options v-model="faxData['applicants']" use-input
-                                    use-chips multiple input-debounce="0" :options="applicantList" @filter="filterFn"
+                                    use-chips input-debounce="0" :options="applicantList" @filter="filterFn"
                                     :loading="loading" :rules="[(val) => !!val || '']" hide-bottom-space />
                             </div>
                         </div>
@@ -134,6 +134,13 @@ const save = async () => {
                             <span class="text-primary text-bold q-ml-xs">
                                 {{ $t('clientFactory.fax.transmissionContentSettings') }}
                             </span>
+                        </div>
+                        <div class="row q-mt-sm q-mb-xs q-pl-xl q-ml-xl">
+                          <div class="col-6 text-negative q-pl-xl q-ml-xl">
+                            <div class="q-pl-lg">
+                              {{$t('clientFactory.fax.OnlyPdfFomratCanBeAttached')}}
+                            </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
@@ -202,8 +209,9 @@ const save = async () => {
                                 {{ $t('clientFactory.fax.maxTransmissions') }}
                             </div>
                             <div class="col-9 flex inline">
-                                <q-input v-model="faxData['maxTransmissions']" outlined dense type="number"
-                                    style="max-width: 150px;" :min="0" />
+                              <q-select dense outlined emit-value map-options v-model="faxData['maxTransmissions']" use-input
+                              use-chips input-debounce="0" :options="[50, 100, 150, 200,300,500,1000,1500,2000]" @filter="filterFn"
+                              :loading="loading" :rules="[(val) => !!val || '']" hide-bottom-space />
                                 <span class="q-mt-sm q-ml-sm">{{ $t('applicant.attendant.items') }}</span>
                             </div>
                         </div>
