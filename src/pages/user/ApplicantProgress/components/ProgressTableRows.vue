@@ -55,8 +55,11 @@
       <template v-slot:body-cell-payment="props">
         <q-td>{{ boIdList[props.row.fix.backOrder]?.payment }}</q-td>
       </template>
-      <template v-slot:body-cell-memo="props">
+      <template v-slot:body-cell-memo="props" v-if="mode==='fix' || mode==='update'">
         <q-td>{{ chooseMemo(props.row.fix) }}</q-td>
+      </template>
+      <template v-slot:body-cell-memo="props" v-else>
+        <q-td>{{ props.row.memo }}</q-td>
       </template>
       <template v-slot:body-cell-qualification="props">
         <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('backOrder.qualification.'+q) }}</p></q-td>
@@ -135,8 +138,8 @@ const mode = computed(()=>{
   } 
   return 'fix'
 })
-function chooseMemo(fix : ApplicantFix){
-  return fix.offerMemo || fix.inspectionMemo || fix.admissionMemo || fix.fixMemo || '-'
+function chooseMemo(fix?: ApplicantFix){
+  return fix?.offerMemo || fix?.inspectionMemo || fix?.admissionMemo || fix?.fixMemo || '-'
 }
 const columns = mode.value==='update'?updateFixesTableColumns:applicantFixesTableColumns
 watch(()=>props.rows, ()=>{
