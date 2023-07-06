@@ -74,71 +74,7 @@ const calculateDistance = async () => {
 const calculateMatchDegree = ()=>{
 
   staffList.value.forEach((staff)=>{
-
-    const qualification = ref<number>(0);
-    const occupation = ref<number>(0);
-    const classification = ref<number>(0);
-    const daysToWork = ref<number>(0);
-    const daysPerWeek = ref<number>(0);
-    const agePercent = ref<number>(0);
-
-    //qualification percentage
-    staff.qualification?.forEach((q)=>{
-      if(props.bo.qualifications.toLowerCase()===q.toLowerCase()){
-        qualification.value = 1
-      }
-    })
-
-    //caseType
-    if(props.bo.caseType && (staff.occupation?.toLowerCase() === props.bo.caseType?.toLowerCase())){
-      occupation.value = 1
-    }
-
-    //classification
-    if(props.bo.transactionType && (staff.classification?.toLowerCase() === props.bo.transactionType?.toLowerCase())){
-      classification.value = 1
-    }
-
-    //daysToWork
-    if(props.bo.numberWorkingDays && staff.daysToWork){
-      const days = stringToNumber(props.bo.numberWorkingDays)
-      if(days && days <= (staff.daysToWork)){
-        daysToWork.value = 1;
-      }
-      else if(days){
-        daysToWork.value = staff.daysToWork/days
-      }
-    }
-
-    //workingDaysWeek
-    if(props.bo.working_days_week && staff.daysPerWeek){
-      let matchingDays = 0
-      staff.daysPerWeek.forEach((daySatff)=>{
-        props.bo.working_days_week.forEach((dayClient)=>{
-          if(dayClient === daySatff){
-            matchingDays++;
-          }
-        })
-      })
-      if(props.bo.working_days_week.length){
-        daysPerWeek.value = matchingDays/props.bo.working_days_week.length
-      }
-    }
-
-    //age
-    if(props.bo.ageLimit && staff.dob){
-      const currentDate = new Date();
-      const dob = new Date(staff.dob.seconds*1000);
-      let age = currentDate.getFullYear() - dob.getFullYear();
-      if (currentDate.getMonth() < dob.getMonth() ||(currentDate.getMonth() === dob.getMonth() &&currentDate.getDate() < dob.getDate())){
-        age--;
-      }
-      agePercent.value = age<props.bo.ageLimit?1:0;
-      console.log(agePercent.value)
-    }
-
-    const matchPercent = ((agePercent.value+qualification.value+occupation.value+classification.value+daysPerWeek.value+daysToWork.value)/6)*100
-    staff.matchDegree = Number(matchPercent.toFixed(2));
+    useBO().matchData(staff,props.bo);
   })
   staffList.value.sort((a, b) => b.matchDegree - a.matchDegree);
 }
@@ -147,19 +83,6 @@ const loading = ref<boolean>(false);
 const { t } = useI18n({ useScope: 'global' });
 const getApplicant = useApplicant();
 const getClient = useClient();
-
-const stringToNumber = (num: string): number | undefined => {
-  const numberMap: { [key: string]: number } = {
-    'one': 1,
-    'two': 2,
-    'three': 3,
-    'four': 4,
-    'five': 5,
-    // Add more mappings as needed
-  };
-
-  return numberMap[num];
-};
 
 onMounted(async () => {
   loading.value = true;
