@@ -24,7 +24,7 @@
           class="q-pr-md"/>
       </LabelField>
       <LabelField :label="$t('backOrder.create.hourlyMonthly')" v-if="selectedBo['type'] == 'referral'"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
+        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4 flex" 
         :edit="edit" :value="`${selectedBo['salary']} ${selectedBo['wage'] == 'monthlySalary' ? $t('backOrder.create.yenMonth')  : $t('backOrder.create.yenHour')}`">
         <q-field v-model="data['wage']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')" 
@@ -32,6 +32,9 @@
           <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" 
           val="hourlyWage" v-model="data['wage']" />
         </q-field>
+        <q-input v-model="data['salary']" outlined dense type="number" :disable="loading" :rules="[creationRule]" hide-bottom-space/>
+        <span v-if="data['wage'] == 'monthlySalary'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenMonth') }}</span>
+        <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
       </LabelField>      
       <labelField :label="$t('client.backOrder.customerReprisentative')" :edit="edit" 
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
@@ -42,7 +45,7 @@
 
     <div class="row q-pb-sm">
       <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" v-if="selectedBo['type'] == 'dispatch'" valueClass="self-center q-pl-md col-4" 
-        :value="`${selectedBo['requiredQualifications']?$t('common.yesShort') : $t('common.noShort')}`" labelClass="q-pl-md col-2 text-right self-center" >
+        :value="`${selectedBo['requiredQualifications']?$t('smoking.yes') : $t('smoking.no')}`" labelClass="q-pl-md col-2 text-right self-center" >
         <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space :rules="[() => 'requiredQualifications' in data || '']" flat >
           <q-toggle v-model="data['requiredQualifications']" 
             :label="$t('backOrder.create.existence')" :disable="loading" />
@@ -80,10 +83,10 @@
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" 
-        valueClass="self-center q-pl-md col-4" :value="`${selectedBo['requiredQualifications']? $t('common.yes') : $t('common.no')}`">
-        <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space :rules="[() => 'requiredQualifications' in data || '']" flat >
+        valueClass="self-center q-pl-md col-4" :value="`${selectedBo['requiredQualifications']? $t('smoking.yes') : $t('smoking.no')}`">
+        <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space flat >
           <q-toggle v-model="data['requiredQualifications']" 
-            :label="$t('backOrder.create.existence')" :disable="loading" />
+            :label="`${data['requiredQualifications']? $t('smoking.yes') : $t('smoking.no')}`" :disable="loading" />
         </q-field>
       </labelField>
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" 
@@ -228,6 +231,13 @@
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')" 
           val="fixed" v-model="data['workingDays']" />
         </q-field>
+        <template v-if="data['workingDays'] == 'fixed'">
+          <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationRule]">
+            <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" 
+              :val="day.value" :disable="loading"
+              :label="day.label" :key="day.value" />
+          </q-field>
+        </template>
       </labelField>
     </div>
 
@@ -525,6 +535,7 @@ import LabelField from 'src/components/form/LabelField.vue';
 import detalInfoTab from './detalInfoTab.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateTime } from 'src/shared/constants/Form.const';
+import { daysList } from 'src/shared/constants/Applicant.const';
 
 const emit = defineEmits(['openSearchByMap']);
 
