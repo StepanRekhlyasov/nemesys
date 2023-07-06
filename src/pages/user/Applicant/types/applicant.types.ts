@@ -19,6 +19,7 @@ export type ApplicantElasticFilter = {
   all : Record<string, unknown>[]
 }
 export type ApplicantElasticSearchData = {
+  keyword?: string,
   applicationDateMin?: string,
   applicationDateMax?: string,
   ageMin?: string,

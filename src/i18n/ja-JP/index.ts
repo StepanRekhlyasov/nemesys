@@ -1407,6 +1407,7 @@ export default {
   actions: {
     clickToAddNewClient: 'クライアント新規追加はこちら',
     searchConditionChange: '検索条件変更',
+    faxBatchTransmission: 'FAX一括送信',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',
@@ -1589,6 +1590,25 @@ export default {
         basicInfoChanged: '基本情報',
         officeInfoChanged: '事業所詳細情報'
       }
+    },
+    fax: {
+      transmissionConfirmation: '送信内容確認',
+      applicantLinkage: '応募者紐付け',
+      clientCategoryNG: 'NGクライアント種別',
+      clientFacilityNG: 'NGクライアント・施設',
+      previousEmploymentClient: '過去就業先クライアント',
+      transmissionContentSettings: '送信内容設定',
+      onlyPdfFomratCanBeAttached:'※ 添付可能な様式はPDFのみとなります。',
+      prSheet: 'PRシート',
+      attachPRSheet: 'PRシート添付',
+      setTransmissionDateTime: '送信日時を設定する',
+      set: '設定する',
+      transmissionDateTime: '送信日時',
+      destinationSettings: '送信先設定',
+      clientNG: 'NGクライアント',
+      refinementConditions: '絞り込み条件',
+      maxTransmissions: '最大送信件数',
+      faxPRSheet: 'PRシートをFAX送信します。',
     }
   },
   inquiry: {
