@@ -28,6 +28,11 @@
         {{ props.col.label }}
       </q-th>
     </template>
+    <template v-slot:body-cell-requestUser="props">
+      <q-td :props="props" >
+        {{ props.row.requestUser || t('common.userNotFound')   }}
+      </q-td>
+    </template>
     <template v-slot:body-cell-addMoreSlots="props">
       <q-td :props="props">
         <DefaultButton

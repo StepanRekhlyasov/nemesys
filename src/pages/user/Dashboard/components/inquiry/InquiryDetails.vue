@@ -11,7 +11,7 @@
         {{ inquiryData.category }}
       </div>
       <div class="col-1 text-right" :class="'text-'+theme">
-        {{ $t('inquiry.detail.recievedDate') }}
+        {{ $t('inquiry.message.issueDate') }}
       </div>
       <div class="col-3">
         {{ timestampToDateFormat(inquiryData.recievedDate as Timestamp) }}

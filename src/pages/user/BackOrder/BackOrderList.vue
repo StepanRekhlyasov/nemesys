@@ -49,7 +49,7 @@
 
 					<template v-slot:body-cell-employmentType="props">
 						<q-td :props="props" class="q-pa-none" >
-							<div> {{ props.row.status? $t(`client.backOrder.${props.row.status}`): '-'}} </div>
+							<div> {{ props.row.status? $t(`backOrder.${props.row.status}`): '-'}} </div>
 						</q-td>
 					</template>
 
@@ -78,13 +78,14 @@
 			</q-card-section>
 		</q-card>
 	</div>
+
 	<InfoBO ref="infoDrawer"  @openSearchByMap="showSearchByMap=true" @passClientToMapSearch="(clientValue)=>{
 		selectedClient = clientValue
 	}"/>
 	<q-drawer
 		v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right"
 		overlay elevated bordered>
-		<createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer=false;"/>
+		<createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer=false;" v-if="cteateBoDrawer"/>
 	</q-drawer>
   <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="showSearchByMap=false"></SearchByMapDrawer>
 </template>

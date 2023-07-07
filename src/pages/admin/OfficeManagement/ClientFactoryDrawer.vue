@@ -107,26 +107,32 @@ const editDraftHandler = async (changedData: ChangedData) => {
 const onImport = async (data: ChangedData) => {
     isLoading.value.isImporting = true
 
-    if(user != null) {
-        const uid = user.uid;
-        const currentUser = await getUserById(uid)
-        const organizations = await organizationStore.getDataById([currentOrganizationId.value], 'Organization')
-
-        localDraft.value = finishEditing(data, localDraft.value, localData.value)
-
-        const copyBeforeRemoveDraft = deepCopy(localData.value)
-        recursivelyRemoveField(copyBeforeRemoveDraft, 'draft')
-
-        const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoveDraft, localDraft.value)
-        const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
-        localData.value = copyBeforeRemoveDraft
-        localDraft.value = {}
-
-        await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, )
-
-        const importLog = await addImportLog(currentUser, localData.value, organizations[0], isOfficeDetailsChanged)
-        newImportLog.value = importLog as ImportLog
+    if(!user) {
+      return
     }
+    const uid = user.uid;
+    const currentUser = await getUserById(uid)
+
+    if(!currentUser){
+      return
+    }
+
+    const organizations = await organizationStore.getDataById([currentOrganizationId.value], 'Organization')
+
+    localDraft.value = finishEditing(data, localDraft.value, localData.value)
+
+    const copyBeforeRemoveDraft = deepCopy(localData.value)
+    recursivelyRemoveField(copyBeforeRemoveDraft, 'draft')
+
+    const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoveDraft, localDraft.value)
+    const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
+    localData.value = copyBeforeRemoveDraft
+    localDraft.value = {}
+
+    await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, )
+
+    const importLog = await addImportLog(currentUser, localData.value, organizations[0], isOfficeDetailsChanged)
+    newImportLog.value = importLog as ImportLog
 
     isLoading.value.isImporting = false
     closeUpdatedCFDrawer()
@@ -136,23 +142,30 @@ const onImport = async (data: ChangedData) => {
 const onReflect = async () => {
     isLoading.value.isReflecting = true
 
-    if (user != null) {
-        const uid = user.uid;
-        const currentUser = await getUserById(uid)
-
-        const copyBeforeRemoreDraft = deepCopy(localData.value)
-        recursivelyRemoveField(copyBeforeRemoreDraft, 'draft')
-
-        const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoreDraft, localDraft.value)
-        const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
-        localData.value = copyBeforeRemoreDraft
-        localDraft.value = {}
-
-        await updateClientFactory({...clientFactoryToUpdate, draft: localDraft.value}, )
-
-        const reflectLog = await addReflectLog(currentUser, localData.value, isOfficeDetailsChanged)
-        newReflectLog.value = reflectLog as ReflectLog
+    if (!user) {
+      return
     }
+
+    const uid = user.uid;
+    const currentUser = await getUserById(uid)
+
+    if(!currentUser){
+      return
+    }
+
+    const copyBeforeRemoreDraft = deepCopy(localData.value)
+    recursivelyRemoveField(copyBeforeRemoreDraft, 'draft')
+
+    const clientFactoryToUpdate = mergeWithDraft(copyBeforeRemoreDraft, localDraft.value)
+    const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
+    localData.value = copyBeforeRemoreDraft
+    localDraft.value = {}
+
+    await updateClientFactory({...clientFactoryToUpdate, draft: localDraft.value}, )
+
+    const reflectLog = await addReflectLog(currentUser, localData.value, isOfficeDetailsChanged)
+    newReflectLog.value = reflectLog as ReflectLog
+
 
     isLoading.value.isReflecting = false
 }

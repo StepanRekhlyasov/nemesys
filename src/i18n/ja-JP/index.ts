@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    minimum:'最小',
+    maximum:'最大',
     BO: 'BO',
     select: '選択',
     reflect: '反映',
@@ -232,7 +234,14 @@ export default {
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
-      billingHistory: '請求履歴'
+      billingHistory: '請求履歴',
+      aggregateDataDisplay:'集計データ表示',
+      dataOutputDisplay:'データ出力',
+      dataOutputDisplayTable:{
+        outputMonth:'出力月',
+        output:'出力',
+        companyWide:'全社',
+      },
     }
   },
   settings: {
@@ -719,6 +728,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※SMS送信時の注意事項',
+      note1:'・SMS送信の際に送付元電話番号の指定はできません。受信者側の混乱をさける為にも、本文の最初に会社名を記載することをお勧めします。',
+      note2:'・最大全半角70文字以内で入力してください。（超える場合は、複数回に渡って送信される場合があります。）',
+      note3:'・改行は2文字分としてカウントされます。',
+      note4:'・50文字以内にURLを差し込んでください。',
+      note5:'・1通あたり8円の費用が発生します。'
+    },
     add: {
       name: '氏名',
       kanaName: 'フリガナ',
@@ -762,6 +779,12 @@ export default {
       applicationMetod: '応募方法',
       image: '応募者画像',
     },
+    shift:{
+      workinghoursearly: '早番',
+      workinghoursday: '日勤',
+      workinghourslate: '遅番',
+      workinghoursnight: '夜勤',
+    },
     list: {
       name: 'スタッフ名 ',
       category: '区分',
@@ -781,6 +804,7 @@ export default {
       operationInfo: '稼働情報',
       yearsExperience: '経験年数',
       availableShift: '勤務可能シフト',
+      station:'駅',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -816,7 +840,7 @@ export default {
         userInChargeVisit: '職見担当ユーザー',
         personalStatus: '本人状況',
         corporationStatus: '法人状況',
-        businessStatus: '営業状況', 
+        businessStatus: '営業状況',
         visitRecotd: '職見記録',
         memo: 'メモ',
         chargeOfFix: 'FIX担当ユーザー',
@@ -931,9 +955,11 @@ export default {
     statusOption: {
       unsupported: '未対応',
       waitingContact: '接触待ち',
+      wait_contact: '接触待ち',
       excluded: '対象外',
       anotherCompany: '他社決定',
       breakContact: '不通',
+      break_contact: '不通',
       decline: '登録辞退',
       wait_attend: 'アテンド待ち',
       wait_FIX: 'FIX待ち',
@@ -1127,6 +1153,7 @@ export default {
     transactionType: '取引種別',
     distance: '起点からの距離',
     selectBOType: 'BOの種類を選択',
+    backOrderDetails: 'バックオーダー詳細',
     officeName: '事業所名',
     clientName: 'クライアント名',
     employmentType: '雇用形態',
@@ -1154,6 +1181,17 @@ export default {
     distanceBusiness: '事業所との距離',
     matchDegree: 'マッチ度',
     statusThisTime: '現時点での状況',
+    wanted: '募集中',
+    inactive: '休止中',
+    sms:{
+      send:'送信',
+      sendSMS:'SMS送信',
+      sendContent:'送信内容',
+      characters:'キャラクター',
+      content:'コンテンツ',
+      template:'レンプレート',
+      form:'提出フォーム',
+    },
     create: {
       employmentConditions: '■就業条件',
       numberWorkingDays: '就業日数',
@@ -1181,7 +1219,7 @@ export default {
       day: '日',
       tasks: '業務内容',
       pickDrop: '送迎の有無',
-      onCallSupport: 'オンコール 対応の有無',
+      onCallSupport: 'オンコール \r 対応の有無',
       onCallRemarks: 'オンコール備考',
       welfare: '福利厚生',
       retirementAge: '定年',
@@ -1195,6 +1233,7 @@ export default {
       caseType: '案件種別',
       requiredQualifications: '必要な資格',
       somethingNotQuestioned: '不問',
+      required: '必須',
       experienceRemarks: '経験備考',
       typeOfEmployment: '就業形態',
       BOGenerationRoute: 'BO発生経路',
@@ -1368,6 +1407,7 @@ export default {
   actions: {
     clickToAddNewClient: 'クライアント新規追加はこちら',
     searchConditionChange: '検索条件変更',
+    faxBatchTransmission: 'FAX一括送信',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',
@@ -1429,7 +1469,7 @@ export default {
       subject: '件名',
       content: '内容',
       date: '配信日時',
-      send: '即時配信',
+      send: '送信',
       delay: '+ 新規追加',
       cancel: 'キャンセル'
     },
@@ -1550,6 +1590,25 @@ export default {
         basicInfoChanged: '基本情報',
         officeInfoChanged: '事業所詳細情報'
       }
+    },
+    fax: {
+      transmissionConfirmation: '送信内容確認',
+      applicantLinkage: '応募者紐付け',
+      clientCategoryNG: 'NGクライアント種別',
+      clientFacilityNG: 'NGクライアント・施設',
+      previousEmploymentClient: '過去就業先クライアント',
+      transmissionContentSettings: '送信内容設定',
+      onlyPdfFomratCanBeAttached:'※ 添付可能な様式はPDFのみとなります。',
+      prSheet: 'PRシート',
+      attachPRSheet: 'PRシート添付',
+      setTransmissionDateTime: '送信日時を設定する',
+      set: '設定する',
+      transmissionDateTime: '送信日時',
+      destinationSettings: '送信先設定',
+      clientNG: 'NGクライアント',
+      refinementConditions: '絞り込み条件',
+      maxTransmissions: '最大送信件数',
+      faxPRSheet: 'PRシートをFAX送信します。',
     }
   },
   inquiry: {
@@ -1575,8 +1634,8 @@ export default {
       replyContent: '返答内容'
     },
     message: {
-      issueDate: '受信日',
-      responseDate: '送信日'
+      issueDate: '送信日',
+      responseDate: '受信日'
     }
   },
   industry: {

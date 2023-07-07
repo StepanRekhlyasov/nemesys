@@ -30,7 +30,7 @@ export interface ApplicantDates {
   invitationDate?: Timestamp;
   created_at: Timestamp | FieldValue;
   updated_at: Timestamp | FieldValue;
-  currentStatusTimestamp: Timestamp | '';
+  currentStatusTimestamp: Timestamp | '' | FieldValue;
   applicationDate?: Timestamp;
   dob?: Timestamp;
   attendingDate?: Timestamp;
@@ -63,7 +63,7 @@ export interface ApplicantBase {
   street?: string;
   apartment?: string;
   status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp}
+  statusChangeTimestamp?: {[key: string] : Timestamp | FieldValue}
   staffRank?: number;
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
@@ -256,6 +256,14 @@ export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffer
   office: string;
   backOrder: string;
   applicant_id: string;
+  waitUpdate?: boolean;
+  currentStatusTimestamp?: Timestamp;
+  currentStatusMonth?: string;
+  userInCharge?: string;
+  status?: ApplicantStatus;
+  prefecture?: string;
+  branchIncharge?: string;
+  organizationId?: string;
 }
 
 export interface FixMainInfo {
@@ -325,4 +333,8 @@ export interface ContactInfo {
 export enum ContactMethod {
   SMS = 'sms',
   PHONE = 'phone'
+}
+
+export interface ApplicantWithFix extends Applicant {
+  fix?: ApplicantFix
 }
