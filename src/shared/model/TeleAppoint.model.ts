@@ -8,12 +8,7 @@ export interface TeleAppointmentHistory {
   requiredService?: string;
   remark?: string;
   created_at?: string;
-}
-
-export interface options {
-  year?: string;
-  month?: string;
-  day?: string;
+  user?:object
 }
 
 export enum TeleAppointmentResult {
@@ -24,10 +19,7 @@ export enum TeleAppointmentResult {
 export enum JobResult {
   NoJobOffer = 'noJobOffer',
 }
-export interface UserTele {
-  id?: string;
-  name: string;
-}
+
 export interface UserTele{
   id?:string,
 }

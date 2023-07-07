@@ -10,7 +10,7 @@ export interface dispatchModel{
   otherCompany?: number,
   joiningAnotherCompany?: number,
 }
-export interface employment{
+export interface employmentModel{
 fullTime?: number,
 partTimeJob?: number,
 dispatch?: number,

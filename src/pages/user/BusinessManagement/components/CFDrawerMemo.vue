@@ -32,7 +32,7 @@
 
         <template v-slot:body-cell-created_user="props">
         <q-td :props="props">
-          {{ getUserName(props.value) }}
+          {{ props.row.userName.displayName}}
         </q-td>
       </template>
 
@@ -67,7 +67,6 @@ import { useQuasar } from 'quasar';
 import EditButton from 'src/components/EditButton.vue';
 import { QTableProps } from 'quasar';
 import { ClientMemo } from 'src/shared/model/Client.model';
-import { UserMemo  } from 'src/shared/model/Client.model';
 import { columnsMemo } from 'src/shared/constants/memo.conts'
 import {useMemo} from 'src/stores/memo'
 import { useI18n } from 'vue-i18n';
@@ -84,7 +83,6 @@ const editableRow:Ref<number> = ref(-1)
 const editableContect = ref({})
 const memoListData: Ref<ClientMemo[]> = ref([])
 const selected= ref(false)
-const users: Ref<UserMemo[]> = ref([]);
 const loading = ref(false)
 const pagination = ref({
   sortBy: 'desc',
@@ -98,15 +96,7 @@ const fetchMemoData = async () => {
   memoListData.value = data.map((row) => {
     return { ...row, selected: false };
   });
-  users.value = await memoStore.loadUsers();
   loading.value = false;
-};
-const getUserName = (uid: string) => {
-  const value = users.value.find(x => x['id'] === uid);
-  if (value) {
-    return value['name'];
-  }
-  return '';
 };
 const showDeleteDialog = async (ids: string[]) => {
   $q.dialog({

@@ -91,7 +91,7 @@
       </template>
       <template v-slot:body-cell-created_by="props">
         <q-td :props="props">
-          {{ getUserName(props.value) }}
+          {{ props.row.user.displayName }}
         </q-td>
       </template>
       <template v-slot:body-cell-action="props">
@@ -105,11 +105,11 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, onBeforeUnmount, onMounted, watch, Ref } from 'vue';
+import { ref, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
 import { useTele } from 'src/stores/TeleAppointment';
-import {  TeleAppointmentHistory, UserTele  } from 'src/shared/model/TeleAppoint.model';
+import {  TeleAppointmentHistory  } from 'src/shared/model/TeleAppoint.model';
 import { DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { QTableProps } from 'quasar';
@@ -136,18 +136,15 @@ const teleData:DocumentData = ref({
       requiredService: [],
       result:'',
       jobResult:'',
-
     });
 const $q = useQuasar();
 const unsubscribe = ref();
 const unsubscribeUsers = ref();
 const dialogType = ref('create');
-const users: Ref<UserTele[]> = ref([]);
 
 const fetchTeleData = async () => {
   loading.value = true;
   historyData.value = await teleStore.loadTeleAppointmentData(props.clientId);
-  users.value = await teleStore.loadUsers();
   loading.value = false;
 };
 
@@ -170,14 +167,6 @@ const showEditDialog = async (data: TeleAppointmentHistory[]) => {
   dialogType.value = 'update';
   teleData.value = JSON.parse(JSON.stringify(data));
   showAddForm.value = true;
-};
-
-const getUserName = (uid: string) => {
-const value = users.value.find(x => x['id'] === uid);
-  if (value) {
-    return value['name'];
-  }
-  return '';
 };
 
 const formatDate = (dateTime: Date | string, type: 'date' | 'time') => {

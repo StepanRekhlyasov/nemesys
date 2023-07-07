@@ -6,13 +6,13 @@ import {
   serverTimestamp,
   query,
   where,
-  doc,
+  doc as docDb,
   writeBatch,
+  getDoc,
   updateDoc
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { toDate } from 'src/shared/utils/utils';
-import {  UserMemo } from 'src/shared/model/Client.model';
 import { ClientMemo } from 'src/shared/model/Client.model';
 import { getAuth , User } from '@firebase/auth';
 import { useQuasar } from 'quasar';
@@ -23,6 +23,7 @@ export const useMemo = defineStore('Memo', () => {
 
   const loadMemoData = async (clientId: string) => {
   const MemoData: ClientMemo[] = [];
+  const userData = await getDoc(docDb(collection(db,'users'),auth.currentUser?.uid))
   const q = await getDocs(
     query(
       collection(db, 'clients', clientId, 'memo'),
@@ -31,23 +32,16 @@ export const useMemo = defineStore('Memo', () => {
     );
       q.forEach(async(doc) => {
       const data = doc.data();
+      const registerUser = userData.data()
       MemoData.push({
         ...data,
         id: doc.id,
+        userName:registerUser,
         created_date: toDate(data.created_date),
         updated_date: toDate(data.updated_date)
       });
     });
     return MemoData;
-    };
-
-    const loadUsers = async () => {
-    const userList: UserMemo[] = [];
-    const q = await getDocs(query(collection(db, 'users'), where('deleted', '==', false)));
-      q.forEach((doc) => {
-      userList.push({ id: doc.id, name: doc.data().name });
-     });
-    return userList;
     };
 
    const deleteMemo = async (ids,clientId:string) => {
@@ -58,7 +52,7 @@ export const useMemo = defineStore('Memo', () => {
      updateData['deleted_at'] = serverTimestamp();
     const batch = writeBatch(db);
     for (const id of ids) {
-   const docRef = doc(db, 'clients', clientId, 'memo', id);
+   const docRef = docDb(db, 'clients', clientId, 'memo', id);
       batch.update(docRef, updateData);
     }
     await batch.commit();
@@ -69,7 +63,7 @@ export const useMemo = defineStore('Memo', () => {
     updateData['updated_at'] = serverTimestamp();
     updateData['updated_by'] = auth.currentUser?.uid;
     updateData['content'] = content
-    await updateDoc(doc(db, 'clients', clientId, 'memo', id), updateData);
+    await updateDoc(docDb(db, 'clients', clientId, 'memo', id), updateData);
   };
 
   const addNewMemo = async (clientId:string,content:string) => {
@@ -84,7 +78,6 @@ export const useMemo = defineStore('Memo', () => {
 
  return {
    loadMemoData,
-   loadUsers,
    updateMemo,
    addNewMemo,
    deleteMemo

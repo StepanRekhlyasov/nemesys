@@ -9,10 +9,7 @@ export interface ClientMemo {
   delited?: boolean;
   user?: User;
   displayName?: string;
-}
-export interface UserMemo{
-  id:string,
-  name: string;
+  userName?:object
 }
 export interface Client {
   id?: string;
