@@ -104,7 +104,6 @@ const getClient = useClient();
 onMounted(async () => {
   loading.value = true;
   await getFormatedData();
-  console.log(staffList.value)
   loading.value = false;
 })
 
