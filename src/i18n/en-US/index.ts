@@ -1588,7 +1588,10 @@ export default {
   },
   industry: {
     nursing: 'Nursing',
-    nurse: 'Nurse'
+    nurse: 'Nurse',
+    uniqueItemSetting: 'Client type unique item setting',
+    specificTypeItems: 'Type-specific item',
+    addLine: 'ADD LINE'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',
