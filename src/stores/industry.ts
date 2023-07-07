@@ -1,4 +1,4 @@
-import { getFirestore, onSnapshot, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, onSnapshot, collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Industry } from 'src/shared/model/Industry.model';
 import { ref, onBeforeUnmount } from 'vue';
@@ -11,6 +11,7 @@ export const useIndsutry = defineStore('industries', () => {
 
     // state
     const industries = ref<Industry[]>([])
+    const isFirstLoading = ref(true)
 
     // unsubscribe
     const unsubscribe = ref<(() => void) | null>(null);
@@ -19,7 +20,8 @@ export const useIndsutry = defineStore('industries', () => {
 
     const getIndustries = () => {
         unsubscribe.value = onSnapshot(collection(db, 'industries'), (snapshot) => {
-            industries.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as Industry }));
+            industries.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Industry));
+            isFirstLoading.value = false
         });
     };
 
@@ -43,6 +45,17 @@ export const useIndsutry = defineStore('industries', () => {
         }
     };
 
+    const updateIndustry = async (industryId: string, updatedIndustry: Industry) => {
+        try {
+            await setDoc(doc(db, 'industries', industryId), updatedIndustry, {merge: true})
+
+            Alert.success()
+        } catch(e) {
+            Alert.warning(e)
+            console.log(e)
+        }
+    }
+
     getIndustries();
 
     // cleanup
@@ -50,7 +63,9 @@ export const useIndsutry = defineStore('industries', () => {
 
     return {
         industries,
+        isFirstLoading,
         getIndustries,
-        addIndustry
+        addIndustry,
+        updateIndustry
     }
 })

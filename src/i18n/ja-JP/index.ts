@@ -1640,7 +1640,10 @@ export default {
   },
   industry: {
     nursing: '介護',
-    nurse: '看護'
+    nurse: '看護',
+    uniqueItemSetting: 'クライアント種別独自項目設定',
+    specificTypeItems: '種別独自項目',
+    addLine: '行追加'
   },
   report:{
     salesActivityIndividualReport:'営業活動個人レポート',
