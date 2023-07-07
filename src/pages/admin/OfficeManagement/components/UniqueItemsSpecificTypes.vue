@@ -54,7 +54,7 @@ const newSpecificTypeHandle = () => {
                 lazy-rules
                 :rules="[
                      (val) => (val && val.length > 0) || '',
-                     (val) => (/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(val)) || 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.'
+                     (val) => (/^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val)) || 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.'
                 ]" hide-bottom-space/>
 
             <q-select class="q-mr-md" dense outlined v-model="newSpecificType.dataType" :options="['string', 'number']" color="accent">
