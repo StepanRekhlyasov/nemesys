@@ -88,7 +88,11 @@
       </label>
       <label class="text-subtitle1" v-if="mode === 'media'">
         {{ $t('KPI.media') }}
-        <MySelect :width="'150px'" />
+        <MySelect :width="'150px'"
+        :options="mediaListToShow"
+        v-model="media"
+        @update:model-value="getData()"
+        />
       </label>
       <label class="text-subtitle1" v-if="mode === 'day'">
         {{ $t('KPI.username') }}
@@ -137,14 +141,18 @@ import { occupationList } from 'src/shared/constants/Applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
 import { mediaItemList ,dayItemList} from './const/kpi.const';
+import {useMedia} from 'src/stores/media';
 const { getReport } = useGetReport();
 const UserBranch = useBranch();
+const {getAllmedia}  = useMedia();
 const day = ref('');
+const media = ref('');
 const dateRange = ref('');
 const branch = ref('');
 const occupation = ref('');
 const user = ref('');
 const userListToShow = ref<{ value: string; label: string }[]>([]);
+const mediaListToShow = ref<{ value: string; label: string }[]>([]);
 const mode = ref('day');
 const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
@@ -164,22 +172,22 @@ const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
-const convertDateRange = (dateRange: string) => {
-  const [from, to] = dateRange.split('-');
-  return { from, to };
-};
+// const convertDateRange = (dateRange: string) => {
+//   const [from, to] = dateRange.split('-');
+//   return { from, to };
+// };
 
-const convertDay = (day: string) => {
-  if (!day) return;
-  const [year, month] = day.split('/');
-  const from = `${year}/${month}/01`;
-  const to = `${year}/${month}/${new Date(
-    Number(year),
-    Number(month),
-    0
-  ).getDate()}`;
-  return { from: from, to: to };
-};
+// const convertDay = (day: string) => {
+//   if (!day) return;
+//   const [year, month] = day.split('/');
+//   const from = `${year}/${month}/01`;
+//   const to = `${year}/${month}/${new Date(
+//     Number(year),
+//     Number(month),
+//     0
+//   ).getDate()}`;
+//   return { from: from, to: to };
+// };
 
 
 const convertUserListToShow = (users: User[]) => {
@@ -209,6 +217,14 @@ async function getData() {
   if (organizationStore.currentOrganizationId) {
     loading.value = true;
     let users;
+    if(mode.value == 'media'){
+      mediaListToShow.value = [...(await getAllmedia())].map((media) => {
+        return {
+          value: media.id,
+          label: media.name,
+        };
+      })
+    }
     if (user.value) {
       users = [await userStore.getUserById(user.value)];
     } else if (branch.value) {
@@ -230,7 +246,6 @@ async function getData() {
     }
 
     const range = { from: '1900/01/01', to: '1900/12/31' };
-
     if(mode.value == 'day'){
       rowData.value = [];
       const rows =await getReport(
@@ -253,7 +268,7 @@ async function getData() {
         range,
         'BasedOnEachItemDate',
         mediaItemList,
-        'indeed',
+        media.value,
         undefined,
         false
       );

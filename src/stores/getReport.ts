@@ -2,8 +2,6 @@ import {
   collection,
   query,
   where,
-  Query,
-  DocumentData,
   getFirestore,
   getCountFromServer,
   QueryFieldFilterConstraint,
