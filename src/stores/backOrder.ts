@@ -1,15 +1,10 @@
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where,writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel,BackOrderState } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue'
-
-interface BackOrderState {
-  BOList: BackOrderModel[]
-  selectedBo: BackOrderModel | null,
-}
 
 export const useBackOrder = defineStore('backOrder', () => {
 	const db = getFirestore();
@@ -35,30 +30,25 @@ export const useBackOrder = defineStore('backOrder', () => {
 		})
 		state.value.BOList = list
 	}
-
   async function getBoById(id: string){
     const docSnap = await getDoc(doc(db, 'BO/'+id))
     return {...docSnap.data(), id: docSnap.id} as BackOrderModel
   }
-
-	async function addBackOrder(backOrderData) {
-		const auth = getAuth();
-		const data = JSON.parse(JSON.stringify(backOrderData));
-		data['created_at'] = serverTimestamp();
-		data['updated_at'] = serverTimestamp();
-		data['deleted'] = false;
-		data['registrant'] = auth.currentUser?.uid
-
-		const snapshot = await getDocs(query(collection(db, '/BO')))
-		data['boId'] = snapshot.docs.length
-
-		const clientRef = collection(db, '/BO');
-		await addDoc(clientRef, data);
-		Alert.success()
-	}
-
+  async function addBackOrder(backOrderData) {
+    const auth = getAuth();
+    const data = JSON.parse(JSON.stringify(backOrderData));
+    data['created_at'] = serverTimestamp();
+    data['updated_at'] = serverTimestamp();
+    data['deleted'] = false;
+    data['registrant'] = auth.currentUser?.uid
+    const snapshot = await getDocs(query(collection(db, '/BO')))
+    data['boId'] = snapshot.docs.length
+    const clientRef = collection(db, '/BO');
+    await addDoc(clientRef, data);
+    Alert.success()
+  }
 	async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
-		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('z', '==', clientId)]
+		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId)]
 		const docs = await getDocs(query(
 			collection(db, '/BO'),
 			...constraints
@@ -120,6 +110,14 @@ export const useBackOrder = defineStore('backOrder', () => {
 		})
 		Promise.all(ret)
 	}
-
-	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById }
+  const deleteBO = async (ids) => {
+    const updateData = {};
+    updateData['deleted'] = true;
+    const batch = writeBatch(db);
+    for (const id of ids) {
+      batch.update(doc(db, 'BO' , id), updateData);
+    }
+    await batch.commit();
+  };
+	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById,deleteBO }
 })
