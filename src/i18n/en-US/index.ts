@@ -1157,6 +1157,7 @@ export default {
     transactionType: 'Transaction Type',
     distance: 'Distance from origin',
     selectBOType: 'Select BO type',
+    backOrderDetails: 'Back Order Details',
     officeName: 'Office Name',
     clientName: 'Client Name',
     employmentType: 'Employment Status',
@@ -1184,6 +1185,8 @@ export default {
     distanceBusiness: 'Distance from Business',
     matchDegree: 'Match degree',
     statusThisTime: 'Status at this time',
+    wanted: 'Wanted',
+    inactive: 'Inactive',
     sms:{
       send:'Send',
       sendSMS:'Send SMS',
@@ -1234,6 +1237,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
+      required: 'Required', 
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',
@@ -1407,6 +1411,7 @@ export default {
   actions: {
     clickToAddNewClient: 'Click here to add a new client',
     searchConditionChange: 'Search condition change',
+    faxBatchTransmission: 'Fax batch transmission',
   },
   failed: 'Action failed',
   success: 'Action was successful',
@@ -1592,6 +1597,25 @@ export default {
         basicInfoChanged: 'Changed Basic Info',
         officeInfoChanged: 'Changed Office Info'
       }
+    },
+    fax: {
+      transmissionConfirmation: 'Transmission Confirmation',
+      applicantLinkage: 'Applicant Linkage',
+      clientCategoryNG: 'NG client category',
+      clientFacilityNG: 'NG client/facility',
+      previousEmploymentClient: 'Previous employment client',
+      transmissionContentSettings: 'Transmission content settings',
+      onlyPdfFomratCanBeAttached:'Only PDF fomat can be attached',
+      prSheet: 'PR sheet',
+      attachPRSheet: 'Attach PR sheet',
+      setTransmissionDateTime: 'Set transmission date and time',
+      set: 'Set',
+      transmissionDateTime: 'Transmission date and time',
+      destinationSettings: 'Destination settings',
+      clientNG: 'NG client',
+      refinementConditions: 'Refinement conditions',
+      maxTransmissions: 'Maximum Transmissions',
+      faxPRSheet: 'Fax the PR Sheet'
     }
   },
   inquiry: {

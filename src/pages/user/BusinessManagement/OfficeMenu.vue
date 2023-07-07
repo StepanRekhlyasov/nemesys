@@ -5,6 +5,8 @@ import { useI18n } from 'vue-i18n';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
 import { OfficeMenuItem } from './types'
+import ClientFactoryDrawer from 'src/pages/user/BusinessManagement/ClientFactoryDrawer.vue';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -15,13 +17,19 @@ const isDrawer = ref({
 })
 const activeItem = ref<null | OfficeMenuItem>(null)
 
+const activeClientFactoryItem = ref<ClientFactory | null>(null)
+// drawers
+const isClientFactoryDrawer = ref(false)
+const mapSearchKey = ref<number>(0);
+
 const menu = computed(() => {
     return [
         {
             name: t('menu.mapSearch'),
             right: require('assets/admin-office-managment/map-search-image.png'),
             click() {
-                isDrawer.value.mapSearchDrawer = true
+                isDrawer.value.mapSearchDrawer = true,
+                mapSearchKey.value = mapSearchKey.value === 0 ? 1 : 0
             },
         },
         {
@@ -73,6 +81,22 @@ const onMenuItem = (item: OfficeMenuItem) => {
     item.click()
 }
 
+const openCFDrawer = (clientFactoryData: ClientFactory) => {
+    isClientFactoryDrawer.value = false
+
+    setTimeout(() => {
+        activeClientFactoryItem.value = clientFactoryData
+
+        if (activeClientFactoryItem.value) {
+            isClientFactoryDrawer.value = true
+        }
+    }, 200);
+}
+
+const hideClientFactoryDrawer = () => {
+  isClientFactoryDrawer.value = false
+}
+
 </script>
 
 <template>
@@ -105,8 +129,11 @@ const onMenuItem = (item: OfficeMenuItem) => {
             </q-card-section>
         </q-card>
 
-        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" />
+        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" @open-c-f-drawer="openCFDrawer" :key="mapSearchKey"/>
         <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" />
+        <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
+            :isDrawer="isClientFactoryDrawer" @hide-drawer="hideClientFactoryDrawer" />
+
     </div>
 </template>
 
@@ -163,4 +190,5 @@ const onMenuItem = (item: OfficeMenuItem) => {
 
 .item_wrapper {
     max-height: 80px;
-}</style>
+}
+</style>

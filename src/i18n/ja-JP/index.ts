@@ -1153,6 +1153,7 @@ export default {
     transactionType: '取引種別',
     distance: '起点からの距離',
     selectBOType: 'BOの種類を選択',
+    backOrderDetails: 'バックオーダー詳細',
     officeName: '事業所名',
     clientName: 'クライアント名',
     employmentType: '雇用形態',
@@ -1180,6 +1181,8 @@ export default {
     distanceBusiness: '事業所との距離',
     matchDegree: 'マッチ度',
     statusThisTime: '現時点での状況',
+    wanted: '募集中',
+    inactive: '休止中',
     sms:{
       send:'送信',
       sendSMS:'SMS送信',
@@ -1216,7 +1219,7 @@ export default {
       day: '日',
       tasks: '業務内容',
       pickDrop: '送迎の有無',
-      onCallSupport: 'オンコール 対応の有無',
+      onCallSupport: 'オンコール \r 対応の有無',
       onCallRemarks: 'オンコール備考',
       welfare: '福利厚生',
       retirementAge: '定年',
@@ -1230,6 +1233,7 @@ export default {
       caseType: '案件種別',
       requiredQualifications: '必要な資格',
       somethingNotQuestioned: '不問',
+      required: '必須',
       experienceRemarks: '経験備考',
       typeOfEmployment: '就業形態',
       BOGenerationRoute: 'BO発生経路',
@@ -1403,6 +1407,7 @@ export default {
   actions: {
     clickToAddNewClient: 'クライアント新規追加はこちら',
     searchConditionChange: '検索条件変更',
+    faxBatchTransmission: 'FAX一括送信',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',
@@ -1585,6 +1590,25 @@ export default {
         basicInfoChanged: '基本情報',
         officeInfoChanged: '事業所詳細情報'
       }
+    },
+    fax: {
+      transmissionConfirmation: '送信内容確認',
+      applicantLinkage: '応募者紐付け',
+      clientCategoryNG: 'NGクライアント種別',
+      clientFacilityNG: 'NGクライアント・施設',
+      previousEmploymentClient: '過去就業先クライアント',
+      transmissionContentSettings: '送信内容設定',
+      onlyPdfFomratCanBeAttached:'※ 添付可能な様式はPDFのみとなります。',
+      prSheet: 'PRシート',
+      attachPRSheet: 'PRシート添付',
+      setTransmissionDateTime: '送信日時を設定する',
+      set: '設定する',
+      transmissionDateTime: '送信日時',
+      destinationSettings: '送信先設定',
+      clientNG: 'NGクライアント',
+      refinementConditions: '絞り込み条件',
+      maxTransmissions: '最大送信件数',
+      faxPRSheet: 'PRシートをFAX送信します。',
     }
   },
   inquiry: {

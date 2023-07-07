@@ -79,6 +79,11 @@ export enum TransactionType {
 } 
 
 export enum BackOrderStatus {
+  Wanted = 'wanted',
+  Inactive = 'inactive'
+}
+
+export enum EmploymentBOStatus {
   FullTime = 'fullTime',
   PartTime = 'partTime',
   PartTimeEmployee = 'partTimeEmployee'
