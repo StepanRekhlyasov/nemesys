@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, ref } from 'vue';
 
 import { Industry } from 'src/shared/model/Industry.model';
+import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
 defineProps<{
@@ -14,10 +15,10 @@ const emit = defineEmits<{
 }>()
 
 const newFacilityForm = ref('')
-const inputVal = ref()
+const inputVal = ref<QInput>()
 
 const newFacilityFormHandle = () => {
-    if(inputVal.value.validate()) {
+    if(inputVal.value && inputVal.value.validate()) {
         emit('newFacilityForm', newFacilityForm.value)
         newFacilityForm.value = ''
     }
@@ -55,10 +56,6 @@ const newFacilityFormHandle = () => {
                 <q-btn color="accent" icon="mdi-plus" :label="t('industry.addLine')" size="sm" @click="newFacilityFormHandle"/>
             </div>
         </div>
-    </div>
-
-    <div v-else>
-
     </div>
 </template>
 

@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, ref } from 'vue';
 
 import { Industry } from 'src/shared/model/Industry.model';
+import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
 defineProps<{
@@ -17,10 +18,10 @@ const newSpecificType = ref({
     title: '',
     dataType: 'string'
 })
-const inputVal = ref()
+const inputVal = ref<QInput>()
 
 const newSpecificTypeHandle = () => {
-    if(inputVal.value.validate()) {
+    if(inputVal.value && inputVal.value.validate()) {
         emit('newSpecificType', newSpecificType.value)
         newSpecificType.value.title = ''
     }
@@ -65,10 +66,6 @@ const newSpecificTypeHandle = () => {
                 <q-btn color="accent" icon="mdi-plus" :label="t('industry.addLine')" size="sm" @click="newSpecificTypeHandle"/>
             </div>
         </div>
-    </div>
-
-    <div v-else>
-
     </div>
 </template>
 
