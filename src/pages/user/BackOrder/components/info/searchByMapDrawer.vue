@@ -17,7 +17,7 @@
           </div>
         </div>
       </q-card-section>
-      <MapSearchs theme="primary"/>
+      <MapSearchs theme="primary" :bo="selectedBo"/>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="candidateStaff">
           <CandidateStaffBoSection :bo="selectedBo" :hideMapButton="true"/>

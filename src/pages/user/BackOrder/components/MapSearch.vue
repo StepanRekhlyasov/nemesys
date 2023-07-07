@@ -1,15 +1,31 @@
 <script lang="ts" setup>
-import { watch, ref, defineProps, defineEmits } from 'vue';
+import { watch, ref, defineProps, defineEmits, onMounted } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import {radius} from '../consts/BackOrder.const'
+import { BackOrderModel } from 'src/shared/model';
+import { useClient } from 'src/stores/client'
 
-const props = defineProps<{theme: string}>()
+const props = defineProps<{theme: string,bo: BackOrderModel | undefined}>()
 const emit = defineEmits<{(e: 'updateMap', mapData)}>()
-
-const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
+const center = ref<{lat: number, lng: number}>({ lat: 0, lng: 0 });
 const radius1 = ref<number>(0);
 const isLoadingProgress = ref(false)
+const getClient = useClient();
+
+onMounted(async () => {
+  await getClientLocation();
+});
+
+const getClientLocation = async()=>{
+  const client = await getClient.fetchClientsById(props.bo?.client_id);
+  if(client.lat && client.lon){
+  center.value = {
+    lat:client.lat-0,
+    lng:client.lon-0
+  }
+}
+}
 
 const circleOption = ref({
   center: center,
