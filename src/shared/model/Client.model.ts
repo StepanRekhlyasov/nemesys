@@ -12,6 +12,7 @@ export interface ClientMemo {
 }
 export interface UserMemo{
   id:string,
+  name: string;
 }
 export interface Client {
   id?: string;

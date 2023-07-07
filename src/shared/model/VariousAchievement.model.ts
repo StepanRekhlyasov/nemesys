@@ -1,4 +1,4 @@
-export interface dispatch{
+export interface dispatchModel{
   inHouseBO?: number,
   inHouseFIX?: number,
   companyJob?: number,
@@ -10,7 +10,7 @@ export interface dispatch{
   otherCompany?: number,
   joiningAnotherCompany?: number,
 }
-export interface emp{
+export interface employment{
 fullTime?: number,
 partTimeJob?: number,
 dispatch?: number,

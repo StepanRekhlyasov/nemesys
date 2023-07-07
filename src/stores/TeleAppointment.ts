@@ -14,7 +14,7 @@ import {
 import { defineStore } from 'pinia';
 import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
-import { TeleAppointmentHistory, UserList } from 'src/shared/model/TeleAppoint.model';
+import { TeleAppointmentHistory, UserTele } from 'src/shared/model/TeleAppoint.model';
 
 export const useTele = defineStore('TeleAppoint', () => {
   const db = getFirestore();
@@ -45,7 +45,7 @@ export const useTele = defineStore('TeleAppoint', () => {
   };
 
   const loadUsers = async () => {
-    const userList: UserList[] = [];
+    const userList: UserTele[] = [];
     const q = await getDocs(query(collection(db, 'users'), where('deleted', '==', false)));
     q.forEach((doc) => {
       userList.push({ id: doc.id, name: doc.data().name });

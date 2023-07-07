@@ -24,8 +24,8 @@ export enum TeleAppointmentResult {
 export enum JobResult {
   NoJobOffer = 'noJobOffer',
 }
-export interface UserList {
-  id: string;
+export interface UserTele {
+  id?: string;
   name: string;
 }
 export interface UserTele{

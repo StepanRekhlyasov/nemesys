@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { toDate } from 'src/shared/utils/utils';
-import {  UserList } from 'src/shared/model/TeleAppoint.model';
+import {  UserMemo } from 'src/shared/model/Client.model';
 import { ClientMemo } from 'src/shared/model/Client.model';
 import { getAuth , User } from '@firebase/auth';
 import { useQuasar } from 'quasar';
@@ -42,7 +42,7 @@ export const useMemo = defineStore('Memo', () => {
     };
 
     const loadUsers = async () => {
-    const userList: UserList[] = [];
+    const userList: UserMemo[] = [];
     const q = await getDocs(query(collection(db, 'users'), where('deleted', '==', false)));
       q.forEach((doc) => {
       userList.push({ id: doc.id, name: doc.data().name });

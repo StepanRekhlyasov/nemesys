@@ -108,7 +108,7 @@ import { useI18n } from 'vue-i18n';
 import { ref, onBeforeUnmount, onMounted, watch, Ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
-import { useTele } from 'src/stores/TeleAppoint';
+import { useTele } from 'src/stores/TeleAppointment';
 import {  TeleAppointmentHistory, UserTele  } from 'src/shared/model/TeleAppoint.model';
 import { DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';

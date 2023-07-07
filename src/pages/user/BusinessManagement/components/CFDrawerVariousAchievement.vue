@@ -64,7 +64,7 @@
 import { ref , Ref , onMounted } from 'vue';
 import { today, lastMonth } from 'src/shared/utils/utils';
 import { dispatchColumns, empRecordColumns } from 'src/shared/constants/VariousAchievement.const'
-import { dispatch , emp } from 'src/shared/model/VariousAchievement.model'
+import { dispatchModel , employment } from 'src/shared/model/VariousAchievement.model'
 import { QTableProps } from 'quasar';
 const columnsdispatch = ref(dispatchColumns)
 const columnsemp  = ref(empRecordColumns)
@@ -77,8 +77,8 @@ defineProps<{
   columnsdispatch: QTableProps['columns']
   dispatchColumns: QTableProps['columns']
 }>()
-const dispatchRecord : Ref<dispatch[]> = ref([]);
-const empRecord : Ref<emp[]>= ref([]);
+const dispatchRecord : Ref<dispatchModel[]> = ref([]);
+const empRecord : Ref<employment[]>= ref([]);
 const loadData = () => {
 dispatchRecord.value = [{
         inHouseBO: 3,
