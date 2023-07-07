@@ -54,7 +54,7 @@ const onScroll = async (info : {
 }
 const applicantStore = useApplicant()
 const props = defineProps<{
-  status: string
+  status: ApplicantStatus
 }>()
 const mode = computed(()=>{
   if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
