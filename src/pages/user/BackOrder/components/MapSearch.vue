@@ -14,6 +14,7 @@ const isLoadingProgress = ref(false)
 const getClient = useClient();
 
 onMounted(async () => {
+
   await getClientLocation();
 });
 
