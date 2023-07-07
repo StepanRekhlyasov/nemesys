@@ -6,7 +6,6 @@ import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClient = defineStore('client', () => {
-
     // db
     const db = getFirestore();
 

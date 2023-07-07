@@ -9,6 +9,12 @@
   <q-card-section class=" q-pa-none">
     <q-table :columns="coloumns" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
+      <template v-slot:body-cell-name="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.value"
+                class="q-pa-none text-body1" />
+        </q-td>
+      </template>
       <template v-slot:body-cell-statusThisTime="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ t(`applicant.statusOption.${props.row.status}`) }}
@@ -26,6 +32,7 @@
       </template>
     </q-table>
   </q-card-section>
+  <ApplicantDetails ref="detailsDrawer" />
 </template>
 
 <script lang="ts" setup>
@@ -39,6 +46,10 @@ import { where } from 'firebase/firestore';
 import { useI18n } from 'vue-i18n';
 import { radius } from '../../consts/BackOrder.const';
 import { QTableProps } from 'quasar';
+import { Applicant } from 'src/shared/model';
+import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
+
+const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 
 const pagination = ref({
   sortBy: 'desc',
@@ -50,6 +61,9 @@ const pagination = ref({
 
 const coloumns = ref<QTableProps | ComputedRef>(BackOrderStaff)
 
+  const openDrawer = (data: Applicant) => {
+  detailsDrawer.value?.openDrawer(data)
+};
 const props = withDefaults(defineProps<{
   bo: BackOrderModel,
   hideMapButton?: boolean
