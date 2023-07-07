@@ -13,12 +13,13 @@ import { onMounted, Ref, ref, computed ,watch} from 'vue';
 import { useMedia } from 'stores/media';
 import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
+import {Media} from 'src/shared/model/Media.model';
 
 const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[]> = ref([]);
 const media = useMedia();
 const applicant = useApplicant();
-const mediaList: Ref<string[]> = ref([]);
+const mediaList = ref<Media[]>([]);
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
@@ -29,7 +30,7 @@ const props = defineProps<{
 const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },
-    labels: [...mediaList.value],
+    labels: [...mediaList.value.map((media) => media.name)],
   };
 });
 
@@ -38,8 +39,8 @@ const showChart = async () => {
   if (!props.dateRangeProps) return;
   const dateRange = props.dateRangeProps;
   dataToshow.value = await Promise.all(
-    mediaList.value.map(async (mediaName) => {
-      return await applicant.countApplicantsByMedia(mediaName, dateRange);
+    mediaList.value.map(async (media) => {
+      return await applicant.countApplicantsByMedia(media.name, dateRange);
     })
   );
 };
