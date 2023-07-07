@@ -298,6 +298,13 @@
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')" 
           val="fixed" v-model="data['workingDays']" />
         </q-field>
+        <template v-if="data['workingDays'] == 'fixed'">
+          <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationRule]">
+            <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" 
+              :val="day.value" :disable="loading"
+              :label="day.label" :key="day.value" />
+          </q-field>
+        </template>
       </labelField>
       <LabelField :label="`${$t('office.workingHours')}  ${$t('office.dayShift')}`" :edit="edit" 
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center"
