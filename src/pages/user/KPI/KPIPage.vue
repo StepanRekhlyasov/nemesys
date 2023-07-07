@@ -134,8 +134,9 @@ import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
 import { where } from 'firebase/firestore';
 import { occupationList } from 'src/shared/constants/Applicant.const';
-import { getIndividualReport } from 'src/stores/individualReport';
+import { getReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
+import { mediaItemList ,dayItemList} from './const/kpi.const';
 const UserBranch = useBranch();
 const day = ref('');
 const dateRange = ref('');
@@ -179,14 +180,6 @@ const convertDay = (day: string) => {
   return { from: from, to: to };
 };
 
-const convertUserList = (users: User[]) => {
-  return users.map((user) => {
-    return {
-      id: user.id,
-      name: user.name,
-    };
-  });
-};
 
 const convertUserListToShow = (users: User[]) => {
   return users.map((user) => {
@@ -235,13 +228,32 @@ async function getData() {
       userListToShow.value = convertUserListToShow(users);
     }
 
-    if (mode.value == 'day') {
-      // const range = convertDay(day.value);
-      const range = { from: '1900/01/01', to: '1900/12/31' };
-      const { rows: rows } = await getIndividualReport(
-        convertUserList(users),
+    const range = { from: '1900/01/01', to: '1900/12/31' };
+
+    if(mode.value == 'day'){
+      rowData.value = [];
+      const rows =await getReport(
+        users,
+        undefined,
         range,
-        'BasedOnLeftMostItemDate',
+        'BasedOnEachItemDate',
+        dayItemList,
+      );
+      rowData.value = rows;
+    }
+
+    if(mode.value == 'media'){
+      rowData.value = [];
+      const rows =await getReport(
+        undefined,
+        Object.values( await UserBranch.getBranchesInOrganization(
+          organizationStore.currentOrganizationId
+        )),
+        range,
+        'BasedOnEachItemDate',
+        mediaItemList,
+        'indeed',
+        undefined,
         false
       );
       rowData.value = rows;

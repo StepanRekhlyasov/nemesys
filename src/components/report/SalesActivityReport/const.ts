@@ -193,10 +193,10 @@ export const columnsR:ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: true,
     },
     {
-      name: 'BO_total',
+      name: 'BO',
       align: 'center',
       label: t('report.categoriesBOTotal'),
-      field: 'BO_total',
+      field: 'BO',
       sortable: true,
     },
   ];

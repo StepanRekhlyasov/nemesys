@@ -2,6 +2,7 @@ import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
 import { computed ,ComputedRef} from 'vue';
 const { t } = i18n.global;
+export const itemList = ['fix', 'inspection', 'offer', 'admission']
 export const dataNames = ['report.companyAverage', 'report.allAverage'];
 export const chartOptions = computed(() => {
   return {
@@ -90,24 +91,24 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: true,
     },
     {
-      name: 'inspection_rate',
+      name: 'inspectionRate',
       align: 'center',
       label: t('report.categories.inspectionRate'),
-      field: 'inspection_rate',
+      field: 'inspectionRate',
       sortable: true,
     },
     {
-      name: 'offer_rate',
+      name: 'offerRate',
       align: 'center',
       label: t('report.categories.offerRate'),
-      field: 'offer_rate',
+      field: 'offerRate',
       sortable: true,
     },
     {
-      name: 'admission_rate',
+      name: 'admissionRate',
       align: 'center',
       label: t('report.categories.admissionRate'),
-      field: 'admission_rate',
+      field: 'admissionRate',
       sortable: true,
     },
   ];
@@ -189,21 +190,22 @@ export const columnsR:ComputedRef<QTableProps['columns']> = computed(() => {
       name: 'BO_total',
       align: 'center',
       label: t('report.categoriesBOTotal'),
-      field: 'BO_total',
+      field: 'BO',
       sortable: true,
     },
     {
       name: 'BO_New',
       align: 'center',
       label: t('report.categoriesBONew'),
-      field: 'BO_New',
+      field: 'BOIsfirst',
+
       sortable: true,
     },
     {
       name: 'BO_Existing',
       align: 'center',
       label: t('report.categories.BOExisting'),
-      field: 'BO_Existing',
+      field: 'BOIsnotfirst',
       sortable: true,
     },
   ];

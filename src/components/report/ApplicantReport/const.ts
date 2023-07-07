@@ -5,12 +5,13 @@ const { t } = i18n.global;
 
 export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
 export const chartType = ['bar', 'line', 'line'];
+
 export const itemList = [
   'applicants',
-  'valid_applicants',
-  'contact_applicants',
-  'attraction_applicants',
-  'attend_applicants',
+  'validApplicants',
+  'contactApplicants',
+  'attractionApplicants',
+  'attendApplicants',
   'fix',
   'inspection',
   'offer',

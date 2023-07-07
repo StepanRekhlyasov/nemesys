@@ -6,14 +6,18 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns ,itemList ,chartType ,rowNames} from './const';
-import { useTotalizer } from 'src/stores/totalization';
-import { calculateCVR } from 'src/components/report/reportUtil';
-import {graphType} from '../Models';
+import { chartOptions, columns, itemList, chartType, rowNames } from './const';
+import {
+  calculateCVR,
+  getListFromObject,
+} from 'src/components/report/reportUtil';
+import { graphType } from '../Models';
+import { useGetReport } from 'src/stores/getReport';
 import VueApexCharts from 'vue3-apexcharts';
-const Totalizer = useTotalizer();
+import { typeOfQuery } from 'src/shared/types/totalization';
+const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
-const apexchart=VueApexCharts
+const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
@@ -70,29 +74,37 @@ const showData = async (
   dateRange: { from: string; to: string },
   organizationId: string
 ) => {
-  let target: { applicants: string; fix: string; bo: string } | undefined =
-    undefined;
-  if (props.graph_type == 'BasedOnLeftMostItemDate') {
-    target = { applicants: 'applicants', fix: 'applicants', bo: 'bo' };
-  }
-  const dataAverage = await Totalizer.Totalize(
-    dateRange,
-    itemList,
-    false,
-    organizationId,
-    target,
-    true
-  );
+  const dataAverage = getListFromObject(
+    await getReport(
+      undefined,
+      undefined,
+      dateRange,
+      props.graph_type,
+      itemList as typeOfQuery[],
+      undefined,
+      organizationId,
+      false
+    ),
+    itemList
+  ) as number[];
+
+  const dataAverageAll = getListFromObject(
+    await getReport(
+      undefined,
+      undefined,
+      dateRange,
+      props.graph_type,
+      itemList as typeOfQuery[],
+      undefined,
+      undefined,
+      false
+    ),
+    itemList
+  ) as number[];
   const dataCvr = calculateCVR(dataAverage);
-  const dataAverageAll = await Totalizer.Totalize(
-    dateRange,
-    itemList,
-    false,
-    undefined,
-    target,
-    true
-  );
+
   const dataCvrAll = calculateCVR(dataAverageAll);
+
   dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
 };
 
@@ -100,19 +112,12 @@ watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
-    await showData(
-      props.dateRangeProps,
-      props.organization_id
-    );
+    await showData(props.dateRangeProps, props.organization_id);
   }
 );
 
 onMounted(async () => {
   if (!props.dateRangeProps) return;
-  await showData(
-    props.dateRangeProps,
-    props.organization_id
-  );
+  await showData(props.dateRangeProps, props.organization_id);
 });
 </script>
-

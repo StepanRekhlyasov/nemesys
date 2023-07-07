@@ -13,17 +13,17 @@
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptions, chartOptionsR, columns, columnsR ,dataNames,dataNamesR,chartNames ,chartNamesR } from './const';
-import { useTotalizer } from 'src/stores/totalization';
-import { calculateCVR } from '../reportUtil';
+import { calculateCVR , getListFromObject} from '../reportUtil';
 import {graphType} from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
-
+import {typeOfQuery} from 'src/shared/types/totalization';
+import { useGetReport } from 'src/stores/getReport';
 const apexchart=VueApexCharts
-const Totalizer = useTotalizer();
+const {getReport}=useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowR: Ref<(number | string)[][]> = ref([]);
-const itemList = ['fix', 'inspection', 'offer', 'admission'];
+const itemList = ['fix', 'inspection', 'offer', 'admission','BO'];
 
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
@@ -83,7 +83,7 @@ const rowsR: ComputedRef<
       inspection: rowData[1],
       offer: rowData[2],
       admission: rowData[3],
-      BO_total: rowData[4]
+      BO: rowData[4]
 
     };
   });
@@ -102,39 +102,33 @@ const showSalesActivityReport = async (
   dateRange: { from: string; to: string },
   organizationId: string
 ) => {
-  let target: { applicants: string; fix: string; bo: string } | undefined =
-    undefined;
-  if (props.graph_type == 'BasedOnLeftMostItemDate') {
-    target = { applicants: 'applicants', fix: 'fix', bo: 'bo' };
-  }
-  const dataAverage = await Totalizer.Totalize(
-    dateRange,
-    itemList,
-    false,
-    organizationId,
-    target
-  );
-  if (!dataAverage) return;
-  const dataAverageR = [...dataAverage];
-  const dataAverageAll = await Totalizer.Totalize(
-    dateRange,
-    itemList,
-    false,
+
+  const dataAverage = getListFromObject(await getReport(
     undefined,
-    target
-  );
-  if (!dataAverageAll) return;
-  const dataAverageAllR = [...dataAverage];
-  const BO = await Totalizer.Totalize(dateRange, ['bo'], false, organizationId, target);
-  const BOAll = await Totalizer.Totalize(dateRange, ['bo'], false, undefined, target);
-  if (!BO) return;
-  dataAverageR.push(BO[0]);
-  if (!BOAll) return;
-  dataAverageAllR.push(BOAll[0]);
+    undefined,
+    dateRange,
+    props.graph_type,
+    itemList as typeOfQuery[],
+    undefined,
+    organizationId,
+    false
+  ),itemList) as number[]
+
+  const dataAverageAll = getListFromObject(await getReport(
+    undefined,
+    undefined,
+    dateRange,
+    props.graph_type,
+    itemList as typeOfQuery[],
+    undefined,
+    undefined,
+    false
+  ),itemList) as number[]
+
   const dataCvr = calculateCVR(dataAverage);
-  const dataCvrAll = calculateCVR(dataAverageR);
+  const dataCvrAll = calculateCVR(dataAverageAll);
   dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
-  dataToshowR.value = [dataAverageR, dataAverageAllR];
+  dataToshowR.value = [dataAverage, dataAverageAll];
 };
 
 watch(
