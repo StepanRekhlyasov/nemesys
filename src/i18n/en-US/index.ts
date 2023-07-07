@@ -1476,9 +1476,9 @@ export default {
       subject: 'subject',
       content: 'content',
       date: 'Delivery date',
-      send: 'Immediate delivery',
+      send: 'Send',
       delay: '+ Add New',
-      cancel: 'cancel'
+      cancel: 'Cancel'
     },
     table: {
       status: 'status',
@@ -1631,14 +1631,14 @@ export default {
     },
     detail: {
       inquiryTitle: 'Inquiry details',
-      responseTitle: 'Response',
+      responseTitle: 'Response form',
       category: 'Category',
       recievedDate: 'Date recieved',
       subject: 'Subject',
       content: 'Content',
       metro: 'Tokyo Metropolitan area',
       adress: 'Town Address',
-      replyContent: 'Contents of reply'
+      replyContent: 'Content'
     },
     message: {
       issueDate: 'Date of issue',

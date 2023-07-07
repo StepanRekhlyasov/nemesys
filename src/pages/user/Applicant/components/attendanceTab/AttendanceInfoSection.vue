@@ -40,7 +40,7 @@
       {{ $t('applicant.attendant.day') }}
     </div>
     <div class="col-2 q-pl-md  blue self-center">
-      <span v-if="!infoEdit">{{ myDateFormat(applicant.attendingDate, 'YYYY/MM/DD HH:SS') }}</span>
+      <span v-if="!infoEdit">{{ timestampToDateFormat(applicant.attendingDate) }}</span>
       <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendingDate']"  :disable="loading">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
@@ -86,7 +86,7 @@ import { ref } from 'vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { myDateFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';

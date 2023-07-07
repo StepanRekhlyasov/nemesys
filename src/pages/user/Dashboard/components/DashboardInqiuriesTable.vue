@@ -24,12 +24,12 @@
       v-model:pagination = pagination
     >
     <template v-slot:body-cell-recievedDate="props">
-      <q-td :props="props">
+      <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
         {{timestampToDateFormat(props.row.recievedDate)}}
       </q-td>
     </template>
     <template v-slot:body-cell="props">
-      <q-td :props="props" @click="openDetails(props.row.id)" class="clickable">
+      <q-td :props="props" @click="openDetails(props.row.id)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
         {{ props.value }}
       </q-td>
     </template>
@@ -57,6 +57,7 @@ import { InquiryData } from 'src/shared/model'
 import { timestampToDateFormat } from 'src/shared/utils/utils'
 import DashboardCreateInquiry from './inquiry/DashboardCreateInquiry.vue'
 import DashboardInquiryDetails from './inquiry/DashboardInquiryDetails.vue'
+import { INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
 
 const pagination = ref({
   rowsPerPage : 5
@@ -106,5 +107,9 @@ watch(() => organization.currentOrganizationId, () => {
   &:hover{
     text-decoration: underline;
   }
+}
+.answered {
+  background-color: #0853741f;
+  font-weight: 700;
 }
 </style>

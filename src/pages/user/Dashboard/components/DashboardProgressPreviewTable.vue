@@ -12,10 +12,10 @@
             class="dashboardPreviewTable"
           >
           <template v-if="mode==='applicant'" v-slot:body-cell-applicationDate="props">
-              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD HH:SS') }}</q-td>
+              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
           </template>
           <template v-else v-slot:body-cell-applicationDate="props">
-              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD HH:SS') }}</q-td>
+              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
           </template>
           </q-table>
         </q-scroll-area>
