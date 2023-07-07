@@ -181,8 +181,8 @@ export const useApplicant = defineStore('applicant', () => {
       const result = documents.filter((row)=>{
         return row.endDate >= (currentTime as Timestamp)
       })
-      state.value.applicantRowsCount[status] = result?.length?result.length:0
-      return result?.length?result.length:0
+      state.value.applicantRowsCount[status] = result?.length ? result.length : 0
+      return result?.length ? result.length : 0
     }
     const docCount = await getCountFromServer(querys)
     const result = docCount.data().count
