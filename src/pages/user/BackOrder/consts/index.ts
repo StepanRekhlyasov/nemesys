@@ -29,6 +29,7 @@ function matchData(staff,bo){
   const daysToWork = ref<number>(0);
   const daysPerWeek = ref<number>(0);
   const agePercent = ref<number>(0);
+  const expReq = ref<number>(0);
 
   //qualification percentage
   staff.qualification?.forEach((q)=>{
@@ -36,6 +37,16 @@ function matchData(staff,bo){
       qualification.value = 1
     }
   })
+
+  //Experience required
+  if(Number(staff.totalYear) && Number(bo.experience_req)){
+    if(staff.totalYear>=bo.experience_req){
+      expReq.value = 1
+    }
+    else{
+      expReq.value = staff.totalYear/bo.experience_req;
+    }
+  }
 
   //caseType
   if(bo.caseType && (staff.occupation?.toLowerCase() === bo.caseType?.toLowerCase())){
@@ -81,11 +92,9 @@ function matchData(staff,bo){
     if (currentDate.getMonth() < dob.getMonth() ||(currentDate.getMonth() === dob.getMonth() &&currentDate.getDate() < dob.getDate())){
       age--;
     }
-    agePercent.value = age<bo.ageLimit?1:0;
-    console.log(agePercent.value)
+    agePercent.value = age<=bo.ageLimit?1:bo.ageLimit/age;
   }
-
-  const matchPercent = ((agePercent.value+qualification.value+occupation.value+classification.value+daysPerWeek.value+daysToWork.value)/6)*100
+  const matchPercent = ((agePercent.value+qualification.value+occupation.value+classification.value+daysPerWeek.value+daysToWork.value+expReq.value)/7)*100
   staff.matchDegree = Number(matchPercent.toFixed(2));
 }
 
