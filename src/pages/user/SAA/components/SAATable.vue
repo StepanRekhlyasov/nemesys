@@ -21,7 +21,6 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 const props = defineProps<{
   rows: QTableProps['rows']
 }>()
-
 const exportTable = () => {
   if(!props.rows || !columns.value){
     return
@@ -29,7 +28,7 @@ const exportTable = () => {
   const csvData = props.rows.map((row) => Object.values(row));
   const csvHeaders = columns.value.map((column) => column.label);
 
-  const csvContent = [
+  const csvContent = '\uFEFF'+[
     csvHeaders.join(','),
     ...csvData.map((row) => row.join(',')),
   ].join('\n');

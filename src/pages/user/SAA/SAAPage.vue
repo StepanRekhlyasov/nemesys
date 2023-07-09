@@ -75,6 +75,7 @@ interface RowData {
   companyNG: number,
   personOKRate: string,
   companyOKRate: string,
+  numberOfFax:number
 }
 
 const dateRange = ref<
@@ -95,9 +96,10 @@ async function getData(){
   fixList.value = await userStore.getSAAFixList(organizationStore.state.currentOrganizationUsers, dateRange.value)
   reMapData()
 }
-function reMapData(){
+async function reMapData(){
   if(method.value === 'user'){
-    rowData.value = mapFixDataForUserMode(fixList.value)
+    const faxData:string[] = await userStore.getSAAFaxList()
+    rowData.value = mapFixDataForUserMode(fixList.value,faxData)
   } else {
     rowData.value = mapFixDataForBranchMode(fixList.value)
   }
@@ -121,7 +123,7 @@ watch(()=>organizationStore.state.userAndBranchesUpdated, async ()=>{
   }
 })
 
-function mapFixDataForUserMode(data : fixWithApplicant[]) {
+function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[]) {
   const result : RowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
     const row : Partial<RowData> = {}
@@ -139,6 +141,7 @@ function mapFixDataForUserMode(data : fixWithApplicant[]) {
         }
       }
     })
+    row.numberOfFax = faxData.filter(key1 => key1 === key).length;
     row.personOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
     row.personNG = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)

@@ -11,7 +11,7 @@ import { getAuth } from 'firebase/auth';
 
 const { t } = i18n.global
 
-interface userStore { 
+interface userStore {
   currentUser?: User
 }
 
@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
   const auth = getAuth();
   const state = ref<userStore>({})
 
-  async function getCurrentUser(){
+  async function getCurrentUser() {
     let user: User | undefined = undefined;
     if (auth.currentUser?.uid) {
       user = await getUserById(auth.currentUser.uid)
@@ -142,7 +142,7 @@ export const useUserStore = defineStore('user', () => {
 
   const getUsersByConstrains = async (constraints?: ConstraintsType) => {
     const organization = useOrganization()
-    if(!constraints){
+    if (!constraints) {
       constraints = [where('deleted', '==', false), where('organization_ids', 'array-contains', organization.currentOrganizationId)]
     }
     const usersData = await getDocs(query(
@@ -159,7 +159,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
 
-  async function getUsersByPermission( permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) {
+  async function getUsersByPermission(permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) {
     const roles = await roleStore.getAllRoles()
     const roleIds: string[] = [];
 
@@ -183,25 +183,25 @@ export const useUserStore = defineStore('user', () => {
       constraints.push(startAt(queryText), endAt(queryText + '\uf8ff'),)
     }
 
-    const users =  await getDocs(query(
+    const users = await getDocs(query(
       collection(db, 'users'),
       ...constraints,
     ))
-    return users.docs.map((user)=>{
-      return {...user.data(), id: user.id} as User
+    return users.docs.map((user) => {
+      return { ...user.data(), id: user.id } as User
     })
   }
 
-  async function getSAAFixList(users : { [id: string]: User; }, dateRange : string | { from: string; to: string; } | null){
-    let to : Timestamp | undefined, from: Timestamp | undefined
+  async function getSAAFixList(users: { [id: string]: User; }, dateRange: string | { from: string; to: string; } | null) {
+    let to: Timestamp | undefined, from: Timestamp | undefined
 
-    if(dateRange){
-      if(typeof dateRange === 'string'){
+    if (dateRange) {
+      if (typeof dateRange === 'string') {
         const fromDate = new Date(dateRange)
         const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
         from = dateToTimestampFormat(fromDate)
         to = dateToTimestampFormat(toDate)
-      } else if (dateRange.from && dateRange.to){
+      } else if (dateRange.from && dateRange.to) {
         const fromDate = new Date(dateRange.from)
         const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
         from = dateToTimestampFormat(fromDate)
@@ -210,66 +210,93 @@ export const useUserStore = defineStore('user', () => {
     }
     const userIDs = Object.keys(users)
     const fixRef = collection(db, 'fix');
-
-    const dateConstaings : {
-      fixStatus : ConstraintsType,
-      inspectionStatus : ConstraintsType,
-      offerStatus : ConstraintsType,
-      admissionStatus : ConstraintsType,
-    } = {
-      fixStatus : [],
-      inspectionStatus : [],
-      offerStatus : [],
-      admissionStatus : [],
+    const userID: string[][] = []
+    let tuserID: string[] = []
+    for (let idx = 0; idx < userIDs.length; idx++) {
+      tuserID.push(userIDs[idx])
+      if (tuserID.length === 10) {
+        userID.push(tuserID)
+        tuserID = []
+      }
     }
-    if(from && to){
-      dateConstaings.fixStatus = [where('fixDate', '>=', from), where('fixDate', '<=', to)]
-      dateConstaings.inspectionStatus = [where('inspectionDate', '>=', from), where('inspectionDate', '<=', to)]
-      dateConstaings.offerStatus = [where('offerDate', '>=', from), where('offerDate', '<=', to)]
-      dateConstaings.admissionStatus = [where('admissionDate', '>=', from), where('admissionDate', '<=', to)]
+    if (tuserID.length > 0) {
+      userID.push(tuserID)
     }
-    const qFix = query(fixRef, where('chargeOfFix', 'in', userIDs), where('fixStatus', '==', true), ...dateConstaings['fixStatus'])
-    const qInspection = query(fixRef, where('chargeOfInspection', 'in', userIDs), where('inspectionStatus', '==', true), ...dateConstaings['inspectionStatus'])
-    const qOffer = query(fixRef, where('chargeOfOffer', 'in', userIDs), where('offerStatus', '==', true), ...dateConstaings['offerStatus'])
-    const qAdmission = query(fixRef, where('chargeOfAdmission', 'in', userIDs), where('admissionStatus', '==', true), ...dateConstaings['admissionStatus'])
-
-    
-    const [admissionQuerySnapshot, offerQuerySnapshot, inspectionQuerySnapshot, fixQuerySnapshot] = await Promise.all([
-      getDocs(qFix),
-      getDocs(qInspection),
-      getDocs(qOffer),
-      getDocs(qAdmission)
-    ]);
-    const admissionFixes = admissionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
-    const offerFixes = offerQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
-    const inspectionFixes = inspectionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
-    const fixFixes = fixQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
-   
     interface fixWithApplicant extends ApplicantFix {
-      applicant? : Applicant
+      applicant?: Applicant
     }
-    const list = [...admissionFixes, ...offerFixes, ...inspectionFixes, ...fixFixes]
-    const fixList : { [id: string]: fixWithApplicant } = {};
-    const applicantIds : string[] = []
-    list.forEach(async (fix)=>{
-      fixList[fix.id] = fix
-      applicantIds.push(fix.applicant_id)
-    })
-    if(applicantIds.length){
-      const applicantRef = collection(db, 'applicants')
-      const applicantQuery = query(applicantRef, where('id', 'in', applicantIds))
-      const applicantSnapshot = await getDocs(applicantQuery)
-      const applicantList : { [id: string]: Applicant } = {};
-      applicantSnapshot.docs.forEach((row)=>{
-        applicantList[row.id] = row.data() as Applicant
+    const fixList: { [id: string]: fixWithApplicant } = {};
+    for (let index = 0; index < userID.length; index++) {
+      const dateConstaings: {
+        fixStatus: ConstraintsType,
+        inspectionStatus: ConstraintsType,
+        offerStatus: ConstraintsType,
+        admissionStatus: ConstraintsType,
+      } = {
+        fixStatus: [],
+        inspectionStatus: [],
+        offerStatus: [],
+        admissionStatus: [],
+      }
+      if (from && to) {
+        dateConstaings.fixStatus = [where('fixDate', '>=', from), where('fixDate', '<=', to)]
+        dateConstaings.inspectionStatus = [where('inspectionDate', '>=', from), where('inspectionDate', '<=', to)]
+        dateConstaings.offerStatus = [where('offerDate', '>=', from), where('offerDate', '<=', to)]
+        dateConstaings.admissionStatus = [where('admissionDate', '>=', from), where('admissionDate', '<=', to)]
+      }
+      const qFix = query(fixRef, where('chargeOfFix', 'in', userID[index]), where('fixStatus', '==', true), ...dateConstaings['fixStatus'])
+      const qInspection = query(fixRef, where('chargeOfInspection', 'in', userID[index]), where('inspectionStatus', '==', true), ...dateConstaings['inspectionStatus'])
+      const qOffer = query(fixRef, where('chargeOfOffer', 'in', userID[index]), where('offerStatus', '==', true), ...dateConstaings['offerStatus'])
+      const qAdmission = query(fixRef, where('chargeOfAdmission', 'in', userID[index]), where('admissionStatus', '==', true), ...dateConstaings['admissionStatus'])
+
+
+      const [admissionQuerySnapshot, offerQuerySnapshot, inspectionQuerySnapshot, fixQuerySnapshot] = await Promise.all([
+        getDocs(qFix),
+        getDocs(qInspection),
+        getDocs(qOffer),
+        getDocs(qAdmission)
+      ]);
+      const admissionFixes = admissionQuerySnapshot.docs.map((row) => { return { ...row.data() as ApplicantFix, id: row.id } });
+      const offerFixes = offerQuerySnapshot.docs.map((row) => { return { ...row.data() as ApplicantFix, id: row.id } });
+      const inspectionFixes = inspectionQuerySnapshot.docs.map((row) => { return { ...row.data() as ApplicantFix, id: row.id } });
+      const fixFixes = fixQuerySnapshot.docs.map((row) => { return { ...row.data() as ApplicantFix, id: row.id } });
+      const list = [...admissionFixes, ...offerFixes, ...inspectionFixes, ...fixFixes]
+      const applicantIds: string[][] = []
+      let tempapplicantIds: string[] = [];
+      list.forEach(async (fix) => {
+        fixList[fix.id] = fix
+        tempapplicantIds.push(fix.applicant_id)
+        if (tempapplicantIds.length === 10) {
+          applicantIds.push(tempapplicantIds)
+          tempapplicantIds = []
+        }
       })
-      for(const fix of Object.values(fixList)){
-        fix.applicant = applicantList[fix.applicant_id]
+      if (tempapplicantIds.length > 0) {
+        applicantIds.push(tempapplicantIds)
+      }
+      // console.log(applicantIds)
+      for (let idx = 0; idx < applicantIds.length; idx++) {
+        const applicantRef = collection(db, 'applicants')
+        const applicantQuery = query(applicantRef, where('id', 'in', applicantIds[idx]))
+        const applicantSnapshot = await getDocs(applicantQuery)
+        const applicantList: { [id: string]: Applicant } = {};
+        applicantSnapshot.docs.forEach((row) => {
+          applicantList[row.id] = row.data() as Applicant
+        })
+        for (const fix of Object.values(fixList)) {
+          fix.applicant = applicantList[fix.applicant_id]
+        }
       }
     }
     return Object.values(fixList);
   }
-
+  async function getSAAFaxList(){
+    const faxRef = collection(db,'fax');
+    const faxSnapshot  = await getDocs(faxRef)
+    const faxId:string[] = []
+    faxSnapshot.docs.map((row) => { faxId.push(row.data()['created_by']) })
+    return faxId
+  }
   return {
     state,
     getCurrentUser,
@@ -281,6 +308,7 @@ export const useUserStore = defineStore('user', () => {
     getAllUsersInBranch,
     getUsersByConstrains,
     getUsersByPermission,
-    getSAAFixList
+    getSAAFixList,
+    getSAAFaxList
   }
 })
