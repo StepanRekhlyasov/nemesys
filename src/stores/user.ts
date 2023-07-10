@@ -289,58 +289,113 @@ export const useUserStore = defineStore('user', () => {
     }
     return Object.values(fixList);
   }
-  async function getSAAFaxList(){
-    const faxRef = collection(db,'fax');
-    const faxSnapshot  = await getDocs(faxRef)
+  function dateRangee(dateRange: string | { from: string; to: string; } | null){
+    let to: Timestamp | undefined, from: Timestamp | undefined
+
+    if (dateRange) {
+      if (typeof dateRange === 'string') {
+        const fromDate = new Date(dateRange)
+        const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
+        from = dateToTimestampFormat(fromDate)
+        to = dateToTimestampFormat(toDate)
+      } else if (dateRange.from && dateRange.to) {
+        const fromDate = new Date(dateRange.from)
+        const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
+        from = dateToTimestampFormat(fromDate)
+        to = dateToTimestampFormat(toDate)
+      }
+    }
+    return [from,to]
+  }
+  async function getSAAFaxList(dateRange){
+    const faxRef = collection(db,'fax')
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const faxQuery = query(faxRef,...constraints)
+    const faxSnapshot  = await getDocs(faxQuery)
     const faxId:string[] = []
     faxSnapshot.docs.map((row) => { faxId.push(row.data()['created_by']) })
     return faxId
   }
-  async function getSAACallList(){
+  async function getSAACallList(dateRange){
     const callRef = collection(db,'teleAppointment');
-    const faxSnapshot  = await getDocs(callRef)
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const callQuery = query(callRef,...constraints)
+    const callSnapshot  = await getDocs(callQuery)
     const callId:string[] = []
-    faxSnapshot.docs.map((row) => { callId.push(row.data()['created_by']) })
+    callSnapshot.docs.map((row) => { callId.push(row.data()['created_by']) })
     return callId
   }
-  async function getSAABOReferralList(){
+  async function getSAABOReferralList(dateRange){
     const BORef = collection(db,'BO');
-    const BOquery = query(BORef,where('type','==','referral'))
-    const faxSnapshot  = await getDocs(BOquery)
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const BOquery = query(BORef,where('type','==','referral'),...constraints)
+    const BOSnapshot  = await getDocs(BOquery)
     const BOId:string[] = []
-    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABODispatchList(){
+  async function getSAABODispatchList(dateRange){
     const BORef = collection(db,'BO');
-    const BOquery = query(BORef,where('type','==','dispatch'))
-    const faxSnapshot  = await getDocs(BOquery)
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const BOquery = query(BORef,where('type','==','dispatch'),...constraints)
+    const BOSnapshot  = await getDocs(BOquery)
     const BOId:string[] = []
-    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABOTTList(){
+  async function getSAABOTTList(dateRange){
     const BORef = collection(db,'BO');
-    const BOquery = query(BORef,where('type','==','TTP'))
-    const faxSnapshot  = await getDocs(BOquery)
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const BOquery = query(BORef,where('type','==','TTP'),...constraints)
+    const BOSnapshot  = await getDocs(BOquery)
     const BOId:string[] = []
-    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABONList(){
+  async function getSAABONList(dateRange){
     const BORef = collection(db,'BO');
-    const BOquery = query(BORef,where('typeCase','==','nurse'))
-    const faxSnapshot  = await getDocs(BOquery)
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const BOquery = query(BORef,where('typeCase','==','nurse'),...constraints)
+    const BOSnapshot  = await getDocs(BOquery)
     const BOId:string[] = []
-    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABONCList(){
+  async function getSAABONCList(dateRange){
     const BORef = collection(db,'BO');
-    const BOquery = query(BORef,where('typeCase','==','nursingCare'))
-    const faxSnapshot  = await getDocs(BOquery)
+    const [from,to] = dateRangee(dateRange)
+    let constraints:ConstraintsType = []
+    if(from && to){
+      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
+    }
+    const BOquery = query(BORef,where('typeCase','==','nursingCare'),...constraints)
+    const BOSnapshot  = await getDocs(BOquery)
     const BOId:string[] = []
-    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
   return {

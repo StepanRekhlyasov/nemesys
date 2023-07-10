@@ -104,13 +104,13 @@ async function getData(){
 }
 async function reMapData(){
   if(method.value === 'user'){
-    const faxData:string[] = await userStore.getSAAFaxList()
-    const callData:string[] = await userStore.getSAACallList()
-    const BOReferralData:string[] = await userStore.getSAABOReferralList()
-    const BODispatchData:string[] = await userStore.getSAABODispatchList()
-    const BONCData:string[] = await userStore.getSAABONCList()
-    const BONData:string[] = await userStore.getSAABONList()
-    const BOTTData:string[] = await userStore.getSAABOTTList()
+    const faxData:string[] = await userStore.getSAAFaxList(dateRange.value)
+    const callData:string[] = await userStore.getSAACallList(dateRange.value)
+    const BOReferralData:string[] = await userStore.getSAABOReferralList(dateRange.value)
+    const BODispatchData:string[] = await userStore.getSAABODispatchList(dateRange.value)
+    const BONCData:string[] = await userStore.getSAABONCList(dateRange.value)
+    const BONData:string[] = await userStore.getSAABONList(dateRange.value)
+    const BOTTData:string[] = await userStore.getSAABOTTList(dateRange.value)
     rowData.value = mapFixDataForUserMode(fixList.value,faxData,callData,BOReferralData,BODispatchData,BONCData,BONData,BOTTData)
   } else {
     rowData.value = mapFixDataForBranchMode(fixList.value)
