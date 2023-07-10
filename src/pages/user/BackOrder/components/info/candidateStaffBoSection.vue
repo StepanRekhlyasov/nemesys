@@ -36,10 +36,10 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, ExtendedApplicant } from 'src/shared/model';
+import { BackOrderModel, ApplicantForCandidateSearch } from 'src/shared/model';
 import { ref, onMounted, watch, ComputedRef } from 'vue';
 import { BackOrderStaff } from '../../consts/BackOrder.const';
-import { useBO } from '../../consts/index';
+import { useBackOrder } from 'src/stores/backOrder';
 import { useApplicant } from 'src/stores/applicant'
 import { useClient } from 'src/stores/client'
 import { where } from 'firebase/firestore';
@@ -51,7 +51,7 @@ import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
-const backOrderStore = useBO()
+const backOrderStore = useBackOrder()
 
 watch(drawerValue, async () => {
   if (drawerValue.value) {
@@ -130,12 +130,12 @@ onMounted(async () => {
 })
 
 const getFormatedData = async () => {
-  staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ExtendedApplicant[];
+  staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ApplicantForCandidateSearch[];
   await calculateDistance();
   calculateMatchDegree();
 }
 
 const emit = defineEmits(['openSearchByMap']);
-const staffList = ref<ExtendedApplicant[]>([])
+const staffList = ref<ApplicantForCandidateSearch[]>([])
 
 </script>

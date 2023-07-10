@@ -46,7 +46,6 @@ export const useClient = defineStore('client', () => {
 
         } catch(e) {
             Alert.warning(e)
-            console.log(e)
         }
     }
 
@@ -71,6 +70,9 @@ export const useClient = defineStore('client', () => {
         const clientRef = doc(collection(db, 'clients'),clientId);
         const clientDoc = await getDoc(clientRef)
         const clientData = clientDoc.data();
+        if(clientData){
+          clientData['lng'] = clientData.lon
+        }
         return clientData as Client;
     };
 

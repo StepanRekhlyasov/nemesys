@@ -27,10 +27,10 @@ onMounted(async () => {
 
 const getClientLocation = async () => {
   const client = await getClient.fetchClientsById(props.bo?.client_id);
-  if (client.lat && client.lon) {
+  if (client.lat && client.lng) {
     center.value = {
-      lat: client.lat - 0,
-      lng: client.lon - 0
+      lat: Number(client.lat),
+      lng: Number(client.lng)
     }
   }
 }

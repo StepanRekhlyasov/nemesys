@@ -13,11 +13,11 @@ export interface ApplicantExperienceBase {
   pastInterviews?: EmploymentStatus;
   deleted?: boolean;
 }
-export interface ApplicantExperienceInputDates{
+export interface ApplicantExperienceInputDates {
   startMonth?: string;
   endMonth?: string;
 }
-export interface ApplicantExperienceDates{
+export interface ApplicantExperienceDates {
   startMonth?: Timestamp;
   endMonth?: Timestamp;
 }
@@ -63,7 +63,7 @@ export interface ApplicantBase {
   street?: string;
   apartment?: string;
   status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp | FieldValue}
+  statusChangeTimestamp?: { [key: string]: Timestamp | FieldValue }
   staffRank?: number;
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
@@ -96,7 +96,7 @@ export interface Applicant extends ApplicantBase, DesiredConditions, PersonalSta
 }
 export interface ApplicantInputs extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantInputDates {
 }
-export interface ExtendedApplicant extends Applicant {
+export interface ApplicantForCandidateSearch extends Applicant {
   distanceBusiness: number;
   matchDegree: number;
 }
@@ -146,7 +146,7 @@ export interface Attendance {
   memo?: string;
 }
 
-export interface PersonalStatus  {
+export interface PersonalStatus {
   smoking?: SmokingStatus;
   tattoos?: TattoosStatus;
   marriedStatus?: MarriedStatus;
@@ -169,7 +169,7 @@ export interface AssignedEvaluation {
   remarks?: string;
 }
 
-export enum ApplicantSex{
+export enum ApplicantSex {
   MALE = 'male',
   FEMALE = 'female'
 }
