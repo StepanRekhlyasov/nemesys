@@ -80,7 +80,7 @@
         {{ $t('applicant.list.info.classiffication') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.classification? $t('applicant.list.info.classification.'+applicant.classification):''}}</span>
+        <span v-if="!edit">{{ applicant.classification? $t('applicant.list.info.classification.'+applicant.classification.toLowerCase()):''}}</span>
         <q-select v-if="edit" outlined dense :options="classificationOption" v-model="data['classification']"
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
