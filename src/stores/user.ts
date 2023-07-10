@@ -319,6 +319,14 @@ export const useUserStore = defineStore('user', () => {
     faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
+  async function getSAABOTTList(){
+    const BORef = collection(db,'BO');
+    const BOquery = query(BORef,where('type','==','TTP'))
+    const faxSnapshot  = await getDocs(BOquery)
+    const BOId:string[] = []
+    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    return BOId
+  }
   async function getSAABONList(){
     const BORef = collection(db,'BO');
     const BOquery = query(BORef,where('typeCase','==','nurse'))
@@ -352,6 +360,7 @@ export const useUserStore = defineStore('user', () => {
     getSAABODispatchList,
     getSAABOReferralList,
     getSAABONCList,
-    getSAABONList
+    getSAABONList,
+    getSAABOTTList
   }
 })

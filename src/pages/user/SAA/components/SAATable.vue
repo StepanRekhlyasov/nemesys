@@ -46,6 +46,7 @@ defineExpose({ exportTable })
 <style lang="scss">
 .saaTable{
   overflow: auto;
+  width: 100%;
   th {
     background-color: $primary;
     color: #fff;

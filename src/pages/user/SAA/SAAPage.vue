@@ -80,7 +80,8 @@ interface RowData {
   introduction:number,
   dispatch:number,
   BO_NC:number,
-  BO_N:number
+  BO_N:number,
+  TTP:number
 }
 
 const dateRange = ref<
@@ -109,7 +110,8 @@ async function reMapData(){
     const BODispatchData:string[] = await userStore.getSAABODispatchList()
     const BONCData:string[] = await userStore.getSAABONCList()
     const BONData:string[] = await userStore.getSAABONList()
-    rowData.value = mapFixDataForUserMode(fixList.value,faxData,callData,BOReferralData,BODispatchData,BONCData,BONData)
+    const BOTTData:string[] = await userStore.getSAABOTTList()
+    rowData.value = mapFixDataForUserMode(fixList.value,faxData,callData,BOReferralData,BODispatchData,BONCData,BONData,BOTTData)
   } else {
     rowData.value = mapFixDataForBranchMode(fixList.value)
   }
@@ -133,7 +135,7 @@ watch(()=>organizationStore.state.userAndBranchesUpdated, async ()=>{
   }
 })
 
-function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callData:string[],boRData:string[],boDData:string[],boNCData:string[],boNData:string[]) {
+function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callData:string[],boRData:string[],boDData:string[],boNCData:string[],boNData:string[],boTTData:string[]) {
   const result : RowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
     const row : Partial<RowData> = {}
@@ -157,6 +159,7 @@ function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callDa
     row.BO_N = boNData.filter(boId => boId === key).length;
     row.dispatch = boDData.filter(boDId => boDId === key).length;
     row.introduction = boRData.filter(boRId => boRId === key).length;
+    row.TTP = boTTData.filter(boTTId => boTTId === key).length;
     row.personOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
     row.personNG = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
