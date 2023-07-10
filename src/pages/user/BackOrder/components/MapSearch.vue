@@ -5,6 +5,7 @@ import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import {radius} from '../consts/BackOrder.const'
 import { BackOrderModel } from 'src/shared/model';
 import { useClient } from 'src/stores/client'
+import { mapDrawerValue } from '../consts/BackOrder.const';
 
 const props = defineProps<{theme: string,bo: BackOrderModel | undefined}>()
 const emit = defineEmits<{(e: 'updateMap', mapData)}>()
@@ -13,10 +14,16 @@ const radius1 = ref<number>(0);
 const isLoadingProgress = ref(false)
 const getClient = useClient();
 
-onMounted(async () => {
+watch(mapDrawerValue,async ()=>{
+  if(mapDrawerValue.value===true){
+    radius1.value = 0;
+    await getClientLocation();
+  }
+})
 
+onMounted(async () => {
   await getClientLocation();
-});
+})
 
 const getClientLocation = async()=>{
   const client = await getClient.fetchClientsById(props.bo?.client_id);

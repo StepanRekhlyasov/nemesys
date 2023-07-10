@@ -32,17 +32,24 @@ import { BackOrderModel, Client } from 'src/shared/model';
 import { ref, watch } from 'vue';
 import MapSearchs from 'src/pages/user/BackOrder/components/MapSearch.vue';
 import CandidateStaffBoSection from './candidateStaffBoSection.vue';
+import { mapDrawerValue } from '../../consts/BackOrder.const';
 
 const props = defineProps<{
   modelValue: boolean,
   selectedBo: BackOrderModel | undefined
   client: Client | undefined
 }>()
+
 const tab = ref('candidateStaff');
 const showDrawer = ref(props.modelValue)
 const emit = defineEmits(['close'])
+
 watch(()=>props.modelValue, (newVal)=>{
   showDrawer.value = newVal
+})
+
+watch(showDrawer,()=>{
+  mapDrawerValue.value = showDrawer.value
 })
 </script>
 <style>

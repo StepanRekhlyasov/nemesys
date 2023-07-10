@@ -53,7 +53,9 @@ import { drawerValue } from '../../consts/BackOrder.const';
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 
 watch(drawerValue,async ()=>{
-  await getFormatedData();
+  if(drawerValue.value===true){
+    await getFormatedData();
+  }
 })
 
 const pagination = ref({
