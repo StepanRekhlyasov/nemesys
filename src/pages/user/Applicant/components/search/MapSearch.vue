@@ -70,18 +70,6 @@ const markerDrag = (event) => {
     <q-card-section>
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center" :zoom="15">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
-        <!-- <CustomMarker
-          :key="office.geohash"
-          :options="{
-            position: {
-              lat: office.lat,
-              lng: office.lon,
-              anchorPoint: 'BOTTOM_CENTER'
-            },
-          }"
-          v-for="office in officeData">
-            <q-icon :color="theme" size="lg" name="place"/>
-        </CustomMarker> -->
         <Circles :options="circleOption" />
       </GoogleMap>
     </q-card-section>

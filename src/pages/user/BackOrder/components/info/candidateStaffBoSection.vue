@@ -12,7 +12,7 @@
       <template v-slot:body-cell-name="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.value"
-                class="q-pa-none text-body1" />
+            class="q-pa-none text-body1" />
         </q-td>
       </template>
       <template v-slot:body-cell-statusThisTime="props">
@@ -52,8 +52,8 @@ import { drawerValue } from '../../consts/BackOrder.const';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 
-watch(drawerValue,async ()=>{
-  if(drawerValue.value===true){
+watch(drawerValue, async () => {
+  if (drawerValue.value) {
     await getFormatedData();
   }
 })
@@ -68,7 +68,7 @@ const pagination = ref({
 
 const coloumns = ref<QTableProps | ComputedRef>(BackOrderStaff)
 
-  const openDrawer = (data: Applicant) => {
+const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
 const props = withDefaults(defineProps<{
@@ -79,16 +79,16 @@ const props = withDefaults(defineProps<{
 }
 )
 
-watch(()=>radius.value,async (newVal)=>{
+watch(() => radius.value, async (newVal) => {
   await getFormatedData();
-  if(radius.value){
-      staffList.value = staffList.value.filter((staff)=>staff.distanceBusiness<=radius.value)
-      staffList.value.sort((a, b) => a.distanceBusiness - b.distanceBusiness);
+  if (radius.value) {
+    staffList.value = staffList.value.filter((staff) => staff.distanceBusiness <= radius.value)
+    staffList.value.sort((a, b) => a.distanceBusiness - b.distanceBusiness);
   }
-  else{
+  else {
     loading.value = true;
-  await getFormatedData();
-  loading.value = false;
+    await getFormatedData();
+    loading.value = false;
   }
 })
 
@@ -109,10 +109,10 @@ const calculateDistance = async () => {
   });
 };
 
-const calculateMatchDegree = ()=>{
+const calculateMatchDegree = () => {
 
-  staffList.value.forEach((staff)=>{
-    useBO().matchData(staff,props.bo);
+  staffList.value.forEach((staff) => {
+    useBO().matchData(staff, props.bo);
   })
   staffList.value.sort((a, b) => b.matchDegree - a.matchDegree);
 }
@@ -128,7 +128,7 @@ onMounted(async () => {
   loading.value = false;
 })
 
-const getFormatedData = async()=>{
+const getFormatedData = async () => {
   staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ExtendedApplicant[];
   await calculateDistance();
   calculateMatchDegree();
