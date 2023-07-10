@@ -700,6 +700,7 @@ export default {
       joiningAnotherCompany: '他社入職',
       referralResults: '紹介実績',
       partTimeJob: 'パート・アルバイト',
+      tempToPerm:'紹介予定派遣'
     },
     contractUnit: {
       corporateBulk: '法人一括',
@@ -1640,7 +1641,10 @@ export default {
   },
   industry: {
     nursing: '介護',
-    nurse: '看護'
+    nurse: '看護',
+    uniqueItemSetting: 'クライアント種別独自項目設定',
+    specificTypeItems: '種別独自項目',
+    addLine: '行追加'
   },
   report:{
     salesActivityIndividualReport:'営業活動個人レポート',
