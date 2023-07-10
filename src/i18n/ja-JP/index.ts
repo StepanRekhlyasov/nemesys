@@ -1613,16 +1613,20 @@ export default {
       faxPRSheet: 'PRシートをFAX送信します。',
       list: {
         senderId: '送信ID',
-        sender: '送信者', 
-        jobSeeker: '求職者', 
+        sender: '送信者',
+        jobSeeker: '求職者',
         attachment: '添付ファイル',
-        numItemsSent: '送信対象件数', 
+        numItemsSent: '送信対象件数',
         numDestinations: '正常宛先件数',
         maxTransmissions: '実送信件数',
         sentDateTime: '送信日時',
         numPages: '一送信件数',
         selectedCF: '宛先事業所数',
         numCFsFax: '正常宛先事業所数',
+        jobApplicantName: '求職者名',
+        branch: '支店',
+        responsiblePerson: '担当',
+        sendDate: '送信日',
       }
     }
   },
