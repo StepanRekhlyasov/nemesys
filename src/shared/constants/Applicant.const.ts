@@ -261,7 +261,7 @@ export const applicantClassification = computed(() => {
     label: t('applicant.list.info.classification.dispatch'),
     value: 'dispatch'
   },{
-    label: t('applicant.list.info.classification.TTP'),
+    label: t('applicant.list.info.classification.ttp'),
     value: 'TTP'
   }]
 })

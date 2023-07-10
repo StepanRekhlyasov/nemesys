@@ -6,7 +6,7 @@
           {{ message.type === INQUIRY_MESSAGE_TYPE.issue ? $t('inquiry.message.issueDate') : $t('inquiry.message.responseDate') }}
         </div>
         <div class="col-8 text-left">
-          {{ timestampToDateFormat(message.date) }}
+          {{ myDateFormat(message.date, 'YYYY-MM-DD HH:SS') }}
         </div>
       </div>
       <div class="row items-start q-gutter-md q-mb-xs myRow">
@@ -26,7 +26,7 @@
 import { computed } from 'vue';
 import { INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData } from 'src/shared/model';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   inquiryData : InquiryData

@@ -14,7 +14,7 @@
         {{ $t('inquiry.message.issueDate') }}
       </div>
       <div class="col-3">
-        {{ timestampToDateFormat(inquiryData.recievedDate as Timestamp) }}
+        {{ myDateFormat(inquiryData.recievedDate, 'YYYY-MM-DD HH:SS') }}
       </div>
     </div>
     <div class="row q-mb-sm q-gutter-sm">
@@ -37,9 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Timestamp } from 'firebase/firestore';
 import { InquiryData } from 'src/shared/model';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 withDefaults(defineProps<{
   inquiryData: InquiryData,

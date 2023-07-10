@@ -25,7 +25,7 @@
     >
     <template v-slot:body-cell-recievedDate="props">
       <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-        {{timestampToDateFormat(props.row.recievedDate)}}
+        {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:SS') }}
       </q-td>
     </template>
     <template v-slot:body-cell="props">
@@ -41,9 +41,14 @@
         dense
         @click="handleExpand()"
       >
-        <q-icon v-if="pagination.rowsPerPage > 0" color="primary" :name="'arrow_drop_down'" :size="'25px'"  />
-        <q-icon v-else color="primary" :name="'arrow_drop_up'" :size="'25px'"  />
+      <template v-if="pagination.rowsPerPage > 0">
+        <q-icon color="primary" :name="'arrow_drop_down'" :size="'25px'"  />
         {{ $t('dashboard.openList') }}
+      </template>
+      <template v-else>
+        <q-icon color="primary" :name="'arrow_drop_up'" :size="'25px'"  />
+        {{ $t('dashboard.closeList') }}
+      </template>
       </q-btn>
     </div>
 </template>
@@ -54,7 +59,7 @@ import DashboardInquiryDrawer from './inquiry/DashboardInquiryDrawer.vue'
 import { useInquiry } from 'src/stores/inquiry'
 import { useOrganization } from 'src/stores/organization'
 import { InquiryData } from 'src/shared/model'
-import { timestampToDateFormat } from 'src/shared/utils/utils'
+import { myDateFormat } from 'src/shared/utils/utils'
 import DashboardCreateInquiry from './inquiry/DashboardCreateInquiry.vue'
 import DashboardInquiryDetails from './inquiry/DashboardInquiryDetails.vue'
 import { INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes'

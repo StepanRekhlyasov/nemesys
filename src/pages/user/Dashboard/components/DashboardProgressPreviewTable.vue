@@ -11,6 +11,9 @@
             :separator="'cell'"
             class="dashboardPreviewTable"
           >
+          <template v-slot:body-cell-occupation="props">
+              <q-td>{{ $t('applicant.add.'+props.row.occupation) }}</q-td>
+          </template>
           <template v-if="mode==='applicant'" v-slot:body-cell-applicationDate="props">
               <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
           </template>

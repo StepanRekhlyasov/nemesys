@@ -936,7 +936,7 @@ export default {
         classification: {
           introduction : 'Introduction',
           dispatch: 'Dispatch',
-          TTP: 'TTP'
+          ttp: 'TTP'
         }
       }
     },
@@ -1748,6 +1748,7 @@ export default {
     showBranch: 'Show branch',
     notification: 'Notification',
     openList: 'Open list',
+    closeList: 'Close list',
     applicantProgress: 'Applicant Progress',
     showWhiteboard: 'Show whiteboard',
     showList: 'Show list',

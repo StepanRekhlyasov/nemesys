@@ -931,7 +931,7 @@ export default {
         classification: {
           introduction: '紹介',
           dispatch: '派遣',
-          TTP: 'TTP'
+          ttp: 'TTP'
         }
       }
 
@@ -1620,14 +1620,14 @@ export default {
       category: 'カテゴリ',
       subject: '件名',
       companyID: '企業ID 企業名',
-      recievedDate: '受信日',
+      recievedDate: '送受信日',
       responseDate: '返信日'
     },
     detail: {
       inquiryTitle: '問い合わせ内容',
       responseTitle: '返答フォーム',
       category: 'カテゴリ',
-      recievedDate: '受信日',
+      recievedDate: '送受信日',
       subject: '件名',
       content: '内容',
       metro: '東京都',
@@ -1741,6 +1741,7 @@ export default {
     showBranch: '表示支店',
     notification: '通知',
     openList: 'リストを開く',
+    closeList: 'リストを閉じる',
     applicantProgress: '応募者進捗状況',
     showWhiteboard: 'ホワイトボードを表示する',
     showList: 'リストを表示する',
