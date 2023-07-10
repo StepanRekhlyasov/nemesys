@@ -26,7 +26,7 @@ const closePdfDialog = () => {
 };
 
 const dialogContentStyle = ref({
-  width: '90%',
+  width: '90%'
 });
 
 </script>
