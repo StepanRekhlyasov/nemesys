@@ -45,12 +45,12 @@ watch(drawerRight,()=>{
   drawerValue.value = drawerRight.value;
 })
 
-const openDrawer = (data : BackOrderModel) => {
+const openDrawer = async (data : BackOrderModel) => {
   if (selectedBo.value?.id && selectedBo.value.id !== data.id) {
     drawerRight.value = false;
   }
   backOrderStore.state.selectedBo = data;
-  drawerRight.value = !drawerRight.value
+  drawerRight.value = true
 }
 onMounted(async () => {
   if (selectedBo.value && selectedBo.value['clientId']){
