@@ -289,7 +289,7 @@ export const useUserStore = defineStore('user', () => {
     }
     return Object.values(fixList);
   }
-  function dateRangee(dateRange: string | { from: string; to: string; } | null){
+  function getFromTo(dateRange: string | { from: string; to: string; } | null){
     let to: Timestamp | undefined, from: Timestamp | undefined
 
     if (dateRange) {
@@ -307,9 +307,9 @@ export const useUserStore = defineStore('user', () => {
     }
     return [from,to]
   }
-  async function getSAAFaxList(dateRange){
+  async function getSAAFaxList(dateRange: string | { from: string; to: string; } | null){
     const faxRef = collection(db,'fax')
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
@@ -320,9 +320,9 @@ export const useUserStore = defineStore('user', () => {
     faxSnapshot.docs.map((row) => { faxId.push(row.data()['created_by']) })
     return faxId
   }
-  async function getSAACallList(dateRange){
+  async function getSAACallList(dateRange: string | { from: string; to: string; } | null){
     const callRef = collection(db,'teleAppointment');
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
@@ -333,9 +333,9 @@ export const useUserStore = defineStore('user', () => {
     callSnapshot.docs.map((row) => { callId.push(row.data()['created_by']) })
     return callId
   }
-  async function getSAABOReferralList(dateRange){
+  async function getSAABOReferralList(dateRange: string | { from: string; to: string; } | null){
     const BORef = collection(db,'BO');
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
@@ -346,9 +346,9 @@ export const useUserStore = defineStore('user', () => {
     BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABODispatchList(dateRange){
+  async function getSAABODispatchList(dateRange: string | { from: string; to: string; } | null){
     const BORef = collection(db,'BO');
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
@@ -359,9 +359,9 @@ export const useUserStore = defineStore('user', () => {
     BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABOTTList(dateRange){
+  async function getSAABOTTList(dateRange: string | { from: string; to: string; } | null){
     const BORef = collection(db,'BO');
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
@@ -372,9 +372,9 @@ export const useUserStore = defineStore('user', () => {
     BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABONList(dateRange){
+  async function getSAABONList(dateRange: string | { from: string; to: string; } | null){
     const BORef = collection(db,'BO');
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
@@ -385,9 +385,9 @@ export const useUserStore = defineStore('user', () => {
     BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
     return BOId
   }
-  async function getSAABONCList(dateRange){
+  async function getSAABONCList(dateRange: string | { from: string; to: string; } | null){
     const BORef = collection(db,'BO');
-    const [from,to] = dateRangee(dateRange)
+    const [from,to] = getFromTo(dateRange)
     let constraints:ConstraintsType = []
     if(from && to){
       constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
