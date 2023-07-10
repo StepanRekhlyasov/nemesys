@@ -11,11 +11,14 @@
             :separator="'cell'"
             class="dashboardPreviewTable"
           >
+          <template v-slot:body-cell-occupation="props">
+              <q-td>{{ $t('applicant.add.'+props.row.occupation) }}</q-td>
+          </template>
           <template v-if="mode==='applicant'" v-slot:body-cell-applicationDate="props">
-              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD HH:SS') }}</q-td>
+              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
           </template>
           <template v-else v-slot:body-cell-applicationDate="props">
-              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD HH:SS') }}</q-td>
+              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
           </template>
           </q-table>
         </q-scroll-area>
@@ -54,7 +57,7 @@ const onScroll = async (info : {
 }
 const applicantStore = useApplicant()
 const props = defineProps<{
-  status: string
+  status: ApplicantStatus
 }>()
 const mode = computed(()=>{
   if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){

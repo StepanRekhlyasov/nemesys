@@ -1,6 +1,6 @@
 <template>
   <div  v-for="(message, index) in inquiryMessages" :key="index">
-    <q-card-section :class="(index + 1) % 2 == 0 ? 'bg-grey-1' : 'bg-grey-2' + ' q-pa-md'">
+    <q-card-section :class="message.type === INQUIRY_MESSAGE_TYPE.issue ? 'bg-grey-1' : 'bg-grey-2' + ' q-pa-md'">
 
       <div class="row items-start q-gutter-md q-mb-xs">
         <div class="col-3 text-right ">

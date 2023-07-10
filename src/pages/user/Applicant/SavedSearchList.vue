@@ -157,7 +157,7 @@ const clearSearch = ()=>{
 
               <q-td class="text-left" v-if="props.row.classification.length">
                 <div class="no-wrap" :key="clsfic" v-for="clsfic in props.row.classification">
-                  {{ t(`applicant.list.info.classification.${clsfic}`) }}<br>
+                  {{ t(`applicant.list.info.classification.${clsfic.toLowerCase()}`) }}<br>
                 </div>
               </q-td>
               <q-td v-else></q-td>
