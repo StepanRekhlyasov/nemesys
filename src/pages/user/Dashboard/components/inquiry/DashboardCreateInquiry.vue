@@ -29,10 +29,10 @@
     </div>
     <div class="row q-mb-sm q-gutter-sm q-mt-lg">
       <div class="col-3 text-right">
-        <q-btn :label="$t('common.submit')" color="primary" size="sm" @click="submitInquiry" :disable="disable"/>
+        <q-btn :label="$t('common.submit')" color="primary" size="sm" @click="submitInquiry" :disable="disable" />
       </div>
       <div class="col-8 text-left">
-        <q-btn :label="$t('common.cancel')" color="primary" outline class="no-shadow q-ml-lg" size="sm" @click="() => emit('closeDrawer')"/>
+        <q-btn :label="$t('common.cancel')" color="primary" outline class="no-shadow q-ml-lg" size="sm" @click="() => emit('closeDrawer')" />
       </div>
     </div>
   </q-card-section>
