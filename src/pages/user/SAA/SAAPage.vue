@@ -75,7 +75,12 @@ interface RowData {
   companyNG: number,
   personOKRate: string,
   companyOKRate: string,
-  numberOfFax:number
+  numberOfFax:number,
+  numberOfCalls:number,
+  introduction:number,
+  dispatch:number,
+  BO_NC:number,
+  BO_N:number
 }
 
 const dateRange = ref<
@@ -99,7 +104,12 @@ async function getData(){
 async function reMapData(){
   if(method.value === 'user'){
     const faxData:string[] = await userStore.getSAAFaxList()
-    rowData.value = mapFixDataForUserMode(fixList.value,faxData)
+    const callData:string[] = await userStore.getSAACallList()
+    const BOReferralData:string[] = await userStore.getSAABOReferralList()
+    const BODispatchData:string[] = await userStore.getSAABODispatchList()
+    const BONCData:string[] = await userStore.getSAABONCList()
+    const BONData:string[] = await userStore.getSAABONList()
+    rowData.value = mapFixDataForUserMode(fixList.value,faxData,callData,BOReferralData,BODispatchData,BONCData,BONData)
   } else {
     rowData.value = mapFixDataForBranchMode(fixList.value)
   }
@@ -123,7 +133,7 @@ watch(()=>organizationStore.state.userAndBranchesUpdated, async ()=>{
   }
 })
 
-function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[]) {
+function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callData:string[],boRData:string[],boDData:string[],boNCData:string[],boNData:string[]) {
   const result : RowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
     const row : Partial<RowData> = {}
@@ -141,7 +151,12 @@ function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[]) {
         }
       }
     })
-    row.numberOfFax = faxData.filter(key1 => key1 === key).length;
+    row.numberOfCalls = callData.filter(callId => callId === key).length
+    row.numberOfFax = faxData.filter(faxId => faxId === key).length;
+    row.BO_NC = boNCData.filter(boId => boId === key).length;
+    row.BO_N = boNData.filter(boId => boId === key).length;
+    row.dispatch = boDData.filter(boDId => boDId === key).length;
+    row.introduction = boRData.filter(boRId => boRId === key).length;
     row.personOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
     row.personNG = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)

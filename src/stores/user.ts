@@ -70,6 +70,8 @@ export const useUserStore = defineStore('user', () => {
       return userSnap.data() as User
     }
 
+    throw new Error(t('common.userNotFound'))
+
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
@@ -81,11 +83,9 @@ export const useUserStore = defineStore('user', () => {
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
     const user = await getUserById(userId)
-
     if(!user){
       throw new Error(t('common.userNotFound'))
     }
-
     if (adminRolesIds.includes(user.role)) {
       if (organizationCode == ADMIN_ORGANIZATION_CODE) {
         return true
@@ -168,7 +168,6 @@ export const useUserStore = defineStore('user', () => {
         roleIds.push(role.id);
       }
     })
-
     if (!roleIds.length) {
       return;
     }
@@ -297,6 +296,45 @@ export const useUserStore = defineStore('user', () => {
     faxSnapshot.docs.map((row) => { faxId.push(row.data()['created_by']) })
     return faxId
   }
+  async function getSAACallList(){
+    const callRef = collection(db,'teleAppointment');
+    const faxSnapshot  = await getDocs(callRef)
+    const callId:string[] = []
+    faxSnapshot.docs.map((row) => { callId.push(row.data()['created_by']) })
+    return callId
+  }
+  async function getSAABOReferralList(){
+    const BORef = collection(db,'BO');
+    const BOquery = query(BORef,where('type','==','referral'))
+    const faxSnapshot  = await getDocs(BOquery)
+    const BOId:string[] = []
+    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    return BOId
+  }
+  async function getSAABODispatchList(){
+    const BORef = collection(db,'BO');
+    const BOquery = query(BORef,where('type','==','dispatch'))
+    const faxSnapshot  = await getDocs(BOquery)
+    const BOId:string[] = []
+    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    return BOId
+  }
+  async function getSAABONList(){
+    const BORef = collection(db,'BO');
+    const BOquery = query(BORef,where('typeCase','==','nurse'))
+    const faxSnapshot  = await getDocs(BOquery)
+    const BOId:string[] = []
+    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    return BOId
+  }
+  async function getSAABONCList(){
+    const BORef = collection(db,'BO');
+    const BOquery = query(BORef,where('typeCase','==','nursingCare'))
+    const faxSnapshot  = await getDocs(BOquery)
+    const BOId:string[] = []
+    faxSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
+    return BOId
+  }
   return {
     state,
     getCurrentUser,
@@ -309,6 +347,11 @@ export const useUserStore = defineStore('user', () => {
     getUsersByConstrains,
     getUsersByPermission,
     getSAAFixList,
-    getSAAFaxList
+    getSAAFaxList,
+    getSAACallList,
+    getSAABODispatchList,
+    getSAABOReferralList,
+    getSAABONCList,
+    getSAABONList
   }
 })
