@@ -46,10 +46,10 @@
     <div class="row" v-if="type == 'referral'" >
       <labelField :label="$t('backOrder.employmentType')" :edit="true" required 
         labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10">
-        <q-field v-model="data['status']" borderless hide-bottom-space :rules="[creationRule]">
+        <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio
-            v-for="key in BackOrderStatus"
-            v-model="data['status']"
+            v-for="key in EmploymentBOStatus"
+            v-model="data['employmentType']"
             :label="$t('client.backOrder.'+key)"
             :val="key"
             :key="key"
@@ -84,29 +84,44 @@
         </q-field>
       </labelField>
     </div>
-
-    <div class="row ">
-      <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
+    <div class="row">
+      <labelField :label="$t('client.backOrder.experienceReq')" :edit="true" required
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center ">
+        <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
+          <q-toggle v-model="data['experienceReq']"  :disable="loading" 
+            :label="data['experienceReq']?$t('backOrder.create.required'):$t('backOrder.create.somethingNotQuestioned')"/>
+        </q-field>
+      </labelField>
+      <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true"
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md self-center ">
         <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
       </labelField>
+    </div>
+    <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
         <q-input v-model="data['upperAgeLimit']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
+      </labelField>
+    </div>
+    
+    <div class="row q-pt-sm" v-if="type == 'dispatch'">
+      <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
+        <q-input v-model="data['invoice']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
 
-    <div class="row q-pt-sm">
-      <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input v-model="data['invoice']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
-      </labelField>
+    <div class="row q-pt-sm"  v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
         <q-input v-model="data['payment']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
+        <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>   
 
-    <div class="row q-pt-sm">
+    <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
         <q-field v-model="data['travelingExpenses']" borderless hide-bottom-space :rules="[creationRule]">
@@ -126,7 +141,7 @@
 import labelField from 'src/components/form/LabelField.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateDate } from 'src/shared/constants/Form.const';
-import { BackOrderModel, TypeOfCase, BackOrderStatus, TypeQualifications, selectOptions } from 'src/shared/model';
+import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
 import { useUserStore } from 'src/stores/user';
 import { ref, watch } from 'vue';
 

@@ -1,6 +1,6 @@
 <template>
   <q-card class="no-shadow bg-grey-3">
-    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog">    
+    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog">
       <q-card-section class="text-white bg-primary no-border-radius" >
         <div class="row">
           <div class="flex items-end ">
@@ -14,15 +14,15 @@
         </div>
       </q-card-section >
 
-      <q-card-section class="bg-white">        
+      <q-card-section class="bg-white">
         <q-btn :label="$t('common.save')" unelevated color="primary" class="no-shadow text-weight-bold q-mr-md" size="sm"  type="submit"/>
         <q-btn :label="$t('common.cancel')" outline  color="primary" class="text-weight-bold"  type="reset" size="sm" @click="closeDialog"/>
       </q-card-section>
 
       <q-separator color="grey-3" size="2px" />
-      <q-card-section class="bg-white">    
+      <q-card-section class="bg-white">
         <!-- Main Information -->
-        <q-card-section>      
+        <q-card-section>
           <q-select
             v-model="data.client_id"
             @update:model-value="data['office_id']=undefined"
@@ -41,12 +41,12 @@
             option-label="name"
             :rules="[creationRule]" hide-bottom-space
             :options="applicantStore.state.clientList.find(client => client.id === data['client_id'])?.office"
-            :disable="!data['client_id']" 
+            :disable="!data['client_id']"
             :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
 
         <!-- Basic Info Section -->
-        <basic-info-section :backOrder="data" :loading="loading" 
+        <basic-info-section :backOrder="data" :loading="loading"
           :client="data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id']) : undefined"
           :officeID="data['office_id']"/>
 
@@ -90,7 +90,7 @@
 
         <!-- Tasks Section -->
         <tasks-section :backOrder="data" :loading="loading" :type="type"/>
-        
+
         <!-- In House Information Section -->
         <template v-if="type=='referral'">
           <in-house-info-section :backOrder="data" :loading="loading"/>
@@ -115,16 +115,13 @@ import { creationRule } from 'src/components/handlers/rules';
 import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { useUserStore } from 'src/stores/user';
-import { QForm, useQuasar } from 'quasar';
+import { QForm } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useI18n } from 'vue-i18n';
 
 const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
   type: 'dispatch' | 'referral'
 }>()
-const $q = useQuasar();
-const { t } = useI18n({ useScope: 'global' });
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
@@ -138,11 +135,11 @@ const data = ref<Partial<BackOrderModel>>({});
 async function addBackOrder() {
     loading.value = true
     if (data.value.client_id && boForm.value?.validate){
-      await backOrderStore.addBackOrder(data.value);
+      await backOrderStore.addBackOrder({...data.value, type: props.type });
       loading.value = false;
       backOrderStore.loadBackOrder();
       closeDialog();
-      Alert.success($q, t)
+      Alert.success()
     }
 }
 
@@ -160,7 +157,7 @@ function resetData() {
 }
 resetData();
 
-watch([data.value.client_id, data.value.office_id], async () => {  
+watch([data.value.client_id, data.value.office_id], async () => {
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
   if (!users) {
     return
@@ -175,3 +172,4 @@ watch([data.value.client_id, data.value.office_id], async () => {
 }, { deep: true, immediate: true})
 
 </script>
+

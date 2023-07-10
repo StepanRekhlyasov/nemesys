@@ -33,6 +33,7 @@ export interface ClientFactory {
     contractInfo?: ContractInfo;
     reflectLog?: ReflectLog;
     importLog?: ImportLog;
+    geohash?: string;
 
     client?: Client
 

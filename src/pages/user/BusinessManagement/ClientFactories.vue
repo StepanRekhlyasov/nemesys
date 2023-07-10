@@ -7,6 +7,7 @@ import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from 'src/components/client-factory/NewClientDrawer.vue';
 import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFactoryDrawer.vue';
+import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue';
 import ClientFactoryTable from 'src/components/client-factory/ClientFactoryTable.vue';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -29,6 +30,7 @@ const fetchData = ref(false)
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
 const isNewClientFactoryDrawer = ref(false)
+const isNewFaxDrawer = ref(false)
 
 const pagination = ref({
     sortBy: 'desc',
@@ -97,6 +99,17 @@ const openNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = true
 }
 
+// new Fax drawer
+
+const hideNewFaxDrawer = () => {
+    isNewFaxDrawer.value = false
+}
+
+const openNewFaxDrawer = () => {
+    isNewFaxDrawer.value = true
+}
+
+
 </script>
 
 <template>
@@ -108,7 +121,8 @@ const openNewClientFactoryDrawer = () => {
             <q-separator color="grey-4" size="2px" />
             <CFPageActions
                 @open-client-drawer="openNewClientDrawer"
-                @open-client-factory-drawer="openNewClientFactoryDrawer"/>
+                @open-client-factory-drawer="openNewClientFactoryDrawer"
+                @open-fax-drawer="openNewFaxDrawer"/>
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
@@ -134,10 +148,16 @@ const openNewClientFactoryDrawer = () => {
             theme="primary"
             :is-drawer="isNewClientDrawer" />
 
-        <NewClientFactoryDrawer 
+        <NewClientFactoryDrawer
             @hide-drawer="hideNewClientFactoryDrawer"
             theme="primary"
             :is-drawer="isNewClientFactoryDrawer"/>
+
+        <FaxDrawer
+        @hide-drawer="hideNewFaxDrawer"
+        theme="primaery"
+        :is-drawer="isNewFaxDrawer"
+        />
     </div>
 </template>
 

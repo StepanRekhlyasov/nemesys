@@ -246,6 +246,7 @@ import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
   applicant: Applicant
@@ -330,8 +331,9 @@ async function saveDesired(){
   try {
     await applicantStore.updateApplicant(data.value);
     desiredEdit.value = false;
+    Alert.success()
   } catch (error) {
-    console.log(error);
+    Alert.warning(error)
   }
   loading.value = false
 }

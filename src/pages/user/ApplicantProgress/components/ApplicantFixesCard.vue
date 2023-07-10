@@ -67,10 +67,13 @@ const applicant = computed(()=>{
   return applicantStore.state.applicants[props.fix.applicant_id]?applicantStore.state.applicants[props.fix.applicant_id]:undefined
 })
 const countFixes = computed(()=>{
-  const notWorkingFix = applicantStore.state.applicantFixes[props.fix.applicant_id].filter((row)=>{
-    return row['status'] !== 'working'
-  })
-  return notWorkingFix.length
+  if(applicantStore.state.applicantFixes[props.fix.applicant_id]){
+    const notWorkingFix = applicantStore.state.applicantFixes[props.fix.applicant_id].filter((row)=>{
+      return row['status'] !== 'working'
+    })
+    return notWorkingFix.length
+  }
+  return 1
 })
 
 const emit = defineEmits<{
