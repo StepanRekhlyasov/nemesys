@@ -59,7 +59,7 @@ import { useOrganization } from 'src/stores/organization';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
 import { fixWithApplicant } from './model/saa.model'
-
+import { useSAA } from 'src/stores/saa'
 interface RowData {
   name: string,
   chargeOfFix: number,
@@ -97,21 +97,23 @@ const organizationStore = useOrganization()
 const fixList = ref<fixWithApplicant[]>([])
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 const saaTableRef = ref<InstanceType<typeof SAATable> | null>(null);
-
+const SAA = useSAA()
 async function getData(){
   fixList.value = await userStore.getSAAFixList(organizationStore.state.currentOrganizationUsers, dateRange.value)
   reMapData()
 }
 async function reMapData(){
   if(method.value === 'user'){
-    const faxData:string[] = await userStore.getSAAFaxList(dateRange.value)
-    const callData:string[] = await userStore.getSAACallList(dateRange.value)
-    const BOReferralData:string[] = await userStore.getSAABOReferralList(dateRange.value)
-    const BODispatchData:string[] = await userStore.getSAABODispatchList(dateRange.value)
-    const BONCData:string[] = await userStore.getSAABONCList(dateRange.value)
-    const BONData:string[] = await userStore.getSAABONList(dateRange.value)
-    const BOTTData:string[] = await userStore.getSAABOTTList(dateRange.value)
-    rowData.value = mapFixDataForUserMode(fixList.value,faxData,callData,BOReferralData,BODispatchData,BONCData,BONData,BOTTData)
+    loading.value = true
+    const faxData:string[] = await SAA.getSAAFaxList(dateRange.value)
+    const callData:string[] = await SAA.getSAACallList(dateRange.value)
+    const BOReferralData:string[] = await SAA.getSAABOReferralList(dateRange.value)
+    const BODispatchData:string[] = await SAA.getSAABODispatchList(dateRange.value)
+    const BONCData:string[] = await SAA.getSAABONCList(dateRange.value)
+    const BONData:string[] = await SAA.getSAABONList(dateRange.value)
+    const BOTTPData:string[] = await SAA.getSAABOTTPList(dateRange.value)
+    rowData.value = mapFixDataForUserMode(fixList.value,faxData,callData,BOReferralData,BODispatchData,BONCData,BONData,BOTTPData)
+    loading.value = false
   } else {
     rowData.value = mapFixDataForBranchMode(fixList.value)
   }
@@ -135,7 +137,7 @@ watch(()=>organizationStore.state.userAndBranchesUpdated, async ()=>{
   }
 })
 
-function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callData:string[],boRData:string[],boDData:string[],boNCData:string[],boNData:string[],boTTData:string[]) {
+function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callData:string[],boRData:string[],boDData:string[],boNCData:string[],boNData:string[],boTTPData:string[]) {
   const result : RowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
     const row : Partial<RowData> = {}
@@ -159,7 +161,7 @@ function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callDa
     row.BO_N = boNData.filter(boId => boId === key).length;
     row.dispatch = boDData.filter(boDId => boDId === key).length;
     row.introduction = boRData.filter(boRId => boRId === key).length;
-    row.TTP = boTTData.filter(boTTId => boTTId === key).length;
+    row.TTP = boTTPData.filter(boTTId => boTTId === key).length;
     row.personOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
     row.personNG = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOK = data.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
@@ -170,7 +172,6 @@ function mapFixDataForUserMode(data : fixWithApplicant[],faxData:string[],callDa
   }
   return result
 }
-
 function mapFixDataForBranchMode(data : fixWithApplicant[]){
   const result : RowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationBranches)){

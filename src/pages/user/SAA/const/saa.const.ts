@@ -56,14 +56,14 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
       sortable: true
     },
     {
-      name: '',
+      name: 'BONursingCare',
       field: 'BO_NC',
       label: t('KPI.BO_NC'),
       align: 'left',
       sortable: true
     },
     {
-      name: '',
+      name: 'BONurse',
       field: 'BO_N',
       label: t('KPI.BO_N'),
       align: 'left',
@@ -83,13 +83,6 @@ export const saaTableColumns = computed<QTableProps['columns']>(() => {
       align: 'left',
       sortable: true
     },
-    // {
-    //   name: 'occupationRate',
-    //   field: 'occupationRate',
-    //   label: t('KPI.occupationRate'),
-    //   align: 'left',
-    //   sortable: true
-    // },
     {
       name: 'TTP',
       field: 'TTP',
