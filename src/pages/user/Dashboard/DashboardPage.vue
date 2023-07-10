@@ -3,8 +3,8 @@
     <q-card-section class="bg-grey-3 flex items-center" style="gap:20px">
       <div class="text-h6 text-primary">{{ $t("menu.dashboard") }} </div>
       <label>{{ $t("dashboard.showBranch") }}</label>
-      <MySelect 
-        @update="onBranchChange()" 
+      <MySelect
+        @update="onBranchChange()"
         v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
         :optionToFetch="'branchIncharge'"
         :width="'175px'"

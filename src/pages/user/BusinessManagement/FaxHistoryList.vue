@@ -23,71 +23,28 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <q-select
-                dense
-                outlined
-                map-options
-                v-model="searchData.selectedApplicant"
-                use-input
-                use-chips
-                input-debounce="0"
-                :options="applicantList"
-                @filter="filterFn"
-                :loading="loading"
-                hide-bottom-space
-                style="max-width: 350px; min-width: 100px"
-                :label="$t('common.pleaseSelect')"
-              />
+              <q-select dense outlined map-options v-model="searchData.selectedApplicant" use-input use-chips
+                input-debounce="0" :options="applicantList" @filter="filterFn" :loading="loading" hide-bottom-space
+                style="max-width: 350px; min-width: 100px" :label="$t('common.pleaseSelect')" />
             </div>
             <div class="col-3">
-              <select-branch
-                :organization-id="organizationStore.currentOrganizationId"
-                v-model="searchData.selectedBranch"
-                hide-bottom-space
-                @on-start-loading="searchData.selectedBranch = ''"
-                style="max-width: 250px; min-width: 100px"
-              />
+              <select-branch :organization-id="organizationStore.currentOrganizationId"
+                v-model="searchData.selectedBranch" hide-bottom-space @on-start-loading="searchData.selectedBranch = ''"
+                style="max-width: 250px; min-width: 100px" />
             </div>
             <div class="col-3">
-              <q-select
-                v-model="searchData.selectedInCharge"
-                :options="allUsers"
-                class="q-ml-sm"
-                outlined
-                style="max-width: 250px; min-width: 100px"
-                color="black"
-                dense
-                emit-value
-                map-options
-                option-label="displayName"
-                option-value="id"
-                :label="$t('common.pleaseSelect')"
-              />
+              <q-select v-model="searchData.selectedInCharge" :options="allUsers" class="q-ml-sm" outlined
+                style="max-width: 250px; min-width: 100px" color="black" dense emit-value map-options
+                option-label="displayName" option-value="id" :label="$t('common.pleaseSelect')" />
             </div>
             <div class="col-2">
-              <q-input
-                v-model="searchData.selectedDate"
-                outlined
-                dense
-                mask="date"
-                :rules="['date']"
-                hide-bottom-space
-              >
+              <q-input v-model="searchData.selectedDate" outlined dense mask="date" :rules="['date']" hide-bottom-space>
                 <template v-slot:prepend>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date v-model="searchData.selectedDate" minimal>
                         <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            :label="$t('common.close')"
-                            color="primary"
-                            flat
-                          />
+                          <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -99,14 +56,8 @@
         </q-card-section>
       </q-card>
     </div>
-    <q-table
-      :columns="columns"
-      :rows="faxList"
-      row-key="name"
-      v-model:pagination="pagination"
-      hide-pagination
-      :loading="loading"
-    >
+    <q-table :columns="columns" :rows="faxList" row-key="name" v-model:pagination="pagination" hide-pagination
+      :loading="loading">
       <template v-slot:body-cell-sender="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ getUserName(props.row.senderId) }}
@@ -114,7 +65,7 @@
       </template>
       <template v-slot:body-cell-attachment="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          <q-btn flat color="primary" label="Flat" />
+          <q-btn @click="openPdfDialog(props.row.faxFileURL)" flat color="primary" label="Flat" />
         </q-td>
       </template>
       <template v-slot:body-cell-numDestinations="props">
@@ -129,14 +80,10 @@
       </template>
     </q-table>
     <div class="row justify-start q-mt-md pagination q-ml-sm">
-      <TablePagination
-        :pagination="pagination"
-        :isAdmin="false"
-        v-model="pagination.page"
-        :key="loadPagination"
-      />
+      <TablePagination :pagination="pagination" :isAdmin="false" v-model="pagination.page" :key="loadPagination" />
     </div>
   </div>
+  <PdfViewer style="height:100%" :url="pdfUrl" />
 </template>
 
 <script lang="ts" setup>
@@ -153,6 +100,8 @@ import { useOrganization } from 'src/stores/organization';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useApplicant } from 'src/stores/applicant';
 import { FaxSearchData } from './types';
+import PdfViewer from './components/PdfViewer.vue';
+import { pdfViewer } from './consts/index'
 
 const organizationStore = useOrganization();
 const applicantStore = useApplicant();
@@ -212,6 +161,13 @@ const faxList = computed(() => {
     );
   });
 });
+
+const pdfUrl = ref('');
+
+const openPdfDialog = (url) => {
+  pdfUrl.value = url;
+  pdfViewer.value = true;
+};
 
 watch(
   () => applicantStore.state.applicantList,
