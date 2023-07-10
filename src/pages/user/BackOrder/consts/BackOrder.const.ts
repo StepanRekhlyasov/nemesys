@@ -3,6 +3,8 @@ import { i18n } from 'boot/i18n';
 
 export const radius = ref<number>(0);
 
+export const drawerValue = ref<boolean>(false);
+
 export const BackOrderColumns = computed(() => {
 	const { t } = i18n.global
 	return [

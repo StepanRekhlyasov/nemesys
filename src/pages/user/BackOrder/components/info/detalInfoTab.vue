@@ -17,7 +17,7 @@
 
   <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="boCommonInformation">
-        <boCommonInfoSections :bo="bo" /> 
+        <boCommonInfoSections :bo="bo" />
       </q-tab-panel>
 
       <q-tab-panel name="candidateStaff">
@@ -32,14 +32,22 @@
 
 <script lang="ts" setup>
 import { BackOrderModel } from 'src/shared/model';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import boCommonInfoSections from './boCommonInfoSections.vue';
 import CandidateStaffBoSection from './candidateStaffBoSection.vue';
 import AssignedStaffBoSection from './assignedStaffBoSection.vue';
+import { drawerValue } from '../../consts/BackOrder.const';
+
+watch(drawerValue,()=>{
+  if(drawerValue.value===false){
+    tab.value = 'boCommonInformation'
+  }
+})
 
 defineProps<{
   bo: BackOrderModel
 }>();
 const emit = defineEmits(['openSearchByMap']);
 const tab = ref('boCommonInformation');
+
 </script>

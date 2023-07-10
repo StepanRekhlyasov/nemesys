@@ -29,30 +29,34 @@ import { getFirestore } from 'firebase/firestore';
 import { BackOrderModel, Client } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useBackOrder } from 'src/stores/backOrder';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import detailInfoBO from './detailInfoBO.vue';
+import { drawerValue } from '../../consts/BackOrder.const';
 
 const backOrderStore = useBackOrder();
-const db = getFirestore();  
+const db = getFirestore();
 const emit = defineEmits(['closeDialog', 'openSearchByMap', 'passClientToMapSearch'])
 
 const client = ref<Client | undefined>(undefined);
 const selectedBo = computed(()=>backOrderStore.state.selectedBo);
 const drawerRight = ref(false);
 
+watch(drawerRight,()=>{
+  drawerValue.value = drawerRight.value;
+})
 
-const openDrawer = async (data : BackOrderModel) => {
+const openDrawer = (data : BackOrderModel) => {
   if (selectedBo.value?.id && selectedBo.value.id !== data.id) {
     drawerRight.value = false;
   }
   backOrderStore.state.selectedBo = data;
-  drawerRight.value = true
+  drawerRight.value = !drawerRight.value
 }
 onMounted(async () => {
   if (selectedBo.value && selectedBo.value['clientId']){
     client.value = await getClient(db, selectedBo.value['clientId'])
     emit('passClientToMapSearch', client.value)
-  }  
+  }
 })
 
 defineExpose({ openDrawer })
