@@ -51,7 +51,7 @@ import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
-const boStore = useBO();
+const backOrderStore = useBO()
 
 watch(drawerValue, async () => {
   if (drawerValue.value) {
@@ -105,7 +105,7 @@ const calculateDistance = async () => {
       lat: staff.lat,
       lon: staff.lon,
     };
-    const distance = boStore.getDistance(clientLocation, staffLocation);
+    const distance = backOrderStore.getDistance(clientLocation, staffLocation);
     staff.distanceBusiness = distance;
   });
 };
@@ -113,7 +113,7 @@ const calculateDistance = async () => {
 const calculateMatchDegree = () => {
 
   staffList.value.forEach((staff) => {
-    boStore.matchData(staff, props.bo);
+    backOrderStore.matchData(staff, props.bo);
   })
   staffList.value.sort((a, b) => b.matchDegree - a.matchDegree);
 }
