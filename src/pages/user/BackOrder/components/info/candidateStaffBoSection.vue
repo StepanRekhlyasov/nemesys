@@ -48,8 +48,13 @@ import { radius } from '../../consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
+import { drawerValue } from '../../consts/BackOrder.const';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
+
+watch(drawerValue,async ()=>{
+  await getFormatedData();
+})
 
 const pagination = ref({
   sortBy: 'desc',
