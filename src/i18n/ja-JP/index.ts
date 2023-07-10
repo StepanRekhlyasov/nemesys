@@ -156,6 +156,7 @@ export default {
     budgetControl: '予算管理',
     SAA: '営業活動集計',
     KPI: 'KPI',
+    faxHistory: 'FAX送信履歴',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -1609,6 +1610,19 @@ export default {
       refinementConditions: '絞り込み条件',
       maxTransmissions: '最大送信件数',
       faxPRSheet: 'PRシートをFAX送信します。',
+      list: {
+        senderId: '送信ID',
+        sender: '送信者', 
+        jobSeeker: '求職者', 
+        attachment: '添付ファイル',
+        numItemsSent: '送信対象件数', 
+        numDestinations: '正常宛先件数',
+        maxTransmissions: '実送信件数',
+        sentDateTime: '送信日時',
+        numPages: '一送信件数',
+        selectedCF: '宛先事業所数',
+        numCFsFax: '正常宛先事業所数',
+      }
     }
   },
   inquiry: {

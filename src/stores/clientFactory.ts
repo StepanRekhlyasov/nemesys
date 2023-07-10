@@ -211,7 +211,7 @@ export const useClientFactory = defineStore('client-factory', () => {
     }
 
     const getClientFactories = async (clients: Client[]) => {
-
+        
     // Unsubscribe from removed clients
         for (const clientId in unsubscribe.value) {
             if (!clients.some(client => client.id === clientId)) {
@@ -226,11 +226,15 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         await Promise.all(clients.map(async (client) => {
             if (!unsubscribe.value[client.id as string]) {
+               
+
                 unsubscribe.value[client.id as string] = onSnapshot(collection(db, `clients/${client.id}/client-factory`), async (snapshot) => {
                     const newClientFactories: ClientFactory[] = [];
-
+                    console.log( `clients/${client.id}/client-factory`)
                     const clientFactoryPromises = snapshot.docs.map(async (doc) => {
                         const clientFactoryData = doc.data()
+                        console.log(doc.data())
+                        console.log(client.id)
 
                         const clientFactory = {
                             ...clientFactoryData,

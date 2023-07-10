@@ -156,6 +156,7 @@ export default {
     budgetControl: 'Budget Control',
     SAA: 'Sales Activity Aggregation',
     KPI: 'KPI',
+    faxHistory: 'FAX History',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -1615,7 +1616,20 @@ export default {
       clientNG: 'NG client',
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
-      faxPRSheet: 'Fax the PR Sheet'
+      faxPRSheet: 'Fax the PR Sheet',
+      list: {
+        senderId: 'Sender ID',
+        sender: 'Sender', 
+        jobSeeker: 'Job Seeker', 
+        attachment: 'Attachment',
+        numItemsSent: 'Number Items Sent', 
+        numDestinations: 'Number Destinations',
+        maxTransmissions: 'Number Transmissions',
+        sentDateTime: 'Sent date and time',
+        numPages: 'Number of PDF pages',
+        selectedCF: 'Selected CF',
+        numCFsFax: 'Number of CFs with fax numbers',
+      }
     }
   },
   inquiry: {

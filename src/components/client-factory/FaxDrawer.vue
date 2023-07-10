@@ -113,7 +113,7 @@ const save = async () => {
                                 {{ $t('report.categories.applicant') }}
                             </div>
                             <div class="col-9">
-                                <q-select dense outlined emit-value map-options v-model="faxData['applicants']" use-input
+                                <q-select dense outlined  map-options v-model="faxData['applicants']" use-input
                                     use-chips input-debounce="0" :options="applicantList" @filter="filterFn"
                                     :loading="loading" :rules="[(val) => !!val || '']" hide-bottom-space />
                             </div>
