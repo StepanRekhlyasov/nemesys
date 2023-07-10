@@ -1,16 +1,16 @@
 import { User } from 'firebase/auth';
 
 export interface ClientMemo {
-  id?: string;
-  created_user: string;
-  content: string;
-  created_date: string;
+  id: string;
+  created_user?: string;
+  content?: string;
+  created_date?: string;
   updated_date?: string;
-  delited: boolean;
+  delited?: boolean;
   user?: User;
   displayName?: string;
+  userName?:object
 }
-
 export interface Client {
   id?: string;
   clientId: string;

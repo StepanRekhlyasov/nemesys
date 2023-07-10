@@ -706,6 +706,7 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
+      tempToPerm:'Temp to Perm'
     },
     contractUnit: {
       corporateBulk: 'Corporate Bulk',
@@ -1661,7 +1662,10 @@ export default {
   },
   industry: {
     nursing: 'Nursing',
-    nurse: 'Nurse'
+    nurse: 'Nurse',
+    uniqueItemSetting: 'Client type unique item setting',
+    specificTypeItems: 'Type-specific item',
+    addLine: 'ADD LINE'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',

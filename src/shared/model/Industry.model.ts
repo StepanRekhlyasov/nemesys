@@ -1,7 +1,19 @@
 export interface Industry {
+    id: string
     industryName: string
     uniqueItems: {
-        typeSpecificItems: Array<{id: string; title: string; dataType: string}> | []
-        facilityForms: Array<{id: string; title: string}> | []
+        typeSpecificItems: Array<SpecificItem>
+        facilityForms: Array<FacilityForm>
     }
+}
+
+export interface SpecificItem {
+    id: string;
+    title: string;
+    dataType: string
+}
+
+export interface FacilityForm {
+    id: string;
+    title: string
 }
