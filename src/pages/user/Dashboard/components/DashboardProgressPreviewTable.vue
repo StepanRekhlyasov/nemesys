@@ -11,14 +11,16 @@
             :separator="'cell'"
             class="dashboardPreviewTable"
           >
+          <template v-slot:header-cell-applicationDate>
+            <q-th v-if="mode==='applicant'">{{ $t('applicant.progress.table.applicationDate') }}</q-th>
+            <q-th v-if="mode==='fix'">{{ $t('client.backOrder.list.id') }}</q-th>
+          </template>
           <template v-slot:body-cell-occupation="props">
               <q-td>{{ $t('applicant.add.'+props.row.occupation) }}</q-td>
           </template>
-          <template v-if="mode==='applicant'" v-slot:body-cell-applicationDate="props">
-              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
-          </template>
-          <template v-else v-slot:body-cell-applicationDate="props">
-              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
+          <template v-slot:body-cell-applicationDate="props">
+              <q-td :props="props" v-if="mode==='applicant'">{{ myDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
+              <q-td :props="props" v-else>{{ boIdList[props.row.backOrder]?.boId }}</q-td>
           </template>
           </q-table>
         </q-scroll-area>
@@ -31,9 +33,10 @@ import { useApplicant } from 'src/stores/applicant';
 import { dashboardPreviewTableColumns as columns, statusTitles} from '../const/dashboard.const'
 import { limitQuery } from '../../ApplicantProgress/const/applicantColumns';
 import { QScrollArea } from 'quasar';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
-import { ApplicantFix, ApplicantStatus } from 'src/shared/model';
-import { computed } from 'vue';
+import { myDateFormat } from 'src/shared/utils/utils';
+import { ApplicantFix, ApplicantStatus, BackOrderModel } from 'src/shared/model';
+import { computed, watch, ref } from 'vue';
+import { useBackOrder } from 'src/stores/backOrder';
 
 const onScroll = async (info : {
     ref: QScrollArea;
@@ -56,9 +59,11 @@ const onScroll = async (info : {
   }
 }
 const applicantStore = useApplicant()
+const backOrderStore = useBackOrder()
 const props = defineProps<{
   status: ApplicantStatus
 }>()
+const boIdList = ref<{[id: string] : BackOrderModel}>({})
 const mode = computed(()=>{
   if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
     return 'applicant'
@@ -68,13 +73,26 @@ const mode = computed(()=>{
   return 'fix'
 })
 const tableRows = computed(()=>{
-  if(mode.value === 'applicant'){
-    return applicantStore.state.applicantsByColumn[props.status]
+  if(mode.value !== 'applicant') {
+    return applicantStore.state.applicantsByColumn[props.status].map((row : ApplicantFix)=>{
+      return {...applicantStore.state.applicants[row.applicant_id], ...row}
+    })
   }
-  return applicantStore.state.applicantsByColumn[props.status].map((row : ApplicantFix)=>{
-    return applicantStore.state.applicants[row.applicant_id]
-  })
+  return applicantStore.state.applicantsByColumn[props.status]
 })
+
+watch(()=>tableRows.value, ()=>{
+  if(mode.value !== 'applicant') {
+    tableRows.value.forEach(async (row : ApplicantFix) => {
+      if (row.backOrder) {
+        if (!boIdList.value[row.backOrder]) {
+          boIdList.value[row.backOrder] = await backOrderStore.getBoById(row.backOrder)
+        }
+      }
+    })
+  }
+}, {immediate: true})
+
 </script>
 <style lang="scss">
 @import "src/css/imports/colors";
