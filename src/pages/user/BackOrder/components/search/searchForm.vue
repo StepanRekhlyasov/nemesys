@@ -179,10 +179,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useQuasar } from 'quasar';
 import MapSearch from './MapSearch.vue';
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from '../../../Applicant/components/search/components/DoubleNumberInput.vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
+
 import {
   moreHalfYearExpOption,
   employmentTypeOption,
@@ -192,8 +193,6 @@ import {
   applicantClassification,
   occupationList,
 } from 'src/shared/constants/Applicant.const';
-
-const $q = useQuasar();
 
 const searchDataSample = {
   employmenttype: [],
@@ -219,13 +218,7 @@ const updateMap = (mapData) => {
       parseFloat(mapData['lng']),
     ]);
   } catch (err) {
-    console.log(err);
-    $q.notify({
-      textColor: 'white',
-      color: 'red-5',
-      icon: 'warning',
-      message: 'invalid lat or lon',
-    });
+    Alert.warning(err);
     return;
   }
   searchData.value['mapData'] = mapData;

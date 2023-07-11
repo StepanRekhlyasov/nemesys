@@ -1,7 +1,8 @@
-export type BOElasticFilter = {
+export interface BOElasticFilter {
   all: Record<string, unknown>[];
-};
-export type BOElasticSearchData = {
+}
+
+export interface BOElasticSearchData {
   registrationDateMin?: string;
   registrationDateMax?: string;
   ageMin?: string;
@@ -16,4 +17,4 @@ export type BOElasticSearchData = {
     lng?: string;
     radiusInM?: string;
   };
-};
+}

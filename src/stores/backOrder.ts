@@ -1,34 +1,13 @@
 import { getAuth } from 'firebase/auth';
-import {
-  setDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  getFirestore,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-  writeBatch,
-  DocumentData,
-  Timestamp,
-} from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { api } from 'src/boot/axios';
-import {
-  dateToTimestampFormat,
-  timestampToDateFormat,
-} from 'src/shared/utils/utils';
-import {
-  BOElasticFilter,
-  BOElasticSearchData,
-} from 'src/pages/user/BackOrder/types/backOrder.types';
+import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 
 interface BackOrderState {
   BOList: BackOrderModel[];
@@ -111,14 +90,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       });
     }
 
-    const items = [
-      'boid',
-      'qualifications',
-      'employmenttype',
-      'experience',
-      'category',
-      'casetype',
-    ];
+    const items = ['boid', 'qualifications', 'employmenttype', 'experience', 'category', 'casetype',];
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
         const obj = {};
@@ -143,7 +115,6 @@ export const useBackOrder = defineStore('backOrder', () => {
         {
           query: queryString,
           page: { size: 30, current: 1 },
-          // 'sort': sort,
           filters: filters,
         },
         {
@@ -166,18 +137,15 @@ export const useBackOrder = defineStore('backOrder', () => {
         console.log(error);
       });
 
-    loadFirestoreBOData();
+    loadBOData();
   }
 
-  const loadFirestoreBOData = async () => {
+  const loadBOData = async () => {
     state.value.BOList = [];
     state.value.isLoadingProgress = true;
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      const boList = await getBOByConstraints([
-        where('deleted', '==', false),
-        where('id', 'in', batch),
-      ]);
+      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch),]);
       for (let i = 0; i < boList.length; i++) {
         boList[i]['dateOfRegistration'] = timestampToDateFormat(
           boList[i]['dateOfRegistration'] as Timestamp
@@ -210,24 +178,15 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['registrant'] = auth.currentUser?.uid;
     const snapshot = await getDocs(query(collection(db, '/BO')));
     data['boId'] = snapshot.docs.length;
-    if (data.dateOfRegistration)
-      data.dateOfRegistration = dateToTimestampFormat(
-        new Date(data.dateOfRegistration)
-      );
+    if (data.dateOfRegistration) data.dateOfRegistration = dateToTimestampFormat(new Date(data.dateOfRegistration));
 
     const docRef = doc(collection(db, '/BO'));
     data['id'] = docRef.id;
     await setDoc(docRef, data);
     Alert.success();
   }
-  async function getClientBackOrder(
-    clientId: string
-  ): Promise<BackOrderModel[]> {
-    const constraints: ConstraintsType = [
-      where('deleted', '==', false),
-      orderBy('created_at', 'desc'),
-      where('clientId', '==', clientId),
-    ];
+  async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
+    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId),];
     const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
 
     const list: BackOrderModel[] = [];
@@ -240,13 +199,8 @@ export const useBackOrder = defineStore('backOrder', () => {
     return list;
   }
 
-  async function getClientFactoryBackOrder(
-    office_id: string
-  ): Promise<BackOrderModel[]> {
-    const constraints: ConstraintsType = [
-      where('deleted', '==', false),
-      where('office_id', '==', office_id),
-    ];
+  async function getClientFactoryBackOrder(office_id: string): Promise<BackOrderModel[]> {
+    const constraints: ConstraintsType = [where('deleted', '==', false), where('office_id', '==', office_id),];
     const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
 
     const list: BackOrderModel[] = [];
@@ -263,10 +217,7 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
     const backOrderData = { ...backOrder };
-    if (backOrderData.dateOfRegistration)
-      backOrderData.dateOfRegistration = dateToTimestampFormat(
-        new Date(backOrderData.dateOfRegistration as string)
-      );
+    if (backOrderData.dateOfRegistration) backOrderData.dateOfRegistration = dateToTimestampFormat(new Date(backOrderData.dateOfRegistration as string));
     const boRef = doc(db, '/BO/' + backOrderData.id);
     await updateDoc(boRef, { ...backOrderData });
     state.value.selectedBo = { ...state.value.selectedBo, ...backOrder };
@@ -303,19 +254,16 @@ export const useBackOrder = defineStore('backOrder', () => {
     await batch.commit();
   };
 
-  function getDistance(
-    loc1: { lat: number; lon: number },
-    loc2: { lat: number; lon: number }
-  ) {
+  function getDistance(loc1: { lat: number; lon: number }, loc2: { lat: number; lon: number }) {
     const easrtRadiusInKm = 6371;
     const dLat = degToRad(loc2.lat - loc1.lat);
     const dLon = degToRad(loc2.lon - loc1.lon);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(degToRad(loc1.lat)) *
-        Math.cos(degToRad(loc2.lat)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(degToRad(loc2.lat)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = easrtRadiusInKm * c;
     return Number(distance.toFixed(2));
@@ -351,18 +299,12 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
 
     //caseType
-    if (
-      bo.caseType &&
-      staff.occupation?.toLowerCase() === bo.caseType?.toLowerCase()
-    ) {
+    if (bo.caseType && staff.occupation?.toLowerCase() === bo.caseType?.toLowerCase()) {
       occupation = 1;
     }
 
     //classification
-    if (
-      bo.transactionType &&
-      staff.classification?.toLowerCase() === bo.transactionType?.toLowerCase()
-    ) {
+    if (bo.transactionType && staff.classification?.toLowerCase() === bo.transactionType?.toLowerCase()) {
       classification = 1;
     }
 
@@ -396,37 +338,17 @@ export const useBackOrder = defineStore('backOrder', () => {
       const currentDate = new Date();
       const dob = new Date(staff.dob.seconds * 1000);
       let age = currentDate.getFullYear() - dob.getFullYear();
-      if (
-        currentDate.getMonth() < dob.getMonth() ||
-        (currentDate.getMonth() === dob.getMonth() &&
-          currentDate.getDate() < dob.getDate())
-      ) {
+      if (currentDate.getMonth() < dob.getMonth() || (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())) {
         age--;
       }
       agePercent = age <= bo.ageLimit ? 1 : bo.ageLimit / age;
     }
-    const matchPercent =
-      ((agePercent +
-        qualification +
-        occupation +
-        classification +
-        daysPerWeek +
-        daysToWork +
-        expReq) /
-        7) *
-      100;
+    const matchPercent = ((agePercent + qualification + occupation + classification + daysPerWeek + daysToWork + expReq) / 7) * 100;
     staff.matchDegree = Number(matchPercent.toFixed(2));
   }
 
   const stringToNumber = (num: string): number | undefined => {
-    const numberMap: { [key: string]: number } = {
-      one: 1,
-      two: 2,
-      three: 3,
-      four: 4,
-      five: 5,
-    };
-
+    const numberMap: { [key: string]: number } = { one: 1, two: 2, three: 3, four: 4, five: 5, };
     return numberMap[num];
   };
 

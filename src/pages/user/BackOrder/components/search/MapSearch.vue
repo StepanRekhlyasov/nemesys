@@ -52,7 +52,6 @@ const setLocation = () => {
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng(),
       };
-      // mapCenter.value = location.value;
     } else {
       Alert.warning();
     }
