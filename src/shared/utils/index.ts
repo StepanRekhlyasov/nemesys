@@ -79,36 +79,3 @@ export function deepCopy(obj: any) {
 
     return copiedObject;
 }
-
-export function objectsAreEqual(object1: Record<string, any>, object2: Record<string, any>): boolean {
-    const keys1 = Object.keys(object1);
-    const keys2 = Object.keys(object2);
-
-    if (keys1.length !== keys2.length) {
-        return false;
-    }
-
-    for (const key of keys1) {
-        if (!keys2.includes(key)) {
-            return false;
-        }
-
-        const value1 = object1[key];
-        const value2 = object2[key];
-
-        const areObjects = isObject(value1) && isObject(value2);
-
-        if (
-            (areObjects && !objectsAreEqual(value1, value2)) ||
-            (!areObjects && value1 !== value2)
-        ) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-export function isObject(object: any): boolean {
-    return object != null && typeof object === 'object';
-}

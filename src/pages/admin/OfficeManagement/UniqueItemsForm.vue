@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { uid } from 'quasar';
+import { uid, is } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { watch, ref } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
@@ -9,7 +9,7 @@ import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue'
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useIndsutry } from 'src/stores/industry';
 import { FacilityForm, Industry, SpecificItem } from 'src/shared/model/Industry.model';
-import { objectsAreEqual, deepCopy } from 'src/shared/utils';
+import { deepCopy } from 'src/shared/utils';
 const { t } = useI18n({ useScope: 'global' });
 
 const industryStore = useIndsutry()
@@ -63,7 +63,7 @@ const newSpecificTypeHandle = (data: { title: string, dataType: string }) => {
     if(industryToUpdate.value) {
         industryToUpdate.value.uniqueItems.typeSpecificItems[id] = { ...data };
 
-        if (!objectsAreEqual(industryToUpdate.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>, activeIndustry.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>)) {
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>, activeIndustry.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>)) {
             isCanBeSaved.value.typeSpecificItems = true;
         }
     }
@@ -74,7 +74,7 @@ const newFacilityForm = (data: string) => {
     if(industryToUpdate.value) {
         industryToUpdate.value.uniqueItems.facilityForms[id] = { title: data };
 
-        if (!objectsAreEqual(industryToUpdate.value?.uniqueItems.facilityForms as Record<string, FacilityForm>, activeIndustry.value?.uniqueItems.facilityForms as Record<string, FacilityForm>)) {
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.facilityForms as Record<string, FacilityForm>, activeIndustry.value?.uniqueItems.facilityForms as Record<string, FacilityForm>)) {
             isCanBeSaved.value.facilityForms = true;
         }
     }
