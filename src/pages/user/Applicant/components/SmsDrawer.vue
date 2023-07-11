@@ -12,7 +12,7 @@
         <p>{{ t('backOrder.sms.template') }}</p>
       </div>
       <div class="col-3 q-pl-sm">
-        <q-select class="bg-white" outlined v-model="template" :options="options" dense />
+        <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates" dense />
       </div>
     </div>
 
@@ -21,9 +21,9 @@
         <p>{{ t('backOrder.sms.content') }}</p>
       </div>
       <div class="col-3 cover80">
-        <textarea v-model="messsage" class="bg-white SmsContent" outlined dense></textarea>
+        <textarea v-model="messsage" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }"></textarea>
         <div>
-          <p>46 {{ t('backOrder.sms.characters') }}</p>
+          <p>{{countCharacters(messsage)}} {{ t('backOrder.sms.characters') }}</p>
         </div>
         <div class="row">
           <q-btn :disable="messsage === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
@@ -170,9 +170,11 @@ import { useI18n } from 'vue-i18n';
 import { destinationApplicant, options } from 'src/pages/user/Applicant/const/sms';
 import { useSMS } from 'src/stores/sms'
 import { useApplicant } from 'src/stores/applicant'
-import { where } from 'firebase/firestore';
+import { DocumentData, where } from 'firebase/firestore';
 import { statusList, StatusOption } from 'src/shared/constants/Applicant.const';
 import { Applicant } from 'src/shared/model/Applicant.model'
+import { QSelectProps } from 'quasar';
+
 
 const loading = ref<boolean>(false)
 const statusOption = ref<StatusOption | ComputedRef>(statusList)
@@ -184,8 +186,17 @@ const status = ref<string | null>(null)
 const date = ref<string | null>(null)
 const template = ref<string | null>(null)
 const getApplicant = useApplicant();
+const templates = ref<DocumentData | QSelectProps>([]);
 
 const { t } = useI18n({ useScope: 'global' });
+
+const countCharacters = (messsage)=>{
+  const lineBreaks = messsage.match(/\r\n|\r|\n/g);
+  const lineBreakCount = lineBreaks ? lineBreaks.length : 0;
+  const characterCount = messsage.length;
+  const totalCount = characterCount + lineBreakCount;
+  return totalCount;
+}
 
 const sendMsg = async () => {
   try {
@@ -222,6 +233,7 @@ const clear = async () => {
 }
 
 onMounted(async () => {
+  templates.value = (await (await options).value).value
   loading.value = true;
   row.value = await getFormatedData();
   row.value.forEach(data => {

@@ -1190,7 +1190,7 @@ export default {
       sendContent:'送信内容',
       characters:'キャラクター',
       content:'コンテンツ',
-      template:'レンプレート',
+      template:'テンプレート',
       form:'提出フォーム',
     },
     create: {

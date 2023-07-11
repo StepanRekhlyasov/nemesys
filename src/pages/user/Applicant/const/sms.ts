@@ -1,6 +1,8 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { i18n } from 'boot/i18n';
-
+import { useOrganization } from 'src/stores/organization';
+import { getDocs, getFirestore, DocumentData} from '@firebase/firestore';
+import { templateCollection } from 'src/shared/utils/utils';
 
 export const destinationApplicant = computed(() => {
   const { t } = i18n.global
@@ -57,12 +59,15 @@ export const destinationApplicant = computed(() => {
   ]
 })
 
-export const options = computed(() => {
-  const { t } = i18n.global
-  return [
-    {
-      label: t('common.pleaseSelect'),
-      value: 'Select',
-    },
-  ];
+export const options = computed(async() => {
+  const organization  = useOrganization()
+  const db = getFirestore();
+  const templates = ref<DocumentData>([]);
+  (await getDocs(templateCollection(db,organization.currentOrganizationId))).forEach(doc=>{
+    const template = doc.data()
+    template['label'] = template.name
+    templates.value.push(template);
+  })
+  return templates
 });
+
