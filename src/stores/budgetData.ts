@@ -198,58 +198,58 @@ export const useBudget = defineStore('budget', () => {
     const rows = data.split('\r\n')
     for (let i = 1; i < rows.length; i++) {
       const formateData = rows[i].split(',')
-      const budgetData = ref({
-        accountingMonth: '',
-        amount: '',
-        branch: '',
-        id: '',
-        media: '',
-        numberOfSlots: '',
-        occupation: '',
-        postingEnd: '',
-        postingStart: '',
-        unitPrice: '',
-        remark: '',
-        agency: '',
-      });
-      budgetData.value.media = formateData[0].replace(/"/g, '');
-      budgetData.value.branch = formateData[1].replace(/"/g, '');
-      budgetData.value.occupation = formateData[2].replace(/"/g, '');
-      budgetData.value.postingStart = formateData[3].replace(/"/g, '')+','+formateData[4].replace(/"/g, '');
-      budgetData.value.postingEnd = formateData[5].replace(/"/g, '')+','+formateData[6].replace(/"/g, '');
-      budgetData.value.accountingMonth = formateData[7].replace(/"/g, '');
-      budgetData.value.amount = formateData[8].replace(/"/g, '');
-      budgetData.value.numberOfSlots = formateData[9].replace(/"/g, '');
-      budgetData.value.unitPrice = formateData[10].replace(/"/g, '');
-      budgetData.value.agency = formateData[11].replace(/"/g, '');
-      budgetData.value.remark = formateData[12].replace(/"/g, '');
-      const options = await getOptionData();
-      //media
-      options['media'].forEach(media=>{
-        if(media.label===budgetData.value.media){
-          budgetData.value.media = media.value
-        }
-      })
-      //branch
-      options['branch'].forEach(branch=>{
-        if(branch.label===budgetData.value.branch){
-          budgetData.value.branch = branch.value
-        }
-      })
-      //occupation
-      occupationList.value.forEach(occupation=>{
-        if(occupation.label===budgetData.value.occupation){
-          budgetData.value.occupation = occupation.value
-        }
-      })
-      //postingStartDate
+      const budgetData = getFormateData(formateData);
+      await getOptionData();
+
+      budgetData.value.media = getColoumnsData('media',budgetData.value.media);
+      budgetData.value.branch = getColoumnsData('branch',budgetData.value.branch);
+      budgetData.value.occupation = getColoumnsData('occupation',budgetData.value.occupation);
+
       budgetData.value['postingStartDate'] = getDateFromString(budgetData.value.postingStart)
-      //postingEndDate
       budgetData.value['postingEndDate'] = getDateFromString(budgetData.value.postingEnd)
 
       await saveBudget(budgetData.value)
     }
     await getBudgetList(selectedYear, selectedMonth);
+  }
+
+ const getColoumnsData = (key:string,value:string)=>{
+  let correctValue = '';
+  options.value[key].forEach(item=>{
+    if(item.label===value){
+      correctValue = item.value
+    }
+  })
+  return correctValue;
+ }
+
+  const getFormateData = (formateData)=>{
+    const budgetData = ref({
+      accountingMonth: '',
+      amount: '',
+      branch: '',
+      id: '',
+      media: '',
+      numberOfSlots: '',
+      occupation: '',
+      postingEnd: '',
+      postingStart: '',
+      unitPrice: '',
+      remark: '',
+      agency: '',
+    });
+    budgetData.value.media = formateData[0].replace(/"/g, '');
+    budgetData.value.branch = formateData[1].replace(/"/g, '');
+    budgetData.value.occupation = formateData[2].replace(/"/g, '');
+    budgetData.value.postingStart = formateData[3].replace(/"/g, '')+','+formateData[4].replace(/"/g, '');
+    budgetData.value.postingEnd = formateData[5].replace(/"/g, '')+','+formateData[6].replace(/"/g, '');
+    budgetData.value.accountingMonth = formateData[7].replace(/"/g, '');
+    budgetData.value.amount = formateData[8].replace(/"/g, '');
+    budgetData.value.numberOfSlots = formateData[9].replace(/"/g, '');
+    budgetData.value.unitPrice = formateData[10].replace(/"/g, '');
+    budgetData.value.agency = formateData[11].replace(/"/g, '');
+    budgetData.value.remark = formateData[12].replace(/"/g, '');
+    return budgetData;
   }
 
   const getDateFromString = (dateInString)=>{
