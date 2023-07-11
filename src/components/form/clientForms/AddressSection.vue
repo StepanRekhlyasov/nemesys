@@ -8,7 +8,7 @@ const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
   modelValue: Record<string, string | number>
-  theme: string
+  theme?: string
 }>(), {
   theme: 'primary'
 })
@@ -73,12 +73,12 @@ watch(prefecture, async () => {
                 {{ t('applicant.add.street') }}
                 <span class="text-red-5">*</span>
               </q-item-label>
-              <q-input outlined dense v-model="clientData['street']" lazy-rules
+              <q-input :color="theme" outlined dense v-model="clientData['street']" lazy-rules
                 :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
             </div>
             <div class="col-6 q-pl-sm">
               <q-item-label class="q-pb-xs">{{ t('client.add.addressBuildingName') }}</q-item-label>
-              <q-input outlined dense v-model="clientData['building']" />
+              <q-input :color="theme" outlined dense v-model="clientData['building']" />
             </div>
           </div>
 
@@ -87,14 +87,14 @@ watch(prefecture, async () => {
               <q-item-label class="q-pb-xs">
                 {{ t('client.add.longitude') }}
               </q-item-label>
-              <q-input outlined dense type="number" v-model.number="clientData['lon']"
+              <q-input :color="theme" outlined dense type="number" v-model.number="clientData['lon']"
                 :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
             </div>
             <div class="col-6 q-pl-sm ">
               <q-item-label class="q-pb-xs">
                 {{ t('client.add.latitude') }}
               </q-item-label>
-              <q-input outlined dense type="number" v-model.number="clientData['lat']"
+              <q-input :color="theme" outlined dense type="number" v-model.number="clientData['lat']"
                 :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
             </div>
           </div>

@@ -100,10 +100,10 @@ defineExpose({
         <q-form class="q-gutter-none" ref="formRef">
             <q-card-section class="q-pa-none q-pt-sm scroll">
                 <q-list>
-                    <ClientName v-model="clientName"/>
-                    <OfficeHead v-model="headName"/>
+                    <ClientName v-model="clientName" :theme="theme"/>
+                    <OfficeHead v-model="headName" :theme="theme"/>
                     <AddressSection v-model="addressSection" :theme="theme"/>
-                    <ClientInformation v-model="clientInfo"/>
+                    <ClientInformation v-model="clientInfo" :theme="theme"/>
                     <ClientType v-model="clientTypes" :theme="theme"/>
                     <FacilityType v-model="facilityTypes" :theme="theme"/>
                     <HeadOfficeInformation v-model="headInfoSection" :theme="theme"/>
