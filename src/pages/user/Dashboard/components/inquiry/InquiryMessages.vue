@@ -1,19 +1,19 @@
 <template>
-  <div v-for="(message, index) in inquiryMessages" :key="index">
-    <q-card-section :class="[(index + 1) % 2 == 0 ? 'bg-grey-1' : 'bg-grey-2' + ' q-pa-md', message.type]">
-      <div class="row items-start q-gutter-md q-mb-xs myRow" :class="message.type">
-        <div class="" :class="message.type === INQUIRY_MESSAGE_TYPE.issue ? 'text-left col-2 limitWidth' : 'text-right col-3'">
+  <div v-for="(message, index) in inquiryMessages" :key="index" :class="message.type === INQUIRY_MESSAGE_TYPE.response ? 'bg-grey-3': ''">
+    <q-card-section>
+      <div class="row items-start q-gutter-md q-mb-xs myRow">
+        <div class="text-right col-3">
           {{ message.type === INQUIRY_MESSAGE_TYPE.issue ? $t('inquiry.message.issueDate') : $t('inquiry.message.responseDate') }}
         </div>
-        <div class="col-8" :class="message.type === INQUIRY_MESSAGE_TYPE.issue ? 'text-right' : 'text-left'">
-          {{ timestampToDateFormat(message.date) }}
+        <div class="col-8 text-left">
+          {{ myDateFormat(message.date, 'YYYY-MM-DD HH:SS') }}
         </div>
       </div>
-      <div class="row items-start q-gutter-md q-mb-xs myRow" :class="message.type">
-        <div class="" :class="message.type === INQUIRY_MESSAGE_TYPE.issue ? 'text-left col-2 limitWidth' : 'text-right col-3'">
+      <div class="row items-start q-gutter-md q-mb-xs myRow">
+        <div class="text-right col-3">
           {{ $t('inquiry.detail.replyContent') }}
         </div>
-        <div :class="message.type === INQUIRY_MESSAGE_TYPE.issue ? 'text-right' : 'text-left'" class="wordBreak col-8">
+        <div class="wordBreak col-8 text-left">
           {{ message.content }}
         </div>
       </div>
@@ -26,7 +26,7 @@
 import { computed } from 'vue';
 import { INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData } from 'src/shared/model';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   inquiryData : InquiryData

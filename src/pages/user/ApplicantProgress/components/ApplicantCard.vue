@@ -55,7 +55,7 @@ const redAlert = computed(()=>{
     return false
   }
   const daysUntilAlert = 3 * 86400000 /* days x miliseconds */
-  const compareWithMe = new Date().setTime(new Date().getTime() - daysUntilAlert);
+  const compareWithMe = new Date().setTime(new Date().getTime() + daysUntilAlert);
   return props.item.currentStatusTimestamp.toDate() < new Date(compareWithMe)
 })
   

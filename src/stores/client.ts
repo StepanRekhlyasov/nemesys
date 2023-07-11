@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia';
-import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 export const useClient = defineStore('client', () => {
-
     // db
     const db = getFirestore();
 
@@ -47,7 +46,6 @@ export const useClient = defineStore('client', () => {
 
         } catch(e) {
             Alert.warning(e)
-            console.log(e)
         }
     }
 
@@ -68,11 +66,22 @@ export const useClient = defineStore('client', () => {
         });
     };
 
+  async function fetchClientsById (clientId){
+        const clientRef = doc(collection(db, 'clients'),clientId);
+        const clientDoc = await getDoc(clientRef)
+        const clientData = clientDoc.data();
+        if(clientData){
+          clientData['lng'] = clientData.lon
+        }
+        return clientData as Client;
+    };
+
     fetchClients();
 
     return {
         clients,
         addNewClient,
-        updateClient
+        updateClient,
+        fetchClientsById
     }
 })
