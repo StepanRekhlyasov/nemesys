@@ -1079,6 +1079,7 @@ export default {
       companyInCharge: '稼働担当者',
       operationMemo: 'メモ',
       operatingSites: '稼働先事業所',
+      assignToBo:'この候補者をBOにアサインする',
 
       // Memo Tab
       content: '内容'

@@ -65,11 +65,12 @@
 
       <q-card-section class="bg-white q-ma-md">
         <div class="row q-pb-sm">
-          <div class="col-6 row">
-            <div class="col-6 text-right text-primary text-weight-regular"> {{ $t('applicant.list.qualification') }}
+          <div class="col-4 row">
+            <q-btn class="bg-primary text-white q-mb-md" :label="$t('applicant.attendant.assignToBo')"/>
+            <div class="col-4 text-right text-primary text-weight-regular"> {{ $t('applicant.list.qualification') }}
             </div>
-            <div class="col-6 q-pl-md" v-if="selectedApplicant.qualification"> 
-              {{ selectedApplicant.qualification.map(applic => $t('applicant.add.' + applic)).join(', ') }} 
+            <div class="col-8 q-pl-md" v-if="selectedApplicant.qualification">
+              {{ selectedApplicant.qualification.map(applic => $t('applicant.add.' + applic)).join(', ') }}
             </div>
           </div>
           <div class="col-6 row">
@@ -88,21 +89,21 @@
           <div class="col-6 row">
             <div class="col-6 text-right">
               <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.earlyShift') }}</span>: 
+                <span class="text-primary">{{ $t('office.earlyShift') }}</span>:
                 {{ selectedApplicant.workingHoursEarly ? '●' : '✕' }}
               </span>
               <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.dayShift') }}</span>: 
+                <span class="text-primary">{{ $t('office.dayShift') }}</span>:
                 {{selectedApplicant.workingHoursDay ? '●' : '✕'}}
               </span>
             </div>
             <div class="col-6">
               <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.lateShift') }}</span>: 
+                <span class="text-primary">{{ $t('office.lateShift') }}</span>:
                 {{selectedApplicant.workingHoursLate ? '●' : '✕'}}
               </span>
               <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.nightShift') }}</span>: 
+                <span class="text-primary">{{ $t('office.nightShift') }}</span>:
                 {{selectedApplicant.workingHoursNight ? '●' : '✕'}}
               </span>
             </div>

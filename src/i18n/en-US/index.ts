@@ -1083,6 +1083,7 @@ export default {
       companyInCharge: 'Company in Charge',
       operationMemo: 'Memo',
       operatingSites: '■Operating Sites',
+      assignToBo:'Assign this candidate to BO',
 
       // Memo Tab
       content: 'Content'
