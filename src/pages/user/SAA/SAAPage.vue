@@ -145,7 +145,7 @@ onMounted(async ()=>{
 })
 
 watch(()=>organizationStore.state.userAndBranchesUpdated, async (newVal)=>{
-  if(newVal){
+  if(!newVal){
     loading.value = false
   } else {
     await getData()
