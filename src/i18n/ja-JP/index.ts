@@ -311,6 +311,7 @@ export default {
       editProfile: 'プロフィール編集',
       accauntSettings: 'アカウント設定',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
+      delete: 'このユーザーアカウントはログインできなくなります。',
       logout: 'ログアウト',
       adminPage: 'システム管理ページを開く',
     },
