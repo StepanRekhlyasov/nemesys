@@ -23,28 +23,71 @@
           </div>
           <div class="row">
             <div class="col-4">
-              <q-select dense outlined map-options v-model="searchData.selectedApplicant" use-input use-chips
-                input-debounce="0" :options="applicantList" @filter="filterFn" :loading="loading" hide-bottom-space
-                style="max-width: 350px; min-width: 100px" :label="$t('common.pleaseSelect')" />
+              <q-select
+                dense
+                outlined
+                map-options
+                v-model="searchData.selectedApplicant"
+                use-input
+                use-chips
+                input-debounce="0"
+                :options="applicantList"
+                @filter="filterFn"
+                :loading="loading"
+                hide-bottom-space
+                style="max-width: 350px; min-width: 100px"
+                :label="$t('common.pleaseSelect')"
+              />
             </div>
             <div class="col-3">
-              <select-branch :organization-id="organizationStore.currentOrganizationId"
-                v-model="searchData.selectedBranch" hide-bottom-space @on-start-loading="searchData.selectedBranch = ''"
-                style="max-width: 250px; min-width: 100px" />
+              <select-branch
+                :organization-id="organizationStore.currentOrganizationId"
+                v-model="searchData.selectedBranch"
+                hide-bottom-space
+                @on-start-loading="searchData.selectedBranch = ''"
+                style="max-width: 250px; min-width: 100px"
+              />
             </div>
             <div class="col-3">
-              <q-select v-model="searchData.selectedInCharge" :options="allUsers" class="q-ml-sm" outlined
-                style="max-width: 250px; min-width: 100px" color="black" dense emit-value map-options
-                option-label="displayName" option-value="id" :label="$t('common.pleaseSelect')" />
+              <q-select
+                v-model="searchData.selectedInCharge"
+                :options="allUsers"
+                class="q-ml-sm"
+                outlined
+                style="max-width: 250px; min-width: 100px"
+                color="black"
+                dense
+                emit-value
+                map-options
+                option-label="displayName"
+                option-value="id"
+                :label="$t('common.pleaseSelect')"
+              />
             </div>
             <div class="col-2">
-              <q-input v-model="searchData.selectedDate" outlined dense mask="date" :rules="['date']" hide-bottom-space>
+              <q-input
+                v-model="searchData.selectedDate"
+                outlined
+                dense
+                mask="date"
+                :rules="['date']"
+                hide-bottom-space
+              >
                 <template v-slot:prepend>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
                       <q-date v-model="searchData.selectedDate" minimal>
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            :label="$t('common.close')"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -56,8 +99,14 @@
         </q-card-section>
       </q-card>
     </div>
-    <q-table :columns="columns" :rows="faxList" row-key="name" v-model:pagination="pagination" hide-pagination
-      :loading="loading">
+    <q-table
+      :columns="columns"
+      :rows="faxList"
+      row-key="name"
+      v-model:pagination="pagination"
+      hide-pagination
+      :loading="loading"
+    >
       <template v-slot:body-cell-sender="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ getUserName(props.row.senderId) }}
@@ -65,7 +114,12 @@
       </template>
       <template v-slot:body-cell-attachment="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          <q-btn @click="openPdfDialog(props.row.faxFileURL)" flat color="primary" label="Flat" />
+          <q-btn
+            @click="openPdfDialog(props.row.faxFileURL)"
+            flat
+            color="primary"
+            label="Flat"
+          />
         </q-td>
       </template>
       <template v-slot:body-cell-numDestinations="props">
@@ -80,10 +134,15 @@
       </template>
     </q-table>
     <div class="row justify-start q-mt-md pagination q-ml-sm">
-      <TablePagination :pagination="pagination" :isAdmin="false" v-model="pagination.page" :key="loadPagination" />
+      <TablePagination
+        :pagination="pagination"
+        :isAdmin="false"
+        v-model="pagination.page"
+        :key="loadPagination"
+      />
     </div>
   </div>
-  <PdfViewer style="height:100%" :url="pdfUrl" />
+  <PdfViewer :url="pdfUrl" />
 </template>
 
 <script lang="ts" setup>
@@ -92,7 +151,6 @@ import { faxColumns } from './consts/Fax.const';
 import { useFax } from 'src/stores/fax';
 import { useUserStore } from 'src/stores/user';
 import { toDate, today, timestampToDateFormat } from 'src/shared/utils/utils';
-import { DateOption } from '../budget/type/budget';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { orderBy, where, Timestamp } from 'firebase/firestore';
 import { User } from 'src/shared/model';
@@ -101,13 +159,10 @@ import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useApplicant } from 'src/stores/applicant';
 import { FaxSearchData } from './types';
 import PdfViewer from './components/PdfViewer.vue';
-import { pdfViewer } from './consts/index'
+import { pdfViewer } from './consts/index';
 
 const organizationStore = useOrganization();
 const applicantStore = useApplicant();
-
-const yearOptions = ref<DateOption[]>([]);
-const monthOptions = ref<DateOption[]>([]);
 
 const columns = ref(faxColumns);
 const selected = ref(false);
@@ -116,8 +171,7 @@ const faxStore = useFax();
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
 const loading = ref(true);
-const searchText = ref('');
-const selectedYear = ref(new Date().getFullYear());
+// const searchText = ref('');
 const searchData = ref<FaxSearchData>({
   selectedDate: today().replaceAll('-', '/'),
   selectedBranch: '',
@@ -126,16 +180,10 @@ const searchData = ref<FaxSearchData>({
 });
 const applicantList = ref(<{ value: string; label: string }[]>[]);
 
-const selectedMonth = ref(new Date().getMonth() + 1);
-const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value + 1;
-const nextYear =
-  selectedMonth.value == 12 ? selectedYear.value + 1 : selectedYear.value;
-const start = Timestamp.fromDate(
-  new Date(`${selectedYear.value}-${('0' + selectedMonth.value).slice(-2)}-01`)
-);
-const end = Timestamp.fromDate(
-  new Date(`${nextYear}-${('0' + nextMonth).slice(-2)}-01`)
-);
+const start = Timestamp.fromDate(new Date(searchData.value.selectedDate));
+const endDate = new Date(new Date(searchData.value.selectedDate));
+endDate.setDate(endDate.getDate() + 1);
+const end = Timestamp.fromDate(endDate);
 
 const pagination = ref({
   page: 1,
@@ -150,16 +198,7 @@ const pagination = ref({
 });
 const loadPagination = ref(0);
 const faxList = computed(() => {
-  if (!searchText.value) {
-    return faxStore.faxList;
-  }
-  const needle = searchText.value.toLowerCase();
-  return faxStore.faxList.filter(function (el) {
-    return (
-      el['media'].toLowerCase().includes(needle) ||
-      el['branch'].toLowerCase().includes(needle)
-    );
-  });
+  return faxStore.faxList;
 });
 
 const pdfUrl = ref('');
@@ -203,17 +242,6 @@ watch(
 );
 
 onMounted(async () => {
-  const ten = 10;
-  const currentYear = new Date().getFullYear();
-  const startYear = currentYear - ten;
-  const endYear = currentYear + ten;
-  for (let year = startYear; year <= endYear; year++) {
-    yearOptions.value.push({ label: String(year), value: year });
-  }
-  for (let month = 1; month <= 12; month++) {
-    monthOptions.value.push({ label: ('0' + month).slice(-2), value: month });
-  }
-
   await faxStore.getFaxList(searchData.value);
   allUsers.value = await useStore.getAllUsers();
 
@@ -250,10 +278,6 @@ const filterFn = (val: string, update) => {
 
 thead tr:first-child th {
   background-color: #f3f0f0;
-}
-
-.buttonbg {
-  background-color: #154c79;
 }
 
 .title {

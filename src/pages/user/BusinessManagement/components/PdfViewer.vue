@@ -1,13 +1,16 @@
 <template>
   <div>
-    <q-dialog style="height:100%" v-model="pdfViewer" persistent :content-css="dialogContentStyle">
-      <q-card style="height:100%">
-        <q-card-section>
-          <iframe :src="props.url" width="1000px" height="600px"></iframe>
+    <q-dialog full-height full-width v-model="pdfViewer" persistent>
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-        <q-card-actions align="right">
-          <q-btn label="Close" color="primary" @click="closePdfDialog" />
-        </q-card-actions>
+
+        <q-separator />
+        <q-card-section>
+          <iframe :src="props.url" frameborder="0"></iframe>
+        </q-card-section>
       </q-card>
     </q-dialog>
   </div>
@@ -15,24 +18,18 @@
 
 <script lang="ts" setup>
 import { pdfViewer } from '../consts';
-import { ref } from 'vue'
 
 const props = defineProps<{
-  url: string
-}>()
-
-const closePdfDialog = () => {
-  pdfViewer.value = false;
-};
-
-const dialogContentStyle = ref({
-  width: '90%'
-});
-
+  url: string;
+}>();
 </script>
+
 <style lang="scss">
-.q-dialog-plugin {
-  width: 90%;
-  max-width: 100%;
+iframe {
+  display: block; /* iframes are inline by default */
+  background: #000;
+  border: none; /* Reset default border */
+  height: 80vh; /* Viewport-relative units */
+  width: 93vw;
 }
 </style>
