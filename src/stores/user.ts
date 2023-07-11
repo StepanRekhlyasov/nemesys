@@ -1,4 +1,4 @@
-import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, DocumentData, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Applicant, ApplicantFix, User, UserPermissionNames } from 'src/shared/model';
 import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
@@ -273,7 +273,6 @@ export const useUserStore = defineStore('user', () => {
       if (tempapplicantIds.length > 0) {
         applicantIds.push(tempapplicantIds)
       }
-      // console.log(applicantIds)
       for (let idx = 0; idx < applicantIds.length; idx++) {
         const applicantRef = collection(db, 'applicants')
         const applicantQuery = query(applicantRef, where('id', 'in', applicantIds[idx]))
@@ -316,9 +315,9 @@ export const useUserStore = defineStore('user', () => {
     }
     const faxQuery = query(faxRef,...constraints)
     const faxSnapshot  = await getDocs(faxQuery)
-    const faxId:string[] = []
-    faxSnapshot.docs.map((row) => { faxId.push(row.data()['created_by']) })
-    return faxId
+    const faxList : DocumentData[] = []
+    faxSnapshot.docs.map((row) => { faxList.push({...row.data(), id: row.id}) })
+    return faxList
   }
   async function getSAACallList(dateRange: string | { from: string; to: string; } | null){
     const callRef = collection(db,'teleAppointment');
@@ -329,75 +328,11 @@ export const useUserStore = defineStore('user', () => {
     }
     const callQuery = query(callRef,...constraints)
     const callSnapshot  = await getDocs(callQuery)
-    const callId:string[] = []
-    callSnapshot.docs.map((row) => { callId.push(row.data()['created_by']) })
-    return callId
+    const callList : DocumentData[] = []
+    callSnapshot.docs.map((row) => { callList.push({...row.data(), id: row.id}) })
+    return callList
   }
-  async function getSAABOReferralList(dateRange: string | { from: string; to: string; } | null){
-    const BORef = collection(db,'BO');
-    const [from,to] = getFromTo(dateRange)
-    let constraints:ConstraintsType = []
-    if(from && to){
-      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
-    }
-    const BOquery = query(BORef,where('type','==','referral'),...constraints)
-    const BOSnapshot  = await getDocs(BOquery)
-    const BOId:string[] = []
-    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
-    return BOId
-  }
-  async function getSAABODispatchList(dateRange: string | { from: string; to: string; } | null){
-    const BORef = collection(db,'BO');
-    const [from,to] = getFromTo(dateRange)
-    let constraints:ConstraintsType = []
-    if(from && to){
-      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
-    }
-    const BOquery = query(BORef,where('type','==','dispatch'),...constraints)
-    const BOSnapshot  = await getDocs(BOquery)
-    const BOId:string[] = []
-    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
-    return BOId
-  }
-  async function getSAABOTTList(dateRange: string | { from: string; to: string; } | null){
-    const BORef = collection(db,'BO');
-    const [from,to] = getFromTo(dateRange)
-    let constraints:ConstraintsType = []
-    if(from && to){
-      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
-    }
-    const BOquery = query(BORef,where('type','==','TTP'),...constraints)
-    const BOSnapshot  = await getDocs(BOquery)
-    const BOId:string[] = []
-    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
-    return BOId
-  }
-  async function getSAABONList(dateRange: string | { from: string; to: string; } | null){
-    const BORef = collection(db,'BO');
-    const [from,to] = getFromTo(dateRange)
-    let constraints:ConstraintsType = []
-    if(from && to){
-      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
-    }
-    const BOquery = query(BORef,where('typeCase','==','nurse'),...constraints)
-    const BOSnapshot  = await getDocs(BOquery)
-    const BOId:string[] = []
-    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
-    return BOId
-  }
-  async function getSAABONCList(dateRange: string | { from: string; to: string; } | null){
-    const BORef = collection(db,'BO');
-    const [from,to] = getFromTo(dateRange)
-    let constraints:ConstraintsType = []
-    if(from && to){
-      constraints = [where('created_at', '>=', from), where('created_at', '<=', to)]
-    }
-    const BOquery = query(BORef,where('typeCase','==','nursingCare'),...constraints)
-    const BOSnapshot  = await getDocs(BOquery)
-    const BOId:string[] = []
-    BOSnapshot.docs.map((row) => { BOId.push(row.data()['registrant']) })
-    return BOId
-  }
+
   return {
     state,
     getCurrentUser,
@@ -412,10 +347,6 @@ export const useUserStore = defineStore('user', () => {
     getSAAFixList,
     getSAAFaxList,
     getSAACallList,
-    getSAABODispatchList,
-    getSAABOReferralList,
-    getSAABONCList,
-    getSAABONList,
-    getSAABOTTList
+    getFromTo
   }
 })

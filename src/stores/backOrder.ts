@@ -13,6 +13,19 @@ export const useBackOrder = defineStore('backOrder', () => {
 			selectedBo: null
 	})
 
+  async function getBoByConstraints(constraints : ConstraintsType = []){
+    const docsSnap = await getDocs(query(
+			collection(db, '/BO'),
+			...constraints
+		))
+    return docsSnap.docs.map(row => {
+			return {
+				...row.data(),
+				id: row.id
+			} as BackOrderModel
+		})
+  }
+
 	async function loadBackOrder() {
 		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
 		const docs = await getDocs(query(
@@ -21,11 +34,11 @@ export const useBackOrder = defineStore('backOrder', () => {
 		))
 
 		const list:BackOrderModel[] = []
-		docs.forEach(fix => {
-			const data = fix.data()
+		docs.forEach(row => {
+			const data = row.data()
 			list.push({
 				...data,
-				id: fix.id
+				id: row.id
 			} as BackOrderModel)
 		})
 		state.value.BOList = list
@@ -119,5 +132,5 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     await batch.commit();
   };
-	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById,deleteBO }
+	return { state, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBoByConstraints }
 })

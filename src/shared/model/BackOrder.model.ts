@@ -1,6 +1,6 @@
 export interface BackOrderModel {
   id: string;
-  type: 'dispatch' | 'referral';
+  type: 'dispatch' | 'referral' | 'TTP';
   BOGenerationRoute: 'coldCall' | 'fax';
   client_id: string;
   office_id: string;
@@ -9,6 +9,7 @@ export interface BackOrderModel {
   invoice?: string;
   created_at: string;
   deleted: false;
+  registrant?: string;
 
   // Introduction Section
   dateOfRegistration: string;
