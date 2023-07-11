@@ -27,6 +27,7 @@ export enum MenuParent{
   BusinessMenagment = 'BUSINESS_MENAGMENT',
   SystemSettings = 'SYSTEM_SETTINGS',
   ApplicantManagement = 'APPLICANT_MANAGEMENT',
+  JobAdManagement = 'JOBAD_MANAGEMENT',
   TotalizationManagement = 'TOTALIZATION_MANAGEMENT',
   BackOrder = 'BACK_ORDER',
   BudgetControl = 'BUDGET_CONTROL',
