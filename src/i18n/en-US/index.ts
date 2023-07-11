@@ -953,7 +953,7 @@ export default {
       waitOffer: 'Wait Offer',
       waitEntry: 'Wait Entry',
       working: 'Working',
-      waitTermintion: 'Wait Termintion',
+      waitTermination: 'Wait Termintion',
       waitRetire: 'Wait Retire',
       retired: 'Retired',
     },
