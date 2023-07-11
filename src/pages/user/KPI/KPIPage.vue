@@ -94,7 +94,7 @@
         @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1" v-if="mode === 'day'">
+      <label class="text-subtitle1" v-if="false">
         {{ $t('KPI.username') }}
         <MySelect
           :options="userListToShow"
@@ -142,7 +142,7 @@ import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
 import { mediaItemList ,dayItemList} from './const/kpi.const';
 import {useMedia} from 'src/stores/media';
-const { getReport } = useGetReport();
+const { getReport ,getDailyReport } = useGetReport();
 const UserBranch = useBranch();
 const {getAllmedia}  = useMedia();
 const day = ref('');
@@ -244,13 +244,12 @@ async function getData() {
       );
       userListToShow.value = convertUserListToShow(users);
     }
-    const range = { from: '1900/01/01', to: '1900/12/31' };
+    const range = { from: '1900/04/01', to: '1900/12/31' };
     if(mode.value == 'day'){
       rowData.value = [];
-      const rows =await getReport(
-        users,
-        undefined,
-        range,
+      const rows =await getDailyReport(
+        day.value,
+        branch.value,
         'BasedOnEachItemDate',
         dayItemList,
       );
@@ -270,6 +269,7 @@ async function getData() {
         media.value,
         undefined,
         false
+
       );
       rowData.value = rows;
     }

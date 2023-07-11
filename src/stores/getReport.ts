@@ -11,7 +11,7 @@ import { defineStore } from 'pinia';
 import { Branch, User } from 'src/shared/model';
 import { useUserStore } from './user';
 import { typeOfQuery } from 'src/shared/types/totalization';
-import { graphType} from 'src/components/report/Models';
+import { graphType } from 'src/components/report/Models';
 const userStore = useUserStore();
 class baseQuery {
   name = '';
@@ -27,27 +27,31 @@ class baseQuery {
   getQuery = (
     db: Firestore,
     dateRange: { from: string; to: string },
-    dateType,
+    dateType:graphType,
     media?,
     branch?,
     uid?,
     organizationId?: string
   ) => {
+    // dateRange.from を Date型に変換
+    const fromDate = new Date(dateRange.from);
+    const toDate = new Date(dateRange.to);
     const filters = [...this.filters];
     if (
-      dateType == 'dateBaseOnLeftMostItemDate' &&
+      dateType == 'BasedOnLeftMostItemDate' &&
       this.dateBasedOnLeftMostItemDate
     ) {
       filters.push(
-        where(this.dateBasedOnLeftMostItemDate, '>=', dateRange.from)
+        where(this.dateBasedOnLeftMostItemDate, '>=', fromDate)
       );
-      filters.push(where(this.dateBasedOnLeftMostItemDate, '<=', dateRange.to));
+      filters.push(where(this.dateBasedOnLeftMostItemDate, '<=', toDate));
     } else if (
-      dateType == 'dateBaseOnEachItemDate' &&
+      dateType == 'BasedOnEachItemDate' &&
       this.dateBasedOnEachItemDate
     ) {
-      filters.push(where(this.dateBasedOnEachItemDate, '>=', dateRange.from));
-      filters.push(where(this.dateBasedOnEachItemDate, '<=', dateRange.to));
+      filters.push(where(this.dateBasedOnEachItemDate, '>=', fromDate));
+      filters.push(where(this.dateBasedOnEachItemDate, '<=', toDate));
+
     }
 
     if (media && this.mediaField) {
@@ -211,7 +215,7 @@ const queryPatternToData = async (
   media: string | undefined = undefined,
   branch: string | undefined = undefined,
   uid: string | undefined = undefined,
-  organizationId:string|undefined = undefined,
+  organizationId: string | undefined = undefined,
   isAverage = false
 ) => {
   const db = getFirestore();
@@ -219,108 +223,172 @@ const queryPatternToData = async (
     return queryDict[queryName].getQuery(
       db,
       dateRange,
-      dateType,
+      dateType as graphType,
       media,
       branch,
       uid,
-      organizationId,
+      organizationId
     );
   });
   const countedData = await Promise.all(
     queryList.map(async (query) => {
-      if(isAverage){
-        return (await getCountFromServer(query)).data().count / (await userStore.getNumberOfUsers(organizationId));
-      }
-      else{
-      return (await getCountFromServer(query)).data().count;
+      if (isAverage) {
+        return (
+          (await getCountFromServer(query)).data().count /
+          (await userStore.getNumberOfUsers(organizationId))
+        );
+      } else {
+        return (await getCountFromServer(query)).data().count;
       }
     })
   );
   return countedData;
 };
 
-export const useGetReport = defineStore('getReport', ()=>{
-  const getReport = async (
-  users: User[] | undefined = undefined,
-  branches: Branch[] | undefined = undefined,
-  dateRange: { from: string; to: string } | undefined,
-  graphType: graphType,
-  queryNames: typeOfQuery[],
-  media: string | undefined = undefined,
-  organizationId: string | undefined = undefined,
-  isAverage = false
-) => {
-  const rows: { [key: string]: string | number }[] = [];
-  if (!dateRange || !dateRange.from || !dateRange.to) return [];
-  let rowItems: (User | Branch|{id: 'all', name: 'all'})[] = [];
-  if (users) {
-    rowItems = users;
+const getMonthDateList = (date: string) => {
+  const dateNum = new Date(date);
+  const firstDate = new Date(dateNum.getFullYear(), dateNum.getMonth(), 1);
+  const lastDate = new Date(dateNum.getFullYear(), dateNum.getMonth() + 1, 0);
+  const dateList: string[] = [];
+  for (let i = 0; i < lastDate.getDate(); i++) {
+    const date = new Date(
+      firstDate.getFullYear(),
+      firstDate.getMonth(),
+      firstDate.getDate() + i
+    )
+    const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+    dateList.push(
+      dateStr
+    );
   }
-  else if (branches) {
-    rowItems = branches;
-  }
-  else{
-    rowItems = [{id: 'all', name: 'all'}];
-  }
-
-  for (const rowItem of rowItems) {
-    let data: number[] = [];
-    if (users) {
-      data = await queryPatternToData(
-        queryNames,
-        dateRange,
-        graphType,
-        media,
-        undefined,
-        rowItem.id,
-        organizationId,
-        isAverage
-      );
-    }
-    else if (branches) {
-      data = await queryPatternToData(
-        queryNames,
-        dateRange,
-        graphType,
-        media,
-        rowItem.id,
-        undefined,
-        organizationId,
-        isAverage
-      );
-    }
-    else{
-      data = await queryPatternToData(
-        queryNames,
-        dateRange,
-        graphType,
-        undefined,
-        undefined,
-        undefined,
-        organizationId,
-        isAverage
-      );
-    }
-    const dataCVR = data.map((num, idx) => {
-      if (idx == 0) return '100.0%';
-      if (data[idx - 1] == 0) return '0.0%';
-      const per = (data[idx] / data[idx - 1]) * 100;
-      const per_str = per.toFixed(1);
-      return per_str + '%';
-    });
-    const row: { [key: string]: number | string } = { name: rowItem.name };
-    for (let i = 0; i < queryNames.length; i++) {
-      row[queryDict[queryNames[i]].name] = data[i];
-    }
-    for (let i = 0; i < queryNames.length; i++) {
-      row[queryDict[queryNames[i]].rateName] = dataCVR[i];
-    }
-    rows.push(row);
-  }
-  return rows;
+  return dateList;
 };
-return {getReport}
-}
-)
 
+export const useGetReport = defineStore('getReport', () => {
+  const getDailyReport = async (
+    dateInMonth: string,
+    branch: string | undefined = undefined,
+    graphType: graphType,
+    queryNames: typeOfQuery[],
+    isAverage = false
+  ) => {
+    const rows: { [key: string]: string | number }[] = [];
+    const dateList = getMonthDateList(dateInMonth)
 
+    for (const date of dateList) {
+      //date は　1900/01/02 のようになっているので それをその日と次の日を示す範囲　dateRange = {from:1900/01/02 , to:1900/01/03}　の形に変換する
+      const dateRange = {
+        from: date,
+        to: new Date(
+          new Date(date).getFullYear(),
+          new Date(date).getMonth(),
+          new Date(date).getDate() + 1
+        ).toLocaleDateString(),
+      };
+      let data: number[] = [];
+      data = await queryPatternToData(
+          queryNames,
+          dateRange,
+          graphType,
+          undefined,
+          branch,
+          undefined,
+          undefined,
+          isAverage
+        );
+      const dataCVR = data.map((num, idx) => {
+        if (idx == 0) return '100.0%';
+        if (data[idx - 1] == 0) return '0.0%';
+        const per = (data[idx] / data[idx - 1]) * 100;
+        const per_str = per.toFixed(1);
+        return per_str + '%';
+      });
+      const row: { [key: string]: number | string } = { name: dateRange.from };
+      for (let i = 0; i < queryNames.length; i++) {
+        row[queryDict[queryNames[i]].name] = data[i];
+      }
+      for (let i = 0; i < queryNames.length; i++) {
+        row[queryDict[queryNames[i]].rateName] = dataCVR[i];
+      }
+      rows.push(row);
+    }
+    return rows;
+  };
+
+  const getReport = async (
+    users: User[] | undefined = undefined,
+    branches: Branch[] | undefined = undefined,
+    dateRange: { from: string; to: string } | undefined,
+    graphType: graphType,
+    queryNames: typeOfQuery[],
+    media: string | undefined = undefined,
+    organizationId: string | undefined = undefined,
+    isAverage = false
+  ) => {
+    const rows: { [key: string]: string | number }[] = [];
+    if (!dateRange || !dateRange.from || !dateRange.to) return [];
+    let rowItems: (User | Branch | { id: 'all'; name: 'all' })[] = [];
+    if (users) {
+      rowItems = users;
+    } else if (branches) {
+      rowItems = branches;
+    } else {
+      rowItems = [{ id: 'all', name: 'all' }];
+    }
+
+    for (const rowItem of rowItems) {
+      let data: number[] = [];
+      if (users) {
+        data = await queryPatternToData(
+          queryNames,
+          dateRange,
+          graphType,
+          media,
+          undefined,
+          rowItem.id,
+          organizationId,
+          isAverage
+        );
+      } else if (branches) {
+        data = await queryPatternToData(
+          queryNames,
+          dateRange,
+          graphType,
+          media,
+          rowItem.id,
+          undefined,
+          organizationId,
+          isAverage
+        );
+      } else {
+        data = await queryPatternToData(
+          queryNames,
+          dateRange,
+          graphType,
+          undefined,
+          undefined,
+          undefined,
+          organizationId,
+          isAverage
+        );
+      }
+      const dataCVR = data.map((num, idx) => {
+        if (idx == 0) return '100.0%';
+        if (data[idx - 1] == 0) return '0.0%';
+        const per = (data[idx] / data[idx - 1]) * 100;
+        const per_str = per.toFixed(1);
+        return per_str + '%';
+      });
+      const row: { [key: string]: number | string } = { name: rowItem.name };
+      for (let i = 0; i < queryNames.length; i++) {
+        row[queryDict[queryNames[i]].name] = data[i];
+      }
+      for (let i = 0; i < queryNames.length; i++) {
+        row[queryDict[queryNames[i]].rateName] = dataCVR[i];
+      }
+      rows.push(row);
+    }
+    return rows;
+  };
+  return { getReport ,getDailyReport};
+});
