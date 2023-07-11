@@ -13,6 +13,7 @@ import {
   where,
   writeBatch,
   DocumentData,
+  Timestamp,
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
@@ -20,7 +21,10 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { api } from 'src/boot/axios';
-import { dateToTimestampFormat } from 'src/shared/utils/utils';
+import {
+  dateToTimestampFormat,
+  timestampToDateFormat,
+} from 'src/shared/utils/utils';
 import {
   BOElasticFilter,
   BOElasticSearchData,
@@ -170,10 +174,17 @@ export const useBackOrder = defineStore('backOrder', () => {
     state.value.isLoadingProgress = true;
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      state.value.BOList = await getBOByConstraints([
+      const boList = await getBOByConstraints([
         where('deleted', '==', false),
         where('id', 'in', batch),
       ]);
+      for (let i = 0; i < boList.length; i++) {
+        boList[i]['dateOfRegistration'] = timestampToDateFormat(
+          boList[i]['dateOfRegistration'] as Timestamp
+        );
+      }
+
+      state.value.BOList = boList;
     }
     state.value.isLoadingProgress = false;
   };
@@ -251,9 +262,13 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
-
-    const boRef = doc(db, '/BO/' + backOrder.id);
-    await updateDoc(boRef, { ...backOrder });
+    const backOrderData = { ...backOrder };
+    if (backOrderData.dateOfRegistration)
+      backOrderData.dateOfRegistration = dateToTimestampFormat(
+        new Date(backOrderData.dateOfRegistration as string)
+      );
+    const boRef = doc(db, '/BO/' + backOrderData.id);
+    await updateDoc(boRef, { ...backOrderData });
     state.value.selectedBo = { ...state.value.selectedBo, ...backOrder };
 
     const changeIndex = state.value.BOList.findIndex(
