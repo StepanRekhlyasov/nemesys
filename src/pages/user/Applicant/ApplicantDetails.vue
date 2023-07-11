@@ -55,7 +55,7 @@
                 <span class="q-mr-md">
                   {{ $t('applicant.list.category') }}
                 </span>
-                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification) : ''}}
+                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification.toLowerCase()) : ''}}
               </span>
             </div>
           </div>
@@ -134,6 +134,7 @@ import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
@@ -150,8 +151,13 @@ const openDrawer = async (data : Applicant) => {
 }
 defineExpose({ openDrawer })
 const changeApplicantStatus = async () => {
-  await applicantStore.updateApplicant({status: selectedApplicant.value?.status})
-  emit('statusUpdated')
+  try{
+    await applicantStore.updateApplicant({status: selectedApplicant.value?.status})
+    emit('statusUpdated')
+    Alert.success();
+  } catch (error){
+    Alert.warning(error);
+  }
 }
 const chooseFiles = () => {
   fileUploadRef.value?.pickFiles()
@@ -170,9 +176,10 @@ const onFileChange = async (image) => {
       ret['imagePath'] = snapshot.ref.fullPath;
       ret['imageURL'] = await getDownloadURL(storageRef)
       await applicantStore.updateApplicant(ret)
+      Alert.success();
     }
     catch (error) {
-      console.log(error);
+      Alert.warning(error);
     }
   }
 }

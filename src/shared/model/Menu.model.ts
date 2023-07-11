@@ -16,7 +16,7 @@ export interface MenuRouter {
 
 export interface Meta {
   requiresAuth: boolean;
-  permission?: UserPermissionNames [];
+  permissions?: UserPermissionNames [];
   isAdmin?: boolean;
   hideInMenu?: boolean;
   applicantsUpdateOnOrganizationChange?: boolean

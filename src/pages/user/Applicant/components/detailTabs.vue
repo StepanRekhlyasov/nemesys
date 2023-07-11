@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import fixEmployInfo from './FIX/fixEmployInfoTab.vue';
+import fixEmployInfo from './fixEmployInfoTab.vue';
 import contactInfo from './contactInfoTab.vue';
 import applicationInfo from './applicantTab/applicationInfoTab.vue';
 import attendanceInfo from './attendanceTab/attendanceTab.vue';

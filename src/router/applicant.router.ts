@@ -17,6 +17,16 @@ const applicant_router: MenuRouter[] = [
     },
     menuParent: MenuParent.ApplicantManagement,
 
+  },
+  {
+    path: 'applicant/savedSearchList',
+    title: 'menu.savedSearchList',
+    component: () => import('src/pages/user/Applicant/SavedSearchList.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.ApplicantManagement,
+
   }
 ]
 

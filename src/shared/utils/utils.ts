@@ -117,13 +117,13 @@ export const findTheLastDate = (dates: Date[]) => {
 
 }
 
-export const dayMonthFromDate = (myDate?: string | undefined | Timestamp) => {
+export const myDateFormat = (myDate?: string | undefined | Timestamp, format?: string) => {
   if (!myDate) return '-';
   if(typeof myDate === 'string'){
     const timeStamp = Date.parse(myDate)
-    return date.formatDate(timeStamp, 'DD/MM')
+    return date.formatDate(timeStamp, format?format:'YYYY.MM.DD')
   } else if (myDate instanceof Timestamp){
-    return date.formatDate(myDate.toDate(), 'DD/MM');
+    return date.formatDate(myDate.toDate(), format?format:'YYYY.MM.DD');
   } else {
     return '-';
   }

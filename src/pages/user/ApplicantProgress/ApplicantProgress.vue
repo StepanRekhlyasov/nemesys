@@ -18,7 +18,7 @@
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
           <MySelect 
             @update="fetchResults()" 
-            v-model="applicantStore.state.applicantProgressFilter['attendeeUserInCharge']"
+            v-model="applicantStore.state.applicantProgressFilter.userInCharge"
             :optionToFetch="'usersInCharge'"
           />
         </div>
@@ -41,30 +41,30 @@
         </div>
         <div class="col-1">
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.entry") }}</p>
-          <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.entry" />
+          <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.wait_entry" />
         </div>
         <div class="col-1">
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.retire") }}</p>
-          <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.retired" />
+          <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.retired" />
         </div>
         <div class="col-1">
           <p class="q-ml-md inputLabel">{{ $t("applicant.progress.working") }}</p>
-          <q-input readonly outlined dense bg-color="white" v-model="countApplicantsStatuses.working" />
+          <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.working" />
         </div>
       </div>
       <div class="q-pt-md">
-        <q-scroll-area style="height: 80vh; max-width: 90vw">
-          <div class="row no-wrap justify-between">
-            <ApplicantColumn
-              v-for="column in columns"
-              :key="column.id"
-              :column="column"
-              :loading="columnsLoading[column.status]"
-              @showMore="(status)=>{fetchResultsHandler(status, true)}"
-              @select-applicant="(applicant)=>{
-                detailsDrawer?.openDrawer(applicant)
-              }"
-            />
+        <q-scroll-area class="applicantColumnsWrapper">
+          <div class="row no-wrap justify-between" style="gap:10px">
+            <template v-for="column in columns" :key="column.id">
+              <ApplicantColumn
+                :column="column"
+                :loading="columnsLoading[column.status]"
+                @showMore="(status)=>{fetchResultsHandler(status as ApplicantStatus, true)}"
+                @select-applicant="(applicant)=>{
+                  detailsDrawer?.openDrawer(applicant)
+                }"
+              />
+              </template>
           </div>
         </q-scroll-area>
       </div>
@@ -84,15 +84,11 @@ import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { ApplicantStatus } from 'src/shared/model';
 
 /** consts */
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 const perQuery = ref<number>(limitQuery)
-const countApplicantsStatuses = ref({
-  entry: 0,
-  retired: 0,
-  working: 0
-})
 const columns = computed(()=>APPLICANT_COLUMNS.map(item => {
   return {...item,
     items: applicantsByColumn.value[item.status]
@@ -115,7 +111,7 @@ const applicantStore = useApplicant();
 const applicantsByColumn = computed(() => applicantStore.state.applicantsByColumn);
 
 /** fetchers */
-const fetchResultsHandler = async (status : string, fetchMore = false) => {
+const fetchResultsHandler = async (status : ApplicantStatus, fetchMore = false) => {
   await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
 }
 const fetchResults = async () => {
@@ -123,23 +119,21 @@ const fetchResults = async () => {
     fetchResultsHandler(status, false)
   })
   COUNT_STATUSES.map(async (status)=>{
-    countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
+    await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
   })
 }
 onMounted( async ()=>{
-  COLUMN_STATUSES.map(async (status)=>{
-    if(typeof applicantStore.state.applicantCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
+  COLUMN_STATUSES.forEach(async (status)=>{
+    if(typeof applicantStore.state.applicantRowsCount[status] === 'undefined' || applicantStore.state.needsApplicantUpdateOnMounted){
       fetchResultsHandler(status, false)
     }
   })
   applicantStore.state.needsApplicantUpdateOnMounted = false
-  COUNT_STATUSES.map(async (status)=>{
-    if(!countApplicantsStatuses.value[status]){
-      countApplicantsStatuses.value[status] = await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
-    }
+  COUNT_STATUSES.forEach(async (status)=>{
+    await applicantStore.countApplicantsByStatus(status, applicantStore.state.applicantProgressFilter)
   })
 })
-watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (newVal, oldVal)=>{
+watch(()=>applicantStore.state.applicantProgressFilter.currentStatusMonth, (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
 })
 </script>
@@ -152,5 +146,10 @@ watch(()=>applicantStore.state.applicantProgressFilter['currentStatusMonth'], (n
   .q-field__native {
     white-space: nowrap;
   }
+}
+.applicantColumnsWrapper{
+  max-width: 1300px;
+  width: 100%;
+  height: 80vh;
 }
 </style>

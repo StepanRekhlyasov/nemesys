@@ -317,9 +317,8 @@ import {
   WorkingDaysWeek
 } from 'src/shared/model/BackOrder.model';
 import { ref, SetupContext } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
-import { useQuasar } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'BackOrderForm',
@@ -334,9 +333,7 @@ export default {
     }
   },
   setup(props, context: SetupContext){
-    const { t } = useI18n({ useScope: 'global' });
     const db = getFirestore();
-    const $q = useQuasar();
 
     const boData = ref({
       requiredService: []
@@ -352,12 +349,7 @@ export default {
       await addDoc(clientRef, data);
 
       context.emit('closeDialog')
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success()
     };
     return {
       boData,

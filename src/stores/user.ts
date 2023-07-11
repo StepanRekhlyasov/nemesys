@@ -1,17 +1,33 @@
 import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where ,getCountFromServer } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { User, UserPermissionNames } from 'src/shared/model';
-import { ConstraintsType } from 'src/shared/utils/utils';
+import { Applicant, ApplicantFix, User, UserPermissionNames } from 'src/shared/model';
+import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
 import { useOrganization } from './organization';
 import { useRole } from './role';
-
+import { ref } from 'vue';
+import { getAuth } from 'firebase/auth';
+import { Timestamp } from 'firebase/firestore';
 const { t } = i18n.global
 
+interface userStore {
+  currentUser?: User
+}
+
 export const useUserStore = defineStore('user', () => {
-  const db = getFirestore()
-  const roleStore = useRole()
+  const db = getFirestore();
+  const roleStore = useRole();
+  const auth = getAuth();
+  const state = ref<userStore>({})
+
+  async function getCurrentUser(){
+    let user: User | undefined = undefined;
+    if (auth.currentUser?.uid) {
+      user = await getUserById(auth.currentUser.uid)
+      state.value.currentUser = user;
+    }
+  }
 
   async function getAllUsers(active_organization_id?: string, queryText?: string) {
     const constraints: ConstraintsType = [
@@ -68,8 +84,6 @@ export const useUserStore = defineStore('user', () => {
       return userSnap.data() as User
     }
 
-    throw new Error(t('common.userNotFound'))
-
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
@@ -81,6 +95,10 @@ export const useUserStore = defineStore('user', () => {
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
     const user = await getUserById(userId)
+
+    if(!user){
+      throw new Error(t('common.userNotFound'))
+    }
 
     if (adminRolesIds.includes(user.role)) {
       if (organizationCode == ADMIN_ORGANIZATION_CODE) {
@@ -185,11 +203,91 @@ export const useUserStore = defineStore('user', () => {
       ...constraints,
     ))
     return users.docs.map((user)=>{
-      return user.data() as User
+      return {...user.data(), id: user.id} as User
     })
   }
 
+  async function getSAAFixList(users : { [id: string]: User; }, dateRange : string | { from: string; to: string; } | null){
+    let to : Timestamp | undefined, from: Timestamp | undefined
+
+    if(dateRange){
+      if(typeof dateRange === 'string'){
+        const fromDate = new Date(dateRange)
+        const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
+        from = dateToTimestampFormat(fromDate)
+        to = dateToTimestampFormat(toDate)
+      } else if (dateRange.from && dateRange.to){
+        const fromDate = new Date(dateRange.from)
+        const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
+        from = dateToTimestampFormat(fromDate)
+        to = dateToTimestampFormat(toDate)
+      }
+    }
+    const userIDs = Object.keys(users)
+    const fixRef = collection(db, 'fix');
+
+    const dateConstaings : {
+      fixStatus : ConstraintsType,
+      inspectionStatus : ConstraintsType,
+      offerStatus : ConstraintsType,
+      admissionStatus : ConstraintsType,
+    } = {
+      fixStatus : [],
+      inspectionStatus : [],
+      offerStatus : [],
+      admissionStatus : [],
+    }
+    if(from && to){
+      dateConstaings.fixStatus = [where('fixDate', '>=', from), where('fixDate', '<=', to)]
+      dateConstaings.inspectionStatus = [where('inspectionDate', '>=', from), where('inspectionDate', '<=', to)]
+      dateConstaings.offerStatus = [where('offerDate', '>=', from), where('offerDate', '<=', to)]
+      dateConstaings.admissionStatus = [where('admissionDate', '>=', from), where('admissionDate', '<=', to)]
+    }
+    const qFix = query(fixRef, where('chargeOfFix', 'in', userIDs), where('fixStatus', '==', true), ...dateConstaings['fixStatus'])
+    const qInspection = query(fixRef, where('chargeOfInspection', 'in', userIDs), where('inspectionStatus', '==', true), ...dateConstaings['inspectionStatus'])
+    const qOffer = query(fixRef, where('chargeOfOffer', 'in', userIDs), where('offerStatus', '==', true), ...dateConstaings['offerStatus'])
+    const qAdmission = query(fixRef, where('chargeOfAdmission', 'in', userIDs), where('admissionStatus', '==', true), ...dateConstaings['admissionStatus'])
+
+
+    const [admissionQuerySnapshot, offerQuerySnapshot, inspectionQuerySnapshot, fixQuerySnapshot] = await Promise.all([
+      getDocs(qFix),
+      getDocs(qInspection),
+      getDocs(qOffer),
+      getDocs(qAdmission)
+    ]);
+    const admissionFixes = admissionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const offerFixes = offerQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const inspectionFixes = inspectionQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+    const fixFixes = fixQuerySnapshot.docs.map((row)=>{ return {...row.data() as ApplicantFix, id: row.id} });
+
+    interface fixWithApplicant extends ApplicantFix {
+      applicant? : Applicant
+    }
+    const list = [...admissionFixes, ...offerFixes, ...inspectionFixes, ...fixFixes]
+    const fixList : { [id: string]: fixWithApplicant } = {};
+    const applicantIds : string[] = []
+    list.forEach(async (fix)=>{
+      fixList[fix.id] = fix
+      applicantIds.push(fix.applicant_id)
+    })
+    if(applicantIds.length){
+      const applicantRef = collection(db, 'applicants')
+      const applicantQuery = query(applicantRef, where('id', 'in', applicantIds))
+      const applicantSnapshot = await getDocs(applicantQuery)
+      const applicantList : { [id: string]: Applicant } = {};
+      applicantSnapshot.docs.forEach((row)=>{
+        applicantList[row.id] = row.data() as Applicant
+      })
+      for(const fix of Object.values(fixList)){
+        fix.applicant = applicantList[fix.applicant_id]
+      }
+    }
+    return Object.values(fixList);
+  }
+
   return {
+    state,
+    getCurrentUser,
     getAllUsers,
     getUserById,
     editUser,
@@ -199,5 +297,6 @@ export const useUserStore = defineStore('user', () => {
     getUsersByConstrains,
     getUsersByPermission,
     getNumberOfUsers,
+    getSAAFixList
   }
 })

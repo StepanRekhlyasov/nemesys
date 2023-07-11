@@ -1,6 +1,5 @@
 import { collection, Firestore,  getDocs, orderBy, query, where } from 'firebase/firestore';
 import { ConstraintsType } from './utils';
-import { ApplicantStatus } from '../model';
 
 export const getApplicantContactsList = (db: Firestore, applicant_id: string) => {
   return getDocs(query(
@@ -8,25 +7,6 @@ export const getApplicantContactsList = (db: Firestore, applicant_id: string) =>
     where('deleted', '==', false),
     orderBy('name')
   ))
-}
-
-export const getApplicantCurrentStatusTimestampField = (status? : string) => {
-  switch (status){
-    case ApplicantStatus.WAIT_CONTACT:
-      return 'applicationDate';
-    case ApplicantStatus.WAIT_ATTEND:
-      return 'invitationDate';
-    case ApplicantStatus.WAIT_FIX:
-      return 'attendingDate';
-    case ApplicantStatus.WAIT_VISIT:
-      return 'fixDate';
-    case ApplicantStatus.WAIT_OFFER:
-      return 'inspectionDate';
-    case ApplicantStatus.WAIT_ENTRY:
-      return 'offerDate';
-    default:
-      return '';
-  }
 }
 
 export const getClientList = (db: Firestore, options?: {

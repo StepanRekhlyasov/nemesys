@@ -4,15 +4,21 @@
         <q-scroll-area style="padding:0;height:275px" @scroll="(info)=>onScroll(info)">
           <q-table 
             :columns="columns" 
-            :rows="applicantStore.state.applicantsByColumn[status]"
+            :rows="tableRows"
             :rows-per-page-options="[0]"
             :title="'●'+statusTitles[status]+$t('dashboard.waitList')"
             hide-pagination
             :separator="'cell'"
             class="dashboardPreviewTable"
           >
-          <template v-slot:body-cell-applicationDate="props">
-            <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD HH:SS') }}</q-td>
+          <template v-slot:body-cell-occupation="props">
+              <q-td>{{ $t('applicant.add.'+props.row.occupation) }}</q-td>
+          </template>
+          <template v-if="mode==='applicant'" v-slot:body-cell-applicationDate="props">
+              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
+          </template>
+          <template v-else v-slot:body-cell-applicationDate="props">
+              <q-td :props="props">{{ timestampToDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
           </template>
           </q-table>
         </q-scroll-area>
@@ -26,6 +32,8 @@ import { dashboardPreviewTableColumns as columns, statusTitles} from '../const/d
 import { limitQuery } from '../../ApplicantProgress/const/applicantColumns';
 import { QScrollArea } from 'quasar';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { ApplicantFix, ApplicantStatus } from 'src/shared/model';
+import { computed } from 'vue';
 
 const onScroll = async (info : {
     ref: QScrollArea;
@@ -49,8 +57,24 @@ const onScroll = async (info : {
 }
 const applicantStore = useApplicant()
 const props = defineProps<{
-  status: string
+  status: ApplicantStatus
 }>()
+const mode = computed(()=>{
+  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
+    return 'applicant'
+  } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
+    return 'update'
+  }
+  return 'fix'
+})
+const tableRows = computed(()=>{
+  if(mode.value === 'applicant'){
+    return applicantStore.state.applicantsByColumn[props.status]
+  }
+  return applicantStore.state.applicantsByColumn[props.status].map((row : ApplicantFix)=>{
+    return applicantStore.state.applicants[row.applicant_id]
+  })
+})
 </script>
 <style lang="scss">
 @import "src/css/imports/colors";

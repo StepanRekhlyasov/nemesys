@@ -1,24 +1,25 @@
-import { Applicant } from 'src/shared/model'
+import { Applicant, ApplicantFix } from 'src/shared/model'
 
 export type ApplicantCol = {
   id: number,
   label: string,
   status: string,
-  items: Applicant[] | never[]
+  items: Applicant[] | never[] | ApplicantFix[]
 }
 
 export type ApplicantProgressFilter = {
   branchIncharge: string,
-  attendeeUserInCharge: string,
+  userInCharge: string,
   prefecture: string,
   currentStatusMonth: string,
-  organizationId: string
+  organizationId?: string
 }
 
 export type ApplicantElasticFilter = {
   all : Record<string, unknown>[]
 }
 export type ApplicantElasticSearchData = {
+  keyword?: string,
   applicationDateMin?: string,
   applicationDateMax?: string,
   ageMin?: string,

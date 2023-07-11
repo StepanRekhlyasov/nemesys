@@ -296,8 +296,7 @@
 
 <script lang="ts">
 import { ref, SetupContext, watch } from 'vue'; //ref,
-import { useQuasar, QForm } from 'quasar';
-import { useI18n } from 'vue-i18n';
+import { QForm } from 'quasar';
 import { addDoc, collection, serverTimestamp, getFirestore } from 'firebase/firestore';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -307,8 +306,6 @@ export default {
   name: 'addClient',
 
   setup(props: object, context: SetupContext) {
-    const { t } = useI18n({ useScope: 'global' });
-    const $q = useQuasar();
     const db = getFirestore();
 
     const clientDataSample = { nursing: [], facilityType: [], conclusionDispatchContract: false, conclusionContract: false, conclusionReferralContract: false, flg_faxng: false }
@@ -320,7 +317,7 @@ export default {
     const addClient = async () => {
       let data = JSON.parse(JSON.stringify(clientData.value));
       if (!data['name']) {
-        Alert.warning($q, t)
+        Alert.warning('No client name')
         return false
       }
 
@@ -328,12 +325,7 @@ export default {
         data['geohash'] = geohashForLocation([data['lat'], data['lon']]);
       }
       catch (err) {
-        $q.notify({
-          textColor: 'white',
-          color: 'red-5',
-          icon: 'warning',
-          message: 'invalid lat or lon',
-        });
+        Alert.warning('invalid lat or lon')
         return
       }
       data['created_at'] = serverTimestamp();
@@ -354,12 +346,7 @@ export default {
       clientData.value = JSON.parse(JSON.stringify(clientDataSample));
       clientForm.value?.resetValidation();
 
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success()
     };
 
     watch(
@@ -383,7 +370,7 @@ export default {
             addClient()
           }
           else {
-            Alert.warning($q, t);
+            Alert.warning('The form does not valid');
           }
         })
       },

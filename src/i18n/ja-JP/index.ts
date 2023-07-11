@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    minimum:'最小',
+    maximum:'最大',
     BO: 'BO',
     select: '選択',
     reflect: '反映',
@@ -56,9 +58,11 @@ export default {
     preview: '確認',
     yes: '有り',
     no: '否能',
+    without: '無し',
     possible: '可能',
     impossible: '無り',
     yesShort: '有',
+    noShort: '無',
     above: '以上',
     moreThan: '件以上',
     pleaseSelect: '選択してください',
@@ -167,6 +171,7 @@ export default {
       userSearch: 'ユーザー検索',
       operationChange: '稼働変更',
       organizationsList: '企業一覧表示',
+      occupationSpecificItems: '職種独自項目設定',
       organizationsTable: {
         number: 'No.',
         organizationId: '企業ID',
@@ -230,7 +235,14 @@ export default {
       },
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
-      billingHistory: '請求履歴'
+      billingHistory: '請求履歴',
+      aggregateDataDisplay:'集計データ表示',
+      dataOutputDisplay:'データ出力',
+      dataOutputDisplayTable:{
+        outputMonth:'出力月',
+        output:'出力',
+        companyWide:'全社',
+      },
     }
   },
   settings: {
@@ -618,6 +630,7 @@ export default {
       transactionType: '取引種別',
       introduction: '紹介',
       dispatch: '一般派遣',
+      ttp: 'TTP',
       reqQualification: '必要な資格',
       regularReview: '正看',
       assistant: '准看',
@@ -634,6 +647,7 @@ export default {
       fullTime: '正社員',
       dispatchEm: '派遣',
       partTime: 'アルバイト',
+      partTimeEmployee: 'パートタイム',
       baito: 'パート',
       retirementAge: '定年',
       hourlywage: '時給',
@@ -687,6 +701,7 @@ export default {
       joiningAnotherCompany: '他社入職',
       referralResults: '紹介実績',
       partTimeJob: 'パート・アルバイト',
+      tempToPerm:'紹介予定派遣'
     },
     contractUnit: {
       corporateBulk: '法人一括',
@@ -715,6 +730,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※SMS送信時の注意事項',
+      note1:'・SMS送信の際に送付元電話番号の指定はできません。受信者側の混乱をさける為にも、本文の最初に会社名を記載することをお勧めします。',
+      note2:'・最大全半角70文字以内で入力してください。（超える場合は、複数回に渡って送信される場合があります。）',
+      note3:'・改行は2文字分としてカウントされます。',
+      note4:'・50文字以内にURLを差し込んでください。',
+      note5:'・1通あたり8円の費用が発生します。'
+    },
     add: {
       name: '氏名',
       kanaName: 'フリガナ',
@@ -758,6 +781,12 @@ export default {
       applicationMetod: '応募方法',
       image: '応募者画像',
     },
+    shift:{
+      workinghoursearly: '早番',
+      workinghoursday: '日勤',
+      workinghourslate: '遅番',
+      workinghoursnight: '夜勤',
+    },
     list: {
       name: 'スタッフ名 ',
       category: '区分',
@@ -777,6 +806,7 @@ export default {
       operationInfo: '稼働情報',
       yearsExperience: '経験年数',
       availableShift: '勤務可能シフト',
+      station:'駅',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -801,6 +831,12 @@ export default {
         status: 'FIXステータス',
         date: 'FIX日',
         fixReasonNG: 'FIXNG理由',
+        attractionsReasonNG: '誘致NG理由',
+        attendingReasonNG: 'アテンドNG理由',
+        break_contact: '不通',
+        anotherCompany: '他社決定',
+        excluded: '対象外',
+        decline: '登録辞退',
         reason: 'FIXNG理由',
         contactPerson: 'FIX担当者ユーザー',
         userInChargeVisit: '職見担当ユーザー',
@@ -811,8 +847,8 @@ export default {
         memo: 'メモ',
         chargeOfFix: 'FIX担当ユーザー',
         inspectionReasonNG: '職見NG理由',
-        admissionReasonNG: '職見NG理由',
-        offerReasonNG: '職見NG理由',
+        admissionReasonNG: '入職NG理由',
+        offerReasonNG: '内定NG理由',
         fixMemo: 'FIXメモ',
         info: '■FIX情報',
         jobSearchInfo: '■ 職見情報',
@@ -860,7 +896,6 @@ export default {
         admission: {
           status: '入職ステータス',
           date: '入職日',
-          reasonNotJoining: '入職NG理由',
           chargeOfAdmission: '入職担当者ユーザー',
           memo: '入職メモ'
         }
@@ -886,7 +921,7 @@ export default {
         qualifications: '資格',
         memo: '誘致メモ',
         invitationDate: '誘致日',
-        seduser: '誘致担当ユーザー',
+        chargeOfAttraction: '誘致担当ユーザー',
         position: '職種',
         period: '就業期間',
 
@@ -897,7 +932,7 @@ export default {
         classification: {
           introduction: '紹介',
           dispatch: '派遣',
-          TTP: 'TTP'
+          ttp: 'TTP'
         }
       }
 
@@ -922,9 +957,11 @@ export default {
     statusOption: {
       unsupported: '未対応',
       waitingContact: '接触待ち',
+      wait_contact: '接触待ち',
       excluded: '対象外',
       anotherCompany: '他社決定',
       breakContact: '不通',
+      break_contact: '不通',
       decline: '登録辞退',
       wait_attend: 'アテンド待ち',
       wait_FIX: 'FIX待ち',
@@ -961,7 +998,7 @@ export default {
     attendant: {
       attendantStatus: 'アテンドステータス',
       day: 'アテンド日',
-      attendeeUserInCharge: 'アテンド担当者ユーザー',
+      chargeOfAttending: 'アテンド担当者ユーザー',
       memo: 'アテンドメモ',
       desiredConditions: '希望条件',
       timeToWork: '就業可能時期',
@@ -1118,6 +1155,7 @@ export default {
     transactionType: '取引種別',
     distance: '起点からの距離',
     selectBOType: 'BOの種類を選択',
+    backOrderDetails: 'バックオーダー詳細',
     officeName: '事業所名',
     clientName: 'クライアント名',
     employmentType: '雇用形態',
@@ -1145,6 +1183,17 @@ export default {
     distanceBusiness: '事業所との距離',
     matchDegree: 'マッチ度',
     statusThisTime: '現時点での状況',
+    wanted: '募集中',
+    inactive: '休止中',
+    sms:{
+      send:'送信',
+      sendSMS:'SMS送信',
+      sendContent:'送信内容',
+      characters:'キャラクター',
+      content:'コンテンツ',
+      template:'レンプレート',
+      form:'提出フォーム',
+    },
     create: {
       employmentConditions: '■就業条件',
       numberWorkingDays: '就業日数',
@@ -1161,6 +1210,7 @@ export default {
       hourlyWage: '時給',
       salary: '給与額',
       yenMonth: '円／月',
+      yenHour: '円/時',
       benefit: '手当',
       bonus: '賞与',
       travelingExpenses: '交通費',
@@ -1171,19 +1221,21 @@ export default {
       day: '日',
       tasks: '業務内容',
       pickDrop: '送迎の有無',
-      onCallSupport: 'オンコール 対応の有無',
+      onCallSupport: 'オンコール \r 対応の有無',
       onCallRemarks: 'オンコール備考',
       welfare: '福利厚生',
       retirementAge: '定年',
       inHouseInformation: '社内情報',
       referralFee: '紹介料の',
+      referralFeeAmount: '紹介料の規定金額',
       regulation: '規定％',
       stipulatedAmount: '規定金額',
       introduction: '紹介',
-      registrant: '登録者',
+      registrant: '登録ユーザー',
       caseType: '案件種別',
       requiredQualifications: '必要な資格',
       somethingNotQuestioned: '不問',
+      required: '必須',
       experienceRemarks: '経験備考',
       typeOfEmployment: '就業形態',
       BOGenerationRoute: 'BO発生経路',
@@ -1207,7 +1259,7 @@ export default {
       employees: '従業員',
       levelOfCare: '介護度',
       memo: 'メモ欄',
-      nameQualification: '資格名'
+      nameQualification: '資格名',
     },
     qualification: {
       registeredNurse: '正看護師',
@@ -1357,6 +1409,7 @@ export default {
   actions: {
     clickToAddNewClient: 'クライアント新規追加はこちら',
     searchConditionChange: '検索条件変更',
+    faxBatchTransmission: 'FAX一括送信',
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',
@@ -1418,7 +1471,7 @@ export default {
       subject: '件名',
       content: '内容',
       date: '配信日時',
-      send: '即時配信',
+      send: '送信',
       delay: '+ 新規追加',
       cancel: 'キャンセル'
     },
@@ -1539,6 +1592,25 @@ export default {
         basicInfoChanged: '基本情報',
         officeInfoChanged: '事業所詳細情報'
       }
+    },
+    fax: {
+      transmissionConfirmation: '送信内容確認',
+      applicantLinkage: '応募者紐付け',
+      clientCategoryNG: 'NGクライアント種別',
+      clientFacilityNG: 'NGクライアント・施設',
+      previousEmploymentClient: '過去就業先クライアント',
+      transmissionContentSettings: '送信内容設定',
+      onlyPdfFomratCanBeAttached:'※ 添付可能な様式はPDFのみとなります。',
+      prSheet: 'PRシート',
+      attachPRSheet: 'PRシート添付',
+      setTransmissionDateTime: '送信日時を設定する',
+      set: '設定する',
+      transmissionDateTime: '送信日時',
+      destinationSettings: '送信先設定',
+      clientNG: 'NGクライアント',
+      refinementConditions: '絞り込み条件',
+      maxTransmissions: '最大送信件数',
+      faxPRSheet: 'PRシートをFAX送信します。',
     }
   },
   inquiry: {
@@ -1549,14 +1621,14 @@ export default {
       category: 'カテゴリ',
       subject: '件名',
       companyID: '企業ID 企業名',
-      recievedDate: '受信日',
+      recievedDate: '送受信日',
       responseDate: '返信日'
     },
     detail: {
       inquiryTitle: '問い合わせ内容',
       responseTitle: '返答フォーム',
       category: 'カテゴリ',
-      recievedDate: '受信日',
+      recievedDate: '送受信日',
       subject: '件名',
       content: '内容',
       metro: '東京都',
@@ -1564,13 +1636,16 @@ export default {
       replyContent: '返答内容'
     },
     message: {
-      issueDate: '受信日',
-      responseDate: '送信日'
+      issueDate: '送信日',
+      responseDate: '受信日'
     }
   },
   industry: {
     nursing: '介護',
-    nurse: '看護'
+    nurse: '看護',
+    uniqueItemSetting: 'クライアント種別独自項目設定',
+    specificTypeItems: '種別独自項目',
+    addLine: '行追加'
   },
   report:{
     salesActivityIndividualReport:'営業活動個人レポート',
@@ -1681,6 +1756,7 @@ export default {
     showBranch: '表示支店',
     notification: '通知',
     openList: 'リストを開く',
+    closeList: 'リストを閉じる',
     applicantProgress: '応募者進捗状況',
     showWhiteboard: 'ホワイトボードを表示する',
     showList: 'リストを表示する',
@@ -1689,9 +1765,9 @@ export default {
   KPI: {
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
-    jobs: '職見数',
-    innerConstant: '内定数',
-    entry: '入職数',
+    numberOfVisit: '職見数',
+    numberOfOffer: '内定数',
+    numberOFEntry: '入職数',
     numberOfCalls: '架電数',
     numberOfFax: 'FAX数',
     dispatch: '派遣',
