@@ -146,7 +146,7 @@ const { getReport } = useGetReport();
 const UserBranch = useBranch();
 const {getAllmedia}  = useMedia();
 const day = ref('');
-const media = ref('');
+const media = ref<string|undefined>(undefined);
 const dateRange = ref('');
 const branch = ref('');
 const occupation = ref('');
@@ -244,7 +244,6 @@ async function getData() {
       );
       userListToShow.value = convertUserListToShow(users);
     }
-
     const range = { from: '1900/01/01', to: '1900/12/31' };
     if(mode.value == 'day'){
       rowData.value = [];
