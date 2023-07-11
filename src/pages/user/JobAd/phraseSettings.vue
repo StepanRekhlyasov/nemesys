@@ -111,19 +111,22 @@ import { ref, onMounted } from 'vue';
 import addPhraseComponent from './components/addPhrase.vue';
 import { phraseColumns, phraseCategoryList} from 'src/shared/constants/JobAd.const';
 import { toDate } from 'src/shared/utils/utils';
-import { useJobSearch } from 'src/stores/jobSearch'
+import { useJobPhrase } from 'src/stores/jobPhrase'
 import { DocumentData } from 'firebase/firestore';
-
+import { QTableProps } from 'quasar';
 
 const drawerRight = ref(false);
 const selectedPhrase = ref({ key: 'null' });
-const jobSearchStore = useJobSearch()
+const jobPhraseStore = useJobPhrase()
 const columns = ref(phraseColumns);
 const phraseList:DocumentData= ref([]);
 const selected = ref([]);
 const loading = ref(true);
 const userData = ref({});
-
+defineProps<{
+  columns: QTableProps['columns'];
+  phraseList:QTableProps['rows']
+}>();
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -142,7 +145,7 @@ const openDrawer = async (data) => {
 
 const fetchPhraseSettingData = async () => {
   loading.value = true;
-  phraseList.value = await jobSearchStore.loadJobPhraseData();
+  phraseList.value = await jobPhraseStore.loadJobPhraseData();
   loading.value = false;
 };
 const openAddDrawer = async () => {

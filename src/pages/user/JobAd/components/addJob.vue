@@ -194,140 +194,6 @@
                   </div>
               </div>
 
-              <!-- <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.jobContent') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['jobContent']">
-                          <template v-if="!jobData['jobContent']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.appealPoint') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['appealPoint']">
-                          <template v-if="!jobData['appealPoint']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.personnelSought') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['personnelSought']">
-                          <template v-if="!jobData['personnelSought']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.employmentDay') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['employmentDay']">
-                          <template v-if="!jobData['employmentDay']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.numDaysEmployment') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['numDaysEmployment']">
-                          <template v-if="!jobData['numDaysEmployment']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.workingHoursEarlyShift') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['workingHoursEarlyShift']">
-                          <template v-if="!jobData['workingHoursEarlyShift']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.workingHoursDayShift') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['workingHoursDayShift']">
-                          <template v-if="!jobData['workingHoursDayShift']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.workingHoursLateShift') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['workingHoursLateShift']">
-                          <template v-if="!jobData['workingHoursLateShift']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.workingHoursNightShift') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['workingHoursNightShift']">
-                          <template v-if="!jobData['workingHoursNightShift']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div> -->
-
               <div class="row text-primary text-body1 q-pt-sm">
                   ■ {{ $t('job.add.employmentContract') }}
               </div>
@@ -516,25 +382,13 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from 'firebase/auth';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { DocumentData } from 'firebase/firestore';
+import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, employmentStatusList, reqList, indeedJobCategoryList, indeedTagList, indeedTagJobType, indeedTagCoronaType, resumeRequiredList } from 'src/shared/constants/JobAd.const';
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  addDoc,
-  getFirestore,
-  serverTimestamp,
-  updateDoc,
-  doc,
-  getDocs
-} from 'firebase/firestore';
 
-
+import { useJobSearch } from 'src/stores/jobSearch'
 const props = defineProps({
   selectedJob: {
       type: Object,
@@ -556,12 +410,10 @@ const hideDrawer = () => {
   emit('hideDrawer')
 }
 
-const db = getFirestore();
 const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const auth = getAuth();
 const jobDataObject = {
   id: props?.selectedJob['id'] || null,
   name: props?.selectedJob['name'] || '',
@@ -577,14 +429,6 @@ const jobDataObject = {
   email: props?.selectedJob['email'] || '',
   phone: props?.selectedJob['phone'] || '',
   jobContent: props?.selectedJob['jobContent'] || {},
-  // appealPoint: props?.selectedJob['appealPoint'] || '',
-  // personnelSought: props?.selectedJob['personnelSought'] || '',
-  // employmentDay: props?.selectedJob['employmentDay'] || '',
-  // numDaysEmployment: props?.selectedJob['numDaysEmployment'] || '',
-  // workingHoursEarlyShift: props?.selectedJob['workingHoursEarlyShift'] || '',
-  // workingHoursDayShift: props?.selectedJob['workingHoursDayShift'] || '',
-  // workingHoursLateShift: props?.selectedJob['workingHoursLateShift'] || '',
-  // workingHoursNightShift: props?.selectedJob['workingHoursNightShift'] || '',
   salaryTypeText: props?.selectedJob['salaryTypeText'] || '',
   salaryCap: props?.selectedJob['salaryCap'] || '',
   minSalary: props?.selectedJob['minSalary'] || '',
@@ -613,50 +457,17 @@ const employmentStatusOption = ref(employmentStatusList);
 const resumeRequiredOption = ref(resumeRequiredList);
 const halfYearExpOption = ref(reqList);
 const indeedJobCategorOption = ref(indeedJobCategoryList);
-
+const jobSearchStore = useJobSearch()
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
-const clientList = ref([]);
-const officeList = ref([]);
+const clientList:DocumentData = ref([]);
+const officeList:DocumentData = ref([]);
 const transactionText = ref('')
 const projectText = ref('')
 const jobForm = ref();
 const jobItems = ref({});
 const jobItemOptions = ref({});
 
-
-onMounted(async () => {
-  const qClient = query(collection(db, 'clients'), where('deleted', '==', false));
-  unsubscribe.value = onSnapshot(qClient, (querySnapshot) => {
-      let data: object[] = [];
-      querySnapshot.forEach((doc) => {
-          data.push({ value: doc.id, label: doc.data().name });
-      });
-      clientList.value = data as never[];
-  });
-  jobData.value.transactionType = props?.selectedJob['transactionType'] || '';
-  jobData.value.projectType = props?.selectedJob['projectType'] || '';
-  jobData.value.client = props?.selectedJob['client'] || '';
-
-  const q = query(collection(db, 'jobItem'), where('deleted', '==', false));
-  const querySnapshotJobItem = await getDocs(q);
-  querySnapshotJobItem.forEach(async (doc) => {
-      let data = doc.data();
-      if (data['dataType']) {
-          data['dataType'] = t('jobItem.dataTypeList.' + data['dataType']);
-      }
-      jobItems.value[doc.id] = data;
-      const qOption = query(collection(db, 'jobItem', doc.id, 'options'), where('deleted', '==', false));
-      const querySnapshotqOption = await getDocs(qOption);
-      let items = []
-      querySnapshotqOption.forEach((docOption) => {
-          items.push(docOption.data() as never);
-      });
-      jobItemOptions.value[doc.id] = items;
-
-  });
-
-})
 
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
@@ -720,47 +531,16 @@ watch(
   }
 )
 
-watch(
-  () => (jobData.value.client),
-  (newVal,) => {
-      officeList.value = [];
-      if (unsubscribeOffice.value) {
-          unsubscribeOffice.value();
-      }
-      if (newVal.value) {
-          const q = query(collection(db, 'clients', newVal.value, 'office'), where('deleted', '==', false));
-          unsubscribeOffice.value = onSnapshot(q, (querySnapshot) => {
-              let data: object[] = [];
-              querySnapshot.forEach((doc) => {
-                  data.push({ value: doc.id, label: doc.data().name });
-              });
-              officeList.value = data as never[];
-          });
-      }
-  }
-)
 
 const saveJob = async () => {
-  let data = jobData.value;
-  data['updated_at'] = serverTimestamp();
-
   try {
-      if (data['id']) {
-          const jobRef = doc(db, 'jobs/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(jobRef, data);
+      if (jobData.value.id) {
+          await jobSearchStore.updateFormData(jobData.value)
           hideDrawer()
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-
-          const docRef = await addDoc(
-              collection(db, 'jobs'),
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
+         await jobSearchStore.addFormData(jobData.value)
+         hideDrawer()
       }
 
       $q.notify({
@@ -782,7 +562,4 @@ const saveJob = async () => {
   }
 
 }
-
-
-
 </script>

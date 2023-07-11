@@ -229,14 +229,20 @@ import { applicantClassification, occupationList } from 'src/shared/constants/Ap
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { toDate } from 'src/shared/utils/utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useJobSearch } from 'src/stores/jobSearch'
+import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
 import { DocumentData } from 'firebase/firestore';
+import { QTableProps } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-
+defineProps<{
+  columns: QTableProps['columns'];
+  areaList:QTableProps['rows'];
+  columnsWard: QTableProps['columns'];
+  wardList:QTableProps['rows']
+}>();
 const areaList:DocumentData = ref([]);
-const jobSearchStore = useJobSearch()
+const regionalSalarySettingStore = useRegionalSalarySetting()
 const selected = ref([]);
 const selectedWard = ref([]);
 const drawerRight = ref(false);
@@ -257,8 +263,8 @@ const pagination = ref({
 
 const fetchRegionalSalaryData = async () => {
   loading.value = true;
-  areaList.value = await jobSearchStore.loadJobAreaData();
-  wardList.value = await jobSearchStore.loadAreaCityData()
+  areaList.value = await regionalSalarySettingStore.loadJobAreaData();
+  wardList.value = await regionalSalarySettingStore.loadAreaCityData()
   loading.value = false;
 };
 
@@ -312,7 +318,7 @@ const showDeleteDialog = async (ids: string) => {
     cancel: t('common.cancel')
   }).onOk(async () => {
     loading.value=true
-    await jobSearchStore.deleteJobAreaData(ids);
+    await regionalSalarySettingStore.deleteJobAreaData(ids);
     loading.value=false
     fetchRegionalSalaryData()
      Alert.success()

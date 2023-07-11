@@ -6,7 +6,9 @@ import {
   query,
   where,
   doc as docDb,
-  writeBatch
+  writeBatch,
+  updateDoc,
+  addDoc
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
@@ -47,103 +49,9 @@ export const useJobSearch = defineStore('jobSearch', () => {
     await batch.commit();
   };
 
-  const loadJobAdsData = async () => {
-    const jobAdsData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'jobAds'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      const data = doc.data();
-      jobAdsData.push({
-        ...data,
-        id: doc.id,
-      });
-    });
 
-    return jobAdsData;
-  };
-
-  const loadJobAreaData = async () => {
-    const jobAreaData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'jobArea'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      const data = doc.data();
-      jobAreaData.push({
-        ...data,
-        id: doc.id,
-      });
-    });
-
-    return jobAreaData;
-  };
-
-  const loadAreaCityData = async () => {
-    const areaCityData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'areaCity'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      const data = doc.data();
-      areaCityData.push({
-        ...data,
-        id: doc.id,
-      });
-    });
-
-    return areaCityData;
-  };
-
-  const loadFormatSettingData = async () => {
-    const formatSettingData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'jobFormat'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      const data = doc.data();
-      formatSettingData.push({
-        ...data,
-        id: doc.id,
-      });
-    });
-
-    return formatSettingData;
-  };
-
-  const loadJobPhraseData = async () => {
-    const jobPhraseData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'jobPhrase'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      const data = doc.data();
-      jobPhraseData.push({
-        ...data,
-        id: doc.id,
-      });
-    });
-
-    return jobPhraseData;
-  };
-
-  const loadJobItemSettingData = async () => {
-    const itemSettingData: object[] = [];
+  const loadClientsData = async () => {
+    const clientData: object[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobItem'),
@@ -152,55 +60,38 @@ export const useJobSearch = defineStore('jobSearch', () => {
     );
     q.forEach(async(doc) => {
       const data = doc.data();
-      itemSettingData.push({
+      clientData.push({
         ...data,
         id: doc.id,
       });
     });
 
-    return itemSettingData;
+    return clientData;
   };
 
-  const deleteJobAreaData = async (id:string) => {
-    const updateData = {
-      deleted: true,
-      deleted_by: auth.currentUser?.uid,
-      deleted_at: serverTimestamp()
-    };
+  const updateFormData = async (data:object) => {
+    const updateData = {};
+    updateData['updated_at'] = serverTimestamp();
+    updateData['updated_by'] = auth.currentUser?.uid;
 
-    const batch = writeBatch(db);
-      const docRef = docDb(db, 'jobArea', id);
-      batch.update(docRef, updateData);
-    await batch.commit();
+    await updateDoc(docDb(db, 'jobs', data['id']), data);
   };
 
-  const loadClientsData = async () => {
-    const clientsData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'clients'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      clientsData.push({
-        label: doc.data().name,
-        id: doc.id,
-      });
-    });
 
-    return clientsData;
+  const addFormData = async (data) => {
+    data['created_at'] = serverTimestamp();
+    data['updated_at'] = serverTimestamp();
+    data['deleted'] = false;
+    data['created_by'] = auth.currentUser?.uid;
+
+    await addDoc(collection(db, 'jobs'), data);
   };
+
   return {
     loadJobSearchData,
     deleteJobSearch,
-    loadJobAdsData,
-    loadAreaCityData,
-    loadJobAreaData,
-    deleteJobAreaData,
-    loadFormatSettingData,
-    loadJobPhraseData,
-    loadJobItemSettingData,
-    loadClientsData
+    loadClientsData,
+    updateFormData,
+    addFormData
   };
 });

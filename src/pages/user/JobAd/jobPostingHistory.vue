@@ -140,18 +140,21 @@ import { jobAdColumns } from 'src/shared/constants/JobAd.const';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { toDate } from 'src/shared/utils/utils';
-import { useJobSearch } from 'src/stores/jobSearch'
+import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
 import { DocumentData } from 'firebase/firestore';
-
+import { QTableProps } from 'quasar';
 const jobAdList:DocumentData = ref([]);
 const selected = ref([]);
 const drawerRight = ref(false);
 const selectedJob = ref({ key: 'null' });
-const jobSearchStore = useJobSearch()
+const jobPostingHistoryStore = useJobPostingHistory()
 const userData = ref({});
 const columns = ref(jobAdColumns);
 const loading = ref(true);
-
+defineProps<{
+  columns: QTableProps['columns'];
+  jobAdList:QTableProps['rows'];
+}>();
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -161,7 +164,7 @@ const pagination = ref({
 
 const fetchJobAdsData = async () => {
   loading.value = true;
-  const data = await jobSearchStore.loadJobAdsData();
+  const data = await jobPostingHistoryStore.loadJobAdsData();
   jobAdList.value = data.map((row) => {
     return { ...row };
   });

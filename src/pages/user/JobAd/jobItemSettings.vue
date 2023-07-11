@@ -118,8 +118,9 @@ import { ref, onMounted } from 'vue';
 import addJobItemComponent from './components/addJobItem.vue';
 import { jobItemColumns, phraseCategoryList, dataTypeList } from 'src/shared/constants/JobAd.const';
 import { toDate } from 'src/shared/utils/utils';
-import { useJobSearch } from 'src/stores/jobSearch'
+import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
+import { QTableProps } from 'quasar';
 
 const drawerRight = ref(false);
 const selectedPhrase = ref({ key: 'null' });
@@ -127,15 +128,17 @@ const columns = ref(jobItemColumns);
 const phraseList:DocumentData = ref([]);
 const selected = ref([]);
 const loading = ref(true);
-const jobSearchStore = useJobSearch()
+const jobItemSettingStore = useJobItemSetting()
 const userData = ref({});
-
+defineProps<{
+  columns: QTableProps['columns'];
+  phraseList:QTableProps['rows']
+}>();
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
   rowsPerPage: 30
-  // rowsNumber: xx if getting data from a server
 });
 
 const openDrawer = async (data) => {
@@ -148,7 +151,7 @@ const openDrawer = async (data) => {
 };
 const fetchItemSettingData = async () => {
   loading.value = true;
-  const data = await jobSearchStore.loadJobItemSettingData();
+  const data = await jobItemSettingStore.loadJobItemSettingData();
   phraseList.value = data.map((row) => {
     return { ...row };
   });

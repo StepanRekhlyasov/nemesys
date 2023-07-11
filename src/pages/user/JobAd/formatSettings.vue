@@ -104,18 +104,22 @@ import { ref, onMounted } from 'vue';
 import addFormatComponent from './components/addFormat.vue';
 import { formatColumns } from 'src/shared/constants/JobAd.const';
 import { toDate } from 'src/shared/utils/utils';
-import { useJobSearch } from 'src/stores/jobSearch'
+import { useFormatSetting } from 'src/stores/formatSetting'
 import { DocumentData } from 'firebase/firestore';
+import { QTableProps } from 'quasar';
 
 const drawerRight = ref(false);
 const selectedFormat = ref({ key: 'null' });
 const columns = ref(formatColumns);
 const formatList:DocumentData = ref([]);
-const jobSearchStore = useJobSearch()
+const formatSettingStore = useFormatSetting()
 const selected = ref([]);
 const loading = ref(true);
 const userData = ref({});
-
+defineProps<{
+  columns: QTableProps['columns'];
+  formatList:QTableProps['rows']
+}>();
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -125,7 +129,7 @@ const pagination = ref({
 
 const fetchFormatSettingData = async () => {
   loading.value = true;
-  const data = await jobSearchStore.loadFormatSettingData();
+  const data = await formatSettingStore.loadFormatSettingData();
   formatList.value = data.map((row) => {
     return { ...row };
   });
