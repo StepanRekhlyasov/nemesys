@@ -53,8 +53,8 @@
         </div>
       </div>
       <div class="q-pt-md">
-        <q-scroll-area style="height: 80vh; max-width: 90vw">
-          <div class="row no-wrap justify-between">
+        <q-scroll-area class="applicantColumnsWrapper">
+          <div class="row no-wrap justify-between" style="gap:10px">
             <template v-for="column in columns" :key="column.id">
               <ApplicantColumn
                 :column="column"
@@ -146,5 +146,10 @@ watch(()=>applicantStore.state.applicantProgressFilter.currentStatusMonth, (newV
   .q-field__native {
     white-space: nowrap;
   }
+}
+.applicantColumnsWrapper{
+  max-width: 1300px;
+  width: 100%;
+  height: 80vh;
 }
 </style>

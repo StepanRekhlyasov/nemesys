@@ -70,7 +70,6 @@ export const useUserStore = defineStore('user', () => {
       return userSnap.data() as User
     }
 
-    throw new Error(t('common.userNotFound'))
 
   }
 
@@ -171,7 +170,6 @@ export const useUserStore = defineStore('user', () => {
     if (!roleIds.length) {
       return;
     }
-
     const constraints: ConstraintsType = [where('deleted', '==', false), where('role', 'in', roleIds), orderBy('displayName')]
 
     if (active_organization_id) {

@@ -81,15 +81,15 @@ const emit = defineEmits<{
 }>()
 
 const redAlert = computed(()=>{
-  if(!applicant.value){
+  if(!props.fix){
     return false
   }
-  if(!(applicant.value.currentStatusTimestamp instanceof Timestamp)){
+  if(!(props.fix.currentStatusTimestamp instanceof Timestamp)){
     return false
   }
   const daysUntilAlert = 3 * 86400000 /* days x miliseconds */
   const compareWithMe = new Date().setTime(new Date().getTime() - daysUntilAlert);
-  return applicant.value.currentStatusTimestamp.toDate() < new Date(compareWithMe)
+  return props.fix.currentStatusTimestamp.toDate() < new Date(compareWithMe)
 })
   
 </script>
@@ -109,7 +109,7 @@ const redAlert = computed(()=>{
   }
 }
 .highlighted{
-  background-color: #A9F5F0;
+  background-color: #A9F5FC;
 }
 .countFixesBtn{
   width: 36px;
