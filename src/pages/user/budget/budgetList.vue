@@ -18,18 +18,23 @@
     <div class="row q-pl-lg">
       <q-input outlined :placeholder="$t('form.searchPlaceholder')" style="width: 350px" color="black" dense
         bg-color="white" v-model="searchText" />
-      <q-btn dense style="color: white" :label="$t('common.search')" class="q-ml-sm q-px-lg buttonbg" />
-      <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg"
-        @click="clear" />
+      <q-btn dense @click="filterBudget" style="color: white" :label="$t('common.search')"
+        class="q-ml-sm q-px-lg buttonbg" />
+      <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg" @click="clear" />
     </div>
     <div class="row q-pt-md q-mt-xs q-pb-sm q-mb-xs">
       <q-checkbox val="xs" class="q-ml-md q-pt-xs" color="blue" v-model="selected" />
       <div class="q-ml-sm q-pt-md">{{ $t('common.numberOfSelections') }}: {{ selectedCount() }}</div>
-      <q-btn :label="$t('common.delete')" dense class="q-ml-lg q-px-md" :class="selectedCount() == 0 ?  'bg-secondary': 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'" :disable="selectedCount() == 0" @click="deleteSelected()" />
-      <q-btn :label="$t('common.export')" dense class="q-ml-md q-px-md" :class="selectedCount() == 0 ?  'bg-secondary': 'text-bold buttonbg'" :outline="selectedCount() > 0" @click="exportCSV" :disable="selectedCount() == 0" />
-      <q-btn :label="$t('common.import')" outline dense class="q-ml-md q-px-md text-bold buttonbg">
+      <q-btn :label="$t('common.delete')" dense class="q-ml-lg q-px-md"
+        :class="selectedCount() == 0 ? 'bg-secondary' : 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'"
+        :disable="selectedCount() == 0" @click="deleteSelected()" />
+      <q-btn :label="$t('common.export')" dense class="q-ml-md q-px-md"
+        :class="selectedCount() == 0 ? 'bg-secondary' : 'text-bold buttonbg'" :outline="selectedCount() > 0"
+        @click="exportCSV" :disable="selectedCount() == 0" />
+      <q-btn :label="$t('common.import')" outline dense class="q-ml-md q-px-md text-bold buttonbg" @click="importCsv">
       </q-btn>
-      <q-btn :label="$t('budget.tempFile')" flat dense class="q-ml-md q-px-md" style="text-decoration: underline" @click="budgetStore.downloadSampleFile">
+      <q-btn :label="$t('budget.tempFile')" flat dense class="q-ml-md q-px-md" style="text-decoration: underline"
+        @click="budgetStore.downloadSampleFile">
       </q-btn>
     </div>
     <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
@@ -68,21 +73,23 @@
       </template>
       <template v-slot:body-cell-posting="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ timestampToDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}} 
+          {{ timestampToDateFormat(props.row.postingStartDate, 'YYYY/MM/DD') }}
           <br />
-          {{ timestampToDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}} 
+          {{ timestampToDateFormat(props.row.postingEndDate, 'YYYY/MM/DD') }}
         </q-td>
       </template>
       <template v-slot:body-cell-amount="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>{{ props.row.amount }}
+          <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>{{
+            props.row.amount }}
         </q-td>
       </template>
       <template v-slot:body-cell-numberOfSlots="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ props.row.numberOfSlots }}
           <br>
-          <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>{{ props.row.unitPrice }}
+          <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>{{
+            props.row.unitPrice }}
         </q-td>
       </template>
 
@@ -98,7 +105,7 @@
       </template>
     </q-table>
     <div class="row justify-start q-mt-md pagination q-ml-sm">
-      <TablePagination :pagination="pagination" :isAdmin="true" v-model="pagination.page" :key="loadPagination"/>
+      <TablePagination :pagination="pagination" :isAdmin="false" v-model="pagination.page" :key="loadPagination" />
     </div>
 
 
@@ -120,7 +127,7 @@
     </q-drawer>
   </div>
 </template>
-   
+
 <script lang="ts" setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { budgetColumns } from './consts/Budget.const';
@@ -129,11 +136,12 @@ import { toDate } from 'src/shared/utils/utils';
 import budgetForm from './components/budgetForm.vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import {BudgetData,DateOption} from './type/budget'
+import { BudgetData, DateOption } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
-import { orderBy, where,Timestamp } from 'firebase/firestore';
+import { orderBy, where, Timestamp } from 'firebase/firestore';
+
 const yearOptions = ref<[DateOption]>([]);
 const monthOptions = ref<[DateOption]>([]);
 const $q = useQuasar();
@@ -151,7 +159,7 @@ const searchText = ref('')
 const selectedYear = ref(new Date().getFullYear());
 const selectedMonth = ref(new Date().getMonth() + 1);
 const drawerRight = ref(false)
-const budgetData = ref<BudgetData>({id:''});
+const budgetData = ref<BudgetData>({ id: '' });
 
 const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value + 1;
 const nextYear = selectedMonth.value == 12 ? selectedYear.value + 1 : selectedYear.value;
@@ -160,8 +168,8 @@ const end = Timestamp.fromDate(new Date(`${nextYear}-${('0' + nextMonth).slice(-
 const pagination = ref({
   page: 1,
   rowsPerPage: 5,
-  path:'budgets',
-  order:orderBy('created_at','asc'),
+  path: 'budgets',
+  order: orderBy('created_at', 'asc'),
   constraints: [
     where('deleted', '==', false),
     where('created_at', '>=', start),
@@ -179,6 +187,9 @@ const budgetList = computed(() => {
   });
 });
 
+const filterBudget = () => {
+  //
+}
 
 const selectedCount = () => {
   return budgetList.value.filter(row => row['selected']).length;
@@ -203,11 +214,31 @@ const showDeleteDialog = async (budgetIds) => {
     const done = await budgetStore.deleteBudget(budgetIds);
     if (done) {
       Alert.success($q, t)
-      loadPagination.value=loadPagination.value==0?1:0
+      loadPagination.value = loadPagination.value == 0 ? 1 : 0
     }
 
   })
 }
+
+const importCsv = async () => {
+    const csvFileInput = document.createElement('input');
+    csvFileInput.type = 'file';
+    csvFileInput.accept = '.csv';
+    csvFileInput.addEventListener('change', (event) => {
+      const file = event.target?.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const contents = e.target?.result;
+          budgetStore.processData(contents,selectedYear.value,selectedMonth.value);
+        };
+        reader.readAsText(file);
+      }
+    });
+    csvFileInput.click();
+
+}
+
 const deleteSelected = () => {
   const budgetItem = budgetList.value.filter(row => row['selected']);
   let items: string[] = []
@@ -218,7 +249,7 @@ const deleteSelected = () => {
 }
 const exportCSV = async () => {
   const budgetItem = budgetList.value.filter(row => row['selected']);
-  if (budgetItem.length == 0){
+  if (budgetItem.length == 0) {
     return false
   }
   await budgetStore.exportTable(budgetItem);
@@ -228,6 +259,7 @@ watch(() => selectedYear.value, async (newValue) => {
   loading.value = true;
   await budgetStore.getBudgetList(newValue, selectedMonth.value);
   loading.value = false;
+
 })
 watch(() => selectedMonth.value, async (newValue) => {
   loading.value = true;
@@ -262,7 +294,7 @@ onMounted(async () => {
 thead tr:first-child th {
   background-color: #f3f0f0;
 }
+
 .buttonbg {
-  background-color: #154c79;  
-}
-</style>
+  background-color: #154c79;
+}</style>

@@ -75,7 +75,7 @@
         </q-form>
     </div>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { budgetAddItem } from '../consts/Budget.const';
@@ -158,4 +158,3 @@ const checkValue = (val: string, reason: string) => {
   }
 }
 </script>
-  

@@ -86,6 +86,12 @@ export const budgetColumns = computed(() => {
       align: 'left',
     },
     {
+      label: t('budget.recordNumber'),
+      field: 'recordNumber',
+      name: 'recordNumber',
+      align: 'left',
+    },
+    {
       label: t('budget.mediaName'),
       field: 'media',
       name: 'media',

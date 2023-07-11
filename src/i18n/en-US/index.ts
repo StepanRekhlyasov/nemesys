@@ -1238,7 +1238,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
-      required: 'Required', 
+      required: 'Required',
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',
@@ -1886,5 +1886,6 @@ export default {
     agency: 'Agency',
     tempFile: 'Click here for the template file',
     updatedAt: 'Last edited date',
+    recordNumber:'Record No.',
   }
 }

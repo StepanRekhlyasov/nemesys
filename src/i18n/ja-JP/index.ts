@@ -1879,5 +1879,6 @@ export default {
     agency: '代理店',
     tempFile: 'テンプレートファイルはこちら',
     updatedAt: '最終編集日',
+    recordNumber:'レコードNo',
   }
 };
