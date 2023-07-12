@@ -312,6 +312,7 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
+      delete: 'This user account will no longer be able to log in.',
       logout: 'Logout',
       adminPage: 'Open system administration page',
     },

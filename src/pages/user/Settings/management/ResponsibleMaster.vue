@@ -258,7 +258,7 @@ async function editUser(user: User) {
 async function deleteAccount(user: User) {
   $q.dialog({
     title: t('common.delete'),
-    message: t('settings.users.deletedInfo'),
+    message: t('settings.users.delete'),
     ok: {
       label: t('common.delete'),
       color: 'negative',
