@@ -59,7 +59,7 @@
               hide-bottom-space
               :options="backOrderOptions"
               :disable="!data['client']" 
-              :label="$t('applicant.list.fixEmployment.office')" />
+              :label="'BOID'" />
         </q-card-section>
 
         <template v-if="fixData && fixData.id">
