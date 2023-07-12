@@ -1,7 +1,7 @@
 <template>
   <q-card class="no-shadow full-width">
 
-    <q-card-section class="q-pa-sm bg-grey-2 q-mt-none">
+    <q-card-section v-if="!bo" class="q-pa-sm bg-grey-2 q-mt-none">
       <q-form ref="applicantForm" @submit="onSubmit">
         <div class="row q-pt-sm">
           <div class="col-2 text-right self-center q-pr-sm">
@@ -29,7 +29,7 @@
       v-model:pagination="pagination"
       hide-pagination>
 
-        <template v-slot:top >
+        <template v-if="!bo" v-slot:top >
           <q-btn color="negative" class="no-shadow q-ml-md" v-if="selectedMemo.length >0" :label="$t('common.delete')"  @click="deleteItem"/>
         </template>
 
@@ -41,14 +41,14 @@
 
         <template v-slot:body-cell-content="props">
           <q-td :props="props">
-            <q-input v-if="isRowSelected(props.rowIndex) " outlined dense v-model="editableContect['content']" />
+            <q-input v-if="isRowSelected(props.rowIndex) && !bo" outlined dense v-model="editableContect['content']" />
             <template v-if="!isRowSelected(props.rowIndex)">
               {{ props.row.content }}
             </template>
           </q-td>
         </template>
 
-        <template v-slot:body-cell-edit="props">
+        <template v-if="!bo" v-slot:body-cell-edit="props">
           <EditButton :props="props" color="primary"
             :on-edit="() => { editableContect = JSON.parse(JSON.stringify(props.row))}"
             :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
@@ -65,15 +65,18 @@ import { computed, Ref, ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { Applicant, ApplicantMemo } from 'src/shared/model';
+import { Applicant, ApplicantMemo, BackOrderModel } from 'src/shared/model';
 import { collection, where, query, getFirestore, getDocs, doc as docDb, getDoc, serverTimestamp, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { getAuth, User } from '@firebase/auth';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 
-const props = defineProps<{
-  applicant: Applicant
-}>()
+const props = withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(), {
+  bo: null
+})
 
 
 const db = getFirestore();

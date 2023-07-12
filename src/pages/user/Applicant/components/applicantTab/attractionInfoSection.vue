@@ -1,5 +1,6 @@
 <template>
   <DropDownEditGroup
+  :bo="bo"
     :isEdit="edit"
     :label="$t('applicant.list.info.attraction')"
     @openEdit="edit = true"
@@ -21,7 +22,7 @@
       <div class="row q-pb-sm q-pt-sm col-12" v-if="!data['attractionsStatus']">
         <NGReasonSelect
           :value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')':''):''"
-          :edit="edit" 
+          :edit="edit"
           :label="$t('applicant.list.fixEmployment.'+reasonKey)"
           :reasonValue="data[reasonKey]"
           @update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
@@ -153,7 +154,7 @@
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
 import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
-import { Applicant, ApplicantInputs, selectOptions } from 'src/shared/model';
+import { Applicant, ApplicantInputs, BackOrderModel, selectOptions } from 'src/shared/model';
 import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
@@ -166,9 +167,12 @@ import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = defineProps<{
-  applicant: Applicant
-}>()
+const props = withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(),{
+  bo:null
+})
 const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
 const data: Ref<Partial<ApplicantInputs>> = ref({})
 const edit = ref(false);

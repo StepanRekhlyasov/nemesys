@@ -10,7 +10,7 @@
             <div style="height: 90px; max-width: 90px; width: 90px" class="relative-position">
               <q-img v-if="selectedApplicant.imageURL" :src="selectedApplicant.imageURL" spinner-color="white"
                 style="height: 90px; width: 90px" />
-              <q-btn icon="edit" class="absolute-center" flat @click="chooseFiles" />
+              <q-btn v-if="!bo" icon="edit" class="absolute-center" flat @click="chooseFiles" />
               <q-file ref="fileUploadRef" class="hidden" name="applicant_image" v-model="applicantImage" use-chips
                 borderless multiple bg-color="white" @update:model-value="onFileChange" accept=".jpg, image/*">
               </q-file>
@@ -21,7 +21,8 @@
               <div class="col-9 flex items-center">
                 <span class="text-h6 text-weight-bold q-pr-xs">{{ selectedApplicant.name }}</span>{{ age ? `(${age})` : '' }} {{ selectedApplicant.sex && $t('applicant.add.'+selectedApplicant.sex) }}
                 <div class="q-pl-md">
-                  <q-select :options="statusOption" v-model="applicantStore.state.selectedApplicant.status" color="black" label-color="black" rounded standout bg-color="white" dense @update:model-value="changeApplicantStatus" emit-value map-options class="select_colorFix"/>
+                  <q-select v-if="!bo" :options="statusOption" v-model="applicantStore.state.selectedApplicant.status" color="black" label-color="black" rounded standout bg-color="white" dense @update:model-value="changeApplicantStatus" emit-value map-options class="select_colorFix"/>
+                  <span v-else class="row" color="black" label-color="black" rounded standout bg-color="white">{{ $t(`applicant.statusOption.${applicantStore.state.selectedApplicant.status}`) }}</span>
                 </div>
               </div>
               <div class="col-3">
@@ -65,11 +66,11 @@
 
       <q-card-section class="bg-white q-ma-md">
         <div class="row q-pb-sm">
-          <div class="col-4 row">
-            <q-btn class="bg-primary text-white q-mb-md" :label="$t('applicant.attendant.assignToBo')"/>
-            <div class="col-4 text-right text-primary text-weight-regular"> {{ $t('applicant.list.qualification') }}
+          <div class="col-6 row">
+            <q-btn v-if="bo" class="bg-primary text-white q-mb-md col-6" :label="$t('applicant.attendant.assignToBo')"/>
+            <div :class="!bo?'col-6 text-right text-primary text-weight-regular':'col-3 text-right text-primary text-weight-regular'"> {{ $t('applicant.list.qualification') }}
             </div>
-            <div class="col-8 q-pl-md" v-if="selectedApplicant.qualification">
+            <div :class="bo?'col-3 q-pl-md':'col-6 q-pl-md'" v-if="selectedApplicant.qualification">
               {{ selectedApplicant.qualification.map(applic => $t('applicant.add.' + applic)).join(', ') }}
             </div>
           </div>
@@ -80,7 +81,7 @@
             <span class="col-3 q-pl-md">
               {{selectedApplicant.totalYear ? selectedApplicant.totalYear +$t('common.year') : ''}}
             </span>
-            <div class="col-3 text-right">
+            <div v-if="!bo" class="col-3 text-right">
               <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
             </div>
           </div>
@@ -111,14 +112,14 @@
           <div class="col-6 row">
             <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays')}}</span>
             <span class="col-3 q-pl-md">{{selectedApplicant.daysToWork ? selectedApplicant.daysToWork + '' + $t('applicant.attendant.days') : ''}}</span>
-            <div class="col-3 text-right">
+            <div v-if="!bo" class="col-3 text-right">
               <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary" />
             </div>
           </div>
         </div>
       </q-card-section>
       <q-card-section class="q-pt-none" v-if="drawerRight">
-        <detail-tabs :applicant="applicantStore.state.selectedApplicant"/>
+        <detail-tabs :bo="bo" :applicant="applicantStore.state.selectedApplicant"/>
       </q-card-section>
     </q-card>
   </q-scroll-area>
@@ -136,6 +137,7 @@ import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { BackOrderModel } from 'src/shared/model';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
@@ -150,6 +152,13 @@ const openDrawer = async (data : Applicant) => {
   applicantStore.state.selectedApplicant = data;
   setTimeout(() => drawerRight.value = true, 300);
 }
+
+const props = withDefaults(defineProps<{
+  bo: BackOrderModel | null,
+}>(), {
+  bo: null
+})
+
 defineExpose({ openDrawer })
 const changeApplicantStatus = async () => {
   try{

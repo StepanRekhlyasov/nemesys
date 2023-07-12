@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, defineEmits, withDefaults } from 'vue'
+import { BackOrderModel } from 'src/shared/model';
+
 const show = ref(false)
 
 const { t } = useI18n({ useScope: 'global' });
@@ -13,12 +15,14 @@ withDefaults(defineProps<{
     isDisabledButton?: boolean
     isWithoutCancel?: boolean
     theme?: string
+    bo:BackOrderModel | null
 }>(), {
   isButton: true,
   isDisabledButton: false,
   isLabelSquare: false,
   isWithoutCancel: false,
-  theme: 'primary'
+  theme: 'primary',
+  bo:null
 })
 
 const emit = defineEmits<{
@@ -43,17 +47,17 @@ const emit = defineEmits<{
               class="text-grey-9" @click="show = true" v-else />
           </div>
         </div>
-        <div class="col-3 text-right" v-if="show || !isButton">
-          <q-btn v-if="!isEdit" 
-            :label="t('common.edit')" :color="theme" 
-            outline  icon="edit" @click="emit('openEdit')" 
+        <div class="col-3 text-right" v-if="!bo && (show || !isButton)">
+          <q-btn v-if="!isEdit"
+            :label="t('common.edit')" :color="theme"
+            outline  icon="edit" @click="emit('openEdit')"
             class="no-shadow q-ml-lg" size="sm" :disable="isDisabledButton" />
-          <q-btn v-if="isEdit" 
-            :label="t('common.save')" :color="theme" 
-            @click="emit('onSave')" size="sm" 
+          <q-btn v-if="isEdit"
+            :label="t('common.save')" :color="theme"
+            @click="emit('onSave')" size="sm"
             :disable="isDisabledButton" />
-          <q-btn v-if="(isEdit && !isWithoutCancel)" 
-            :label="t('common.cancel')" class="q-ml-md" 
+          <q-btn v-if="(isEdit && !isWithoutCancel)"
+            :label="t('common.cancel')" class="q-ml-md"
             outline :color="theme" @click="emit('closeEdit')"
             size="sm" />
         </div>

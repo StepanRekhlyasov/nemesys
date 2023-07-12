@@ -1,5 +1,6 @@
 <template>
   <DropDownEditGroup
+  :bo="bo"
     :isEdit="desiredEdit"
     :label="'1.'+ $t('applicant.attendant.desiredConditions')"
     @openEdit="desiredEdit = true"
@@ -13,7 +14,7 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ data['timeAvailable'] ? timestampToDateFormat(applicant.timeToWork) : timestampToDateFormat(applicant.attendingDate) }}</span>
         <template v-if="desiredEdit">
-          <q-checkbox v-model="data['timeAvailable']" 
+          <q-checkbox v-model="data['timeAvailable']"
           :label="data['timeAvailable']? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')"/>
           <q-input v-if="data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"  :disable="loading">
             <template v-slot:prepend>
@@ -47,11 +48,11 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ daysPerWeekComputed }}</span>
         <template v-if="desiredEdit">
-          <q-option-group 
+          <q-option-group
             type="checkbox"
             :disable="loading"
             :options="days"
-            v-model="data['daysPerWeek']" 
+            v-model="data['daysPerWeek']"
           />
         </template>
       </div>
@@ -61,11 +62,11 @@
       <div class="col-3 q-pl-md blue self-center">
         <span v-if="!desiredEdit">{{ specialDayComputed }}</span>
         <template v-if="desiredEdit">
-          <q-option-group 
+          <q-option-group
             type="checkbox"
             :disable="loading"
             :options="specialDays"
-            v-model="data['specialDay']" 
+            v-model="data['specialDay']"
           />
         </template>
       </div>
@@ -148,7 +149,7 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
-        
+
         <q-select v-if="desiredEdit" outlined v-model="data['nearestStation']"
           :options="stationData" :disable="!data['route'] || loading" dense />
       </div>
@@ -173,7 +174,7 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityDesired }}</span>
-        <q-select outlined dense multiple :options="facilityOp" 
+        <q-select outlined dense multiple :options="facilityOp"
           use-chips emit-value map-options v-if="desiredEdit"  option-label="name"
           v-model="data['facilityDesired']" :disable="loading"/>
       </div>
@@ -240,7 +241,7 @@ import { daysList, PossibleTransportationServicesList, specialDaysList } from 's
 import { computed, onMounted, ref, watch } from 'vue';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
@@ -248,9 +249,12 @@ import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = defineProps<{
-  applicant: Applicant
-}>()
+const props = withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(), {
+  bo: null
+})
 const applicantStore = useApplicant();
 const { t } = i18n.global;
 

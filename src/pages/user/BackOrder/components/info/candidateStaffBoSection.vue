@@ -32,7 +32,7 @@
       </template>
     </q-table>
   </q-card-section>
-  <ApplicantDetails ref="detailsDrawer" />
+  <ApplicantDetails :bo="bo" ref="detailsDrawer" />
 </template>
 
 <script lang="ts" setup>

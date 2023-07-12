@@ -1,5 +1,6 @@
 <template>
   <DropDownEditGroup
+  :bo="bo"
     :isEdit="edit"
     :label="'2.'+ $t('applicant.attendant.workExperience')"
     @openEdit="edit = true"
@@ -9,7 +10,7 @@
         <div class="text-blue text-weight-regular self-center text-subtitle1 ">
           [{{ $t('applicant.attendant.experienceDetails') }}]
         </div>
-        <q-btn :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="editExperience=undefined;openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
+        <q-btn v-if="!bo" :label="$t('common.addNew')" color="primary" icon="mdi-plus-thick" @click="editExperience=undefined;openDialog=true" class="no-shadow q-ml-lg" size="sm"/>
       </div>
 
       <div class="row q-pa-sm"></div>
@@ -73,12 +74,12 @@
         </template>
 
 
-        <template v-slot:body-cell-edit="props">
+        <template v-if="!bo" v-slot:body-cell-edit="props">
           <q-td :props="props">
             <q-btn icon="mdi-pencil-outline" size="sm" round style="color: #175680" flat @click="editExperience=props.row;openDialog=true;"/>
           </q-td>
         </template>
-        <template v-slot:body-cell-delete="props">
+        <template v-if="!bo" v-slot:body-cell-delete="props">
           <q-td :props="props">
             <q-btn style="color: #222222" icon="delete" size="sm" round flat @click="deleteExperience(props.row)" />
           </q-td>
@@ -116,15 +117,18 @@ import { useI18n } from 'vue-i18n';
 import { collection, getFirestore, onSnapshot, query, where, Timestamp } from '@firebase/firestore';
 import workExperienceForm from './WorkExperienceForm.vue';
 import { differentDateYear, timestampToDateFormat, toDate } from 'src/shared/utils/utils';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, BackOrderModel } from 'src/shared/model';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useApplicant } from 'src/stores/applicant';
 import { workExpColumns as columns } from 'src/shared/constants/Applicant.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = defineProps<{
-  applicant: Applicant
-}>();
+const props = withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(), {
+  bo: null
+})
 const applicantStore = useApplicant();
 
 const loading = ref(false);
@@ -170,7 +174,7 @@ function deleteExperience(experience : Partial<ApplicantExperienceInputs>) {
       loading.value = true;
       await applicantStore.saveWorkExperience({
         id : experience.id,
-        deleted: true, 
+        deleted: true,
       }, props.applicant.id)
       load();
     } catch (e) {

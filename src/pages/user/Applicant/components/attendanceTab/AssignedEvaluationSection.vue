@@ -1,5 +1,6 @@
 <template>
   <DropDownEditGroup
+  :bo="bo"
   :isEdit="edit"
   :label="'4.'+ $t('applicant.attendant.assignedEvaluation')"
   @openEdit="edit = true"
@@ -60,12 +61,15 @@ import { expertiseLevelList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { useApplicant } from 'src/stores/applicant';
-import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = defineProps<{
-  applicant: Applicant
-}>();
+const props = withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(), {
+  bo: null
+})
 const applicantStore = useApplicant();
 const staffRank = computed(() => props.applicant['staffRank'] && RankCount.getRank(props.applicant['staffRank']))
 const edit = ref(false);

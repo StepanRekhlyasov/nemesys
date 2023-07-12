@@ -1,5 +1,6 @@
 <template>
   <DropDownEditGroup
+  :bo="bo"
     :isEdit="edit"
     :label="$t('applicant.list.info.application')"
     @openEdit="edit = true"
@@ -59,7 +60,7 @@
         {{ $t('applicant.list.info.apply') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.applicationMetod? $t('applicant.add.'+applicant.applicationMetod) :''}}</span>        
+        <span v-if="!edit">{{ applicant.applicationMetod? $t('applicant.add.'+applicant.applicationMetod) :''}}</span>
         <q-select v-if="edit" outlined dense :options="applicationMethodOption"
           emit-value map-options v-model="data['applicationMetod']" :disable="loading"/>
       </div>
@@ -167,14 +168,17 @@ import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
-import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = defineProps<{
-  applicant: Applicant
-}>()
+const props =withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(),{
+  bo:null
+})
 const defaultData = ref<Partial<ApplicantInputs>>({})
 const data = ref<Partial<ApplicantInputs>>({})
 const edit = ref(false);

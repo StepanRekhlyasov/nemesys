@@ -10,39 +10,39 @@
     inline-label
     switch-indicator
     active-bg-color="white">
-      <q-tab name="contactInfo" :label="$t('applicant.list.contactInfo')" />
+      <q-tab v-if="!bo" name="contactInfo" :label="$t('applicant.list.contactInfo')" />
       <q-tab name="applicationInfo" :label="$t('applicant.list.applicationInfo')" />
       <q-tab name="attendanceInfo" :label="$t('applicant.list.attendanceInfo')" />
-      <q-tab name="fixEmployInfo" :label="$t('applicant.list.fixEmployInfo')" />
-      <q-tab name="operationInfo" :label="$t('applicant.list.operationInfo')" />
+      <q-tab v-if="!bo" name="fixEmployInfo" :label="$t('applicant.list.fixEmployInfo')" />
+      <q-tab v-if="!bo" name="operationInfo" :label="$t('applicant.list.operationInfo')" />
       <q-tab name="memo" :label="$t('client.list.memo')" />
   </q-tabs>
 
   <q-separator />
 
   <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="contactInfo">
+      <q-tab-panel v-if="!bo" name="contactInfo">
         <contactInfo :applicant="applicant" :key="applicant.id"/>
       </q-tab-panel>
 
       <q-tab-panel name="applicationInfo">
-        <applicationInfo :applicant="applicant" :key="applicant.id"/>
+        <applicationInfo :bo="bo" :applicant="applicant" :key="applicant.id"/>
       </q-tab-panel>
 
       <q-tab-panel name="attendanceInfo">
-        <attendanceInfo :applicant="applicant" />
+        <attendanceInfo :bo="bo" :applicant="applicant" />
       </q-tab-panel>
 
-      <q-tab-panel name="fixEmployInfo">
+      <q-tab-panel v-if="!bo" name="fixEmployInfo">
         <fixEmployInfo :applicant="applicant" :key="applicant.id" />
       </q-tab-panel>
 
-      <q-tab-panel name="operationInfo">
+      <q-tab-panel v-if="!bo" name="operationInfo">
         <operationInfoComponent :applicant="applicant"/>
       </q-tab-panel>
-      
+
       <q-tab-panel name="memo">
-        <applicantMemo :applicant="applicant"/>
+        <applicantMemo :bo="bo" :applicant="applicant"/>
       </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -57,11 +57,14 @@ import applicationInfo from './applicantTab/applicationInfoTab.vue';
 import attendanceInfo from './attendanceTab/attendanceTab.vue';
 import operationInfoComponent from './operationInfoTab.vue';
 import applicantMemo from './memoTab.vue';
-import { Applicant } from 'src/shared/model';
+import { Applicant, BackOrderModel } from 'src/shared/model';
 
 const tab = ref('contactInfo');
-defineProps<{
-  applicant: Applicant
-}>()
+withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(), {
+  bo: null
+})
 
 </script>

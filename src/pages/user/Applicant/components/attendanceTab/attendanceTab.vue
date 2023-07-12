@@ -1,23 +1,23 @@
 <template>
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-none q-mb-none">
-      <attendanceInfoComponent :applicant="applicant"/>
+      <attendanceInfoComponent :bo="bo" :applicant="applicant"/>
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <desiredConditionsComponent :applicant="applicant"/>
+      <desiredConditionsComponent :bo="bo" :applicant="applicant"/>
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <workExperienceComponent :applicant="applicant"/>
+      <workExperienceComponent :bo="bo" :applicant="applicant"/>
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <personalStatusComponent :applicant="applicant"/>
+      <personalStatusComponent :bo="bo" :applicant="applicant"/>
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <assignedEvaluationComponent :applicant="applicant"/>
+      <assignedEvaluationComponent :bo="bo" :applicant="applicant"/>
     </q-card-section>
   </q-card>
 </template>
@@ -28,8 +28,11 @@ import desiredConditionsComponent from './DesiredSection.vue';
 import workExperienceComponent from './WorkExperienceSection.vue';
 import assignedEvaluationComponent from './AssignedEvaluationSection.vue';
 import personalStatusComponent from './PersonalSection.vue';
-import { Applicant } from 'src/shared/model';
-defineProps<{
-  applicant: Applicant
-}>()
+import { Applicant, BackOrderModel } from 'src/shared/model';
+withDefaults(defineProps<{
+  applicant: Applicant,
+  bo:BackOrderModel | null
+}>(),{
+  bo:null
+})
 </script>
