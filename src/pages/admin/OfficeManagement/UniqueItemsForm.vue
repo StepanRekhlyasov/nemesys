@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { uid } from 'quasar';
+import { uid, is } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { watch, ref } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
@@ -9,7 +9,7 @@ import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue'
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useIndsutry } from 'src/stores/industry';
 import { FacilityForm, Industry, SpecificItem } from 'src/shared/model/Industry.model';
-import { arraysAreEqual, deepCopy } from 'src/shared/utils';
+import { deepCopy } from 'src/shared/utils';
 const { t } = useI18n({ useScope: 'global' });
 
 const industryStore = useIndsutry()
@@ -28,7 +28,7 @@ const handleActiveIndustry = (selectedIndustry: Industry) => {
 }
 
 const isCanBeSaved = ref({
-    specificTypes: false,
+    typeSpecificItems: false,
     facilityForms: false
 })
 const isLoading = ref(isFirstLoading)
@@ -40,8 +40,9 @@ const resetSaveButtons = () => {
 }
 
 const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
+    isLoading.value = true
+    isCanBeSaved.value[key] = false
     if(activeIndustry.value && industryToUpdate.value) {
-        isLoading.value = true
 
         const updatedIndustry = {
             ...activeIndustry.value,
@@ -52,23 +53,30 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
         };
         await updateIndustry(activeIndustry.value.id, updatedIndustry)
 
-        isLoading.value = false
     }
+
+    isLoading.value = false
 }
 
-const newSpecificTypeHandle = (data: {title: string, dataType: string}) => {
-    industryToUpdate.value?.uniqueItems.typeSpecificItems.push({...data, id: uid()})
+const newSpecificTypeHandle = (data: { title: string, dataType: string }) => {
+    const id = uid();
+    if(industryToUpdate.value) {
+        industryToUpdate.value.uniqueItems.typeSpecificItems[id] = { ...data };
 
-    if(!arraysAreEqual(industryToUpdate.value?.uniqueItems.typeSpecificItems as Array<SpecificItem>, activeIndustry.value?.uniqueItems.typeSpecificItems as Array<SpecificItem>)) {
-        isCanBeSaved.value.specificTypes = true
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>, activeIndustry.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>)) {
+            isCanBeSaved.value.typeSpecificItems = true;
+        }
     }
 }
 
 const newFacilityForm = (data: string) => {
-    industryToUpdate.value?.uniqueItems.facilityForms.push({id: uid(), title: data})
+    const id = uid();
+    if(industryToUpdate.value) {
+        industryToUpdate.value.uniqueItems.facilityForms[id] = { title: data };
 
-    if(!arraysAreEqual(industryToUpdate.value?.uniqueItems.facilityForms as Array<FacilityForm>, activeIndustry.value?.uniqueItems.facilityForms as Array<FacilityForm>)) {
-        isCanBeSaved.value.facilityForms = true
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.facilityForms as Record<string, FacilityForm>, activeIndustry.value?.uniqueItems.facilityForms as Record<string, FacilityForm>)) {
+            isCanBeSaved.value.facilityForms = true;
+        }
     }
 }
 
@@ -98,7 +106,7 @@ watch(() => industries.value, () => {
                 :label="t('industry.specificTypeItems') + ' (' + t('client.add.officeInfo') + ')'"
                 :is-edit="true"
                 :isLabelSquare="true"
-                :is-disabled-button="!isCanBeSaved.specificTypes"
+                :is-disabled-button="!isCanBeSaved.typeSpecificItems"
                 :is-without-cancel="true"
                 @on-save="updateIndustryHandler('typeSpecificItems')"
                 theme="accent">

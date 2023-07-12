@@ -35,7 +35,7 @@ watch(clientData, () => {
                         TEL
                         <span class="text-red-5">*</span>
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['tel']" :placeholder="t('client.add.phoneLabel')"
+                    <q-input :color="theme" outlined dense v-model="clientData['tel']" :placeholder="t('client.add.phoneLabel')"
                         lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
                 </div>
                 <div class="col-6 q-pl-sm">
@@ -43,7 +43,7 @@ watch(clientData, () => {
                         FAX
                         <span class="text-red-5">*</span>
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['fax']" :placeholder="t('client.add.phoneLabel')"
+                    <q-input :color="theme" outlined dense v-model="clientData['fax']" :placeholder="t('client.add.phoneLabel')"
                         lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
                 </div>
             </div>
@@ -52,7 +52,7 @@ watch(clientData, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.email') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['mail']"
+                    <q-input :color="theme" outlined dense v-model="clientData['mail']"
                         :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')" />
                 </div>
                 <div class="col-6 q-pl-sm q-pt-lg">
@@ -65,13 +65,13 @@ watch(clientData, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.homePage') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['homePage']" />
+                    <q-input :color="theme" outlined dense v-model="clientData['homePage']" />
                 </div>
                     <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         {{ t('office.numberEmployees') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['numberEmployees']" />
+                    <q-input :color="theme" outlined dense v-model="clientData['numberEmployees']" />
                 </div>
             </div>
 

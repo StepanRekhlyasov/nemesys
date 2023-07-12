@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineEmits, defineProps, watch } from 'vue';
+import { ref, defineEmits, defineProps, withDefaults, watch } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     modelValue: string
-}>()
+    theme?: string
+}>(), {
+    theme: 'primary'
+})
 
 const emit = defineEmits(['update:modelValue'])
 const localName = ref(props.modelValue)
@@ -23,7 +26,7 @@ watch(localName, (newVal) => {
                 {{ t('client.add.officeName') }}
                 <span class="text-red-5">*</span>
             </q-item-label>
-            <q-input outlined dense v-model="localName" :placeholder="t('client.add.clientLabel')" lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+            <q-input :color="theme" outlined dense v-model="localName" :placeholder="t('client.add.clientLabel')" lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
         </q-item-section>
     </q-item>
 </template>
