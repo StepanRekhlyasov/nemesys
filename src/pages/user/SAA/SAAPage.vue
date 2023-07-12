@@ -119,7 +119,7 @@ async function getData(){
   }
 
   [boData.value, faxData.value, callData.value, fixList.value] = await Promise.all([
-    backOrderStore.getBoByConstraints(constraints),
+    backOrderStore.getBOByConstraints(constraints),
     userStore.getSAAFaxList(dateRange.value),
     userStore.getSAACallList(dateRange.value),
     userStore.getSAAFixList(organizationStore.state.currentOrganizationUsers, dateRange.value)

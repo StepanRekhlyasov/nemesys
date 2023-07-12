@@ -36,20 +36,6 @@ export const useBackOrder = defineStore('backOrder', () => {
       total_results: 0,
     },
   });
-
-  async function getBoByConstraints(constraints : ConstraintsType = []){
-    const docsSnap = await getDocs(query(
-			collection(db, '/BO'),
-			...constraints
-		))
-    return docsSnap.docs.map(row => {
-			return {
-				...row.data(),
-				id: row.id
-			} as BackOrderModel
-		})
-  }
-
  
   const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
@@ -377,6 +363,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     getClientFactoryBackOrder,
     getBoById,
     deleteBO,
-    getBoByConstraints
+    getBOByConstraints
   };
 });
