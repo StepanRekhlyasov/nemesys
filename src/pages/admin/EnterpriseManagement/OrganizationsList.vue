@@ -197,7 +197,12 @@ async function onRowSave(props: { row: Row, rowIndex: number }) {
 
 async function searchOrganizations(name: string) {
   loading.value = true
-  const organizations = await organizationStore.getOrganizationsByName(name)
+  if (!name) {
+    return
+  }
+  const organizations = rows.value.filter(function (el) {
+    return el['name'].toLowerCase().includes(name.toLowerCase()) || el['code'].toLowerCase().includes(name.toLowerCase())
+  });
   rows.value = await mapOrganizationsToRow(organizations)
   loading.value = false
 }
