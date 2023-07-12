@@ -107,7 +107,7 @@
   <div class="row justify-start q-mt-md q-mb-md pagination">
     <TablePagination :isAdmin="true" ref="paginationRef" :pagination="pagination" @on-data-update="async (newData) => {
       rows = await mapOrganizationsToRow(newData as Organization[])
-      rowsList = rows
+      copyRows = rows
       await forceReRender()
     }" @on-loading-state-change="(v) => loading = v" :disable="!sortable" />
   </div>
@@ -163,7 +163,7 @@ const organizationStore = useOrganization()
 
 const editableRow = ref<Row>()
 const rows = ref<Rows>([])
-const rowsList = ref<Rows>([])
+const copyRows = ref<Rows>([])
 
 const isEqual = ref(false)
 
@@ -199,8 +199,10 @@ async function onRowSave(props: { row: Row, rowIndex: number }) {
 
 async function searchOrganizations(name: string) {
   loading.value = true
-  rows.value = [...rowsList.value]
+  rows.value = [...copyRows.value]
+  console.log(name)
   if (!name) {
+    loading.value = false
     return
   }
   const organizations = rows.value.filter(function (el) {

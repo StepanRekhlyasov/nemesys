@@ -207,8 +207,10 @@ async function refresh() {
 
 async function searchUsers() {
   loading.value = true
-  const users = await userStore.searchUsers(search.value)
-  setUsers(users)
+  usersListData.value = [...copyUsersListData.value]
+  usersListData.value = usersListData.value.filter(function (el) {
+    return el['displayName'].includes(search.value)
+  });
   loading.value = false
 }
 
