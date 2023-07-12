@@ -1189,7 +1189,7 @@ export default {
       send:'送信',
       sendSMS:'SMS送信',
       sendContent:'送信内容',
-      characters:'キャラクター',
+      characters:'文字',
       content:'コンテンツ',
       template:'テンプレート',
       form:'提出フォーム',

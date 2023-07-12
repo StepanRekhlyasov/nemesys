@@ -3,11 +3,8 @@
     <div class="row bg-white cover">
       <p class="text-h7 text-primary">■{{ t('backOrder.sms.sendContent') }}</p>
     </div>
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm">
-      <p>{{ t('backOrder.sms.form') }}</p>
-    </div>
 
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl">
+    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm">
       <div class="col-2 q-pl-xl">
         <p>{{ t('backOrder.sms.template') }}</p>
       </div>
@@ -18,7 +15,7 @@
 
     <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm q-pb-sm cover">
       <div class="col-2 q-pl-xl">
-        <p>{{ t('backOrder.sms.content') }}</p>
+        <p>{{ t('backOrder.sms.sendContent') }}</p>
       </div>
       <div class="col-3 cover80">
         <textarea v-model="messsage" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }"></textarea>
