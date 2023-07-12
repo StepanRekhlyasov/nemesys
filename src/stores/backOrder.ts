@@ -50,26 +50,138 @@ export const useBackOrder = defineStore('backOrder', () => {
 		})
   }
 
-	async function loadBackOrder() {
-		const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc')]
-		const docs = await getDocs(query(
-			collection(db, '/BO'),
-			...constraints
-		))
+ 
+  const formatDate = (dt: Date, midNight = false) => {
+    const year = dt.toLocaleString('en-US', { year: 'numeric' });
+    const month = dt.toLocaleString('en-US', { month: '2-digit' });
+    const day = dt.toLocaleString('en-US', { day: '2-digit' });
+    if (midNight) {
+      return year + '-' + month + '-' + day + 'T00:00:00+00:00';
+    }
+    return year + '-' + month + '-' + day + 'T23:59:59+00:00';
+  };
 
-		const list:BackOrderModel[] = []
-		docs.forEach(row => {
-			const data = row.data()
-			list.push({
-				...data,
-				id: row.id
-			} as BackOrderModel)
-		})
-		state.value.BOList = list
-	}
-  async function getBoById(id: string){
-    const docSnap = await getDoc(doc(db, 'BO/'+id))
-    return {...docSnap.data(), id: docSnap.id} as BackOrderModel
+  async function loadBackOrder(searchData: BOElasticSearchData) {
+    state.value.currentIds = [];
+    state.value.BOList = [];
+    state.value.isLoadingProgress = true;
+
+    const filters: BOElasticFilter = ref({ all: [{ deleted: 'false' }] }).value;
+    let queryString = '';
+
+    if (searchData['keyword']) {
+      queryString = searchData['keyword'];
+    }
+    if (searchData.registrationDateMin && searchData.registrationDateMax) {
+      filters['all'].push({
+        created_at: {
+          from: formatDate(new Date(searchData.registrationDateMin), true),
+          to: formatDate(new Date(searchData.registrationDateMax)),
+        },
+      });
+    } else if (searchData.registrationDateMin) {
+      filters['all'].push({
+        created_at: {
+          from: formatDate(new Date(searchData.registrationDateMin), true),
+        },
+      });
+    } else if (searchData.registrationDateMax) {
+      filters['all'].push({
+        created_at: {
+          to: formatDate(new Date(searchData.registrationDateMax)),
+        },
+      });
+    }
+
+    if (searchData.ageMin) {
+      filters['all'].push({
+        upperagelimit: { from: parseInt(searchData.ageMin) },
+      });
+    }
+    if (searchData.ageMax) {
+      filters['all'].push({
+        upperagelimit: { to: parseInt(searchData.ageMax) },
+      });
+    }
+
+    const items = ['boid', 'qualifications', 'employmenttype', 'experience', 'category', 'casetype',];
+    for (let i = 0; i < items.length; i++) {
+      if (searchData[items[i]] && searchData[items[i]].length > 0) {
+        const obj = {};
+        obj[items[i]] = searchData[items[i]];
+        filters['all'].push(obj);
+      }
+    }
+
+    if (searchData.mapData) {
+      filters['all'].push({
+        geohash: {
+          center: `${searchData.mapData.lat}, ${searchData.mapData.lng}`,
+          distance: searchData.mapData.radiusInM,
+          unit: 'm',
+        },
+      });
+    }
+
+    await api
+      .post(
+        process.env.elasticSearchBOURL as string,
+        {
+          query: queryString,
+          page: { size: 30, current: 1 },
+          filters: filters,
+        },
+        {
+          headers: {
+            Authorization: process.env.elasticSearchKey,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status == 200) {
+          const responseData = response.data.results;
+          state.value.metaData = response.data.meta.page;
+          for (let i = 0; i < responseData.length; i++) {
+            state.value.currentIds.push(responseData[i]['id']['raw']);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    loadBOData();
+  }
+
+  const loadBOData = async () => {
+    state.value.BOList = [];
+    state.value.isLoadingProgress = true;
+    while (state.value.currentIds.length) {
+      const batch = state.value.currentIds.splice(0, 10);
+      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch),]);
+      for (let i = 0; i < boList.length; i++) {
+        boList[i]['dateOfRegistration'] = timestampToDateFormat(
+          boList[i]['dateOfRegistration'] as Timestamp
+        );
+      }
+
+      state.value.BOList = boList;
+    }
+    state.value.isLoadingProgress = false;
+  };
+
+  async function getBOByConstraints(constraints: ConstraintsType) {
+    const q = query(collection(db, 'BO'), ...constraints);
+    const snapshot = await getDocs(q);
+    return snapshot?.docs.map((doc) => {
+      return doc.data() as BackOrderModel;
+    });
+  }
+
+  async function getBoById(id: string) {
+    const docSnap = await getDoc(doc(db, 'BO/' + id));
+    return { ...docSnap.data(), id: docSnap.id } as BackOrderModel;
   }
   async function addBackOrder(backOrderData) {
     const auth = getAuth();
@@ -253,6 +365,18 @@ export const useBackOrder = defineStore('backOrder', () => {
     const numberMap: { [key: string]: number } = { one: 1, two: 2, three: 3, four: 4, five: 5, };
     return numberMap[num];
   };
-
-  return { state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBoByConstraints }
-})
+  return {
+    state,
+    getDistance,
+    matchData,
+    loadBackOrder,
+    addBackOrder,
+    getClientBackOrder,
+    deleteBackOrder,
+    updateBackOrder,
+    getClientFactoryBackOrder,
+    getBoById,
+    deleteBO,
+    getBoByConstraints
+  };
+});
