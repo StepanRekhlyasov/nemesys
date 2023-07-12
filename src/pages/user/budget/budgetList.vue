@@ -4,12 +4,14 @@
       <span class="text-h6 text-primary ">{{ $t('budget.search') }}</span>
       <span class="q-pl-md q-pt-sm">{{ $t('client.variousAchievement.displayPeriod') }}</span>
       <q-select v-model="selectedYear" :options="yearOptions" class="q-ml-sm" outlined
-        style="max-width: 250px;min-width: 100px;" color="black" dense bg-color="white" emit-value map-options />
+        style="max-width: 250px;min-width: 150px;" color="black" dense bg-color="white" emit-value map-options />
       <span class="q-ml-sm q-pt-sm">{{ $t('common.year') }}</span>
       <q-select v-model="selectedMonth" :options="monthOptions" class="q-ml-sm" outlined
-        style="max-width: 150px;min-width: 100px;" color="black" dense bg-color="white" emit-value map-options />
+        style="max-width: 200px;min-width: 150px;" color="black" dense bg-color="white" emit-value map-options />
 
       <span class="q-ml-sm q-pt-sm">{{ $t('common.month') }}</span>
+      <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg"
+        @click="selectedMonth = null; selectedYear = null" />
     </div>
 
     <div class="row q-pt-md q-pl-lg q-mt-xs q-pb-sm q-mb-xs">
@@ -136,7 +138,7 @@ import { toDate } from 'src/shared/utils/utils';
 import budgetForm from './components/budgetForm.vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { BudgetData, DateOption } from './type/budget'
+import { BudgetData, DateOption, selectedYearMonth } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
@@ -156,18 +158,31 @@ const loading = ref(true);
 
 
 const searchText = ref('')
-const selectedYear = ref(new Date().getFullYear());
-const selectedMonth = ref(new Date().getMonth() + 1);
+const selectedYear = ref<selectedYearMonth>(new Date().getFullYear());
+const selectedMonth = ref<selectedYearMonth>(new Date().getMonth() + 1);
 const drawerRight = ref(false)
-const budgetData = ref<BudgetData>({ id: '' });
+const budgetData = ref<BudgetData>({
+  accountingMonth: '',
+  amount: '',
+  branch: '',
+  id: '',
+  media: '',
+  numberOfSlots: '',
+  occupation: '',
+  postingEndDate: '',
+  postingStartDate: '',
+  unitPrice: '',
+  remark: '',
+  agency: '',
+});
 
-const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value + 1;
-const nextYear = selectedMonth.value == 12 ? selectedYear.value + 1 : selectedYear.value;
+const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value as number + 1;
+const nextYear = selectedMonth.value == 12 ? selectedYear.value as number + 1 : selectedYear.value;
 const start = Timestamp.fromDate(new Date(`${selectedYear.value}-${('0' + selectedMonth.value).slice(-2)}-01`))
 const end = Timestamp.fromDate(new Date(`${nextYear}-${('0' + nextMonth).slice(-2)}-01`))
 const pagination = ref({
   page: 1,
-  rowsPerPage: 5,
+  rowsPerPage: 30,
   path: 'budgets',
   order: orderBy('created_at', 'asc'),
   constraints: [
@@ -213,7 +228,7 @@ const showDeleteDialog = async (budgetIds) => {
   }).onOk(async () => {
     const done = await budgetStore.deleteBudget(budgetIds);
     if (done) {
-      Alert.success($q, t)
+      Alert.success()
       loadPagination.value = loadPagination.value == 0 ? 1 : 0
     }
 
@@ -221,21 +236,22 @@ const showDeleteDialog = async (budgetIds) => {
 }
 
 const importCsv = async () => {
-    const csvFileInput = document.createElement('input');
-    csvFileInput.type = 'file';
-    csvFileInput.accept = '.csv';
-    csvFileInput.addEventListener('change', (event) => {
-      const file = event.target?.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const contents = e.target?.result;
-          budgetStore.processData(contents,selectedYear.value,selectedMonth.value);
-        };
-        reader.readAsText(file);
-      }
-    });
-    csvFileInput.click();
+  const csvFileInput = document.createElement('input');
+  csvFileInput.type = 'file';
+  csvFileInput.accept = '.csv';
+  csvFileInput.addEventListener('change', (event) => {
+    const file = event.target?.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const contents = e.target?.result;
+        budgetStore.processData(contents, selectedYear.value, selectedMonth.value);
+        Alert.success()
+      };
+      reader.readAsText(file);
+    }
+  });
+  csvFileInput.click();
 
 }
 
@@ -252,7 +268,7 @@ const exportCSV = async () => {
   if (budgetItem.length == 0) {
     return false
   }
-  await budgetStore.exportTable(budgetItem);
+  await budgetStore.exportTable(budgetItem as BudgetData[]);
 }
 
 watch(() => selectedYear.value, async (newValue) => {
@@ -297,4 +313,5 @@ thead tr:first-child th {
 
 .buttonbg {
   background-color: #154c79;
-}</style>
+}
+</style>

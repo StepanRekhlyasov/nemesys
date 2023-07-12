@@ -1,4 +1,4 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, collectionGroup, DocumentData, where, Timestamp, doc, getDoc, onSnapshot, writeBatch } from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, collectionGroup, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp } from 'firebase/firestore';
 import { getStorage, ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { defineStore } from 'pinia';
 import { exportFile, date } from 'quasar';
@@ -7,7 +7,8 @@ import { occupationList } from 'src/shared/constants/Applicant.const';
 import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
-import { dateToTimestampFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { BudgetData, selectedYearMonth } from 'src/pages/user/budget/type/budget'
 
 export const useBudget = defineStore('budget', () => {
   const db = getFirestore();
@@ -16,35 +17,30 @@ export const useBudget = defineStore('budget', () => {
   const unsubscribe = ref();
   const auth = getAuth();
 
-  async function saveBudget(budgetData) {
-    const length = await getBudgetLength()
+  async function saveBudget(budgetData: BudgetData) {
     const data = JSON.parse(JSON.stringify(budgetData));
     if (data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
     if (data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
-    let docRef;
+
     if (!data['id']) {
+      const snapshot = await getDocs(query(collection(db, '/budgets')))
+      data['recordNumber'] = snapshot.docs.length + 1;
       data['created_at'] = serverTimestamp();
-      data['recordNumber'] = length + 1;
       data['deleted'] = false;
-      docRef = doc(collection(db, 'budgets'));
+      data['added_by'] = auth.currentUser?.uid;
+      data['updated_at'] = serverTimestamp();
+      const docRef = doc(collection(db, 'budgets'));
       data['id'] = docRef.id;
       await setDoc(docRef, data);
     } else {
-      docRef = doc(db, 'budgets', data['id']);
+      const docRef = doc(db, 'budgets', data['id']);
       data['updated_at'] = serverTimestamp();
+      data['updated_by'] = auth.currentUser?.uid;
       await updateDoc(docRef, data);
     }
     Alert.success()
     return true
   }
-
-  const getBudgetLength = async () => {
-    const budgetsCollection = collection(db, 'budgets');
-    const q = query(budgetsCollection, where('deleted', '==', false));
-    const querySnapshot = await getDocs(q);
-    const length = querySnapshot.docs.length;
-    return length;
-  };
 
   async function getOptionData() {
     const docsMedia = await getDocs(query(collection(db, 'media')));
@@ -64,50 +60,34 @@ export const useBudget = defineStore('budget', () => {
     return options.value;
 
   }
-  async function getBudgetList(selectedYear: number, selectedMonth: number) {
+  async function getBudgetList(selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) {
     await getOptionData();
-    const q = query(collection(db, 'budgets'), where('deleted', '==', false));
+    const constraints = [where('deleted', '==', false)]
+    if (selectedYear && selectedMonth) {
+      constraints.push(where('accountingMonth', '==', `${selectedYear}/${('0' + selectedMonth).slice(-2)}`))
+    }
+    const q = query(collection(db, 'budgets'), ...constraints, orderBy('recordNumber'));
     if (unsubscribe.value) {
       unsubscribe.value();
     }
     unsubscribe.value = onSnapshot(q, (querySnapshot) => {
       const items: DocumentData[] = [];
       querySnapshot.forEach((doc) => {
-        // if(typeof doc.data().accountingMonth==='string'){
-        // }
-        if (doc.data().accountingMonth) {
-          const timeStamp = doc.data().accountingMonth.split('/');
-          const year = Number(timeStamp[0])
-          const month = Number(timeStamp[1])
-          if (year === selectedYear && month === selectedMonth) {
-            const data = doc.data();
-            data['media'] = getItem(data['media'], 'media')
-            data['branch'] = getItem(data['branch'], 'branch')
-            data['occupation'] = getItem(data['occupation'], 'occupation')
-            data['id'] = doc.id
-            data['selected'] = false
-            items.push(data);
-          }
-        }
-        else {
-          const data = doc.data();
-          data['media'] = getItem(data['media'], 'media')
-          data['branch'] = getItem(data['branch'], 'branch')
-          data['occupation'] = getItem(data['occupation'], 'occupation')
-
-          data['id'] = doc.id
-          data['selected'] = false
-          items.push(data);
-        }
+        const data = doc.data();
+        data['media'] = getItem(data['media'], 'media')
+        data['branch'] = getItem(data['branch'], 'branch')
+        data['occupation'] = getItem(data['occupation'], 'occupation')
+        data['id'] = doc.id
+        data['selected'] = false
+        items.push(data);
       });
-      items.sort((a, b) => a.recordNumber - b.recordNumber);
       budgetList.value = items;
     });
   }
   async function getBudgetData(budgetId: string) {
     const applicantRef = doc(db, 'budgets/' + budgetId);
     const result = await getDoc(applicantRef)
-    return { id: result.id, ...result.data() }
+    return { ...result.data() as BudgetData, id: result.id }
   }
 
   const getItem = (item: string, key: string) => {
@@ -117,7 +97,7 @@ export const useBudget = defineStore('budget', () => {
       return obj.label;
     }
   };
-  const deleteBudget = async (budgetIds) => {
+  const deleteBudget = async (budgetIds: string[]) => {
     const updateData = {}
     updateData['deleted'] = true;
     updateData['deleted_by'] = auth.currentUser?.uid;
@@ -172,8 +152,12 @@ export const useBudget = defineStore('budget', () => {
     return `"${formatted}"`
   }
 
-  const exportTable = async (rows) => {
+  const exportTable = async (rows: BudgetData[]) => {
     // naive encoding to csv format
+    for (let i = 0; i < rows.length; i++) {
+      rows[i]['postingStartDate'] = timestampToDateFormat(rows[i]['postingStartDate'] as Timestamp)
+      rows[i]['postingEndDate'] = timestampToDateFormat(rows[i]['postingEndDate'] as Timestamp)
+    }
     const content = '\uFEFF' + [budgetAddItem.value.map(col => wrapCsvValue(col.label))].concat(
       rows.map(row => budgetAddItem.value.map(col => wrapCsvValue(row[col.key])).join(','))
     ).join('\r\n')
@@ -194,22 +178,36 @@ export const useBudget = defineStore('budget', () => {
     }
   }
 
-  const processData = async (data, selectedYear: number, selectedMonth: number) => {
+  const processData = async (data, selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) => {
     const rows = data.split('\r\n')
+    const batch = writeBatch(db);
+    await getOptionData();
+    const snapshot = await getDocs(query(collection(db, '/budgets')))
+    let recordNumber = snapshot.docs.length + 1;
+
     for (let i = 1; i < rows.length; i++) {
       const formateData = rows[i].split(',')
       const budgetData = getFormateData(formateData);
-      await getOptionData();
-
       budgetData.value.media = getColoumnsData('media', budgetData.value.media);
       budgetData.value.branch = getColoumnsData('branch', budgetData.value.branch);
       budgetData.value.occupation = getColoumnsData('occupation', budgetData.value.occupation);
 
-      budgetData.value['postingStartDate'] = getDateFromString(budgetData.value.postingStart)
-      budgetData.value['postingEndDate'] = getDateFromString(budgetData.value.postingEnd)
+      if (budgetData.value['postingStartDate']) budgetData.value['postingStartDate'] = dateToTimestampFormat(new Date(budgetData.value['postingStartDate'] as string)) as Timestamp;
+      if (budgetData.value['postingEndDate']) budgetData.value['postingEndDate'] = dateToTimestampFormat(new Date(budgetData.value['postingEndDate'] as string)) as Timestamp;
 
-      await saveBudget(budgetData.value)
+      budgetData.value['recordNumber'] = recordNumber;
+      budgetData.value['created_at'] = serverTimestamp();
+      budgetData.value['updated_at'] = serverTimestamp();
+      budgetData.value['deleted'] = false;
+      budgetData.value['added_by'] = auth.currentUser?.uid;
+
+      const docRef = doc(collection(db, 'budgets'));
+      budgetData.value['id'] = docRef.id;
+      batch.set(docRef, budgetData.value);
+      recordNumber += 1;
+
     }
+    await batch.commit()
     await getBudgetList(selectedYear, selectedMonth);
   }
 
@@ -223,8 +221,8 @@ export const useBudget = defineStore('budget', () => {
     return correctValue;
   }
 
-  const getFormateData = (formateData) => {
-    const budgetData = ref({
+  const getFormateData = (formateData: BudgetData) => {
+    const budgetData = ref<BudgetData>({
       accountingMonth: '',
       amount: '',
       branch: '',
@@ -232,8 +230,8 @@ export const useBudget = defineStore('budget', () => {
       media: '',
       numberOfSlots: '',
       occupation: '',
-      postingEnd: '',
-      postingStart: '',
+      postingEndDate: '',
+      postingStartDate: '',
       unitPrice: '',
       remark: '',
       agency: '',
@@ -241,24 +239,15 @@ export const useBudget = defineStore('budget', () => {
     budgetData.value.media = formateData[0].replace(/"/g, '');
     budgetData.value.branch = formateData[1].replace(/"/g, '');
     budgetData.value.occupation = formateData[2].replace(/"/g, '');
-    budgetData.value.postingStart = formateData[3].replace(/"/g, '') + ',' + formateData[4].replace(/"/g, '');
-    budgetData.value.postingEnd = formateData[5].replace(/"/g, '') + ',' + formateData[6].replace(/"/g, '');
-    budgetData.value.accountingMonth = formateData[7].replace(/"/g, '');
-    budgetData.value.amount = formateData[8].replace(/"/g, '');
-    budgetData.value.numberOfSlots = formateData[9].replace(/"/g, '');
-    budgetData.value.unitPrice = formateData[10].replace(/"/g, '');
-    budgetData.value.agency = formateData[11].replace(/"/g, '');
-    budgetData.value.remark = formateData[12].replace(/"/g, '');
+    budgetData.value.postingStartDate = formateData[3].replace(/"/g, '');
+    budgetData.value.postingEndDate = formateData[4].replace(/"/g, '');
+    budgetData.value.accountingMonth = formateData[5].replace(/"/g, '');
+    budgetData.value.amount = formateData[6].replace(/"/g, '');
+    budgetData.value.numberOfSlots = formateData[7].replace(/"/g, '');
+    budgetData.value.unitPrice = formateData[8].replace(/"/g, '');
+    budgetData.value.agency = formateData[9].replace(/"/g, '');
+    budgetData.value.remark = formateData[10].replace(/"/g, '');
     return budgetData;
-  }
-
-  const getDateFromString = (dateInString) => {
-    const secondsMatchStr = dateInString.match(/seconds=(\d+)/);
-    if (secondsMatchStr && secondsMatchStr[1]) {
-      const seconds = parseInt(secondsMatchStr[1]);
-      const date = new Date(seconds * 1000);
-      return date;
-    }
   }
 
   return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable }
