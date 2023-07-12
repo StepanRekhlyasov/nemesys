@@ -123,25 +123,10 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from 'firebase/auth';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
 import { useFormatSetting } from 'src/stores/formatSetting'
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  setDoc,
-  getFirestore,
-  serverTimestamp,
-  updateDoc,
-  doc,
-  // getDocs,
-  // writeBatch
-} from 'firebase/firestore';
-
 
 const props = defineProps({
   selectedFormat: {
