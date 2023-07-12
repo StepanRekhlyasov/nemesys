@@ -112,7 +112,7 @@ const applicantsByColumn = computed(() => applicantStore.state.applicantsByColum
 
 /** fetchers */
 const fetchResultsHandler = async (status : ApplicantStatus, fetchMore = false) => {
-  await applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
+  await applicantStore.getApplicantsByColumns(status, applicantStore.state.applicantProgressFilter, perQuery.value, fetchMore)
 }
 const fetchResults = async () => {
   COLUMN_STATUSES.map(async (status)=>{

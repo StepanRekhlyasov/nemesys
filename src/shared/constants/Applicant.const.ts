@@ -559,3 +559,15 @@ export const applicantStatusCharge = {
   [ApplicantStatus.WORKING] : 'chargeOfAdmission',
   [ApplicantStatus.WAIT_TERMINATION] : 'chargeOfAdmission',
 }
+
+export const ApplicantOrFixColumn = {
+  [ApplicantStatus.WAIT_CONTACT] : 'applicants',
+  [ApplicantStatus.WAIT_ATTEND] : 'applicants',
+  [ApplicantStatus.WAIT_FIX] : 'applicants',
+  [ApplicantStatus.RETIRED] : 'applicants',
+  [ApplicantStatus.WAIT_VISIT] : 'fix',
+  [ApplicantStatus.WAIT_OFFER] : 'fix',
+  [ApplicantStatus.WAIT_ENTRY] : 'fix',
+  [ApplicantStatus.WAIT_TERMINATION] : 'fix',
+  [ApplicantStatus.WORKING] : 'fix',
+}

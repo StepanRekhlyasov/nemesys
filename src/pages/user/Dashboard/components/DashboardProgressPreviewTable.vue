@@ -37,6 +37,7 @@ import { myDateFormat } from 'src/shared/utils/utils';
 import { ApplicantFix, ApplicantStatus, BackOrderModel } from 'src/shared/model';
 import { computed, watch, ref } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
+import { ApplicantOrFixColumn } from 'src/shared/constants/Applicant.const';
 
 const onScroll = async (info : {
     ref: QScrollArea;
@@ -51,7 +52,7 @@ const onScroll = async (info : {
 }) => {
   if(info.verticalPercentage === 1 || info.verticalContainerSize===info.verticalSize){
     if(applicantStore.state.continueFromDoc[props.status]){
-      await applicantStore.getApplicantsByStatus(props.status, applicantStore.state.applicantProgressFilter, limitQuery, true)
+      await applicantStore.getApplicantsByColumns(props.status, applicantStore.state.applicantProgressFilter, limitQuery, true)
     }
     if(applicantStore.state.applicantsByColumn[props.status].length < 4 && applicantStore.state.continueFromDoc[props.status]){
       onScroll(info)
@@ -65,7 +66,7 @@ const props = defineProps<{
 }>()
 const boIdList = ref<{[id: string] : BackOrderModel}>({})
 const mode = computed(()=>{
-  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
+  if(ApplicantOrFixColumn[props.status]==='applicants'){
     return 'applicant'
   } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
     return 'update'
