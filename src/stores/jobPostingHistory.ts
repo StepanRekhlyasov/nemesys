@@ -7,7 +7,7 @@ import {
   serverTimestamp,
   updateDoc,
   addDoc,
-  doc as docDb
+  doc as docDb,
 
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
@@ -51,9 +51,76 @@ export const useJobPostingHistory = defineStore('jobPostingHistory', () => {
 
     await addDoc(collection(db, 'jobAds'), data);
   };
+const getJobsdata = async() =>{
+  const jobsData: object[] = [];
+    const q = await getDocs(
+      query(
+        collection(db, 'jobs'),
+        where('deleted', '==', false),
+      )
+    );
+    q.forEach(async(doc) => {
+      const data = doc.data();
+      jobsData.push({
+        ...data,
+        value: doc.id,
+      });
+    });
+
+    return jobsData;
+  };
+
+  const getJobFormatData = async() =>{
+    const jobFormatData: object[] = [];
+    const q = await getDocs(
+      query(
+        collection(db, 'jobFormat'),
+        where('deleted', '==', false),
+      )
+    );
+    q.forEach(async(doc) => {
+      const dataDoc = doc.data();
+      dataDoc.name = `${dataDoc.name} (${dataDoc.desc})`;
+      jobFormatData.push({
+        ...dataDoc,
+        value: doc.id,
+      });
+    });
+
+    return jobFormatData;
+  }
+
+  const getPhraseData = async (options) => {
+    const q = await getDocs(
+      query(
+        collection(db, 'jobPhrase'),
+        where('deleted', '==', false),
+      )
+    );
+    options.value['occupation'] = [];
+    options.value['jobTag'] = [];
+    options.value['jobContent'] = [];
+    q.forEach(async(doc) => {
+      const dataDoc = doc.data();
+      dataDoc.name = `${dataDoc.name} (${dataDoc.content})`;
+      if (dataDoc.phraseCategory == 'occupation') {
+        options.value['occupation'].push({ value: doc.id, ...dataDoc } as never);
+    } else if (dataDoc.phraseCategory == 'jobTagline') {
+        options.value['jobTag'].push({ value: doc.id, ...dataDoc } as never);
+    }
+    else if (dataDoc.phraseCategory == 'jobContent') {
+        options.value['jobContent'].push({ value: doc.id, ...dataDoc } as never);
+    }
+    });
+    return options.value
+  };
+
   return {
     loadJobAdsData,
     updateFormData,
-    addFormData
+    addFormData,
+    getJobsdata,
+    getJobFormatData,
+    getPhraseData
   };
-});
+})

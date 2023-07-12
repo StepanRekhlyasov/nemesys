@@ -108,12 +108,32 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
     await batch.commit();
   }
 
+  const fetchWardListData = async (id) => {
+    const wardListData: object[] = [];
+    const q = await getDocs(
+      query(
+        collection(db, 'jobArea' , id , 'areaCity'),
+        where('deleted', '==', false),
+      )
+    );
+    q.forEach(async(doc) => {
+      const data = doc.data();
+      wardListData.push({
+        ...data,
+        value: doc.id,
+      });
+    });
+
+    return wardListData;
+  };
+
   return {
     loadJobAreaData,
     loadAreaCityData,
     deleteJobAreaData,
     updateFormData,
     addFormData,
-    addNewCity
+    addNewCity,
+    fetchWardListData
   };
 });

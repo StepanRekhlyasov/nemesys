@@ -12,11 +12,14 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
+import { useI18n } from 'vue-i18n';
 
 export const useJobSearch = defineStore('jobSearch', () => {
   const db = getFirestore();
   const auth = getAuth()
-
+  const { t } = useI18n({
+    useScope: 'global',
+  });
   const loadJobSearchData = async () => {
     const jobSearchData: object[] = [];
     const q = await getDocs(
@@ -54,14 +57,13 @@ export const useJobSearch = defineStore('jobSearch', () => {
     const clientData: object[] = [];
     const q = await getDocs(
       query(
-        collection(db, 'jobItem'),
+        collection(db, 'clients'),
         where('deleted', '==', false),
       )
     );
     q.forEach(async(doc) => {
-      const data = doc.data();
       clientData.push({
-        ...data,
+        label:doc.data().name,
         id: doc.id,
       });
     });
@@ -87,11 +89,49 @@ export const useJobSearch = defineStore('jobSearch', () => {
     await addDoc(collection(db, 'jobs'), data);
   };
 
+  const loadJobItemSettingData = async () => {
+    const q = query(collection(db, 'jobItem'), where('deleted', '==', false));
+    const querySnapshotJobItem = await getDocs(q);
+    querySnapshotJobItem.forEach(async (doc) => {
+      const data = doc.data();
+      if (data['dataType']) {
+          data['dataType'] = t('jobItem.dataTypeList.' + data['dataType']);
+      }
+        const qOption = query(collection(db, 'jobItem', doc.id, 'options'), where('deleted', '==', false));
+        const querySnapshotqOption = await getDocs(qOption);
+        const items = []
+        querySnapshotqOption.forEach((docOption) => {
+            items.push(docOption.data() as never);
+        });
+        return items
+  });
+  }
+
+  const loadOfficeData = async (id:string) =>{
+    const officeData: object[] = [];
+    const q = await getDocs(
+      query(
+        collection(db, 'clients',id,'office'),
+        where('deleted', '==', false),
+      )
+    );
+    q.forEach(async(doc) => {
+      officeData.push({
+        label:doc.data().name,
+        id: doc.id,
+      });
+    });
+
+    return officeData;
+  }
+
   return {
     loadJobSearchData,
     deleteJobSearch,
     loadClientsData,
     updateFormData,
-    addFormData
+    addFormData,
+    loadJobItemSettingData,
+    loadOfficeData
   };
 });

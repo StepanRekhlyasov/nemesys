@@ -239,11 +239,13 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps , onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
 import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
+import { DocumentData } from 'firebase/firestore';
+const jobPostingHistoryStore = useJobPostingHistory()
 const props = defineProps({
   selectedJob: {
       type: Object,
@@ -255,7 +257,7 @@ const props = defineProps({
   }
 }
 )
-const jobPostingHistoryStore = useJobPostingHistory()
+
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -264,6 +266,7 @@ const hideDrawer = () => {
   jobAdData.value = { ...jobAdDataObject }
   emit('hideDrawer')
 }
+
 const { t } = useI18n({
   useScope: 'global',
 });
@@ -286,7 +289,7 @@ const facilityText = ref('');
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
 const unsubscribePhrase = ref();
-const jobList = ref([]);
+const jobList:DocumentData = ref([]);
 const transactionText = ref('')
 const projectText = ref('')
 const paymentText = ref('')
@@ -297,7 +300,22 @@ const jobForm = ref();
 const formatSettingItems = ref(formatSettingItemList);
 const options = ref({});
 const unsubscribeFormat = ref()
-const publicationFormatOptions = ref([])
+const publicationFormatOptions:DocumentData = ref([])
+
+onMounted(async () => {
+  jobList.value = await jobPostingHistoryStore.getJobsdata()
+      if (props?.selectedJob['jobId'] && !jobAdData.value.jobId) {
+          jobAdData.value.jobId = props?.selectedJob['jobId'] || '';
+      }
+  jobAdData.value.publicationPeriod = props?.selectedJob['publicationPeriod'] || '';
+
+  getPhrase();
+  publicationFormatOptions.value = await jobPostingHistoryStore.getJobFormatData()
+      if (props?.selectedJob['publicationFormat'] && !jobAdData.value.publicationFormat) {
+          jobAdData.value.publicationFormat = props?.selectedJob['publicationFormat'] || '';
+      }
+
+})
 
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
@@ -355,6 +373,7 @@ watch(
           }
 
       }
+      getPhrase();
   }
 )
 
@@ -416,5 +435,15 @@ const saveJobAd = async () => {
       });
   }
 }
+
+
+const getPhrase = async () => {
+  if (unsubscribePhrase.value) {
+      unsubscribePhrase.value();
+  }
+   const data = await jobPostingHistoryStore.getPhraseData(options)
+  options.value = data
+}
+
 
 </script>

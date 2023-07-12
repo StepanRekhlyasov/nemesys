@@ -245,14 +245,14 @@
 
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { regionSalaryAddColumns } from 'src/shared/constants/JobAd.const';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
-
+import { DocumentData } from 'firebase/firestore';
+const regionalSalarySettingStore = useRegionalSalarySetting()
 const props = defineProps({
   selectedArea: {
       type: Object,
@@ -261,10 +261,10 @@ const props = defineProps({
   isDrawer: {
       type: Boolean,
       required: true
-  },
+  }
 }
 )
-const regionalSalarySettingStore = useRegionalSalarySetting()
+
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -273,6 +273,7 @@ const hideDrawer = () => {
   areaData.value = { ...areaDataObject }
   emit('hideDrawer')
 }
+
 const { t } = useI18n({
   useScope: 'global',
 });
@@ -300,7 +301,7 @@ const citySetting = ref({ prefecture: [], ward: {} });
 const prefectureJPList = ref([]);
 const wardJPList = ref([]);
 const wardData = ref({});
-const wardList = ref([]);
+const wardList:DocumentData = ref([]);
 
 const loading = ref(false);
 
@@ -309,7 +310,24 @@ const pagination = ref({
   descending: false,
   page: 1,
   rowsPerPage: 10
+  // rowsNumber: xx if getting data from a server
 });
+
+onMounted(async () => {
+
+  areaData.value.transactionType = props?.selectedArea['transactionType'] || '';
+  areaData.value.projectType = props?.selectedArea['projectType'] || '';
+
+
+  let areaId = props?.selectedArea['id'] || '';
+  if (areaId) {
+    loading.value = true;
+    wardList.value = await regionalSalarySettingStore.fetchWardListData(areaId)
+          loading.value = false;
+  }
+
+
+})
 
 onBeforeUnmount(() => {
   if (unsubscribeWard.value) {

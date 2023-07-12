@@ -51,9 +51,35 @@ export const useFormatSetting = defineStore('formatSetting', () => {
     await addDoc(collection(db, 'jobFormat'), data);
   };
 
+  const getPhraseData = async (options) => {
+    const q = await getDocs(
+      query(
+        collection(db, 'jobPhrase'),
+        where('deleted', '==', false),
+      )
+    );
+    options.value['occupation'] = [];
+    options.value['jobTag'] = [];
+    options.value['jobContent'] = [];
+    q.forEach(async(doc) => {
+      const dataDoc = doc.data();
+      dataDoc.name = `${dataDoc.name} (${dataDoc.content})`;
+      if (dataDoc.phraseCategory == 'occupation') {
+        options.value['occupation'].push({ value: doc.id, ...dataDoc } as never);
+    } else if (dataDoc.phraseCategory == 'jobTagline') {
+        options.value['jobTag'].push({ value: doc.id, ...dataDoc } as never);
+    }
+    else if (dataDoc.phraseCategory == 'jobContent') {
+        options.value['jobContent'].push({ value: doc.id, ...dataDoc } as never);
+    }
+    });
+    return options.value
+  };
+
   return {
    loadFormatSettingData,
    updateFormData,
-   addFormData
+   addFormData,
+   getPhraseData
   };
 });

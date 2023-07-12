@@ -7,7 +7,7 @@ import {
   serverTimestamp,
   updateDoc,
   addDoc,
-  doc as docDb
+  doc as docDb,
 
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
@@ -52,26 +52,44 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
   };
 
   const updateOption = async (id,data:object) => {
-    const updateData = {};
-    updateData['updated_at'] = serverTimestamp();
-    updateData['updated_by'] = auth.currentUser?.uid;
-
-    await updateDoc(docDb(db, 'jobItem',id,'options', data['id']), updateData);
+    data['updated_at'] = serverTimestamp();
+    data['updated_by'] = auth.currentUser?.uid;
+    await updateDoc(docDb(db, 'jobItem',id,'options', data['id']), data);
   };
 
   const addNewOption = async (id,data:object) => {
+    debugger
     data['created_at'] = serverTimestamp();
-    data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
-
     await addDoc(collection(db, 'jobItem',id,'options'), data);
+
   };
+  const fetchJobItemOptionsData = async (id) => {
+  const jobItemOption: object[] = [];
+  const q = await getDocs(
+    query(
+      collection(db, 'jobItem',id,'options'),
+      where('deleted', '==', false),
+    )
+  );
+  q.forEach(async(doc) => {
+    const data = doc.data();
+    jobItemOption.push({
+      ...data,
+      id: doc.id,
+    });
+  });
+
+  return jobItemOption;
+};
+
   return {
    loadJobItemSettingData,
    updateFormData,
    addFormData,
    addNewOption,
-   updateOption
+   updateOption,
+   fetchJobItemOptionsData
   };
 });

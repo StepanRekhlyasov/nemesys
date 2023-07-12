@@ -1,4 +1,3 @@
-
 <template>
   <q-card class="no-shadow bg-grey-3">
       <q-form ref="jobForm" @submit="saveJob">
@@ -193,7 +192,6 @@
                       </div>
                   </div>
               </div>
-
               <div class="row text-primary text-body1 q-pt-sm">
                   ■ {{ $t('job.add.employmentContract') }}
               </div>
@@ -323,9 +321,6 @@
                       <q-input outlined dense v-model="jobData['upperAgeLimit']" hide-bottom-space />
                   </div>
               </div>
-
-
-              <!-- Media Information -->
               <div class="row text-primary text-body1 q-pt-sm">
                   ■ {{ $t('job.add.mediaInformation') }}
               </div>
@@ -371,9 +366,6 @@
 
                   </div>
               </div>
-
-
-
           </q-card-section>
       </q-form>
   </q-card>
@@ -382,13 +374,13 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { DocumentData } from 'firebase/firestore';
-import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, employmentStatusList, reqList, indeedJobCategoryList, indeedTagList, indeedTagJobType, indeedTagCoronaType, resumeRequiredList } from 'src/shared/constants/JobAd.const';
-
+import { DocumentData } from 'firebase/firestore';
 import { useJobSearch } from 'src/stores/jobSearch'
+const jobSearchStore = useJobSearch()
 const props = defineProps({
   selectedJob: {
       type: Object,
@@ -400,16 +392,13 @@ const props = defineProps({
   }
 }
 )
-
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-
 const hideDrawer = () => {
   jobData.value = { ...jobDataObject }
   emit('hideDrawer')
 }
-
 const { t } = useI18n({
   useScope: 'global',
 });
@@ -457,7 +446,7 @@ const employmentStatusOption = ref(employmentStatusList);
 const resumeRequiredOption = ref(resumeRequiredList);
 const halfYearExpOption = ref(reqList);
 const indeedJobCategorOption = ref(indeedJobCategoryList);
-const jobSearchStore = useJobSearch()
+
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
 const clientList:DocumentData = ref([]);
@@ -468,7 +457,13 @@ const jobForm = ref();
 const jobItems = ref({});
 const jobItemOptions = ref({});
 
-
+onMounted(async () => {
+  clientList.value = await jobSearchStore.loadClientsData()
+  jobData.value.transactionType = props?.selectedJob['transactionType'] || '';
+  jobData.value.projectType = props?.selectedJob['projectType'] || '';
+  jobData.value.client = props?.selectedJob['client'] || '';
+  await jobSearchStore.loadJobItemSettingData()
+})
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
       unsubscribe.value();
@@ -478,7 +473,6 @@ onBeforeUnmount(() => {
   }
 
 })
-
 watch(
   () => (jobData.value.transactionType),
   (newVal,) => {
@@ -489,7 +483,6 @@ watch(
       }
   }
 )
-
 watch(
   () => (jobData.value.projectType),
   (newVal,) => {
@@ -500,7 +493,6 @@ watch(
       }
   }
 )
-
 watch(
   () => (jobData.value.indeedTag),
   (newVal,) => {
@@ -530,8 +522,18 @@ watch(
       }
   }
 )
-
-
+watch(
+  () => (jobData.value.client),
+  (newVal,) => {
+      officeList.value = [];
+      if (unsubscribeOffice.value) {
+          unsubscribeOffice.value();
+      }
+      if (newVal.value) {
+         officeList.value = jobSearchStore.loadOfficeData(newVal.value)
+      }
+  }
+)
 const saveJob = async () => {
   try {
       if (jobData.value.id) {

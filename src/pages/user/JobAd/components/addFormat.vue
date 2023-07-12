@@ -123,11 +123,12 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
 import { useFormatSetting } from 'src/stores/formatSetting'
 
+const formatSettingStore = useFormatSetting()
 const props = defineProps({
   selectedFormat: {
       type: Object,
@@ -153,7 +154,6 @@ const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const formatSettingStore = useFormatSetting()
 const formartDataObject = {
   id: props?.selectedFormat['id'] || null,
   name: props?.selectedFormat['name'] || '',
@@ -165,6 +165,7 @@ const formartDataObject = {
 
 }
 const formartData = ref({ ...formartDataObject })
+// const unsubscribeWard = ref();
 const transactionText = ref('')
 const projectText = ref('')
 const formatForm = ref();
@@ -174,6 +175,17 @@ const formatSettingItems = ref(formatSettingItemList);
 const mediaOptions = ref(mediaList);
 const unsubscribePhrase = ref();
 const options = ref({});
+
+onMounted(async () => {
+  formartData.value.transactionType = props?.selectedFormat['transactionType'] || '';
+  formartData.value.projectType = props?.selectedFormat['projectType'] || '';
+
+  formatSettingItems.value.forEach(item => {
+      formartData.value[item.value] = props?.selectedFormat[item.value] || '';
+  });
+  const done = await formatSettingStore.getPhraseData(options)
+  options.value = done
+})
 
 onBeforeUnmount(() => {
   if (unsubscribePhrase.value) {
@@ -205,7 +217,6 @@ watch(
       }
   }
 )
-
 const saveFormat = async () => {
   try {
       if (formartData.value.id) {
