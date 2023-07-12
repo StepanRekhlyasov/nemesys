@@ -245,6 +245,7 @@
 
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
