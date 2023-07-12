@@ -119,9 +119,6 @@
                       :max="(optionItem.length / pagination.rowsPerPage) >= 1 ? optionItem.length / pagination.rowsPerPage : 1"
                       direction-links outline />
               </div>
-
-
-
           </q-card-section>
       </q-form>
 
@@ -131,22 +128,9 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from 'firebase/auth';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
-
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  setDoc,
-  getFirestore,
-  serverTimestamp,
-  updateDoc,
-  doc,
-} from 'firebase/firestore';
-
+import { useJobItemSetting } from 'src/stores/jobItemSetting'
 
 const props = defineProps({
   selectedPhrase: {
@@ -159,22 +143,18 @@ const props = defineProps({
   }
 }
 )
-
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-
 const hideDrawer = () => {
   jobItem.value = { ...jobItemObject }
   emit('hideDrawer')
 }
-
-const db = getFirestore();
 const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const auth = getAuth();
+const jobItemSettingStore = useJobItemSetting()
 const jobItemObject = {
   id: props?.selectedPhrase['id'] || null,
   name: props?.selectedPhrase['name'] || '',
@@ -184,7 +164,6 @@ const jobItemObject = {
   media: props?.selectedPhrase['media'] || '',
   recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
   dataType: props?.selectedPhrase['dataType'] || '',
-
 }
 const jobItem = ref({ ...jobItemObject })
 const unsubscribe = ref();
@@ -194,9 +173,7 @@ const phraseCategoryOptions = ref(phraseCategoryList);
 const dataTypeOptions = ref(dataTypeList);
 const columns = ref(jobItemOptionColumns);
 const optionItem = ref([]);
-
 const loading = ref(false);
-
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -204,32 +181,11 @@ const pagination = ref({
   rowsPerPage: 10
 });
 
-onMounted(async () => {
-  jobItem.value.phraseCategory = props?.selectedPhrase['phraseCategory'] || '';
-  if (jobItem.value['id']) {
-      const qPhrase = query(collection(db, 'jobItem/' + jobItem.value['id'] + '/options'), where('deleted', '==', false));
-      unsubscribe.value = onSnapshot(qPhrase, (querySnapshot) => {
-          let data: object[] = [];
-          loading.value = true;
-          querySnapshot.forEach((doc) => {
-              data.push({ ...doc.data(), id: doc.id });
-          });
-          optionItem.value = data as never[];
-          loading.value = false;
-      });
-  }
-
-})
-
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
       unsubscribe.value();
   }
-
 })
-
-
-
 watch(
   () => (jobItem.value.phraseCategory),
   (newVal,) => {
@@ -241,30 +197,16 @@ watch(
       }
   }
 )
-
-
 const saveJobItem = async () => {
-  let data = jobItem.value;
-  data['updated_at'] = serverTimestamp();
-
   try {
-      if (data['id']) {
-          const formartRef = doc(db, 'jobItem/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(formartRef, data);
+      if (jobItem.value.id) {
+
+          await jobItemSettingStore.updateFormData(jobItem.value)
           hideDrawer()
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-          const docRef = doc(collection(db, 'jobItem'));
-          data['id'] = docRef.id;
-
-          await setDoc(docRef,
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
+         await jobItemSettingStore.addFormData(jobItem.value)
+         hideDrawer()
       }
 
       $q.notify({
@@ -273,7 +215,6 @@ const saveJobItem = async () => {
           icon: 'cloud_done',
           message: t('success'),
       });
-      //jobItem.value = { ...jobItemObject }
       formatForm.value.resetValidation();
   } catch (error) {
       console.log(error);
@@ -291,33 +232,20 @@ const addNewItem = () => {
 
 }
 const addNewOption = async (data: object) => {
-  data['updated_at'] = serverTimestamp();
   try {
-      if (data['id']) {
-          const formartRef = doc(db, 'jobItem/' + jobItem.value['id'] + '/options/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(formartRef, data);
+      if (jobItem.value.id) {
+         await jobItemSettingStore.updateOption(jobItem.value['id'],data)
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-          const docRef = doc(collection(db, 'jobItem/' + jobItem.value['id'] + '/options'));
-          data['id'] = docRef.id;
-
-          await setDoc(docRef,
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
+        await jobItemSettingStore.addNewOption(jobItem.value['id'],data)
       }
-
       $q.notify({
           color: 'green-4',
           textColor: 'white',
           icon: 'cloud_done',
           message: t('success'),
       });
-      //jobItem.value = { ...jobItemObject }
+      jobItem.value = { ...jobItemObject }
       formatForm.value.resetValidation();
   } catch (error) {
       console.log(error);
@@ -328,7 +256,5 @@ const addNewOption = async (data: object) => {
           message: t('failed'),
       });
   }
-
-
 }
 </script>

@@ -239,24 +239,11 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from 'firebase/auth';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps , onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  addDoc,
-  getFirestore,
-  serverTimestamp,
-  updateDoc,
-  doc
-} from 'firebase/firestore';
-
-
+import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
 const props = defineProps({
   selectedJob: {
       type: Object,
@@ -268,7 +255,7 @@ const props = defineProps({
   }
 }
 )
-
+const jobPostingHistoryStore = useJobPostingHistory()
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -277,13 +264,10 @@ const hideDrawer = () => {
   jobAdData.value = { ...jobAdDataObject }
   emit('hideDrawer')
 }
-
-const db = getFirestore();
 const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const auth = getAuth();
 const jobAdDataObject = {
   id: props?.selectedJob['id'] || null,
   name: props?.selectedJob['name'] || '',
@@ -314,37 +298,6 @@ const formatSettingItems = ref(formatSettingItemList);
 const options = ref({});
 const unsubscribeFormat = ref()
 const publicationFormatOptions = ref([])
-
-onMounted(async () => {
-  const q = query(collection(db, 'jobs'), where('deleted', '==', false));
-  unsubscribe.value = onSnapshot(q, (querySnapshot) => {
-      let data: object[] = [];
-      querySnapshot.forEach((doc) => {
-          data.push({ value: doc.id, ...doc.data() });
-      });
-      jobList.value = data as never[];
-      if (props?.selectedJob['jobId'] && !jobAdData.value.jobId) {
-          jobAdData.value.jobId = props?.selectedJob['jobId'] || '';
-      }
-  });
-  jobAdData.value.publicationPeriod = props?.selectedJob['publicationPeriod'] || '';
-
-  getPhrase();
-
-
-  const qFormat = query(collection(db, 'jobFormat'), where('deleted', '==', false));
-  unsubscribeFormat.value = onSnapshot(qFormat, (querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-          let dataDoc = doc.data();
-          dataDoc.name = `${dataDoc.name} (${dataDoc.desc})`;
-          publicationFormatOptions.value.push({ value: doc.id, ...dataDoc } as never);
-      });
-      if (props?.selectedJob['publicationFormat'] && !jobAdData.value.publicationFormat) {
-          jobAdData.value.publicationFormat = props?.selectedJob['publicationFormat'] || '';
-      }
-  });
-
-})
 
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
@@ -402,7 +355,6 @@ watch(
           }
 
       }
-      getPhrase();
   }
 )
 
@@ -436,26 +388,14 @@ watch(
 
 
 const saveJobAd = async () => {
-  let data = jobAdData.value;
-  data['updated_at'] = serverTimestamp();
-
   try {
-      if (data['id']) {
-          const jobRef = doc(db, 'jobAds/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(jobRef, data);
+      if (jobAdData.value.id) {
+          await jobPostingHistoryStore.updateFormData(jobAdData.value)
           hideDrawer()
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-
-          const docRef = await addDoc(
-              collection(db, 'jobAds'),
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
+         await jobPostingHistoryStore.addFormData(jobAdData.value)
+         hideDrawer()
       }
 
       $q.notify({
@@ -475,48 +415,6 @@ const saveJobAd = async () => {
           message: t('failed'),
       });
   }
-
 }
-
-const getParsedContent = (content: string) => {
-  let parsed = content.match(/(?<=\{).+?(?=\})/g);
-  if (parsed) {
-      const objJob = jobList.value.find(o => o['value'] === jobAdData.value['jobId']);
-      if (objJob && objJob['jobContent']) {
-          for (var i = 0; i < parsed.length; i++) {
-              if (objJob['jobContent'][parsed[i]]) {
-                  content = content.replace(`{${parsed[i]}}`, objJob['jobContent'][parsed[i]]);
-              }
-          }
-      }
-  }
-  return content;
-}
-
-const getPhrase = async () => {
-  if (unsubscribePhrase.value) {
-      unsubscribePhrase.value();
-  }
-  const qPhrase = query(collection(db, 'jobPhrase'), where('deleted', '==', false));
-  unsubscribePhrase.value = onSnapshot(qPhrase, (querySnapshot) => {
-      options.value['occupation'] = [];
-      options.value['jobTag'] = [];
-      options.value['jobContent'] = [];
-      querySnapshot.forEach((doc) => {
-          let dataDoc = doc.data();
-          dataDoc.name = `${dataDoc.name} (${getParsedContent(dataDoc.content)})`;
-          if (dataDoc.phraseCategory == 'occupation') {
-              options.value['occupation'].push({ value: doc.id, ...dataDoc } as never);
-          } else if (dataDoc.phraseCategory == 'jobTagline') {
-              options.value['jobTag'].push({ value: doc.id, ...dataDoc } as never);
-          } else if (dataDoc.phraseCategory == 'jobContent') {
-              options.value['jobContent'].push({ value: doc.id, ...dataDoc } as never);
-          }
-      });
-  });
-
-
-}
-
 
 </script>

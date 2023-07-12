@@ -127,7 +127,7 @@ import { getAuth } from 'firebase/auth';
 import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
-
+import { useFormatSetting } from 'src/stores/formatSetting'
 import {
   collection,
   query,
@@ -169,7 +169,7 @@ const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const auth = getAuth();
+const formatSettingStore = useFormatSetting()
 const formartDataObject = {
   id: props?.selectedFormat['id'] || null,
   name: props?.selectedFormat['name'] || '',
@@ -190,37 +190,6 @@ const formatSettingItems = ref(formatSettingItemList);
 const mediaOptions = ref(mediaList);
 const unsubscribePhrase = ref();
 const options = ref({});
-
-onMounted(async () => {
-  formartData.value.transactionType = props?.selectedFormat['transactionType'] || '';
-  formartData.value.projectType = props?.selectedFormat['projectType'] || '';
-
-  formatSettingItems.value.forEach(item => {
-      formartData.value[item.value] = props?.selectedFormat[item.value] || '';
-  });
-
-  const qPhrase = query(collection(db, 'jobPhrase'), where('deleted', '==', false));
-  unsubscribePhrase.value = onSnapshot(qPhrase, (querySnapshot) => {
-      options.value['occupation'] = [];
-      options.value['jobTag'] = [];
-      options.value['jobContent'] = [];
-      querySnapshot.forEach((doc) => {
-          let dataDoc = doc.data();
-          dataDoc.name = `${dataDoc.name} (${dataDoc.content})`;
-          if (dataDoc.phraseCategory == 'occupation') {
-              options.value['occupation'].push({ value: doc.id, ...dataDoc } as never);
-          } else if (dataDoc.phraseCategory == 'jobTagline') {
-              options.value['jobTag'].push({ value: doc.id, ...dataDoc } as never);
-          }
-          else if (dataDoc.phraseCategory == 'jobContent') {
-              options.value['jobContent'].push({ value: doc.id, ...dataDoc } as never);
-          }
-      });
-  });
-
-
-
-})
 
 onBeforeUnmount(() => {
   if (unsubscribePhrase.value) {
@@ -254,28 +223,14 @@ watch(
 )
 
 const saveFormat = async () => {
-  let data = formartData.value;
-  data['updated_at'] = serverTimestamp();
-
   try {
-      if (data['id']) {
-          const formartRef = doc(db, 'jobFormat/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(formartRef, data);
+      if (formartData.value.id) {
+          await formatSettingStore.updateFormData(formartData.value)
           hideDrawer()
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-          const docRef = doc(collection(db, 'jobFormat'));
-          data['id'] = docRef.id;
-
-          await setDoc(docRef,
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
-          hideDrawer();
+         await formatSettingStore.addFormData(formartData.value)
+         hideDrawer()
       }
 
       $q.notify({
@@ -294,7 +249,6 @@ const saveFormat = async () => {
           message: t('failed'),
       });
   }
-
 }
 
 </script>

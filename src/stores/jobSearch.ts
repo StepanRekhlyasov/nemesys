@@ -15,7 +15,7 @@ import { getAuth } from 'firebase/auth';
 
 export const useJobSearch = defineStore('jobSearch', () => {
   const db = getFirestore();
-  const auth =getAuth()
+  const auth = getAuth()
 
   const loadJobSearchData = async () => {
     const jobSearchData: object[] = [];
@@ -74,11 +74,11 @@ export const useJobSearch = defineStore('jobSearch', () => {
     updateData['updated_at'] = serverTimestamp();
     updateData['updated_by'] = auth.currentUser?.uid;
 
-    await updateDoc(docDb(db, 'jobs', data['id']), data);
+    await updateDoc(docDb(db, 'jobs', data['id']), updateData);
   };
 
 
-  const addFormData = async (data) => {
+  const addFormData = async (data:object) => {
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;

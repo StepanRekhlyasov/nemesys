@@ -246,27 +246,12 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from 'firebase/auth';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { regionSalaryAddColumns } from 'src/shared/constants/JobAd.const';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  setDoc,
-  getFirestore,
-  serverTimestamp,
-  updateDoc,
-  doc,
-  getDoc,
-  writeBatch
-} from 'firebase/firestore';
-
+import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
 
 const props = defineProps({
   selectedArea: {
@@ -276,10 +261,10 @@ const props = defineProps({
   isDrawer: {
       type: Boolean,
       required: true
-  }
+  },
 }
 )
-
+const regionalSalarySettingStore = useRegionalSalarySetting()
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -288,13 +273,10 @@ const hideDrawer = () => {
   areaData.value = { ...areaDataObject }
   emit('hideDrawer')
 }
-
-const db = getFirestore();
 const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const auth = getAuth();
 const areaDataObject = {
   id: props?.selectedArea['id'] || null,
   name: props?.selectedArea['name'] || '',
@@ -327,47 +309,7 @@ const pagination = ref({
   descending: false,
   page: 1,
   rowsPerPage: 10
-  // rowsNumber: xx if getting data from a server
 });
-
-onMounted(async () => {
-  const docRef = doc(db, 'metadata', 'prefectureJP');
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-      prefectureJPList.value = docSnap.data() as []
-  } else {
-      console.log('No such document!');
-  }
-
-  const wardDocRef = doc(db, 'metadata', 'regionData');
-  const wardDocSnap = await getDoc(wardDocRef);
-  if (wardDocSnap.exists()) {
-      wardJPList.value = wardDocSnap.data() as []
-  } else {
-      console.log('No such document!');
-  }
-
-
-  areaData.value.transactionType = props?.selectedArea['transactionType'] || '';
-  areaData.value.projectType = props?.selectedArea['projectType'] || '';
-
-
-  let areaId = props?.selectedArea['id'] || '';
-  if (areaId) {
-      loading.value = true;
-      const qWard = query(collection(db, 'jobArea', areaId, 'areaCity'), where('deleted', '==', false));
-      unsubscribeWard.value = onSnapshot(qWard, (querySnapshot) => {
-          let data: object[] = [];
-          querySnapshot.forEach((doc) => {
-              data.push({ value: doc.id, ...doc.data() });
-          });
-          wardList.value = data as never[];
-          loading.value = false;
-      });
-  }
-
-
-})
 
 onBeforeUnmount(() => {
   if (unsubscribeWard.value) {
@@ -430,27 +372,14 @@ watch(
 )
 
 const saveArea = async () => {
-  let data = areaData.value;
-  data['updated_at'] = serverTimestamp();
-
   try {
-      if (data['id']) {
-          const jobRef = doc(db, 'jobArea/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(jobRef, data);
+      if (areaData.value.id) {
+          await regionalSalarySettingStore.updateFormData(areaData.value)
           hideDrawer()
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-          const docRef = doc(collection(db, 'jobArea'));
-          data['id'] = docRef.id;
-
-          await setDoc(docRef,
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
+         await regionalSalarySettingStore.addFormData(areaData.value)
+         hideDrawer()
       }
 
       $q.notify({
@@ -459,6 +388,7 @@ const saveArea = async () => {
           icon: 'cloud_done',
           message: t('success'),
       });
+      areaData.value = { ...areaDataObject }
       jobForm.value.resetValidation();
   } catch (error) {
       console.log(error);
@@ -478,28 +408,7 @@ const openCitySettingDialog = () => {
 }
 
 const addNewCity = async () => {
-  const batch = writeBatch(db);
-  let data = citySetting.value;
-  let cityData = {};
-  cityData['createsd_at'] = serverTimestamp();
-  cityData['updated_at'] = serverTimestamp();
-  cityData['deleted'] = false;
-  cityData['monthlySalaryCap'] = data['monthlySalaryCap'];
-  cityData['monthlySalaryMin'] = data['monthlySalaryMin'];
-  cityData['hourlySalaryCap'] = data['hourlySalaryCap'];
-  cityData['hourlySalaryMin'] = data['hourlySalaryMin'];
-
-  for (var i = 0; i < data['prefecture'].length; i++) {
-      cityData['prefecture'] = data['prefecture'][i];
-      for (var j = 0; j < data['ward'][cityData['prefecture']].length; j++) {
-          cityData['ward'] = data['ward'][cityData['prefecture']][j];
-          let docRef = doc(collection(db, 'jobArea', areaData.value.id, 'areaCity'));
-          cityData['id'] = docRef.id;
-          batch.set(docRef, cityData)
-      }
-
-  }
-  await batch.commit();
+  await regionalSalarySettingStore.addNewCity(citySetting.value,areaData.value.id)
   prompt.value = false;
 }
 </script>

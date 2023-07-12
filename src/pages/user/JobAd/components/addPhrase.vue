@@ -39,13 +39,9 @@
                           :rules="[(val) => (val && val.length > 0) || '']" />
                   </div>
               </div>
-
-
               <div class="row text-primary text-body1 q-pt-sm">
                   ■  {{ $t('phraseSettings.add.phraseInfo') }}
               </div>
-
-
               <div class="row">
                   <div class="col-6">
                       {{ $t('phraseSettings.add.phraseCategory') }}
@@ -84,11 +80,6 @@
                       <q-input outlined dense v-model="phraseData['desc']" hide-bottom-space />
                   </div>
               </div>
-
-              <!-- <div class="row q-mt-md">
-                  {{ $t('formatSetting.add.formatting') }}
-                  <q-btn color="primary" size="sm" class="q-ml-md" dense :label="$t('common.addNew')" icon="add" />
-              </div> -->
               <div class="row text-primary text-body1 q-pt-sm">
                   ■ {{ $t('phraseSettings.add.recruitmentItemRefer') }}
               </div>
@@ -125,9 +116,6 @@
                   </q-table>
 
               </div>
-
-
-
           </q-card-section>
       </q-form>
 
@@ -137,22 +125,9 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { getAuth } from 'firebase/auth';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onMounted } from 'vue';
 import { mediaList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
-
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  setDoc,
-  getFirestore,
-  serverTimestamp,
-  updateDoc,
-  doc,
-} from 'firebase/firestore';
-
+import { useJobPhrase } from 'src/stores/jobPhrase'
 
 const props = defineProps({
   selectedPhrase: {
@@ -165,22 +140,18 @@ const props = defineProps({
   }
 }
 )
-
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-
 const hideDrawer = () => {
   phraseData.value = { ...phraseDataObject }
   emit('hideDrawer')
 }
-
-const db = getFirestore();
 const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const auth = getAuth();
+const jobPhraseStore = useJobPhrase()
 const phraseDataObject = {
   id: props?.selectedPhrase['id'] || null,
   name: props?.selectedPhrase['name'] || '',
@@ -208,8 +179,6 @@ onMounted(async () => {
   phraseData.value.phraseCategory = props?.selectedPhrase['phraseCategory'] || '';
   phraseData.value.content = props?.selectedPhrase['content'] || '';
 })
-
-
 watch(
   () => (phraseData.value.phraseCategory),
   (newVal,) => {
@@ -221,62 +190,16 @@ watch(
       }
   }
 )
-
-watch(
-  () => (phraseData.value.content),
-  async (newVal,) => {
-      let parsed = newVal.match(/(?<=\{).+?(?=\})/g);
-      if (parsed) {
-          for (var i = 0; i < parsed.length; i++) {
-              const q = query(collection(db, 'jobItem'), where('deleted', '==', false), where('name', '==', parsed[i]));
-              const querySnapshot = await getDocs(q);
-              querySnapshot.forEach(async (doc) => {
-                  let data = doc.data();
-                  if (data['dataType']) {
-                      data['dataType'] = t('jobItem.dataTypeList.' + data['dataType']);
-                  }
-                  jobItems.value[doc.id] = data;
-                  const qOption = query(collection(db, 'jobItem', doc.id, 'options'), where('deleted', '==', false));
-                  const querySnapshotqOption = await getDocs(qOption);
-                  let items = []
-                  loading.value = true;
-                  querySnapshotqOption.forEach((docOption) => {
-                      items.push(docOption.data() as never);
-                  });
-                  jobItemOptions.value[doc.id] = items;
-                  loading.value = false;
-
-              });
-
-          }
-      }
-  }
-)
-
-
 const savePhrase = async () => {
-  let data = phraseData.value;
-  data['updated_at'] = serverTimestamp();
-
   try {
-      if (data['id']) {
-          const formartRef = doc(db, 'jobPhrase/' + data['id']);
-          data['updated_by'] = auth.currentUser?.uid;
-          await updateDoc(formartRef, data);
+      if (phraseData.value.id) {
+
+          await jobPhraseStore.updateFormData(phraseData.value)
           hideDrawer()
 
       } else {
-          data['created_at'] = serverTimestamp();
-          data['deleted'] = false;
-          data['created_by'] = auth.currentUser?.uid;
-          const docRef = doc(collection(db, 'jobPhrase'));
-          data['id'] = docRef.id;
-
-          await setDoc(docRef,
-              data
-          );
-          console.log('Document written with ID: ', docRef.id);
-          hideDrawer();
+         await jobPhraseStore.addFormData(phraseData.value)
+         hideDrawer()
       }
 
       $q.notify({
@@ -285,7 +208,7 @@ const savePhrase = async () => {
           icon: 'cloud_done',
           message: t('success'),
       });
-      //phraseData.value = { ...phraseDataObject }
+      phraseData.value = { ...phraseDataObject }
       formatForm.value.resetValidation();
   } catch (error) {
       console.log(error);
