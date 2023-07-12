@@ -65,14 +65,14 @@ watch(clientData, () => {
                       <q-item-label class="q-pb-xs">
                         {{ t('client.add.contractor') }} : TEL
                       </q-item-label>
-                      <q-input outlined dense v-model="clientData['personInChargeTel']"
+                      <q-input :color="theme" outlined dense v-model="clientData['personInChargeTel']"
                         :placeholder="t('client.add.phoneLabel')" />
                     </div>
                     <div class="col-6 q-pl-sm">
                       <q-item-label class="q-pb-xs">
                         {{ t('client.add.contractor') }} : FAX
                       </q-item-label>
-                      <q-input outlined dense v-model="clientData['personInChargeFax']"
+                      <q-input :color="theme" outlined dense v-model="clientData['personInChargeFax']"
                         :placeholder="t('client.add.phoneLabel')" />
                     </div>
                 </div>
@@ -81,14 +81,14 @@ watch(clientData, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.contractor') }} : MAIL
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['personInChargeMail']"
+                    <q-input :color="theme" outlined dense v-model="clientData['personInChargeMail']"
                         :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')" />
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.contractor') }} : {{ t('client.list.personIncharge') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['personInCharge']"
+                    <q-input :color="theme" outlined dense v-model="clientData['personInCharge']"
                         :placeholder="t('client.add.managerLabel')" />
                 </div>
             </div>
