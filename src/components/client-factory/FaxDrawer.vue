@@ -318,7 +318,11 @@ const save = async () => {
               </div>
               <div class="col-9"></div>
             </div>
-          </q-card-section>
+            <div class="q-mt-lg">
+              <q-btn label="Submit" type="submit" color="primary"/>
+              <q-btn label="Reset" type="reset" color="red"  class="q-ml-sm" />
+            </div>
+          </q-card-section> 
         </q-card>
       </q-form>
     </q-scroll-area>

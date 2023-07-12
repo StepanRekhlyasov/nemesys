@@ -1,14 +1,23 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps } from 'vue';
+import { defineProps,ref } from 'vue';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-
+import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue';
 defineProps<{
     clientFactory: ClientFactory
 }>();
 
 const { t } = useI18n({ useScope: 'global' });
+const isNewFaxDrawer = ref(false)
+const hideNewFaxDrawer = () => {
+    isNewFaxDrawer.value = false
+}
+
+const openNewFaxDrawer = () => {
+    console.log(1)
+    isNewFaxDrawer.value = true
+}
 </script>
 
 <template>
@@ -76,11 +85,16 @@ const { t } = useI18n({ useScope: 'global' });
                     </q-btn>
                 </div>
                 <div class="full-width">
-                    <q-btn size="sm" outline color="primary" class="q-mt-sm" style="width: 5rem;">
+                    <q-btn size="sm" outline color="primary" class="q-mt-sm" @click="openNewFaxDrawer" style="width: 5rem;">
                         FAX送信
                     </q-btn>
                 </div>
             </div>
+            <FaxDrawer
+            @hide-drawer="hideNewFaxDrawer"
+            theme="primaery"
+            :is-drawer="isNewFaxDrawer"
+            />
     </div>
 </template>
 
