@@ -32,10 +32,11 @@ import { onMounted, ref } from 'vue';
 import DashboardChooseBanner from './DashboardChooseBanner.vue';
 import DashboardProgressPreviewTable from './DashboardProgressPreviewTable.vue';
 import { limitQuery } from '../../ApplicantProgress/const/applicantColumns';
+import { ApplicantStatus } from 'src/shared/model';
 
 const applicantStore = useApplicant()
 const props = defineProps<{
-  status: string,
+  status: ApplicantStatus,
   updateOnMounted: boolean
 }>()
 const showPreview = ref(false)

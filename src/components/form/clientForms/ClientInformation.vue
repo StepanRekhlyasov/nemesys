@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { reactive, watch, defineEmits, defineProps } from 'vue';
+import { reactive, watch, defineEmits, defineProps, withDefaults } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modelValue: Record<string, any>
-}>();
+  theme?: string
+}>(), {
+  theme: 'primary'
+})
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -31,7 +34,7 @@ watch(clientData, () => {
                         {{ t('office.representativeName') }}
                         <span class="text-red-5">*</span>
                       </q-item-label>
-                      <q-input outlined dense v-model="clientData['representativeName']"
+                      <q-input :color="theme" outlined dense v-model="clientData['representativeName']"
                         :placeholder="t('client.add.managerLabel')" lazy-rules
                         :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
                     </div>
@@ -39,7 +42,7 @@ watch(clientData, () => {
                       <q-item-label class="q-pb-xs">
                         {{ t('office.established') }}
                       </q-item-label>
-                      <q-input outlined dense v-model="clientData['established']" placeholder="2000-07" />
+                      <q-input :color="theme" outlined dense v-model="clientData['established']" placeholder="2000-07" />
                     </div>
                 </div>
 
@@ -48,13 +51,13 @@ watch(clientData, () => {
                       <q-item-label class="q-pb-xs">
                         {{ t('office.capital') }}
                       </q-item-label>
-                      <q-input outlined dense v-model="clientData['capital']" placeholder="1,000,000"/>
+                      <q-input :color="theme" outlined dense v-model="clientData['capital']" placeholder="1,000,000"/>
                     </div>
                     <div class="col-6 q-pl-sm">
                       <q-item-label class="q-pb-xs">
                         {{ t('office.earnings') }}
                       </q-item-label>
-                      <q-input outlined dense v-model="clientData['earnings']" placeholder="1,000,000" />
+                      <q-input :color="theme" outlined dense v-model="clientData['earnings']" placeholder="1,000,000" />
                     </div>
                 </div>
 
@@ -63,7 +66,7 @@ watch(clientData, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('office.companyProfile') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientData['companyProfile']" />
+                    <q-input :color="theme" outlined dense v-model="clientData['companyProfile']" />
                 </div>
             </div>
 

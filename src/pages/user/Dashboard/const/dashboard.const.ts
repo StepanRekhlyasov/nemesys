@@ -82,13 +82,14 @@ export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() 
 })
 export const statusTitles = computed(()=>{
   return {
-    'wait_contact': t('applicant.progress.status.waitContact'),
-    'wait_attend': t('applicant.progress.status.waitAttent'),
-    'wait_FIX': t('applicant.progress.status.waitFix'),
-    'wait_visit': t('applicant.progress.status.waitVisit'),
-    'wait_offer': t('applicant.progress.status.waitOffer'),
-    'wait_entry': t('applicant.progress.status.waitEntry'),
-    'wait_termination': t('applicant.progress.status.waitTermination'),
+    'wait_contact': t('applicant.statusList.waitContact'),
+    'wait_attend': t('applicant.statusList.waitAttend'),
+    'wait_FIX': t('applicant.statusList.waitFIX'),
+    'wait_visit': t('applicant.statusList.waitVisit'),
+    'wait_offer': t('applicant.statusList.waitOffer'),
+    'wait_entry': t('applicant.statusList.waitEntry'),
+    'working': t('applicant.statusList.working'),
+    'wait_termination': t('applicant.statusList.waitTermination'),
   }
 })
 export const borderColor = {
@@ -97,6 +98,7 @@ export const borderColor = {
   'wait_FIX': '#DFFE86',
   'wait_visit': '#DFFE86',
   'wait_offer': '#DFFE86',
-  'wait_entry': '#17568080',
+  'wait_entry': '#DFFE86',
+  'working': '#17568080',
   'wait_termination': '#17568080',
 }

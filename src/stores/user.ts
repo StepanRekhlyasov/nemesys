@@ -8,6 +8,8 @@ import { useOrganization } from './organization';
 import { useRole } from './role';
 import { ref } from 'vue';
 import { getAuth } from 'firebase/auth';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getApp } from 'firebase/app';
 
 const { t } = i18n.global
 
@@ -74,10 +76,20 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
+    if(user.email === undefined){
+      delete user.email
+    }
+
     const userRef = doc(db, 'users/' + id);
     await updateDoc(userRef, {
       ...user
     })
+
+    if (user.email) {
+      const functions = getFunctions(getApp(), 'asia-northeast1')
+      const updateUserEmail = httpsCallable(functions, 'update_user_email');
+      await updateUserEmail({ id, email: user.email })
+    }
   }
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
