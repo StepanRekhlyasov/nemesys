@@ -149,7 +149,6 @@ const hideDrawer = () => {
   emit('hideDrawer')
 }
 
-const db = getFirestore();
 const { t } = useI18n({
   useScope: 'global',
 });
