@@ -950,7 +950,7 @@ export default {
       waitOffer: '内定待ち',
       waitEntry: '入職待ち',
       working: '稼働中',
-      waitTermintion: '終了待ち',
+      waitTermination: '終了待ち',
       waitRetire: '退職待ち',
       retired: '退職済み',
     },
