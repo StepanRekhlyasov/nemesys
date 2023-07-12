@@ -57,13 +57,13 @@ import SAATable from './components/SAATable.vue';
 import { ref, onMounted, watch } from 'vue'
 import { useOrganization } from 'src/stores/organization';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
-import { useUserStore } from 'src/stores/user';
 import { useBackOrder } from 'src/stores/backOrder';
 import { fixWithApplicant } from './model/saa.model'
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { DocumentData, where } from 'firebase/firestore';
-
+import { getFromTo } from 'src/shared/utils/utils';
+import { useSAA } from 'src/stores/saa';
 interface RowData {
   name: string,
   chargeOfFix: number,
@@ -96,7 +96,7 @@ const dateRange = ref<
 const method = ref('user')
 const loading = ref(false)
 const rowData = ref<RowData[]>([])
-const userStore = useUserStore()
+const SAA = useSAA()
 const organizationStore = useOrganization()
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
@@ -112,7 +112,7 @@ async function getData(){
   loading.value = true
   const constraints : ConstraintsType = []
   if(dateRange.value){
-    const [from, to] = userStore.getFromTo(dateRange.value)
+    const [from, to] = getFromTo(dateRange.value)
     if(from && to){
       constraints.push(where('created_at', '>=', from), where('created_at', '<=', to))
     }
@@ -120,9 +120,9 @@ async function getData(){
 
   [boData.value, faxData.value, callData.value, fixList.value] = await Promise.all([
     backOrderStore.getBOByConstraints(constraints),
-    userStore.getSAAFaxList(dateRange.value),
-    userStore.getSAACallList(dateRange.value),
-    userStore.getSAAFixList(organizationStore.state.currentOrganizationUsers, dateRange.value)
+    SAA.getSAAFaxList(dateRange.value),
+    SAA.getSAACallList(dateRange.value),
+    SAA.getSAAFixList(organizationStore.state.currentOrganizationUsers, dateRange.value)
   ])
   reMapData()
   loading.value = false
