@@ -1,9 +1,24 @@
-export interface BudgetData{
-    id:string;
-} 
-export interface DateOption{
-    label: string, value: number; 
+import { Timestamp } from 'firebase/firestore';
+
+export interface BudgetData {
+  id: string;
+  accountingMonth: string;
+  amount: number | string,
+  branch: string;
+  media: string;
+  numberOfSlots: number | string;
+  occupation: string;
+  postingEndDate: Timestamp | string;
+  postingStartDate: Timestamp | string;
+  unitPrice: string;
+  remark: string;
+  agency: string;
+
 }
-export interface OptionData{
-    occupation:{ label: string; value: string; }[];
+export interface DateOption {
+  label: string, value: number;
 }
+export interface OptionData {
+  occupation: { label: string; value: string; }[];
+}
+export type selectedYearMonth = number | null

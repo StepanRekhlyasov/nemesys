@@ -39,7 +39,7 @@ export const budgetAddItem = computed(() => {
       label: t('budget.accountingMonth'),
       key: 'accountingMonth',
       type: 'date',
-      required: false,
+      required: true,
       format: 'month'
     },
     {
