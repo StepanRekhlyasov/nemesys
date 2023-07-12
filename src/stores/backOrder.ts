@@ -36,7 +36,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       total_results: 0,
     },
   });
-
+ 
   const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
@@ -351,7 +351,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     const numberMap: { [key: string]: number } = { one: 1, two: 2, three: 3, four: 4, five: 5, };
     return numberMap[num];
   };
-
   return {
     state,
     getDistance,
@@ -364,5 +363,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     getClientFactoryBackOrder,
     getBoById,
     deleteBO,
+    getBOByConstraints
   };
 });
