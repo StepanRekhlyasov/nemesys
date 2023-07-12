@@ -8,7 +8,7 @@ export const useSMS = defineStore('sms', () => {
 
   async function send(msg: string, selected: Record<string, { selected: boolean; phoneNumber: string | undefined }>) {
       const selectedItems = Object.values(selected).filter((item) => item.selected === true);
-      if (selectedItems.length === 0) {
+      if (selectedItems.length === 0){
         throw new Error('No selected Applicants');
       }
       const batch = writeBatch(db);
