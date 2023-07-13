@@ -140,7 +140,7 @@ import { where } from 'firebase/firestore';
 import { occupationList } from 'src/shared/constants/Applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
-import { mediaItemList, dayItemList } from './const/kpi.const';
+import { mediaItemList, dayItemList, mediaItemRateList } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
 const UserBranch = useBranch();
@@ -227,6 +227,7 @@ async function getData() {
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         queryNames: dayItemList,
+        rateNames: mediaItemRateList,
         dateInMonth: day.value,
         branch: branch.value,
         isAverage: false,
@@ -245,6 +246,7 @@ async function getData() {
           )
         ),
         queryNames: mediaItemList,
+        rateNames: mediaItemRateList,
         media: media.value,
         isAverage: false,
       });

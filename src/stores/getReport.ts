@@ -328,21 +328,26 @@ export const useGetReport = defineStore('getReport', () => {
         isAverage: false,
         queryNames: state.queryNames,
       });
-      const dataCVR = data.map((num, idx) => {
-        if (idx == 0) return '100.0%';
-        if (data[idx - 1] == 0) return '0.0%';
-        const per = (data[idx] / data[idx - 1]) * 100;
-        const perStr = per.toFixed(1);
-        return perStr + '%';
-      });
       const row: { [key: string]: number | string } = { name: dateRange.from };
       for (let i = 0; i < state.queryNames.length; i++) {
         row[fieldDicts[state.queryNames[i]].name] = data[i];
       }
-      for (let i = 0; i < state.queryNames.length; i++) {
-        const rateName = fieldDicts[state.queryNames[i]].rateName;
-        if (rateName) {
-          row[rateName] = dataCVR[i];
+      if (state.rateNames) {
+        for (const rate of state.rateNames) {
+          const num = row[rate[0]];
+          const deno = row[rate[1]];
+          if (
+            typeof num === 'number' &&
+            typeof deno === 'number' &&
+            num !== 0
+          ) {
+            const per = (deno / num) * 100;
+            const perStr = per.toFixed(1) + '%';
+            if ('rateName' in fieldDicts[rate[2]]) {
+              const rateName = fieldDicts[rate[2]]['rateName'];
+              if (rateName) row[rateName] = perStr;
+            }
+          }
         }
       }
       rows.push(row);
@@ -395,22 +400,28 @@ export const useGetReport = defineStore('getReport', () => {
           queryNames: state.queryNames,
         });
       }
-
-      const dataCVR = data.map((num, idx) => {
-        if (idx == 0) return '100.0%';
-        if (data[idx - 1] == 0) return '0.0%';
-        const per = (data[idx] / data[idx - 1]) * 100;
-        const perStr = per.toFixed(1);
-        return perStr + '%';
-      });
       const row: { [key: string]: number | string } = { name: rowItem.name };
       for (let i = 0; i < state.queryNames.length; i++) {
         row[fieldDicts[state.queryNames[i]].name] = data[i];
       }
-      for (let i = 0; i < state.queryNames.length; i++) {
-        const rateName = fieldDicts[state.queryNames[i]].rateName;
-        if (rateName) {
-          row[rateName] = dataCVR[i];
+
+      if (state.rateNames) {
+        for (const rate of state.rateNames) {
+          const num = row[rate[0]];
+          const deno = row[rate[1]];
+          if (
+            typeof num === 'number' &&
+            typeof deno === 'number' &&
+            num !== 0
+          ) {
+            const per = (deno / num) * 100;
+            const perStr = per.toFixed(1) + '%';
+            const rateName = fieldDicts[rate[1]].rateName;
+            if (rate.length == 3) {
+              row[rate[2]] = perStr
+            }
+            else if (rateName) row[rateName] = perStr;
+          }
         }
       }
       rows.push(row);
