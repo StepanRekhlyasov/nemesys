@@ -16,7 +16,7 @@ import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore';
 import { getListFromObject } from '../reportUtil';
 type RowsType = { [key: string]: string | number }[];
-const {getReport} = useGetReport();
+const { getReport } = useGetReport();
 const apexchart = VueApexCharts;
 const userStore = useUserStore();
 const organizationStore = useOrganization();
@@ -78,14 +78,13 @@ const showIndividualReport = async (
       organizationStore.currentOrganizationId
     ),
   ]);
-  const rows = await getReport(
-    {   users:users,
-        dateRange:range,
-        graphType:props.graph_type,
-        queryNames:itemList,
-        isAverage:false,
-      }
-  );
+  const rows = await getReport({
+    users: users,
+    dateRange: range,
+    graphType: props.graph_type,
+    queryNames: itemList,
+    isAverage: false,
+  });
   rowsIndividual.value = rows;
   for (const row of rows) {
     seriesList.value.push({
@@ -96,27 +95,23 @@ const showIndividualReport = async (
   }
 
   const allDataAverage = getListFromObject(
-    await getReport(
-      {
-        dateRange:range,
-        graphType:props.graph_type,
-        queryNames:itemList,
-        isAverage:true,
-      }
-    ),
+    await getReport({
+      dateRange: range,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      isAverage: true,
+    }),
     itemList
   ) as number[];
 
   const dataAverage = getListFromObject(
-    await getReport(
-      {
-        dateRange:range,
-        graphType:props.graph_type,
-        queryNames:itemList,
-        isAverage:true,
-        organizationId:organizationId.value
-      }
-    ),
+    await getReport({
+      dateRange: range,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      isAverage: true,
+      organizationId: organizationId.value,
+    }),
     itemList
   ) as number[];
 
