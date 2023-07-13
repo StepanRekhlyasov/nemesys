@@ -7,7 +7,7 @@
             return val.length > 0 || ''
           }
           return val?.name && val?.name?.length > 0 || ''
-        }]" />
+        }]" v-bind="$attrs"/>
 </template>
 
 <script setup lang="ts">

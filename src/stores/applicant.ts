@@ -73,10 +73,11 @@ type ApplicantsByColumn = {
   'wait_contact': Applicant[] | [];
   'wait_attend': Applicant[] | [];
   'wait_FIX': Applicant[] | [];
-  'wait_visit': Applicant[] | [];
-  'wait_offer': Applicant[] | [];
-  'wait_entry': Applicant[] | [];
-  'wait_termination': Applicant[] | [];
+  'wait_visit': ApplicantFix[] | [];
+  'wait_offer': ApplicantFix[] | [];
+  'wait_entry': ApplicantFix[] | [];
+  'wait_termination': ApplicantFix[] | [];
+  'working': ApplicantFix[] | [];
 };
 
 export const useApplicant = defineStore('applicant', () => {
@@ -105,6 +106,7 @@ export const useApplicant = defineStore('applicant', () => {
       'wait_offer': [],
       'wait_entry': [],
       'wait_termination': [],
+      'working': []
     },
     continueFromDoc: {
       'wait_contact': null,

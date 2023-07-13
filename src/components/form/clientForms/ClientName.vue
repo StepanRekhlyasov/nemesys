@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineEmits, defineProps, watch } from 'vue';
+import { ref, defineEmits, defineProps, watch, withDefaults } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     modelValue: string
-}>()
+    theme?: string
+}>(), {
+    theme: 'primary'
+})
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -24,6 +27,7 @@ watch(localName, (newVal) => {
                 <span class="text-red-5">*</span>
             </q-item-label>
             <q-input
+                :color="theme"
                 outlined
                 dense
                 v-model="localName"
