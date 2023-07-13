@@ -34,15 +34,27 @@ watch(clientData, () => {
                         {{ t('office.representativeName') }}
                         <span class="text-red-5">*</span>
                       </q-item-label>
-                      <q-input :color="theme" outlined dense v-model="clientData['representativeName']"
-                        :placeholder="t('client.add.managerLabel')" lazy-rules
-                        :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+                      
+                      <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['representativeName']"
+                        :placeholder="t('client.add.managerLabel')"
+                        lazy-rules
+                        :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
+                        hide-bottom-space />
                     </div>
                     <div class="col-6 q-pl-sm">
                       <q-item-label class="q-pb-xs">
                         {{ t('office.established') }}
                       </q-item-label>
-                      <q-input :color="theme" outlined dense v-model="clientData['established']" placeholder="2000-07" />
+
+                      <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['established']"
+                        placeholder="2000-07"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                     </div>
                 </div>
 
@@ -51,13 +63,25 @@ watch(clientData, () => {
                       <q-item-label class="q-pb-xs">
                         {{ t('office.capital') }}
                       </q-item-label>
-                      <q-input :color="theme" outlined dense v-model="clientData['capital']" placeholder="1,000,000"/>
+
+                      <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['capital']"
+                        placeholder="1,000,000"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                     </div>
                     <div class="col-6 q-pl-sm">
                       <q-item-label class="q-pb-xs">
                         {{ t('office.earnings') }}
                       </q-item-label>
-                      <q-input :color="theme" outlined dense v-model="clientData['earnings']" placeholder="1,000,000" />
+
+                      <q-input
+                      :color="theme"
+                      outlined dense
+                      v-model="clientData['earnings']"
+                      placeholder="1,000,000"
+                      :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                     </div>
                 </div>
 
@@ -66,7 +90,12 @@ watch(clientData, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('office.companyProfile') }}
                     </q-item-label>
-                    <q-input :color="theme" outlined dense v-model="clientData['companyProfile']" />
+
+                    <q-input
+                    :color="theme"
+                    outlined dense
+                    v-model="clientData['companyProfile']" 
+                    :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>
 
