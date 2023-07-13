@@ -1,6 +1,7 @@
 import { graphType } from '../types/totalization';
 import { typeOfQuery } from '../types/totalization';
 import { User, Branch } from 'src/shared/model';
+import { Media } from 'src/shared/model/Media.model';
 import { QueryFieldFilterConstraint } from 'firebase/firestore';
 export interface ReportState {
   dateRange: { from: string; to: string };
@@ -31,6 +32,11 @@ export interface mediaBasedReportState extends basedReportState {
   branches: Branch[];
 }
 
+export interface branchBasedReportState extends basedReportState {
+  medias: Media[];
+  branch: Branch;
+}
+
 export interface userBasedReportState extends basedReportState {
   users: User[];
 }
@@ -38,7 +44,6 @@ export interface userBasedReportState extends basedReportState {
 export interface dailyBasedReportState extends basedReportState {
   dateInMonth: string;
   branch: string;
-
 }
 
 export interface FieldDict {

@@ -19,7 +19,9 @@ import {
   FieldDict,
   dailyBasedReportState,
   reportStateAndOthers,
+  branchBasedReportState,
 } from 'src/shared/model/GetReport';
+import { Media } from 'src/shared/model/Media.model';
 const userStore = useUserStore();
 
 const applicantFieldDict: FieldDict = {
@@ -107,6 +109,7 @@ const inspectionFieldDict: FieldDict = {
   collection: fixFieldDict.collection,
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
+  uidField: 'chaegeOfInspection',
 };
 
 const offerFieldDict: FieldDict = {
@@ -118,6 +121,7 @@ const offerFieldDict: FieldDict = {
   collection: fixFieldDict.collection,
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
+  uidField: 'chargeOfOffer',
 };
 
 const admissionFieldDict: FieldDict = {
@@ -129,6 +133,7 @@ const admissionFieldDict: FieldDict = {
   collection: fixFieldDict.collection,
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
+  uidField: 'chargeOfAdmission',
 };
 
 const BOIsfirstFieldDict: FieldDict = {
@@ -336,12 +341,11 @@ export const useGetReport = defineStore('getReport', () => {
         for (const rate of state.rateNames) {
           const num = row[rate[0]];
           const deno = row[rate[1]];
-          if (
-            typeof num === 'number' &&
-            typeof deno === 'number' &&
-            num !== 0
-          ) {
-            const per = (deno / num) * 100;
+          if (typeof num === 'number' && typeof deno === 'number') {
+            let per = 0;
+            if (num !== 0) {
+              per = (deno / num) * 100;
+            }
             const perStr = per.toFixed(1) + '%';
             if ('rateName' in fieldDicts[rate[2]]) {
               const rateName = fieldDicts[rate[2]]['rateName'];
@@ -356,16 +360,21 @@ export const useGetReport = defineStore('getReport', () => {
   };
 
   const getReport = async (
-    state: mediaBasedReportState | basedReportState | userBasedReportState
+    state:
+      | mediaBasedReportState
+      | basedReportState
+      | userBasedReportState
+      | branchBasedReportState
   ) => {
     const rows: { [key: string]: string | number }[] = [];
-    let rowItems: (User | Branch | { id: 'all'; name: 'all' })[] = [];
+    let rowItems: (User | Branch | Media | { id: 'all'; name: 'all' })[] = [];
     if ('branches' in state) {
       rowItems = state.branches;
     } else if ('users' in state) {
       rowItems = state.users;
+    } else if ('medias' in state) {
+      rowItems = state.medias;
     } else rowItems = [{ id: 'all', name: 'all' }];
-
     for (const rowItem of rowItems) {
       let data: number[] = [];
 
@@ -375,6 +384,7 @@ export const useGetReport = defineStore('getReport', () => {
             dateRange: state.dateRange,
             dateType: state.graphType,
             media: state.media,
+            branch: rowItem.id,
           },
           isAverage: state.isAverage,
           queryNames: state.queryNames,
@@ -385,6 +395,17 @@ export const useGetReport = defineStore('getReport', () => {
             dateRange: state.dateRange,
             dateType: state.graphType,
             uid: rowItem.id,
+          },
+          isAverage: state.isAverage,
+          queryNames: state.queryNames,
+        });
+      } else if ('medias' in state) {
+        data = await queryPatternToData({
+          reportState: {
+            dateRange: state.dateRange,
+            dateType: state.graphType,
+            media: rowItem.id,
+            branch: state.branch.id,
           },
           isAverage: state.isAverage,
           queryNames: state.queryNames,
@@ -411,16 +432,15 @@ export const useGetReport = defineStore('getReport', () => {
           const deno = row[rate[1]];
           if (
             typeof num === 'number' &&
-            typeof deno === 'number' &&
-            num !== 0
+            typeof deno === 'number'
           ) {
-            const per = (deno / num) * 100;
+            let per = 0;
+            if (num !== 0) per = (deno / num) * 100;
             const perStr = per.toFixed(1) + '%';
             const rateName = fieldDicts[rate[1]].rateName;
             if (rate.length == 3) {
-              row[rate[2]] = perStr
-            }
-            else if (rateName) row[rateName] = perStr;
+              row[rate[2]] = perStr;
+            } else if (rateName) row[rateName] = perStr;
           }
         }
       }

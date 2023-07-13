@@ -3,6 +3,11 @@ import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
 export const dayItemList = [
+  'applicants',
+  'validApplicants',
+  'contactApplicants',
+  'attractionApplicants',
+  'attendApplicants',
   'nursingCare',
   'nurse',
   'generalDispatch',
@@ -13,12 +18,20 @@ export const dayItemList = [
   'offer',
   'admission',
 ] as const;
+
 export const mediaItemList = [
   'applicants',
   'validApplicants',
   'contactApplicants',
   'attractionApplicants',
   'attendApplicants',
+  'fix',
+  'inspection',
+  'offer',
+  'admission',
+] as const;
+
+export const userItemList = [
   'fix',
   'inspection',
   'offer',
@@ -35,6 +48,12 @@ export const mediaItemRateList = [
   ['inspection', 'offer'],
   ['offer', 'admission'],
   ['applicants', 'fix','applicantsFixRate'],
+] as const;
+
+export const userItemRateList = [
+  ['fix', 'inspection'],
+  ['inspection', 'offer'],
+  ['offer', 'admission'],
 ] as const;
 
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
@@ -538,14 +557,14 @@ export const everydayColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: 'attraction',
+      field: 'attractionApplicants',
       label: t('KPI.tables.everyday.10'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: 'attend',
+      field: 'attendApplicants',
       label: t('KPI.tables.everyday.11'),
       align: 'center',
       sortable: true,

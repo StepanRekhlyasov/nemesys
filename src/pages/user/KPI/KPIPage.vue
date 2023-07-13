@@ -22,6 +22,10 @@
               label: $t('KPI.modeMedia'),
               value: 'media',
             },
+            {
+              label: $t('KPI.modeIndividual'),
+              value: 'individual',
+            },
           ]"
           :width="'175px'"
           v-model="mode"
@@ -48,6 +52,10 @@
               label: $t('KPI.applicationAttribute'),
               value: 'applicationAttribute',
             },
+            {
+              label: $t('KPI.modeIndividual'),
+              value: 'individual',
+            },
           ]"
           :width="'175px'"
           v-model="item"
@@ -57,7 +65,7 @@
       </label>
       <label
         class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'media'"
+        v-if="mode === 'branch' || mode === 'media' || mode === 'individual'"
       >
         {{ $t('KPI.targetPeriod') }}
         <DateRange
@@ -77,7 +85,10 @@
           :range="false"
         />
       </label>
-      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
+      <label
+        class="text-subtitle1"
+        v-if="mode === 'branch' || mode === 'day' || mode == 'individual'"
+      >
         {{ $t('common.branch') }}
         <MySelect
           :width="'150px'"
@@ -95,7 +106,7 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1" v-if="false">
+      <label class="text-subtitle1" v-if="mode === 'individual'">
         {{ $t('KPI.username') }}
         <MySelect
           :options="userListToShow"
@@ -140,12 +151,18 @@ import { where } from 'firebase/firestore';
 import { occupationList } from 'src/shared/constants/Applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
-import { mediaItemList, dayItemList, mediaItemRateList } from './const/kpi.const';
+import {
+  mediaItemList,
+  dayItemList,
+  mediaItemRateList,
+  userItemList,
+  userItemRateList,
+} from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
-const dummyDataDateRange  = { from: '1900/01/01', to: '1900/12/31' };
+const dummyDataDateRange = { from: '1900/01/01', to: '1900/12/31' };
 const dummyDate = '1900/07/01';
 const day = ref(dummyDate);
 const media = ref<string | undefined>(undefined);
@@ -195,17 +212,33 @@ const getBranchList = async () => {
 async function getData() {
   if (organizationStore.currentOrganizationId) {
     loading.value = true;
-    let users;
-    if (mode.value == 'media') {
+
+    // we need to care switching mode while loading
+    const modeNow = mode.value;
+
+    // let users;
+    // if (user.value) {
+    //   users = [await userStore.getUserById(user.value)];
+    // } else if (branch.value) {
+    //   users = await userStore.getUsersByConstrains([
+    //     where('branch_id', '==', branch.value),
+    //     where('deleted', '==', false),
+    //     where(
+    //       'organization_ids',
+    //       'array-contains',
+    //       organizationStore.currentOrganizationId
+    //     ),
+    //   ]);
+    //   userListToShow.value = convertObjToIdNameList(users);
+    // } else {
+    //   users = await userStore.getAllUsers(
+    //     organizationStore.currentOrganizationId
+    //   );
+    //   userListToShow.value = convertObjToIdNameList(users);
+    // }
+    if (mode.value == 'individual' && branch.value) {
       rowData.value = [];
-      mediaListToShow.value = convertObjToIdNameList([
-        ...(await getAllmedia()),
-      ]);
-    }
-    if (user.value) {
-      users = [await userStore.getUserById(user.value)];
-    } else if (branch.value) {
-      users = await userStore.getUsersByConstrains([
+      const users = await userStore.getUsersByConstrains([
         where('branch_id', '==', branch.value),
         where('deleted', '==', false),
         where(
@@ -215,24 +248,48 @@ async function getData() {
         ),
       ]);
       userListToShow.value = convertObjToIdNameList(users);
-    } else {
-      users = await userStore.getAllUsers(
-        organizationStore.currentOrganizationId
-      );
-      userListToShow.value = convertObjToIdNameList(users);
+      const rows = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        queryNames: userItemList,
+        rateNames: userItemRateList,
+        users: users,
+        isAverage: false,
+      });
+      console.log(rows)
+      rowData.value = rows;
     }
-    if (mode.value == 'day') {
+    else if(mode.value == 'individual'){
+      rowData.value = [];
+    }
+
+    if (mode.value == 'day' && day.value) {
       rowData.value = [];
       const rows = await getDailyReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         queryNames: dayItemList,
-        rateNames: mediaItemRateList,
         dateInMonth: day.value,
         branch: branch.value,
         isAverage: false,
       });
       rowData.value = rows;
+    }
+
+    if (mode.value == 'branch' && branch.value) {
+      rowData.value = [];
+      const rows = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branch: branch.value,
+        queryNames: mediaItemList,
+        rateNames: mediaItemRateList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+      });
+      rowData.value = rows;
+    } else if (mode.value == 'branch') {
+      rowData.value = [];
     }
 
     if (mode.value == 'media' && media.value) {
@@ -251,8 +308,16 @@ async function getData() {
         isAverage: false,
       });
       rowData.value = rows;
+    } else if (mode.value == 'media') {
+      rowData.value = [];
+      mediaListToShow.value = convertObjToIdNameList([
+        ...(await getAllmedia()),
+      ]);
     }
-
+    if (modeNow != mode.value) {
+      resetData();
+      rowData.value = [];
+    }
     loading.value = false;
   }
 }
