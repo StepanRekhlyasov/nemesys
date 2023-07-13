@@ -63,18 +63,18 @@ const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
 
-const getApplicantIds = async ()=>{
+const getApplicantIds = async () => {
   const db = getFirestore();
-    const collectionRef = collection(db, 'fix');
+  const collectionRef = collection(db, 'fix');
 
-    const q = query(collectionRef, where('backOrder', '==', props.bo.id));
-    const snapshot = await getDocs(q);
+  const q = query(collectionRef, where('backOrder', '==', props.bo.id));
+  const snapshot = await getDocs(q);
 
-    const assignedStaff = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    applicantIds.value = assignedStaff.map((staff) => staff.applicant_id);
+  const assignedStaff = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+  applicantIds.value = assignedStaff.map((staff) => staff.applicant_id);
 }
 
 onMounted(async () => {
