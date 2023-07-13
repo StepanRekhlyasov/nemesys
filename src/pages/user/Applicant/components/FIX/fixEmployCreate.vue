@@ -47,7 +47,7 @@
               option-label="name"
               :rules="[creationRule]" 
               hide-bottom-space
-              :options="applicantStore.state.clientList.find(client => client.id === data['client'])?.office"
+              :options="clientFactoryList"
               :disable="!data['client']"
               :label="$t('applicant.list.fixEmployment.office')" />
             <q-select
@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { serverTimestamp, Timestamp } from 'firebase/firestore';
 import { Applicant, ApplicantFix, BackOrderModel, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
@@ -144,6 +144,8 @@ import { creationRule } from 'src/components/handlers/rules';
 import { useFix } from 'src/stores/fix';
 import { QForm } from 'quasar';
 import { useUserStore } from 'src/stores/user';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const props = defineProps<{
   fixData?: ApplicantFix,
@@ -156,16 +158,19 @@ const emits = defineEmits(['updateList', 'close', 'updateDoc'])
 
 const auth = getAuth();
 const organization = useOrganization();
+const clientFactoryStore = useClientFactory();
 const applicantStore = useApplicant();
 const fixStore = useFix();
 const userStore = useUserStore()
+const backOrderStore = useBackOrder()
+
 const data = ref<Partial<ApplicantFix>>({});
+const clientFactoryList = ref<ClientFactory[]>([])
 const loading = ref(false);
 const edit = ref<string[]>([]);
 const usersListOption = ref<selectOptions[]>([]);
 const name = ref('');
 
-const backOrderStore = useBackOrder()
 const backOrderOptions = computed(()=>{
   return backOrderList.value.map((row)=>{
     const disable = !!props.createdFixes.find((item)=>{
@@ -179,6 +184,15 @@ const backOrderOptions = computed(()=>{
   }) || []
 })
 const backOrderList = ref<BackOrderModel[]>([])
+
+onMounted(async () => {
+  await applicantStore.getClients()
+})
+watch(() => data.value.client, async () => {
+  if (data.value.client) {
+    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client)
+  }
+}, { deep: true, immediate: true })
 
 watch(()=>data.value.office, async (newValue)=>{
   if(newValue){

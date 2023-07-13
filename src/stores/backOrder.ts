@@ -47,7 +47,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     return year + '-' + month + '-' + day + 'T23:59:59+00:00';
   };
 
-  async function loadBackOrder(searchData: BOElasticSearchData) {
+  async function loadBackOrder(searchData?: BOElasticSearchData) {
     state.value.currentIds = [];
     state.value.BOList = [];
     state.value.isLoadingProgress = true;
