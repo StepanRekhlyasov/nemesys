@@ -166,7 +166,9 @@ onMounted(async () => {
 })
 watch(() => data.value.client_id, async () => {
   if (data.value.client_id) {
+    loading.value = true
     clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client_id)
+    loading.value = false
   }
 }, { deep: true, immediate: true })
 watch([data.value.client_id, data.value.office_id], async () => {
