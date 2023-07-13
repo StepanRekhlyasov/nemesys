@@ -10,7 +10,7 @@
       <q-card-section class="number">
         <q-inner-loading showing color="primary" v-if="applicantStore.state.columnsLoading[status]"/>
         <template v-else>
-          <q-btn unelevated square :label="applicantStore.state.applicantCount[status]" :disabled="applicantStore.state.columnsLoading[status]" :size="'25px'">
+          <q-btn unelevated square :label="applicantStore.state.applicantRowsCount[status] || 0" :disabled="applicantStore.state.columnsLoading[status]" :size="'25px'">
             <DashboardChooseBanner
               :link="'/applicant-progress/'"
               :offset="[0,-220]"
@@ -32,16 +32,17 @@ import { onMounted, ref } from 'vue';
 import DashboardChooseBanner from './DashboardChooseBanner.vue';
 import DashboardProgressPreviewTable from './DashboardProgressPreviewTable.vue';
 import { limitQuery } from '../../ApplicantProgress/const/applicantColumns';
+import { ApplicantStatus } from 'src/shared/model';
 
 const applicantStore = useApplicant()
 const props = defineProps<{
-  status: string,
+  status: ApplicantStatus,
   updateOnMounted: boolean
 }>()
 const showPreview = ref(false)
 
 onMounted(async ()=>{
-  if(props.updateOnMounted || typeof applicantStore.state.applicantCount[props.status] === 'undefined') {
+  if(props.updateOnMounted || typeof applicantStore.state.applicantRowsCount[props.status] === 'undefined') {
     await applicantStore.getApplicantsByStatus(props.status, applicantStore.state.applicantProgressFilter, limitQuery)
   } 
 })

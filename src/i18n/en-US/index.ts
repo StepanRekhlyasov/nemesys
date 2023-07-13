@@ -17,6 +17,8 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    minimum:'min',
+    maximum:'max',
     BO: 'BO',
     select: 'Please, choose',
     reflect: 'reflect',
@@ -56,9 +58,11 @@ export default {
     preview: 'Preview',
     yes: 'Yes',
     no: 'No',
+    without: 'Without',
     possible: 'Possible',
     impossible: 'Impossible',
     yesShort: 'Yes',
+    noShort: 'No',
     above: 'Above',
     moreThan: 'or More',
     pleaseSelect: 'Please Select',
@@ -167,6 +171,7 @@ export default {
       userSearch: 'User search',
       operationChange: 'Operation Change',
       organizationsList: 'Organization List',
+      occupationSpecificItems: 'Occupation-specific item settings',
       organizationsTable: {
         number: 'No.',
         organizationId: 'Organization ID',
@@ -230,7 +235,14 @@ export default {
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
-      billingHistory: 'Billing history'
+      billingHistory: 'Billing history',
+      aggregateDataDisplay:'Aggregated Data Display',
+      dataOutputDisplay:'Data Output',
+      dataOutputDisplayTable:{
+        outputMonth:'Output month',
+        output:'output',
+        companyWide:'Company-wide',
+      },
     }
   },
   settings: {
@@ -301,6 +313,7 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
+      delete: 'This user account will no longer be able to log in.',
       logout: 'Logout',
       adminPage: 'Open system administration page',
     },
@@ -623,6 +636,7 @@ export default {
       transactionType: 'Transaction Type',
       introduction: 'Introduction',
       dispatch: 'Dispatch',
+      ttp: 'TTP',
       reqQualification: 'Required qualification',
       regularReview: 'Regular review',
       assistant: 'Assistant',
@@ -639,6 +653,7 @@ export default {
       fullTime: 'Full Time',
       dispatchEm: 'Dispatch',
       partTime: 'Part Time',
+      partTimeEmployee: 'Part Time (employee)',
       baito: 'Baito',
       retirementAge: 'Retirement Age',
       hourlywage: 'Hourly Wage',
@@ -692,6 +707,7 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
+      tempToPerm:'Temp to Perm'
     },
     contractUnit: {
       corporateBulk: 'Corporate Bulk',
@@ -720,6 +736,14 @@ export default {
     }
   },
   applicant: {
+    smsNotes:{
+      note:'※Notes for SMS transmission:',
+      note1:'・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',
+      note2:'・Please input within a maximum of 70 characters in both full-width and half-width characters. (If the limit is exceeded, the message may be sent in multiple parts.)',
+      note3:'・Line breaks count as 2 characters.',
+      note4:'・Please include URLs within 50 characters.',
+      note5:'・Each message will incur a cost of 8 yen.'
+    },
     add: {
       name: 'Name',
       kanaName: 'Kana Name',
@@ -763,6 +787,12 @@ export default {
       applicationMetod: 'Application Metod',
       image: 'Applicant Image',
     },
+    shift:{
+      workinghoursearly: 'Early Shift',
+      workinghoursday: 'Day Shift',
+      workinghourslate: 'Late Shift',
+      workinghoursnight: 'Night Shift',
+    },
     list: {
       name: 'Staff Name ',
       category: 'Category',
@@ -782,6 +812,7 @@ export default {
       operationInfo: 'Operation Info',
       yearsExperience: 'Years of Experience',
       availableShift: 'Available Shift',
+      station:'station',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -805,6 +836,12 @@ export default {
         status: 'FIX Status',
         date: 'FIX Date',
         fixReasonNG: 'FIX NG Reason',
+        attractionsReasonNG: 'Attraction NG Reason',
+        attendingReasonNG: 'Attending NG Reason',
+        break_contact: 'No answer',
+        anotherCompany: 'Another offer',
+        excluded: 'Not target',
+        decline: 'Unregistered',
         inspectionReasonNG: 'Inspection NG Reason',
         offerReasonNG: 'Offer NG Reason',
         admissionReasonNG: 'Admission NG Reason',
@@ -832,8 +869,8 @@ export default {
         comments: 'Comments (A-E)',
         inspectionMemo: 'Job inspection memo',
         notApplicable: 'Not target',
-        decided: 'No answer',
-        notCovered: 'Not covered',
+        decided: 'Another offer',
+        notCovered: 'No answer',
         registrationDeclined: 'Unregistered',
         age: 'Age',
         antiSocial: 'Criminal organization',
@@ -864,7 +901,6 @@ export default {
         admission: {
           status: 'Employment Status',
           date: 'Date of Entry',
-          reasonNotJoining: 'Reason for Not Joining',
           chargeOfAdmission: 'Person in Charge of Admission',
           memo: 'Admission memo'
         }
@@ -887,11 +923,11 @@ export default {
 
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
-        classiffication: 'Classiffication',
+        classiffication: 'Classification',
         qualifications: 'Qualifications',
         memo: 'Attraction Memo',
         invitationDate: 'Invitation Date',
-        seduser: 'Seduser',
+        chargeOfAttraction: 'Charge Of Attraction',
         position: 'Position',
         period: 'Employment Period',
 
@@ -902,7 +938,7 @@ export default {
         classification: {
           introduction : 'Introduction',
           dispatch: 'Dispatch',
-          TTP: 'TTP'
+          ttp: 'TTP'
         }
       }
     },
@@ -919,16 +955,18 @@ export default {
       waitOffer: 'Wait Offer',
       waitEntry: 'Wait Entry',
       working: 'Working',
-      waitTermintion: 'Wait Termintion',
+      waitTermination: 'Wait Termintion',
       waitRetire: 'Wait Retire',
       retired: 'Retired',
     },
     statusOption: {
       unsupported: 'Unsupported',
       waitingContact: 'Waiting for Contact',
+      wait_contact: 'Waiting for Contact',
       excluded: 'Not target',
       anotherCompany: 'Another offer',
       breakContact: 'No answer',
+      break_contact: 'No answer',
       decline: 'Unregistered',
       wait_attend: 'Wait Attend',
       wait_FIX: 'Wait FIX',
@@ -965,7 +1003,7 @@ export default {
     attendant: {
       attendantStatus: 'Attendant Status',
       day: 'Attending Day',
-      attendeeUserInCharge: 'User in charge',
+      chargeOfAttending: 'User in charge',
       memo: 'Attendance Memo',
       desiredConditions: 'Desired Conditions',
       timeToWork: 'Possible Employment Period',
@@ -1069,7 +1107,7 @@ export default {
         waitVisit: 'Wait-Visit',
         waitOffer: 'Wait-Offer',
         waitEntry: 'Wait-Entry',
-        waitTermination: 'Wait-Termination',
+        waitTermination: 'Update Check List',
       },
       card: {
         applicationDate: 'I',
@@ -1080,7 +1118,7 @@ export default {
         appointmentDate: 'O',
       },
       table: {
-        'fullName': 'Name',
+        'fullName': 'Full Name',
         'applicationDate': 'Application Date',
         'nearestStation': 'Nearest Station',
         'qualificationsExperience': 'Qualifications and Experience',
@@ -1122,9 +1160,10 @@ export default {
     transactionType: 'Transaction Type',
     distance: 'Distance from origin',
     selectBOType: 'Select BO type',
+    backOrderDetails: 'Back Order Details',
     officeName: 'Office Name',
     clientName: 'Client Name',
-    employmentType: 'Employment Type',
+    employmentType: 'Employment Status',
     hourlyRate: 'Hourly Rate',
     monthlyWage: 'Monthly Wage',
     state: 'State/Province',
@@ -1149,6 +1188,17 @@ export default {
     distanceBusiness: 'Distance from Business',
     matchDegree: 'Match degree',
     statusThisTime: 'Status at this time',
+    wanted: 'Wanted',
+    inactive: 'Inactive',
+    sms:{
+      send:'Send',
+      sendSMS:'Send SMS',
+      sendContent:'Contents of transmission',
+      characters:'Characters',
+      content:'Content',
+      template:'Template',
+      form:'Submission form',
+    },
     create: {
       employmentConditions: '■ Employment Conditions',
       numberWorkingDays: 'Number of working days',
@@ -1165,22 +1215,24 @@ export default {
       hourlyWage: 'Hourly Wage',
       salary: 'Salary',
       yenMonth: 'Yen/Month',
+      yenHour: 'Yen/Hour',
       benefit: 'Benefit',
       bonus: 'Bonus',
       travelingExpenses: 'Traveling Expenses',
       welfareProgramme: 'Welfare Programme',
-      childcare: 'Childcare, nursing care and other leave',
+      childcare: 'Childcare and caregiving leave',
       payday: 'Payday',
       remarks: 'Remarks',
       day: 'Day',
-      tasks: 'Tasks',
+      tasks: 'Work content',
       pickDrop: 'Pick-up and drop-off',
       onCallSupport: 'On-call support',
       onCallRemarks: 'On-call Remarks',
-      welfare: 'Welfare',
+      welfare: 'Employee benefits',
       retirementAge: 'Rretirement Age',
-      inHouseInformation: 'In-house Information',
+      inHouseInformation: 'Internal Company Information',
       referralFee: 'Referral Fee',
+      referralFeeAmount: 'Referral Fee Amount',
       regulation: 'Regulation % of',
       stipulatedAmount: 'Stipulated amount',
       introduction: 'Introduction',
@@ -1188,6 +1240,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
+      required: 'Required', 
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',
@@ -1211,7 +1264,7 @@ export default {
       employees: 'Employees',
       levelOfCare: 'Level of care',
       memo: 'Memo',
-      nameQualification: 'Name of Qualification'
+      nameQualification: 'Qualification Name'
     },
     qualification: {
       registeredNurse: 'Registered Nurse',
@@ -1361,6 +1414,7 @@ export default {
   actions: {
     clickToAddNewClient: 'Click here to add a new client',
     searchConditionChange: 'Search condition change',
+    faxBatchTransmission: 'Fax batch transmission',
   },
   failed: 'Action failed',
   success: 'Action was successful',
@@ -1425,9 +1479,9 @@ export default {
       subject: 'subject',
       content: 'content',
       date: 'Delivery date',
-      send: 'Immediate delivery',
+      send: 'Send',
       delay: '+ Add New',
-      cancel: 'cancel'
+      cancel: 'Cancel'
     },
     table: {
       status: 'status',
@@ -1546,6 +1600,25 @@ export default {
         basicInfoChanged: 'Changed Basic Info',
         officeInfoChanged: 'Changed Office Info'
       }
+    },
+    fax: {
+      transmissionConfirmation: 'Transmission Confirmation',
+      applicantLinkage: 'Applicant Linkage',
+      clientCategoryNG: 'NG client category',
+      clientFacilityNG: 'NG client/facility',
+      previousEmploymentClient: 'Previous employment client',
+      transmissionContentSettings: 'Transmission content settings',
+      onlyPdfFomratCanBeAttached:'Only PDF fomat can be attached',
+      prSheet: 'PR sheet',
+      attachPRSheet: 'Attach PR sheet',
+      setTransmissionDateTime: 'Set transmission date and time',
+      set: 'Set',
+      transmissionDateTime: 'Transmission date and time',
+      destinationSettings: 'Destination settings',
+      clientNG: 'NG client',
+      refinementConditions: 'Refinement conditions',
+      maxTransmissions: 'Maximum Transmissions',
+      faxPRSheet: 'Fax the PR Sheet'
     }
   },
   inquiry: {
@@ -1561,14 +1634,14 @@ export default {
     },
     detail: {
       inquiryTitle: 'Inquiry details',
-      responseTitle: 'Response',
+      responseTitle: 'Response form',
       category: 'Category',
       recievedDate: 'Date recieved',
       subject: 'Subject',
       content: 'Content',
       metro: 'Tokyo Metropolitan area',
       adress: 'Town Address',
-      replyContent: 'Contents of reply'
+      replyContent: 'Content'
     },
     message: {
       issueDate: 'Date of issue',
@@ -1577,7 +1650,10 @@ export default {
   },
   industry: {
     nursing: 'Nursing',
-    nurse: 'Nurse'
+    nurse: 'Nurse',
+    uniqueItemSetting: 'Client type unique item setting',
+    specificTypeItems: 'Type-specific item',
+    addLine: 'ADD LINE'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',
@@ -1674,6 +1750,7 @@ export default {
     showBranch: 'Show branch',
     notification: 'Notification',
     openList: 'Open list',
+    closeList: 'Close list',
     applicantProgress: 'Applicant Progress',
     showWhiteboard: 'Show whiteboard',
     showList: 'Show list',
@@ -1682,9 +1759,9 @@ export default {
   KPI: {
     targetPeriod: 'Period',
     numberOfFix: 'FIX Qty.',
-    jobs: 'Visit Qty.',
-    innerConstant: 'Offer Qty.',
-    entry: 'Entry Qty.',
+    numberOfVisit: 'Visit Qty.',
+    numberOfOffer: 'Offer Qty.',
+    numberOFEntry: 'Entry Qty.',
     numberOfCalls: 'Call Qty.',
     numberOfFax: 'FAX Qty.',
     dispatch: 'Dispatch',

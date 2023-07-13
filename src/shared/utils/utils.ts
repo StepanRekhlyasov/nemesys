@@ -117,13 +117,13 @@ export const findTheLastDate = (dates: Date[]) => {
 
 }
 
-export const dayMonthFromDate = (myDate?: string | undefined | Timestamp) => {
+export const myDateFormat = (myDate?: string | undefined | Timestamp, format?: string) => {
   if (!myDate) return '-';
   if(typeof myDate === 'string'){
     const timeStamp = Date.parse(myDate)
-    return date.formatDate(timeStamp, 'DD/MM')
+    return date.formatDate(timeStamp, format?format:'YYYY.MM.DD')
   } else if (myDate instanceof Timestamp){
-    return date.formatDate(myDate.toDate(), 'DD/MM');
+    return date.formatDate(myDate.toDate(), format?format:'YYYY.MM.DD');
   } else {
     return '-';
   }
@@ -163,6 +163,24 @@ export const remainingDays = (date1 : Date, date2 : Date) => {
   return Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / millisecondsInDay) 
 }
 
+export const getFromTo = (dateRange: string | { from: string; to: string; } | null) => {
+  let to: Timestamp | undefined, from: Timestamp | undefined
+
+  if (dateRange) {
+      if (typeof dateRange === 'string') {
+          const fromDate = new Date(dateRange)
+          const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
+          from = dateToTimestampFormat(fromDate)
+          to = dateToTimestampFormat(toDate)
+      } else if (dateRange.from && dateRange.to) {
+          const fromDate = new Date(dateRange.from)
+          const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
+          from = dateToTimestampFormat(fromDate)
+          to = dateToTimestampFormat(toDate)
+      }
+  }
+  return [from, to]
+}
 // rules intut textfield
 
 // export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`

@@ -45,7 +45,7 @@ export const usePagination = defineStore('pagination', () => {
       lastSnapshot = snapshot
       lastQuery = query
       return snapshot?.docs.map((doc) => {
-        return doc.data() as unknown
+        return {...doc.data(), id: doc.id} as unknown
       })
     }
 

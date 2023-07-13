@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { reactive, watch, defineEmits, defineProps } from 'vue';
+import { reactive, watch, defineEmits, defineProps, withDefaults } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     modelValue: Record<string, string>
-}>();
+    theme?: string
+}>(), {
+    theme: 'primary'
+})
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -28,14 +31,14 @@ watch(contractInfo, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.list.personIncharge') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="contractInfo['nameContact']"
+                    <q-input :color="theme" outlined dense v-model="contractInfo['nameContact']"
                         :placeholder="t('client.add.managerLabel')" />
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         {{ t('office.personInChargeTel') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="contractInfo['positionContact']"
+                    <q-input :color="theme" outlined dense v-model="contractInfo['positionContact']"
                         :placeholder="t('clientFactory.drawer.details.inChargeTitle')" />
                 </div>
             </div>
@@ -44,14 +47,14 @@ watch(contractInfo, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.list.personIncharge') }} : TEL
                     </q-item-label>
-                    <q-input outlined dense v-model="contractInfo['telContact']"
+                    <q-input :color="theme" outlined dense v-model="contractInfo['telContact']"
                         :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')" />
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         {{ t('client.list.personIncharge') }} : MAIL
                     </q-item-label>
-                    <q-input outlined dense v-model="contractInfo['mailContact']"
+                    <q-input :color="theme" outlined dense v-model="contractInfo['mailContact']"
                         :placeholder="t('client.add.phoneLabel')" />
                 </div>
             </div>

@@ -12,6 +12,7 @@ interface OrganizationState {
   activeOrganization: number,
   currentOrganizationBranches: { [id: string]: Branch; },
   currentOrganizationUsers: { [id: string]: User; },
+  userAndBranchesUpdated: boolean
 }
 
 const organization = 'organization'
@@ -23,6 +24,7 @@ export const useOrganization = defineStore('organization', () => {
     activeOrganization: 0,
     currentOrganizationBranches: {},
     currentOrganizationUsers: {},
+    userAndBranchesUpdated: true
   })
 
   const userStore = useUserStore()
@@ -43,8 +45,10 @@ export const useOrganization = defineStore('organization', () => {
     { deep: true }
   )
   watch(() => currentOrganizationId.value, async () => {
+    state.value.userAndBranchesUpdated = false
     state.value.currentOrganizationBranches = await getCurrentOrganizationBranches()
     state.value.currentOrganizationUsers = await getCurrentUsersInChrage()
+    state.value.userAndBranchesUpdated = true
   })
 
   async function getAllOrganizationsIds() {
@@ -78,7 +82,7 @@ export const useOrganization = defineStore('organization', () => {
       return usersObject
     }
     users.forEach((user) => {
-      users[user.id] = user as User
+      usersObject[user.id] = user as User
     })
 
     return usersObject
@@ -165,6 +169,14 @@ export const useOrganization = defineStore('organization', () => {
 
   }
 
+  async function getAllOrganizations() {
+    const organizationsQuery = query(collection(db, 'organization/'), where('deleted', '==', false));
+    const querySnapshot = await getDocs(organizationsQuery);
+    return querySnapshot.docs.map((org)=>{
+      return org.data() as Organization
+    })
+  }
+
   return {
     state,
     currentOrganizationId,
@@ -175,5 +187,6 @@ export const useOrganization = defineStore('organization', () => {
     getAllOrganizationsIds,
     getOrganizationsByName,
     getDataById,
+    getAllOrganizations,
   }
 })

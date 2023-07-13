@@ -6,12 +6,30 @@ import { i18n } from 'boot/i18n';
 import { adminRolesIds, ADMIN_ORGANIZATION_CODE } from 'src/components/handlers/consts';
 import { useOrganization } from './organization';
 import { useRole } from './role';
+import { ref } from 'vue';
+import { getAuth } from 'firebase/auth';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getApp } from 'firebase/app';
 
 const { t } = i18n.global
 
+interface userStore {
+  currentUser?: User
+}
+
 export const useUserStore = defineStore('user', () => {
-  const db = getFirestore()
-  const roleStore = useRole()
+  const db = getFirestore();
+  const roleStore = useRole();
+  const auth = getAuth();
+  const state = ref<userStore>({})
+
+  async function getCurrentUser() {
+    let user: User | undefined = undefined;
+    if (auth.currentUser?.uid) {
+      user = await getUserById(auth.currentUser.uid)
+      state.value.currentUser = user;
+    }
+  }
 
   async function getAllUsers(active_organization_id?: string, queryText?: string) {
     const constraints: ConstraintsType = [
@@ -46,7 +64,6 @@ export const useUserStore = defineStore('user', () => {
     return users
   }
 
-
   async function getUserById(id: string) {
 
     const docRef = doc(db, 'users', id)
@@ -57,20 +74,31 @@ export const useUserStore = defineStore('user', () => {
       return userSnap.data() as User
     }
 
-    throw new Error(t('common.userNotFound'))
 
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
+    if(user.email === undefined){
+      delete user.email
+    }
+
     const userRef = doc(db, 'users/' + id);
     await updateDoc(userRef, {
       ...user
     })
+
+    if (user.email) {
+      const functions = getFunctions(getApp(), 'asia-northeast1')
+      const updateUserEmail = httpsCallable(functions, 'update_user_email');
+      await updateUserEmail({ id, email: user.email })
+    }
   }
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
     const user = await getUserById(userId)
-
+    if(!user){
+      throw new Error(t('common.userNotFound'))
+    }
     if (adminRolesIds.includes(user.role)) {
       if (organizationCode == ADMIN_ORGANIZATION_CODE) {
         return true
@@ -127,7 +155,7 @@ export const useUserStore = defineStore('user', () => {
 
   const getUsersByConstrains = async (constraints?: ConstraintsType) => {
     const organization = useOrganization()
-    if(!constraints){
+    if (!constraints) {
       constraints = [where('deleted', '==', false), where('organization_ids', 'array-contains', organization.currentOrganizationId)]
     }
     const usersData = await getDocs(query(
@@ -145,7 +173,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
 
-  async function getUsersByPermission( permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) {
+  async function getUsersByPermission(permission: UserPermissionNames, queryText?: string, active_organization_id?: string,) {
     const roles = await roleStore.getAllRoles()
     const roleIds: string[] = [];
 
@@ -154,11 +182,9 @@ export const useUserStore = defineStore('user', () => {
         roleIds.push(role.id);
       }
     })
-
     if (!roleIds.length) {
       return;
     }
-
     const constraints: ConstraintsType = [where('deleted', '==', false), where('role', 'in', roleIds), orderBy('displayName')]
 
     if (active_organization_id) {
@@ -169,16 +195,17 @@ export const useUserStore = defineStore('user', () => {
       constraints.push(startAt(queryText), endAt(queryText + '\uf8ff'),)
     }
 
-    const users =  await getDocs(query(
+    const users = await getDocs(query(
       collection(db, 'users'),
       ...constraints,
     ))
-    return users.docs.map((user)=>{
-      return user.data() as User
+    return users.docs.map((user) => {
+      return { ...user.data(), id: user.id } as User
     })
   }
-
   return {
+    state,
+    getCurrentUser,
     getAllUsers,
     getUserById,
     editUser,
@@ -186,6 +213,6 @@ export const useUserStore = defineStore('user', () => {
     searchUsers,
     getAllUsersInBranch,
     getUsersByConstrains,
-    getUsersByPermission
+    getUsersByPermission,
   }
 })

@@ -11,11 +11,13 @@ withDefaults(defineProps<{
     isButton?: boolean
     label?: string
     isDisabledButton?: boolean
+    isWithoutCancel?: boolean
     theme?: string
 }>(), {
   isButton: true,
   isDisabledButton: false,
   isLabelSquare: false,
+  isWithoutCancel: false,
   theme: 'primary'
 })
 
@@ -50,7 +52,7 @@ const emit = defineEmits<{
             :label="t('common.save')" :color="theme" 
             @click="emit('onSave')" size="sm" 
             :disable="isDisabledButton" />
-          <q-btn v-if="isEdit" 
+          <q-btn v-if="(isEdit && !isWithoutCancel)" 
             :label="t('common.cancel')" class="q-ml-md" 
             outline :color="theme" @click="emit('closeEdit')"
             size="sm" />

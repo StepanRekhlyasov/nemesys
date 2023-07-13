@@ -14,7 +14,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['name']" bg-color="white"
-                  :rules="[(val) => !!val || '']" hide-bottom-space />
+                  :rules="[creationRule]" hide-bottom-space />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -23,7 +23,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['kanaName']" 
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -32,7 +32,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['postCode']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -41,7 +41,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" 
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" 
                   :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
@@ -51,7 +51,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['municipalities']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -60,7 +60,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['street']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -95,7 +95,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                :rules="[creationRule]" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -106,7 +106,7 @@
                 <select-branch 
                   :organization-id="organizationStore.currentOrganizationId" 
                   v-model="applicantData['branchIncharge']" 
-                  :rules="[(val) => !!val || '']" 
+                  :rules="[creationRule]" 
                   hide-bottom-space
                   @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
                   @on-end-loading="disableSubmit = false"
@@ -123,7 +123,7 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['sex']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  :rules="[creationRule]" hide-bottom-space> 
                   <template v-slot:control>      
                     <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
                     <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
@@ -160,7 +160,7 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['occupation']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  :rules="[creationRule]" hide-bottom-space> 
                   <template v-slot:control>                    
                     <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
                     <q-radio v-model="applicantData['occupation']" val="nursingCare"
@@ -182,7 +182,7 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['qualification']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  :rules="[creationRule]" hide-bottom-space> 
                   <template v-slot:control>       
                     <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
                       :label="$t('applicant.add.registeredNurse')" />
@@ -261,6 +261,8 @@ import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate} from 'src/shared/constants/Form.const';
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { creationRule } from 'src/components/handlers/rules';
 
 const applicantDataSample = {
   qualification: [],
@@ -329,10 +331,13 @@ async function onSubmit() {
   /** required fields */
   data['dob'] = Timestamp.fromDate(new Date(data.dob));
   data['deleted'] = false;
-  const success = await applicantStore.createApplicant(data, applicantImage.value)
-  if(success){
+  try{
+    await applicantStore.createApplicant(data, applicantImage.value)
+    Alert.success();
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
+  } catch(error){
+    Alert.warning(error);
   }
   loading.value = false;
 }

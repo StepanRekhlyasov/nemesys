@@ -5,16 +5,20 @@
     @openEdit="emit('openEdit'); resetData();"
     @closeEdit="emit('closeEdit'); resetData();"
     @onSave="saveHandler()">
+    <q-form ref="form">
     <div class="row q-pb-sm">
       <labelField :label="$t('applicant.list.fixEmployment.status')" :edit="edit.includes('info')" 
-        :value="fixData.fixStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md">
-        <q-checkbox v-model="data['fixStatus']" label="OK" @click="data['data'] = '';emit('disableChange')"
-          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
-        <q-checkbox v-model="data['fixStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
-          unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
+        :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md self-center" required>
+        <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
+            v-model="data['fixStatus']" :rules="[() => 'fixStatus' in data || '']">
+          <q-checkbox v-model="data['fixStatus']" label="OK" @click="data['data'] = '';emit('disableChange')"
+            checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
+          <q-checkbox v-model="data['fixStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
+            unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
+        </q-field>
       </labelField>
-      <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.fixDate">
-        <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['fixDate']" :disable="loading">
+      <labelField :label="$t('applicant.list.fixEmployment.date')" :edit="edit.includes('info')" :value="fixData.fixDate" required valueClass="col-3 q-pl-md self-center">
+        <q-input v-if="edit.includes('info')" dense outlined bg-color="white" v-model="data['fixDate']" :disable="loading" hide-bottom-space :rules="[creationRule, validateDate]">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -49,27 +53,28 @@
           .filter(user => user.value === fixData['chargeOfFix'])
           .map(user => user.label).join('')"
         :label="$t('applicant.list.fixEmployment.chargeOfFix')"
-        valueClass="col-9 q-pl-md">  
+        valueClass="col-9 q-pl-md" required>  
 
         <q-select
           v-if="edit.includes('info')"
           v-model="data['chargeOfFix']"
           :disable="loading"
-          emit-value map-options dense outlined
+          emit-value map-options dense outlined hide-bottom-space
+          :rules="[creationRule]"
           :options="usersListOption" 
           :label="$t('common.pleaseSelect')" />
       </labelField>
     </div>
-    <div class="row q-pb-sm">
-      <labelField 
-        :edit="edit.includes('info')" 
-        :label="$t('applicant.list.fixEmployment.fixMemo')" 
-        :value="fixData['fixMemo']" valueClass="col-9 q-pl-md">
-
-        <q-input dense outlined bg-color="white"
-          v-model="data['fixMemo']" :disable="loading" />
-      </labelField>
-    </div>
+      <div class="row q-pb-sm">
+        <labelField 
+          :edit="edit.includes('info')" 
+          :label="$t('applicant.list.fixEmployment.fixMemo')" 
+          :value="fixData['fixMemo']" valueClass="col-9 q-pl-md">
+          <q-input dense outlined bg-color="white"
+            v-model="data['fixMemo']" :disable="loading" />
+        </labelField>
+      </div>
+    </q-form>
   </DropDownEditGroup>
 </template>
 
@@ -78,8 +83,11 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { ApplicantFix, FixMainInfo, selectOptions } from 'src/shared/model';
-import { ref, watch } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods'
+import { creationRule } from 'src/components/handlers/rules';
+import { validateDate } from 'src/shared/constants/Form.const';
+import { QForm } from 'quasar';
 
 const props = defineProps<{
   loading: boolean,
@@ -97,11 +105,17 @@ const detailKey = 'fixReasonNGDetail' /** change reason detail key */
 const tabKey = 'info' /** change tab key */
 const statusKey = 'fixStatus' /** change status key */
 const hightlightError = ref<string[]>([])
+const form: Ref<QForm|null> = ref(null);
+
 const saveHandler = () => {
-  if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
-    emit('save', tabKey, data.value);
-    resetData();
-  }
+  form.value?.validate().then(success => {
+    if (success) {
+      if(useSaveHandler(data, hightlightError, reasonKey, detailKey, statusKey)){
+        emit('save', tabKey, data.value);
+        resetData();
+      }
+    }
+  })
 }
 useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
 /** NGReasonSelect handlers */
@@ -123,6 +137,7 @@ function resetData() {
     chargeOfFix: props.editData['chargeOfFix'] || '',
     fixMemo: props.editData['fixMemo'] || '',
   };
+  form.value?.resetValidation
 }
 
 </script>

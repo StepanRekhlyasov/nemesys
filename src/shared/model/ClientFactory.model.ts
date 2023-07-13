@@ -33,27 +33,40 @@ export interface ClientFactory {
     contractInfo?: ContractInfo;
     reflectLog?: ReflectLog;
     importLog?: ImportLog;
+    geohash?: string;
 
     client?: Client
 
     draft: Partial<ClientFactory> | Record<string, never>
 }
 
-interface OfficeDetails {
-    registeredInfo: {
-        prefecture: string
-        officeName: string
-        parentClient: string
-        municipality: string
-        city: string
-        tel: string
-        street: string
-        building: string
-        fax: string
-        others: string
-        latitude: number
-        longitude: number
-    },
+type OfficeDetails = {
+    [key: string]: {
+        commonItems: {
+            referralFeePer: number
+            referralFeeFix: number
+            salaryHour: number
+            salaryMonth: number
+            salaryAdditional: string
+            payday: string
+            disabilityTime: string
+            yearFixed: string
+            welfareHealth: string
+            leisureSpecial: string
+            contentWork: string
+            canSmoke: boolean
+            dayOffYear: string
+            dayOffWeek: string
+            workingHourEarly: string
+            workingHourDay: string
+            workingHourLate: string
+            workingHourNight: string
+        }
+        uniqueItems: {
+            [key: string]: string
+        }
+    }
+} | {
     commonItems: {
         referralFeePer: number
         referralFeeFix: number
@@ -72,10 +85,22 @@ interface OfficeDetails {
         workingHourEarly: string
         workingHourDay: string
         workingHourLate: string
-        workingHourNight: string 
-    },
-    uniqueItems: {
-        [key: string]: string
+        workingHourNight: string
+    }
+} & {
+    registeredInfo: {
+        prefecture: string
+        officeName: string
+        parentClient: string
+        municipality: string
+        city: string
+        tel: string
+        street: string
+        building: string
+        fax: string
+        others: string
+        latitude: number
+        longitude: number
     }
 }
 

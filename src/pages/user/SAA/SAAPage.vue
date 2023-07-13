@@ -20,7 +20,7 @@
           :width="'175px'"
           v-model="method"
           :clearable="false"
-          @update:model-value="getData()"
+          @update:model-value="reMapData()"
         />
       </label>
       <label class="text-subtitle1">
@@ -29,24 +29,6 @@
           v-model="dateRange"
           :width="'250px'"
           :height="'40px'"
-          @update:model-value="getData()"
-        />
-      </label>
-      <label class="text-subtitle1">
-        {{ $t('applicant.progress.filters.branch') }}
-        <MySelect
-          :option-to-fetch="'branchIncharge'"
-          :width="'175px'"
-          v-model="branch"
-          @update:model-value="getData()"
-        />
-      </label>
-      <label class="text-subtitle1">
-        {{ $t('KPI.username') }}
-        <MySelect
-          :option-to-fetch="'usersInCharge'"
-          :width="'175px'"
-          v-model="user"
           @update:model-value="getData()"
         />
       </label>
@@ -74,49 +56,167 @@ import DateRange from 'src/components/inputs/DateRange.vue';
 import SAATable from './components/SAATable.vue';
 import { ref, onMounted, watch } from 'vue'
 import { useOrganization } from 'src/stores/organization';
-import { User } from 'src/shared/model';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
-import { useUserStore } from 'src/stores/user';
-import { where } from 'firebase/firestore';
+import { useBackOrder } from 'src/stores/backOrder';
+import { fixWithApplicant } from './model/saa.model'
+import { BackOrderModel } from 'src/shared/model';
+import { ConstraintsType } from 'src/shared/utils/utils';
+import { DocumentData, where } from 'firebase/firestore';
+import { getFromTo } from 'src/shared/utils/utils';
+import { useSAA } from 'src/stores/saa';
+interface RowData {
+  name: string,
+  chargeOfFix: number,
+  chargeOfInspection: number,
+  chargeOfOffer: number,
+  chargeOfAdmission: number,
+  chargeOfInspectionRate: string,
+  chargeOfOfferRate: string,
+  chargeOfAdmissionRate: string,
+  personOK: number,
+  personNG: number,
+  companyOK: number,
+  companyNG: number,
+  personOKRate: string,
+  companyOKRate: string,
+  numberOfFax:number,
+  numberOfCalls:number,
+  introduction:number,
+  dispatch:number,
+  BO_NC:number,
+  BO_N:number,
+  TTP:number
+}
 
-const dateRange = ref('')
-const branch = ref('')
-const user = ref('')
+const dateRange = ref<
+  string | {
+      from: string;
+      to: string;
+  } | null>(null)
 const method = ref('user')
 const loading = ref(false)
-const rowData = ref<User[]>([])
-const userStore = useUserStore()
+const rowData = ref<RowData[]>([])
+const SAA = useSAA()
 const organizationStore = useOrganization()
+
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
 const saaTableRef = ref<InstanceType<typeof SAATable> | null>(null);
+const backOrderStore = useBackOrder()
+
+const boData = ref<BackOrderModel[]>([])
+const faxData = ref<DocumentData[]>([])
+const callData = ref<DocumentData[]>([])
+const fixList = ref<fixWithApplicant[]>([])
 
 async function getData(){
-  if(organizationStore.currentOrganizationId){
-    loading.value = true
-    /**
-     * here is test data.
-     * true data should be parsed here to table keys only
-     * because of csv downloading
-     */
-    if(user.value){
-      rowData.value = await userStore.getUsersByConstrains([where('id', '==', user.value), where('deleted', '==', false), where('organization_ids', 'array-contains', organizationStore.currentOrganizationId)])
-    } else if (branch.value) {
-      rowData.value = await userStore.getUsersByConstrains([where('branch_id', '==', branch.value), where('deleted', '==', false), where('organization_ids', 'array-contains', organizationStore.currentOrganizationId)])
-    } else {
-      rowData.value = await userStore.getAllUsers(organizationStore.currentOrganizationId)
+  loading.value = true
+  const constraints : ConstraintsType = []
+  if(dateRange.value){
+    const [from, to] = getFromTo(dateRange.value)
+    if(from && to){
+      constraints.push(where('created_at', '>=', from), where('created_at', '<=', to))
     }
-    loading.value = false
+  }
+
+  [boData.value, faxData.value, callData.value, fixList.value] = await Promise.all([
+    backOrderStore.getBOByConstraints(constraints),
+    SAA.getSAAFaxList(dateRange.value),
+    SAA.getSAACallList(dateRange.value),
+    SAA.getSAAFixList(organizationStore.state.currentOrganizationUsers, dateRange.value)
+  ])
+  reMapData()
+  loading.value = false
+}
+async function reMapData(){
+  if(method.value === 'user'){
+    rowData.value = mapFixDataForUserMode()
+  } else {
+    rowData.value = mapFixDataForBranchMode()
   }
 }
-watch(()=>organizationStore.currentOrganizationId, ()=>{
-  getData()
-})
+
 function downloadCSV(){
   saaTableRef.value?.exportTable()
 }
-onMounted(()=>{
-  getData()
+onMounted(async ()=>{
+  loading.value = true
+  await getData()
+  loading.value = false
 })
+
+watch(()=>organizationStore.state.userAndBranchesUpdated, async (newVal)=>{
+  if(!newVal){
+    loading.value = false
+  } else {
+    await getData()
+  }
+})
+
+function mapFixDataForUserMode() {
+  const result : RowData[] = []
+  for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
+    const row : Partial<RowData> = {}
+    row.name = value.displayName? value.displayName : value.name
+    const statusCountFields = ['chargeOfFix', 'chargeOfInspection', 'chargeOfOffer', 'chargeOfAdmission']
+    statusCountFields.forEach((field)=>{
+      row[field] = fixList.value.reduce((accumulator, currentValue)=> currentValue[field] === key ? accumulator + 1 : accumulator, 0)
+    })
+    statusCountFields.forEach((field)=>{
+      if(field!=='chargeOfFix'){
+        if(row.chargeOfFix){
+          row[field + 'Rate'] = Math.floor((row[field] / row.chargeOfFix) * 100) + '%'
+        } else {
+          row[field + 'Rate'] = '-'
+        }
+      }
+    })
+    row.numberOfCalls = callData.value.filter(row => row.created_by === key)?.length
+    row.numberOfFax = faxData.value.filter(row => row.created_by === key)?.length;
+    row.BO_NC = boData.value.filter(row => row.registrant === key && row.typeCase === 'nursingCare')?.length;
+    row.BO_N = boData.value.filter(row => row.registrant === key && row.typeCase === 'nurse')?.length;
+    row.dispatch = boData.value.filter(row => row.registrant === key && row.type === 'dispatch')?.length;
+    row.introduction = boData.value.filter(row => row.registrant === key && row.type === 'referral')?.length;
+    row.TTP = boData.value.filter(row => row.registrant === key && row.type === 'TTP')?.length;
+    row.personOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
+    row.personNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
+    row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
+    row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
+    row.personOKRate = (row.personOK + row.personNG)?(row.personOK / (row.personOK + row.personNG)).toFixed(2):'-'
+    row.companyOKRate = (row.companyOK + row.companyNG)?(row.companyOK / (row.companyOK + row.companyNG)).toFixed(2):'-'
+    result.push(row as RowData)
+  }
+  return result
+}
+
+function mapFixDataForBranchMode(){
+  const result : RowData[] = []
+  for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationBranches)){
+    const row : Partial<RowData> = {}
+    row.name = value.name
+    const statusCountFields = ['chargeOfFix', 'chargeOfInspection', 'chargeOfOffer', 'chargeOfAdmission']
+    statusCountFields.forEach((field)=>{
+      row[field] = fixList.value.reduce((accumulator, currentValue)=> currentValue[field] && currentValue.applicant?.branchIncharge === key ? accumulator + 1 : accumulator, 0)
+    })
+    statusCountFields.forEach((field)=>{
+      if(field!=='chargeOfFix'){
+        if(row.chargeOfFix){
+          row[field + 'Rate'] = Math.floor((row[field] / row.chargeOfFix) * 100) + '%'
+        } else {
+          row[field + 'Rate'] = '-'
+        }
+      }
+    })
+    row.personOK = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
+    row.personNG = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
+    row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
+    row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
+    row.personOKRate = (row.personOK + row.personNG)?(row.personOK / (row.personOK + row.personNG)).toFixed(2):'-'
+    row.companyOKRate = (row.companyOK + row.companyNG)?(row.companyOK / (row.companyOK + row.companyNG)).toFixed(2):'-'
+    result.push(row as RowData)
+  }
+  return result
+}
+
 </script>
 <style scoped lang="scss">
 .gap{

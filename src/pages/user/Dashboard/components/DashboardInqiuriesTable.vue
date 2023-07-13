@@ -15,21 +15,21 @@
     <DashboardInquiryDrawer v-model="drawerDetails" @closeDrawer="drawerDetails=false">
       <DashboardInquiryDetails :id="openId" />
     </DashboardInquiryDrawer>
-    <q-table 
-      :columns="columns" 
-      :rows="inqueries" 
+    <q-table
+      :columns="columns"
+      :rows="inqueries"
       class="dashboardTable"
       :separator="'none'"
       hide-pagination
       v-model:pagination = pagination
     >
     <template v-slot:body-cell-recievedDate="props">
-      <q-td :props="props">
-        {{timestampToDateFormat(props.row.recievedDate)}}
+      <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+        {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:SS') }}
       </q-td>
     </template>
     <template v-slot:body-cell="props">
-      <q-td :props="props" @click="openDetails(props.row.id)" class="clickable">
+      <q-td :props="props" @click="openDetails(props.row.id)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
         {{ props.value }}
       </q-td>
     </template>
@@ -41,9 +41,14 @@
         dense
         @click="handleExpand()"
       >
-        <q-icon v-if="pagination.rowsPerPage > 0" color="primary" :name="'arrow_drop_down'" :size="'25px'"  /> 
-        <q-icon v-else color="primary" :name="'arrow_drop_up'" :size="'25px'"  /> 
-        {{ $t('dashboard.openList') }} 
+      <template v-if="pagination.rowsPerPage > 0">
+        <q-icon color="primary" :name="'arrow_drop_down'" :size="'25px'"  />
+        {{ $t('dashboard.openList') }}
+      </template>
+      <template v-else>
+        <q-icon color="primary" :name="'arrow_drop_up'" :size="'25px'"  />
+        {{ $t('dashboard.closeList') }}
+      </template>
       </q-btn>
     </div>
 </template>
@@ -54,9 +59,10 @@ import DashboardInquiryDrawer from './inquiry/DashboardInquiryDrawer.vue'
 import { useInquiry } from 'src/stores/inquiry'
 import { useOrganization } from 'src/stores/organization'
 import { InquiryData } from 'src/shared/model'
-import { timestampToDateFormat } from 'src/shared/utils/utils'
+import { myDateFormat } from 'src/shared/utils/utils'
 import DashboardCreateInquiry from './inquiry/DashboardCreateInquiry.vue'
 import DashboardInquiryDetails from './inquiry/DashboardInquiryDetails.vue'
+import { INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
 
 const pagination = ref({
   rowsPerPage : 5
@@ -106,5 +112,9 @@ watch(() => organization.currentOrganizationId, () => {
   &:hover{
     text-decoration: underline;
   }
+}
+.answered {
+  background-color: #0853741f;
+  font-weight: 700;
 }
 </style>

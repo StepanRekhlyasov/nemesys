@@ -18,11 +18,12 @@ const auth = getAuth();
 export async function mapOrganizationsToRow(organizations: Organization[]) {
   return await Promise.all(
     organizations.map(async (organization, index) => {
-      const user = await store.getUserById(organization.operatorUser)
+        const user = await store.getUserById(organization.operatorUser)
+        const displayName = user?.displayName ?? ''
       return {
         number: index + 1,
         organizationCodeAndName: organization.code + ' ' + organization.name,
-        operatorName: user?.displayName,
+        operatorName: displayName,
         ...organization
       }
     })

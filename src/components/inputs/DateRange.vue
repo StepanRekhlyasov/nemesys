@@ -53,7 +53,7 @@ withDefaults(defineProps<{
   modelValue: string | {
     from : string,
     to : string
-  },
+  } | null,
   clearable?: boolean,
   maxYearMonth?: string,
   disable?:boolean,

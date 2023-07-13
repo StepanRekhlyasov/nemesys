@@ -223,19 +223,16 @@
 
 <script lang="ts">
 import { ref, SetupContext, watch } from 'vue'; //ref,
-import { useQuasar, QForm } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { addDoc, collection, serverTimestamp, getFirestore, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { geohashForLocation } from 'geofire-common';
+import { QForm } from 'quasar';
 
 export default {
   name: 'addOffice',
 
   setup(props: object, context: SetupContext) {
-    const { t } = useI18n({ useScope: 'global' });
-    const $q = useQuasar();
     const db = getFirestore();
     const officeDataSample = { facilityType: [], conclusionDispatchContract: false, conclusionReferralContract: false, flg_faxng: false }
     const officeData = ref(JSON.parse(JSON.stringify(officeDataSample)));
@@ -251,19 +248,14 @@ export default {
     const addOffice = async () => {
       let data = officeData.value;
       if (!data['headquarterClient']) {
-        Alert.warning($q, t)
+        Alert.warning()
         return false
       }
       try {
         data['geohash'] = geohashForLocation([data['lat'], data['lon']]);
       }
       catch (err) {
-        $q.notify({
-          textColor: 'white',
-          color: 'red-5',
-          icon: 'warning',
-          message: 'invalid lat or lon',
-        });
+        Alert.warning('invalid lat or lon')
         return
       }
 
@@ -279,12 +271,7 @@ export default {
       officeData.value = JSON.parse(JSON.stringify(officeDataSample));
       officeForm.value?.resetValidation();
 
-      $q.notify({
-        color: 'green-4',
-        textColor: 'white',
-        icon: 'cloud_done',
-        message: t('success'),
-      });
+      Alert.success()
     };
 
     loadClients();
@@ -340,7 +327,7 @@ export default {
             addOffice()
           }
           else {
-            Alert.warning($q, t);
+            Alert.warning();
           }
         })
       },
