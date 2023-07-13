@@ -182,16 +182,18 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['qualification']"
-                  :rules="[creationRule]" hide-bottom-space> 
+                  hide-bottom-space> 
                   <template v-slot:control>       
                     <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
-                      :label="$t('applicant.add.registeredNurse')" />
+                      :label="$t('applicant.qualification.registeredNurse')" />
                     <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
-                      :label="$t('applicant.add.assistantNurse')" />
+                      :label="$t('applicant.qualification.assistantNurse')" />
                     <q-checkbox v-model="applicantData['qualification']" val="newcomer"
-                      :label="$t('applicant.add.newcomer')" />
+                      :label="$t('applicant.qualification.newcomer')" />
                     <q-checkbox v-model="applicantData['qualification']" val="careWorker"
-                      :label="$t('applicant.add.careWorker')" />
+                      :label="$t('applicant.qualification.careWorker')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="worker"
+                      :label="$t('applicant.qualification.worker')" />
                   </template>
                 </q-field>
               </div>
@@ -203,14 +205,25 @@
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
                 :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
-                  <template v-slot:append>
+                  <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD">
+                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                           </div>
                         </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                          </div>
+                        </q-time>
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -240,7 +253,7 @@
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
+          <q-btn :label="$t('common.register')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
@@ -315,6 +328,7 @@ async function onSubmit() {
     data.applicationDate = new Date()
   }
   data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+  data['invitationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
   data['currentStatusTimestamp'] = data['applicationDate'] ;
   data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
   data['currentStatusMonth'] = toMonthYear(data['applicationDate']);

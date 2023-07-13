@@ -35,7 +35,7 @@
         {{ $t('applicant.list.info.invitationDate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ timestampToDateFormat(applicant.invitationDate) }}</span>
+        <span v-if="!edit">{{ applicant['invitationDate']?timestampToDateFormat(applicant['invitationDate']):timestampToDateFormat(applicant['applicationDate']) }}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['invitationDate']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -107,16 +107,18 @@
         {{ $t('applicant.list.info.qualifications') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant.qualification? applicant.qualification.map(applic => $t('applicant.add.'+applic)).join(', ') :''}}</span>
+        <span v-if="!edit">{{ applicant.qualification? applicant.qualification.map(applic => $t('applicant.qualification.'+applic)).join(', ') :''}}</span>
         <template v-if="edit">
           <q-checkbox v-model="data['qualification']" val="registeredNurse"
-            :label="$t('applicant.add.registeredNurse')" />
+            :label="$t('applicant.qualification.registeredNurse')" />
           <q-checkbox v-model="data['qualification']" val="assistantNurse"
-            :label="$t('applicant.add.assistantNurse')" />
+            :label="$t('applicant.qualification.assistantNurse')" />
           <q-checkbox v-model="data['qualification']" val="newcomer"
-            :label="$t('applicant.add.newcomer')" />
+            :label="$t('applicant.qualification.newcomer')" />
           <q-checkbox v-model="data['qualification']" val="careWorker"
-            :label="$t('applicant.add.careWorker')" />
+            :label="$t('applicant.qualification.careWorker')" />
+          <q-checkbox v-model="data['qualification']" val="worker"
+            :label="$t('applicant.qualification.worker')" />
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -201,7 +203,7 @@ async function resetData() {
     attractionsStatus: props?.applicant['attractionsStatus'] || false,
     attractionsReasonNG: props?.applicant['attractionsReasonNG'] || '',
     attractionsReasonNGDetail: props?.applicant['attractionsReasonNGDetail'] || '',
-    invitationDate: timestampToDateFormat(props?.applicant['invitationDate']),
+    invitationDate: props?.applicant['invitationDate']?timestampToDateFormat(props?.applicant['invitationDate']):timestampToDateFormat(props?.applicant['applicationDate']),
     employmentStatus: props?.applicant['employmentStatus'],
     chargeOfAttraction: props?.applicant['chargeOfAttraction'],
     classification: props?.applicant['classification'],

@@ -183,7 +183,7 @@ const clearSearch = ()=>{
 
               <q-td class="text-left" v-if="props.row.qualification.length">
                 <div class="no-wrap" :key="qua" v-for="qua in props.row.qualification">
-                  {{ t(`applicant.add.${qua}`) }}<br>
+                  {{ t(`applicant.qualification.${qua}`) }}<br>
                 </div>
               </q-td>
               <q-td v-else></q-td>

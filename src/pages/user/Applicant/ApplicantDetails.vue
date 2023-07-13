@@ -69,7 +69,7 @@
             <div class="col-6 text-right text-primary text-weight-regular"> {{ $t('applicant.list.qualification') }}
             </div>
             <div class="col-6 q-pl-md" v-if="selectedApplicant.qualification"> 
-              {{ selectedApplicant.qualification.map(applic => $t('applicant.add.' + applic)).join(', ') }} 
+              {{ selectedApplicant.qualification.map(applic => $t('applicant.qualification.' + applic)).join(', ') }} 
             </div>
           </div>
           <div class="col-6 row">

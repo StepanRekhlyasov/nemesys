@@ -53,6 +53,7 @@ export default {
     update: 'Successfully updated!',
     clear: 'Clear',
     submit: 'Submit',
+    register: 'Register',
     remove: 'Remove',
     ok: 'OK',
     preview: 'Preview',
@@ -779,13 +780,16 @@ export default {
       others: 'Others',
       qualification: 'Qualification',
       applicationDate: 'Application Date',
+      applicationMedia: 'Application Media',
+      applicationMetod: 'Application Metod',
+      image: 'Applicant Image',
+    },
+    qualification: {
       registeredNurse: 'Registered Nurse',
       assistantNurse: 'Assistant Nurse',
       newcomer: 'Newcomer',
       careWorker: 'Care Worker',
-      applicationMedia: 'Application Media',
-      applicationMetod: 'Application Metod',
-      image: 'Applicant Image',
+      worker: 'Worker',
     },
     shift:{
       workinghoursearly: 'Early Shift',
@@ -1265,12 +1269,6 @@ export default {
       levelOfCare: 'Level of care',
       memo: 'Memo',
       nameQualification: 'Qualification Name'
-    },
-    qualification: {
-      registeredNurse: 'Registered Nurse',
-      assistantNurse: 'Aassistant Nurse',
-      newcomer: 'Newcomer',
-      careWorker: 'Care Worker',
     },
     travelingExpenses:{
       yesRegular: 'Yes / Regular',

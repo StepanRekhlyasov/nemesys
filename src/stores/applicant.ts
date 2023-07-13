@@ -433,6 +433,9 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   const getApplicantsByColumns = async (status : ApplicantStatus, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
+    if(state.value.columnsLoading[status]){
+      return;
+    }
     const queryCollection = ApplicantOrFixColumn[status]
     if(!showMore){
       state.value.applicantsByColumn[status] = []

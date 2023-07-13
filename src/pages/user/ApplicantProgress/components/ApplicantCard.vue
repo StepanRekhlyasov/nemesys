@@ -12,7 +12,7 @@
     </div>
     <div class='row q-gutter-md items-center'>
       <div class='col'>{{ item.occupation && $t('applicant.add.' + item.occupation) }}</div>
-      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }}</div>
+      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) + ' ' + item.municipalities }}</div>
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1' v-if="item.status" v-html="statusDateName[item.status]"></div>
