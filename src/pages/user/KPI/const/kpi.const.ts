@@ -1,9 +1,29 @@
 import { QTableProps } from 'quasar';
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
-
 const { t } = i18n.global
-
+export const dayItemList = [
+  'nursingCare',
+  'nurse',
+  'generalDispatch',
+  'introduction',
+  'TTP',
+  'fix',
+  'inspection',
+  'offer',
+  'admission',
+] as const
+export const mediaItemList =[
+  'applicants',
+  'validApplicants',
+  'contactApplicants',
+  'attractionApplicants',
+  'attendApplicants',
+  'fix',
+  'inspection',
+  'offer',
+  'admission',
+] as const
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -16,132 +36,125 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
     {
       name: '',
       field: '',
-      label: t('KPI.tables.actualFigures.1'),
-      align: 'center',
-      sortable: true
-    },
-    {
-      name: '',
-      field: '',
       label: t('KPI.tables.actualFigures.2'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'applicants',
       label: t('KPI.tables.actualFigures.3'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'validApplicants',
       label: t('KPI.tables.actualFigures.4'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'contactApplicants',
       label: t('KPI.tables.actualFigures.5'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'attractionApplicants',
       label: t('KPI.tables.actualFigures.6'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'attendApplicants',
       label: t('KPI.tables.actualFigures.7'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'fix',
       label: t('KPI.tables.actualFigures.8'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'inspection',
       label: t('KPI.tables.actualFigures.9'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'offer',
       label: t('KPI.tables.actualFigures.10'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'admission',
       label: t('KPI.tables.actualFigures.11'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'validApplicantsRate',
       label: t('KPI.tables.actualFigures.12'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'contactApplicantsRate',
       label: t('KPI.tables.actualFigures.13'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'attractionApplicantsRate',
       label: t('KPI.tables.actualFigures.14'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'attendApplicantsRate',
       label: t('KPI.tables.actualFigures.15'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'fixRate',
       label: t('KPI.tables.actualFigures.16'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'inspectionRate',
       label: t('KPI.tables.actualFigures.17'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'offerRate',
       label: t('KPI.tables.actualFigures.18'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'admissionRate',
       label: t('KPI.tables.actualFigures.19'),
       align: 'center',
       sortable: true
@@ -154,7 +167,7 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
       sortable: true
     },
   ]
-}) 
+})
 export const unitPriceColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -284,7 +297,7 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
       sortable: true
     },
   ]
-}) 
+})
 export const applicationAttributeColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -435,7 +448,7 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(() =
       sortable: true
     },
   ]
-}) 
+})
 export const everydayColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -468,87 +481,87 @@ export const everydayColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: '',
+      field: 'nursingCare',
       label: t('KPI.tables.everyday.4'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'nurse',
       label: t('KPI.tables.everyday.5'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'generalDispatch',
       label: t('KPI.tables.everyday.6'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'introduction',
       label: t('KPI.tables.everyday.7'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'TTP',
       label: t('KPI.tables.everyday.8'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'applicants',
       label: t('KPI.tables.everyday.9'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'attraction',
       label: t('KPI.tables.everyday.10'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'attend',
       label: t('KPI.tables.everyday.11'),
       align: 'center',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'fix',
+      field: 'fix',
       label: t('KPI.tables.everyday.12'),
       align: 'center',
       sortable: true
     },
     {
-      name: '',
-      field: '',
+      name: 'inspection',
+      field: 'inspection',
       label: t('KPI.tables.everyday.13'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'offer',
       label: t('KPI.tables.everyday.14'),
       align: 'center',
       sortable: true
     },
     {
       name: '',
-      field: '',
+      field: 'admission',
       label: t('KPI.tables.everyday.15'),
       align: 'center',
       sortable: true
     },
   ]
-}) 
+})

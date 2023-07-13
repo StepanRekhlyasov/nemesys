@@ -14,11 +14,12 @@ import { onMounted, ref, computed, watch } from 'vue';
 import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
+import {Media} from 'src/shared/model/Media.model';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const budget = useBudget();
 const media = useMedia();
-const mediaList = ref<string[]>([]);
+const mediaList = ref<Media[]>([]);
 const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },
@@ -43,7 +44,7 @@ const chartOptions = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [...mediaList.value],
+      categories: [...mediaList.value.map((media) => media.name)],
     },
     yaxis: [
       {
@@ -85,12 +86,12 @@ const showChart = async () => {
   dataToshow.value = [];
   mediaList.value = await media.getAllmedia();
   const companyAverage = await budget.getUnitPricePerOrganizationPerMedia(
-    mediaList.value,
+    mediaList.value.map((media) => media.name),
     props.dateRangeProps,
     props.organization_id
   );
   const companyAverageAll = await budget.getUnitPricePerOrganizationPerMedia(
-    mediaList.value,
+    mediaList.value.map((media) => media.name),
     props.dateRangeProps,
     undefined
   );

@@ -4,10 +4,10 @@ const { t } = i18n.global;
 export const rowNamesSex = [
   'report.categories.male',
   'report.categories.female',
-];
-export const chartTypeSex: string[] = ['bar', 'bar'];
-export const chartTypeUnitPrice: string[] = ['bar','bar','line','line']
-export const chartTypeUnitPricePerMedia: string[] = ['bar','bar']
+] as const;
+export const chartTypeSex = ['bar', 'bar'] as const ;
+export const chartTypeUnitPrice = ['bar','bar','line','line'] as const
+export const chartTypeUnitPricePerMedia = ['bar','bar'] as const
 
 export const rowNamesAges = [
   'report.categories.teens',
@@ -16,18 +16,18 @@ export const rowNamesAges = [
   'report.categories.forties',
   'report.categories.fifties',
   'report.categories.sixties',
-];
+] as const;
 
-export const chartTypeAges: string[] = [
+export const chartTypeAges = [
   'bar',
   'bar',
   'bar',
   'bar',
   'bar',
   'bar',
-];
-export const rowNamesDaysToWork = ['1', '2', '3', '4', '5', '6', '7'];
-export const chartTypeDaysToWork: string[] = [
+] as const ;
+export const rowNamesDaysToWork = ['1', '2', '3', '4', '5', '6', '7'] as const;
+export const chartTypeDaysToWork = [
   'bar',
   'bar',
   'bar',
@@ -35,19 +35,19 @@ export const chartTypeDaysToWork: string[] = [
   'bar',
   'bar',
   'bar',
-];
-export const chartTypeMedia: string[] = ['pie'];
+] as const;
+export const chartTypeMedia = ['pie'] as const;
 
-export const unitPricenames: string[] = [
+export const unitPricenames = [
   'report.categories.applicationUnitPrice',
   'report.categories.startUnitPrice',
   'report.categories.applicationUnitPriceAllAverage',
   'report.categories.startUnitPriceAllAverage',
-];
-export const unitPricenamesPerMedia: string[] = [
+] as const;
+export const unitPricenamesPerMedia = [
   'report.categories.applicationUnitPrice',
   'report.categories.applicationUnitPriceAllAverage',
-];
+] as const;
 export const chartOptionsSex = computed(() => {
   return {
     legend: { position: 'left' },
