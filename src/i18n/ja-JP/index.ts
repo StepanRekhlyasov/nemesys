@@ -1193,6 +1193,8 @@ export default {
       content:'コンテンツ',
       template:'テンプレート',
       form:'提出フォーム',
+      recordsPerPage:'1ページに',
+      all:'全部'
     },
     create: {
       employmentConditions: '■就業条件',

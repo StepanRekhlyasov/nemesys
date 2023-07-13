@@ -1197,6 +1197,8 @@ export default {
       content:'Content',
       template:'Template',
       form:'Submission form',
+      recordsPerPage:'Records per page',
+      all:'All',
     },
     create: {
       employmentConditions: '■ Employment Conditions',

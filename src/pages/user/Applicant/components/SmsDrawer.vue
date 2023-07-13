@@ -76,7 +76,9 @@
         <q-btn @click="clear" :label="t('common.clear')" class="text-primary q-ml-md"></q-btn>
       </div>
       <q-table :columns="destinationApplicant" :loading="loading" :rows-per-page="row.length" :rows="row" row-key="id"
-        class="no-shadow" table-class="text-grey-8" table-header-class="text-grey-9">
+        class="no-shadow" table-class="text-grey-8" table-header-class="text-grey-9"
+        :rows-per-page-label="t('backOrder.sms.recordsPerPage')"
+        >
 
         <template v-slot:header-cell-staffApplication="props">
           <q-th :props="props" class="q-pa-none">
