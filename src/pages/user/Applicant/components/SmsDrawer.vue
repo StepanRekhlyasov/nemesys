@@ -1,47 +1,49 @@
 <template>
   <q-card-section>
-    <div class="row bg-white cover">
-      <p class="text-h7 text-primary">■{{ t('backOrder.sms.sendContent') }}</p>
-    </div>
+    <div class="contentsOfTransmission">
+      <div class="row bg-white cover">
+        <p class="text-h7 text-primary">■{{ t('backOrder.sms.sendContent') }}</p>
+      </div>
 
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm">
-      <div class="col-2 q-pl-xl">
-        <p>{{ t('backOrder.sms.template') }}</p>
-      </div>
-      <div class="col-3 q-pl-sm">
-        <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates" dense clearable/>
-      </div>
-    </div>
-
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm q-pb-sm cover">
-      <div class="col-2 q-pl-xl">
-        <p>{{ t('backOrder.sms.sendContent') }}</p>
-      </div>
-      <div class="col-3 cover80">
-        <textarea v-model="message" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }">
-        </textarea>
-        <div>
-          <p>{{countCharacters(message)}} {{ t('backOrder.sms.characters') }}</p>
+      <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm">
+        <div class="col-2 q-pl-xl">
+          <p>{{ t('backOrder.sms.template') }}</p>
         </div>
-        <div class="row">
-          <q-btn :disable="message === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
-            class="bg-primary text-white"></q-btn>
-          <q-btn @click="message = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
+        <div class="col-3 q-pl-sm">
+          <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates" dense clearable/>
         </div>
       </div>
-    </div>
 
-    <div class="notes">
-      <ol>
-        <li><strong class="text-negative">{{ t('applicant.smsNotes.note') }}</strong></li>
-        <div class="q-ml-sm">
-          <li><strong>{{ t('applicant.smsNotes.note1') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note2') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note3') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note4') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note5') }}</strong></li>
+      <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm q-pb-sm cover">
+        <div class="col-2 q-pl-xl">
+          <p>{{ t('backOrder.sms.sendContent') }}</p>
         </div>
-      </ol>
+        <div class="col-3 cover80">
+          <textarea v-model="message" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }">
+          </textarea>
+          <div>
+            <p>{{countCharacters(message)}} {{ t('backOrder.sms.characters') }}</p>
+          </div>
+          <div class="row">
+            <q-btn :disable="message === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
+              class="bg-primary text-white"></q-btn>
+            <q-btn @click="message = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <ol>
+          <li><strong class="text-negative">{{ t('applicant.smsNotes.note') }}</strong></li>
+          <div class="q-ml-sm">
+            <li><strong>{{ t('applicant.smsNotes.note1') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note2') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note3') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note4') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note5') }}</strong></li>
+          </div>
+        </ol>
+      </div>
     </div>
 
 
@@ -263,6 +265,15 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.contentsOfTransmission{
+  overflow-x: hidden;
+}
+
+.destination{
+  width: 950px;
+  overflow-x: auto;
+}
+
 .cover {
   width: 100%
 }
@@ -277,6 +288,9 @@ onMounted(async () => {
   width: 90%;
   padding: 5px;
   resize: none
+}
+h1 {
+  color: Green;
 }
 </style>
 
