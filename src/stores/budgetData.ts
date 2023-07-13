@@ -1,4 +1,4 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, collectionGroup, DocumentData, where, Timestamp, doc, getDoc, onSnapshot, writeBatch } from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, DocumentData, where, Timestamp, doc, getDoc, onSnapshot, writeBatch } from 'firebase/firestore';
 import { getStorage, ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { defineStore } from 'pinia';
 import { exportFile, date } from 'quasar';
@@ -8,6 +8,7 @@ import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
 import { dateToTimestampFormat } from 'src/shared/utils/utils';
+import { useBranch } from './branch';
 
 export const useBudget = defineStore('budget', () => {
 	const db = getFirestore();
@@ -15,6 +16,7 @@ export const useBudget = defineStore('budget', () => {
 	const budgetList = ref(<DocumentData[]>[]);
 	const unsubscribe = ref();
 	const auth = getAuth();
+	const branchStore = useBranch()
 
 	async function saveBudget(budgetData) {
 		const data = JSON.parse(JSON.stringify(budgetData));
@@ -22,8 +24,8 @@ export const useBudget = defineStore('budget', () => {
 			Alert.warning('Posting start date > Posting end date');
 			return false
 		}
-		if(data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
-		if(data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
+		if (data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
+		if (data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
 
 		let docRef;
 		if (!data['id']) {
@@ -42,31 +44,26 @@ export const useBudget = defineStore('budget', () => {
 		Alert.success()
 		return true
 	}
-	async function getOptionData() {
+	async function getOptionData(organizationId: string) {
 		const docsMedia = await getDocs(query(collection(db, 'media')));
 		const mediaList: DocumentData = [];
 		docsMedia.forEach((doc) => {
 			mediaList.push({ value: doc.id, label: doc.data().name });
 		});
 		options.value['media'] = mediaList;
-
-		const docsBranch = await getDocs(query(collectionGroup(db, 'branches')));
-		const branchList: DocumentData = [];
-		docsBranch.forEach((doc) => {
-			branchList.push({ value: doc.id, label: doc.data().name });
-		});
-		options.value['branch'] = branchList;
-
+		const branches = Object.values((await branchStore.getBranchesInOrganization(organizationId)))
+		options.value['branch'] = branches.map((b) => {
+			return { value: b.id, label: b.name }
+		})
 		return options.value;
-
 	}
-	async function getBudgetList(selectedYear: number, selectedMonth: number) {
-		await getOptionData();
+	async function getBudgetList(selectedYear: number, selectedMonth: number, organizationId: string) {
+		await getOptionData(organizationId);
 		const nextMonth = selectedMonth == 12 ? 1 : selectedMonth + 1;
 		const nextYear = selectedMonth == 12 ? selectedYear + 1 : selectedYear;
 		const start = Timestamp.fromDate(new Date(`${selectedYear}-${('0' + selectedMonth).slice(-2)}-01`))
 		const end = Timestamp.fromDate(new Date(`${nextYear}-${('0' + nextMonth).slice(-2)}-01`))
-		const q = query(collection(db, 'budgets'), where('deleted', '==', false), where('created_at', '>=', start), where('created_at', '<', end));
+		const q = query(collection(db, 'budgets'), where('deleted', '==', false), where('created_at', '>=', start), where('created_at', '<', end), where('organizationId', '==', organizationId));
 
 		if (unsubscribe.value) {
 			unsubscribe.value();
@@ -129,7 +126,7 @@ export const useBudget = defineStore('budget', () => {
 				'text/csv'
 			)
 			if (status !== true) {
-        Alert.warning('Browser denied file download...', { color: 'negative' })
+				Alert.warning('Browser denied file download...', { color: 'negative' })
 			}
 		};
 		xhr.open('GET', url);
@@ -171,7 +168,7 @@ export const useBudget = defineStore('budget', () => {
 			}
 		)
 		if (status !== true) {
-      Alert.warning('Browser denied file download...', { color: 'negative' })
+			Alert.warning('Browser denied file download...', { color: 'negative' })
 		}
 	}
 
