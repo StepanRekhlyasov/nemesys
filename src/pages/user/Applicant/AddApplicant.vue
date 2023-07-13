@@ -328,7 +328,7 @@ async function onSubmit() {
     data.applicationDate = new Date()
   }
   data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
-  data['invitationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+  data['invitationDate'] = data['applicationDate'];
   data['currentStatusTimestamp'] = data['applicationDate'] ;
   data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
   data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
