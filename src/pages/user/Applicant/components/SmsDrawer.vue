@@ -9,7 +9,7 @@
         <p>{{ t('backOrder.sms.template') }}</p>
       </div>
       <div class="col-3 q-pl-sm">
-        <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates" dense />
+        <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates" dense clearable/>
       </div>
     </div>
 
@@ -18,14 +18,15 @@
         <p>{{ t('backOrder.sms.sendContent') }}</p>
       </div>
       <div class="col-3 cover80">
-        <textarea v-model="messsage" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }"></textarea>
+        <textarea v-model="message" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }">
+        </textarea>
         <div>
-          <p>{{countCharacters(messsage)}} {{ t('backOrder.sms.characters') }}</p>
+          <p>{{countCharacters(message)}} {{ t('backOrder.sms.characters') }}</p>
         </div>
         <div class="row">
-          <q-btn :disable="messsage === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
+          <q-btn :disable="message === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
             class="bg-primary text-white"></q-btn>
-          <q-btn @click="messsage = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
+          <q-btn @click="message = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
         </div>
       </div>
     </div>
@@ -161,7 +162,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, ComputedRef } from 'vue';
+import { ref, onMounted, ComputedRef, watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant, options } from 'src/pages/user/Applicant/const/sms';
@@ -176,7 +177,7 @@ import { QSelectProps } from 'quasar';
 const loading = ref<boolean>(false)
 const statusOption = ref<StatusOption | ComputedRef>(statusList)
 const selected = ref<Record<string, { selected: boolean; phoneNumber: string | undefined}>>({})
-const messsage = ref<string>('')
+const message = ref<string>('')
 const row = ref<Applicant[]>([])
 const keyword = ref<string | null>(null)
 const status = ref<string | null>(null)
@@ -187,19 +188,31 @@ const templates = ref<DocumentData | QSelectProps>([]);
 
 const { t } = useI18n({ useScope: 'global' });
 
-const countCharacters = (messsage)=>{
-  const lineBreaks = messsage.match(/\r\n|\r|\n/g);
+const countCharacters = (message)=>{
+  const lineBreaks = message.match(/\r\n|\r|\n/g);
   const lineBreakCount = lineBreaks ? lineBreaks.length : 0;
-  const characterCount = messsage.length;
+  const characterCount = message.length;
   const totalCount = characterCount + lineBreakCount;
   return totalCount;
 }
 
+watch(template,(newTemplate)=>{
+  if(newTemplate){
+    const subject = newTemplate.subject
+    const content = newTemplate.contents
+   message.value = `${subject}\n\n${content}`;
+
+  }
+  else{
+    message.value = ''
+  }
+})
+
 const sendMsg = async () => {
   try {
-    await useSMS().send(messsage.value, selected.value)
+    await useSMS().send(message.value, selected.value)
     Alert.success()
-    messsage.value = ''
+    message.value = ''
   } catch (error) {
     Alert.warning(error)
   }
@@ -231,6 +244,8 @@ const clear = async () => {
 
 onMounted(async () => {
   templates.value =  await options.value
+
+  console.log(template.value)
   console.log(templates.value)
   loading.value = true;
   row.value = await getFormatedData();
