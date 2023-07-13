@@ -17,7 +17,6 @@
 import { QTableProps, exportFile } from 'quasar';
 import { saaTableColumns as columns } from '../const/saa.const'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ref } from 'vue';
 
 const props = defineProps<{
   rows: QTableProps['rows']
