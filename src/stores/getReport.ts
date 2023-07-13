@@ -100,7 +100,7 @@ const attendApplicantsFieldDict: FieldDict = {
 
 const inspectionFieldDict: FieldDict = {
   name: 'inspection',
-  rateName: 'inspectionApplicantsRate',
+  rateName: 'inspectionRate',
   dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
   filters: [where('inspectionStatus', '==', true)],
@@ -111,7 +111,7 @@ const inspectionFieldDict: FieldDict = {
 
 const offerFieldDict: FieldDict = {
   name: 'offer',
-  rateName: 'offerApplicantsRate',
+  rateName: 'offerRate',
   dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
   filters: [where('offerStatus', '==', true)],
@@ -122,7 +122,7 @@ const offerFieldDict: FieldDict = {
 
 const admissionFieldDict: FieldDict = {
   name: 'admission',
-  rateName: 'admissionApplicantsRate',
+  rateName: 'admissionRate',
   dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
   filters: [where('admissionStatus', '==', true)],
