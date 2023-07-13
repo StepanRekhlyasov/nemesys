@@ -161,6 +161,14 @@ function mapFixDataForUserMode() {
     statusCountFields.forEach((field)=>{
       row[field] = fixList.value.reduce((accumulator, currentValue)=> currentValue[field] === key ? accumulator + 1 : accumulator, 0)
     })
+    row.numberOfCalls = callData.value.filter(row => row.created_by === key)?.length
+    row.numberOfFax = faxData.value.filter(row => row.created_by === key)?.length;
+    row.BO_NC = boData.value.filter(row => row.registrant === key && row.typeCase === 'nursingCare')?.length;
+    row.BO_N = boData.value.filter(row => row.registrant === key && row.typeCase === 'nurse')?.length;
+    row.dispatch = boData.value.filter(row => row.registrant === key && row.type === 'dispatch')?.length;
+    row.introduction = boData.value.filter(row => row.registrant === key && row.type === 'referral')?.length;
+    row.TTP = boData.value.filter(row => row.registrant === key && row.type === 'TTP')?.length;
+
     statusCountFields.forEach((field)=>{
       if(field!=='chargeOfFix'){
         if(row.chargeOfFix){
@@ -170,18 +178,12 @@ function mapFixDataForUserMode() {
         }
       }
     })
-    row.numberOfCalls = callData.value.filter(row => row.created_by === key)?.length
-    row.numberOfFax = faxData.value.filter(row => row.created_by === key)?.length;
-    row.BO_NC = boData.value.filter(row => row.registrant === key && row.typeCase === 'nursingCare')?.length;
-    row.BO_N = boData.value.filter(row => row.registrant === key && row.typeCase === 'nurse')?.length;
-    row.dispatch = boData.value.filter(row => row.registrant === key && row.type === 'dispatch')?.length;
-    row.introduction = boData.value.filter(row => row.registrant === key && row.type === 'referral')?.length;
-    row.TTP = boData.value.filter(row => row.registrant === key && row.type === 'TTP')?.length;
+    
     row.personOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
     row.personNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
+    row.personOKRate = (row.personOK + row.personNG)?(row.personOK / (row.personOK + row.personNG)).toFixed(2):'-'
     row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
     row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
-    row.personOKRate = (row.personOK + row.personNG)?(row.personOK / (row.personOK + row.personNG)).toFixed(2):'-'
     row.companyOKRate = (row.companyOK + row.companyNG)?(row.companyOK / (row.companyOK + row.companyNG)).toFixed(2):'-'
     result.push(row as RowData)
   }
@@ -195,8 +197,17 @@ function mapFixDataForBranchMode(){
     row.name = value.name
     const statusCountFields = ['chargeOfFix', 'chargeOfInspection', 'chargeOfOffer', 'chargeOfAdmission']
     statusCountFields.forEach((field)=>{
-      row[field] = fixList.value.reduce((accumulator, currentValue)=> currentValue[field] && currentValue.applicant?.branchIncharge === key ? accumulator + 1 : accumulator, 0)
+      row[field] = fixList.value.reduce((accumulator, currentValue)=> currentValue[field] && organizationStore.state.currentOrganizationUsers[currentValue[field]].branch_id === key ? accumulator + 1 : accumulator, 0)
     })
+
+    row.numberOfCalls = callData.value.filter(row => row.created_by && organizationStore.state.currentOrganizationUsers[row.created_by] && organizationStore.state.currentOrganizationUsers[row.created_by].branch_id === key)?.length
+    row.numberOfFax = faxData.value.filter(row => row.created_by && organizationStore.state.currentOrganizationUsers[row.created_by] && organizationStore.state.currentOrganizationUsers[row.created_by].branch_id === key)?.length;
+    row.BO_NC = boData.value.filter(row => row.registrant && organizationStore.state.currentOrganizationUsers[row.registrant] && organizationStore.state.currentOrganizationUsers[row.registrant].branch_id === key && row.typeCase === 'nursingCare')?.length;
+    row.BO_N = boData.value.filter(row => row.registrant && organizationStore.state.currentOrganizationUsers[row.registrant] && organizationStore.state.currentOrganizationUsers[row.registrant].branch_id === key && row.typeCase === 'nurse')?.length;
+    row.dispatch = boData.value.filter(row => row.registrant && organizationStore.state.currentOrganizationUsers[row.registrant] && organizationStore.state.currentOrganizationUsers[row.registrant].branch_id === key && row.type === 'dispatch')?.length;
+    row.introduction = boData.value.filter(row => row.registrant && organizationStore.state.currentOrganizationUsers[row.registrant] && organizationStore.state.currentOrganizationUsers[row.registrant].branch_id === key && row.type === 'referral')?.length;
+    row.TTP = boData.value.filter(row => row.registrant && organizationStore.state.currentOrganizationUsers[row.registrant] && organizationStore.state.currentOrganizationUsers[row.registrant].branch_id === key && row.type === 'TTP')?.length;
+
     statusCountFields.forEach((field)=>{
       if(field!=='chargeOfFix'){
         if(row.chargeOfFix){
@@ -206,11 +217,12 @@ function mapFixDataForBranchMode(){
         }
       }
     })
-    row.personOK = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
-    row.personNG = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
-    row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
-    row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.applicant?.branchIncharge === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
+    
+    row.personOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection] && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection].branch_id === key && currentValue.personalStatus === true ? accumulator + 1 : accumulator, 0)
+    row.personNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection] && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection].branch_id === key && currentValue.personalStatus === false ? accumulator + 1 : accumulator, 0)
     row.personOKRate = (row.personOK + row.personNG)?(row.personOK / (row.personOK + row.personNG)).toFixed(2):'-'
+    row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection] && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection].branch_id === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
+    row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection] && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection].branch_id === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOKRate = (row.companyOK + row.companyNG)?(row.companyOK / (row.companyOK + row.companyNG)).toFixed(2):'-'
     result.push(row as RowData)
   }

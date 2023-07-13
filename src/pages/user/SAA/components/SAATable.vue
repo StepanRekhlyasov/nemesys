@@ -9,7 +9,7 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <q-td>{{ props.row.displayName?props.row.displayName:props.row.name }}</q-td>
+      <q-td class="clickable" @click="showDrawer=!showDrawer">{{ props.row.displayName?props.row.displayName:props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
@@ -17,16 +17,20 @@
 import { QTableProps, exportFile } from 'quasar';
 import { saaTableColumns as columns } from '../const/saa.const'
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { ref } from 'vue';
 
 const props = defineProps<{
   rows: QTableProps['rows']
 }>()
+const showDrawer = ref(false)
 const exportTable = () => {
   if(!props.rows || !columns.value){
     return
   }
+  const csvHeaders = columns.value.map((column) => {
+    return column.label
+  });
   const csvData = props.rows.map((row) => Object.values(row));
-  const csvHeaders = columns.value.map((column) => column.label);
 
   const csvContent = '\uFEFF'+[
     csvHeaders.join(','),

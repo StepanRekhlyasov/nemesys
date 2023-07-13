@@ -37,7 +37,7 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!edit">{{ applicant['invitationDate']? myDateFormat(applicant['invitationDate'], 'YYYY/MM/DD HH:mm'):myDateFormat(applicant['applicationDate'], 'YYYY/MM/DD HH:mm') }}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['invitationDate']">
-          <template v-slot:append>
+          <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="data['invitationDate']" default-view="Years" :options="limitDate">
@@ -45,6 +45,17 @@
                     <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+          <template v-slot:append>
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-time v-model="data['invitationDate']" mask="YYYY/MM/DD HH:mm">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                  </div>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -156,7 +167,7 @@
 import { Ref, ref } from 'vue';
 import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
 import { Applicant, ApplicantInputs, selectOptions } from 'src/shared/model';
-import { limitDate, myDateFormat, timestampToDateFormat } from 'src/shared/utils/utils'
+import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import SelectBranch from 'src/pages/user/Settings/management/components/SelectBranch.vue';
@@ -203,7 +214,7 @@ async function resetData() {
     attractionsStatus: props?.applicant['attractionsStatus'] || false,
     attractionsReasonNG: props?.applicant['attractionsReasonNG'] || '',
     attractionsReasonNGDetail: props?.applicant['attractionsReasonNGDetail'] || '',
-    invitationDate: props?.applicant['invitationDate']?timestampToDateFormat(props?.applicant['invitationDate']):timestampToDateFormat(props?.applicant['applicationDate']),
+    invitationDate: props?.applicant['invitationDate']?myDateFormat(props?.applicant['invitationDate'], 'YYYY/MM/DD HH:mm'):myDateFormat(props?.applicant['applicationDate'], 'YYYY/MM/DD HH:mm'),
     employmentStatus: props?.applicant['employmentStatus'],
     chargeOfAttraction: props?.applicant['chargeOfAttraction'],
     classification: props?.applicant['classification'],

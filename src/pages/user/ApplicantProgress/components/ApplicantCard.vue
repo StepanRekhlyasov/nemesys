@@ -16,14 +16,14 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1' v-if="item.status" v-html="statusDateName[item.status]"></div>
-      <div class='col' v-if="item.status">{{ item[applicantStatusDates[item.status]] ? timestampToDateFormat(item[applicantStatusDates[item.status]], 'YYYY.MM.DD') : '—' }}</div>
+      <div class='col' v-if="item.status">{{ item[applicantStatusDates[item.status]] ? myDateFormat(item[applicantStatusDates[item.status]], 'YYYY.MM.DD') : '—' }}</div>
     </div>
   </q-card>
 </template>
 <script lang="ts" setup>
 import { Timestamp } from 'firebase/firestore'
 import { Applicant } from 'src/shared/model'
-import { timestampToDateFormat } from 'src/shared/utils/utils'
+import { myDateFormat } from 'src/shared/utils/utils'
 import { computed } from 'vue'
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
 import { RankCount } from 'src/shared/utils/RankCount.utils'
