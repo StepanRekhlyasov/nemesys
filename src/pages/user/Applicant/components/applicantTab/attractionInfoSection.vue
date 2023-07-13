@@ -35,7 +35,7 @@
         {{ $t('applicant.list.info.invitationDate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ applicant['invitationDate']?timestampToDateFormat(applicant['invitationDate']):timestampToDateFormat(applicant['applicationDate']) }}</span>
+        <span v-if="!edit">{{ applicant['invitationDate']? myDateFormat(applicant['invitationDate'], 'YYYY/MM/DD HH:mm'):myDateFormat(applicant['applicationDate'], 'YYYY/MM/DD HH:mm') }}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['invitationDate']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
@@ -156,7 +156,7 @@
 import { Ref, ref } from 'vue';
 import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
 import { Applicant, ApplicantInputs, selectOptions } from 'src/shared/model';
-import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
+import { limitDate, myDateFormat, timestampToDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import SelectBranch from 'src/pages/user/Settings/management/components/SelectBranch.vue';
