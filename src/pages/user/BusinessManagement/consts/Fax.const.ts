@@ -7,8 +7,8 @@ export const faxColumns = computed(() => {
     return [
         {
             label: t('clientFactory.fax.list.senderId'),
-            field: 'senderID',
-            name: 'senderID',
+            field: 'senderId',
+            name: 'senderId',
             align: 'left',
         },
         {
@@ -31,8 +31,8 @@ export const faxColumns = computed(() => {
         },
         {
             label: t('clientFactory.fax.list.numPages'),
-            field: 'numPages',
-            name: 'numPages',
+            field: 'numPDFPages',
+            name: 'numPDFPages',
             align: 'left',
         },
         {

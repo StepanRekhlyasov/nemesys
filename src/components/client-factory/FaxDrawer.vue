@@ -5,7 +5,8 @@ import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { useFax } from 'src/stores/fax';
 import { useQuasar } from 'quasar';
-
+import PdfViewer from 'src/pages/user/BusinessManagement/components/PdfViewer.vue';
+import { pdfViewer } from 'src/pages/user/BusinessManagement/consts/index';
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
 const $q = useQuasar();
@@ -56,7 +57,13 @@ watch(
     faxData.value.transmissionDateTime = '';
   }
 );
-
+watch(
+  faxFile,()=>{
+    if(faxFile.value.length === 0){
+      pdfUrl.value=''
+    }
+  }
+);
 const filterFn = (val: string, update) => {
   const pagination = {
     sortBy: 'desc',
@@ -90,6 +97,14 @@ const save = async () => {
     faxForm.value.resetValidation();
   });
 };
+const pdfUrl = ref('');
+function viewFile(event){
+  const file = event.target.files[0];
+  pdfUrl.value = URL.createObjectURL(file);
+}
+const openPdfViewer = () =>{
+  pdfViewer.value = true;
+}
 </script>
 
 <template>
@@ -186,7 +201,7 @@ const save = async () => {
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.prSheet') }}
               </div>
-              <div class="col-9">
+              <div class="col-5">
                 <q-file
                   name="fax_files"
                   v-model="faxFile"
@@ -199,6 +214,14 @@ const save = async () => {
                   accept="application/pdf"
                   :rules="[(val) => !!val || '']"
                   hide-bottom-space
+                  @input="viewFile"
+                />
+              </div>
+              <div class="col-2 q-mt-xs" v-if="pdfUrl.length>0">
+                <q-btn
+                  color="primary"
+                  label="preview"
+                  @click="openPdfViewer"
                 />
               </div>
             </div>
@@ -322,6 +345,7 @@ const save = async () => {
       </q-form>
     </q-scroll-area>
   </q-drawer>
+  <PdfViewer :url="pdfUrl" />
 </template>
 
 <style lang="scss" scoped></style>

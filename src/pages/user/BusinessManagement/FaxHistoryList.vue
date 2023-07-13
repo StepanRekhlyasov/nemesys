@@ -114,17 +114,19 @@
       </template>
       <template v-slot:body-cell-attachment="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          <q-btn
-            @click="openPdfDialog(props.row.faxFileURL)"
-            flat
-            color="primary"
-            label="Flat"
-          />
+          <span class="fileName" @click="openPdfDialog(props.row.faxFileURL)">
+            {{ props.row.fileName }}
+          </span>
+        </q-td>
+      </template>
+      <template v-slot:body-cell-selectedCF="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          {{ props.row.selectCF }}
         </q-td>
       </template>
       <template v-slot:body-cell-numDestinations="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ props.row.applicants.length }}
+          {{ props.row.numDestinations }}
         </q-td>
       </template>
       <template v-slot:body-cell-sentDateTime="props">
@@ -179,7 +181,6 @@ const searchData = ref<FaxSearchData>({
   selectedApplicant: null,
 });
 const applicantList = ref(<{ value: string; label: string }[]>[]);
-
 const start = Timestamp.fromDate(new Date(searchData.value.selectedDate));
 const endDate = new Date(new Date(searchData.value.selectedDate));
 endDate.setDate(endDate.getDate() + 1);
@@ -200,7 +201,6 @@ const loadPagination = ref(0);
 const faxList = computed(() => {
   return faxStore.faxList;
 });
-
 const pdfUrl = ref('');
 
 const openPdfDialog = (url) => {
@@ -284,5 +284,10 @@ thead tr:first-child th {
   color: $main-black;
   font-weight: bold;
   font-size: 1rem;
+}
+.fileName {
+  color: blue;
+  font-size: 1rem;
+  cursor: pointer;
 }
 </style>

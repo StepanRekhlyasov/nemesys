@@ -33,13 +33,15 @@ export const useFax = defineStore('fax', () => {
   const uploadFaxFile = async (faxFile: FileList | []) => {
     const file = faxFile[0];
     const storage = getStorage();
+    const timestamp: number = Date.now();
     const storageRef = refStorage(
       storage,
-      `faxFile/${auth.currentUser?.uid}/${file['name']}`
+      `faxFile/${auth.currentUser?.uid}/${timestamp}.pdf`
     );
     try {
       const snapshot = await uploadBytes(storageRef, file);
       const data = {};
+      data['fileName'] = file['name'];
       data['faxFilePath'] = snapshot.ref.fullPath;
       data['faxFileURL'] = await getDownloadURL(storageRef);
       return data;
