@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, withDefaults } from 'vue';
+import { ref, defineProps, defineEmits, withDefaults,watch } from 'vue';
 import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from './types';
 
 const props = withDefaults(defineProps<{
@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
     (e: 'selectItem', item: ClientFactoryTableRow)
+    (e: 'selectedId', item: number[])
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
@@ -27,6 +28,9 @@ const getSelectedString = () => {
 const selectItem = (item: ClientFactoryTableRow) => {
     emit('selectItem', item)
 }
+watch(selected,()=>{
+    emit('selectedId',selected.value)
+})
 </script>
 
 <template>

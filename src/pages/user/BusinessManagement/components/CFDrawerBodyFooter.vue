@@ -4,7 +4,7 @@ import { defineProps,ref } from 'vue';
 
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue';
-defineProps<{
+const props = defineProps<{
     clientFactory: ClientFactory
 }>();
 
@@ -13,9 +13,8 @@ const isNewFaxDrawer = ref(false)
 const hideNewFaxDrawer = () => {
     isNewFaxDrawer.value = false
 }
-
+const selectedCF:string[] = [props.clientFactory.id]
 const openNewFaxDrawer = () => {
-    console.log(1)
     isNewFaxDrawer.value = true
 }
 </script>
@@ -93,6 +92,7 @@ const openNewFaxDrawer = () => {
             <FaxDrawer
             @hide-drawer="hideNewFaxDrawer"
             theme="primaery"
+            :selectedCF="selectedCF"
             :is-drawer="isNewFaxDrawer"
             />
     </div>

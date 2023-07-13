@@ -31,7 +31,6 @@ const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
 const isNewClientFactoryDrawer = ref(false)
 const isNewFaxDrawer = ref(false)
-
 const pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -57,7 +56,10 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
         }
     }, 200);
 }
-
+const selected = ref<number[]>([])
+const selectedCFHandler = (item:number[]) =>{
+    selected.value = item
+}
 watch([clients], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
@@ -100,15 +102,21 @@ const openNewClientFactoryDrawer = () => {
 }
 
 // new Fax drawer
-
+let selectedCF:string[] = []
 const hideNewFaxDrawer = () => {
     isNewFaxDrawer.value = false
 }
 
 const openNewFaxDrawer = () => {
+    selectedCF = []
+    Object.keys(selected.value).forEach((key)=>{
+        selectedCF.push(selected.value[key].id)
+    });
+    if(selectedCF.length === 0 || selectedCF.length === tableRows.value.length){
+        selectedCF = ['all']
+    }
     isNewFaxDrawer.value = true
 }
-
 
 </script>
 
@@ -126,6 +134,7 @@ const openNewFaxDrawer = () => {
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
+                    @selected-id="selectedCFHandler"
                     :isFetching="fetchData"
                     :rows="paginatedTableRows"
                     :pagination="pagination"
@@ -156,6 +165,7 @@ const openNewFaxDrawer = () => {
         <FaxDrawer
         @hide-drawer="hideNewFaxDrawer"
         theme="primaery"
+        :selectedCF="selectedCF"
         :is-drawer="isNewFaxDrawer"
         />
     </div>

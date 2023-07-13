@@ -10,16 +10,15 @@ const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
 const $q = useQuasar();
 
-withDefaults(
-  defineProps<{
+const props = withDefaults(defineProps<{
     isDrawer: boolean;
     theme?: string;
-  }>(),
+    selectedCF:string[]
+}>(),
   {
     theme: 'primary',
-  }
+  },
 );
-
 const faxDataDataSample = {
   setTransmissionDateTime: true,
   transmissionDateTime: '',
@@ -30,7 +29,6 @@ const applicantList = ref(<{ value: string; label: string }[]>[]);
 const applicantStore = useApplicant();
 const loading = ref(false);
 const faxForm = ref();
-
 const emit = defineEmits<{
   (e: 'hideDrawer');
 }>();
@@ -85,6 +83,7 @@ const save = async () => {
     persistent: true,
     cancel: t('common.cancel'),
   }).onOk(async () => {
+    faxData.value.selectedCF = props.selectedCF
     await faxStore.saveFax(faxData.value, faxFile.value);
     faxData.value = JSON.parse(JSON.stringify(faxDataDataSample));
     faxFile.value = [];
@@ -147,7 +146,7 @@ const save = async () => {
                   :options="applicantList"
                   @filter="filterFn"
                   :loading="loading"
-                  :rules="[(val) => !!val || '']"
+                  
                   hide-bottom-space
                 />
               </div>
@@ -317,10 +316,6 @@ const save = async () => {
                 {{ $t('clientFactory.fax.refinementConditions') }}
               </div>
               <div class="col-9"></div>
-            </div>
-            <div class="q-mt-lg">
-              <q-btn label="Submit" type="submit" color="primary"/>
-              <q-btn label="Reset" type="reset" color="red"  class="q-ml-sm" />
             </div>
           </q-card-section> 
         </q-card>
