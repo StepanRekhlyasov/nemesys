@@ -40,7 +40,7 @@
       </q-btn>
     </div>
     <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
-      :loading="loading">
+      :loading="loading" class="budgetTable">
       <template v-slot:header-cell-branch="props">
         <q-th :props="props" class="q-pa-none">
           <div> {{ $t('settings.branch.name') }} </div>
@@ -307,8 +307,13 @@ onMounted(async () => {
 })
 </script>
 <style lang="scss">
-thead tr:first-child th {
-  background-color: #f3f0f0;
+.budgetTable {
+  overflow: auto;
+
+  th {
+    background-color: #f3f0f0;
+    border-color: #f3f0f0;
+  }
 }
 
 .buttonbg {
