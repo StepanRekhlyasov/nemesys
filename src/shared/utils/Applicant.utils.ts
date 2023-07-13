@@ -1,4 +1,4 @@
-import { collection, Firestore,  getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, Firestore,  getDocs, getFirestore, orderBy, query, where, writeBatch } from 'firebase/firestore';
 import { ConstraintsType } from './utils';
 
 export const getApplicantContactsList = (db: Firestore, applicant_id: string) => {

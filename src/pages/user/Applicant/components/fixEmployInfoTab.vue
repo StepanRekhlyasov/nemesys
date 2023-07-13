@@ -261,7 +261,12 @@ function mutateDatesInData(data){
 async function updateData(data){
   if (fixData.value?.id){
     data['updated_at'] = serverTimestamp();
-    await fixStore.updateFix(fixData.value.id, data)
+    try{
+      await fixStore.updateFix(fixData.value.id, data)
+    } catch(e){
+      Alert.warning(e)
+    }
+    Alert.success()
   }
   data = mutateDatesInData(data)
   fixData.value = {

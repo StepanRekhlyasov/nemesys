@@ -97,6 +97,7 @@ import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useOrganization } from 'src/stores/organization';
 import ApplicantTable from './components/ApplicantTable.vue';
+import { ApplicantOrFixColumn } from 'src/shared/constants/Applicant.const';
 
 const loading = ref(false)
 const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null);
@@ -152,7 +153,7 @@ watch(()=>organization.currentOrganizationId, (newVal)=>{
 })
 watch(()=>applicantOrFixData.value, async (newVal)=>{
   loading.value = true
-  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(statusParams.firestore as ApplicantStatus)){
+  if(ApplicantOrFixColumn[statusParams.firestore] === 'applicants'){
     applicantsForTable.value = newVal as Applicant[]
     return
   }

@@ -117,6 +117,7 @@ import { applicantFixesTableColumns, updateFixesTableColumns } from 'src/pages/u
 import { computed, ref, watch } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useOrganization } from 'src/stores/organization';
+import { ApplicantOrFixColumn } from 'src/shared/constants/Applicant.const';
 
 const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
@@ -131,7 +132,7 @@ const organizationStore = useOrganization()
 const boIdList = ref<{[id: string] : BackOrderModel}>({})
 const backOrderStore = useBackOrder()
 const mode = computed(()=>{
-  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
+  if(ApplicantOrFixColumn[props.status]==='applicants'){
     return 'applicant'
   } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
     return 'update'
