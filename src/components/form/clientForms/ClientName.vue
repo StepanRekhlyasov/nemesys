@@ -33,7 +33,7 @@ watch(localName, (newVal) => {
                 v-model="localName"
                 :placeholder="t('client.add.clientLabel')"
                 lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']"
+                :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
                 hide-bottom-space />
         </q-item-section>
     </q-item>

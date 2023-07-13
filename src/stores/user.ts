@@ -1,4 +1,4 @@
-import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where ,getCountFromServer } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { User, UserPermissionNames } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -56,11 +56,25 @@ export const useUserStore = defineStore('user', () => {
     usersData.forEach((user) => {
       if (user.exists()) {
         users.push(user.data() as User)
+        users[users.length - 1].id = user.id
+
       }
     })
 
     return users
   }
+
+  async function getNumberOfUsers(organizationId?: string) {
+    const filters =
+      !organizationId
+        ? [where('deleted', '==', false)]
+        : [where('organization_ids', 'array-contains', organizationId),where('deleted', '==', false)];
+    const numOfUsers =  (
+      await getCountFromServer(query(collection(db, 'users'), ...filters))
+    ).data().count;
+    return numOfUsers
+  }
+
 
   async function getUserById(id: string) {
 
@@ -164,6 +178,7 @@ export const useUserStore = defineStore('user', () => {
     usersData.forEach((user) => {
       if (user.exists()) {
         users.push(user.data() as User)
+        users[users.length - 1].id = user.id
       }
     })
     return users
@@ -211,5 +226,6 @@ export const useUserStore = defineStore('user', () => {
     getAllUsersInBranch,
     getUsersByConstrains,
     getUsersByPermission,
+    getNumberOfUsers
   }
 })

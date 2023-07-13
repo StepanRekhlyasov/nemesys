@@ -94,7 +94,8 @@ export default {
       '12' : 'December',
     },
     more: 'More',
-    downloadCSV: 'Download CSV'
+    downloadCSV: 'Download CSV',
+    branch: 'Branch',
   },
   smoking: {
     no: 'No',
@@ -1672,7 +1673,21 @@ export default {
     ageComposition:'age composition',
     daysToWork:'days to Work',
     yen:'yen',
+    item:'item',
+    base:'base',
+    totalingMethod:'totaling method',
+    jobCategory:'job category',
     categories:{
+      totalingMethod:{
+        totallingDailyData:'totalling daily data',
+        totallingAttractionDataByBranch:'totalling attraction data by branch',
+        totallingAttractionDataByMedia:'totalling attraction data by media',
+      },
+      item:{
+        actualValue:'actual value',
+        unitPricePerLeadtime:'unitPrice L/T',
+        applicationAttribute:'application attribute',
+      },
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
       numberOfInvitations:'NumberOfInvitations',
@@ -1773,7 +1788,7 @@ export default {
     modeMedia: 'Media Data Aggregation',
     modeBranch: 'Branch Data Aggregation',
     modeIndividual: 'Individual Data Aggregation',
-    modeDay: 'Date and Time Aggregation',
+    dailyTotal: 'daily total',
     item: 'Item',
     actualFigures: 'Actual figures',
     unitPrice: 'Unit price/LT',
