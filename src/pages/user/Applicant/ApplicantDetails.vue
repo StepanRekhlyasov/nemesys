@@ -67,7 +67,7 @@
       <q-card-section class="bg-white q-ma-md">
         <div class="row q-pb-sm">
           <div class="col-6 row">
-            <q-btn v-if="bo" class="bg-primary text-white q-mb-md col-6" :label="$t('applicant.attendant.assignToBo')"/>
+            <q-btn @click="assignToBo()" v-if="bo" class="bg-primary text-white q-mb-md col-6" :label="$t('applicant.attendant.assignToBo')"/>
             <div :class="!bo?'col-6 text-right text-primary text-weight-regular':'col-3 text-right text-primary text-weight-regular'"> {{ $t('applicant.list.qualification') }}
             </div>
             <div :class="bo?'col-3 q-pl-md':'col-6 q-pl-md'" v-if="selectedApplicant.qualification">
@@ -138,12 +138,15 @@ import hiddenText from 'src/components/hiddingText.component.vue';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { BackOrderModel } from 'src/shared/model';
+import { getAuth } from 'firebase/auth';
+import { serverTimestamp, addDoc, collection, getFirestore } from 'firebase/firestore';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
 const statusOption = ref(statusList);
 const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
+const db = getFirestore();
 const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(timestampToDateFormat(selectedApplicant.value['dob'])):'0')
 const openDrawer = async (data : Applicant) => {
   if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
@@ -151,6 +154,26 @@ const openDrawer = async (data : Applicant) => {
   }
   applicantStore.state.selectedApplicant = data;
   setTimeout(() => drawerRight.value = true, 300);
+}
+
+const assignToBo = async ()=>{
+  const data = ref({
+    applicant_id:selectedApplicant.value?.id,
+    backOrder:props.bo?.id,
+    client:props.bo?.client_id,
+    office:props.bo?.office_id,
+    deleted:false,
+    created_by:getAuth().currentUser?.uid,
+    created_at:serverTimestamp(),
+    updated_at:serverTimestamp(),
+  })
+  try {
+    const collectionRef = collection(db, 'fix');
+    await addDoc(collectionRef, data.value);
+    Alert.success();
+  } catch (error) {
+    Alert.warning(error);
+  }
 }
 
 const props = withDefaults(defineProps<{
