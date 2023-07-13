@@ -2,47 +2,38 @@
   <div class="flex">
     <q-btn-toggle
       flat
-      :color="$props.admin ? 'accent' : 'black'"
+      :color="admin ? 'accent' : 'black'"
       toggle-color="primary"
       v-model='locale'
-      @input="setLang"
       :options="localeOptions"
     />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar'
+import { watch } from 'vue';
 
-export default defineComponent({
-  name: 'LanguageSwitcher',
-  props: {
-    admin: Boolean
-  },
-  setup() {
-    const q = useQuasar();
-    const { locale } = useI18n({ useScope: 'global' });
-    const setLang = () => {
-      q.lang.set(q.lang)
-    };
+defineProps<{
+  admin?: boolean
+}>()
+const $q = useQuasar();
 
-    return {
-      localeOptions: [
-        { value: 'en-US', label: 'English' },
-        { value: 'ja-JP', label: '日本語' },
-      ],
-      locale,
+const { locale } = useI18n({ useScope: 'global' });
+const localeOptions = [
+  { value: 'en-US', label: 'English' },
+  { value: 'ja-JP', label: '日本語' },
+]
 
-      setLang,
-    };
-  },
-});
+watch(locale, val => {
+  const langKey = val === 'ja-JP'?'ja':'en-US'
+  import(
+    /* webpackInclude: /(ja|en-US)\.js$/ */
+    'quasar/lang/' + langKey 
+    ).then(lang => {
+      $q.lang.set(lang.default)
+    })
+}, {immediate: true})
+
 </script>
-
-<style lang="scss">
-.toolbarLanguage-item{
-
-}
-</style>
