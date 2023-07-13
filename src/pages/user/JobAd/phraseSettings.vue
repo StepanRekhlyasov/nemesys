@@ -17,11 +17,8 @@
                   <q-btn color="primary" :label="$t('phraseSettings.addNew')" icon="add" @click="openAddDrawer" />
               </div>
           </div>
-
       </q-card-section>
-
       <q-separator color="white" size="2px" />
-
       <q-card-section class=" q-pa-none">
           <q-table :columns="columns" :rows="phraseList" row-key="id" selection="multiple" class="no-shadow"
               v-model:selected="selected" v-model:pagination="pagination" hide-pagination :loading="loading">
@@ -63,7 +60,6 @@
                   </q-td>
               </template>
 
-
               <template v-slot:body-cell-author="props">
                   <q-td :props="props">
                       <span v-if="props.row.created_by">{{ userData[props.row.created_by] }} <br></span>
@@ -78,7 +74,6 @@
                   </q-td>
               </template>
 
-
               <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                       <q-btn flat round size="sm" icon="content_copy"  />
@@ -91,9 +86,6 @@
                   direction-links outline />
           </div>
       </q-card-section>
-
-
-
       <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
           elevated bordered>
           <q-scroll-area class="fit text-left">
@@ -101,8 +93,6 @@
                   :key="selectedPhrase?.key" />
           </q-scroll-area>
       </q-drawer>
-
-
       </q-card>
 </template>
 

@@ -464,6 +464,7 @@ onMounted(async () => {
   jobData.value.client = props?.selectedJob['client'] || '';
   await jobSearchStore.loadJobItemSettingData()
 })
+
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
       unsubscribe.value();
@@ -473,6 +474,7 @@ onBeforeUnmount(() => {
   }
 
 })
+
 watch(
   () => (jobData.value.transactionType),
   (newVal,) => {
@@ -483,6 +485,7 @@ watch(
       }
   }
 )
+
 watch(
   () => (jobData.value.projectType),
   (newVal,) => {
@@ -493,6 +496,7 @@ watch(
       }
   }
 )
+
 watch(
   () => (jobData.value.indeedTag),
   (newVal,) => {
@@ -522,6 +526,7 @@ watch(
       }
   }
 )
+
 watch(
   () => (jobData.value.client),
   (newVal,) => {
@@ -534,6 +539,7 @@ watch(
       }
   }
 )
+
 const saveJob = async () => {
   try {
       if (jobData.value.id) {

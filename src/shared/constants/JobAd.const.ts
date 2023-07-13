@@ -750,18 +750,21 @@ export const phraseColumns = computed(() => {
 export const phraseCategoryList = computed(() => {
   return [
     {
-      label: t('applicant.add.occupation'),
-      value: 'occupation',
+      label: t('job.add.employmentContract'),
+      value: 'employmentContract',
     },
     {
       label: t('job.add.jobContent'),
       value: 'jobContent',
     },
     {
-      label: t('phraseSettings.add.jobTagline'),
-      value: 'jobTagline',
+      label: t('job.add.employmentConditions'),
+      value: 'employmentConditions',
     },
-
+    {
+      label: t('job.add.mediaInformation'),
+      value: 'mediaInformations',
+    },
   ]
 })
 

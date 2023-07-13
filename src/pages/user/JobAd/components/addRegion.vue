@@ -34,7 +34,6 @@
                   {{ $t('regionSalary.add.areaInfo') }}
               </div>
 
-
               <div class="row">
                   <div class="col-4">
                       {{ $t('job.add.transactionType') }}
@@ -93,7 +92,6 @@
                   <q-btn color="primary" size="sm" class="q-ml-md" dense :label="$t('common.addNew')" icon="add"
                       @click="openCitySettingDialog" :disable="!areaData.id" />
               </div>
-
 
               <q-table :columns="columns" :rows="wardList" row-key="id" class="no-shadow q-mt-sm"
                   v-model:pagination="pagination" hide-pagination :loading="loading" dense>
@@ -239,7 +237,6 @@
               </q-card-actions>
           </q-card>
       </q-dialog>
-
   </q-card>
 </template>
 

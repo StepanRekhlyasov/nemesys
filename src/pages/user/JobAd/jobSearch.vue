@@ -21,9 +21,7 @@
                   <q-btn color="primary" :label="$t('job.addNewJob')" icon="add" @click="openAddDrawer" />
               </div>
           </div>
-
       </q-card-section>
-
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
           <q-table :columns="columns" :rows="jobList" row-key="id" selection="multiple" class="no-shadow"
@@ -116,7 +114,6 @@
                   :key="selectedJob?.key" />
           </q-scroll-area>
       </q-drawer>
-
   </q-card>
 </template>
 <script lang="ts" setup>

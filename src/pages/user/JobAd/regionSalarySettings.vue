@@ -19,9 +19,7 @@
                   <q-btn outline color="primary" :label="$t('job.changeSearchCondition')" />
               </div>
           </div>
-
       </q-card-section>
-
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none" v-if="areaFlag">
           <q-table :columns="columns" :rows="areaList" row-key="id" selection="multiple" class="no-shadow"
@@ -71,7 +69,6 @@
                       <div> {{ $t('job.creationDate') }} </div>
                   </q-th>
               </template>
-
 
               <template v-slot:body-cell-name="props">
                   <q-td :props="props" class="q-pa-none">
@@ -200,7 +197,6 @@
                       <div v-if="props.row.hourlySalaryMin"> {{ props.row.hourlySalaryMin }}</div>
                   </q-td>
               </template>
-
           </q-table>
           <div class="row justify-start q-mt-md pagination">
               <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
@@ -208,7 +204,6 @@
                   direction-links outline />
           </div>
       </q-card-section>
-
       <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
           elevated bordered>
           <q-scroll-area class="fit text-left">
@@ -216,7 +211,6 @@
                   :key="selectedArea?.key" />
           </q-scroll-area>
       </q-drawer>
-
   </q-card>
 </template>
 <script lang="ts" setup>

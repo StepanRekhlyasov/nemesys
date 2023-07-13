@@ -118,9 +118,6 @@
                       :max="(optionItem.length / pagination.rowsPerPage) >= 1 ? optionItem.length / pagination.rowsPerPage : 1"
                       direction-links outline />
               </div>
-
-
-
           </q-card-section>
       </q-form>
 
@@ -147,11 +144,9 @@ const props = defineProps({
   }
 }
 )
-
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-
 const hideDrawer = () => {
   jobItem.value = { ...jobItemObject }
   emit('hideDrawer')
@@ -169,7 +164,6 @@ const jobItemObject = {
   media: props?.selectedPhrase['media'] || '',
   recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
   dataType: props?.selectedPhrase['dataType'] || '',
-
 }
 const jobItem = ref({ ...jobItemObject })
 const unsubscribe = ref();
@@ -179,9 +173,7 @@ const phraseCategoryOptions = ref(phraseCategoryList);
 const dataTypeOptions = ref(dataTypeList);
 const columns = ref(jobItemOptionColumns);
 const optionItem:DocumentData = ref([]);
-
 const loading = ref(false);
-
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -205,8 +197,6 @@ onBeforeUnmount(() => {
 
 })
 
-
-
 watch(
   () => (jobItem.value.phraseCategory),
   (newVal,) => {
@@ -218,7 +208,6 @@ watch(
       }
   }
 )
-
 
 const saveJobItem = async () => {
   try {
@@ -250,6 +239,7 @@ const saveJobItem = async () => {
   }
 
 }
+
 const addNewItem = () => {
   optionItem.value.unshift({ 'name': '' } as never)
 
@@ -279,7 +269,5 @@ const addNewOption = async (data: object) => {
           message: t('failed'),
       });
   }
-
-
 }
 </script>

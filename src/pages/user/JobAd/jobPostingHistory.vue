@@ -61,7 +61,6 @@
                   </q-th>
               </template>
 
-
               <template v-slot:body-cell-name="props">
                   <q-td :props="props" class="q-pa-none">
                       <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.value"
@@ -130,7 +129,6 @@
                   :key="selectedJob?.key" />
           </q-scroll-area>
       </q-drawer>
-
   </q-card>
 </template>
 <script lang="ts" setup>

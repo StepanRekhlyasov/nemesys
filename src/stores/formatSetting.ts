@@ -34,11 +34,10 @@ export const useFormatSetting = defineStore('formatSetting', () => {
   };
 
   const updateFormData = async (data:object) => {
-    const updateData = {};
-    updateData['updated_at'] = serverTimestamp();
-    updateData['updated_by'] = auth.currentUser?.uid;
+    data['updated_at'] = serverTimestamp();
+    data['updated_by'] = auth.currentUser?.uid;
 
-    await updateDoc(docDb(db, 'jobFormat', data['id']), updateData);
+    await updateDoc(docDb(db, 'jobFormat', data['id']), data);
   };
 
 

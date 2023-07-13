@@ -17,11 +17,8 @@
                   <q-btn color="primary" :label="$t('formatSetting.addNew')" icon="add" @click="openAddDrawer" />
               </div>
           </div>
-
       </q-card-section>
-
       <q-separator color="white" size="2px" />
-
       <q-card-section class=" q-pa-none">
           <q-table :columns="columns" :rows="formatList" row-key="id" selection="multiple" class="no-shadow"
               v-model:selected="selected" v-model:pagination="pagination" hide-pagination :loading="loading">
@@ -31,7 +28,6 @@
                       <div> {{ $t('formatSetting.add.formatName') }} </div>
                   </q-th>
               </template>
-
               <template v-slot:header-cell-updatedBy="props">
                   <q-th :props="props" class="q-pa-none">
                       <div> {{ $t('regionSalary.list.updatedBy') }} </div>
@@ -44,7 +40,6 @@
                       <div> {{ $t('job.creationDate') }} </div>
                   </q-th>
               </template>
-
               <template v-slot:body-cell-edit="props">
                   <q-td :props="props">
                       <q-btn flat round size="sm" icon="edit" color="primary"  @click="openDrawer(props.row)" />
@@ -56,22 +51,18 @@
                       <div>{{ props.row.name }}</div>
                   </q-td>
               </template>
-
               <template v-slot:body-cell-author="props">
                   <q-td :props="props">
                       <span v-if="props.row.created_by">{{ userData[props.row.created_by] }} <br></span>
                       {{ toDate(props.row.created_at ) }}
                   </q-td>
               </template>
-
               <template v-slot:body-cell-updatedBy="props">
                   <q-td :props="props">
                       <span v-if="props.row.created_by">{{ userData[props.row.created_by] }} <br></span>
                       {{ toDate(props.row.updated_at ) }}
                   </q-td>
               </template>
-
-
               <template v-slot:body-cell-action="props">
                   <q-td :props="props">
                       <q-btn flat round size="sm" icon="content_copy" />
@@ -84,9 +75,6 @@
                   direction-links outline />
           </div>
       </q-card-section>
-
-
-
       <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
           elevated bordered>
           <q-scroll-area class="fit text-left">
@@ -94,8 +82,6 @@
                   :key="selectedFormat?.key" />
           </q-scroll-area>
       </q-drawer>
-
-
   </q-card>
 </template>
 

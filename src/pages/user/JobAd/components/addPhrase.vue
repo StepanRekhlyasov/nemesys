@@ -114,11 +114,9 @@
                           </q-td>
                       </template>
                   </q-table>
-
               </div>
           </q-card-section>
       </q-form>
-
   </q-card>
 </template>
 
@@ -179,6 +177,7 @@ onMounted(async () => {
   phraseData.value.phraseCategory = props?.selectedPhrase['phraseCategory'] || '';
   phraseData.value.content = props?.selectedPhrase['content'] || '';
 })
+
 watch(
   () => (phraseData.value.phraseCategory),
   (newVal,) => {
@@ -190,7 +189,6 @@ watch(
       }
   }
 )
-
 
 const savePhrase = async () => {
   try {

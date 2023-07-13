@@ -116,7 +116,6 @@
 
           </q-card-section>
       </q-form>
-
   </q-card>
 </template>
 
@@ -140,16 +139,13 @@ const props = defineProps({
   }
 }
 )
-
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-
 const hideDrawer = () => {
   formartData.value = { ...formartDataObject }
   emit('hideDrawer')
 }
-
 const { t } = useI18n({
   useScope: 'global',
 });
@@ -161,11 +157,8 @@ const formartDataObject = {
   projectType: '',
   desc: props?.selectedFormat['desc'] || '',
   media: props?.selectedFormat['media'] || '',
-
-
 }
 const formartData = ref({ ...formartDataObject })
-// const unsubscribeWard = ref();
 const transactionText = ref('')
 const projectText = ref('')
 const formatForm = ref();
@@ -217,6 +210,7 @@ watch(
       }
   }
 )
+
 const saveFormat = async () => {
   try {
       if (formartData.value.id) {

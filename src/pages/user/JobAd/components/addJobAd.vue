@@ -56,7 +56,6 @@
                   </div>
               </div>
 
-
               <div class="row">
                   <div class="col-4">
                       {{ $t('job.add.transactionType') }}
@@ -79,7 +78,6 @@
                       <q-input outlined dense v-model="facilityText" hide-bottom-space readonly />
                   </div>
               </div>
-
 
               <div class="row q-pt-sm">
                   <div class="col-4">
@@ -166,7 +164,6 @@
                   </div>
               </div>
 
-
               <div class="row q-pt-sm">
                   <div class="col-4">
                       {{ $t('jobAd.add.media') }}
@@ -229,8 +226,6 @@
                       </div>
                   </div>
               </div>
-
-
           </q-card-section>
       </q-form>
   </q-card>
@@ -257,7 +252,6 @@ const props = defineProps({
   }
 }
 )
-
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -266,7 +260,6 @@ const hideDrawer = () => {
   jobAdData.value = { ...jobAdDataObject }
   emit('hideDrawer')
 }
-
 const { t } = useI18n({
   useScope: 'global',
 });
@@ -285,7 +278,6 @@ const jobAdDataObject = {
 const jobAdData = ref({ ...jobAdDataObject })
 const mediaOptions = ref(mediaList);
 const facilityText = ref('');
-
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
 const unsubscribePhrase = ref();
@@ -405,7 +397,6 @@ watch(
   }
 )
 
-
 const saveJobAd = async () => {
   try {
       if (jobAdData.value.id) {
@@ -435,7 +426,6 @@ const saveJobAd = async () => {
       });
   }
 }
-
 
 const getPhrase = async () => {
   if (unsubscribePhrase.value) {
