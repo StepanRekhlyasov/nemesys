@@ -1,9 +1,8 @@
 import { QTableProps } from 'quasar';
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
-import { typeOfQuery } from 'src/shared/types/totalization';
 const { t } = i18n.global
-export const dayItemList:typeOfQuery[] = [
+export const dayItemList = [
   'nursingCare',
   'nurse',
   'generalDispatch',
@@ -13,8 +12,8 @@ export const dayItemList:typeOfQuery[] = [
   'inspection',
   'offer',
   'admission',
-]
-export const mediaItemList:typeOfQuery[] =[
+] as const
+export const mediaItemList =[
   'applicants',
   'validApplicants',
   'contactApplicants',
@@ -24,7 +23,7 @@ export const mediaItemList:typeOfQuery[] =[
   'inspection',
   'offer',
   'admission',
-]
+] as const
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
   return [
     {

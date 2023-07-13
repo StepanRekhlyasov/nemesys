@@ -11,231 +11,271 @@ import { defineStore } from 'pinia';
 import { Branch, User } from 'src/shared/model';
 import { useUserStore } from './user';
 import { typeOfQuery } from 'src/shared/types/totalization';
-import { graphType } from 'src/components/report/Models';
+import {
+  mediaBasedReportState,
+  basedReportState,
+  userBasedReportState,
+  ReportState,
+  FieldDict,
+  dailyBasedReportState,
+  reportStateAndOthers,
+} from 'src/shared/model/GetReport';
 const userStore = useUserStore();
-class baseQuery {
-  name = '';
-  rateName = 'No rate name';
-  dateBasedOnEachItemDate: string | undefined;
-  dateBasedOnLeftMostItemDate: string | undefined;
-  filters: QueryFieldFilterConstraint[] = [];
-  collection: string | undefined;
-  branchField: string | undefined;
-  uidField: string | undefined;
-  mediaField: string | undefined;
 
-  getQuery = (
-    db: Firestore,
-    dateRange: { from: string; to: string },
-    dateType:graphType,
-    media?,
-    branch?,
-    uid?,
-    organizationId?: string
-  ) => {
-    // dateRange.from を Date型に変換
-    const fromDate = new Date(dateRange.from);
-    const toDate = new Date(dateRange.to);
-    const filters = [...this.filters];
-    if (
-      dateType == 'BasedOnLeftMostItemDate' &&
-      this.dateBasedOnLeftMostItemDate
-    ) {
-      filters.push(
-        where(this.dateBasedOnLeftMostItemDate, '>=', fromDate)
-      );
-      filters.push(where(this.dateBasedOnLeftMostItemDate, '<=', toDate));
-    } else if (
-      dateType == 'BasedOnEachItemDate' &&
-      this.dateBasedOnEachItemDate
-    ) {
-      filters.push(where(this.dateBasedOnEachItemDate, '>=', fromDate));
-      filters.push(where(this.dateBasedOnEachItemDate, '<=', toDate));
-
-    }
-
-    if (media && this.mediaField) {
-      filters.push(where(this.mediaField, '==', media));
-    }
-
-    if (branch && this.branchField) {
-      filters.push(where(this.branchField, '==', branch));
-    }
-
-    if (uid && this.uidField) {
-      filters.push(where(this.uidField, '==', uid));
-    }
-    if (organizationId) {
-      filters.push(where('organization_id', '==', organizationId));
-    }
-
-    if (!this.collection) throw new Error('collection is not defined');
-    const dbRef = collection(db, this.collection);
-    return query(dbRef, ...filters);
-  };
-}
-class applicantQuery extends baseQuery {
-  name = 'applicants';
-  dateBasedOnEachItemDate = 'applicationDate';
-  dateBasedOnLeftMostItemDate = 'applicationDate';
-  filters: QueryFieldFilterConstraint[] = [];
-  collection = 'applicants';
-  branchField = 'branchInCharge';
-  mediaField = 'media';
-}
-
-class fixQuery extends baseQuery {
-  name = 'fix';
-  rateName = 'fixRate';
-  dateBasedOnEachItemDate = 'data';
-  dateBasedOnLeftMostItemDate = 'data';
-  filters = [where('fixStatus', '==', true)];
-  collection = 'fix';
-  branchField = 'branchInCharge';
-  uidField = 'chargeOfFix';
-  mediaField = 'media';
-}
-
-class BOQuery extends baseQuery {
-  name = 'BO';
-  dateBasedOnEachItemDate = 'created_at';
-  dateBasedOnLeftMostItemDate = 'created_at';
-  filters: QueryFieldFilterConstraint[] = [];
-  collection = 'BO';
-  uidField = 'id_registerUser';
-  mediaField = 'media';
-}
-
-class validApplicantQuery extends applicantQuery {
-  name = 'validApplicants';
-  rateName = 'validApplicantsRate';
-}
-
-class contactApplicantQuery extends applicantQuery {
-  name = 'contactApplicants';
-  rateName = 'contactApplicantsRate';
-  filters = [where('contactStatus', '==', true)];
-}
-
-class attractionApplicantQuery extends applicantQuery {
-  name = 'attractionApplicants';
-  rateName = 'attractionApplicantsRate';
-  filters = [where('attractionStatus', '==', true)];
-}
-
-class attendApplicantQuery extends applicantQuery {
-  name = 'attendApplicants';
-  rateName = 'attendApplicantsRate';
-  filters = [where('attendStatus', '==', true)];
-}
-
-class inspectionQuery extends fixQuery {
-  name = 'inspection';
-  rateName = 'inspectionRate';
-  dateBasedOnEachItemDate = 'inspectionDate';
-  filters = [where('inspectionStatus', '==', true)];
-  uidField = 'chargeOfInspection';
-}
-
-class offerQuery extends fixQuery {
-  name = 'offer';
-  rateName = 'offerRate';
-  dateBasedOnEachItemDate = 'offerDate';
-  filters = [where('offerStatus', '==', true)];
-  uidField = 'chargeOfOffer';
-}
-
-class admissionQuery extends fixQuery {
-  name = 'admission';
-  rateName = 'admissionRate';
-  dateBasedOnEachItemDate = 'admissionDate';
-  filters = [where('admissionStatus', '==', true)];
-  uidField = 'chargeOfAdmission';
-}
-
-class BOIsFirstQuery extends BOQuery {
-  name = 'BOIsfirst';
-  filters = [where('is_first', '==', true)];
-}
-
-class BOIsNotFirstQuery extends BOQuery {
-  name = 'BOIsnotfirst';
-  filters = [where('is_first', '==', false)];
-}
-
-class GeneralDispatchQuery extends BOQuery {
-  name = 'generalDispatch';
-  filters = [where('transactionType', '==', 'generalDispatch')];
-}
-
-class introductionQuery extends BOQuery {
-  name = 'introduction';
-  filters = [where('transactionType', '==', 'introduction')];
-}
-
-class TTPQuery extends BOQuery {
-  name = 'TTP';
-  filters = [where('transactionType', '==', 'TTP')];
-}
-
-class nurseQuery extends BOQuery {
-  name = 'nurse';
-  filters = [where('typeCase', '==', 'nurse')];
-}
-
-class nursingCareQuery extends BOQuery {
-  name = 'nursingCare';
-  filters = [where('typeCase', '==', 'nursingCare')];
-}
-
-const queryDict: { [key in typeOfQuery]: baseQuery } = {
-  applicants: new applicantQuery(),
-  validApplicants: new validApplicantQuery(),
-  contactApplicants: new contactApplicantQuery(),
-  attractionApplicants: new attractionApplicantQuery(),
-  attendApplicants: new attendApplicantQuery(),
-  fix: new fixQuery(),
-  inspection: new inspectionQuery(),
-  offer: new offerQuery(),
-  admission: new admissionQuery(),
-  BO: new BOQuery(),
-  BOIsfirst: new BOIsFirstQuery(),
-  BOIsnotfirst: new BOIsNotFirstQuery(),
-  generalDispatch: new GeneralDispatchQuery(),
-  introduction: new introductionQuery(),
-  TTP: new TTPQuery(),
-  nurse: new nurseQuery(),
-  nursingCare: new nursingCareQuery(),
+const applicantFieldDict: FieldDict = {
+  name: 'applicants',
+  dateBasedOnEachItemDate: 'applicationDate',
+  dateBasedOnLeftMostItemDate: 'applicationDate',
+  filters: [],
+  collection: 'applicants',
+  branchField: 'branchInCharge',
+  mediaField: 'media',
 };
 
-const queryPatternToData = async (
-  queryNames: typeOfQuery[],
-  dateRange: { from: string; to: string },
-  dateType: string,
-  media: string | undefined = undefined,
-  branch: string | undefined = undefined,
-  uid: string | undefined = undefined,
-  organizationId: string | undefined = undefined,
-  isAverage = false
+const fixFieldDict: FieldDict = {
+  name: 'fix',
+  rateName: 'fixRate',
+  dateBasedOnEachItemDate: 'data',
+  dateBasedOnLeftMostItemDate: 'data',
+  filters: [where('fixStatus', '==', true)],
+  collection: 'fix',
+  branchField: 'branchInCharge',
+  uidField: 'chargeOfFix',
+  mediaField: 'media',
+};
+
+const BOFieldDict: FieldDict = {
+  name: 'BO',
+  dateBasedOnEachItemDate: 'created_at',
+  dateBasedOnLeftMostItemDate: 'created_at',
+  filters: [],
+  collection: 'BO',
+  uidField: 'id_registerUser',
+  mediaField: 'media',
+};
+
+const validApplicantsFieldDict: FieldDict = {
+  name: 'validApplicants',
+  rateName: 'validApplicantsRate',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+};
+
+const contatApplicantsFieldDict: FieldDict = {
+  name: 'contactApplicants',
+  rateName: 'contactApplicantsRate',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('contactStatus', '==', true)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+};
+
+const attractionApplicantsFieldDict: FieldDict = {
+  name: 'attractionApplicants',
+  rateName: 'attractionApplicantsRate',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('attractionStatus', '==', true)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+};
+
+const attendApplicantsFieldDict: FieldDict = {
+  name: 'attendApplicants',
+  rateName: 'attendApplicantsRate',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('attendStatus', '==', true)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+};
+
+const inspectionFieldDict: FieldDict = {
+  name: 'inspection',
+  rateName: 'inspectionApplicantsRate',
+  dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('inspectionStatus', '==', true)],
+  collection: fixFieldDict.collection,
+  branchField: fixFieldDict.branchField,
+  mediaField: fixFieldDict.mediaField,
+};
+
+const offerFieldDict: FieldDict = {
+  name: 'offer',
+  rateName: 'offerApplicantsRate',
+  dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('offerStatus', '==', true)],
+  collection: fixFieldDict.collection,
+  branchField: fixFieldDict.branchField,
+  mediaField: fixFieldDict.mediaField,
+};
+
+const admissionFieldDict: FieldDict = {
+  name: 'admission',
+  rateName: 'admissionApplicantsRate',
+  dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('admissionStatus', '==', true)],
+  collection: fixFieldDict.collection,
+  branchField: fixFieldDict.branchField,
+  mediaField: fixFieldDict.mediaField,
+};
+
+const BOIsfirstFieldDict: FieldDict = {
+  name: 'BOIsfirst',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('is_first', '==', true)],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const BOIsNotfirstFieldDict: FieldDict = {
+  name: 'BOIsnotfirst',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('is_first', '==', false)],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const generalDispatchFieldDict: FieldDict = {
+  name: 'generalDispatch',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('transactionType', '==', 'generalDispatch')],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const introductionFieldDict: FieldDict = {
+  name: 'introduction',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('transactionType', '==', 'introduction')],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const TTPFieldDict: FieldDict = {
+  name: 'TTP',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('transactionType', '==', 'TTP')],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const nurseFieldDict: FieldDict = {
+  name: 'nurse',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('typeCase', '==', 'nurse')],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const nurseCareFieldDict: FieldDict = {
+  name: 'nursingCare',
+  dateBasedOnEachItemDate: BOFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: BOFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('typeCase', '==', 'nursingCare')],
+  collection: BOFieldDict.collection,
+  uidField: BOFieldDict.uidField,
+  mediaField: BOFieldDict.mediaField,
+};
+
+const fieldDicts: { [key in typeOfQuery]: FieldDict } = {
+  applicants: applicantFieldDict,
+  validApplicants: validApplicantsFieldDict,
+  contactApplicants: contatApplicantsFieldDict,
+  attractionApplicants: attractionApplicantsFieldDict,
+  attendApplicants: attendApplicantsFieldDict,
+  fix: fixFieldDict,
+  inspection: inspectionFieldDict,
+  offer: offerFieldDict,
+  admission: admissionFieldDict,
+  BO: BOFieldDict,
+  BOIsfirst: BOIsfirstFieldDict,
+  BOIsnotfirst: BOIsNotfirstFieldDict,
+  generalDispatch: generalDispatchFieldDict,
+  introduction: introductionFieldDict,
+  TTP: TTPFieldDict,
+  nurse: nurseFieldDict,
+  nursingCare: nurseCareFieldDict,
+};
+
+const getQuery = (
+  reportState: ReportState,
+  queryName: typeOfQuery,
+  db: Firestore
 ) => {
+  const fieldDict = fieldDicts[queryName];
+  const fromDate = new Date(reportState.dateRange.from);
+  const toDate = new Date(reportState.dateRange.to);
+  const filters: QueryFieldFilterConstraint[] = [...fieldDict.filters];
+  if (
+    reportState.dateType == 'BasedOnLeftMostItemDate' &&
+    fieldDict.dateBasedOnLeftMostItemDate
+  ) {
+    filters.push(where(fieldDict.dateBasedOnLeftMostItemDate, '>=', fromDate));
+    filters.push(where(fieldDict.dateBasedOnLeftMostItemDate, '<=', toDate));
+  } else if (
+    reportState.dateType == 'BasedOnEachItemDate' &&
+    fieldDict.dateBasedOnEachItemDate
+  ) {
+    filters.push(where(fieldDict.dateBasedOnEachItemDate, '>=', fromDate));
+    filters.push(where(fieldDict.dateBasedOnEachItemDate, '<=', toDate));
+  }
+
+  if (reportState.media && fieldDict.mediaField) {
+    filters.push(where(fieldDict.mediaField, '==', reportState.media));
+  }
+
+  if (reportState.branch && fieldDict.branchField) {
+    filters.push(where(fieldDict.branchField, '==', reportState.branch));
+  }
+
+  if (reportState.uid && fieldDict.uidField) {
+    filters.push(where(fieldDict.uidField, '==', reportState.uid));
+  }
+  if (reportState.organizationId) {
+    filters.push(where('organization_id', '==', reportState.organizationId));
+  }
+  const dbRef = collection(db, fieldDict.collection);
+  return query(dbRef, ...filters);
+};
+
+const queryPatternToData = async (stateAndOthers: reportStateAndOthers) => {
   const db = getFirestore();
-  const queryList = queryNames.map((queryName) => {
-    return queryDict[queryName].getQuery(
-      db,
-      dateRange,
-      dateType as graphType,
-      media,
-      branch,
-      uid,
-      organizationId
-    );
-  });
+
+  const queryList = stateAndOthers.queryNames.map((queryName) =>
+    getQuery(stateAndOthers.reportState, queryName, db)
+  );
   const countedData = await Promise.all(
     queryList.map(async (query) => {
-      if (isAverage) {
+      if (stateAndOthers.isAverage) {
         return (
           (await getCountFromServer(query)).data().count /
-          (await userStore.getNumberOfUsers(organizationId))
+          (await userStore.getNumberOfUsers(
+            stateAndOthers.reportState.organizationId
+          ))
         );
       } else {
         return (await getCountFromServer(query)).data().count;
@@ -255,28 +295,21 @@ const getMonthDateList = (date: string) => {
       firstDate.getFullYear(),
       firstDate.getMonth(),
       firstDate.getDate() + i
-    )
-    const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
-    dateList.push(
-      dateStr
     );
+    const dateStr = `${date.getFullYear()}/${
+      date.getMonth() + 1
+    }/${date.getDate()}`;
+    dateList.push(dateStr);
   }
   return dateList;
 };
 
 export const useGetReport = defineStore('getReport', () => {
-  const getDailyReport = async (
-    dateInMonth: string,
-    branch: string | undefined = undefined,
-    graphType: graphType,
-    queryNames: typeOfQuery[],
-    isAverage = false
-  ) => {
+  const getDailyReport = async (state: dailyBasedReportState) => {
     const rows: { [key: string]: string | number }[] = [];
-    const dateList = getMonthDateList(dateInMonth)
+    const dateList = getMonthDateList(state.dateInMonth);
 
     for (const date of dateList) {
-      //date は　1900/01/02 のようになっているので それをその日と次の日を示す範囲　dateRange = {from:1900/01/02 , to:1900/01/03}　の形に変換する
       const dateRange = {
         from: date,
         to: new Date(
@@ -286,29 +319,31 @@ export const useGetReport = defineStore('getReport', () => {
         ).toLocaleDateString(),
       };
       let data: number[] = [];
-      data = await queryPatternToData(
-          queryNames,
-          dateRange,
-          graphType,
-          undefined,
-          branch,
-          undefined,
-          undefined,
-          isAverage
-        );
+      data = await queryPatternToData({
+        reportState: {
+          dateRange: dateRange,
+          dateType: state.graphType,
+          branch: state.branch,
+        },
+        isAverage: false,
+        queryNames: state.queryNames,
+      });
       const dataCVR = data.map((num, idx) => {
         if (idx == 0) return '100.0%';
         if (data[idx - 1] == 0) return '0.0%';
         const per = (data[idx] / data[idx - 1]) * 100;
-        const per_str = per.toFixed(1);
-        return per_str + '%';
+        const perStr = per.toFixed(1);
+        return perStr + '%';
       });
       const row: { [key: string]: number | string } = { name: dateRange.from };
-      for (let i = 0; i < queryNames.length; i++) {
-        row[queryDict[queryNames[i]].name] = data[i];
+      for (let i = 0; i < state.queryNames.length; i++) {
+        row[fieldDicts[state.queryNames[i]].name] = data[i];
       }
-      for (let i = 0; i < queryNames.length; i++) {
-        row[queryDict[queryNames[i]].rateName] = dataCVR[i];
+      for (let i = 0; i < state.queryNames.length; i++) {
+        const rateName = fieldDicts[state.queryNames[i]].rateName;
+        if (rateName) {
+          row[rateName] = dataCVR[i];
+        }
       }
       rows.push(row);
     }
@@ -316,79 +351,71 @@ export const useGetReport = defineStore('getReport', () => {
   };
 
   const getReport = async (
-    users: User[] | undefined = undefined,
-    branches: Branch[] | undefined = undefined,
-    dateRange: { from: string; to: string } | undefined,
-    graphType: graphType,
-    queryNames: typeOfQuery[],
-    media: string | undefined = undefined,
-    organizationId: string | undefined = undefined,
-    isAverage = false
+    state: mediaBasedReportState | basedReportState | userBasedReportState
   ) => {
     const rows: { [key: string]: string | number }[] = [];
-    if (!dateRange || !dateRange.from || !dateRange.to) return [];
     let rowItems: (User | Branch | { id: 'all'; name: 'all' })[] = [];
-    if (users) {
-      rowItems = users;
-    } else if (branches) {
-      rowItems = branches;
-    } else {
-      rowItems = [{ id: 'all', name: 'all' }];
-    }
+    if ('branches' in state) {
+      rowItems = state.branches;
+    } else if ('users' in state) {
+      rowItems = state.users;
+    } else rowItems = [{ id: 'all', name: 'all' }];
 
     for (const rowItem of rowItems) {
       let data: number[] = [];
-      if (users) {
-        data = await queryPatternToData(
-          queryNames,
-          dateRange,
-          graphType,
-          media,
-          undefined,
-          rowItem.id,
-          organizationId,
-          isAverage
-        );
-      } else if (branches) {
-        data = await queryPatternToData(
-          queryNames,
-          dateRange,
-          graphType,
-          media,
-          rowItem.id,
-          undefined,
-          organizationId,
-          isAverage
-        );
+
+      if ('branches' in state) {
+        data = await queryPatternToData({
+          reportState: {
+            dateRange: state.dateRange,
+            dateType: state.graphType,
+            media: state.media,
+          },
+          isAverage: state.isAverage,
+          queryNames: state.queryNames,
+        });
+      } else if ('users' in state) {
+        data = await queryPatternToData({
+          reportState: {
+            dateRange: state.dateRange,
+            dateType: state.graphType,
+            uid: rowItem.id,
+          },
+          isAverage: state.isAverage,
+          queryNames: state.queryNames,
+        });
       } else {
-        data = await queryPatternToData(
-          queryNames,
-          dateRange,
-          graphType,
-          undefined,
-          undefined,
-          undefined,
-          organizationId,
-          isAverage
-        );
+        data = await queryPatternToData({
+          reportState: {
+            dateRange: state.dateRange,
+            dateType: state.graphType,
+            organizationId: state.organizationId,
+          },
+          isAverage: state.isAverage,
+          queryNames: state.queryNames,
+        });
       }
+
       const dataCVR = data.map((num, idx) => {
         if (idx == 0) return '100.0%';
         if (data[idx - 1] == 0) return '0.0%';
         const per = (data[idx] / data[idx - 1]) * 100;
-        const per_str = per.toFixed(1);
-        return per_str + '%';
+        const perStr = per.toFixed(1);
+        return perStr + '%';
       });
       const row: { [key: string]: number | string } = { name: rowItem.name };
-      for (let i = 0; i < queryNames.length; i++) {
-        row[queryDict[queryNames[i]].name] = data[i];
+      for (let i = 0; i < state.queryNames.length; i++) {
+        row[fieldDicts[state.queryNames[i]].name] = data[i];
       }
-      for (let i = 0; i < queryNames.length; i++) {
-        row[queryDict[queryNames[i]].rateName] = dataCVR[i];
+      for (let i = 0; i < state.queryNames.length; i++) {
+        const rateName = fieldDicts[state.queryNames[i]].rateName;
+        if (rateName) {
+          row[rateName] = dataCVR[i];
+        }
       }
       rows.push(row);
     }
     return rows;
   };
-  return { getReport ,getDailyReport};
+  return { getReport, getDailyReport };
 });

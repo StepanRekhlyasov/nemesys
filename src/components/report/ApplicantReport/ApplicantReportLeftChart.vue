@@ -14,7 +14,6 @@ import {
 import { graphType } from '../Models';
 import { useGetReport } from 'src/stores/getReport';
 import VueApexCharts from 'vue3-apexcharts';
-import { typeOfQuery } from 'src/shared/types/totalization';
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const apexchart = VueApexCharts;
@@ -75,30 +74,23 @@ const showData = async (
   organizationId: string
 ) => {
   const dataAverage = getListFromObject(
-    await getReport(
-      undefined,
-      undefined,
-      dateRange,
-      props.graph_type,
-      itemList as typeOfQuery[],
-      undefined,
-      organizationId,
-      false
-    ),
+    await getReport({
+      dateRange: dateRange,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      organizationId: organizationId,
+      isAverage: false,
+    }),
     itemList
   ) as number[];
 
   const dataAverageAll = getListFromObject(
-    await getReport(
-      undefined,
-      undefined,
-      dateRange,
-      props.graph_type,
-      itemList as typeOfQuery[],
-      undefined,
-      undefined,
-      false
-    ),
+    await getReport({
+      dateRange: dateRange,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      isAverage: false,
+    }),
     itemList
   ) as number[];
   const dataCvr = calculateCVR(dataAverage);

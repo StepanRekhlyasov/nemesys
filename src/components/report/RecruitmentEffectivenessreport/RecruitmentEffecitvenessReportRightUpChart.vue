@@ -9,11 +9,11 @@
 
 <script setup lang="ts">
 import { graphType } from '../Models';
-import { onMounted, Ref, ref, computed ,watch} from 'vue';
+import { onMounted, Ref, ref, computed, watch } from 'vue';
 import { useMedia } from 'stores/media';
 import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
-import {Media} from 'src/shared/model/Media.model';
+import { Media } from 'src/shared/model/Media.model';
 
 const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[]> = ref([]);
@@ -40,22 +40,17 @@ const showChart = async () => {
   const dateRange = props.dateRangeProps;
   dataToshow.value = await Promise.all(
     mediaList.value.map(async (media) => {
-      return await applicant.countApplicantsByMedia(media.name, dateRange);
+      return await applicant.countApplicantsByMedia(media.id, dateRange);
     })
   );
 };
 
 watch(
-  () => [
-    props.branch_user_list,
-    props.dateRangeProps,
-    props.graph_type,
-  ],
+  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
     await showChart();
   }
 );
-
 
 onMounted(async () => {
   await showChart();

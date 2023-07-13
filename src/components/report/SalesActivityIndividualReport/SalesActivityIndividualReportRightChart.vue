@@ -6,15 +6,16 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptionsR, columnsR, dataNames } from './const';
+import { chartOptionsR, columnsR, dataNames, itemListRight } from './const';
 import { useGetReport } from 'src/stores/getReport';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useUserStore } from 'src/stores/user';
 import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore';
+import { getListFromObject } from '../reportUtil';
 const apexchart = VueApexCharts;
-const {getReport} = useGetReport();
+const { getReport } = useGetReport();
 const userStore = useUserStore();
 const organizationStore = useOrganization();
 const t = useI18n({ useScope: 'global' }).t;
@@ -37,7 +38,9 @@ const rows = computed<{ [key: string]: string | number }[]>(() => {
       BOIsnotfirst: rowData[4],
     };
   });
-  return (dataToshowCnverted as {[key: string]: string | number }[]).concat(rowsIndividual.value);
+  return (dataToshowCnverted as { [key: string]: string | number }[]).concat(
+    rowsIndividual.value
+  );
 });
 
 const series = computed<
@@ -64,7 +67,6 @@ const props = defineProps<{
 
 const showIndividualReport = async (
   organizationId: string,
-  userList: { id: string; name: string }[],
   dateRange?: { from: string; to: string }
 ) => {
   if (!dateRange) return;
@@ -80,54 +82,45 @@ const showIndividualReport = async (
   ]);
 
   const rows = await getReport(
-    users,
-    undefined,
-    dateRange,
-    props.graph_type,
-    ['BO', 'BOIsfirst', 'BOIsnotfirst'],
-    undefined,
-    undefined,
-    false
+    {
+      dateRange: dateRange,
+      graphType: props.graph_type,
+      queryNames: itemListRight,
+      isAverage: false,
+      users:users
+    }
   );
   rowsIndividual.value = rows;
 
   for (const row of rows) {
     seriesIndividual.value.push({
       name: row.name as string,
-      data: [0, 0, row['BO'], row['BOIsfirst'], row['BOIsnotfirst']],
+      data: [
+        0,
+        0,
+        row[itemListRight[0]],
+        row[itemListRight[0]],
+        row[itemListRight[2]],
+      ],
       type: 'bar',
     });
   }
-  const allDataAverage_ = await getReport(
-    undefined,
-    undefined,
-    dateRange,
-    props.graph_type,
-    ['BO', 'BOIsfirst', 'BOIsnotfirst'],
-    undefined,
-    undefined,
-    true
-  );
-  const dataAverage_ = await getReport(
-    undefined,
-    undefined,
-    dateRange,
-    props.graph_type,
-    ['BO', 'BOIsfirst', 'BOIsnotfirst'],
-    undefined,
-    organizationId,
-    true
-  );
-  const dataAverage = [
-    dataAverage_[0]['BO'],
-    dataAverage_[0]['BOIsfirst'],
-    dataAverage_[0]['BOIsnotfirst'],
-  ];
-  const allDataAverage = [
-    allDataAverage_[0]['BO'],
-    allDataAverage_[0]['BOIsfirst'],
-    allDataAverage_[0]['BOIsnotfirst'],
-  ];
+
+  const allDataAverage = getListFromObject(await getReport({
+    dateRange: dateRange,
+    graphType: props.graph_type,
+    queryNames: itemListRight,
+    organizationId: undefined,
+    isAverage: true,
+  }),itemListRight) as number[];
+
+  const dataAverage = getListFromObject(await getReport({
+    dateRange: dateRange,
+    graphType: props.graph_type,
+    queryNames: itemListRight,
+    organizationId: organizationId,
+    isAverage: true,
+  }),itemListRight) as number[];
 
   dataAverage.unshift(0);
   allDataAverage.unshift(0);
@@ -143,7 +136,6 @@ watch(
       userList.value = props.branch_user_list;
       await showIndividualReport(
         props.organization_id,
-        userList.value,
         props.dateRangeProps
       );
     }
@@ -156,7 +148,6 @@ onMounted(async () => {
     userList.value = props.branch_user_list;
     await showIndividualReport(
       props.organization_id,
-      userList.value,
       props.dateRangeProps
     );
   }

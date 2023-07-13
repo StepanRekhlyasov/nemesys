@@ -2,11 +2,11 @@ import { i18n } from 'boot/i18n';
 import { computed ,ComputedRef} from 'vue';
 import {QTableProps} from 'quasar'
 const { t } = i18n.global;
-
-export const dataNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
-export const dataNamesR = ['report.companyTotal','report.allCVR'];
-export const chartNames = ['bar', 'line', 'line'];
-export const chartNamesR = ['bar', 'bar'];
+export const itemList = ['fix', 'inspection', 'offer', 'admission','BO'] as const;
+export const dataNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'] as const;
+export const dataNamesR = ['report.companyTotal','report.allCVR'] as const;
+export const chartNames = ['bar', 'line', 'line'] as const;
+export const chartNamesR = ['bar', 'bar'] as const;
 export const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },

@@ -88,10 +88,11 @@
       </label>
       <label class="text-subtitle1" v-if="mode === 'media'">
         {{ $t('KPI.media') }}
-        <MySelect :width="'150px'"
-        :options="mediaListToShow"
-        v-model="media"
-        @update:model-value="getData()"
+        <MySelect
+          :width="'150px'"
+          :options="mediaListToShow"
+          v-model="media"
+          @update:model-value="getData()"
         />
       </label>
       <label class="text-subtitle1" v-if="false">
@@ -133,21 +134,22 @@ import DateRange from 'src/components/inputs/DateRange.vue';
 import KpiTable from './components/KPITable.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useOrganization } from 'src/stores/organization';
-import { User } from 'src/shared/model';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
 import { useUserStore } from 'src/stores/user';
 import { where } from 'firebase/firestore';
 import { occupationList } from 'src/shared/constants/Applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
-import { mediaItemList ,dayItemList} from './const/kpi.const';
-import {useMedia} from 'src/stores/media';
-const { getReport ,getDailyReport } = useGetReport();
+import { mediaItemList, dayItemList } from './const/kpi.const';
+import { useMedia } from 'src/stores/media';
+const { getReport, getDailyReport } = useGetReport();
 const UserBranch = useBranch();
-const {getAllmedia}  = useMedia();
-const day = ref('');
-const media = ref<string|undefined>(undefined);
-const dateRange = ref('');
+const { getAllmedia } = useMedia();
+const dummyDataDateRange  = { from: '1900/01/01', to: '1900/12/31' };
+const dummyDate = '1900/07/01';
+const day = ref(dummyDate);
+const media = ref<string | undefined>(undefined);
+const dateRange = ref(dummyDataDateRange);
 const branch = ref('');
 const occupation = ref('');
 const user = ref('');
@@ -159,71 +161,46 @@ const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
   day.value = '';
-  dateRange.value = '';
+  dateRange.value = dummyDataDateRange;
   branch.value = '';
   occupation.value = '';
 };
 
-
 const loading = ref(false);
-const rowData = ref<{[key:string]:(number|string)}[]>([]);
+const rowData = ref<{ [key: string]: number | string }[]>([]);
 const userStore = useUserStore();
 const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
-// const convertDateRange = (dateRange: string) => {
-//   const [from, to] = dateRange.split('-');
-//   return { from, to };
-// };
-
-// const convertDay = (day: string) => {
-//   if (!day) return;
-//   const [year, month] = day.split('/');
-//   const from = `${year}/${month}/01`;
-//   const to = `${year}/${month}/${new Date(
-//     Number(year),
-//     Number(month),
-//     0
-//   ).getDate()}`;
-//   return { from: from, to: to };
-// };
-
-
-const convertUserListToShow = (users: User[]) => {
-  return users.map((user) => {
+const convertObjToIdNameList = (objList) => {
+  return objList.map((obj) => {
     return {
-      value: user.id,
-      label: user.name,
+      value: obj.id,
+      label: obj.name,
     };
   });
 };
 
-
 const getBranchList = async () => {
-  branchs.value = Object.values(
-    await UserBranch.getBranchesInOrganization(
-      organizationStore.currentOrganizationId
+  branchs.value = convertObjToIdNameList(
+    Object.values(
+      await UserBranch.getBranchesInOrganization(
+        organizationStore.currentOrganizationId
+      )
     )
-  ).map((branch) => {
-    return {
-      value: branch.id,
-      label: branch.name,
-    };
-  });
+  );
 };
 
 async function getData() {
   if (organizationStore.currentOrganizationId) {
     loading.value = true;
     let users;
-    if(mode.value == 'media'){
-      mediaListToShow.value = [...(await getAllmedia())].map((media) => {
-        return {
-          value: media.id,
-          label: media.name,
-        };
-      })
+    if (mode.value == 'media') {
+      rowData.value = [];
+      mediaListToShow.value = convertObjToIdNameList([
+        ...(await getAllmedia()),
+      ]);
     }
     if (user.value) {
       users = [await userStore.getUserById(user.value)];
@@ -237,40 +214,40 @@ async function getData() {
           organizationStore.currentOrganizationId
         ),
       ]);
-      userListToShow.value = convertUserListToShow(users);
+      userListToShow.value = convertObjToIdNameList(users);
     } else {
       users = await userStore.getAllUsers(
         organizationStore.currentOrganizationId
       );
-      userListToShow.value = convertUserListToShow(users);
+      userListToShow.value = convertObjToIdNameList(users);
     }
-    const range = { from: '1900/04/01', to: '1900/12/31' };
-    if(mode.value == 'day'){
+    if (mode.value == 'day') {
       rowData.value = [];
-      const rows =await getDailyReport(
-        day.value,
-        branch.value,
-        'BasedOnEachItemDate',
-        dayItemList,
-      );
+      const rows = await getDailyReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        queryNames: dayItemList,
+        dateInMonth: day.value,
+        branch: branch.value,
+        isAverage: false,
+      });
       rowData.value = rows;
     }
 
-    if(mode.value == 'media'){
+    if (mode.value == 'media' && media.value) {
       rowData.value = [];
-      const rows =await getReport(
-        undefined,
-        Object.values( await UserBranch.getBranchesInOrganization(
-          organizationStore.currentOrganizationId
-        )),
-        range,
-        'BasedOnEachItemDate',
-        mediaItemList,
-        media.value,
-        undefined,
-        false
-
-      );
+      const rows = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branches: Object.values(
+          await UserBranch.getBranchesInOrganization(
+            organizationStore.currentOrganizationId
+          )
+        ),
+        queryNames: mediaItemList,
+        media: media.value,
+        isAverage: false,
+      });
       rowData.value = rows;
     }
 
@@ -280,7 +257,7 @@ async function getData() {
 watch(
   () => organizationStore.currentOrganizationId,
   async () => {
-    await getBranchList()
+    await getBranchList();
     getData();
   }
 );
@@ -301,9 +278,8 @@ function downloadCSV() {
 }
 
 onMounted(async () => {
-  await getBranchList()
+  await getBranchList();
   getData();
-
 });
 </script>
 <style scoped lang="scss">

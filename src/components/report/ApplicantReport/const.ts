@@ -3,8 +3,8 @@ import { computed ,ComputedRef} from 'vue';
 import { QTableProps } from 'quasar';
 const { t } = i18n.global;
 
-export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'];
-export const chartType = ['bar', 'line', 'line'];
+export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'] as const;
+export const chartType = ['bar', 'line', 'line'] as const ;
 
 export const itemList = [
   'applicants',
@@ -16,7 +16,7 @@ export const itemList = [
   'inspection',
   'offer',
   'admission',
-];
+] as const;
 export const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },
@@ -45,7 +45,7 @@ export const chartOptions = computed(() => {
         t('report.categories.applicant'),
         t('report.categories.validApplicant'),
         t('report.categories.numberOfContacts'),
-        t('report.categories.numberOfContacts'),
+        t('report.categories.numberOfInvitations'),
         t('report.categories.numberOfAttendance'),
         t('report.categories.fix'),
         t('report.categories.inspection'),
@@ -116,7 +116,7 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
     {
       name: 'NumberOfInvitations',
       align: 'center',
-      label: t('report.categories.numberOfContacts'),
+      label: t('report.categories.numberOfInvitations'),
       field: 'attraction_applicants',
       sortable: true,
     },

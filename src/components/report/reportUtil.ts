@@ -20,7 +20,7 @@ export const convertToPercentage = (data: number[][]): number[][] => {
 
 export const getListFromObject = (
   objs: { [key: string]: string | number }[],
-  targetList: string[]
+  targetList:Readonly<string[]>,
 ) => {
   const itemList: (string | number)[] = [];
   for(const obj of objs){

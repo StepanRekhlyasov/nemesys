@@ -12,23 +12,31 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, chartOptionsR, columns, columnsR ,dataNames,dataNamesR,chartNames ,chartNamesR } from './const';
-import { calculateCVR , getListFromObject} from '../reportUtil';
-import {graphType} from '../Models';
+import {
+  chartOptions,
+  chartOptionsR,
+  columns,
+  columnsR,
+  dataNames,
+  dataNamesR,
+  chartNames,
+  chartNamesR,
+  itemList,
+} from './const';
+import { calculateCVR, getListFromObject } from '../reportUtil';
+import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
-import {typeOfQuery} from 'src/shared/types/totalization';
 import { useGetReport } from 'src/stores/getReport';
-const apexchart=VueApexCharts
-const {getReport}=useGetReport();
+const apexchart = VueApexCharts;
+const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowR: Ref<(number | string)[][]> = ref([]);
-const itemList = ['fix', 'inspection', 'offer', 'admission','BO'];
 
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  return dataToshow.value.slice(0,-1).map((rowData, index) => {
+  return dataToshow.value.slice(0, -1).map((rowData, index) => {
     return {
       name: t(dataNames[index]),
       data: rowData,
@@ -83,8 +91,7 @@ const rowsR: ComputedRef<
       inspection: rowData[1],
       offer: rowData[2],
       admission: rowData[3],
-      BO: rowData[4]
-
+      BO: rowData[4],
     };
   });
 });
@@ -97,33 +104,30 @@ const props = defineProps<{
   graph_type: graphType;
 }>();
 
-
 const showSalesActivityReport = async (
   dateRange: { from: string; to: string },
   organizationId: string
 ) => {
+  const dataAverage = getListFromObject(
+    await getReport({
+      dateRange: dateRange,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      organizationId: organizationId,
+      isAverage: false,
+    }),
+    itemList
+  ) as number[];
 
-  const dataAverage = getListFromObject(await getReport(
-    undefined,
-    undefined,
-    dateRange,
-    props.graph_type,
-    itemList as typeOfQuery[],
-    undefined,
-    organizationId,
-    false
-  ),itemList) as number[]
-
-  const dataAverageAll = getListFromObject(await getReport(
-    undefined,
-    undefined,
-    dateRange,
-    props.graph_type,
-    itemList as typeOfQuery[],
-    undefined,
-    undefined,
-    false
-  ),itemList) as number[]
+  const dataAverageAll = getListFromObject(
+    await getReport({
+      dateRange: dateRange,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      isAverage: false,
+    }),
+    itemList
+  ) as number[];
 
   const dataCvr = calculateCVR(dataAverage);
   const dataCvrAll = calculateCVR(dataAverageAll);
@@ -143,4 +147,3 @@ onMounted(async () => {
   await showSalesActivityReport(props.dateRangeProps, props.organization_id);
 });
 </script>
-

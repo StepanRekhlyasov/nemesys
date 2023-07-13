@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, dataNames ,itemList } from './const';
+import { chartOptions, columns, dataNames, itemList } from './const';
 import { useGetReport } from 'src/stores/getReport';
 import { calculateCVR } from '../reportUtil';
 import { useUserStore } from 'src/stores/user';
@@ -15,7 +15,6 @@ import VueApexCharts from 'vue3-apexcharts';
 import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore';
 import { getListFromObject } from '../reportUtil';
-import { typeOfQuery } from 'src/shared/types/totalization';
 type RowsType = { [key: string]: string | number }[];
 const {getReport} = useGetReport();
 const apexchart = VueApexCharts;
@@ -29,24 +28,20 @@ const seriesList = ref<
   { name: string; data: (number | string)[]; type: string }[]
 >([]);
 const rows = computed<RowsType>(() => {
-  const dataToshowCnverted= dataToShow.value
-    .map((rowData, index) => {
-      return {
-        name: t(dataNames[index]),
-        fix: rowData[0],
-        inspection: rowData[1],
-        offer: rowData[2],
-        admission: rowData[3],
-        inspectionRate: dataToShowCVR.value[index][1],
-        offerRate: dataToShowCVR.value[index][2],
-        admissionRate: dataToShowCVR.value[index][3],
-      };
-    })
-    return (dataToshowCnverted as RowsType).concat(
-      rowsIndividual.value);
-  }
-
-);
+  const dataToshowCnverted = dataToShow.value.map((rowData, index) => {
+    return {
+      name: t(dataNames[index]),
+      fix: rowData[0],
+      inspection: rowData[1],
+      offer: rowData[2],
+      admission: rowData[3],
+      inspectionRate: dataToShowCVR.value[index][1],
+      offerRate: dataToShowCVR.value[index][2],
+      admissionRate: dataToShowCVR.value[index][3],
+    };
+  });
+  return (dataToshowCnverted as RowsType).concat(rowsIndividual.value);
+});
 const series = computed<
   { name: string; data: (number | string)[]; type: string }[]
 >(() => {
@@ -83,40 +78,47 @@ const showIndividualReport = async (
       organizationStore.currentOrganizationId
     ),
   ]);
-  const rows = await getReport(users, undefined, range, props.graph_type, [
-    'fix',
-    'inspection',
-    'offer',
-    'admission',
-  ]);
+  const rows = await getReport(
+    {   users:users,
+        dateRange:range,
+        graphType:props.graph_type,
+        queryNames:itemList,
+        isAverage:false,
+      }
+  );
   rowsIndividual.value = rows;
-  for(const row of rows){
-      seriesList.value.push({
-        name: row.name as string,
-        data: [row['fix'], row['inspection'], row['offer'], row['admission']],
-        type: 'bar',
-      });
+  for (const row of rows) {
+    seriesList.value.push({
+      name: row.name as string,
+      data: [row['fix'], row['inspection'], row['offer'], row['admission']],
+      type: 'bar',
+    });
   }
-  const allDataAverage = getListFromObject(await getReport(
-    undefined,
-    undefined,
-    range,
-    props.graph_type,
-    itemList as typeOfQuery[],
-    undefined,
-    undefined,
-    true
-  ),itemList) as number[]
-  const dataAverage = getListFromObject(await getReport(
-    undefined,
-    undefined,
-    range,
-    props.graph_type,
-    itemList as typeOfQuery[],
-    undefined,
-    organizationId.value,
-    true
-  ),itemList) as number[]
+
+  const allDataAverage = getListFromObject(
+    await getReport(
+      {
+        dateRange:range,
+        graphType:props.graph_type,
+        queryNames:itemList,
+        isAverage:true,
+      }
+    ),
+    itemList
+  ) as number[];
+
+  const dataAverage = getListFromObject(
+    await getReport(
+      {
+        dateRange:range,
+        graphType:props.graph_type,
+        queryNames:itemList,
+        isAverage:true,
+        organizationId:organizationId.value
+      }
+    ),
+    itemList
+  ) as number[];
 
   const dataAverageCvr = calculateCVR(dataAverage);
   const allDataAverageCvr = calculateCVR(allDataAverage);

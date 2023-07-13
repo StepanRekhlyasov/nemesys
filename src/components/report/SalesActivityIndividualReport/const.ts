@@ -2,8 +2,9 @@ import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
 import { computed ,ComputedRef} from 'vue';
 const { t } = i18n.global;
-export const itemList = ['fix', 'inspection', 'offer', 'admission']
-export const dataNames = ['report.companyAverage', 'report.allAverage'];
+export const itemList = ['fix', 'inspection', 'offer', 'admission'] as const
+export const itemListRight = ['BO', 'BOIsfirst', 'BOIsnotfirst'] as const
+export const dataNames = ['report.companyAverage', 'report.allAverage'] as const;
 export const chartOptions = computed(() => {
   return {
 
@@ -187,22 +188,22 @@ export const columnsR:ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: true,
     },
     {
-      name: 'BO_total',
+      name: 'BOTotal',
       align: 'center',
-      label: t('report.categoriesBOTotal'),
+      label: t('report.categories.BOTotal'),
       field: 'BO',
       sortable: true,
     },
     {
-      name: 'BO_New',
+      name: 'BONew',
       align: 'center',
-      label: t('report.categoriesBONew'),
+      label: t('report.categories.BONew'),
       field: 'BOIsfirst',
 
       sortable: true,
     },
     {
-      name: 'BO_Existing',
+      name: 'BOExisting',
       align: 'center',
       label: t('report.categories.BOExisting'),
       field: 'BOIsnotfirst',
