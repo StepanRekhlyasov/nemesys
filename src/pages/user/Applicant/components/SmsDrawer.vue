@@ -10,7 +10,8 @@
           <p>{{ t('backOrder.sms.template') }}</p>
         </div>
         <div class="col-3 q-pl-sm">
-          <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates" dense clearable/>
+          <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates"
+            dense clearable />
         </div>
       </div>
 
@@ -22,7 +23,7 @@
           <textarea v-model="message" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }">
           </textarea>
           <div>
-            <p>{{countCharacters(message)}} {{ t('backOrder.sms.characters') }}</p>
+            <p>{{ countCharacters(message) }} {{ t('backOrder.sms.characters') }}</p>
           </div>
           <div class="row">
             <q-btn :disable="message === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
@@ -70,7 +71,7 @@
             :options="statusOption" />
         </div>
         <div class="col-4 q-pl-sm">
-          <q-input v-model="date"  dense outlined type="date" class="bg-white" />
+          <q-input v-model="date" dense outlined type="date" class="bg-white" />
         </div>
       </div>
       <div class="row q-mb-sm q-mt-sm">
@@ -79,8 +80,7 @@
       </div>
       <q-table :columns="destinationApplicant" :loading="loading" :rows-per-page="row.length" :rows="row" row-key="id"
         class="no-shadow" table-class="text-grey-8" table-header-class="text-grey-9"
-        :rows-per-page-label="t('backOrder.sms.recordsPerPage')"
-        >
+        :rows-per-page-label="t('backOrder.sms.recordsPerPage')">
 
         <template v-slot:header-cell-staffApplication="props">
           <q-th :props="props" class="q-pa-none">
@@ -180,7 +180,7 @@ import { QSelectProps } from 'quasar';
 
 const loading = ref<boolean>(false)
 const statusOption = ref<StatusOption | ComputedRef>(statusList)
-const selected = ref<Record<string, { selected: boolean; phoneNumber: string | undefined}>>({})
+const selected = ref<Record<string, { selected: boolean; phoneNumber: string | undefined }>>({})
 const message = ref<string>('')
 const row = ref<Applicant[]>([])
 const keyword = ref<string | null>(null)
@@ -192,7 +192,7 @@ const templates = ref<DocumentData | QSelectProps>([]);
 
 const { t } = useI18n({ useScope: 'global' });
 
-const countCharacters = (message)=>{
+const countCharacters = (message) => {
   const lineBreaks = message.match(/\r\n|\r|\n/g);
   const lineBreakCount = lineBreaks ? lineBreaks.length : 0;
   const characterCount = message.length;
@@ -200,14 +200,14 @@ const countCharacters = (message)=>{
   return totalCount;
 }
 
-watch(template,(newTemplate)=>{
-  if(newTemplate){
+watch(template, (newTemplate) => {
+  if (newTemplate) {
     const subject = newTemplate.subject
     const content = newTemplate.contents
-   message.value = `${subject}\n\n${content}`;
+    message.value = `${subject}\n\n${content}`;
 
   }
-  else{
+  else {
     message.value = ''
   }
 })
@@ -247,7 +247,7 @@ const clear = async () => {
 }
 
 onMounted(async () => {
-  templates.value =  await options.value
+  templates.value = await options.value
 
   console.log(template.value)
   console.log(templates.value)
@@ -265,11 +265,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.contentsOfTransmission{
+.contentsOfTransmission {
   overflow-x: hidden;
 }
 
-.destination{
+.destination {
   width: 950px;
   overflow-x: auto;
 }
@@ -289,6 +289,7 @@ onMounted(async () => {
   padding: 5px;
   resize: none
 }
+
 h1 {
   color: Green;
 }

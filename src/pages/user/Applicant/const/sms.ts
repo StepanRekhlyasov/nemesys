@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { i18n } from 'boot/i18n';
 import { useOrganization } from 'src/stores/organization';
-import { getDocs, getFirestore, DocumentData, query, where} from '@firebase/firestore';
+import { getDocs, getFirestore, DocumentData, query, where } from '@firebase/firestore';
 import { templateCollection } from 'src/shared/utils/utils';
 
 export const destinationApplicant = computed(() => {
@@ -63,7 +63,7 @@ export const options = computed(async () => {
   const organization = useOrganization();
   const templates = ref<DocumentData[]>([]);
   const db = getFirestore();
-  const q = query(templateCollection(db,organization.currentOrganizationId), where('deleted', '==', false));
+  const q = query(templateCollection(db, organization.currentOrganizationId), where('deleted', '==', false));
   const querySnapshot = await getDocs(q);
 
   const fetchedTemplates: DocumentData[] = [];

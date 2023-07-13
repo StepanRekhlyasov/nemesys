@@ -1,22 +1,19 @@
 <template>
-  <DropDownEditGroup
-  :bo="bo"
-    :isEdit="desiredEdit"
-    :label="'1.'+ $t('applicant.attendant.desiredConditions')"
-    @openEdit="desiredEdit = true"
-    @closeEdit="desiredEdit=false; resetData();"
-    @onSave="saveDesired">
+  <DropDownEditGroup :bo="bo" :isEdit="desiredEdit" :label="'1.' + $t('applicant.attendant.desiredConditions')"
+    @openEdit="desiredEdit = true" @closeEdit="desiredEdit = false; resetData();" @onSave="saveDesired">
 
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? timestampToDateFormat(applicant.timeToWork) : timestampToDateFormat(applicant.attendingDate) }}</span>
+        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? timestampToDateFormat(applicant.timeToWork) :
+          timestampToDateFormat(applicant.attendingDate) }}</span>
         <template v-if="desiredEdit">
           <q-checkbox v-model="data['timeAvailable']"
-          :label="data['timeAvailable']? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')"/>
-          <q-input v-if="data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"  :disable="loading">
+            :label="data['timeAvailable'] ? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')" />
+          <q-input v-if="data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
+            :disable="loading">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -35,9 +32,9 @@
         {{ $t('applicant.attendant.daysToWork') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.daysToWork?applicant.daysToWork+' '+$t('applicant.attendant.days'):''}}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" min="1" max="7"
-          v-model="data['daysToWork']" :disable="loading" type="number" />
+        <span v-if="!desiredEdit">{{ applicant.daysToWork ? applicant.daysToWork + ''+$t('applicant.attendant.days'):''}}</span>
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" min="1" max="7" v-model="data['daysToWork']"
+          :disable="loading" type="number" />
       </div>
     </div>
 
@@ -48,12 +45,7 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ daysPerWeekComputed }}</span>
         <template v-if="desiredEdit">
-          <q-option-group
-            type="checkbox"
-            :disable="loading"
-            :options="days"
-            v-model="data['daysPerWeek']"
-          />
+          <q-option-group type="checkbox" :disable="loading" :options="days" v-model="data['daysPerWeek']" />
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -62,12 +54,7 @@
       <div class="col-3 q-pl-md blue self-center">
         <span v-if="!desiredEdit">{{ specialDayComputed }}</span>
         <template v-if="desiredEdit">
-          <q-option-group
-            type="checkbox"
-            :disable="loading"
-            :options="specialDays"
-            v-model="data['specialDay']"
-          />
+          <q-option-group type="checkbox" :disable="loading" :options="specialDays" v-model="data['specialDay']" />
         </template>
       </div>
     </div>
@@ -77,28 +64,28 @@
         {{ $t('office.earlyShift') }}
       </div>
       <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursEarly?'●': '✕' }}</span>
+        <span v-if="!desiredEdit">{{ applicant.workingHoursEarly ? '●' : '✕' }}</span>
         <q-checkbox v-if="desiredEdit" v-model="data['workingHoursEarly']" />
       </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.dayShift') }}
       </div>
       <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursDay?'●': '✕' }}</span>
+        <span v-if="!desiredEdit">{{ applicant.workingHoursDay ? '●' : '✕' }}</span>
         <q-checkbox v-if="desiredEdit" v-model="data['workingHoursDay']" />
       </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.lateShift') }}
       </div>
       <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursLate?'●': '✕' }}</span>
+        <span v-if="!desiredEdit">{{ applicant.workingHoursLate ? '●' : '✕' }}</span>
         <q-checkbox v-if="desiredEdit" v-model="data['workingHoursLate']" />
       </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.nightShift') }}
       </div>
       <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursNight?'●': '✕' }}</span>
+        <span v-if="!desiredEdit">{{ applicant.workingHoursNight ? '●' : '✕' }}</span>
         <q-checkbox v-if="desiredEdit" v-model="data['workingHoursNight']" />
       </div>
 
@@ -110,8 +97,7 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.shiftRemarks" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['shiftRemarks']" :disable="loading" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" />
       </div>
     </div>
 
@@ -123,15 +109,14 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ applicant.meansCommuting }}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['meansCommuting']" :disable="loading" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['meansCommuting']" :disable="loading" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.route') }}
       </div>
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.route" />
-        <q-select v-if="desiredEdit" outlined v-model="data['route']" dense :options="routeData" :disable="loading"/>
+        <q-select v-if="desiredEdit" outlined v-model="data['route']" dense :options="routeData" :disable="loading" />
       </div>
     </div>
 
@@ -141,8 +126,7 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.commutingTime" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['commutingTime']" :disable="loading" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['commutingTime']" :disable="loading" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.nearestStation') }}
@@ -150,8 +134,8 @@
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
 
-        <q-select v-if="desiredEdit" outlined v-model="data['nearestStation']"
-          :options="stationData" :disable="!data['route'] || loading" dense />
+        <q-select v-if="desiredEdit" outlined v-model="data['nearestStation']" :options="stationData"
+          :disable="!data['route'] || loading" dense />
       </div>
     </div>
 
@@ -161,8 +145,8 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.commutingTimeRemarks" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['commutingTimeRemarks']" :disable="loading" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['commutingTimeRemarks']"
+          :disable="loading" />
       </div>
     </div>
 
@@ -174,9 +158,8 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityDesired }}</span>
-        <q-select outlined dense multiple :options="facilityOp"
-          use-chips emit-value map-options v-if="desiredEdit"  option-label="name"
-          v-model="data['facilityDesired']" :disable="loading"/>
+        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options v-if="desiredEdit"
+          option-label="name" v-model="data['facilityDesired']" :disable="loading" />
       </div>
     </div>
 
@@ -186,9 +169,8 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityType }}</span>
-        <q-select outlined dense multiple :options="facilityOp"
-          use-chips emit-value map-options v-if="desiredEdit" option-label="name"
-          v-model="data['ngFacilityType']" :disable="loading"/>
+        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options v-if="desiredEdit"
+          option-label="name" v-model="data['ngFacilityType']" :disable="loading" />
       </div>
     </div>
 
@@ -199,17 +181,18 @@
         {{ $t('applicant.attendant.hourlyRate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ applicant.hourlyRate?applicant.hourlyRate+' '+$t('common.yen'):''}}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" min="0"
-          v-model="data['hourlyRate']" :disable="loading" type="number" />
+        <span v-if="!desiredEdit">{{ applicant.hourlyRate ? applicant.hourlyRate + ' ' + $t('common.yen') : '' }}</span>
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" min="0" v-model="data['hourlyRate']"
+          :disable="loading" type="number" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.transportationServices') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ applicant.transportationServices? $t('applicant.attendant.'+applicant.transportationServices) : '' }}</span>
-        <q-select v-if="desiredEdit" outlined dense :options="transportationServicesOptions"
-        emit-value map-options v-model="data['transportationServices']" :disable="loading"/>
+        <span v-if="!desiredEdit">{{ applicant.transportationServices ?
+          $t('applicant.attendant.' + applicant.transportationServices) : '' }}</span>
+        <q-select v-if="desiredEdit" outlined dense :options="transportationServicesOptions" emit-value map-options
+          v-model="data['transportationServices']" :disable="loading" />
       </div>
     </div>
 
@@ -218,19 +201,22 @@
         {{ $t('applicant.attendant.jobSearchPriorities') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities1 ? '① '+applicant.jobSearchPriorities1 : ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['jobSearchPriorities1']" :disable="loading" />
+        <hidden-text v-if="!desiredEdit"
+          :value="applicant.jobSearchPriorities1 ? '① ' + applicant.jobSearchPriorities1 : ''" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['jobSearchPriorities1']"
+          :disable="loading" />
       </div>
       <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities2 ? '② ' + applicant.jobSearchPriorities2: ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['jobSearchPriorities2']" :disable="loading" />
+        <hidden-text v-if="!desiredEdit"
+          :value="applicant.jobSearchPriorities2 ? '② ' + applicant.jobSearchPriorities2 : ''" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['jobSearchPriorities2']"
+          :disable="loading" />
       </div>
       <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities3 ? '③ ' + applicant.jobSearchPriorities3: ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['jobSearchPriorities3']" :disable="loading" />
+        <hidden-text v-if="!desiredEdit"
+          :value="applicant.jobSearchPriorities3 ? '③ ' + applicant.jobSearchPriorities3 : ''" />
+        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['jobSearchPriorities3']"
+          :disable="loading" />
       </div>
     </div>
   </DropDownEditGroup>
@@ -251,7 +237,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = withDefaults(defineProps<{
   applicant: Applicant,
-  bo:BackOrderModel | null
+  bo: BackOrderModel | null
 }>(), {
   bo: null
 })
@@ -268,16 +254,16 @@ const data = ref<Partial<ApplicantInputs>>({});
 const routeData = ref([]);
 const stationData = ref([]);
 
-const daysPerWeekComputed = computed(()=>{
-  if(Array.isArray(props.applicant.daysPerWeek)){
-    return props.applicant.daysPerWeek.map(day => t('weekDay.'+day)).join('・')
+const daysPerWeekComputed = computed(() => {
+  if (Array.isArray(props.applicant.daysPerWeek)) {
+    return props.applicant.daysPerWeek.map(day => t('weekDay.' + day)).join('・')
   }
   return ''
 })
 
-const specialDayComputed = computed(()=>{
-  if(Array.isArray(props.applicant.specialDay)){
-    return props.applicant.specialDay.map(day => t('applicant.attendant.specialDays.'+day)).join('・')
+const specialDayComputed = computed(() => {
+  if (Array.isArray(props.applicant.specialDay)) {
+    return props.applicant.specialDay.map(day => t('applicant.attendant.specialDays.' + day)).join('・')
   }
   return ''
 })
@@ -288,14 +274,14 @@ onMounted(async () => {
 });
 
 watch(
-    () => (data.value['route']),
-    async (newVal,) => {
-        if (newVal) {
-          data.value['neareststation'] = '';
-          stationData.value = [];
-          stationData.value = await metadataStore.getStationByID(newVal)
-        }
+  () => (data.value['route']),
+  async (newVal,) => {
+    if (newVal) {
+      data.value['neareststation'] = '';
+      stationData.value = [];
+      stationData.value = await metadataStore.getStationByID(newVal)
     }
+  }
 )
 
 
@@ -303,9 +289,9 @@ function resetData() {
   defaultData.value = {
     timeToWork: timestampToDateFormat(props.applicant['timeToWork']),
     daysToWork: props.applicant['daysToWork'],
-    daysPerWeek: Array.isArray(props.applicant['daysPerWeek'])?props.applicant['daysPerWeek']:[],
+    daysPerWeek: Array.isArray(props.applicant['daysPerWeek']) ? props.applicant['daysPerWeek'] : [],
     timeAvailable: props.applicant['timeAvailable'] || false,
-    specialDay: Array.isArray(props.applicant['specialDay'])?props.applicant['specialDay']:[],
+    specialDay: Array.isArray(props.applicant['specialDay']) ? props.applicant['specialDay'] : [],
     shiftRemarks: props.applicant['shiftRemarks'],
     meansCommuting: props.applicant['meansCommuting'],
     nearestStation: props.applicant['nearestStation'],
@@ -330,7 +316,7 @@ resetData();
 const joinFacilityType = computed(() => props.applicant.ngFacilityType?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
 const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
 
-async function saveDesired(){
+async function saveDesired() {
   loading.value = true;
   try {
     await applicantStore.updateApplicant(data.value);
@@ -344,10 +330,10 @@ async function saveDesired(){
 </script>
 
 <style lang="scss">
-.text_dots{
+.text_dots {
   display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

@@ -14,46 +14,40 @@
 
         <div class="q-pt-sm">
           <q-btn :label="$t('common.addNew')" type="submit" color="primary" icon="mdi-plus-thick"
-            class="no-shadow q-ml-md" :disable="!data['content']"/>
+            class="no-shadow q-ml-md" :disable="!data['content']" />
         </div>
       </q-form>
     </q-card-section>
 
-    <q-table
-      :columns="columns"
-      :rows="memoListData"
-      v-model:selected="selectedMemo"
-      :loading="loadData"
-      row-key="id"
-      selection="multiple"
-      v-model:pagination="pagination"
-      hide-pagination>
+    <q-table :columns="columns" :rows="memoListData" v-model:selected="selectedMemo" :loading="loadData" row-key="id"
+      selection="multiple" v-model:pagination="pagination" hide-pagination>
 
-        <template v-if="!bo" v-slot:top >
-          <q-btn color="negative" class="no-shadow q-ml-md" v-if="selectedMemo.length >0" :label="$t('common.delete')"  @click="deleteItem"/>
-        </template>
+      <template v-if="!bo" v-slot:top>
+        <q-btn color="negative" class="no-shadow q-ml-md" v-if="selectedMemo.length > 0" :label="$t('common.delete')"
+          @click="deleteItem" />
+      </template>
 
-        <template v-slot:body-cell-created_user="props">
-          <q-td :props="props">
-            {{ props.row.user.displayName }}
-          </q-td>
-        </template>
+      <template v-slot:body-cell-created_user="props">
+        <q-td :props="props">
+          {{ props.row.user.displayName }}
+        </q-td>
+      </template>
 
-        <template v-slot:body-cell-content="props">
-          <q-td :props="props">
-            <q-input v-if="isRowSelected(props.rowIndex) && !bo" outlined dense v-model="editableContect['content']" />
-            <template v-if="!isRowSelected(props.rowIndex)">
-              {{ props.row.content }}
-            </template>
-          </q-td>
-        </template>
+      <template v-slot:body-cell-content="props">
+        <q-td :props="props">
+          <q-input v-if="isRowSelected(props.rowIndex) && !bo" outlined dense v-model="editableContect['content']" />
+          <template v-if="!isRowSelected(props.rowIndex)">
+            {{ props.row.content }}
+          </template>
+        </q-td>
+      </template>
 
-        <template v-if="!bo" v-slot:body-cell-edit="props">
-          <EditButton :props="props" color="primary"
-            :on-edit="() => { editableContect = JSON.parse(JSON.stringify(props.row))}"
-            :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
-            :editable-row="editableRow" :key="props.rowIndex"/>
-        </template>
+      <template v-if="!bo" v-slot:body-cell-edit="props">
+        <EditButton :props="props" color="primary"
+          :on-edit="() => { editableContect = JSON.parse(JSON.stringify(props.row)) }"
+          :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
+          :editable-row="editableRow" :key="props.rowIndex" />
+      </template>
 
     </q-table>
 
@@ -73,7 +67,7 @@ import EditButton from 'src/components/EditButton.vue';
 
 const props = withDefaults(defineProps<{
   applicant: Applicant,
-  bo:BackOrderModel | null
+  bo: BackOrderModel | null
 }>(), {
   bo: null
 })
@@ -102,29 +96,29 @@ const pagination = ref({
 
 const columns = computed(() => {
   return [
-  {
+    {
       name: 'created_user',
       required: true,
       label: t('detal.memo.registredUser'),
       align: 'left',
       field: 'created_user',
       sortable: false,
-    },{
+    }, {
       name: 'content',
-      label: t('detal.memo.contents') ,
+      label: t('detal.memo.contents'),
       field: 'content',
       align: 'left',
-    },{
+    }, {
       name: 'created_date',
-      label: t('detal.memo.creationDay') ,
+      label: t('detal.memo.creationDay'),
       field: 'created_date',
       align: 'left',
-    },{
+    }, {
       name: 'updated_date',
-      label: t('detal.memo.updateDate') ,
+      label: t('detal.memo.updateDate'),
       field: 'updated_date',
       align: 'left',
-    },{
+    }, {
       name: 'edit',
       align: 'left',
     }
@@ -134,10 +128,10 @@ const columns = computed(() => {
 const loading = ref(false);
 
 
-const loadMemoData = async () =>{
+const loadMemoData = async () => {
   loadData.value = true
   const q = query(collection(db, 'applicants/' + props.applicant.id + '/memo'), where('deleted', '==', false));
-  try{
+  try {
     const memo = await getDocs(q)
     const data = memo.docs.map(async (doc) => {
       let content = doc.data();
@@ -150,7 +144,7 @@ const loadMemoData = async () =>{
         updated_date: toDate(content.updated_date),
       } as ApplicantMemo
     })
-    Promise.all(data).then(ret => memoListData.value=ret)
+    Promise.all(data).then(ret => memoListData.value = ret)
     loadData.value = false
   } catch (e) {
     Alert.warning(e)
@@ -194,7 +188,7 @@ async function onUpdate(index) {
     let updateData = {}
     updateData['updated_at'] = serverTimestamp();
     updateData['updated_by'] = auth.currentUser?.uid;
-    updateData['content'] = editableContect.value['content']  || '';
+    updateData['content'] = editableContect.value['content'] || '';
 
     await updateDoc(
       doc(db, 'applicants/' + props.applicant.id + '/memo/' + editableContect.value['id']),
@@ -219,7 +213,7 @@ async function deleteItem() {
   updateData['deleted_by'] = user.uid;
   updateData['deleted_at'] = serverTimestamp();
   const ret = selectedMemo.value.map(async (memo) => {
-      await updateDoc(
+    await updateDoc(
       docDb(db, 'applicants/' + props.applicant.id + '/memo/' + memo.id),
       updateData
     );
@@ -233,6 +227,4 @@ function isRowSelected(row) {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

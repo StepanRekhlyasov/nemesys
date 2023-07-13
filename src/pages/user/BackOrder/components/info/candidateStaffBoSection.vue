@@ -7,7 +7,7 @@
     </div>
   </div>
   <q-card-section class=" q-pa-none">
-    <q-table :columns="coloumns" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
+    <q-table :columns="columns" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
       <template v-slot:body-cell-name="props">
         <q-td :props="props" class="no-wrap q-pa-none">
@@ -48,16 +48,9 @@ import { radius } from '../../consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
-import { drawerValue } from '../../consts/BackOrder.const';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const backOrderStore = useBackOrder()
-
-watch(drawerValue, async () => {
-  if (drawerValue.value) {
-    await getFormatedData();
-  }
-})
 
 const pagination = ref({
   sortBy: 'desc',
@@ -67,7 +60,7 @@ const pagination = ref({
   // rowsNumber: xx if getting data from a server
 });
 
-const coloumns = ref<QTableProps | ComputedRef>(BackOrderStaff)
+const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
 
 const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)

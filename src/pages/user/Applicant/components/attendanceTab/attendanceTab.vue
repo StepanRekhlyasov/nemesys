@@ -1,23 +1,23 @@
 <template>
   <q-card class="no-shadow full-width">
     <q-card-section class="q-pa-none q-mb-none">
-      <attendanceInfoComponent :bo="bo" :applicant="applicant"/>
+      <attendanceInfoComponent :bo="bo" :applicant="applicant" />
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <desiredConditionsComponent :bo="bo" :applicant="applicant"/>
+      <desiredConditionsComponent :bo="bo" :applicant="applicant" />
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <workExperienceComponent :bo="bo" :applicant="applicant"/>
+      <workExperienceComponent :bo="bo" :applicant="applicant" />
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <personalStatusComponent :bo="bo" :applicant="applicant"/>
+      <personalStatusComponent :bo="bo" :applicant="applicant" />
     </q-card-section>
 
     <q-card-section class="q-pa-none q-mb-none">
-      <assignedEvaluationComponent :bo="bo" :applicant="applicant"/>
+      <assignedEvaluationComponent :bo="bo" :applicant="applicant" />
     </q-card-section>
   </q-card>
 </template>
@@ -31,8 +31,8 @@ import personalStatusComponent from './PersonalSection.vue';
 import { Applicant, BackOrderModel } from 'src/shared/model';
 withDefaults(defineProps<{
   applicant: Applicant,
-  bo:BackOrderModel | null
-}>(),{
-  bo:null
+  bo: BackOrderModel | null
+}>(), {
+  bo: null
 })
 </script>
