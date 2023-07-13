@@ -165,7 +165,6 @@ onMounted(async () => {
   await applicantStore.getClients()
 })
 watch(() => data.value.client_id, async () => {
-  console.log(data.value.client_id)
   if (data.value.client_id) {
     clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client_id)
   }
