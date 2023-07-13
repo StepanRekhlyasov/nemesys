@@ -106,7 +106,7 @@
           @update:model-value="getData()"
         />
       </label>
-      <label class="text-subtitle1" v-if="mode === 'individual'">
+      <label class="text-subtitle1" v-if="false">
         {{ $t('KPI.username') }}
         <MySelect
           :options="userListToShow"
@@ -216,26 +216,6 @@ async function getData() {
     // we need to care switching mode while loading
     const modeNow = mode.value;
 
-    // let users;
-    // if (user.value) {
-    //   users = [await userStore.getUserById(user.value)];
-    // } else if (branch.value) {
-    //   users = await userStore.getUsersByConstrains([
-    //     where('branch_id', '==', branch.value),
-    //     where('deleted', '==', false),
-    //     where(
-    //       'organization_ids',
-    //       'array-contains',
-    //       organizationStore.currentOrganizationId
-    //     ),
-    //   ]);
-    //   userListToShow.value = convertObjToIdNameList(users);
-    // } else {
-    //   users = await userStore.getAllUsers(
-    //     organizationStore.currentOrganizationId
-    //   );
-    //   userListToShow.value = convertObjToIdNameList(users);
-    // }
     if (mode.value == 'individual' && branch.value) {
       rowData.value = [];
       const users = await userStore.getUsersByConstrains([
@@ -256,7 +236,6 @@ async function getData() {
         users: users,
         isAverage: false,
       });
-      console.log(rows)
       rowData.value = rows;
     }
     else if(mode.value == 'individual'){
