@@ -312,19 +312,14 @@ const pagination = ref({
 });
 
 onMounted(async () => {
-
   areaData.value.transactionType = props?.selectedArea['transactionType'] || '';
   areaData.value.projectType = props?.selectedArea['projectType'] || '';
-
-
   let areaId = props?.selectedArea['id'] || '';
   if (areaId) {
     loading.value = true;
     wardList.value = await regionalSalarySettingStore.fetchWardListData(areaId)
           loading.value = false;
   }
-
-
 })
 
 onBeforeUnmount(() => {
@@ -341,21 +336,21 @@ watch(
       wardData.value = {}
       let removedItem = oldVal.filter(item => newVal.indexOf(item) < 0)
 
-      for (var i = 0; i < newVal.length; i++) {
+      for (let i = 0; i < newVal.length; i++) {
           let pref = prefectureJPList.value[newVal[i]];
           if (!(newVal[i] in citySetting.value.ward)) {
               citySetting.value.ward[newVal[i]] = [] as never;
           }
 
           for (const key in wardJPList.value) {
-              for (var j = 0; j < wardJPList.value[key]['length']; j++) {
+              for (let j = 0; j < wardJPList.value[key]['length']; j++) {
                   if (pref in wardJPList.value[key][j]) {
                       wardData.value[newVal[i]] = wardJPList.value[key][j][pref];
                   }
               }
           }
       }
-      for (var i = 0; i < removedItem.length; i++) {
+      for (let i = 0; i < removedItem.length; i++) {
           citySetting.value.ward[removedItem[i]] = [] as never;
 
       }

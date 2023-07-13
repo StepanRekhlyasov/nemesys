@@ -85,7 +85,6 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
   };
 
   const addNewCity = async (data,id) => {
-    const batch = writeBatch(db);
     const cityData = {};
     cityData['createsd_at'] = serverTimestamp();
     cityData['updated_at'] = serverTimestamp();
@@ -94,17 +93,10 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
     cityData['monthlySalaryMin'] = data['monthlySalaryMin'];
     cityData['hourlySalaryCap'] = data['hourlySalaryCap'];
     cityData['hourlySalaryMin'] = data['hourlySalaryMin'];
-
     for (let i = 0; i < data['prefecture'].length; i++) {
         cityData['prefecture'] = data['prefecture'][i];
-        for (let j = 0; j < data['ward'][cityData['prefecture']].length; j++) {
-            cityData['ward'] = data['ward'][cityData['prefecture']][j];
-            const docRef = docDb(collection(db, 'jobArea', id, 'areaCity'));
-            cityData['id'] = docRef.id;
-            batch.set(docRef, cityData)
-        }
-    }
-    await batch.commit();
+        await addDoc(collection(db, 'jobArea', id, 'areaCity'),cityData);
+      }
   }
 
   const fetchWardListData = async (id) => {

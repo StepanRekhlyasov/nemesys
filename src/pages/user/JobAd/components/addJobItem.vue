@@ -70,32 +70,31 @@
                   <div class="col-12">
                       <q-input outlined dense v-model="jobItem['desc']" hide-bottom-space />
                   </div>
+
               </div>
 
               <div class="row q-mt-sm">
                   {{ $t('jobItem.add.adItemSettings') }}
               </div>
 
-              <div class="row">
-                  <div class="col-6">
+              <div class="column">
+                <div>
                       {{ $t('phraseSettings.add.dataType') }}
+                      <span class="text-red-5">*</span>
                   </div>
-              </div>
-              <div class="row">
                   <div class="col-6">
-                      <q-input outlined dense v-model="jobItem['dataTypeText']" hide-bottom-space />
+                      <q-input outlined  dense v-model="jobItem['dataType']" hide-bottom-space />
                   </div>
               </div>
 
-              <div class="row text-primary text-body1 q-pt-sm">
+              <div class="row text-primary text-body1 q-pt-sm" v-if="jobItem.dataType === 'option'">
                   ■ {{ $t('jobItem.add.optionSetting') }}
                   <q-btn color="primary" size="sm" class="q-ml-md" dense :label="$t('common.addNew')" icon="add"
                       @click="addNewItem" :disable="!jobItem.id" />
               </div>
 
-              <q-table :columns="columns" :rows="optionItem" row-key="id" class="no-shadow q-mt-sm"
-                  v-model:pagination="pagination" hide-pagination :loading="loading" dense>
-
+              <q-table v-if="jobItem.dataType === 'option'" :columns="columns" :rows="optionItem" row-key="id" class="no-shadow q-mt-sm"
+                 :loading="loading" dense hide-pagination>
                   <template v-slot:body-cell-edit="props">
                       <q-td :props="props">
                           <q-btn flat round size="sm" icon="menu" color="primary" />
@@ -113,14 +112,9 @@
                       </q-td>
                   </template>
               </q-table>
-              <div class="row justify-start q-mt-md pagination">
-                  <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-                      :max="(optionItem.length / pagination.rowsPerPage) >= 1 ? optionItem.length / pagination.rowsPerPage : 1"
-                      direction-links outline />
-              </div>
+
           </q-card-section>
       </q-form>
-
   </q-card>
 </template>
 
@@ -131,6 +125,7 @@ import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
+import draggable from 'vuedraggable'
 
 const jobItemSettingStore = useJobItemSetting()
 const props = defineProps({
@@ -165,6 +160,7 @@ const jobItemObject = {
   recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
   dataType: props?.selectedPhrase['dataType'] || '',
 }
+const drag = ref(false)
 const jobItem = ref({ ...jobItemObject })
 const unsubscribe = ref();
 const phraseCategoryText = ref('')
@@ -174,12 +170,6 @@ const dataTypeOptions = ref(dataTypeList);
 const columns = ref(jobItemOptionColumns);
 const optionItem:DocumentData = ref([]);
 const loading = ref(false);
-const pagination = ref({
-  sortBy: 'desc',
-  descending: false,
-  page: 1,
-  rowsPerPage: 10
-});
 
 onMounted(async () => {
   jobItem.value.phraseCategory = props?.selectedPhrase['phraseCategory'] || '';
