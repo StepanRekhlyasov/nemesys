@@ -42,9 +42,18 @@ watch(selectedClient, (newVal) => {
                 {{ t('client.add.parentClientName') }}
             <span class="text-red-5">*</span>
             </q-item-label>
-            <q-select outlined v-model="selectedClient" :options="clientList" dense emit-value
-                map-options lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space
-                style="max-width:400px" use-input @filter="filterFn" clearable :color="theme"/>
+            <q-select
+                outlined
+                v-model="selectedClient"
+                :options="clientList"
+                dense emit-value
+                map-options lazy-rules
+                :rules="[val => !!val || '']"
+                hide-bottom-space
+                style="max-width:400px"
+                use-input
+                @filter="filterFn"
+                clearable :color="theme"/>
         </q-item-section>
     </q-item>
 </template>

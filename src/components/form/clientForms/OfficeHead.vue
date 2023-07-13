@@ -26,8 +26,14 @@ watch(localHead, (newVal) => {
                 {{ t('client.list.officeHead') }}
                 <span class="text-red-5">*</span>
             </q-item-label>
-            <q-input :color="theme" outlined dense v-model="localHead" :placeholder="t('client.add.clientLabel')" lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+            <q-input
+                :color="theme"
+                outlined dense
+                v-model="localHead"
+                :placeholder="t('client.add.clientLabel')"
+                lazy-rules
+                :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
+                hide-bottom-space />
         </q-item-section>
     </q-item>
 </template>

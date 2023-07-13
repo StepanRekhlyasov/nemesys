@@ -94,7 +94,8 @@ export default {
       '12' : '12月',
     },
     more: 'もっと',
-    downloadCSV: 'CSVダウンロード'
+    downloadCSV: 'CSVダウンロード',
+    branch: '支店',
   },
   smoking: {
     no: '無',
@@ -1665,7 +1666,21 @@ export default {
     ageComposition:'年齢構成',
     daysToWork:'勤務日数',
     yen:'円',
+    item:'項目',
+    base:'拠点',
+    totalingMethod:'集計方法',
+    jobCategory:'職種',
     categories:{
+      totalingMethod:{
+      totallingDailyData:'日次データ集計',
+      totallingAttractionDataByBranch:'支店別集客データ集計',
+      totallingAttractionDataByMedia:'媒体別集客データ集計'
+    },
+    item:{
+      actualValue:'実績値',
+      unitPricePerLeadtime:'単価L/T',
+      applicationAttribute:'応募属性'
+    },
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
       numberOfInvitations:'誘致数',
@@ -1766,7 +1781,7 @@ export default {
     modeMedia: '媒体別集客データ集計',
     modeIndividual: '個人別データ集計',
     modeBranch: '支店別集客データ集計',
-    modeDay: '日時集計',
+    dailyTotal: '日次集計',
     item: '項目',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',

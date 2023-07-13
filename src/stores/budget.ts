@@ -110,7 +110,7 @@ export const useBudget = defineStore('budget', () => {
   };
 
   const getUnitPricePerOrganizationPerMedia = async (
-    media_list: string[],
+    mediaList: string[],
     dateRangeProps?: { from: string; to: string },
     organization_id?: string,
   ) => {
@@ -119,7 +119,6 @@ export const useBudget = defineStore('budget', () => {
     if (organization_id) {
       filters.push(where('organization_id', '==', organization_id));
     }
-    //dateRangeProps is like {from:1900/01/01,to:1900/12/01}
     if (!dateRangeProps) return;
     const toMonth = dateRangeProps.to.split('/')[1];
     const year = dateRangeProps.to.split('/')[0];
@@ -127,28 +126,27 @@ export const useBudget = defineStore('budget', () => {
     filters.push(where('record_month', '==', Number(toMonth)));
     const querys = query(mediaRef, ...filters);
     const docSnap = await getDocs(querys);
-    //budget_amount and number_of_applicants is like [0,0,0,0,0,0,0]
     const budget_amount: number[] = [];
-    budget_amount.length = media_list.length;
+    budget_amount.length = mediaList.length;
     budget_amount.fill(0);
     const number_of_applicants: number[] = [];
-    number_of_applicants.length = media_list.length;
+    number_of_applicants.length = mediaList.length;
     number_of_applicants.fill(0);
 
     for (const doc of docSnap.docs) {
       const budget = doc.data() as Budget;
-      if (!media_list.includes(doc.data().media)) continue;
-      const index = media_list.indexOf(doc.data().media);
+      if (!mediaList.includes(doc.data().media)) continue;
+      const index = mediaList.indexOf(doc.data().media);
       budget_amount[index] += budget.budget_amount;
       number_of_applicants[index] += budget.number_of_applicants;
     }
     const unitpricePerApplicants: number[] = [];
-    unitpricePerApplicants.length = media_list.length;
+    unitpricePerApplicants.length = mediaList.length;
     unitpricePerApplicants.fill(0);
     const unitpricePerAdmission: number[] = [];
-    unitpricePerAdmission.length = media_list.length;
+    unitpricePerAdmission.length = mediaList.length;
     unitpricePerAdmission.fill(0);
-    for (let i = 0; i < media_list.length; i++) {
+    for (let i = 0; i < mediaList.length; i++) {
       if (number_of_applicants[i] === 0) continue;
       unitpricePerApplicants[i] = budget_amount[i] / number_of_applicants[i];
     }
