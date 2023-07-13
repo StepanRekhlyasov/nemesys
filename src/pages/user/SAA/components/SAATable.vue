@@ -9,7 +9,7 @@
     hide-pagination
   >
     <template v-slot:body-cell-name="props">
-      <q-td class="clickable" @click="showDrawer=!showDrawer">{{ props.row.displayName?props.row.displayName:props.row.name }}</q-td>
+      <q-td class="clickable">{{ props.row.displayName?props.row.displayName:props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
@@ -22,7 +22,7 @@ import { ref } from 'vue';
 const props = defineProps<{
   rows: QTableProps['rows']
 }>()
-const showDrawer = ref(false)
+
 const exportTable = () => {
   if(!props.rows || !columns.value){
     return
