@@ -191,13 +191,14 @@ export const useBudget = defineStore('budget', () => {
       const formateData = rows[i].split(',')
       if (formateData.length < 2) continue
       const budgetData = getFormateData(formateData);
+      if (!budgetData.value.accountingMonth) continue
       budgetData.value.media = getColoumnsData('media', budgetData.value.media);
       budgetData.value.branch = getColoumnsData('branch', budgetData.value.branch);
       budgetData.value.occupation = getColoumnsData('occupation', budgetData.value.occupation);
 
       if (budgetData.value['postingStartDate']) budgetData.value['postingStartDate'] = dateToTimestampFormat(new Date(budgetData.value['postingStartDate'] as string)) as Timestamp;
       if (budgetData.value['postingEndDate']) budgetData.value['postingEndDate'] = dateToTimestampFormat(new Date(budgetData.value['postingEndDate'] as string)) as Timestamp;
-      if (budgetData.value.accountingMonth) budgetData.value.accountingMonthDate = dateToTimestampFormat(new Date(budgetData.value.accountingMonth));
+      budgetData.value.accountingMonthDate = dateToTimestampFormat(new Date(budgetData.value.accountingMonth));
 
       budgetData.value['updated_at'] = serverTimestamp();
       budgetData.value['deleted'] = false;
