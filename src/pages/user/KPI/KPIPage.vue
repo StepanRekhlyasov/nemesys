@@ -22,10 +22,6 @@
               label: $t('KPI.modeMedia'),
               value: 'media',
             },
-            {
-              label: $t('KPI.modeIndividual'),
-              value: 'individual',
-            },
           ]"
           :width="'175px'"
           v-model="mode"
@@ -61,7 +57,7 @@
       </label>
       <label
         class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'media' || mode === 'individual'"
+        v-if="mode === 'branch' || mode === 'media'"
       >
         {{ $t('KPI.targetPeriod') }}
         <DateRange
@@ -83,7 +79,7 @@
       </label>
       <label
         class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'day' || mode == 'individual'"
+        v-if="mode === 'branch' || mode === 'day'"
       >
         {{ $t('common.branch') }}
         <MySelect
@@ -142,8 +138,6 @@ import KpiTable from './components/KPITable.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useOrganization } from 'src/stores/organization';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
-import { useUserStore } from 'src/stores/user';
-import { where } from 'firebase/firestore';
 import { occupationList } from 'src/shared/constants/Applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
@@ -151,8 +145,6 @@ import {
   mediaItemList,
   dayItemList,
   mediaItemRateList,
-  userItemList,
-  userItemRateList,
 } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
@@ -181,7 +173,6 @@ const resetData = () => {
 
 const loading = ref(false);
 const rowData = ref<{ [key: string]: number | string }[]>([]);
-const userStore = useUserStore();
 const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
@@ -211,31 +202,6 @@ async function getData() {
 
     // we need to care switching mode while loading
     const modeNow = mode.value;
-
-    if (mode.value == 'individual' && branch.value) {
-      rowData.value = [];
-      const users = await userStore.getUsersByConstrains([
-        where('branch_id', '==', branch.value),
-        where('deleted', '==', false),
-        where(
-          'organization_ids',
-          'array-contains',
-          organizationStore.currentOrganizationId
-        ),
-      ]);
-      userListToShow.value = convertObjToIdNameList(users);
-      const rows = await getReport({
-        dateRange: dateRange.value,
-        graphType: 'BasedOnEachItemDate',
-        queryNames: userItemList,
-        rateNames: userItemRateList,
-        users: users,
-        isAverage: false,
-      });
-      rowData.value = rows;
-    } else if (mode.value == 'individual') {
-      rowData.value = [];
-    }
 
     if (mode.value == 'day' && day.value) {
       rowData.value = [];
