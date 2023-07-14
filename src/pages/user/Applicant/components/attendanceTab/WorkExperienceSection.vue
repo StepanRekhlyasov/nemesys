@@ -60,8 +60,8 @@
 
         <template v-slot:body-cell-month="props">
           <q-td :props="props">
-            {{ timestampToDateFormat(props.row.startMonth)  }}<br/>
-            {{ timestampToDateFormat(props.row.endMonth) }}<br/>
+            {{ myDateFormat(props.row.startMonth)  }}<br/>
+            {{ myDateFormat(props.row.endMonth) }}<br/>
           </q-td>
         </template>
 
@@ -115,7 +115,7 @@ import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { collection, getFirestore, onSnapshot, query, where, Timestamp } from '@firebase/firestore';
 import workExperienceForm from './WorkExperienceForm.vue';
-import { differentDateYear, timestampToDateFormat, toDate } from 'src/shared/utils/utils';
+import { differentDateYear, myDateFormat, toDate } from 'src/shared/utils/utils';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useApplicant } from 'src/stores/applicant';

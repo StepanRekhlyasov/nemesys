@@ -129,9 +129,6 @@ export const myDateFormat = (myDate?: string | undefined | Timestamp, format?: s
   }
 }
 
-export const timestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
-  return date.formatDate(myDate?.toDate?.(), mask);
-}
 export const dateToTimestampFormat = (myDate : Date) => {
   const result = Timestamp.fromDate?.(myDate)
   if(isNaN(result.seconds)){

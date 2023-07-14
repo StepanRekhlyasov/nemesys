@@ -68,9 +68,9 @@
       </template>
       <template v-slot:body-cell-posting="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ timestampToDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}} 
+          {{ myDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}} 
           <br />
-          {{ timestampToDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}} 
+          {{ myDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}} 
         </q-td>
       </template>
       <template v-slot:body-cell-amount="props">
@@ -131,7 +131,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import {BudgetData,DateOption} from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { orderBy, where,Timestamp } from 'firebase/firestore';
 const yearOptions = ref<[DateOption]>([]);

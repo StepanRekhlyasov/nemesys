@@ -11,7 +11,7 @@
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? timestampToDateFormat(applicant.timeToWork) : timestampToDateFormat(applicant.attendingDate) }}</span>
+        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? myDateFormat(applicant.timeToWork) : myDateFormat(applicant.attendingDate) }}</span>
         <template v-if="desiredEdit">
           <q-checkbox v-model="data['timeAvailable']" 
           :label="data['timeAvailable']? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')"/>
@@ -242,7 +242,7 @@ import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
@@ -297,7 +297,7 @@ watch(
 
 function resetData() {
   defaultData.value = {
-    timeToWork: timestampToDateFormat(props.applicant['timeToWork']),
+    timeToWork: myDateFormat(props.applicant['timeToWork']),
     daysToWork: props.applicant['daysToWork'],
     daysPerWeek: Array.isArray(props.applicant['daysPerWeek'])?props.applicant['daysPerWeek']:[],
     timeAvailable: props.applicant['timeAvailable'] || false,

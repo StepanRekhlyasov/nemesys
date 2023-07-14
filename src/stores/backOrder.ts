@@ -6,7 +6,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { api } from 'src/boot/axios';
-import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
 import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 
 interface BackOrderState {
@@ -147,7 +147,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       const batch = state.value.currentIds.splice(0, 10);
       const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch),]);
       for (let i = 0; i < boList.length; i++) {
-        boList[i]['dateOfRegistration'] = timestampToDateFormat(
+        boList[i]['dateOfRegistration'] = myDateFormat(
           boList[i]['dateOfRegistration'] as Timestamp
         );
       }

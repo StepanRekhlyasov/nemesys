@@ -81,7 +81,7 @@ import { ref, onMounted } from 'vue';
 import { budgetAddItem } from '../consts/Budget.const';
 import { useBudget } from 'src/stores/budgetData';
 import {OptionData} from '../type/budget'
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()
@@ -102,8 +102,8 @@ const budgetDataSample = {
     media: props.budgetData['media'] || '',
     numberOfSlots: props.budgetData['numberOfSlots'] || '',
     occupation: props.budgetData['occupation'] || '',
-    postingEndDate: timestampToDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
-    postingStartDate: timestampToDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
+    postingEndDate: myDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
+    postingStartDate: myDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
     unitPrice: props.budgetData['unitPrice'] || '',
     remark: props.budgetData['remark'] || '',
     agency: props.budgetData['agency'] || '',
