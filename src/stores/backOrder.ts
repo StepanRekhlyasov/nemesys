@@ -36,7 +36,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       total_results: 0,
     },
   });
- 
+
   const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
@@ -114,7 +114,7 @@ export const useBackOrder = defineStore('backOrder', () => {
         process.env.elasticSearchBOURL as string,
         {
           query: queryString,
-          page: { size: 30, current: 1 },
+          page: { size: 100, current: 1 },
           filters: filters,
         },
         {
@@ -143,6 +143,7 @@ export const useBackOrder = defineStore('backOrder', () => {
   const loadBOData = async () => {
     state.value.BOList = [];
     state.value.isLoadingProgress = true;
+    const allBOList = ref<BackOrderModel[]>([])
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
       const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch),]);
@@ -152,8 +153,9 @@ export const useBackOrder = defineStore('backOrder', () => {
         );
       }
 
-      state.value.BOList = boList;
+      allBOList.value = [...allBOList.value, ...boList];
     }
+    state.value.BOList = allBOList.value
     state.value.isLoadingProgress = false;
   };
 
