@@ -12,7 +12,6 @@ const props = withDefaults(defineProps<{
     theme: 'primary',
 })
 
-
 const emit = defineEmits(['update:modelValue']);
 
 const clientData = reactive({ ...props.modelValue });
@@ -87,7 +86,7 @@ watch(clientData, () => {
                         outlined dense
                         v-model="clientData['personInChargeTel']"
                         :placeholder="t('client.add.phoneLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
                 </div>
                     <div class="col-6 q-pl-sm">
                         <q-item-label class="q-pb-xs">
@@ -99,7 +98,7 @@ watch(clientData, () => {
                         outlined dense
                         v-model="clientData['personInChargeFax']"
                         :placeholder="t('client.add.phoneLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
                 </div>
             </div>
 
@@ -114,7 +113,7 @@ watch(clientData, () => {
                         outlined dense
                         v-model="clientData['personInChargeMail']"
                         :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || true]"/>
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
@@ -126,7 +125,7 @@ watch(clientData, () => {
                         outlined dense
                         v-model="clientData['personInCharge']"
                         :placeholder="t('client.add.managerLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
                 </div>
             </div>
         </q-item-section>
