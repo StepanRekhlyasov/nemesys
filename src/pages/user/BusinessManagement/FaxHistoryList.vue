@@ -173,7 +173,6 @@ const faxStore = useFax();
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
 const loading = ref(true);
-// const searchText = ref('');
 const searchData = ref<FaxSearchData>({
   selectedDate: today().replaceAll('-', '/'),
   selectedBranch: '',

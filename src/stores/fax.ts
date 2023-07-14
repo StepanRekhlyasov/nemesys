@@ -108,11 +108,7 @@ export const useFax = defineStore('fax', () => {
       const items: DocumentData[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        // data['media'] = getItem(data['media'], 'media')
-        // data['branch'] = getItem(data['branch'], 'branch')
-        // data['occupation'] = getItem(data['occupation'], 'occupation')
         data['id'] = doc.id;
-        // data['selected'] = false
         items.push(data);
       });
       faxList.value = items;

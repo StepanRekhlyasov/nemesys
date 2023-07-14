@@ -220,7 +220,7 @@ const openPdfViewer = () =>{
               <div class="col-2 q-mt-xs" v-if="pdfUrl.length>0">
                 <q-btn
                   color="primary"
-                  label="preview"
+                  :label="t('common.preview')"
                   @click="openPdfViewer"
                 />
               </div>

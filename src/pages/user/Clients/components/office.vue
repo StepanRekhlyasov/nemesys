@@ -1,7 +1,5 @@
 <template>
   <div class="q-pa-sm">
-    <!-- {{officeData}} -->
-    <!-- {{$store.state.user}} -->
     <div class="row q-pa-md q-gutter-sm">
       <q-breadcrumbs class="text-brown">
         <template v-slot:separator>
@@ -662,7 +660,6 @@
 import { useI18n } from 'vue-i18n';
 import { doc, getDoc, onSnapshot, getFirestore, updateDoc, addDoc, collection, serverTimestamp, Timestamp, query, where, orderBy } from 'firebase/firestore';
 import { ref, computed, onBeforeUnmount } from 'vue';
-//import { defineComponent } from "vue";
 import { useRoute } from 'vue-router';
 import { useQuasar } from 'quasar';
 import teleAppointmentReg from './teleAppointmentReg.vue';
@@ -1047,9 +1044,6 @@ export default {
         car_commuting: officeData.value['car_commuting'],
         parking_available: officeData.value['parking_available'],
         parking_remarks: officeData.value['parking_remarks'],
-        // contract_mailaddress: officeData.value['contract_mailaddress'],
-        // contract_user_name: officeData.value['contract_user_name'],
-        // manager: officeData.value['manager'],
       };
       editTitle.value = t('common.edit');
       basicInfoDialog.value = true;
