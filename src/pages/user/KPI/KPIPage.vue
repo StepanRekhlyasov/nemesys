@@ -233,8 +233,7 @@ async function getData() {
         isAverage: false,
       });
       rowData.value = rows;
-    }
-    else if(mode.value == 'individual'){
+    } else if (mode.value == 'individual') {
       rowData.value = [];
     }
 

@@ -24,7 +24,7 @@ export interface basedReportState {
   queryNames: Readonly<typeOfQuery[]>;
   organizationId?: string;
   isAverage: boolean;
-  rateNames?:Readonly<Readonly<typeOfQuery[]>[]>
+  rateNames?:Readonly<Readonly<string[]>[]>
 }
 
 export interface mediaBasedReportState extends basedReportState {
@@ -34,7 +34,7 @@ export interface mediaBasedReportState extends basedReportState {
 
 export interface branchBasedReportState extends basedReportState {
   medias: Media[];
-  branch: Branch;
+  branch: string;
 }
 
 export interface userBasedReportState extends basedReportState {

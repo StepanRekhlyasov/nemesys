@@ -38,7 +38,7 @@ export const userItemList = [
   'admission',
 ] as const;
 
-export const mediaItemRateList = [
+export const mediaItemRateList= [
   ['applicants', 'validApplicants'],
   ['validApplicants', 'contactApplicants'],
   ['contactApplicants', 'attractionApplicants'],
