@@ -1,8 +1,8 @@
 import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ClientOffice } from 'src/shared/model';
-import { getClientList, getClientFactoriesList } from 'src/shared/utils/Applicant.utils';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
+import { getClientList } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
@@ -556,35 +556,15 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  async function getClients(active_organization_id?: string): Promise<Client[]> {
+  async function getClients(active_organization_id?: string) {
     const clientsData = await getClientList(db, { active_organization_id })
     const list: Client[] = [];
     clientsData?.forEach((doc) => {
       const data = doc.data();
       list.push({ id: doc.id, ...data } as Client);
     });
-    return list;
+    state.value.clientList = list
   }
-
-  async function getClientFactories(client_id: string): Promise<ClientOffice[]> {
-    const officeData = await getClientFactoriesList(db, client_id)
-    const list: ClientOffice[] = []
-
-    officeData.forEach(office => {
-      list.push({ id: office.id, ...office.data() } as ClientOffice)
-    })
-
-    return list
-  }
-
-  getClients().then(clients => {
-    state.value.clientList = clients
-    state.value.clientList.map(async (client) => {
-      if (client.id) {
-        client.office = await getClientFactories(client.id)
-      }
-    })
-  })
 
   const saveWorkExperience = async (rawData: Partial<ApplicantExperienceInputs>, applicantId: string) => {
     const saveData: Partial<ApplicantExperience> = JSON.parse(JSON.stringify(rawData))
@@ -778,6 +758,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getClientFactories, getApplicantsByColumns, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, saveFixDataToApplicant, changeApplicantStatusByOkFields, getApplicantById }
+  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant , createApplicant, countApplicantsBySex,getApplicantContactData,saveWorkExperience, agesListOfApplicants ,countApplicantsdaysToWork ,countApplicantsByMedia,getApplicantsByConstraints, saveFixDataToApplicant, changeApplicantStatusByOkFields, getApplicantById }
 })
 

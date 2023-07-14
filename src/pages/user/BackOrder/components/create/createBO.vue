@@ -40,7 +40,7 @@
             option-value="id"
             option-label="name"
             :rules="[creationRule]" hide-bottom-space
-            :options="applicantStore.state.clientList.find(client => client.id === data['client_id'])?.office"
+            :options="clientFactoryList"
             :disable="!data['client_id']"
             :label="$t('applicant.list.fixEmployment.office')" />
         </q-card-section>
@@ -102,7 +102,7 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, selectOptions, UserPermissionNames } from 'src/shared/model';
-import { Ref, ref, watch } from 'vue';
+import { onMounted, Ref, ref, watch } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
 import TasksSection from './TasksSection.vue';
@@ -117,6 +117,8 @@ import { useOrganization } from 'src/stores/organization';
 import { useUserStore } from 'src/stores/user';
 import { QForm } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
@@ -125,9 +127,11 @@ const props = defineProps<{
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
+const clientFactoryStore = useClientFactory();
 const userStore = useUserStore();
 
 const usersListOption = ref<selectOptions[]>([]);
+const clientFactoryList = ref<ClientFactory[]>([])
 const boForm: Ref<QForm|null> = ref(null);
 const loading = ref(false);
 const data = ref<Partial<BackOrderModel>>({});
@@ -157,6 +161,16 @@ function resetData() {
 }
 resetData();
 
+onMounted(async () => {
+  await applicantStore.getClients()
+})
+watch(() => data.value.client_id, async () => {
+  if (data.value.client_id) {
+    loading.value = true
+    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client_id)
+    loading.value = false
+  }
+}, { deep: true, immediate: true })
 watch([data.value.client_id, data.value.office_id], async () => {
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
   if (!users) {
