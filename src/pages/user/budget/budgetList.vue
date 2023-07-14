@@ -162,6 +162,7 @@ const selectedYear = ref<selectedYearMonth>(new Date().getFullYear());
 const selectedMonth = ref<selectedYearMonth>(new Date().getMonth() + 1);
 const drawerRight = ref(false)
 const budgetData = ref<BudgetData>({
+  recordNumber: '',
   accountingMonth: '',
   amount: '',
   branch: '',
@@ -182,7 +183,7 @@ const start = Timestamp.fromDate(new Date(`${selectedYear.value}-${('0' + select
 const end = Timestamp.fromDate(new Date(`${nextYear}-${('0' + nextMonth).slice(-2)}-01`))
 const pagination = ref({
   page: 1,
-  rowsPerPage: 30,
+  rowsPerPage: 100,
   path: 'budgets',
   order: orderBy('created_at', 'asc'),
   constraints: [
