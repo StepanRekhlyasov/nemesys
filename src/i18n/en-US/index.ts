@@ -1601,6 +1601,7 @@ export default {
       }
     },
     fax: {
+      confirmAction: 'Confirm Action',
       transmissionConfirmation: 'Transmission Confirmation',
       applicantLinkage: 'Applicant Linkage',
       clientCategoryNG: 'NG client category',
@@ -1618,6 +1619,8 @@ export default {
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
       faxPRSheet: 'Fax the PR Sheet',
+      transMissionConfirmation:'Redirecting to Confirmation Content page.',
+      areYouSure: 'Are you sure?',
       list: {
         senderId: 'Sender ID',
         sender: 'Sender',

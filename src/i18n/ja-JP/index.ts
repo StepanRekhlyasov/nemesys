@@ -1594,6 +1594,7 @@ export default {
       }
     },
     fax: {
+      confirmAction:'送信内容確認',
       transmissionConfirmation: '送信内容確認',
       applicantLinkage: '応募者紐付け',
       clientCategoryNG: 'NGクライアント種別',
@@ -1611,6 +1612,8 @@ export default {
       refinementConditions: '絞り込み条件',
       maxTransmissions: '最大送信件数',
       faxPRSheet: 'PRシートをFAX送信します。',
+      transMissionConfirmation:'送信確認画面へ移動します。',
+      areYouSure: 'よろしいですか？',
       list: {
         senderId: '送信ID',
         sender: '送信者',

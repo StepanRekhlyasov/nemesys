@@ -5,6 +5,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 import { useFax } from 'src/stores/fax';
 import { useQuasar } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils'
 import PdfViewer from 'src/pages/user/BusinessManagement/components/PdfViewer.vue';
 import { pdfViewer } from 'src/pages/user/BusinessManagement/consts/index';
 const { t } = useI18n({ useScope: 'global' });
@@ -86,8 +87,9 @@ const filterFn = (val: string, update) => {
 };
 const save = async () => {
   $q.dialog({
-    message: t('clientFactory.fax.faxPRSheet'),
+    message: `${t('clientFactory.fax.faxPRSheet')}<br />${t('clientFactory.fax.areYouSure')}`,
     persistent: true,
+    html:true,
     cancel: t('common.cancel'),
   }).onOk(async () => {
     faxData.value.selectedCF = props.selectedCF
@@ -95,6 +97,7 @@ const save = async () => {
     faxData.value = JSON.parse(JSON.stringify(faxDataDataSample));
     faxFile.value = [];
     faxForm.value.resetValidation();
+    confirm.value=false
   });
 };
 const pdfUrl = ref('');
@@ -105,8 +108,22 @@ function viewFile(event){
 const openPdfViewer = () =>{
   pdfViewer.value = true;
 }
+const confirm = ref(false);
+const confirmContent = () =>{
+  if(pdfUrl.value.length === 0 || !('applicants' in faxData.value) || faxData.value['applicants']==null){
+    Alert.warning()
+    return
+  }
+  $q.dialog({
+    message: `${t('clientFactory.fax.transMissionConfirmation')}<br />${t('clientFactory.fax.areYouSure')}`,
+    persistent: true,
+    html: true,
+    cancel: t('common.cancel'),
+  }).onOk(async () => {
+    confirm.value = true
+  });
+}
 </script>
-
 <template>
   <q-drawer
     :model-value="isDrawer"
@@ -123,7 +140,8 @@ const openPdfViewer = () =>{
         <q-card class="no-shadow bg-grey-3">
           <q-card-section class="text-white bg-primary">
             <div class="text-h6">
-              <q-btn dense flat icon="close" @click="hideDrawer" />
+              <q-btn dense flat icon="close" @click="hideDrawer" v-if="!confirm"/>
+              <q-btn dense flat icon="close" @click="(()=>{confirm=!confirm})" v-else/>
               <span class="q-pl-sm text-bold">{{
                 $t('client.add.options.faxSending')
               }}</span>
@@ -134,6 +152,16 @@ const openPdfViewer = () =>{
                 class="text-bold q-ml-lg q-px-md q-py-none"
                 dense
                 type="submit"
+                v-if="confirm"
+              />
+              <q-btn
+                :label="t('clientFactory.fax.confirmAction')"
+                color="white"
+                text-color="primary"
+                class="text-bold q-ml-lg q-px-md q-py-none"
+                dense
+                @click="confirmContent"
+                v-else
               />
             </div>
           </q-card-section>
@@ -149,7 +177,7 @@ const openPdfViewer = () =>{
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('report.categories.applicant') }}
               </div>
-              <div class="col-9">
+              <div class="col-9" v-if="!confirm">
                 <q-select
                   dense
                   outlined
@@ -161,9 +189,12 @@ const openPdfViewer = () =>{
                   :options="applicantList"
                   @filter="filterFn"
                   :loading="loading"
-                  
+                  :rules="[(val) => !!val || '']"
                   hide-bottom-space
                 />
+              </div>
+              <div class="col-9 q-mt-sm" v-else>
+                <q-text>{{faxData['applicants']['label']}}</q-text>
               </div>
             </div>
             <div class="row">
@@ -190,7 +221,7 @@ const openPdfViewer = () =>{
                 {{ $t('clientFactory.fax.transmissionContentSettings') }}
               </span>
             </div>
-            <div class="row q-mt-sm q-mb-xs q-pl-xl q-ml-xl">
+            <div class="row q-mt-sm q-mb-xs q-pl-xl q-ml-xl" v-if="!confirm">
               <div class="col-6 text-negative q-pl-xl q-ml-xl">
                 <div class="q-pl-lg">
                   {{ $t('clientFactory.fax.onlyPdfFomratCanBeAttached') }}
@@ -201,7 +232,7 @@ const openPdfViewer = () =>{
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.prSheet') }}
               </div>
-              <div class="col-5">
+              <div class="col-5" v-if="!confirm">
                 <q-file
                   name="fax_files"
                   v-model="faxFile"
@@ -217,15 +248,16 @@ const openPdfViewer = () =>{
                   @input="viewFile"
                 />
               </div>
-              <div class="col-2 q-mt-xs" v-if="pdfUrl.length>0">
-                <q-btn
+              <div class="col-9" v-else>
+                <q-btn class="col-3"
                   color="primary"
                   :label="t('common.preview')"
                   @click="openPdfViewer"
                 />
+                <q-text class="col-6 q-ml-sm">{{ faxFile[0]['name'] }}</q-text>
               </div>
             </div>
-            <div class="row">
+            <div class="row" v-if="!confirm">
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.setTransmissionDateTime') }}
               </div>
@@ -236,11 +268,11 @@ const openPdfViewer = () =>{
                 />
               </div>
             </div>
-            <div class="row" v-if="faxData['setTransmissionDateTime']">
+            <div class="row" v-if="faxData['setTransmissionDateTime'] || confirm">
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.transmissionDateTime') }}
               </div>
-              <div class="col-9">
+              <div class="col-9" v-if="!confirm">
                 <q-input
                   dense
                   outlined
@@ -297,6 +329,9 @@ const openPdfViewer = () =>{
                   </template>
                 </q-input>
               </div>
+              <div class="col-9 q-mt-sm" v-else>
+                <q-text>{{ faxData['transmissionDateTime'] }}</q-text>
+              </div>
             </div>
             <div class="row q-mt-sm">
               <q-icon name="square" color="primary" class="q-mt-xs" />
@@ -309,7 +344,7 @@ const openPdfViewer = () =>{
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.maxTransmissions') }}
               </div>
-              <div class="col-9 flex inline">
+              <div class="col-9 flex inline" v-if="!confirm">
                 <q-select
                   dense
                   outlined
@@ -324,6 +359,9 @@ const openPdfViewer = () =>{
                 <span class="q-mt-sm q-ml-sm">{{
                   $t('applicant.attendant.items')
                 }}</span>
+              </div>
+              <div class="col-9 q-mt-sm" v-else>
+                <q-text>{{faxData['maxTransmissions']}}</q-text>
               </div>
             </div>
 
