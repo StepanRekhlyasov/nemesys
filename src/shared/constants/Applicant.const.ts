@@ -261,7 +261,7 @@ export const applicantClassification = computed(() => {
     label: t('applicant.list.info.classification.dispatch'),
     value: 'dispatch'
   },{
-    label: t('applicant.list.info.classification.TTP'),
+    label: t('applicant.list.info.classification.ttp'),
     value: 'TTP'
   }]
 })
@@ -558,4 +558,16 @@ export const applicantStatusCharge = {
   [ApplicantStatus.WAIT_ENTRY] : 'chargeOfOffer',
   [ApplicantStatus.WORKING] : 'chargeOfAdmission',
   [ApplicantStatus.WAIT_TERMINATION] : 'chargeOfAdmission',
+}
+
+export const ApplicantOrFixColumn = {
+  [ApplicantStatus.WAIT_CONTACT] : 'applicants',
+  [ApplicantStatus.WAIT_ATTEND] : 'applicants',
+  [ApplicantStatus.WAIT_FIX] : 'applicants',
+  [ApplicantStatus.RETIRED] : 'applicants',
+  [ApplicantStatus.WAIT_VISIT] : 'fix',
+  [ApplicantStatus.WAIT_OFFER] : 'fix',
+  [ApplicantStatus.WAIT_ENTRY] : 'fix',
+  [ApplicantStatus.WAIT_TERMINATION] : 'fix',
+  [ApplicantStatus.WORKING] : 'fix',
 }

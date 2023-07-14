@@ -5,7 +5,7 @@ import { addDoc, collection, deleteField, doc, getDoc, getDocs, getFirestore, or
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from './applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { applicantNGStatusField, applicantStatusCharge, applicantStatusDates, applicantStatusOkFields } from 'src/shared/constants/Applicant.const';
+import { ApplicantOrFixColumn, applicantNGStatusField, applicantStatusCharge, applicantStatusDates, applicantStatusOkFields } from 'src/shared/constants/Applicant.const';
 import { useRoute } from 'vue-router';
 
 export interface FixOption {
@@ -15,7 +15,8 @@ export interface FixOption {
 export const useFix = defineStore('fix', () => {
   const db = getFirestore();
   const { t } = useI18n({ useScope: 'global' });
-  const applicantStore = useApplicant()
+  const applicantStore = useApplicant()  
+  const route = useRoute()
 
   async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
     
@@ -119,7 +120,6 @@ export const useFix = defineStore('fix', () => {
   }
 
   async function formatDataFix(fix_id: string, data: Partial<ApplicantFix>){
-    
     const fixDoc = await getDoc(doc(db, 'fix/' + fix_id))
     const currentFix = {...fixDoc.data(), id: fixDoc.id} as ApplicantFix
     if(!currentFix){
@@ -141,24 +141,24 @@ export const useFix = defineStore('fix', () => {
         break;
       }
     }
-    const applicant = await applicantStore.getApplicantsByConstraints([where('id', '==', data.applicant_id)])
+    const applicant = data.applicant_id?await applicantStore.getApplicantById(data.applicant_id):null
     if(newStatus){
       data.currentStatusTimestamp = data[applicantStatusDates[newStatus]]
       data.currentStatusMonth = toMonthYear(data[applicantStatusDates[newStatus]])
       data.userInCharge = data[applicantStatusCharge[newStatus]]
-      if(applicant[0]){
-        data.prefecture = applicant[0].prefecture
-        data.branchIncharge = applicant[0].branchIncharge
-        data.organizationId = applicant[0].organizationId
+      if(applicant){
+        data.prefecture = applicant.prefecture
+        data.branchIncharge = applicant.branchIncharge
+        data.organizationId = applicant.organizationId
       }
       data.status = newStatus
     }
-    if(data.status && currentFix.status && currentFix.status !== data.status && route.meta.applicantsUpdateOnOrganizationChange){
+    if(data.status && currentFix.status && currentFix.status !== data.status && route.meta.applicantsUpdateOnOrganizationChange && applicantStore.state.applicantsByColumn[currentFix.status]){
       applicantStore.state.applicantsByColumn[currentFix.status] = applicantStore.state.applicantsByColumn[currentFix.status].filter((item : ApplicantFix)=>item.id!==data.id)
     }
     return data
   }
-  const route = useRoute()
+
   async function updateFix (fix_id: string, data: Partial<ApplicantFix>) {
     data = await formatDataFix(fix_id, data)
     for (const [key, value] of Object.entries(data)){
@@ -173,8 +173,8 @@ export const useFix = defineStore('fix', () => {
       doc(db, '/fix/'+ fix_id ),
       data
     );
-    if(data.status && route.meta.applicantsUpdateOnOrganizationChange && [ApplicantStatus.WAIT_VISIT, ApplicantStatus.WAIT_OFFER, ApplicantStatus.WAIT_ENTRY, ApplicantStatus.WAIT_TERMINATION].includes(data.status)){
-      await applicantStore.getApplicantsByStatus(data.status, applicantStore.state.applicantProgressFilter)
+    if(data.status && route.meta.applicantsUpdateOnOrganizationChange && ApplicantOrFixColumn[data.status] === 'fix'){
+      await applicantStore.getApplicantsByColumns(data.status, applicantStore.state.applicantProgressFilter)
     }
   }
   

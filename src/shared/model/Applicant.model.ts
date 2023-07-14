@@ -13,11 +13,11 @@ export interface ApplicantExperienceBase {
   pastInterviews?: EmploymentStatus;
   deleted?: boolean;
 }
-export interface ApplicantExperienceInputDates{
+export interface ApplicantExperienceInputDates {
   startMonth?: string;
   endMonth?: string;
 }
-export interface ApplicantExperienceDates{
+export interface ApplicantExperienceDates {
   startMonth?: Timestamp;
   endMonth?: Timestamp;
 }
@@ -63,7 +63,7 @@ export interface ApplicantBase {
   street?: string;
   apartment?: string;
   status?: ApplicantStatus;
-  statusChangeTimestamp?: {[key: string] : Timestamp | FieldValue}
+  statusChangeTimestamp?: { [key: string]: Timestamp | FieldValue }
   staffRank?: number;
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
@@ -85,16 +85,20 @@ export interface ApplicantBase {
   inspectionStatus?: boolean;
   offerStatus?: boolean;
   admissionStatus?: boolean;
-  userInCharge?: string; 
-  chargeOfFix?: string; 
-  chargeOfInspection?: string; 
-  chargeOfAdmission?: string; 
+  userInCharge?: string;
+  chargeOfFix?: string;
+  chargeOfInspection?: string;
+  chargeOfAdmission?: string;
   chargeOfOffer?: string;
   bestFix?: ApplicantFix;
 }
 export interface Applicant extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantDates {
 }
 export interface ApplicantInputs extends ApplicantBase, DesiredConditions, PersonalStatus, AssignedEvaluation, Attendance, ApplicantInfo, ApplicantInputDates {
+}
+export interface ApplicantForCandidateSearch extends Applicant {
+  distanceBusiness: number;
+  matchDegree: number;
 }
 
 export interface ApplicantInfo {
@@ -134,7 +138,7 @@ export interface DesiredConditions {
   jobSearchPriorities3?: string;
 }
 
-export interface Attendance { 
+export interface Attendance {
   attendingStatus?: boolean;
   attendingReasonNG?: string;
   attendingReasonNGDetail?: string;
@@ -142,7 +146,7 @@ export interface Attendance {
   memo?: string;
 }
 
-export interface PersonalStatus  {
+export interface PersonalStatus {
   smoking?: SmokingStatus;
   tattoos?: TattoosStatus;
   marriedStatus?: MarriedStatus;
@@ -165,7 +169,7 @@ export interface AssignedEvaluation {
   remarks?: string;
 }
 
-export enum ApplicantSex{
+export enum ApplicantSex {
   MALE = 'male',
   FEMALE = 'female'
 }
@@ -219,7 +223,7 @@ export enum ApplicantOccupation {
   NURSE = 'nurse',
   NURSING_CARE = 'nursingCare',
   LIFECOUNSELOR = 'lifeCounselor',
-  CAREMANAGER = 'careManager', 
+  CAREMANAGER = 'careManager',
   OTHERS = 'others'
 }
 
@@ -248,7 +252,7 @@ export enum ApplicantStatus {
   RETIRED = 'retired'
 }
 
-export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffersInfo, FixEmploymentInfo { 
+export interface ApplicantFix extends FixMainInfo, FixJobSearchInfo, FixJobOffersInfo, FixEmploymentInfo {
   id: string;
   created_user?: string;
   created_at: Timestamp | FieldValue | string;
@@ -272,8 +276,8 @@ export interface FixMainInfo {
   fixReasonNG: string;
   fixReasonNGDetail?: string;
   chargeOfFix: string;
-  fixMemo?: string;  
-} 
+  fixMemo?: string;
+}
 
 export interface FixJobSearchInfo {
   inspectionStatus: boolean;

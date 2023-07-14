@@ -94,7 +94,8 @@ export default {
       '12' : 'December',
     },
     more: 'More',
-    downloadCSV: 'Download CSV'
+    downloadCSV: 'Download CSV',
+    branch: 'Branch',
   },
   smoking: {
     no: 'No',
@@ -312,6 +313,7 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
+      delete: 'This user account will no longer be able to log in.',
       logout: 'Logout',
       adminPage: 'Open system administration page',
     },
@@ -705,6 +707,7 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
+      tempToPerm:'Temp to Perm'
     },
     contractUnit: {
       corporateBulk: 'Corporate Bulk',
@@ -935,7 +938,7 @@ export default {
         classification: {
           introduction : 'Introduction',
           dispatch: 'Dispatch',
-          TTP: 'TTP'
+          ttp: 'TTP'
         }
       }
     },
@@ -952,7 +955,7 @@ export default {
       waitOffer: 'Wait Offer',
       waitEntry: 'Wait Entry',
       working: 'Working',
-      waitTermintion: 'Wait Termintion',
+      waitTermination: 'Wait Termintion',
       waitRetire: 'Wait Retire',
       retired: 'Retired',
     },
@@ -1476,9 +1479,9 @@ export default {
       subject: 'subject',
       content: 'content',
       date: 'Delivery date',
-      send: 'Immediate delivery',
+      send: 'Send',
       delay: '+ Add New',
-      cancel: 'cancel'
+      cancel: 'Cancel'
     },
     table: {
       status: 'status',
@@ -1631,14 +1634,14 @@ export default {
     },
     detail: {
       inquiryTitle: 'Inquiry details',
-      responseTitle: 'Response',
+      responseTitle: 'Response form',
       category: 'Category',
       recievedDate: 'Date recieved',
       subject: 'Subject',
       content: 'Content',
       metro: 'Tokyo Metropolitan area',
       adress: 'Town Address',
-      replyContent: 'Contents of reply'
+      replyContent: 'Content'
     },
     message: {
       issueDate: 'Date of issue',
@@ -1647,7 +1650,10 @@ export default {
   },
   industry: {
     nursing: 'Nursing',
-    nurse: 'Nurse'
+    nurse: 'Nurse',
+    uniqueItemSetting: 'Client type unique item setting',
+    specificTypeItems: 'Type-specific item',
+    addLine: 'ADD LINE'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',
@@ -1667,7 +1673,21 @@ export default {
     ageComposition:'age composition',
     daysToWork:'days to Work',
     yen:'yen',
+    item:'item',
+    base:'base',
+    totalingMethod:'totaling method',
+    jobCategory:'job category',
     categories:{
+      totalingMethod:{
+        totallingDailyData:'totalling daily data',
+        totallingAttractionDataByBranch:'totalling attraction data by branch',
+        totallingAttractionDataByMedia:'totalling attraction data by media',
+      },
+      item:{
+        actualValue:'actual value',
+        unitPricePerLeadtime:'unitPrice L/T',
+        applicationAttribute:'application attribute',
+      },
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
       numberOfInvitations:'NumberOfInvitations',
@@ -1744,6 +1764,7 @@ export default {
     showBranch: 'Show branch',
     notification: 'Notification',
     openList: 'Open list',
+    closeList: 'Close list',
     applicantProgress: 'Applicant Progress',
     showWhiteboard: 'Show whiteboard',
     showList: 'Show list',
@@ -1767,7 +1788,7 @@ export default {
     modeMedia: 'Media Data Aggregation',
     modeBranch: 'Branch Data Aggregation',
     modeIndividual: 'Individual Data Aggregation',
-    modeDay: 'Date and Time Aggregation',
+    dailyTotal: 'daily total',
     item: 'Item',
     actualFigures: 'Actual figures',
     unitPrice: 'Unit price/LT',

@@ -26,7 +26,7 @@
               size="sm"
               @click.once="sendResponse"
 
-              :disable="!responseContent || loading"
+              :disable="loading"
               style="margin-left: 2px;"
             >
               {{ $t('releaseNotes.form.send') }}

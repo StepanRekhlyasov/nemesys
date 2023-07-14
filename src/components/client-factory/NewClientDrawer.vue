@@ -24,7 +24,6 @@ const childFormRef = ref<{
     validateAndSubmit: () => void
 } | null>(null);
 
-
 const emit = defineEmits<{
     (e: 'hideDrawer')
 }>()
@@ -41,10 +40,8 @@ const submitForm = () => {
 };
 
 const onSubmit = async (newClientData: Client | null) => {
-
-    emit('hideDrawer')
-
     if(newClientData) {
+        emit('hideDrawer')
         const clientRef = await addNewClient(newClientData)
 
         if (clientRef) {

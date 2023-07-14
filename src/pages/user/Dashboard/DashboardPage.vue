@@ -32,7 +32,7 @@ const { userInCharge, prefecture, currentStatusMonth } = state.value.applicantPr
 const updateOnMounted = ref(false)
 const onBranchChange = async () => {
   COLUMN_STATUSES.map(async (status)=>{
-    applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, limitQuery)
+    applicantStore.getApplicantsByColumns(status, applicantStore.state.applicantProgressFilter, limitQuery)
   })
 }
 onBeforeMount(()=>{

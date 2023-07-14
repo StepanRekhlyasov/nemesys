@@ -42,7 +42,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="data['invitationDate']" default-view="Years" :options="limitDate">
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -80,7 +80,7 @@
         {{ $t('applicant.list.info.classiffication') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.classification? $t('applicant.list.info.classification.'+applicant.classification):''}}</span>
+        <span v-if="!edit">{{ applicant.classification? $t('applicant.list.info.classification.'+applicant.classification.toLowerCase()):''}}</span>
         <q-select v-if="edit" outlined dense :options="classificationOption" v-model="data['classification']"
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>

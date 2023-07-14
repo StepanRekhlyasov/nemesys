@@ -55,7 +55,7 @@
                 <span class="q-mr-md">
                   {{ $t('applicant.list.category') }}
                 </span>
-                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification) : ''}}
+                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification.toLowerCase()) : ''}}
               </span>
             </div>
           </div>
