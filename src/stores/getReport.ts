@@ -406,7 +406,7 @@ export const useGetReport = defineStore('getReport', () => {
             dateRange: state.dateRange,
             dateType: state.graphType,
             media: rowItem.id,
-            branch: state.branch.id,
+            branch: state.branch,
           },
           isAverage: state.isAverage,
           queryNames: state.queryNames,
