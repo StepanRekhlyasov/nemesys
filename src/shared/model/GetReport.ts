@@ -24,7 +24,7 @@ export interface basedReportState {
   queryNames: Readonly<typeOfQuery[]>;
   organizationId?: string;
   isAverage: boolean;
-  rateNames?:Readonly<typeOfQuery[][]>
+  rateNames?:Readonly<Readonly<typeOfQuery[]>[]>
 }
 
 export interface mediaBasedReportState extends basedReportState {
@@ -56,4 +56,5 @@ export interface FieldDict {
   readonly branchField?: string;
   readonly mediaField: string;
   readonly uidField?: string;
+  readonly occupationField?: string;
 }

@@ -39,7 +39,7 @@ export const useBudget = defineStore('budget', () => {
     organization_id?: string,
     beforeMonth = 7
   ) => {
-    const mediaRef = collection(db, 'budget');
+    const mediaRef = collection(db, 'budgets');
     const filters: QueryFieldFilterConstraint[] = [];
     const filters_: QueryFieldFilterConstraint[] = [];
 
@@ -114,7 +114,7 @@ export const useBudget = defineStore('budget', () => {
     dateRangeProps?: { from: string; to: string },
     organization_id?: string,
   ) => {
-    const mediaRef = collection(db, 'budget');
+    const mediaRef = collection(db, 'budgets');
     const filters: QueryFieldFilterConstraint[] = [];
     if (organization_id) {
       filters.push(where('organization_id', '==', organization_id));

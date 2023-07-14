@@ -32,6 +32,7 @@ const applicantFieldDict: FieldDict = {
   collection: 'applicants',
   branchField: 'branchInCharge',
   mediaField: 'media',
+  occupationField : 'occupation',
 };
 
 const fixFieldDict: FieldDict = {

@@ -52,10 +52,6 @@
               label: $t('KPI.applicationAttribute'),
               value: 'applicationAttribute',
             },
-            {
-              label: $t('KPI.modeIndividual'),
-              value: 'individual',
-            },
           ]"
           :width="'175px'"
           v-model="item"
