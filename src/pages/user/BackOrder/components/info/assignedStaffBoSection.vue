@@ -63,28 +63,15 @@ const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
 
-const getApplicantIds = async () => {
-  const db = getFirestore();
-  const collectionRef = collection(db, 'fix');
-
-  const q = query(collectionRef, where('backOrder', '==', props.bo.id),where('deleted','==',false));
-  const snapshot = await getDocs(q);
-
-  const assignedStaff = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data()
-  }));
-  applicantIds.value = assignedStaff.map((staff) => staff.applicant_id);
-}
-
 onMounted(async () => {
   loading.value = true;
   try {
-
-    await getApplicantIds();
-    await getFormatedData(applicantIds.value)
+    applicantIds.value = await backOrderStore.getApplicantIds(props.bo);
+    if(applicantIds.value.length){
+      await getFormatedData(applicantIds.value)
+    }
   } catch (error) {
-    console.error('Error fetching documents:', error);
+
   }
   loading.value = false
 });

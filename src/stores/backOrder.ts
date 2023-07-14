@@ -120,6 +120,8 @@ export const useBackOrder = defineStore('backOrder', () => {
     await batch.commit();
   };
 
+
+
   function getDistance(loc1: { lat: number, lon: number }, loc2: { lat: number, lon: number }) {
     const easrtRadiusInKm = 6371;
     const dLat = degToRad(loc2.lat - loc1.lat);
@@ -150,7 +152,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 
     //qualification percentage
     staff.qualification?.forEach((q) => {
-      if (bo.qualifications.toLowerCase() === q.toLowerCase()) {
+      if (bo.qualifications?.toLowerCase() === q.toLowerCase()) {
         qualification = 1
       }
     })
@@ -166,12 +168,12 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
 
     //caseType
-    if (bo.caseType && (staff.occupation?.toLowerCase() === bo.caseType?.toLowerCase())) {
+    if (bo.caseType && (staff.occupation.toLowerCase() === bo.caseType.toLowerCase())) {
       occupation = 1
     }
 
     //classification
-    if (bo.transactionType && (staff.classification?.toLowerCase() === bo.transactionType?.toLowerCase())) {
+    if (bo.transactionType && (staff.classification.toLowerCase() === bo.transactionType.toLowerCase())) {
       classification = 1
     }
 
@@ -227,5 +229,20 @@ export const useBackOrder = defineStore('backOrder', () => {
     return numberMap[num];
   };
 
-  return { state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
+  const getApplicantIds = async (bo) => {
+    const db = getFirestore();
+    const collectionRef = collection(db, 'fix');
+
+    const q = query(collectionRef, where('backOrder', '==', bo.id),where('deleted','==',false));
+    const snapshot = await getDocs(q);
+
+    const assignedStaff = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    const applicantIds = assignedStaff.map((staff) => staff['applicant_id']);
+    return applicantIds
+  }
+
+  return { getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
 })
