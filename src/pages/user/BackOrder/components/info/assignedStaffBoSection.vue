@@ -67,7 +67,7 @@ const getApplicantIds = async () => {
   const db = getFirestore();
   const collectionRef = collection(db, 'fix');
 
-  const q = query(collectionRef, where('backOrder', '==', props.bo.id));
+  const q = query(collectionRef, where('backOrder', '==', props.bo.id),where('deleted','==',false));
   const snapshot = await getDocs(q);
 
   const assignedStaff = snapshot.docs.map((doc) => ({
