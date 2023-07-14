@@ -199,8 +199,11 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ applicant.hourlyRate?applicant.hourlyRate+' '+$t('common.yen'):''}}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" min="0"
-          v-model="data['hourlyRate']" :disable="loading" type="number" />
+        <div v-if="desiredEdit" class="flex items-center no-wrap">
+          <q-input dense outlined bg-color="white" min="0"
+            v-model="data['hourlyRate']" :disable="loading" type="number"/>
+          <span class="q-ml-sm">{{ $t('common.yen') }}</span>
+        </div>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.transportationServices') }}
@@ -218,18 +221,27 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities1 ? '① '+applicant.jobSearchPriorities1 : ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['jobSearchPriorities1']" :disable="loading" />
+        <label v-if="desiredEdit" class="flex items-center no-wrap" >
+          <span class="q-mr-sm text-body1">①</span>
+          <q-input dense outlined bg-color="white"
+            v-model="data['jobSearchPriorities1']" :disable="loading" style="width:100%" />
+        </label>
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-sm blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities2 ? '② ' + applicant.jobSearchPriorities2: ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['jobSearchPriorities2']" :disable="loading" />
+        <label v-if="desiredEdit" class="flex items-center no-wrap" >
+          <span class="q-mr-sm text-body1">②</span>
+          <q-input dense outlined bg-color="white"
+            v-model="data['jobSearchPriorities2']" :disable="loading" style="width:100%"/>
+        </label>
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-sm blue ">
         <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities3 ? '③ ' + applicant.jobSearchPriorities3: ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['jobSearchPriorities3']" :disable="loading" />
+        <label v-if="desiredEdit" class="flex items-center no-wrap" >
+          <span class="q-mr-sm text-body1">③</span>
+          <q-input v-if="desiredEdit" dense outlined bg-color="white"
+            v-model="data['jobSearchPriorities3']" :disable="loading" style="width:100%"/>
+        </label>
       </div>
     </div>
   </DropDownEditGroup>
