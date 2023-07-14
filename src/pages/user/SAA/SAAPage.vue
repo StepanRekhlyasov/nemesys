@@ -64,29 +64,7 @@ import { ConstraintsType } from 'src/shared/utils/utils';
 import { DocumentData, where } from 'firebase/firestore';
 import { getFromTo } from 'src/shared/utils/utils';
 import { useSAA } from 'src/stores/saa';
-interface RowData {
-  name: string,
-  chargeOfFix: number,
-  chargeOfInspection: number,
-  chargeOfOffer: number,
-  chargeOfAdmission: number,
-  chargeOfInspectionRate: string,
-  chargeOfOfferRate: string,
-  chargeOfAdmissionRate: string,
-  personOK: number,
-  personNG: number,
-  companyOK: number,
-  companyNG: number,
-  personOKRate: string,
-  companyOKRate: string,
-  numberOfFax:number,
-  numberOfCalls:number,
-  introduction:number,
-  dispatch:number,
-  BO_NC:number,
-  BO_N:number,
-  TTP:number
-}
+import { SaaRowData } from './const/model';
 
 const dateRange = ref<
   string | {
@@ -95,7 +73,7 @@ const dateRange = ref<
   } | null>(null)
 const method = ref('user')
 const loading = ref(false)
-const rowData = ref<RowData[]>([])
+const rowData = ref<SaaRowData[]>([])
 const SAA = useSAA()
 const organizationStore = useOrganization()
 
@@ -153,9 +131,9 @@ watch(()=>organizationStore.state.userAndBranchesUpdated, async (newVal)=>{
 })
 
 function mapFixDataForUserMode() {
-  const result : RowData[] = []
+  const result : SaaRowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationUsers)){
-    const row : Partial<RowData> = {}
+    const row : Partial<SaaRowData> = {}
     row.name = value.displayName? value.displayName : value.name
     const statusCountFields = ['chargeOfFix', 'chargeOfInspection', 'chargeOfOffer', 'chargeOfAdmission']
     statusCountFields.forEach((field)=>{
@@ -185,15 +163,15 @@ function mapFixDataForUserMode() {
     row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
     row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOKRate = (row.companyOK + row.companyNG)?(row.companyOK / (row.companyOK + row.companyNG)).toFixed(2):'-'
-    result.push(row as RowData)
+    result.push(row as SaaRowData)
   }
   return result
 }
 
 function mapFixDataForBranchMode(){
-  const result : RowData[] = []
+  const result : SaaRowData[] = []
   for(const [key, value] of Object.entries(organizationStore.state.currentOrganizationBranches)){
-    const row : Partial<RowData> = {}
+    const row : Partial<SaaRowData> = {}
     row.name = value.name
     const statusCountFields = ['chargeOfFix', 'chargeOfInspection', 'chargeOfOffer', 'chargeOfAdmission']
     statusCountFields.forEach((field)=>{
@@ -224,7 +202,7 @@ function mapFixDataForBranchMode(){
     row.companyOK = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection] && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection].branch_id === key && currentValue.corporationStatus === true ? accumulator + 1 : accumulator, 0)
     row.companyNG = fixList.value.reduce((accumulator, currentValue) => currentValue.chargeOfInspection && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection] && organizationStore.state.currentOrganizationUsers[currentValue.chargeOfInspection].branch_id === key && currentValue.corporationStatus === false ? accumulator + 1 : accumulator, 0)
     row.companyOKRate = (row.companyOK + row.companyNG)?(row.companyOK / (row.companyOK + row.companyNG)).toFixed(2):'-'
-    result.push(row as RowData)
+    result.push(row as SaaRowData)
   }
   return result
 }

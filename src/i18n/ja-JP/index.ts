@@ -1762,6 +1762,7 @@ export default {
     waitList: 'リスト'
   },
   KPI: {
+    parameters: 'パラメータ',
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     numberOfVisit: '職見数',
@@ -1893,5 +1894,13 @@ export default {
     agency: '代理店',
     tempFile: 'テンプレートファイルはこちら',
     updatedAt: '最終編集日',
+  },
+  pentagon: {
+    chargeOfAdmission : '入職数',
+    chargeOfOffer : '内定数',
+    chargeOfInspection : '職見数',
+    chargeOfFix : 'FIX数',
+    BoQty : 'BO数',
+    average: '平均'
   }
 };

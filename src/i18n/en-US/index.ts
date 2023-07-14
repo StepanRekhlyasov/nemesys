@@ -1769,6 +1769,7 @@ export default {
     waitList: ' waiting list'
   },
   KPI: {
+    parameters: 'Parameters',
     targetPeriod: 'Period',
     numberOfFix: 'FIX Qty.',
     numberOfVisit: 'Visit Qty.',
@@ -1900,5 +1901,13 @@ export default {
     agency: 'Agency',
     tempFile: 'Click here for the template file',
     updatedAt: 'Last edited date',
+  },
+  pentagon: {
+    chargeOfAdmission : 'Entry Qty.',
+    chargeOfOffer : 'Offer Qty.',
+    chargeOfInspection : 'Visit Qty.',
+    chargeOfFix : 'FIX Qty.',
+    BoQty : 'BO Qty.',
+    average: 'Average'
   }
 }
