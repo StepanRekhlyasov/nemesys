@@ -1,7 +1,8 @@
 import { Timestamp } from 'firebase/firestore';
 
 export interface BudgetData {
-  id: string;
+  recordNumber?: number | string;
+  id?: string;
   accountingMonth: string;
   amount: number | string,
   branch: string;
@@ -10,6 +11,7 @@ export interface BudgetData {
   occupation: string;
   postingEndDate: Timestamp | string;
   postingStartDate: Timestamp | string;
+  accountingMonthDate?: Timestamp | string;
   unitPrice: string;
   remark: string;
   agency: string;

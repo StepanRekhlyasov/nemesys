@@ -6,6 +6,18 @@ const { t } = i18n.global
 export const budgetAddItem = computed(() => {
   return [
     {
+      label: 'ID',
+      key: 'id',
+      type: '',
+      required: true,
+    },
+    {
+      label: t('budget.recordNumber'),
+      key: 'recordNumber',
+      type: '',
+      required: true,
+    },
+    {
       label: t('budget.media'),
       key: 'media',
       type: 'select',

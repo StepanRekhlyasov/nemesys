@@ -2,13 +2,13 @@
   <div>
     <div class="text-h6 text-primary q-pl-md q-pt-md" v-if="!edit">{{ $t('budget.reg') }}</div>
     <q-linear-progress indeterminate v-if="loading" size="xs" />
-    <q-form ref="budgetForm" @submit="onSubmit" @reset="onReset" class="q-pa-md">
-      <div class="row q-pt-sm" v-for="item in budgetItem" :key="item.key">
-        <div class="col-2 q-pt-sm q-pl-sm">
+    <q-form ref="budgetForm" @submit="onSubmit" @reset="onReset" class="q-pl-md q-pb-md">
+      <div class="row" v-for="item in budgetItem" :key="item.key">
+        <div class="col-2 q-pt-md q-pl-sm" v-if="item.type">
           {{ item.label }}
           <span class="text-red" v-if="item.required">*</span>
         </div>
-        <div class="col-4 q-pl-sm">
+        <div class="col-4 q-pl-sm q-pt-sm">
           <q-input outlined dense v-model="budgetData[item.key]" v-if="item.type == 'text'"
             :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space />
           <q-input outlined dense v-model="budgetData[item.key]" v-if="item.type == 'number'"
@@ -80,12 +80,12 @@
 import { ref, onMounted } from 'vue';
 import { budgetAddItem } from '../consts/Budget.const';
 import { useBudget } from 'src/stores/budgetData';
-import { OptionData } from '../type/budget'
+import { OptionData, BudgetData } from '../type/budget'
 import { timestampToDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()
-const budgetData = ref({});
+
 const budgetForm = ref();
 const options = ref<OptionData>({ occupation: [] });
 const budgetItem = ref(budgetAddItem);
@@ -109,6 +109,8 @@ const budgetDataSample = {
   agency: props.budgetData['agency'] || '',
 
 }
+const budgetData = ref<BudgetData>(JSON.parse(JSON.stringify(budgetDataSample)));
+
 onMounted(async () => {
   options.value = await budgetStore.getOptionData();
   onReset(true);
@@ -141,14 +143,11 @@ const onSubmit = async () => {
 
 const onReset = (mount = false) => {
   if (props.edit) {
-    budgetData.value = JSON.parse(JSON.stringify(budgetDataSample));
     if (!mount) {
       emit('close')
     }
   }
-  else {
-    budgetData.value = {}
-  }
+  budgetData.value = JSON.parse(JSON.stringify(budgetDataSample));
   budgetForm.value.resetValidation();
 };
 
