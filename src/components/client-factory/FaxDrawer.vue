@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { withDefaults, defineEmits, defineProps, ref, watch } from 'vue';
 import { useApplicant } from 'src/stores/applicant';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import { useFax } from 'src/stores/fax';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils'
@@ -40,18 +40,18 @@ const hideDrawer = () => {
 };
 
 watch(
-  () => applicantStore.state.applicantList,
-  (newVal) => {
-    applicantList.value = [];
-    for (let i = 0; i < newVal.length; i++) {
-      let label = newVal[i]['name'] || '';
-      if (newVal[i]['dob']) {
-        label += ' (' + timestampToDateFormat(newVal[i]['dob']) + ')';
-      }
-      applicantList.value.push({ label: label, value: newVal[i]['id'] });
-    }
-  }
-);
+    () => (applicantStore.state.applicantList),
+    (newVal) => {
+        applicantList.value = [];
+        for (let i = 0; i < newVal.length; i++) {
+            let label = newVal[i]['name'] || ''
+            if (newVal[i]['dob']) {
+                label += ' (' + myDateFormat(newVal[i]['dob']) + ')'
+            }
+            applicantList.value.push({ label: label, value: newVal[i]['id'] })
+        }
+    },
+)
 watch(
   () => faxData.value.setTransmissionDateTime,
   () => {

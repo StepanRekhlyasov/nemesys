@@ -270,20 +270,24 @@ export const applicantClassification = computed(() => {
 export const qualificationList = computed(() => {
   return [
     {
-      label: t('applicant.add.registeredNurse'),
+      label: t('applicant.qualification.registeredNurse'),
       value: 'registeredNurse'
     },
     {
-      label: t('applicant.add.assistantNurse'),
+      label: t('applicant.qualification.assistantNurse'),
       value: 'assistantNurse'
     },
     {
-      label: t('applicant.add.newcomer'),
+      label: t('applicant.qualification.newcomer'),
       value: 'newcomer'
     },
     {
-      label: t('applicant.add.careWorker'),
+      label: t('applicant.qualification.careWorker'),
       value: 'careWorker'
+    },
+    {
+      label: t('applicant.qualification.worker'),
+      value: 'worker'
     },
   ]
 })

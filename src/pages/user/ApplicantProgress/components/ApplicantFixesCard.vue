@@ -17,7 +17,7 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1' v-html="statusDateName[status]"></div>
-      <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ timestampToDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
+      <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ myDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
       <div class='col' v-else>{{ fix[applicantStatusDates[status]]?fix[applicantStatusDates[status]]:'-' }}</div>
     </div>
     <q-btn
@@ -43,7 +43,7 @@ import { RankCount } from 'src/shared/utils/RankCount.utils'
 import { i18n } from 'boot/i18n'
 import { useApplicant } from 'src/stores/applicant'
 import { applicantStatusDates } from 'src/shared/constants/Applicant.const'
-import { timestampToDateFormat } from 'src/shared/utils/utils'
+import { myDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   fix: ApplicantFix,

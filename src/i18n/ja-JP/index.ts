@@ -53,6 +53,7 @@ export default {
     update: '正常に更新されました！',
     clear: 'クリア',
     submit: '送信',
+    register: '登録',
     remove: '除外',
     ok: 'OK',
     preview: '確認',
@@ -775,13 +776,16 @@ export default {
       others: 'その他',
       qualification: '持っている資格',
       applicationDate: '応募日',
+      applicationMedia: '応募媒体',
+      applicationMetod: '応募方法',
+      image: '応募者画像',
+    },
+    qualification: {
       registeredNurse: '正看護師',
       assistantNurse: '準看護師',
       newcomer: '初任者',
       careWorker: '介護福祉士',
-      applicationMedia: '応募媒体',
-      applicationMetod: '応募方法',
-      image: '応募者画像',
+      worker: '実務者',
     },
     shift:{
       workinghoursearly: '早番',
@@ -1262,12 +1266,6 @@ export default {
       levelOfCare: '介護度',
       memo: 'メモ欄',
       nameQualification: '資格名',
-    },
-    qualification: {
-      registeredNurse: '正看護師',
-      assistantNurse: '準看護師',
-      newcomer: '初任者',
-      careWorker: '介護福祉士',
     },
     travelingExpenses:{
       yesRegular: '有り／定期',
@@ -1785,6 +1783,7 @@ export default {
     waitList: 'リスト'
   },
   KPI: {
+    parameters: 'パラメータ',
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     numberOfVisit: '職見数',
@@ -1916,5 +1915,13 @@ export default {
     agency: '代理店',
     tempFile: 'テンプレートファイルはこちら',
     updatedAt: '最終編集日',
+  },
+  pentagon: {
+    chargeOfAdmission : '入職数',
+    chargeOfOffer : '内定数',
+    chargeOfInspection : '職見数',
+    chargeOfFix : 'FIX数',
+    BoQty : 'BO数',
+    average: '平均'
   }
 };

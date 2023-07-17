@@ -76,7 +76,7 @@
           <q-radio
             v-for="key in TypeQualifications"
             v-model="data['qualifications']"
-            :label="$t('backOrder.qualification.'+key)"
+            :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading || !data['requiredQualifications']"

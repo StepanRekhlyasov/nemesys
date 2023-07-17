@@ -57,7 +57,7 @@
               <q-radio
                 v-for="key in TypeQualifications"
                 v-model="boData['qualifications']"
-                :label="$t('applicant.add.'+key)"
+                :label="$t('applicant.qualification.'+key)"
                 checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
                 :val="key"
                 :key="key"

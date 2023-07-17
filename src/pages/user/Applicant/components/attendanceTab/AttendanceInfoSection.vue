@@ -40,16 +40,27 @@
       {{ $t('applicant.attendant.day') }}
     </div>
     <div class="col-2 q-pl-md  blue self-center">
-      <span v-if="!infoEdit">{{ timestampToDateFormat(applicant.attendingDate) }}</span>
+      <span v-if="!infoEdit">{{ myDateFormat(applicant.attendingDate, 'YYYY/MM/DD HH:mm') }}</span>
       <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendingDate']"  :disable="loading">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="data['attendingDate']" mask="YYYY/MM/DD">
+              <q-date v-model="data['attendingDate']" mask="YYYY/MM/DD HH:mm">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                 </div>
               </q-date>
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+        <template v-slot:append>
+          <q-icon name="access_time" class="cursor-pointer">
+            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+              <q-time v-model="data['attendingDate']" mask="YYYY/MM/DD HH:mm">
+                <div class="row items-center justify-end">
+                  <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                </div>
+              </q-time>
             </q-popup-proxy>
           </q-icon>
         </template>
@@ -86,7 +97,7 @@ import { ref } from 'vue';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import { useApplicant } from 'src/stores/applicant';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -122,7 +133,7 @@ function resetData() {
     attendingStatus: props?.applicant['attendingStatus'] || false,
     attendingReasonNG: props?.applicant['attendingReasonNG'],
     attendingReasonNGDetail: props?.applicant['attendingReasonNGDetail'],
-    attendingDate: timestampToDateFormat(props?.applicant['attendingDate']),
+    attendingDate: myDateFormat(props?.applicant['attendingDate']),
     chargeOfAttending: props?.applicant['chargeOfAttending'],
     memo: props?.applicant['memo'],
   }

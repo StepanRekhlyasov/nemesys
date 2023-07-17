@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ApplicantFix, ApplicantStatus } from 'src/shared/model';
-import { ConstraintsType, toDateFormat, toMonthYear } from 'src/shared/utils/utils';
+import { ConstraintsType, myDateFormat, toMonthYear } from 'src/shared/utils/utils';
 import { addDoc, collection, deleteField, doc, getDoc, getDocs, getFirestore, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from './applicant';
@@ -27,11 +27,11 @@ export const useFix = defineStore('fix', () => {
         list.push({
             ...data,
             id: fix.id,
-            fixDate: toDateFormat(data['fixDate']),
-            offerDate: toDateFormat(data['offerDate']),
-            admissionDate: toDateFormat(data['admissionDate']),
-            endDate: toDateFormat(data['endDate']),
-            inspectionDate: toDateFormat(data['inspectionDate']),
+            fixDate: myDateFormat(data['fixDate'], 'YYYY/MM/DD HH:mm'),
+            offerDate: myDateFormat(data['offerDate'], 'YYYY/MM/DD HH:mm'),
+            admissionDate: myDateFormat(data['admissionDate'], 'YYYY/MM/DD HH:mm'),
+            endDate: myDateFormat(data['endDate'], 'YYYY/MM/DD'),
+            inspectionDate: myDateFormat(data['inspectionDate'], 'YYYY/MM/DD HH:mm'),
         } as ApplicantFix)
     })
     applicantStore.state.applicantFixes[applicant_id] = list
@@ -64,11 +64,11 @@ export const useFix = defineStore('fix', () => {
       return {
         ...itemData,
         id: item.id,
-        fixDate: toDateFormat(itemData['fixDate']),
-        offerDate: toDateFormat(itemData['offerDate']),
-        admissionDate: toDateFormat(itemData['admissionDate']),
-        endDate: toDateFormat(itemData['endDate']),
-        inspectionDate: toDateFormat(itemData['inspectionDate']),
+        fixDate: myDateFormat(itemData['fixDate'], 'YYYY/MM/DD HH:mm'),
+        offerDate: myDateFormat(itemData['offerDate'], 'YYYY/MM/DD HH:mm'),
+        admissionDate: myDateFormat(itemData['admissionDate'], 'YYYY/MM/DD HH:mm'),
+        endDate: myDateFormat(itemData['endDate'], 'YYYY/MM/DD'),
+        inspectionDate: myDateFormat(itemData['inspectionDate'], 'YYYY/MM/DD HH:mm'),
       } as ApplicantFix
     })
     if(Array.isArray(ids)){
