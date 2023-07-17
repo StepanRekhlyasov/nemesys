@@ -198,8 +198,9 @@ const clearRadius = () => {
               Km
             </template>
           </q-input>
-          <q-btn :disable="inputRadius<=0" @click="getRadius" class="bg-primary text-white q-ma-sm" :label="$t('common.search')"/>
-          <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')"/>
+          <q-btn :disable="inputRadius <= 0" @click="getRadius" class="bg-primary text-white q-ma-sm"
+            :label="$t('common.search')" />
+          <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')" />
         </div>
       </div>
     </q-card-section>

@@ -31,9 +31,9 @@ watch(mapDrawerValue, async () => {
     searchRadius.value = 0;
     await getClientLocation();
     staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ApplicantForCandidateSearch[];
-      staffList.value.forEach((staff) => {
-        staff['marker'] = 'white';
-      });
+    staffList.value.forEach((staff) => {
+      staff['marker'] = 'white';
+    });
   }
 })
 
@@ -53,28 +53,29 @@ const getClientLocation = async () => {
       lng: Number(client.lng)
     }
   }
+  getMarkerColor()
 }
 
 const circleOption = computed(() => {
   return {
-  center: center.value,
-  radius: searchRadius.value*1000,
-  strokeColor: '#FF0000',
-  strokeOpacity: 0.8,
-  strokeWeight: 2,
-  fillColor: '#FF0000',
-  fillOpacity: 0.05,
-};
+    center: center.value,
+    radius: searchRadius.value * 1000+0+1.627,
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.05,
+  };
 });
 
 const isInsideCircle = (staffLocation) => {
-  const clientLocation = {lat:center.value.lat, lon:center.value.lng}
+  const clientLocation = { lat: center.value.lat, lon: center.value.lng }
   const distance = backOrderStore.getDistance(clientLocation, staffLocation);
-  return distance<=searchRadius.value;
+  return distance <= searchRadius.value;
 }
 
 const getStaffMarkerOptions = (staff) => {
-  const position = { lat: staff.lat, lng: staff.lon };
+  const position = { lat: staff.lat, lng: staff.lon, anchorPoint: 'BOTTOM_CENTER' };
   return {
     position,
     draggable: false,
@@ -84,10 +85,10 @@ const getStaffMarkerOptions = (staff) => {
 
 const getMarkerColor = () => {
   staffList.value.forEach((staff) => {
-    if(isInsideCircle(staff)){
+    if (isInsideCircle(staff)) {
       staff.marker = 'primary';
     }
-    else{
+    else {
       staff.marker = 'white';
     }
   });
@@ -133,7 +134,7 @@ const setLocation = () => {
   }
   isLoadingProgress.value = true
   const geocoder = new google.maps.Geocoder();
-  geocoder.geocode({ address: searchInput.value },(results, status) => {
+  geocoder.geocode({ address: searchInput.value }, (results, status) => {
     if (status === 'OK' && results[0]) {
       const place = results[0];
       center.value = {
@@ -165,12 +166,13 @@ const clear = () => {
     </div>
     <q-card-section class="row search">
       <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker">
-      <template v-slot:prepend>
-        <q-btn flat icon='place' :color="props.theme"></q-btn>
-      </template>
-    </q-input>
-      <q-btn :disable="searchInput==''" @click="setLocation" class="bg-primary text-white q-mr-md" :label="$t('common.search')"/>
-      <q-btn @click="clear" :label="$t('common.clear')"/>
+        <template v-slot:prepend>
+          <q-btn flat icon='place' :color="props.theme"></q-btn>
+        </template>
+      </q-input>
+      <q-btn :disable="searchInput == ''" @click="setLocation" class="bg-primary text-white q-mr-md"
+        :label="$t('common.search')" />
+      <q-btn @click="clear" :label="$t('common.clear')" />
     </q-card-section>
     <q-card-section>
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
@@ -194,8 +196,9 @@ const clear = () => {
               Km
             </template>
           </q-input>
-          <q-btn :disable="inputRadius<=0" @click="getRadius" class="bg-primary text-white q-ma-sm" :label="$t('common.search')"/>
-          <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')"/>
+          <q-btn :disable="inputRadius <= 0" @click="getRadius" class="bg-primary text-white q-ma-sm"
+            :label="$t('common.search')" />
+          <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')" />
         </div>
       </div>
     </q-card-section>
@@ -204,11 +207,12 @@ const clear = () => {
 </template>
 
 <style scoped>
-.search{
+.search {
   width: 100%;
   padding-bottom: 0%;
 }
-.searchBox{
+
+.searchBox {
   width: 70%;
 }
 
@@ -223,5 +227,4 @@ const clear = () => {
   padding: 4px 8px;
   border-radius: 4px;
 }
-
 </style>
