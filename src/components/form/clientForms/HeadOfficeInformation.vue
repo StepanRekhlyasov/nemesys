@@ -72,7 +72,7 @@ watch(clientData, () => {
                         outlined dense
                         v-model="clientData['mail']"
                         :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
-                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || '']"/>
+                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || true]"/>
                 </div>
 
                 <div class="col-6 q-pl-sm q-pt-lg">

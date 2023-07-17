@@ -37,9 +37,8 @@ const submitForm = () => {
 }
 
 const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) => {
-    emit('hideDrawer')
-
     if(newClientFactoryData) {
+        emit('hideDrawer')
         await addClientFactory(newClientFactoryData as ClientFactory)
     }
 }
