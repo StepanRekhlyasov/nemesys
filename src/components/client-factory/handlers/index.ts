@@ -131,7 +131,7 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
 
       const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
           if(key) {
-            return {label: key, value: (safeGet(draft, key) ?? safeGet(clientFactory, key)) || '', key: `clientFactory.officeDetails.${industryType}.uniqueItems.${key}`, editType: 'text', isHighlight: safeGet(draft, key) !== undefined && safeGet(clientFactory, key) !== safeGet(draft, key)}
+            return {label: key, value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`)) || typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 0 : '', key: `officeDetails.${industryType}.uniqueItems.${key}`, editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 'number' : 'text', isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`)}
           }
 
         return {label: '', value: '', editType: '', key: '', isHighlight: false}
@@ -163,19 +163,6 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
         {label: t('clientFactory.drawer.details.workingHourNight'), value: (safeGet(draft, 'officeDetails.commonItems.workingHourNight') ?? safeGet(clientFactory, 'officeDetails.commonItems.workingHourNight')) || '', editType: 'text', key: 'officeDetails.commonItems.workingHourNight', isHighlight: safeGet(draft, 'officeDetails.commonItems.workingHourNight') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.workingHourNight') !== safeGet(draft, 'officeDetails.commonItems.workingHourNight')}
       ]
     }).value 
-
-    officeDetails.uniqueItems = computed(() => {
-
-      const uniqueItems = Object.keys(safeGet(clientFactory, 'clientFactory.officeDetails.uniqueItems') ?? {}).map((key) => {
-          if(key) {
-            return {label: key, value: (safeGet(draft, key) ?? safeGet(clientFactory, key)) || '', key: `clientFactory.officeDetails.uniqueItems.${key}`, editType: 'text', isHighlight: safeGet(draft, key) !== undefined && safeGet(clientFactory, key) !== safeGet(draft, key)}
-          }
-
-          return {label: '', value: '', editType: '', key: '', isHighlight: false}
-      })
-
-      return uniqueItems
-    }).value
   }
 
   return officeDetails
