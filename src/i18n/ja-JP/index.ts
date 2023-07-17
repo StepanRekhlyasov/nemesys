@@ -919,7 +919,7 @@ export default {
         birth: '生年月日',
         lon: '経度',
         lat: '緯度',
-
+        shortTime: '時短',
         attractionsStatus: '誘致ステータス',
         employmentStatus: '就業状況',
         classiffication: '区分',

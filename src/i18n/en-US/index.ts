@@ -924,7 +924,7 @@ export default {
         birth: 'Date of birth',
         lon: 'Longitude',
         lat: 'Latitude',
-
+        shortTime: 'Short Time',
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
         classiffication: 'Classification',

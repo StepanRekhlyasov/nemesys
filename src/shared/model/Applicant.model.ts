@@ -119,10 +119,11 @@ export interface DesiredConditions {
   daysToWork?: number;
   daysPerWeek?: Days[];
   specialDay?: SpecialDay[];
-  workingHoursEarly?: boolean;
-  workingHoursDay?: boolean;
-  workingHoursLate?: boolean;
-  workingHoursNight?: boolean;
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  shortTime?: boolean;
   shiftRemarks?: string;
   meansCommuting?: string;
   nearestStation?: string;
