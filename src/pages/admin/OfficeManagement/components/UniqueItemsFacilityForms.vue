@@ -27,8 +27,8 @@ const newFacilityFormHandle = () => {
 
 <template>
     <div v-if="activeIndustry">
-        <div v-if="activeIndustry.uniqueItems.facilityForms.length">
-            <div v-for="(line, idx) in activeIndustry.uniqueItems.facilityForms" :key="line.id" class="row items-center q-mt-md">
+        <div v-if="Object.keys(activeIndustry.uniqueItems.facilityForms).length">
+            <div v-for="(line, key, idx) in activeIndustry.uniqueItems.facilityForms" :key="key" class="row items-center q-mt-md">
                 <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
 
                 <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${idx + 1}` }}</div>
@@ -40,7 +40,7 @@ const newFacilityFormHandle = () => {
         <div class="row items-center q-mt-md">
             <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
 
-            <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${activeIndustry.uniqueItems.facilityForms.length + 1}` }}</div>
+            <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${Object.keys(activeIndustry.uniqueItems.facilityForms).length + 1}` }}</div>
 
             <q-input
                 class="q-mr-md" outlined dense

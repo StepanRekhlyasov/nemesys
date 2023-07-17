@@ -6,7 +6,7 @@ const { t } = useI18n({ useScope: 'global' });
 const props = withDefaults(defineProps<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     modelValue: Record<string, any>
-    theme: string
+    theme?: string
 }>(), {
     theme: 'primary'
 });
@@ -34,16 +34,30 @@ watch(clientFactoryInfo, () => {
                         TEL
                         <span class="text-red-5">*</span>
                     </q-item-label>
-                    <q-input outlined dense v-model="clientFactoryInfo['tel']" :placeholder="t('client.add.phoneLabel')"
-                        lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientFactoryInfo['tel']"
+                        :placeholder="t('client.add.phoneLabel')"
+                        lazy-rules
+                        :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
+                        hide-bottom-space />
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         FAX
                         <span class="text-red-5">*</span>
                     </q-item-label>
-                    <q-input outlined dense v-model="clientFactoryInfo['fax']" :placeholder="t('client.add.phoneLabel')"
-                        lazy-rules :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientFactoryInfo['fax']"
+                        :placeholder="t('client.add.phoneLabel')"
+                        lazy-rules
+                        :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
+                        hide-bottom-space />
                 </div>
             </div>
 
@@ -52,8 +66,12 @@ watch(clientFactoryInfo, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.email') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientFactoryInfo['mail']"
-                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')" />
+
+                    <q-input
+                        :color="theme"
+                        outlined dense v-model="clientFactoryInfo['mail']"
+                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
+                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || '']"/>
                 </div>
                 <div class="col-6 q-pl-sm q-pt-lg">
                     <q-checkbox size="xs" v-model="clientFactoryInfo['isFaxNG']" :label="t('client.add.faxReceptionNG')" :color="theme"/>
@@ -65,13 +83,23 @@ watch(clientFactoryInfo, () => {
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.homePage') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientFactoryInfo['homepageUrl']" />
+                    
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientFactoryInfo['homepageUrl']"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         {{ t('office.numberEmployees') }}
                     </q-item-label>
-                    <q-input outlined dense v-model="clientFactoryInfo['numberEmployees']" />
+
+                    <q-input
+                    :color="theme"
+                    outlined dense
+                    v-model="clientFactoryInfo['numberEmployees']"
+                    :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>
 

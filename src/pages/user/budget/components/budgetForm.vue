@@ -80,20 +80,22 @@
 import { ref, onMounted } from 'vue';
 import { budgetAddItem } from '../consts/Budget.const';
 import { useBudget } from 'src/stores/budgetData';
-import {OptionData} from '../type/budget'
+import { OptionData } from '../type/budget'
 import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
+import { useOrganization } from 'src/stores/organization';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()
 const budgetData = ref({});
 const budgetForm = ref();
-const options = ref<OptionData>({occupation:[]});
+const options = ref<OptionData>({ occupation: [] });
 const budgetItem = ref(budgetAddItem);
 const budgetStore = useBudget();
 const loading = ref(true);
 const edit = ref(props.edit);
 const monthPicker = ref();
-
+const organization = useOrganization()
 const budgetDataSample = {
     accountingMonth: props.budgetData['accountingMonth'] || '',
     amount: props.budgetData['amount'] || '',
@@ -110,10 +112,17 @@ const budgetDataSample = {
 
 }
 onMounted(async () => {
-    options.value = await budgetStore.getOptionData();
+    options.value = await budgetStore.getOptionData(organization.currentOrganizationId);
     onReset(true);
     loading.value = false;
 });
+
+watchCurrentOrganization(async (v) => {
+    loading.value = true
+    options.value = await budgetStore.getOptionData(v);
+    onReset(true);
+    loading.value = false;
+})
 
 const optionsEnd = (date: string) => {
     return date >= budgetData.value['postingStartDate'];
@@ -127,6 +136,10 @@ const optionsStart = (date: string) => {
 
 
 const onSubmit = async () => {
+    if (!edit.value) {
+        budgetData.value['organizationId'] = organization.currentOrganizationId
+    }
+
     const save = await budgetStore.saveBudget(budgetData.value);
     if (save) {
         if (!budgetData.value['id']) {
@@ -153,9 +166,9 @@ const onReset = (mount = false) => {
 };
 
 const checkValue = (val: string, reason: string) => {
-  if (reason === 'month') {
-      monthPicker.value[0].hide();
-  }
+    if (reason === 'month') {
+        monthPicker.value[0].hide();
+    }
 }
 </script>
   

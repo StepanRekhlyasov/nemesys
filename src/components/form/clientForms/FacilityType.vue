@@ -31,8 +31,16 @@ const updateType = (value: string, isChecked: boolean) => {
             <q-item-label class="q-pb-xs">
                 {{t('client.add.facilityType')}}
             </q-item-label>
-            <q-checkbox size="xs" :model-value="localType.includes(option.value)" :val="option.value" :label="option.name" :color="`${theme}`"
-                v-for="option in facilityList" :key="option.value" @update:modelValue="(isChecked) => updateType(option.value, isChecked)"/>
+
+            <q-checkbox
+                size="xs"
+                :model-value="localType.includes(option.value)"
+                :val="option.value"
+                :label="option.name"
+                :color="`${theme}`"
+                v-for="option in facilityList"
+                :key="option.value"
+                @update:modelValue="(isChecked) => updateType(option.value, isChecked)"/>
         </div>
     </q-item>
 </template>

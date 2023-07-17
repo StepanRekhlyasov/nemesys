@@ -94,7 +94,8 @@ export default {
       '12' : '12月',
     },
     more: 'もっと',
-    downloadCSV: 'CSVダウンロード'
+    downloadCSV: 'CSVダウンロード',
+    branch: '支店',
   },
   smoking: {
     no: '無',
@@ -312,6 +313,7 @@ export default {
       editProfile: 'プロフィール編集',
       accauntSettings: 'アカウント設定',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
+      delete: 'このユーザーアカウントはログインできなくなります。',
       logout: 'ログアウト',
       adminPage: 'システム管理ページを開く',
     },
@@ -932,7 +934,7 @@ export default {
         classification: {
           introduction: '紹介',
           dispatch: '派遣',
-          TTP: 'TTP'
+          ttp: 'TTP'
         }
       }
 
@@ -950,7 +952,7 @@ export default {
       waitOffer: '内定待ち',
       waitEntry: '入職待ち',
       working: '稼働中',
-      waitTermintion: '終了待ち',
+      waitTermination: '終了待ち',
       waitRetire: '退職待ち',
       retired: '退職済み',
     },
@@ -1641,14 +1643,14 @@ export default {
       category: 'カテゴリ',
       subject: '件名',
       companyID: '企業ID 企業名',
-      recievedDate: '受信日',
+      recievedDate: '送受信日',
       responseDate: '返信日'
     },
     detail: {
       inquiryTitle: '問い合わせ内容',
       responseTitle: '返答フォーム',
       category: 'カテゴリ',
-      recievedDate: '受信日',
+      recievedDate: '送受信日',
       subject: '件名',
       content: '内容',
       metro: '東京都',
@@ -1685,7 +1687,21 @@ export default {
     ageComposition:'年齢構成',
     daysToWork:'勤務日数',
     yen:'円',
+    item:'項目',
+    base:'拠点',
+    totalingMethod:'集計方法',
+    jobCategory:'職種',
     categories:{
+      totalingMethod:{
+      totallingDailyData:'日次データ集計',
+      totallingAttractionDataByBranch:'支店別集客データ集計',
+      totallingAttractionDataByMedia:'媒体別集客データ集計'
+    },
+    item:{
+      actualValue:'実績値',
+      unitPricePerLeadtime:'単価L/T',
+      applicationAttribute:'応募属性'
+    },
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
       numberOfInvitations:'誘致数',
@@ -1762,6 +1778,7 @@ export default {
     showBranch: '表示支店',
     notification: '通知',
     openList: 'リストを開く',
+    closeList: 'リストを閉じる',
     applicantProgress: '応募者進捗状況',
     showWhiteboard: 'ホワイトボードを表示する',
     showList: 'リストを表示する',
@@ -1785,7 +1802,7 @@ export default {
     modeMedia: '媒体別集客データ集計',
     modeIndividual: '個人別データ集計',
     modeBranch: '支店別集客データ集計',
-    modeDay: '日時集計',
+    dailyTotal: '日次集計',
     item: '項目',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',

@@ -258,11 +258,25 @@ export const useClientFactory = defineStore('client-factory', () => {
 
                     clientFactoriesMap.value[client.id as string] = newClientFactories;
                     clientFactories.value = Object.values(clientFactoriesMap.value).flat();
-
                 });
             }
         }));
     };
+
+    const getClientFactoryList = async (client_id: string) => {
+        const docSnap =  await getDocs(query(
+            collection(db, 'clients/'+client_id+'/client-factory'),
+            orderBy('name')
+        ))
+        return docSnap.docs.map((doc) => {
+            return {
+                ...doc.data(),
+                id: doc.id,
+                updated_at: date.formatDate(doc.data()?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+            } as ClientFactory;
+        })
+    } 
 
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
@@ -449,6 +463,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         clientFactories,
         modifiedCFs,
         getClientFactories,
+        getClientFactoryList,
         getAllImportLogs,
         getAllReflectLogs,
         addReflectLog,

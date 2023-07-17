@@ -52,13 +52,13 @@ const props = defineProps<{
 const { t } = i18n.global
 const statusDateName = computed(()=>{
   return {
-    'wait_contact' : t('applicant.progress.card.applicationDate'),
-    'wait_attend' : t('applicant.progress.card.invitationDate'),
-    'wait_FIX' : t('applicant.progress.card.attendingDate'),
-    'wait_visit' : t('applicant.progress.card.FIXDate'),
-    'wait_offer' : t('applicant.progress.card.jobDate'),
-    'wait_entry' : t('applicant.progress.card.appointmentDate'),
-    'wait_termination' : '&#128337;',
+    [ApplicantStatus.WAIT_CONTACT] : t('applicant.progress.card.applicationDate'),
+    [ApplicantStatus.WAIT_ATTEND] : t('applicant.progress.card.invitationDate'),
+    [ApplicantStatus.WAIT_FIX] : t('applicant.progress.card.attendingDate'),
+    [ApplicantStatus.WAIT_VISIT] : t('applicant.progress.card.FIXDate'),
+    [ApplicantStatus.WAIT_OFFER] : t('applicant.progress.card.jobDate'),
+    [ApplicantStatus.WAIT_ENTRY] : t('applicant.progress.card.appointmentDate'),
+    [ApplicantStatus.WAIT_TERMINATION] : '&#128337;',
   }
 })
 
@@ -69,7 +69,9 @@ const applicant = computed(()=>{
 const countFixes = computed(()=>{
   if(applicantStore.state.applicantFixes[props.fix.applicant_id]){
     const notWorkingFix = applicantStore.state.applicantFixes[props.fix.applicant_id].filter((row)=>{
-      return row['status'] !== 'working'
+      if(row.status){
+        return [ApplicantStatus.WAIT_VISIT, ApplicantStatus.WAIT_OFFER, ApplicantStatus.WAIT_ENTRY, ApplicantStatus.WAIT_TERMINATION].includes(row.status)
+      }
     })
     return notWorkingFix.length
   }
@@ -81,15 +83,15 @@ const emit = defineEmits<{
 }>()
 
 const redAlert = computed(()=>{
-  if(!applicant.value){
+  if(!props.fix){
     return false
   }
-  if(!(applicant.value.currentStatusTimestamp instanceof Timestamp)){
+  if(!(props.fix.currentStatusTimestamp instanceof Timestamp)){
     return false
   }
   const daysUntilAlert = 3 * 86400000 /* days x miliseconds */
   const compareWithMe = new Date().setTime(new Date().getTime() - daysUntilAlert);
-  return applicant.value.currentStatusTimestamp.toDate() < new Date(compareWithMe)
+  return props.fix.currentStatusTimestamp.toDate() < new Date(compareWithMe)
 })
   
 </script>
@@ -109,7 +111,7 @@ const redAlert = computed(()=>{
   }
 }
 .highlighted{
-  background-color: #A9F5F0;
+  background-color: #A9F5FC;
 }
 .countFixesBtn{
   width: 36px;

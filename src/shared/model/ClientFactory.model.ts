@@ -87,9 +87,6 @@ type OfficeDetails = {
         workingHourLate: string
         workingHourNight: string
     }
-    uniqueItems: {
-        [key: string]: string
-    }
 } & {
     registeredInfo: {
         prefecture: string

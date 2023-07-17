@@ -89,8 +89,7 @@ const validateAndSubmit = async () => {
                     city: '',
                     parentClient: parentClient.value
                 },
-                commonItems: {},
-                uniqueItems: {}
+                commonItems: {}
             } as ClientFactory['officeDetails'],
             draft: {}
         } as Partial<ClientFactory>
@@ -113,13 +112,13 @@ defineExpose({
             <q-form class="q-gutter-none" ref="formRef">
                 <q-card-section class="q-pa-none q-pt-sm scroll">
                     <q-list>
-                        <ClientFactoryName v-model="clientFactoryName"/>
+                        <ClientFactoryName v-model="clientFactoryName" :theme="theme"/>
                         <ParentClient v-model="parentClient" :theme="theme"/>
                         <AddressSection v-model="addressSection" :theme="theme"/>
                         <ClientFactoryInfo v-model="clientFactoryInfo" :theme="theme"/>
                         <ContractInfo v-model="contractInfo" :theme="theme"/>
                         <FacilityType v-model="facilityTypes" :theme="theme"/>
-                        <ContactInfo v-model="inChargeInfo"/>
+                        <ContactInfo v-model="inChargeInfo" :theme="theme"/>
 
                     </q-list>
                 </q-card-section>
