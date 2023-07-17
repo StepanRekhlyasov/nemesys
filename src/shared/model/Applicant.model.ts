@@ -149,6 +149,8 @@ export interface Attendance {
 
 export interface PersonalStatus {
   smoking?: SmokingStatus;
+  smokingWhat?: string;
+  smokingStop?: string;
   tattoos?: TattoosStatus;
   marriedStatus?: MarriedStatus;
   liveTogether?: TattoosStatus;

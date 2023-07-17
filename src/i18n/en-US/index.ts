@@ -105,7 +105,9 @@ export default {
     electronic: 'Electronic cigarettes',
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
-    notPossible: 'Not possible'
+    notPossible: 'Not possible',
+    can: 'Can stop smoking while working',
+    cant: 'Cannot stop smoking while working',
   },
   marriedStatus: {
     married: 'Married',
