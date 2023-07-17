@@ -138,7 +138,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
 import { ApplicantFix, Applicant, BackOrderModel } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { toDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import { useBackOrder } from 'src/stores/backOrder';
 
 const props = defineProps<{
@@ -252,7 +252,7 @@ function mutateDatesInData(data){
   const keys = ['fixDate', 'offerDate', 'admissionDate', 'inspectionDate', 'endDate']
   keys.map((key)=>{
     if(data[key]){
-      data[key] = toDateFormat(data[key])
+      data[key] = myDateFormat(data[key], 'YYYY/MM/DD HH:mm')
     }
   })
   return data
