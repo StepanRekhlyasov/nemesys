@@ -19,7 +19,7 @@
               <q-td>{{ $t('applicant.add.'+props.row.occupation) }}</q-td>
           </template>
           <template v-slot:body-cell-applicationDate="props">
-              <q-td :props="props" v-if="mode==='applicant'">{{ myDateFormat(props.row.applicationDate, 'YYYY/MM/DD') }}</q-td>
+              <q-td :props="props" v-if="mode==='applicant'">{{ myDateFormat(props.row.applicationDate, 'YYYY/MM/DD HH:mm') }}</q-td>
               <q-td :props="props" v-else>{{ boIdList[props.row.backOrder]?.boId }}</q-td>
           </template>
           </q-table>

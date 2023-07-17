@@ -105,12 +105,12 @@
     <div class="row "  >
       <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" v-if="selectedBo['requiredQualifications']"
-        :value="selectedBo['qualifications']? $t('backOrder.qualification.'+data['qualifications']) : ''">
+        :value="selectedBo['qualifications']? $t('applicant.qualification.'+data['qualifications']) : ''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationRule(val) : true]">
           <q-radio
             v-for="key in TypeQualifications"
             v-model="data['qualifications']"
-            :label="$t('backOrder.qualification.'+key)"
+            :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading || !data['requiredQualifications']"

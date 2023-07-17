@@ -62,7 +62,7 @@
         <q-td>{{ props.row.memo }}</q-td>
       </template>
       <template v-slot:body-cell-qualification="props">
-        <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('backOrder.qualification.'+q) }}</p></q-td>
+        <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('applicant.qualification.'+q) }}</p></q-td>
       </template>
       <template v-slot:body-cell-timeToWork="props">
         <q-td>{{ myDateFormat(props.row.timeToWork, 'YYYY/MM/DD') }}</q-td>
