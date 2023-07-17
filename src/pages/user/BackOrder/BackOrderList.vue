@@ -175,6 +175,7 @@ import { radius } from './consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -198,6 +199,11 @@ const pagination = ref({
   rowsPerPage: 10,
   // rowsNumber: xx if getting data from a server
 });
+
+
+watchCurrentOrganization(async ()=>{
+ await backOrderStore.loadBackOrder({});
+})
 
 const closeMap = () => {
   showSearchByMap.value = false;

@@ -8,6 +8,7 @@ import { ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
 import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
+import { useOrganization } from './organization';
 
 interface BackOrderState {
   BOList: BackOrderModel[];
@@ -36,7 +37,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       total_results: 0,
     },
   });
- 
+  const organization = useOrganization()
   const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
@@ -141,19 +142,20 @@ export const useBackOrder = defineStore('backOrder', () => {
   }
 
   const loadBOData = async () => {
-    state.value.BOList = [];
     state.value.isLoadingProgress = true;
+    let allBOList: BackOrderModel[] = []
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch),]);
+      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId)]);
       for (let i = 0; i < boList.length; i++) {
         boList[i]['dateOfRegistration'] = myDateFormat(
           boList[i]['dateOfRegistration'] as Timestamp
         );
       }
 
-      state.value.BOList = boList;
+      allBOList = [...allBOList, ...boList];
     }
+    state.value.BOList = allBOList
     state.value.isLoadingProgress = false;
   };
 
@@ -182,6 +184,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 
     const docRef = doc(collection(db, '/BO'));
     data['id'] = docRef.id;
+    data['organizationId'] = organization.currentOrganizationId
     await setDoc(docRef, data);
     Alert.success();
   }
