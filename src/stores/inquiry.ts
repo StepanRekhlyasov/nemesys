@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { date } from 'quasar';
 import { InquiryMessage, INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData, InquiryDataRow, Organization } from 'src/shared/model';
-import { findTheLastDate, timestampToDateFormat } from 'src/shared/utils/utils';
+import { findTheLastDate, myDateFormat } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 
 type InquiryState = {
@@ -108,7 +108,7 @@ export const useInquiry = defineStore('inquiry', () => {
       // @ts-expect-error the same problem as on 98 line
       messages: [...state.value.currentRowData.messages,
         {
-          messageDate: timestampToDateFormat(message.date),
+          messageDate: myDateFormat(message.date),
           content: message.content,
           type: message.type
         }

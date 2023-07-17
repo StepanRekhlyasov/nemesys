@@ -47,7 +47,7 @@
           <template v-slot:body-cell-qualification="props">
             <q-td :props="props">
               <span v-if="props.value && props.value.length > 0">
-                {{ props.value.map(item => $t('applicant.add.' + item)).join(', ') }}
+                {{ props.value.map(item => $t('applicant.qualification.' + item)).join(', ') }}
               </span>
             </q-td>
           </template>
