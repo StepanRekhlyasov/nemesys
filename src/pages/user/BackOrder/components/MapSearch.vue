@@ -111,6 +111,7 @@ watch(searchRadius, (newVal) => {
 const markerDrag = (event) => {
   center.value = { lat: event.latLng.lat(), lng: event.latLng.lng() }
   emit('updateMap', { ...center.value, 'radiusInM': searchRadius.value * 1000 })
+  getMarkerColor()
 }
 
 const getRadius = () => {
