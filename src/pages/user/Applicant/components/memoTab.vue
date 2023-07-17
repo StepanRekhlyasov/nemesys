@@ -8,7 +8,7 @@
             {{ $t('applicant.attendant.content') }}
           </div>
           <div class="col-9 q-pl-sm">
-            <q-input outlined dense v-model="data['content']" class="bg-white" />
+            <q-input outlined dense v-model="data['content']" class="bg-white" type="textarea"/>
           </div>
         </div>
 
@@ -41,7 +41,7 @@
 
         <template v-slot:body-cell-content="props">
           <q-td :props="props" style="white-space: break-spaces;">
-            <q-input v-if="isRowSelected(props.rowIndex) " outlined dense v-model="editableContect['content']" />
+            <q-input v-if="isRowSelected(props.rowIndex) " type="textarea" outlined dense v-model="editableContect['content']" />
             <template v-if="!isRowSelected(props.rowIndex)">
               {{ props.row.content }}
             </template>
