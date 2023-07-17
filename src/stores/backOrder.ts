@@ -147,7 +147,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   const loadBOData = async () => {
     state.value.isLoadingProgress = true;
-    const allBOList = ref<BackOrderModel[]>([])
+    let allBOList: BackOrderModel[] = []
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
       const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch), orderBy('boId', 'desc')]);
@@ -157,9 +157,9 @@ export const useBackOrder = defineStore('backOrder', () => {
         );
       }
 
-      allBOList.value = [...allBOList.value, ...boList];
+      allBOList = [...allBOList, ...boList];
     }
-    state.value.BOList = allBOList.value
+    state.value.BOList = allBOList
     state.value.isLoadingProgress = false;
   };
 
