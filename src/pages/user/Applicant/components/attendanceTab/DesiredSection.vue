@@ -72,6 +72,9 @@
     </div>
 
     <div class="row q-pb-sm">
+      <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.list.availableShift') }}
+      </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.earlyShift') }}
       </div>
