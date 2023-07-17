@@ -1628,7 +1628,7 @@ export default {
         attachment: 'Attachment',
         numItemsSent: 'Number Items Sent',
         numDestinations: 'Number Destinations',
-        maxTransmissions: 'Number Transmissions',
+        numTransmissions: 'Number Transmissions',
         sentDateTime: 'Sent date and time',
         numPages: 'Number of PDF pages',
         selectedCF: 'Selected CF',

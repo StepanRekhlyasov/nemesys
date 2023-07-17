@@ -60,9 +60,9 @@ export const faxColumns = computed(() => {
             align: 'left',
         },
         {
-            label: t('clientFactory.fax.list.maxTransmissions'),
-            field: 'maxTransmissions',
-            name: 'maxTransmissions',
+            label: t('clientFactory.fax.list.numTransmissions'),
+            field: 'numSuccessDelivery',
+            name: 'numSuccessDelivery',
             align: 'left',
         },
 

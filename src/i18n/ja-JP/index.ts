@@ -1621,7 +1621,7 @@ export default {
         attachment: '添付ファイル',
         numItemsSent: '送信対象件数',
         numDestinations: '正常宛先件数',
-        maxTransmissions: '実送信件数',
+        numTransmissions: '実送信件数',
         sentDateTime: '送信日時',
         numPages: '一送信件数',
         selectedCF: '宛先事業所数',
