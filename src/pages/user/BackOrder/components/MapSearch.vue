@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { watch, ref, defineProps, defineEmits, onMounted } from 'vue';
-import { GoogleMap, Marker as Markers, Circle as Circles, InfoWindow } from 'vue3-google-map';
+import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { radius } from '../consts/BackOrder.const'
 import { BackOrderModel, ApplicantForCandidateSearch } from 'src/shared/model';
@@ -31,13 +31,15 @@ watch(mapDrawerValue, async () => {
     await getClientLocation();
     staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ApplicantForCandidateSearch[];
       staffList.value.forEach((staff) => {
-        staff['marker'] = 'yellow';
+        staff['marker'] = 'white';
       });
   }
 })
 
 onMounted(async () => {
+  isLoadingProgress.value = true
   await getClientLocation();
+  isLoadingProgress.value = false;
 
 })
 
@@ -68,28 +70,27 @@ const isInsideCircle = (staffLocation) => {
   return distance<=searchRadius.value;
 }
 
+// const getColor = (staff) => {
+
+// }
+
 const getStaffMarkerOptions = (staff) => {
   const position = { lat: staff.lat, lng: staff.lon };
-  const iconUrl = `http://maps.google.com/mapfiles/ms/icons/${staff.marker}-dot.png`;
-  // console.log(staffList.value[0])
   return {
     position,
     draggable: false,
     clickable: true,
-    icon: {
-      url: iconUrl,
-    },
   };
 }
 
 watch(searchRadius, (newVal) => {
-
+isLoadingProgress.value = true
   staffList.value.forEach((staff) => {
     if(isInsideCircle(staff)){
-      staff.marker = 'blue';
+      staff.marker = 'primary';
     }
     else{
-      staff.marker = 'yellow';
+      staff.marker = 'white';
     }
   });
 
@@ -112,6 +113,7 @@ watch(searchRadius, (newVal) => {
   }
 
   emit('updateMap', { ...center, 'radiusInM': searchRadius.value * 1000 })
+  isLoadingProgress.value = false;
 });
 
 const markerDrag = (event) => {
@@ -143,22 +145,7 @@ const openDrawer = (data: Applicant) => {
 };
 
 const searchOnMap = async () => {
-    // if (searchArea.value) {
-    //   const response = await fetch(
-    //     `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-    //       searchArea.value
-    //     )}&key=${searchConfig.apiKey}`
-    //   );
-    //   const data = await response.json();
-    //   if (data.status === "OK" && data.results.length > 0) {
-    //     const result = data.results[0];
-    //     center.value = {
-    //       lat: result.geometry.location.lat,
-    //       lng: result.geometry.location.lng,
-    //     };
-    //     emit("updateMap", { ...center.value, 'radiusInM': searchRadius.value * 1000 });
-    //   }
-    // }
+  //
   };
 
 const clear = () => {
@@ -182,11 +169,9 @@ const clear = () => {
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
         :zoom="9.6">
         <Markers :options="{ position: center, draggable: false, clickable: true }" @dragend="markerDrag" />
-        <Markers v-for="staff in staffList" :key="staff.id" :options="getStaffMarkerOptions(staff)">
-          <InfoWindow>
-            <q-btn @click="openDrawer(staff)" id="staff-marker-label" :label="staff.name"/>
-          </InfoWindow>
-        </Markers>
+        <CustomMarker v-for="staff in staffList" :key="staff.id" :options="getStaffMarkerOptions(staff)">
+          <q-icon :color="staff.marker" size="lg" name="place" @click="openDrawer(staff)" />
+        </CustomMarker>
         <Circles :options="circleOption" />
       </GoogleMap>
     </q-card-section>
