@@ -132,7 +132,7 @@ async function addBackOrder() {
   if (data.value.client_id && boForm.value?.validate) {
     await backOrderStore.addBackOrder({ ...data.value, type: props.type });
     loading.value = false;
-    backOrderStore.loadBackOrder({});
+    await backOrderStore.loadBackOrder({});
     closeDialog();
     Alert.success()
   }

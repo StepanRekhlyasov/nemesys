@@ -16,7 +16,7 @@
       <q-card-section class="q-pa-none">
         <q-table :columns="columns" :rows="state.BOList" row-key="id" selection="multiple" class="no-shadow"
           v-model:selected="selected" table-class="text-grey-8" table-header-class="text-grey-9"
-          v-model:pagination="pagination" hide-pagination>
+          :loading="state.isLoadingProgress" :pagination="pagination" hide-pagination>
           <template v-slot:header-cell-caseType="props">
             <q-th :props="props" class="q-pa-none">
               <div>{{ $t('backOrder.create.caseType') }}</div>
@@ -103,6 +103,12 @@
             </q-td>
           </template>
         </q-table>
+        <div class="row justify-start q-mt-md q-mb-md pagination">
+          <TablePaginationSimple :pagination="pagination" :is-admin="false" :max="state.metaData.total_pages"
+            @on-data-update="async (page) => {
+              pagination.page = page
+            }" />
+        </div>
       </q-card-section>
     </q-card>
   </div>
@@ -121,7 +127,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { Ref, ref, computed, ComputedRef } from 'vue';
+import { Ref, ref, computed, ComputedRef, watch } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
 import SearchByMapDrawer from './components/info/searchByMapDrawer.vue';
@@ -133,6 +139,7 @@ import { radius } from './consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
+import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -153,8 +160,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 100,
-  // rowsNumber: xx if getting data from a server
+  rowsPerPage: 30,
 });
 
 const closeMap = () => {
@@ -184,8 +190,13 @@ function showDialog(bo: BackOrderModel) {
 
 const loadSearchStaff = async (staffList: BOElasticSearchData) => {
   pagination.value.page = 1;
-  await backOrderStore.loadBackOrder(staffList);
+  await backOrderStore.loadBackOrder(staffList, pagination.value);
 };
 
-backOrderStore.loadBackOrder({});
+backOrderStore.loadBackOrder({}, pagination.value);
+
+watch(() => pagination.value.page, async () => {
+  await backOrderStore.loadBackOrder({}, pagination.value);
+})
+
 </script>
