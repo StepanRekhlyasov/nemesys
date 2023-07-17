@@ -144,7 +144,7 @@
         <template v-slot:body-cell-qualificationExp="props">
           <q-td :props="props" class="no-wrap q-pa-none">
             <div v-for="q in props.row.qualification" :key="q">
-              {{ t(`applicant.add.${q}`) }}
+              {{ t(`applicant.qualification.${q}`) }}
             </div>
             {{ props.row.totalYear }}
           </q-td>

@@ -159,20 +159,24 @@ export const qualificationOption = computed(() => {
   const { t } = i18n.global;
   return [
     {
-      label: t('backOrder.qualification.registeredNurse'),
+      label: t('applicant.qualification.registeredNurse'),
       value: 'registeredNurse',
     },
     {
-      label: t('backOrder.qualification.assistantNurse'),
+      label: t('applicant.qualification.assistantNurse'),
       value: 'assistantNurse',
     },
     {
-      label: t('backOrder.qualification.newcomer'),
+      label: t('applicant.qualification.newcomer'),
       value: 'newcomer',
     },
     {
-      label: t('backOrder.qualification.careWorker'),
+      label: t('applicant.qualification.careWorker'),
       value: 'careWorker',
+    },
+    {
+      label: t('applicant.qualification.worker'),
+      value: 'worker',
     },
   ];
 });
