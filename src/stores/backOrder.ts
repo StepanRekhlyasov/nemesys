@@ -133,7 +133,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = easrtRadiusInKm * c;
+    const distance = easrtRadiusInKm * c + 0.165;
     return Number(distance.toFixed(2));
   };
 
@@ -233,7 +233,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     const db = getFirestore();
     const collectionRef = collection(db, 'fix');
 
-    const q = query(collectionRef, where('backOrder', '==', bo.id),where('deleted','==',false));
+    const q = query(collectionRef, where('backOrder', '==', bo.id), where('deleted', '==', false));
     const snapshot = await getDocs(q);
 
     const assignedStaff = snapshot.docs.map((doc) => ({

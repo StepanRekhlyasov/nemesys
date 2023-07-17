@@ -59,7 +59,7 @@ const getClientLocation = async () => {
 const circleOption = computed(() => {
   return {
     center: center.value,
-    radius: searchRadius.value * 1000+0+1.627,
+    radius: searchRadius.value * 1000,
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,

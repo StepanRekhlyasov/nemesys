@@ -1,9 +1,16 @@
 <script lang="ts" setup>
-import { watch, ref, defineProps, defineEmits, computed } from 'vue';
-import { GoogleMap, Marker as Markers, Circle as Circles } from 'vue3-google-map';
+import { watch, ref, defineProps, defineEmits, computed, onMounted } from 'vue';
+import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { Alert } from 'src/shared/utils/Alert.utils';
+// import { ApplicantForCandidateSearch } from 'src/shared/model';
+import { useBackOrder } from 'src/stores/backOrder';
+import { where } from 'firebase/firestore';
+import { useApplicant } from 'src/stores/applicant'
+import { Applicant } from 'src/shared/model';
+import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 
+const backOrderStore = useBackOrder()
 const props = defineProps<{ theme: string }>()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
 
@@ -12,6 +19,48 @@ const radius = ref<number>(10);
 const inputRadius = ref<number>(10);
 const isLoadingProgress = ref(false)
 const searchInput = ref('')
+
+const applicantList = ref<Applicant[]>([])
+const getApplicant = useApplicant();
+const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
+
+const openDrawer = (data: Applicant) => {
+  detailsDrawer.value?.openDrawer(data)
+};
+
+const isInsideCircle = (applicantLocation) => {
+  const clientLocation = { lat: center.value.lat, lon: center.value.lng }
+  const distance = backOrderStore.getDistance(clientLocation, applicantLocation);
+  return distance <= radius.value;
+}
+
+const getApplicantMarkerOptions = (applicant) => {
+  const position = { lat: applicant.lat, lng: applicant.lon, anchorPoint: 'BOTTOM_CENTER' };
+  return {
+    position,
+    draggable: false,
+    clickable: true,
+  };
+}
+
+const getMarkerColor = () => {
+  applicantList.value.forEach((applicant) => {
+    if (isInsideCircle(applicant)) {
+      applicant.marker = 'primary';
+    }
+    else {
+      applicant.marker = 'white';
+    }
+  });
+}
+
+onMounted(async()=>{
+  applicantList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]);
+  applicantList.value.forEach((applicant) => {
+      applicant['marker'] = 'white';
+    });
+  getMarkerColor();
+})
 
 const circleOption = computed(() => {
   return {
@@ -33,7 +82,7 @@ watch(radius, (newVal) => {
   if (typeof newVal != 'number') {
     newVal = parseInt(newVal);
   }
-
+getMarkerColor();
   emit('updateMap', { ...center, 'radiusInM': radius.value * 1000 })
 });
 
@@ -59,6 +108,7 @@ const setLocation = () => {
         lat: place.geometry.location.lat(),
         lng: place.geometry.location.lng(),
       };
+      getMarkerColor()
     } else {
       Alert.warning()
     }
@@ -67,8 +117,8 @@ const setLocation = () => {
 }
 
 const markerDrag = (event) => {
-  console.log('sdsdasdsaddsadds')
   center.value = { lat: event.latLng.lat(), lng: event.latLng.lng() }
+  getMarkerColor();
   emit('updateMap', { ...center.value, 'radiusInM': radius.value * 1000 })
 }
 
@@ -98,6 +148,9 @@ const clear = () => {
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
         :zoom="9.6">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
+        <CustomMarker v-for="applicant in applicantList" :key="applicant.id" :options="getApplicantMarkerOptions(applicant)">
+          <q-icon :color="applicant.marker" size="lg" name="place" @click="openDrawer(applicant)" />
+        </CustomMarker>
         <Circles :options="circleOption" />
       </GoogleMap>
     </q-card-section>
@@ -119,7 +172,7 @@ const clear = () => {
         </div>
       </div>
     </q-card-section>
-
+    <ApplicantDetails ref="detailsDrawer" />
   </q-card>
 </template>
 
