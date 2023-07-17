@@ -152,7 +152,7 @@ import { ref, onMounted, watch, computed } from 'vue';
 import { faxColumns } from './consts/Fax.const';
 import { useFax } from 'src/stores/fax';
 import { useUserStore } from 'src/stores/user';
-import { toDate, today, timestampToDateFormat } from 'src/shared/utils/utils';
+import { toDate, today, myDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { orderBy, where, Timestamp } from 'firebase/firestore';
 import { User } from 'src/shared/model';
@@ -214,7 +214,7 @@ watch(
     for (let i = 0; i < newVal.length; i++) {
       let label = newVal[i]['name'] || '';
       if (newVal[i]['dob']) {
-        label += ' (' + timestampToDateFormat(newVal[i]['dob']) + ')';
+        label += ' (' + myDateFormat(newVal[i]['dob']) + ')';
       }
       applicantList.value.push({ label: label, value: newVal[i]['id'] });
     }
