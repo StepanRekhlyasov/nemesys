@@ -25,6 +25,7 @@ const { clients } = storeToRefs(clientStore)
 
 const clientFactoriesList = ref<ClientFactory[]>([]);
 const radiusKm = ref<number>(10);
+const inputRadius = ref<number>(10);
 const radiusInM = computed(() => radiusKm.value * 1000);
 const searchInput = ref('');
 const circleOption = computed(() => {
@@ -135,6 +136,14 @@ watch([radiusKm], () => {
   searchClients()
 });
 
+const getRadius = () => {
+  radiusKm.value = inputRadius.value
+}
+
+const clearRadius = () => {
+  radiusKm.value = 0
+  inputRadius.value = 0
+}
 
 </script>
 
@@ -183,12 +192,14 @@ watch([radiusKm], () => {
         <div class="col-1 flex justify-end q-pa-sm">
           {{ $t('client.list.distanceFromOrigin') }}
         </div>
-        <div class="col-2">
-          <q-input outlined dense type="number" v-model.number="radiusKm">
+        <div class="col-3 row">
+          <q-input outlined dense type="number" v-model.number="inputRadius">
             <template v-slot:after>
               Km
             </template>
           </q-input>
+          <q-btn :disable="inputRadius<=0" @click="getRadius" class="bg-primary text-white q-ma-sm" :label="$t('common.search')"/>
+          <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')"/>
         </div>
       </div>
     </q-card-section>

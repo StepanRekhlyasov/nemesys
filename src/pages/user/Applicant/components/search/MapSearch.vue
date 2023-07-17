@@ -8,6 +8,7 @@ const emit = defineEmits<{(e: 'updateMap', mapData)}>()
 
 const center = ref<{lat: number, lng: number}>({ lat: 36.0835255, lng: 140.0 });
 const radius = ref<number>(500);
+const inputRadius = ref<number>(500);
 const isLoadingProgress = ref(false)
 
 const circleOption = ref({
@@ -40,6 +41,15 @@ watch(radius, (newVal) => {
 
   emit('updateMap', { ...center, 'radiusInM': radius.value })
 });
+
+const getRadius = () => {
+  radius.value = inputRadius.value
+}
+
+const clearRadius = () => {
+  radius.value = 0
+  inputRadius.value = 0
+}
 
 const markerDrag = (event) => {
   console.log('sdsdasdsaddsadds')
@@ -79,12 +89,14 @@ const markerDrag = (event) => {
         <div class="col-1 flex justify-end q-pa-sm">
           {{ $t('client.list.distanceFromOrigin') }}
         </div>
-        <div class="col-2">
-          <q-input outlined dense type="number" v-model.number="radius">
+        <div class="col-3 row">
+          <q-input outlined dense type="number" v-model.number="inputRadius">
             <template v-slot:after>
               m
             </template>
           </q-input>
+          <q-btn :disable="inputRadius<=0" @click="getRadius" class="bg-primary text-white q-ma-sm" :label="$t('common.search')"/>
+          <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')"/>
         </div>
       </div>
     </q-card-section>

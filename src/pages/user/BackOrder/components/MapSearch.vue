@@ -147,6 +147,8 @@ const setLocation = () => {
   isLoadingProgress.value = false
 }
 
+
+
 const clear = () => {
   searchInput.value = '';
 }
