@@ -54,11 +54,11 @@ const getMarkerColor = () => {
   });
 }
 
-onMounted(async()=>{
+onMounted(async () => {
   applicantList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]);
   applicantList.value.forEach((applicant) => {
-      applicant['marker'] = 'white';
-    });
+    applicant['marker'] = 'white';
+  });
   getMarkerColor();
 })
 
@@ -82,7 +82,7 @@ watch(radius, (newVal) => {
   if (typeof newVal != 'number') {
     newVal = parseInt(newVal);
   }
-getMarkerColor();
+  getMarkerColor();
   emit('updateMap', { ...center, 'radiusInM': radius.value * 1000 })
 });
 
@@ -148,7 +148,8 @@ const clear = () => {
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
         :zoom="9.6">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
-        <CustomMarker v-for="applicant in applicantList" :key="applicant.id" :options="getApplicantMarkerOptions(applicant)">
+        <CustomMarker v-for="applicant in applicantList" :key="applicant.id"
+          :options="getApplicantMarkerOptions(applicant)">
           <q-icon :color="applicant.marker" size="lg" name="place" @click="openDrawer(applicant)" />
         </CustomMarker>
         <Circles :options="circleOption" />

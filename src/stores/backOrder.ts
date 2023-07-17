@@ -120,8 +120,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     await batch.commit();
   };
 
-
-
   function getDistance(loc1: { lat: number, lon: number }, loc2: { lat: number, lon: number }) {
     const easrtRadiusInKm = 6371;
     const dLat = degToRad(loc2.lat - loc1.lat);
