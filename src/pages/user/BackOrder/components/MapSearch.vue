@@ -151,6 +151,7 @@ const setLocation = () => {
 
 const clear = () => {
   searchInput.value = '';
+  getClientLocation();
 }
 
 </script>
@@ -162,7 +163,11 @@ const clear = () => {
       <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <q-card-section class="row search">
-      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker"/>
+      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker">
+      <template v-slot:prepend>
+        <q-btn flat icon='place' :color="props.theme"></q-btn>
+      </template>
+    </q-input>
       <q-btn :disable="searchInput==''" @click="setLocation" class="bg-primary text-white q-mr-md" :label="$t('common.search')"/>
       <q-btn @click="clear" :label="$t('common.clear')"/>
     </q-card-section>
