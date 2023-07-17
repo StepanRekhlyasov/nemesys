@@ -83,11 +83,7 @@
         <q-select 
           v-if="desiredEdit" 
           v-model="data['workingHoursEarly']" 
-          :options="[
-            {label: '○', value: '○'},
-            {label: '△', value: '△'},
-            {label: '×', value: '×'},
-          ]"
+          :options="shiftOptions"
           emit-value
           dense
           style="width:50px"
@@ -101,11 +97,7 @@
         <q-select 
           v-if="desiredEdit" 
           v-model="data['workingHoursDay']" 
-          :options="[
-            {label: '○', value: '○'},
-            {label: '△', value: '△'},
-            {label: '×', value: '×'},
-          ]"
+          :options="shiftOptions"
           emit-value
           dense
           style="width:50px"
@@ -119,11 +111,7 @@
         <q-select 
           v-if="desiredEdit" 
           v-model="data['workingHoursLate']" 
-          :options="[
-            {label: '○', value: '○'},
-            {label: '△', value: '△'},
-            {label: '×', value: '×'},
-          ]"
+          :options="shiftOptions"
           emit-value
           dense
           style="width:50px;"
@@ -137,11 +125,7 @@
         <q-select 
           v-if="desiredEdit" 
           v-model="data['workingHoursNight']" 
-          :options="[
-            {label: '○', value: '○'},
-            {label: '△', value: '△'},
-            {label: '×', value: '×'},
-          ]"
+          :options="shiftOptions"
           emit-value
           dense
           style="width:50px;"
@@ -319,7 +303,11 @@ const props = defineProps<{
 }>()
 const applicantStore = useApplicant();
 const { t } = i18n.global;
-
+const shiftOptions = [
+  {label: '○', value: '○'},
+  {label: '△', value: '△'},
+  {label: '×', value: '×'},
+]
 const desiredEdit = ref(false);
 const days = ref(daysList);
 const specialDays = ref(specialDaysList);
