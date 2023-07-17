@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { watch, ref, defineProps, defineEmits, onMounted } from 'vue';
+import { watch, ref, defineProps, defineEmits, onMounted, computed } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { radius } from '../consts/BackOrder.const'
@@ -11,6 +11,7 @@ import { useApplicant } from 'src/stores/applicant'
 import { useBackOrder } from 'src/stores/backOrder';
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{ theme: string, bo: BackOrderModel | undefined }>()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
@@ -19,7 +20,7 @@ const searchRadius = ref<number>(0);
 const inputRadius = ref<number>(0);
 const isLoadingProgress = ref(false)
 const getClient = useClient();
-const searchArea = ref('')
+const searchInput = ref('')
 const staffList = ref<ApplicantForCandidateSearch[]>([])
 const getApplicant = useApplicant();
 const backOrderStore = useBackOrder()
@@ -45,7 +46,7 @@ onMounted(async () => {
 
 const getClientLocation = async () => {
   const client = await getClient.fetchClientsById(props.bo?.client_id);
-  searchArea.value = `${client.building} ${client.street} ${client.municipality} ${client.prefecture}`;
+  searchInput.value = `${client.building} ${client.street} ${client.municipality} ${client.prefecture}`;
   if (client.lat && client.lng) {
     center.value = {
       lat: Number(client.lat),
@@ -54,14 +55,16 @@ const getClientLocation = async () => {
   }
 }
 
-const circleOption = ref({
-  center: center,
-  radius: searchRadius,
+const circleOption = computed(() => {
+  return {
+  center: center.value,
+  radius: searchRadius.value*1000,
   strokeColor: '#FF0000',
   strokeOpacity: 0.8,
   strokeWeight: 2,
   fillColor: '#FF0000',
   fillOpacity: 0.05,
+};
 });
 
 const isInsideCircle = (staffLocation) => {
@@ -69,10 +72,6 @@ const isInsideCircle = (staffLocation) => {
   const distance = backOrderStore.getDistance(clientLocation, staffLocation);
   return distance<=searchRadius.value;
 }
-
-// const getColor = (staff) => {
-
-// }
 
 const getStaffMarkerOptions = (staff) => {
   const position = { lat: staff.lat, lng: staff.lon };
@@ -83,8 +82,7 @@ const getStaffMarkerOptions = (staff) => {
   };
 }
 
-watch(searchRadius, (newVal) => {
-isLoadingProgress.value = true
+const getMarkerColor = () => {
   staffList.value.forEach((staff) => {
     if(isInsideCircle(staff)){
       staff.marker = 'primary';
@@ -93,7 +91,11 @@ isLoadingProgress.value = true
       staff.marker = 'white';
     }
   });
+}
 
+watch(searchRadius, (newVal) => {
+  isLoadingProgress.value = true
+  getMarkerColor();
   radius.value = searchRadius.value
   let center = circleOption.value.center;
   if (!newVal) {
@@ -102,32 +104,12 @@ isLoadingProgress.value = true
   if (typeof newVal != 'number') {
     newVal = parseInt(newVal);
   }
-  circleOption.value = {
-    center: center,
-    radius: searchRadius.value * 1000,
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.05,
-  }
-
   emit('updateMap', { ...center, 'radiusInM': searchRadius.value * 1000 })
   isLoadingProgress.value = false;
 });
 
 const markerDrag = (event) => {
   center.value = { lat: event.latLng.lat(), lng: event.latLng.lng() }
-  circleOption.value = {
-    center: center.value,
-    radius: searchRadius.value * 1000,
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.05,
-  }
-
   emit('updateMap', { ...center.value, 'radiusInM': searchRadius.value * 1000 })
 }
 
@@ -144,12 +126,29 @@ const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
 
-const searchOnMap = async () => {
-  //
-  };
+const setLocation = () => {
+  if (!searchInput.value) {
+    return
+  }
+  isLoadingProgress.value = true
+  const geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: searchInput.value },(results, status) => {
+    if (status === 'OK' && results[0]) {
+      const place = results[0];
+      center.value = {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      };
+      getMarkerColor();
+    } else {
+      Alert.warning()
+    }
+  });
+  isLoadingProgress.value = false
+}
 
 const clear = () => {
-  searchArea.value = '';
+  searchInput.value = '';
 }
 
 </script>
@@ -161,14 +160,14 @@ const clear = () => {
       <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <q-card-section class="row search">
-      <q-input class="q-mr-md searchBox" outlined v-model="searchArea" dense prefix-icon="mdi-map-marker"/>
-      <q-btn :disable="searchArea==''" @click="searchOnMap" class="bg-primary text-white q-mr-md" :label="$t('common.search')"/>
+      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker"/>
+      <q-btn :disable="searchInput==''" @click="setLocation" class="bg-primary text-white q-mr-md" :label="$t('common.search')"/>
       <q-btn @click="clear" :label="$t('common.clear')"/>
     </q-card-section>
     <q-card-section>
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
         :zoom="9.6">
-        <Markers :options="{ position: center, draggable: false, clickable: true }" @dragend="markerDrag" />
+        <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
         <CustomMarker v-for="staff in staffList" :key="staff.id" :options="getStaffMarkerOptions(staff)">
           <q-icon :color="staff.marker" size="lg" name="place" @click="openDrawer(staff)" />
         </CustomMarker>
