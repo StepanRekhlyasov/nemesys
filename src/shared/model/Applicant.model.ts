@@ -326,7 +326,7 @@ export interface ApplicantMemo {
   content: string;
   user: User;
   created_date: string;
-  updated_date?: string;
+  updated_at?: string;
   delited: boolean;
 }
 
