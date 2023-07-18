@@ -105,7 +105,9 @@ export default {
     electronic: '電子たばこ',
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
-    notPossible: '不可'
+    notPossible: '不可',
+    can: '就業中禁煙可能',
+    cant: '就業中禁煙不可',
   },
   marriedStatus: {
     married: '既婚',
@@ -919,7 +921,7 @@ export default {
         birth: '生年月日',
         lon: '経度',
         lat: '緯度',
-
+        shortTime: '時短',
         attractionsStatus: '誘致ステータス',
         employmentStatus: '就業状況',
         classiffication: '区分',
