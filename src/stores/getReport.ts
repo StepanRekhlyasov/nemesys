@@ -308,9 +308,9 @@ const getQuery = async (
     fromDate.setMonth(fromDate.getMonth() - 1);
   }
   const fieldDict = fieldDicts[queryName.queryName];
-  const filters: QueryFieldFilterConstraint[] = [...fieldDict.filters];
+  let filters: QueryFieldFilterConstraint[] = [...fieldDict.filters];
   if (queryName.filtersInput) {
-    filters.concat([...queryName.filtersInput]);
+    filters = filters.concat([...queryName.filtersInput]);
   }
   if (
     reportState.dateType == 'BasedOnLeftMostItemDate' &&
