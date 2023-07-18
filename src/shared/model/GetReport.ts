@@ -10,6 +10,7 @@ export interface ReportState {
   branch?: string;
   uid?: string;
   organizationId?: string;
+  occupation?: string;
 }
 
 export interface reportStateAndOthers {
@@ -25,6 +26,7 @@ export interface basedReportState {
   organizationId?: string;
   isAverage: boolean;
   rateNames?:Readonly<Readonly<string[]>[]>
+  occupation?: string;
 }
 
 export interface mediaBasedReportState extends basedReportState {

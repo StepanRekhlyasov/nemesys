@@ -2,6 +2,9 @@ import { QTableProps } from 'quasar';
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
+
+export const secondperday = 1000 * 60 * 60 * 24
+
 export const dayItemList = [
   'applicants',
   'validApplicants',
@@ -20,18 +23,12 @@ export const dayItemList = [
 ] as const;
 
 export const mediaItemList = [
+  'amount',
   'applicants',
   'validApplicants',
   'contactApplicants',
   'attractionApplicants',
   'attendApplicants',
-  'fix',
-  'inspection',
-  'offer',
-  'admission',
-] as const;
-
-export const userItemList = [
   'fix',
   'inspection',
   'offer',
@@ -50,12 +47,6 @@ export const mediaItemRateList= [
   ['applicants', 'fix','applicantsFixRate'],
 ] as const;
 
-export const userItemRateList = [
-  ['fix', 'inspection'],
-  ['inspection', 'offer'],
-  ['offer', 'admission'],
-] as const;
-
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -67,7 +58,7 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: '',
+      field: 'amount',
       label: t('KPI.tables.actualFigures.2'),
       align: 'center',
       sortable: true,
@@ -158,7 +149,7 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: 'attendApplicantsRate',
+      field: 'attractionApplicantsRate',
       label: t('KPI.tables.actualFigures.15'),
       align: 'center',
       sortable: true,
@@ -211,119 +202,119 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: '',
+      field: 'applicants',
       label: t('KPI.tables.unitPrice.1'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'validApplicants',
       label: t('KPI.tables.unitPrice.2'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'contactApplicants',
       label: t('KPI.tables.unitPrice.3'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'attractionApplicants',
       label: t('KPI.tables.unitPrice.4'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'attendApplicants',
       label: t('KPI.tables.unitPrice.5'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'fix',
       label: t('KPI.tables.unitPrice.6'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'inspection',
       label: t('KPI.tables.unitPrice.7'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'offer',
       label: t('KPI.tables.unitPrice.8'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'admission',
       label: t('KPI.tables.unitPrice.9'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'contactApplicantsRate',
       label: t('KPI.tables.unitPrice.10'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'attractionApplicantsRate',
       label: t('KPI.tables.unitPrice.11'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'attractionApplicantsRate',
       label: t('KPI.tables.unitPrice.12'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'fixRate',
       label: t('KPI.tables.unitPrice.13'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'inspectionRate',
       label: t('KPI.tables.unitPrice.14'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'offerRate',
       label: t('KPI.tables.unitPrice.15'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'admissionRate',
       label: t('KPI.tables.unitPrice.15'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
-      field: '',
+      field: 'applicantsFixRate',
       label: t('KPI.tables.unitPrice.15'),
       align: 'center',
       sortable: true,

@@ -77,10 +77,7 @@
           :range="false"
         />
       </label>
-      <label
-        class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'day'"
-      >
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
         {{ $t('common.branch') }}
         <MySelect
           :width="'150px'"
@@ -116,7 +113,6 @@
           :options="occupationList"
           :width="'100px'"
           v-model="occupation"
-          :clearable="false"
           @update:model-value="getData()"
         />
       </label>
@@ -177,6 +173,23 @@ const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
+const devideByAmount = (rows) => {
+  for (const row of rows) {
+    for (const key of Object.keys(row)) {
+      const num = row[key];
+      if (
+        typeof num == 'number' &&
+        typeof row['amount'] == 'number' &&
+        num != 0 &&
+        key != 'amount'
+      ) {
+        row[key] = row['amount'] / num;
+      }
+    }
+  }
+  return [...rows];
+};
+
 const convertObjToIdNameList = (objList) => {
   return objList.map((obj) => {
     return {
@@ -199,7 +212,7 @@ const getBranchList = async () => {
 async function getData() {
   if (organizationStore.currentOrganizationId) {
     loading.value = true;
-
+    dateRange.value = dummyDataDateRange;
     // we need to care switching mode while loading
     const modeNow = mode.value;
 
@@ -218,7 +231,7 @@ async function getData() {
 
     if (mode.value == 'branch' && branch.value) {
       rowData.value = [];
-      const rows = await getReport({
+      let rows = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
@@ -226,7 +239,22 @@ async function getData() {
         rateNames: mediaItemRateList,
         medias: [...(await getAllmedia())],
         isAverage: false,
+        occupation: occupation.value,
       });
+      if (item.value == 'unitPrice') rows = devideByAmount(rows);
+      rowData.value = rows;
+    } else if (mode.value == 'branch' && occupation.value) {
+      rowData.value = [];
+      let rows = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        queryNames: mediaItemList,
+        rateNames: mediaItemRateList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+      if (item.value == 'unitPrice') rows = devideByAmount(rows);
       rowData.value = rows;
     } else if (mode.value == 'branch') {
       rowData.value = [];
@@ -234,7 +262,7 @@ async function getData() {
 
     if (mode.value == 'media' && media.value) {
       rowData.value = [];
-      const rows = await getReport({
+      let rows = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branches: Object.values(
@@ -246,8 +274,10 @@ async function getData() {
         rateNames: mediaItemRateList,
         media: media.value,
         isAverage: false,
+        occupation: occupation.value,
       });
-      rowData.value = rows;
+      if (item.value == 'unitPrice') rows = devideByAmount(rows);
+      rowData.value = [...rows];
     } else if (mode.value == 'media') {
       rowData.value = [];
       mediaListToShow.value = convertObjToIdNameList([

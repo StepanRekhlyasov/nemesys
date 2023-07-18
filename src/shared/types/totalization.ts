@@ -16,4 +16,5 @@ export type typeOfQuery =
   | 'introduction'
   | 'TTP'
   | 'nurse'
-  | 'nursingCare';
+  | 'nursingCare'
+  | 'amount';
