@@ -141,6 +141,7 @@ import {
   mediaItemList,
   dayItemList,
   mediaItemRateList,
+  applicationAttributeItemList
 } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
@@ -228,8 +229,21 @@ async function getData() {
       });
       rowData.value = rows;
     }
+    if(mode.value == 'branch' && item.value == 'applicationAttribute'){
+        rowData.value = [];
+        let rows = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branch: branch.value,
+        queryNames: applicationAttributeItemList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+      rowData.value = rows;
+    }
 
-    if (mode.value == 'branch' && branch.value) {
+    else if (mode.value == 'branch' && branch.value) {
       rowData.value = [];
       let rows = await getReport({
         dateRange: dateRange.value,
@@ -260,7 +274,21 @@ async function getData() {
       rowData.value = [];
     }
 
-    if (mode.value == 'media' && media.value) {
+    if(mode.value == 'media' && item.value == 'applicationAttribute'){
+        rowData.value = [];
+        let rows = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branch: branch.value,
+        queryNames: applicationAttributeItemList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+      rowData.value = rows;
+    }
+
+    else if (mode.value == 'media' && media.value) {
       rowData.value = [];
       let rows = await getReport({
         dateRange: dateRange.value,

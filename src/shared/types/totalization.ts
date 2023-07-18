@@ -1,4 +1,4 @@
-export type graphType = 'BasedOnLeftMostItemDate'|'BasedOnEachItemDate'
+export type graphType = 'BasedOnLeftMostItemDate' | 'BasedOnEachItemDate';
 export type typeOfQuery =
   | 'applicants'
   | 'validApplicants'
@@ -17,4 +17,14 @@ export type typeOfQuery =
   | 'TTP'
   | 'nurse'
   | 'nursingCare'
-  | 'amount';
+  | 'amount'
+  | 'male'
+  | 'female'
+  | 'daysToWorkOne'
+  | 'daysToWorkTwo'
+  | 'daysToWorkThree'
+  | 'daysToWorkFour'
+  | 'daysToWorkFive'
+  | 'daysToWorkSix'
+  | 'daysToWorkSeven'
+  ;

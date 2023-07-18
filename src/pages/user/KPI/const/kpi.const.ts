@@ -3,7 +3,19 @@ import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
 
-export const secondperday = 1000 * 60 * 60 * 24
+export const secondperday = 1000 * 60 * 60 * 24;
+
+export const applicationAttributeItemList = [
+  'male',
+  'female',
+  'daysToWorkOne',
+  'daysToWorkTwo',
+  'daysToWorkThree',
+  'daysToWorkFour',
+  'daysToWorkFive',
+  'daysToWorkSix',
+  'daysToWorkSeven',
+] as const;
 
 export const dayItemList = [
   'applicants',
@@ -35,7 +47,7 @@ export const mediaItemList = [
   'admission',
 ] as const;
 
-export const mediaItemRateList= [
+export const mediaItemRateList = [
   ['applicants', 'validApplicants'],
   ['validApplicants', 'contactApplicants'],
   ['contactApplicants', 'attractionApplicants'],
@@ -44,7 +56,7 @@ export const mediaItemRateList= [
   ['fix', 'inspection'],
   ['inspection', 'offer'],
   ['offer', 'admission'],
-  ['applicants', 'fix','applicantsFixRate'],
+  ['applicants', 'fix', 'applicantsFixRate'],
 ] as const;
 
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
@@ -333,14 +345,14 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(
       },
       {
         name: '',
-        field: '',
+        field: 'male',
         label: t('KPI.tables.applicationAttribute.1'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: '',
+        field: 'female',
         label: t('KPI.tables.applicationAttribute.2'),
         align: 'center',
         sortable: true,
@@ -389,35 +401,35 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(
       },
       {
         name: '',
-        field: '',
+        field: 'daysToWorkOne',
         label: t('KPI.tables.applicationAttribute.9'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: '',
+        field: 'daysToWorkTwo',
         label: t('KPI.tables.applicationAttribute.10'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: '',
+        field: 'daysToWorkThree',
         label: t('KPI.tables.applicationAttribute.11'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: '',
+        field: 'daysToWorkFour',
         label: t('KPI.tables.applicationAttribute.12'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: '',
+        field: 'daysToWorkFive',
         label: t('KPI.tables.applicationAttribute.13'),
         align: 'center',
         sortable: true,

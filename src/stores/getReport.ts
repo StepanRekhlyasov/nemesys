@@ -223,6 +223,105 @@ const amountFieldDict: FieldDict = {
   mediaField: 'media',
 };
 
+const manFieldDict: FieldDict = {
+  name: 'male',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('sex', '==', 'male')],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const femanFieldDict: FieldDict = {
+  name: 'female',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('sex', '==', 'female')],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkOneFieldDict: FieldDict = {
+  name: 'daysToWorkOne',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 1)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkTwoFieldDict: FieldDict = {
+  name: 'daysToWorkTwo',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 2)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkThreeFieldDict: FieldDict = {
+  name: 'daysToWorkThree',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 3)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkFourFieldDict: FieldDict = {
+  name: 'daysToWorkFour',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 4)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkFiveFieldDict: FieldDict = {
+  name: 'daysToWorkFive',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 5)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkSixFieldDict: FieldDict = {
+  name: 'daysToWorkSix',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 6)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
+const daysToWorkSevenFieldDict: FieldDict = {
+  name: 'daysToWorkSeven',
+  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
+  filters: [where('daysToWork', '==', 7)],
+  collection: applicantFieldDict.collection,
+  branchField: applicantFieldDict.branchField,
+  mediaField: applicantFieldDict.mediaField,
+  occupationField: applicantFieldDict.occupationField,
+};
+
 const fieldDicts: { [key in typeOfQuery]: FieldDict } = {
   applicants: applicantFieldDict,
   validApplicants: validApplicantsFieldDict,
@@ -242,6 +341,15 @@ const fieldDicts: { [key in typeOfQuery]: FieldDict } = {
   nurse: nurseFieldDict,
   nursingCare: nurseCareFieldDict,
   amount: amountFieldDict,
+  male: manFieldDict,
+  female: femanFieldDict,
+  daysToWorkOne: daysToWorkOneFieldDict,
+  daysToWorkTwo: daysToWorkTwoFieldDict,
+  daysToWorkThree: daysToWorkThreeFieldDict,
+  daysToWorkFour: daysToWorkFourFieldDict,
+  daysToWorkFive: daysToWorkFiveFieldDict,
+  daysToWorkSix: daysToWorkSixFieldDict,
+  daysToWorkSeven: daysToWorkSevenFieldDict,
 };
 const proratedRate = (dayForMonth: Date, fromDate: Date, toDate: Date) => {
   const numOfDayOfMonth = new Date(
@@ -250,8 +358,7 @@ const proratedRate = (dayForMonth: Date, fromDate: Date, toDate: Date) => {
     0
   ).getDate();
 
-  const days =
-    (toDate.getTime() - fromDate.getTime()) / (secondperday) + 1;
+  const days = (toDate.getTime() - fromDate.getTime()) / secondperday + 1;
 
   return days / numOfDayOfMonth;
 };
@@ -269,6 +376,7 @@ const getQuery = async (
   if (queryName == 'amount') {
     fromDate.setMonth(fromDate.getMonth() - 1);
   }
+
   const fieldDict = fieldDicts[queryName];
   const filters: QueryFieldFilterConstraint[] = [...fieldDict.filters];
   if (
@@ -299,12 +407,13 @@ const getQuery = async (
   if (reportState.organizationId) {
     filters.push(where('organization_id', '==', reportState.organizationId));
   }
-  if(reportState.occupation && fieldDict.occupationField){
-    filters.push(where(fieldDict.occupationField, '==', reportState.occupation));
+  if (reportState.occupation && fieldDict.occupationField) {
+    filters.push(
+      where(fieldDict.occupationField, '==', reportState.occupation)
+    );
   }
   const dbRef = collection(db, fieldDict.collection);
   const queryNow = query(dbRef, ...filters);
-
 
   if (queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
@@ -327,7 +436,7 @@ const getQuery = async (
           const rate = proratedRate(
             toDateTrue,
             new Date(toDateTrue.getFullYear(), toDateTrue.getMonth(), 1),
-            toDateTrue,
+            toDateTrue
           );
           amount = doc.data().amount * rate;
         } else {

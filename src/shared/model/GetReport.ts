@@ -11,6 +11,7 @@ export interface ReportState {
   uid?: string;
   organizationId?: string;
   occupation?: string;
+  day?:number;
 }
 
 export interface reportStateAndOthers {
@@ -59,4 +60,5 @@ export interface FieldDict {
   readonly mediaField: string;
   readonly uidField?: string;
   readonly occupationField?: string;
+
 }
