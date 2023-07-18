@@ -79,6 +79,7 @@ const validateAndSubmit = async () => {
                 registeredInfo: {
                     prefecture: addressSection.value.prefecture,
                     officeName: clientFactoryName.value,
+                    municipality: addressSection.value.municipality,
                     tel: clientFactoryInfo.value.tel,
                     fax: clientFactoryInfo.value.fax,
                     latitude: addressSection.value.lat,
