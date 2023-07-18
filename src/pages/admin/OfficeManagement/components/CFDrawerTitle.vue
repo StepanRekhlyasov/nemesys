@@ -7,15 +7,15 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
     selectedItem: ClientFactory,
-    industryValue: Array<{ value: string, isSelected: boolean, ts: string }>,
-    selectedIndustry: { value: string, isSelected: boolean, ts: string } | undefined
+    industryValue: Array<{ value: string, isSelected: boolean }>,
+    selectedIndustry: { value: string, isSelected: boolean } | undefined
 }>();
 
 const emit = defineEmits<{
-    (e: 'editIndustry', value: { value: string, isSelected: boolean, ts: string })
+    (e: 'editIndustry', value: { value: string, isSelected: boolean})
 }>()
 
-const dropDownHandler = (item: { value: string, isSelected: boolean, ts: string }) => {
+const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
     emit('editIndustry', item)
 }
 </script>
@@ -34,7 +34,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean, ts: string 
                         no-caps
                         push
                         auto-close
-                        :label="selectedIndustry.ts ?? ''"
+                        :label="selectedIndustry.value ?? ''"
                         color="white"
                         text-color="accent">
                         <q-list>
@@ -48,7 +48,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean, ts: string 
                                 v-for="item in industryValue.filter(el => el.value !== selectedIndustry?.value)">
                                 
                                 <q-item-label>
-                                    {{ item.ts }}
+                                    {{ item.value }}
                                 </q-item-label>
                             </q-item>
                         </q-list>
