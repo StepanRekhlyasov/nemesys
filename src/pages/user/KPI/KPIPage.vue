@@ -212,14 +212,13 @@ const getBranchList = async () => {
 
 async function getData() {
   if (organizationStore.currentOrganizationId) {
-    console.log(item.value,branch.value,mode.value)
     rowData.value = []
     loading.value = true;
     // we need to care switching mode while loading
     const modeNow = mode.value;
     if (mode.value == 'day' && day.value) {
       rowData.value = [];
-      const rows = await getDailyReport({
+      rowData.value = await getDailyReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         queryNames: dayItemList,
@@ -227,7 +226,6 @@ async function getData() {
         branch: branch.value,
         isAverage: false,
       });
-      rowData.value = rows;
     }
     if (mode.value == 'branch' && item.value == 'applicationAttribute') {
       rowData.value = [];
