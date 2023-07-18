@@ -7,7 +7,6 @@ import {
   QueryFieldFilterConstraint,
   Firestore,
   getDocs,
-  doc,
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, User } from 'src/shared/model';
@@ -311,7 +310,10 @@ const getQuery = async (
   const fieldDict = fieldDicts[queryName.queryName];
   const filters: QueryFieldFilterConstraint[] = [...fieldDict.filters];
   if (queryName.filtersInput) {
-    filters.concat(queryName.filtersInput);
+    console.log('AAAA')
+    console.log(queryName.filtersInput)
+    filters.concat([...queryName.filtersInput]);
+    console.log(filters)
   }
   if (
     reportState.dateType == 'BasedOnLeftMostItemDate' &&

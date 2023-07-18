@@ -101,7 +101,7 @@ const showIndividualReport = async (
       queryNames: itemList,
       isAverage: true,
     }),
-    itemList
+    itemList.map((item)=>{return item.queryName})
   ) as number[];
 
   const dataAverage = getListFromObject(
@@ -112,7 +112,7 @@ const showIndividualReport = async (
       isAverage: true,
       organizationId: organizationId.value,
     }),
-    itemList
+    itemList.map((item)=>{return item.queryName})
   ) as number[];
 
   const dataAverageCvr = calculateCVR(dataAverage);
