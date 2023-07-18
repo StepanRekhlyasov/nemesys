@@ -177,6 +177,7 @@ const budgetData = ref<BudgetData>({
   unitPrice: '',
   remark: '',
   agency: '',
+  organizationId:organization.currentOrganizationId,
 });
 
 const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value as number + 1;
@@ -308,7 +309,6 @@ onMounted(async () => {
   for (let month = 1; month <= 12; month++) {
     monthOptions.value.push({ label: ('0' + month).slice(-2), value: month });
   }
-
   await budgetStore.getBudgetList(selectedYear.value, selectedMonth.value, organization.currentOrganizationId);
   loading.value = false;
 

@@ -185,9 +185,8 @@ export const useBudget = defineStore('budget', () => {
     const rows = data.split('\r\n')
     const batch = writeBatch(db);
     await getOptionData(organization.currentOrganizationId);
-    const snapshot = await getDocs(query(collection(db, '/budgets')))
+    const snapshot = await getDocs(query(collection(db, '/budgets'),where('deleted','==',false)))
     let recordNumber = snapshot.docs.length + 1;
-
     for (let i = 1; i < rows.length; i++) {
       const formateData = rows[i].split(',')
       if (formateData.length < 2) continue
@@ -196,11 +195,7 @@ export const useBudget = defineStore('budget', () => {
       budgetData.value.media = getColoumnsData('media', budgetData.value.media);
       budgetData.value.branch = getColoumnsData('branch', budgetData.value.branch);
       budgetData.value.occupation = getColoumnsData('occupation', budgetData.value.occupation);
-
-      if (budgetData.value['postingStartDate']) budgetData.value['postingStartDate'] = dateToTimestampFormat(new Date(budgetData.value['postingStartDate'] as string)) as Timestamp;
-      if (budgetData.value['postingEndDate']) budgetData.value['postingEndDate'] = dateToTimestampFormat(new Date(budgetData.value['postingEndDate'] as string)) as Timestamp;
       budgetData.value.accountingMonthDate = dateToTimestampFormat(new Date(budgetData.value.accountingMonth));
-
       budgetData.value['updated_at'] = serverTimestamp();
       budgetData.value['deleted'] = false;
 
@@ -218,6 +213,7 @@ export const useBudget = defineStore('budget', () => {
         batch.set(docRef, { ...budgetData.value });
         recordNumber += 1;
       }
+
     }
     await batch.commit()
     await getBudgetList(selectedYear, selectedMonth,organization.currentOrganizationId);
@@ -226,6 +222,8 @@ export const useBudget = defineStore('budget', () => {
   const getColoumnsData = (key: string, value: string) => {
     let correctValue = '';
     options.value[key].forEach(item => {
+      console.log(item.label)
+      // console.log(value)
       if (item.label === value) {
         correctValue = item.value
       }
@@ -235,11 +233,12 @@ export const useBudget = defineStore('budget', () => {
 
   const getFormateData = (formateData: BudgetData) => {
     const budgetData = ref<BudgetData>({
-      recordNumber: '',
+      // recordNumber: '',
+      organizationId:organization.currentOrganizationId,
       accountingMonth: '',
       amount: '',
       branch: '',
-      id: '',
+      // id: '',
       media: '',
       numberOfSlots: '',
       occupation: '',
@@ -249,13 +248,11 @@ export const useBudget = defineStore('budget', () => {
       remark: '',
       agency: '',
     });
-    budgetData.value.id = formateData[0].replace(/"/g, '');
-    budgetData.value.recordNumber = formateData[1].replace(/"/g, '');
     budgetData.value.media = formateData[2].replace(/"/g, '');
     budgetData.value.branch = formateData[3].replace(/"/g, '');
     budgetData.value.occupation = formateData[4].replace(/"/g, '');
-    budgetData.value.postingStartDate = formateData[5].replace(/"/g, '');
-    budgetData.value.postingEndDate = formateData[6].replace(/"/g, '');
+    budgetData.value.postingStartDate = (formateData[5]).replace(/"/g,'')
+    budgetData.value.postingEndDate = (formateData[6]).replace(/"/g,'')
     budgetData.value.accountingMonth = formateData[7].replace(/"/g, '');
     budgetData.value.amount = formateData[8].replace(/"/g, '');
     budgetData.value.numberOfSlots = formateData[9].replace(/"/g, '');

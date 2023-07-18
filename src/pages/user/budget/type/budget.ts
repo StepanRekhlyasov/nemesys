@@ -15,7 +15,7 @@ export interface BudgetData {
   unitPrice: string;
   remark: string;
   agency: string;
-
+  organizationId:string;
 }
 export interface DateOption {
   label: string, value: number;

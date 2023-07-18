@@ -30,9 +30,9 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, ApplicantForCandidateSearch } from 'src/shared/model';
-import { ref, onMounted, ComputedRef, watch } from 'vue';
+import { ref, onMounted, ComputedRef } from 'vue';
 import { BackOrderStaff } from '../../consts/BackOrder.const';
-import { collection, query, where, getDocs, getFirestore } from 'firebase/firestore';
+import { where } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
 import { useApplicant } from 'src/stores/applicant'
 import { Applicant } from 'src/shared/model';
