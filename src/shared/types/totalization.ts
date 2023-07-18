@@ -20,11 +20,5 @@ export type typeOfQuery =
   | 'amount'
   | 'male'
   | 'female'
-  | 'daysToWorkOne'
-  | 'daysToWorkTwo'
-  | 'daysToWorkThree'
-  | 'daysToWorkFour'
-  | 'daysToWorkFive'
-  | 'daysToWorkSix'
-  | 'daysToWorkSeven'
+  | 'applicantsNurse'
   ;

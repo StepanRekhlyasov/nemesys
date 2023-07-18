@@ -11,22 +11,30 @@ export interface ReportState {
   uid?: string;
   organizationId?: string;
   occupation?: string;
-  day?:number;
+  day?: number;
 }
+
+export type queryNameType = Readonly<
+  {
+    readonly queryName: typeOfQuery;
+    readonly filtersInput?: readonly [QueryFieldFilterConstraint];
+    fieldName?: string;
+  }[]
+>;
 
 export interface reportStateAndOthers {
   reportState: ReportState;
-  isAverage:boolean;
-  queryNames: Readonly<typeOfQuery[]>;
+  isAverage: boolean;
+  queryNames: queryNameType
 }
 
 export interface basedReportState {
   dateRange: { from: string; to: string };
   graphType: graphType;
-  queryNames: Readonly<typeOfQuery[]>;
+  queryNames:queryNameType;
   organizationId?: string;
   isAverage: boolean;
-  rateNames?:Readonly<Readonly<string[]>[]>
+  rateNames?: Readonly<Readonly<string[]>[]>;
   occupation?: string;
 }
 
@@ -60,5 +68,4 @@ export interface FieldDict {
   readonly mediaField: string;
   readonly uidField?: string;
   readonly occupationField?: string;
-
 }

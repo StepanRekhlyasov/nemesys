@@ -1,50 +1,86 @@
 import { QTableProps } from 'quasar';
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
+import { where } from 'firebase/firestore';
 const { t } = i18n.global;
 
 export const secondperday = 1000 * 60 * 60 * 24;
-
 export const applicationAttributeItemList = [
-  'male',
-  'female',
-  'daysToWorkOne',
-  'daysToWorkTwo',
-  'daysToWorkThree',
-  'daysToWorkFour',
-  'daysToWorkFive',
-  'daysToWorkSix',
-  'daysToWorkSeven',
+  { queryName: 'male' },
+  { queryName: 'female' },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 1)],
+    fieldName: 'daysToWork1',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 2)],
+    fieldName: 'daysToWork2',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 3)],
+    fieldName: 'daysToWork3',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 4)],
+    fieldName: 'daysToWork4',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 5)],
+    fieldName: 'daysToWork5',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 6)],
+    fieldName: 'daysToWork6',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 7)],
+    fieldName: 'daysToWork7',
+  },
+  { queryName: 'applicants',
+    filtersInput: [where('occupation', '==', 'nurse')],
+    fieldName: 'applicantsNurse'
+  },
+  { queryName: 'applicants',
+    filtersInput: [where('occupation', '==', 'nursingCare')],
+    fieldName: 'applicantsNursingCare'
+  },
 ] as const;
 
 export const dayItemList = [
-  'applicants',
-  'validApplicants',
-  'contactApplicants',
-  'attractionApplicants',
-  'attendApplicants',
-  'nursingCare',
-  'nurse',
-  'generalDispatch',
-  'introduction',
-  'TTP',
-  'fix',
-  'inspection',
-  'offer',
-  'admission',
+  { queryName: 'applicants' },
+  { queryName: 'validApplicants' },
+  { queryName: 'contactApplicants' },
+  { queryName: 'attractionApplicants' },
+  { queryName: 'attendApplicants' },
+  { queryName: 'nursingCare' },
+  { queryName: 'nurse' },
+  { queryName: 'generalDispatch' },
+  { queryName: 'introduction' },
+  { queryName: 'TTP' },
+  { queryName: 'fix' },
+  { queryName: 'inspection' },
+  { queryName: 'offer' },
+  { queryName: 'admission' },
 ] as const;
 
 export const mediaItemList = [
-  'amount',
-  'applicants',
-  'validApplicants',
-  'contactApplicants',
-  'attractionApplicants',
-  'attendApplicants',
-  'fix',
-  'inspection',
-  'offer',
-  'admission',
+  { queryName: 'amount' },
+  { queryName: 'applicants' },
+  { queryName: 'validApplicants' },
+  { queryName: 'contactApplicants' },
+  { queryName: 'attractionApplicants' },
+  { queryName: 'attendApplicants' },
+  { queryName: 'fix' },
+  { queryName: 'inspection' },
+  { queryName: 'offer' },
+  { queryName: 'admission' },
 ] as const;
 
 export const mediaItemRateList = [
@@ -401,35 +437,35 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(
       },
       {
         name: '',
-        field: 'daysToWorkOne',
+        field: 'daysToWork1',
         label: t('KPI.tables.applicationAttribute.9'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: 'daysToWorkTwo',
+        field: 'daysToWork2',
         label: t('KPI.tables.applicationAttribute.10'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: 'daysToWorkThree',
+        field: 'daysToWork3',
         label: t('KPI.tables.applicationAttribute.11'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: 'daysToWorkFour',
+        field: 'daysToWork4',
         label: t('KPI.tables.applicationAttribute.12'),
         align: 'center',
         sortable: true,
       },
       {
         name: '',
-        field: 'daysToWorkFive',
+        field: 'daysToWork5',
         label: t('KPI.tables.applicationAttribute.13'),
         align: 'center',
         sortable: true,
@@ -457,7 +493,7 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(
       },
       {
         name: '',
-        field: '',
+        field: 'applicantsNursingCare',
         label: t('KPI.tables.applicationAttribute.17'),
         align: 'center',
         sortable: true,
@@ -471,7 +507,7 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(
       },
       {
         name: '',
-        field: '',
+        field: 'applicantsNurse',
         label: t('KPI.tables.applicationAttribute.19'),
         align: 'center',
         sortable: true,

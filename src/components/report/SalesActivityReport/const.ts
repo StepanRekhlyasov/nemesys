@@ -2,7 +2,12 @@ import { i18n } from 'boot/i18n';
 import { computed ,ComputedRef} from 'vue';
 import {QTableProps} from 'quasar'
 const { t } = i18n.global;
-export const itemList = ['fix', 'inspection', 'offer', 'admission','BO'] as const;
+export const itemList = [
+  {queryName:'fix'},
+  {queryName:'inspection'},
+  {queryName:'offer'},
+  {queryName:'admission'}
+] as const
 export const dataNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'] as const;
 export const dataNamesR = ['report.companyTotal','report.allCVR'] as const;
 export const chartNames = ['bar', 'line', 'line'] as const;
