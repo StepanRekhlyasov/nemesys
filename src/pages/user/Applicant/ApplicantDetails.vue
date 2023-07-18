@@ -111,7 +111,7 @@
                 {{ $t('applicant.list.qualification') }}
               </div>
               <div :class="bo ? 'col-3 q-pl-md' : 'col-6 q-pl-md'" v-if="selectedApplicant.qualification">
-                {{ selectedApplicant.qualification.map(applic => $t('applicant.add.' + applic)).join(', ') }}
+                {{ selectedApplicant.qualification.map(applic => $t('applicant.qualification.' + applic)).join(', ') }}
               </div>
             </div>
             <div class="col-6 row">
@@ -124,20 +124,6 @@
               <div v-if="!bo" class="col-3 text-right">
                 <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
               </div>
-            <div class="col-6 q-pl-md" v-if="selectedApplicant.qualification">
-              {{ selectedApplicant.qualification.map(applic => $t('applicant.qualification.' + applic)).join(', ') }}
-            </div>
-          </div>
-          <div class="col-6 row">
-            <span class="col-6 text-right text-primary text-weight-regular">
-              {{$t('applicant.list.experience')}}
-            </span>
-            <span class="col-3 q-pl-md">
-              {{selectedApplicant.totalYear ? selectedApplicant.totalYear + ' ' + $t('common.year') : ''}}
-            </span>
-            <div class="col-3 text-right">
-              <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
-            </div>
           </div>
         </div>
         <div class="row">
@@ -170,14 +156,14 @@
           <div class="col-5 row">
             <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays')}}</span>
             <span class="col-3 q-pl-md">{{selectedApplicant.daysToWork ? selectedApplicant.daysToWork + ' ' + $t('applicant.attendant.days') : ''}}</span>
-            <div class="col-3 text-right">
+            <div v-if="!bo" class="col-3 text-right">
               <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary" />
             </div>
           </div>
         </div>
       </q-card-section>
       <q-card-section class="q-pt-none" v-if="drawerRight">
-        <detail-tabs :applicant="applicantStore.state.selectedApplicant"/>
+        <detail-tabs :bo="bo" :applicant="applicantStore.state.selectedApplicant"/>
       </q-card-section>
     </q-card>
   </q-scroll-area>
