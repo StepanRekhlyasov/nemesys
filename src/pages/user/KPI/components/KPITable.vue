@@ -28,6 +28,7 @@ import {
   everydayColumns,
   unitPriceColumns,
   applicationAttributeColumns,
+  rateCalcuPattern
 } from '../const/kpi.const';
 import { Applicant } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -52,6 +53,12 @@ const calculateTotal = (rows: QTableProps['rows'] | undefined) => {
     });
     return acc;
   });
+
+  for(const pattern of rateCalcuPattern) {
+    if (total[pattern.before] && total[pattern.before]) {
+      total[pattern.name] = (total[pattern.after] / total[pattern.before] * 100).toFixed(1) + '%';
+    }
+  }
 
   total['name'] = t('KPI.total');
   return total;
