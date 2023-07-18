@@ -59,33 +59,71 @@
     </div>
 
     <div class="row q-pb-sm">
+      <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.list.availableShift') }}
+      </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.earlyShift') }}
       </div>
-      <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursEarly ? '●' : '✕' }}</span>
-        <q-checkbox v-if="desiredEdit" v-model="data['workingHoursEarly']" />
+      <div class="col-1 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursEarly }}</span>
+        <q-select
+          v-if="desiredEdit"
+          v-model="data['workingHoursEarly']"
+          :options="shiftOptions"
+          emit-value
+          dense
+          style="width:50px"
+        />
       </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.dayShift') }}
       </div>
-      <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursDay ? '●' : '✕' }}</span>
-        <q-checkbox v-if="desiredEdit" v-model="data['workingHoursDay']" />
+      <div class="col-1 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursDay }}</span>
+        <q-select
+          v-if="desiredEdit"
+          v-model="data['workingHoursDay']"
+          :options="shiftOptions"
+          emit-value
+          dense
+          style="width:50px"
+        />
       </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.lateShift') }}
       </div>
-      <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursLate ? '●' : '✕' }}</span>
-        <q-checkbox v-if="desiredEdit" v-model="data['workingHoursLate']" />
+      <div class="col-1 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursLate }}</span>
+        <q-select
+          v-if="desiredEdit"
+          v-model="data['workingHoursLate']"
+          :options="shiftOptions"
+          emit-value
+          dense
+          style="width:50px;"
+        />
       </div>
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.nightShift') }}
       </div>
-      <div class="col-2 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursNight ? '●' : '✕' }}</span>
-        <q-checkbox v-if="desiredEdit" v-model="data['workingHoursNight']" />
+      <div class="col-1 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.workingHoursNight }}</span>
+        <q-select
+          v-if="desiredEdit"
+          v-model="data['workingHoursNight']"
+          :options="shiftOptions"
+          emit-value
+          dense
+          style="width:50px;"
+        />
+      </div>
+      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.list.info.shortTime') }}
+      </div>
+      <div class="col-1 q-pl-md blue self-center">
+        <span v-if="!desiredEdit">{{ applicant.shortTime ? '✓' : '×' }}</span>
+        <q-checkbox v-if="desiredEdit" v-model="data['shortTime']" />
       </div>
 
     </div>
@@ -251,7 +289,11 @@ const props = withDefaults(defineProps<{
 })
 const applicantStore = useApplicant();
 const { t } = i18n.global;
-
+const shiftOptions = [
+  {label: '○', value: '○'},
+  {label: '△', value: '△'},
+  {label: '×', value: '×'},
+]
 const desiredEdit = ref(false);
 const days = ref(daysList);
 const specialDays = ref(specialDaysList);
@@ -312,10 +354,11 @@ function resetData() {
     jobSearchPriorities1: props.applicant['jobSearchPriorities1'],
     jobSearchPriorities2: props.applicant['jobSearchPriorities2'],
     jobSearchPriorities3: props.applicant['jobSearchPriorities3'],
-    workingHoursEarly: props.applicant['workingHoursEarly'] || false,
-    workingHoursDay: props.applicant['workingHoursDay'] || false,
-    workingHoursLate: props.applicant['workingHoursLate'] || false,
-    workingHoursNight: props.applicant['workingHoursNight'] || false,
+    workingHoursEarly: props.applicant['workingHoursEarly'] || '×',
+    workingHoursDay: props.applicant['workingHoursDay'] || '×',
+    workingHoursLate: props.applicant['workingHoursLate'] || '×',
+    workingHoursNight: props.applicant['workingHoursNight'] || '×',
+    shortTime: props.applicant['shortTime'] || false,
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }

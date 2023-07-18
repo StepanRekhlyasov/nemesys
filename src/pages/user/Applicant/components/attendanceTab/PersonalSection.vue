@@ -13,8 +13,30 @@
         </div>
         <div class="col-3 q-pl-md blue ">
           <span v-if="!edit">{{ applicant.smoking?$t('smoking.'+applicant.smoking):''}}</span>
+          <span v-if="!edit && data['smokingWhat'] && data['smoking']==='yes'"> / {{ $t('smoking.'+applicant.smokingWhat) }}</span>
+          <span v-if="!edit && data['smokingStop'] && data['smoking']==='yes'"> / {{ $t('smoking.'+applicant.smokingStop) }}</span>
           <q-select v-if="edit" outlined dense :options="smokingStatusOptions"
             emit-value map-options v-model="data['smoking']" :disable="loading"/>
+          <q-select v-if="edit && data['smoking']==='yes'" outlined dense :options="[
+            {
+              label: $t('smoking.paper'),
+              value: 'paper'
+            },{
+              label: $t('smoking.electronic'),
+              value: 'electronic'
+            }
+          ]"
+            emit-value map-options v-model="data['smokingWhat']" :disable="loading"/>
+          <q-select v-if="edit && data['smokingWhat'] && data['smoking']==='yes'" outlined dense :options="[
+            {
+              label: $t('smoking.can'),
+              value: 'can'
+            },{
+              label: $t('smoking.cant'),
+              value: 'cant'
+            }
+          ]"
+            emit-value map-options v-model="data['smokingStop']" :disable="loading"/>
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.tattoos') }}
@@ -172,6 +194,8 @@ const data = ref<Partial<ApplicantInputs>>({})
 function resetData() {
   defaultData.value = {
     smoking: props?.applicant['smoking'],
+    smokingWhat: props?.applicant['smokingWhat'],
+    smokingStop: props?.applicant['smokingStop'],
     tattoos: props?.applicant['tattoos'],
     marriedStatus: props?.applicant['marriedStatus'],
     liveTogether: props?.applicant['liveTogether'],

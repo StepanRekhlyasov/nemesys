@@ -119,10 +119,11 @@ export interface DesiredConditions {
   daysToWork?: number;
   daysPerWeek?: Days[];
   specialDay?: SpecialDay[];
-  workingHoursEarly?: boolean;
-  workingHoursDay?: boolean;
-  workingHoursLate?: boolean;
-  workingHoursNight?: boolean;
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  shortTime?: boolean;
   shiftRemarks?: string;
   meansCommuting?: string;
   nearestStation?: string;
@@ -148,6 +149,8 @@ export interface Attendance {
 
 export interface PersonalStatus {
   smoking?: SmokingStatus;
+  smokingWhat?: string;
+  smokingStop?: string;
   tattoos?: TattoosStatus;
   marriedStatus?: MarriedStatus;
   liveTogether?: TattoosStatus;
@@ -323,7 +326,7 @@ export interface ApplicantMemo {
   content: string;
   user: User;
   created_date: string;
-  updated_date?: string;
+  updated_at?: string;
   delited: boolean;
 }
 
