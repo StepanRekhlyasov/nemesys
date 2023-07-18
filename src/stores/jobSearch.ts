@@ -61,13 +61,13 @@ export const useJobSearch = defineStore('jobSearch', () => {
         where('deleted', '==', false),
       )
     );
+
     q.forEach(async(doc) => {
       clientData.push({
         label:doc.data().name,
         id: doc.id,
       });
     });
-
     return clientData;
   };
 
@@ -106,23 +106,23 @@ export const useJobSearch = defineStore('jobSearch', () => {
   });
   }
 
-  const loadOfficeData = async (id:string) =>{
-    const officeData: object[] = [];
-    const q = await getDocs(
-      query(
-        collection(db, 'clients',id,'office'),
-        where('deleted', '==', false),
-      )
-    );
-    q.forEach(async(doc) => {
-      officeData.push({
-        label:doc.data().name,
-        id: doc.id,
-      });
+const loadOfficeData = async (id:string) => {
+  const officeData:object[] = [];
+  const q = await getDocs(
+    query(
+      collection(db, 'clients', id, 'client-factory'),
+    )
+  );
+  q.forEach((doc) => {
+    const data = doc.data();
+    officeData.push({
+      label: data.name,
+      id:doc.id
     });
+  });
+  return officeData;
+};
 
-    return officeData;
-  }
 
   return {
     loadJobSearchData,

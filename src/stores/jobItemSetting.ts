@@ -57,7 +57,6 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
   };
 
   const addNewOption = async (id,data:object) => {
-    debugger
     data['created_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;

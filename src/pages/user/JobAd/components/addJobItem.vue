@@ -92,27 +92,38 @@
                   <q-btn color="primary" size="sm" class="q-ml-md" dense :label="$t('common.addNew')" icon="add"
                       @click="addNewItem" :disable="!jobItem.id" />
               </div>
-
-              <q-table v-if="jobItem.dataType === 'option'" :columns="columns" :rows="optionItem" row-key="id" class="no-shadow q-mt-sm"
-                 :loading="loading" dense hide-pagination>
-                  <template v-slot:body-cell-edit="props">
-                      <q-td :props="props">
-                          <q-btn flat round size="sm" icon="menu" color="primary" />
-                      </q-td>
-                  </template>
-                  <template v-slot:body-cell-name="props">
-                      <q-td :props="props">
-                          <span v-if="props.row.name">{{ props.row.name }}</span>
+              <q-markup-table
+                v-if="jobItem.dataType === 'option'"
+                class="table"
+                :bordered="false"
+                :square="false"
+                separator="none"
+                flat>
+                    <thead>
+                        <tr>
+                            <th class="table__column text-left" :key="item.name" v-for="item in columns">
+                                {{ item.label }}
+                            </th>
+                            <th class="table__column text-left"></th>
+                        </tr>
+                    </thead>
+                    <draggable v-model="optionItem" handle=".handle" tag="tbody" item-key="name" ghost-class="ghost">
+                    <template #item="{ element }">
+                      <tr>
+                        <td scope="row"><q-btn flat round size="sm" icon="menu" color="primary" class="handle"/></td>
+                        <td><span v-if="element.name">{{ element.name }}</span>
                           <span v-else>Click here to add name</span>
-                          <q-popup-edit v-model="props.row.name" :title="$t('jobItem.add.optionContentUpdate')" buttons persistent
+                          <q-popup-edit v-model="element.name" :title="$t('jobItem.add.optionContentUpdate')" buttons persistent
                               v-slot="scope" :label-set="$t('common.save')" :label-cancel="$t('common.cancel')"
-                              @hide="addNewOption(props.row)">
+                              @save="addNewOption(element, $event)">
                               <q-input v-model="scope.value" dense autofocus />
-                          </q-popup-edit>
-                      </q-td>
-                  </template>
-              </q-table>
+                          </q-popup-edit></td>
+                          <td>{{ selectedCategoryJobDataCount}}</td>
 
+                     </tr>
+                   </template>
+                   </draggable>
+              </q-markup-table>
           </q-card-section>
       </q-form>
   </q-card>
@@ -121,7 +132,7 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, defineProps, onMounted, onBeforeUnmount ,computed} from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
@@ -160,7 +171,6 @@ const jobItemObject = {
   recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
   dataType: props?.selectedPhrase['dataType'] || '',
 }
-const drag = ref(false)
 const jobItem = ref({ ...jobItemObject })
 const unsubscribe = ref();
 const phraseCategoryText = ref('')
@@ -230,16 +240,26 @@ const saveJobItem = async () => {
 
 }
 
+const selectedCategoryJobDataCount = computed(() => {
+  const selectedCategory = jobItem.value.content;
+  const selectedJobData = optionItem.value.filter(data => data.content === selectedCategory);
+  return selectedJobData.length;
+});
+
 const addNewItem = () => {
   optionItem.value.unshift({ 'name': '' } as never)
 
 }
 
-const addNewOption = async (data: object) => {
+const addNewOption = async (data: object, updatedName) => {
+  debugger
   try {
     if (data['id']) {
-           await jobItemSettingStore.updateOption(jobItem.value['id'],data)
+      data['name'] = updatedName;
+        await jobItemSettingStore.updateOption(jobItem.value['id'],data)
+
       } else {
+        data['name'] = updatedName;
         await jobItemSettingStore.addNewOption(jobItem.value['id'],data)
       }
 
@@ -260,4 +280,15 @@ const addNewOption = async (data: object) => {
       });
   }
 }
+
 </script>
+<style lang="scss">
+.handle {
+  float: left;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.ghost {
+  opacity: 0;
+}
+</style>

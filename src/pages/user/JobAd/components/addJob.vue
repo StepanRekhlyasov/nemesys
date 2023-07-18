@@ -79,8 +79,6 @@
                       </q-select>
                   </div>
               </div>
-
-
               <div class="row q-pt-sm">
                   <div class="col-4">
                       {{ $t('job.add.paymentType') }}
@@ -529,13 +527,13 @@ watch(
 
 watch(
   () => (jobData.value.client),
-  (newVal,) => {
+  async(newVal,) => {
       officeList.value = [];
       if (unsubscribeOffice.value) {
           unsubscribeOffice.value();
       }
-      if (newVal.value) {
-         officeList.value = jobSearchStore.loadOfficeData(newVal.value)
+      if (newVal) {
+         officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
       }
   }
 )
