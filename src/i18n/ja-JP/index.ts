@@ -939,7 +939,8 @@ export default {
         classification: {
           introduction: '紹介',
           dispatch: '派遣',
-          ttp: 'TTP'
+          ttp: 'TTP',
+          TTP:'TTP',
         }
       }
 

@@ -944,7 +944,8 @@ export default {
         classification: {
           introduction : 'Introduction',
           dispatch: 'Dispatch',
-          ttp: 'TTP'
+          ttp: 'TTP',
+          TTP:'TTP'
         }
       }
     },

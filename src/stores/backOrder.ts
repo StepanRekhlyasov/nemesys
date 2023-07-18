@@ -283,76 +283,199 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   function matchData(staff: DocumentData, bo: DocumentData) {
     let qualification = 0;
-    let occupation = 0;
-    let classification = 0;
     let daysToWork = 0;
     let daysPerWeek = 0;
     let agePercent = 0;
     let expReq = 0;
-
+    let workingHoursDay = 0;
+    let workingHoursEarly = 0;
+    let workingHoursLate = 0;
+    let workingHoursNight = 0;
+    let workingHours = 0;
+    let commuteDistance = 0;
+    const matchedData = {
+      'qualification':{
+        value:0,
+        label:'',
+      },
+      'expReq':{
+        value:0,
+        label:'',
+      },
+      'daysToWork':{
+        value:0,
+        label:'',
+      },
+      'agePercent':{
+        value:0,
+        label:'',
+      },
+      'commuteDistance':{
+        value:0,
+        label:'',
+      },
+      'daysPerWeek':{
+        value:0,
+        'sunday':0,
+        'monday':0,
+        'tuesday':0,
+        'wednesday':0,
+        'thursday':0,
+        'friday':0,
+        'saturday':0,
+      },
+      'workingHours':{
+        value:0,
+        'day':0,
+        'early':0,
+        'late':0,
+        'night':0,
+      },
+    };
     //qualification percentage
     staff.qualification?.forEach((q) => {
       if (bo.qualifications?.toLowerCase() === q.toLowerCase()) {
         qualification = 1
+        matchedData['qualification'].label = q;
       }
     });
+    matchedData['qualification'].value = qualification*100;
 
     //Experience required
-    if (Number(staff.totalYear) && Number(bo.experience_req)) {
-      if (staff.totalYear >= bo.experience_req) {
-        expReq = 1;
-      } else {
-        expReq = staff.totalYear / bo.experience_req;
+    if(!bo.experience_req){
+      expReq = 1;
+    }
+    else{
+      if (staff.totalYear){
+        matchedData['expReq'].label = staff.totalYear;
+        if (Number(staff.totalYear) >= Number(bo.experience_req)) {
+          expReq = 1;
+        } else {
+          expReq = Number(staff.totalYear) / Number(bo.experience_req);
+        }
       }
     }
-
-    //caseType
-    if (bo.caseType && (staff.occupation?.toLowerCase() === bo.caseType?.toLowerCase())) {
-      occupation = 1
-    }
-
-    //classification
-    if (bo.transactionType && (staff.classification?.toLowerCase() === bo.transactionType?.toLowerCase())) {
-      classification = 1
-    }
+    matchedData['expReq'].value = expReq*100
 
     //daysToWork
-    if (bo.numberWorkingDays && staff.daysToWork) {
-      const days = stringToNumber(bo.numberWorkingDays);
-      if (days && days <= staff.daysToWork) {
+      if(!bo.daysPerWeekList){
         daysToWork = 1;
-      } else if (days) {
-        daysToWork = staff.daysToWork / days;
       }
-    }
+      else{
+        const days = stringToNumber(bo.daysPerWeekList)
+        if(staff.daysToWork){
+          matchedData.daysToWork.label = staff.daysToWork;
+          if (!days || days <= Number(staff.daysToWork)){
+            daysToWork = 1;
+          } else{
+            daysToWork = Number(staff.daysToWork) / days;
+          }
+        }
+      }
+    matchedData['daysToWork'].value = daysToWork*100;
 
     //workingDaysWeek
-    if (bo.working_days_week && staff.daysPerWeek) {
-      let matchingDays = 0;
-      staff.daysPerWeek.forEach((daySatff) => {
-        bo.working_days_week.forEach((dayClient) => {
-          if (dayClient === daySatff) {
-            matchingDays++;
-          }
+    if(bo.working_days_week.length===0){
+      daysPerWeek = 1;
+    }
+    else{
+      if (staff.daysPerWeek && staff.daysPerWeek.length!=0) {
+        let matchingDays = 0;
+        staff.daysPerWeek.forEach((daySatff) => {
+          bo.working_days_week.forEach((dayClient) => {
+            if (dayClient === daySatff) {
+              matchingDays++;
+              matchedData['daysPerWeek'][dayClient] = 1;
+            }
+          });
         });
-      });
-      if (bo.working_days_week.length) {
-        daysPerWeek = matchingDays / bo.working_days_week.length;
+        if (bo.working_days_week.length) {
+          daysPerWeek = matchingDays / bo.working_days_week.length;
+        }
       }
     }
-
+    matchedData['daysPerWeek'].value = daysPerWeek*100;
     //age
-    if (bo.ageLimit && staff.dob) {
+    if (bo.upperAgeLimit && staff.dob) {
       const currentDate = new Date();
       const dob = new Date(staff.dob.seconds * 1000);
       let age = currentDate.getFullYear() - dob.getFullYear();
       if (currentDate.getMonth() < dob.getMonth() || (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())) {
         age--;
       }
-      agePercent = age <= bo.ageLimit ? 1 : bo.ageLimit / age;
+      matchedData.agePercent.label = age.toString();
+      agePercent = age <= bo.upperAgeLimit ? 1 : bo.upperAgeLimit / age;
     }
-    const matchPercent = ((agePercent + qualification + occupation + classification + daysPerWeek + daysToWork + expReq) / 7) * 100;
+    matchedData['agePercent'].value = agePercent*100;
+
+    //workingHoursDay
+    let totalWorkingHours = 0;
+    if(bo.workingHoursDay_min || bo.workingHoursDay_max){
+      totalWorkingHours++;
+      if(staff.workingHoursDay===true || staff.workingHoursDay==='△'){
+        workingHoursDay = 1;
+      }
+    }
+    else{
+      workingHoursDay = 1;
+    }
+  //workingHoursEarly
+    if(bo.workingHoursEarly_min || bo.workingHoursEarly_max){
+      totalWorkingHours++;
+      if(staff.workingHoursEarly===true || staff.workingHoursEarly==='△'){
+        workingHoursEarly = 1;
+      }
+    }
+    else{
+      workingHoursEarly = 1;
+    }
+    //workingHoursLate
+    if(bo.workingHoursLate_min || bo.workingHoursLate_max){
+      totalWorkingHours++;
+      if(staff.workingHoursLate===true || staff.workingHoursLate==='△'){
+        workingHoursLate = 1;
+      }
+    }
+    else{
+      workingHoursLate = 1;
+    }
+    //workingHoursNight
+    if(bo.workingHoursNight_min || bo.workingHoursNight_max){
+      totalWorkingHours++;
+      if(staff.workingHoursNight===true || staff.workingHoursNight==='△'){
+        workingHoursNight = 1;
+      }
+    }
+    else{
+      workingHoursNight = 1;
+    }
+    workingHours = (workingHoursDay+workingHoursEarly+workingHoursLate+workingHoursNight)/totalWorkingHours;
+    matchedData['workingHours'].value = workingHours*100;
+    matchedData['workingHours']['day'] = workingHoursDay;
+    matchedData['workingHours']['early'] = workingHoursEarly;
+    matchedData['workingHours']['late'] = workingHoursLate;
+    matchedData['workingHours']['night'] = workingHoursNight;
+
+    //commute distance
+    commuteDistance = 1;
+    // let commuteTime = '';
+    // if(!staff.commutingTime){
+    //   commuteDistance = 1
+    // }
+    // else{
+    //   for(let i=0;i<staff.commutingTime.length-1;i++){
+        // if(staff.commuteDistance[i]!=' '){
+        //   commuteTime += staff.commuteDistance[i];
+        // }
+      // }
+      // commuteDistance = (Number(commuteTime)*0.5)/staff.distanceBusiness;
+    // }
+    matchedData.commuteDistance.label = staff.distanceBusiness.toString();
+    matchedData['commuteDistance'].value = Number((commuteDistance*100).toFixed(2));
+
+    const matchPercent = ((agePercent + qualification + daysPerWeek + daysToWork + expReq + workingHours + commuteDistance) / 7) * 100;
     staff.matchDegree = Number(matchPercent.toFixed(2));
+    return matchedData;
   }
 
   const stringToNumber = (num: string): number | undefined => {

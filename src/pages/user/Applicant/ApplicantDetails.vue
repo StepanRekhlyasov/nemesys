@@ -52,37 +52,6 @@
                   {{ selectedApplicant.occupation && $t('applicant.add.' + selectedApplicant.occupation) }}
                 </span>
               </div>
-              <div class="row">
-                <span class="col-6 q-pr-md">
-                  {{ $t('applicant.add.applicationMetod') }}: {{ selectedApplicant.applicationMetod ? $t('applicant.add.' +
-                    selectedApplicant.applicationMetod) : '' }}
-                </span>
-                <span class="col-3 relative-position "><hidden-text v-if="selectedApplicant.email"
-                    :value="'MAIL: ' + selectedApplicant.email" /></span>
-                <span class="col-3 q-pl-md">
-                  <span class="q-mr-md">
-                    {{ $t('applicant.list.category') }}
-                  </span>
-                  {{ selectedApplicant.classification ? $t('applicant.list.info.classification.' +
-                    selectedApplicant.classification.toLowerCase()) : '' }}
-                </span>
-              </div>
-            </div>
-            <div class="row">
-              <span class="q-pr-md">
-                {{ $t('applicant.add.applicationDate') }}: {{ myDateFormat(selectedApplicant.applicationDate, 'YYYY/MM/DD')  }}
-              </span>
-            </div>
-            <div class="row">
-              <span class="col-6 ">
-                {{ $t('applicant.add.applicationMedia') }}: {{selectedApplicant.media?selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}
-              </span>
-              <span class="col-3 relative-position"><hidden-text v-if="selectedApplicant.phone"
-                  :value="'TEL: ' + selectedApplicant.phone" /></span>
-              <span class="col-3 q-pl-md">
-                <span class="q-mr-md">{{ $t('applicant.add.occupation') }}</span>
-                {{selectedApplicant.occupation && $t('applicant.add.' + selectedApplicant.occupation) }}
-              </span>
             </div>
             <div class="row">
               <span class="col-6 q-pr-md">
@@ -94,8 +63,13 @@
                 <span class="q-mr-md">
                   {{ $t('applicant.list.category') }}
                 </span>
-                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification.toLowerCase()) : ''}}
-              </span>
+                <div :class="bo ? 'col-3 q-pl-md' : 'col-6 q-pl-md'" v-if="selectedApplicant.classification">
+                  <span class="col-5">
+                    {{ selectedApplicant.classification.map(applic => $t('applicant.list.info.classification.' + applic.toLowerCase())).join(', ') }}
+                  </span>
+                </div>
+
+                </span>
             </div>
           </div>
         </q-card-section>
