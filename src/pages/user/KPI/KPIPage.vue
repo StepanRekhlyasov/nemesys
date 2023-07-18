@@ -162,10 +162,10 @@ const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
-  day.value = '';
+  day.value =  dummyDate;
   dateRange.value = dummyDataDateRange;
   branch.value = '';
-  occupation.value = '';
+
 };
 
 const loading = ref(false);
@@ -212,12 +212,11 @@ const getBranchList = async () => {
 
 async function getData() {
   if (organizationStore.currentOrganizationId) {
+    console.log(item.value,branch.value,mode.value)
     rowData.value = []
     loading.value = true;
-    dateRange.value = dummyDataDateRange;
     // we need to care switching mode while loading
     const modeNow = mode.value;
-
     if (mode.value == 'day' && day.value) {
       rowData.value = [];
       const rows = await getDailyReport({
