@@ -98,6 +98,9 @@ export default {
     downloadCSV: 'CSVダウンロード',
     branch: '支店',
   },
+  rule: {
+    onlyNumber: '数字のみ、ハイフンなし'
+  },
   smoking: {
     no: '無',
     yes: '有',
