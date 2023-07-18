@@ -9,7 +9,7 @@ import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
 import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
 import { useRouter } from 'vue-router';
-import { updateSharedVariable } from "./components/search/searchData"
+import { updateSharedVariable } from './components/search/searchData'
 
 const router = useRouter()
 const saveSearch = useApplicantSaveSearch()

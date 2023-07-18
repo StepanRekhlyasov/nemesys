@@ -384,16 +384,20 @@ import DoubleNumberInput from './components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import {useApplicantSaveSearch} from 'src/stores/applicantSaveSearch'
 import {checkValidity} from 'src/pages/user/Applicant/const/index'
-import { dataa } from "./searchData"
+import { searchDataSample, resetSharedVariable} from './searchData'
+const props = defineProps<{
+    searchData:DocumentData
+}>();
+
 const db = getFirestore();
 const saveSearch = useApplicantSaveSearch()
-const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
 
-const searchData = ref<DocumentData>(JSON.parse(JSON.stringify(searchDataSample)));
+
+const searchData = ref<DocumentData>(props.searchData);
 const prefectureList = ref<ComputedRef>(prefList);
 const prefectureData = ref<DocumentData>({});
 const stationData = ref<DocumentData>([]);
-//const selectedPref = ref({lable: ''})
+
 
 const statusOption = ref<StatusOption | ComputedRef>(statusList)
 const expanded = ref<boolean>(false)
@@ -508,14 +512,15 @@ const searchStaff = async () => {
     if (user == null) {
         return false
     }
-    searchData.value = dataa.value
     emit('loadSearchStaff', searchData.value)
     emit('isLoading', false)
 };
 
+
 const reset = () => {
     searchData.value = JSON.parse(JSON.stringify(searchDataSample));
-    //searchStaff();
+    resetSharedVariable();
+    searchStaff();
 }
 
 const save=  async ()=>{
