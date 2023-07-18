@@ -162,13 +162,10 @@ import { useApplicant } from 'src/stores/applicant';
 import { FaxSearchData } from './types';
 import PdfViewer from './components/PdfViewer.vue';
 import { pdfViewer } from './consts/index';
-
 const organizationStore = useOrganization();
 const applicantStore = useApplicant();
-
 const columns = ref(faxColumns);
 const selected = ref(false);
-
 const faxStore = useFax();
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
@@ -178,13 +175,13 @@ const searchData = ref<FaxSearchData>({
   selectedBranch: '',
   selectedInCharge: '',
   selectedApplicant: null,
+  selectedOrganization: organizationStore.currentOrganizationId
 });
 const applicantList = ref(<{ value: string; label: string }[]>[]);
 const start = Timestamp.fromDate(new Date(searchData.value.selectedDate));
 const endDate = new Date(new Date(searchData.value.selectedDate));
 endDate.setDate(endDate.getDate() + 1);
 const end = Timestamp.fromDate(endDate);
-
 const pagination = ref({
   page: 1,
   rowsPerPage: 30,
@@ -206,7 +203,9 @@ const openPdfDialog = (url) => {
   pdfUrl.value = url;
   pdfViewer.value = true;
 };
-
+watch(()=>organizationStore.state.userAndBranchesUpdated,()=>{
+  searchData.value.selectedOrganization = organizationStore.currentOrganizationId
+})
 watch(
   () => applicantStore.state.applicantList,
   (newVal) => {

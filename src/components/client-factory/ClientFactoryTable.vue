@@ -28,6 +28,7 @@ const getSelectedString = () => {
 const selectItem = (item: ClientFactoryTableRow) => {
     emit('selectItem', item)
 }
+
 watch(()=>selected.value,()=>{
     emit('selectedId',selected.value)
 })

@@ -94,10 +94,6 @@ const save = async () => {
   }).onOk(async () => {
     faxData.value.selectedCF = props.selectedCF
     await faxStore.saveFax(faxData.value, faxFile.value);
-    faxData.value = JSON.parse(JSON.stringify(faxDataDataSample));
-    faxFile.value = [];
-    faxForm.value.resetValidation();
-    confirm.value=false
   });
 };
 const pdfUrl = ref('');
@@ -141,7 +137,7 @@ const confirmContent = () =>{
           <q-card-section class="text-white bg-primary">
             <div class="text-h6">
               <q-btn dense flat icon="close" @click="hideDrawer" v-if="!confirm"/>
-              <q-btn dense flat icon="close" @click="(()=>{confirm=!confirm})" v-else/>
+              <q-btn dense flat icon="edit" @click="(()=>{confirm=!confirm})" v-else/>
               <span class="q-pl-sm text-bold">{{
                 $t('client.add.options.faxSending')
               }}</span>

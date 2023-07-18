@@ -19,4 +19,5 @@ export interface FaxSearchData {
   selectedBranch: string;
   selectedInCharge: string;
   selectedApplicant: string | null;
+  selectedOrganization: string | null;
 }

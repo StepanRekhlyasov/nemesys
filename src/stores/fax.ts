@@ -22,14 +22,15 @@ import { dateToTimestampFormat } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { FaxSearchData } from 'src/pages/user/BusinessManagement/types';
 import { useUserStore } from 'src/stores/user';
-
+import { useOrganization } from 'src/stores/organization';
 export const useFax = defineStore('fax', () => {
   const db = getFirestore();
   const auth = getAuth();
   const unsubscribe = ref();
   const faxList = ref(<DocumentData[]>[]);
   const useStore = useUserStore();
-
+  const organizationStore = useOrganization();
+  
   const uploadFaxFile = async (faxFile: FileList | []) => {
     const file = faxFile[0];
     const storage = getStorage();
@@ -59,7 +60,7 @@ export const useFax = defineStore('fax', () => {
     if (user) {
       data['branch_id'] = user.branch_id;
     }
-
+    data['organizationIds'] = organizationStore.currentOrganizationId
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
     data['created_at'] = serverTimestamp();
@@ -97,7 +98,9 @@ export const useFax = defineStore('fax', () => {
     if (searchData.selectedInCharge) {
       filters.push(where('senderId', '==', searchData.selectedInCharge));
     }
-
+    if(searchData.selectedOrganization) {
+      filters.push(where('organizationIds', '==', searchData.selectedOrganization))
+    }
     const q = query(collection(db, 'fax'), ...filters);
 
     if (unsubscribe.value) {

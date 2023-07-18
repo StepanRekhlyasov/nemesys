@@ -1595,7 +1595,7 @@ export default {
     },
     fax: {
       confirmAction:'送信内容確認',
-      transmissionConfirmation: '送信内容確認',
+      transmissionConfirmation: 'この内容で送信する',
       applicantLinkage: '応募者紐付け',
       clientCategoryNG: 'NGクライアント種別',
       clientFacilityNG: 'NGクライアント・施設',

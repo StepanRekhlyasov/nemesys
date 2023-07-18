@@ -102,22 +102,26 @@ const openNewClientFactoryDrawer = () => {
 }
 
 // new Fax drawer
-let selectedCF:string[] = []
+const selectedCF = ref<string[]>([])
 const hideNewFaxDrawer = () => {
     isNewFaxDrawer.value = false
 }
 
 const openNewFaxDrawer = () => {
-    selectedCF = []
+    selectedCF.value = []
     Object.keys(selected.value).forEach((key)=>{
-        selectedCF.push(selected.value[key].id)
+        selectedCF.value.push(selected.value[key].id)
     });
-    if(selectedCF.length === 0 || selectedCF.length === tableRows.value.length){
-        selectedCF = ['all']
+    if(selectedCF.value.length === 0 || selectedCF.value.length === tableRows.value.length){
+        selectedCF.value = ['all']
     }
     isNewFaxDrawer.value = true
 }
-
+const openFaxDrawer = (id:string) =>{
+    selectedCF.value = []
+    selectedCF.value.push(id)
+    isNewFaxDrawer.value = true
+}
 </script>
 
 <template>
@@ -131,7 +135,7 @@ const openNewFaxDrawer = () => {
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
                 @open-fax-drawer="openNewFaxDrawer"/>
-            <q-card-section class="table no-padding">
+            <q-card-section class="table no-padding"> 
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
                     @selected-id="selectedCFHandler"
@@ -150,6 +154,7 @@ const openNewFaxDrawer = () => {
             v-if="activeClientFactoryItem"
             v-model:selectedItem="activeClientFactoryItem"
             :isDrawer="isClientFactoryDrawer"
+            @open-fax-drawer="openFaxDrawer"
             @hide-drawer="hideClientFactoryDrawer"/>
 
         <NewClientDrawer

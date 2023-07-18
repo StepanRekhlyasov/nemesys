@@ -1,22 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps,ref } from 'vue';
+import { defineEmits } from 'vue';
 
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue';
-const props = defineProps<{
-    clientFactory: ClientFactory
-}>();
-
+const emit = defineEmits<{
+    (e: 'openFaxDrawer')
+}>()
+const openFaxDrawer = () =>{
+    emit('openFaxDrawer')
+}
 const { t } = useI18n({ useScope: 'global' });
-const isNewFaxDrawer = ref(false)
-const hideNewFaxDrawer = () => {
-    isNewFaxDrawer.value = false
-}
-const selectedCF:string[] = [props.clientFactory.id]
-const openNewFaxDrawer = () => {
-    isNewFaxDrawer.value = true
-}
+
 </script>
 
 <template>
@@ -84,17 +77,11 @@ const openNewFaxDrawer = () => {
                     </q-btn>
                 </div>
                 <div class="full-width">
-                    <q-btn size="sm" outline color="primary" class="q-mt-sm" @click="openNewFaxDrawer" style="width: 5rem;">
+                    <q-btn size="sm" outline color="primary" class="q-mt-sm" @click="openFaxDrawer" style="width: 5rem;">
                         FAX送信
                     </q-btn>
                 </div>
             </div>
-            <FaxDrawer
-            @hide-drawer="hideNewFaxDrawer"
-            theme="primaery"
-            :selectedCF="selectedCF"
-            :is-drawer="isNewFaxDrawer"
-            />
     </div>
 </template>
 
