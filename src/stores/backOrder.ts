@@ -36,7 +36,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       total_results: 0,
     },
   });
- 
+
   const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
@@ -47,9 +47,11 @@ export const useBackOrder = defineStore('backOrder', () => {
     return year + '-' + month + '-' + day + 'T23:59:59+00:00';
   };
 
-  async function loadBackOrder(searchData: BOElasticSearchData) {
+  async function loadBackOrder(searchData: BOElasticSearchData, pagination = {
+    page: 1,
+    rowsPerPage: 30,
+  }) {
     state.value.currentIds = [];
-    state.value.BOList = [];
     state.value.isLoadingProgress = true;
 
     const filters: BOElasticFilter = ref({ all: [{ deleted: 'false' }] }).value;
@@ -114,8 +116,11 @@ export const useBackOrder = defineStore('backOrder', () => {
         process.env.elasticSearchBOURL as string,
         {
           query: queryString,
-          page: { size: 30, current: 1 },
+          page: { size: pagination.rowsPerPage, current: pagination.page },
           filters: filters,
+          sort: {
+            boid: 'desc'
+          }
         },
         {
           headers: {
@@ -141,19 +146,20 @@ export const useBackOrder = defineStore('backOrder', () => {
   }
 
   const loadBOData = async () => {
-    state.value.BOList = [];
     state.value.isLoadingProgress = true;
+    let allBOList: BackOrderModel[] = []
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch),]);
+      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch), orderBy('boId', 'desc')]);
       for (let i = 0; i < boList.length; i++) {
         boList[i]['dateOfRegistration'] = myDateFormat(
           boList[i]['dateOfRegistration'] as Timestamp
         );
       }
 
-      state.value.BOList = boList;
+      allBOList = [...allBOList, ...boList];
     }
+    state.value.BOList = allBOList
     state.value.isLoadingProgress = false;
   };
 
