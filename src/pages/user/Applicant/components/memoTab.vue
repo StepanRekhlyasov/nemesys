@@ -105,7 +105,7 @@ const columns = computed<QTableProps['columns']>(() => {
       label: t('detal.memo.registredUser'),
       align: 'left',
       field: 'created_user',
-      sortable: false,
+      sortable: true,
     },{
       name: 'content',
       label: t('detal.memo.contents') ,
@@ -116,11 +116,13 @@ const columns = computed<QTableProps['columns']>(() => {
       label: t('detal.memo.creationDay') ,
       field: 'created_date',
       align: 'left',
+      sortable: true,
     },{
       name: 'updated_at',
       label: t('detal.memo.updateDate'),
       field: 'updated_at',
       align: 'left',
+      sortable: true,
     },{
       name: 'edit',
       field: '',
