@@ -89,16 +89,11 @@ type OfficeDetails = {
     }
 } & {
     registeredInfo: {
-        prefecture: string
-        officeName: string
         parentClient: string
-        municipality: string
-        city: string
         tel: string
         street: string
         building: string
         fax: string
-        others: string
         latitude: number
         longitude: number
     }
