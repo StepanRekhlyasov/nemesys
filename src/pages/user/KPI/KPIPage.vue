@@ -327,17 +327,13 @@ watch(
   }
 );
 watch(
-  () => mode.value,
-  () => {
+  () => [mode.value,item.value,branch.value],
+  async () => {
     resetData();
+    await getData();
   }
 );
-watch(
-  () => branch.value,
-  () => {
-    resetData();
-  }
-);
+
 function downloadCSV() {
   kpiTableRef.value?.exportTable();
 }
