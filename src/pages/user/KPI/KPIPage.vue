@@ -272,6 +272,9 @@ async function getData() {
 
     if (mode.value == 'media' && item.value == 'applicationAttribute') {
       rowData.value = [];
+      mediaListToShow.value = convertObjToIdNameList([
+        ...(await getAllmedia()),
+      ]);
       let rows = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
@@ -283,6 +286,9 @@ async function getData() {
       });
       rowData.value = rows;
     } else if (mode.value == 'media' && media.value) {
+      mediaListToShow.value = convertObjToIdNameList([
+        ...(await getAllmedia()),
+      ]);
       rowData.value = [];
       let rows = await getReport({
         dateRange: dateRange.value,
