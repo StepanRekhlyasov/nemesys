@@ -1531,7 +1531,7 @@ export default {
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
-        city: '事業所住所：市区町村',
+        municipality: '事業所住所：自治体',
         townAndStreet: '事業所住所：町名・番地',
         others: '事業所住所：ビル名・その他',
         longitude: '事業所住所：経度',
