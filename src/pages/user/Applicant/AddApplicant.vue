@@ -23,7 +23,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['kanaName']" 
-                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule, isKatakanaRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -275,7 +275,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate} from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationRule, isKatakanaRule } from 'src/components/handlers/rules';
 
 const applicantDataSample = {
   qualification: [],

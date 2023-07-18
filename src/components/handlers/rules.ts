@@ -15,6 +15,15 @@ export const organizationCodeRule = async (val: string) => {
   return true
 }
 
+export const isKatakanaRule = (val: string) => {
+
+  if (!/^[\u30a0-\u30ff!?#$%&\s]+$/.test(val)) {
+    return ''
+  }
+
+  return true
+}
+
 export const isCodeUniqueRule = async (val: string) => {
 
   if (val == ADMIN_ORGANIZATION_CODE) {
