@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, dataNames, itemList } from './const';
+import { chartOptions, columns, dataNames, itemList, itemRateList } from './const';
 import { useGetReport } from 'src/stores/getReport';
 import { calculateCVR } from '../reportUtil';
 import { useUserStore } from 'src/stores/user';
@@ -81,6 +81,7 @@ const showIndividualReport = async (
   const rows = await getReport({
     users: users,
     dateRange: range,
+    rateNames: itemRateList,
     graphType: props.graph_type,
     queryNames: itemList,
     isAverage: false,
