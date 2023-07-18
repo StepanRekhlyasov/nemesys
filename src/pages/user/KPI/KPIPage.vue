@@ -141,7 +141,7 @@ import {
   mediaItemList,
   dayItemList,
   mediaItemRateList,
-  applicationAttributeItemList
+  applicationAttributeItemList,
 } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
@@ -212,6 +212,7 @@ const getBranchList = async () => {
 
 async function getData() {
   if (organizationStore.currentOrganizationId) {
+    rowData.value = []
     loading.value = true;
     dateRange.value = dummyDataDateRange;
     // we need to care switching mode while loading
@@ -229,9 +230,9 @@ async function getData() {
       });
       rowData.value = rows;
     }
-    if(mode.value == 'branch' && item.value == 'applicationAttribute'){
-        rowData.value = [];
-        let rows = await getReport({
+    if (mode.value == 'branch' && item.value == 'applicationAttribute') {
+      rowData.value = [];
+      let rows = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
@@ -241,9 +242,7 @@ async function getData() {
         occupation: occupation.value,
       });
       rowData.value = rows;
-    }
-
-    else if (mode.value == 'branch' && branch.value) {
+    } else if (mode.value == 'branch' && branch.value) {
       rowData.value = [];
       let rows = await getReport({
         dateRange: dateRange.value,
@@ -274,9 +273,9 @@ async function getData() {
       rowData.value = [];
     }
 
-    if(mode.value == 'media' && item.value == 'applicationAttribute'){
-        rowData.value = [];
-        let rows = await getReport({
+    if (mode.value == 'media' && item.value == 'applicationAttribute') {
+      rowData.value = [];
+      let rows = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
@@ -286,9 +285,7 @@ async function getData() {
         occupation: occupation.value,
       });
       rowData.value = rows;
-    }
-
-    else if (mode.value == 'media' && media.value) {
+    } else if (mode.value == 'media' && media.value) {
       rowData.value = [];
       let rows = await getReport({
         dateRange: dateRange.value,
@@ -327,7 +324,7 @@ watch(
   }
 );
 watch(
-  () => [mode.value,item.value,branch.value],
+  () => [mode.value, item.value, branch.value],
   async () => {
     resetData();
     await getData();

@@ -244,17 +244,6 @@ const femaleFieldDict: FieldDict = {
   occupationField: applicantFieldDict.occupationField,
 };
 
-const applicantsNurseFieldDict: FieldDict = {
-  name: 'applicantsNurse',
-  dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
-  dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('occupation', '==', 'nurse')],
-  collection: applicantFieldDict.collection,
-  branchField: applicantFieldDict.branchField,
-  mediaField: applicantFieldDict.mediaField,
-  occupationField: applicantFieldDict.occupationField,
-};
-
 const fieldDicts: { [key in typeOfQuery]: FieldDict } = {
   applicants: applicantFieldDict,
   validApplicants: validApplicantsFieldDict,
@@ -276,7 +265,6 @@ const fieldDicts: { [key in typeOfQuery]: FieldDict } = {
   amount: amountFieldDict,
   male: maleFieldDict,
   female: femaleFieldDict,
-  applicantsNurse: applicantsNurseFieldDict,
 };
 const proratedRate = (dayForMonth: Date, fromDate: Date, toDate: Date) => {
   const numOfDayOfMonth = new Date(
@@ -294,7 +282,7 @@ const getQuery = async (
   reportState: ReportState,
   queryName: {
     queryName: typeOfQuery;
-    filtersInput?: readonly [QueryFieldFilterConstraint];
+    filtersInput?: readonly [QueryFieldFilterConstraint] |QueryFieldFilterConstraint[];
     fieldName?: string;
   },
   db: Firestore,

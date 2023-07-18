@@ -18,20 +18,28 @@ export type queryNameType = Readonly<
   {
     readonly queryName: typeOfQuery;
     readonly filtersInput?: readonly [QueryFieldFilterConstraint];
-    fieldName?: string;
+    readonly fieldName?: string;
   }[]
 >;
+
+export type queryNameTypeNotReadonly =
+  {
+    queryName: typeOfQuery;
+    filtersInput?:QueryFieldFilterConstraint[];
+    fieldName?: string;
+  }[]
+;
 
 export interface reportStateAndOthers {
   reportState: ReportState;
   isAverage: boolean;
-  queryNames: queryNameType
+  queryNames: queryNameType|queryNameTypeNotReadonly;
 }
 
 export interface basedReportState {
   dateRange: { from: string; to: string };
   graphType: graphType;
-  queryNames:queryNameType;
+  queryNames:queryNameType|queryNameTypeNotReadonly;
   organizationId?: string;
   isAverage: boolean;
   rateNames?: Readonly<Readonly<string[]>[]>;

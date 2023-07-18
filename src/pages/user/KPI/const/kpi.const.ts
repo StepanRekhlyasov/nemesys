@@ -43,13 +43,15 @@ export const applicationAttributeItemList = [
     filtersInput: [where('daysToWork', '==', 7)],
     fieldName: 'daysToWork7',
   },
-  { queryName: 'applicants',
+  {
+    queryName: 'applicants',
     filtersInput: [where('occupation', '==', 'nurse')],
-    fieldName: 'applicantsNurse'
+    fieldName: 'applicantsNurse',
   },
-  { queryName: 'applicants',
+  {
+    queryName: 'applicants',
     filtersInput: [where('occupation', '==', 'nursingCare')],
-    fieldName: 'applicantsNursingCare'
+    fieldName: 'applicantsNursingCare',
   },
 ] as const;
 
@@ -402,7 +404,7 @@ export const applicationAttributeColumns = computed<QTableProps['columns']>(
       },
       {
         name: '',
-        field: '',
+        field: '20y',
         label: t('KPI.tables.applicationAttribute.4'),
         align: 'center',
         sortable: true,

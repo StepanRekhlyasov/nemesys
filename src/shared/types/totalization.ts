@@ -20,5 +20,4 @@ export type typeOfQuery =
   | 'amount'
   | 'male'
   | 'female'
-  | 'applicantsNurse'
   ;
