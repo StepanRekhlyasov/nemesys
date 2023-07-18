@@ -11,6 +11,8 @@ export interface ClientFactory {
     lon: number
     distance: number
     address: string
+    prefecture: string
+    municipality: string
     fax: string
     tel: string
     homepageUrl: string
