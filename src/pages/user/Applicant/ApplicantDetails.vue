@@ -55,7 +55,12 @@
                 <span class="q-mr-md">
                   {{ $t('applicant.list.category') }}
                 </span>
-                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification.toLowerCase()) : ''}}
+                <span v-if="Array.isArray(selectedApplicant.classification)">
+                  <template v-for="item, index in selectedApplicant.classification" :key="index">
+                    {{ $t('applicant.list.info.classification.' + item.toLowerCase())}}
+                    <template v-if="selectedApplicant.classification && selectedApplicant.classification.length > index + 1">, </template>
+                  </template>
+                </span>
               </span>
             </div>
           </div>

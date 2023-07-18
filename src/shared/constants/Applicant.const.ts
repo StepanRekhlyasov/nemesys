@@ -87,13 +87,20 @@ export const applicationMethod = computed(() => {
 })
 
 export const employmentStatus = computed(() => {
-  return [{
-    label: t('applicant.list.info.working'),
-    value: 'working'
-  },{
-    label: t('applicant.list.info.notWorking'),
-    value: 'notWorking'
-  },]
+  return [
+    {
+      label: t('applicant.list.info.generalDispatch'),
+      value: 'generalDispatch'
+    },
+    {
+      label: t('applicant.list.info.placementDispatching'),
+      value: 'placementDispatching'
+    },
+    {
+      label: t('applicant.list.info.fullTime'),
+      value: 'fullTime'
+    },
+  ]
 })
 
 export const attendantStatus = computed(() =>{

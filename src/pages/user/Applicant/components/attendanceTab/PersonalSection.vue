@@ -40,10 +40,17 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.tattoos') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
+        <div class="col-3 q-pl-md blue flex items-center">
           <span v-if="!edit">{{ applicant.tattoos?$t('tattoos.'+applicant.tattoos):''}}</span>
-          <q-select v-if="edit" outlined dense :options="tattoosOptions"
-            emit-value map-options v-model="data['tattoos']" :disable="loading"/>
+          <q-radio
+            v-else
+            v-for="option in tattoosOptions"
+            :key="option.value"
+            :val="option.value"
+            :label="option.label"
+            v-model="data['tattoos']"
+            :disable="loading"
+          />
         </div>
       </div>
 
@@ -53,20 +60,42 @@
         </div>
         <div class="col-3 q-pl-md blue ">
           <span v-if="!edit">{{ applicant.marriedStatus?$t('marriedStatus.'+applicant.marriedStatus):''}}</span>
-          <q-select v-if="edit" outlined dense :options="marriedOptions"
-            emit-value map-options v-model="data['marriedStatus']" :disable="loading"/>
+          <q-radio
+            v-else
+            v-for="option in marriedOptions"
+            :key="option.value"
+            :val="option.value"
+            :label="option.label"
+            v-model="data['marriedStatus']"
+            :disable="loading"
+          />
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.liveTogether') }}
         </div>
         <div class="col-3 q-pl-md blue ">
           <span v-if="!edit">{{ applicant.liveTogether?$t('tattoos.'+applicant.liveTogether):''}}</span>
-          <q-select v-if="edit" outlined dense :options="tattoosOptions"
-            emit-value map-options v-model="data['liveTogether']" :disable="loading"/>
+          <q-radio
+            v-else
+            v-for="option in tattoosOptions"
+            :key="option.value"
+            :val="option.value"
+            :label="option.label"
+            v-model="data['liveTogether']"
+            :disable="loading"
+          />
         </div>
       </div>
 
       <div class="row q-pb-sm">
+        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+          {{ $t('applicant.attendant.childrenNumber') }}
+        </div>
+        <div class="col-3 q-pl-md blue ">
+          <span v-if="!edit">{{ applicant.childrenNumber}}</span>
+          <q-input v-if="edit" dense outlined bg-color="white"
+            v-model="data['childrenNumber']" :disable="loading" />
+        </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.cohabitation') }}
         </div>
@@ -75,13 +104,15 @@
           <q-input v-if="edit" dense outlined bg-color="white"
             v-model="data['cohabitation']" :disable="loading" />
         </div>
+      </div>
+      <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-          {{ $t('applicant.attendant.children') }}
+          {{ $t('applicant.attendant.childrenAge') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.children}}</span>
+          <span v-if="!edit">{{ applicant.childrenAge}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
-            v-model="data['children']" :disable="loading" />
+            v-model="data['childrenAge']" :disable="loading" />
         </div>
       </div>
 
@@ -125,18 +156,18 @@
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.interviewsWaitingList') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
+        <div class="col-3 q-pl-md blue flex items-center">
           <span v-if="!edit">{{ applicant.interviewsWaitingList? applicant.interviewsWaitingList+' '+$t('applicant.attendant.items') : ''}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
-            v-model="data['interviewsWaitingList']" :disable="loading" type="number"/>
+            v-model="data['interviewsWaitingList']" :disable="loading" type="number"/><span class="q-ml-sm">件</span>
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.temporaryCompaniesRegistered') }}
         </div>
-        <div class="col-3 q-pl-md blue ">
+        <div class="col-3 q-pl-md blue flex items-center">
           <span v-if="!edit">{{ applicant.temporaryCompaniesRegistered? applicant.temporaryCompaniesRegistered+' '+$t('applicant.attendant.items') : ''}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
-            v-model="data['temporaryCompaniesRegistered']" :disable="loading" type="number" />
+            v-model="data['temporaryCompaniesRegistered']" :disable="loading" type="number" /><span class="q-ml-sm">件</span>
         </div>
       </div>
 
@@ -196,7 +227,8 @@ function resetData() {
     marriedStatus: props?.applicant['marriedStatus'],
     liveTogether: props?.applicant['liveTogether'],
     cohabitation: props?.applicant['cohabitation'],
-    children: props?.applicant['children'],
+    childrenNumber: props?.applicant['childrenNumber'],
+    childrenAge: props?.applicant['childrenAge'],
     medicalHistory: props?.applicant['medicalHistory'],
     vaccinationStatus: props?.applicant['vaccinationStatus'],
     startCaring: props?.applicant['startCaring'],

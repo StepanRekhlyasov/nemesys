@@ -85,8 +85,8 @@
       {{ $t('applicant.attendant.memo') }}
     </div>
     <div class="col-10 q-pl-md blue ">
-      <hidden-text v-if="!infoEdit" :value="applicant.memo" />
-      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['memo']" :disable="loading"/>
+      <hidden-text v-if="!infoEdit" :value="applicant.attendanceMemo" />
+      <q-input v-if="infoEdit" dense outlined bg-color="white" v-model="data['attendanceMemo']" :disable="loading"/>
     </div>
   </div>
 </template>
@@ -135,7 +135,7 @@ function resetData() {
     attendingReasonNGDetail: props?.applicant['attendingReasonNGDetail'],
     attendingDate: myDateFormat(props?.applicant['attendingDate']),
     chargeOfAttending: props?.applicant['chargeOfAttending'],
-    memo: props?.applicant['memo'],
+    attendanceMemo: props?.applicant['attendanceMemo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
