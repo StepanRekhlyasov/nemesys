@@ -4,7 +4,7 @@ import { ADMIN_ORGANIZATION_CODE } from './consts';
 
 const { t } = i18n.global
 
-export const creationRule = (val: string) => val && val.length > 0 || ''
+export const creationRule = (val: string) => val && val.length > 0 && val.trim().length >= val.length || ''
 
 export const organizationCodeRule = async (val: string) => {
 

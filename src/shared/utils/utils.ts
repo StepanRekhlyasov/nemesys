@@ -129,9 +129,6 @@ export const myDateFormat = (myDate?: string | undefined | Timestamp, format?: s
   }
 }
 
-export const timestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
-  return date.formatDate(myDate?.toDate?.(), mask);
-}
 export const dateToTimestampFormat = (myDate : Date) => {
   const result = Timestamp.fromDate?.(myDate)
   if(isNaN(result.seconds)){
@@ -163,6 +160,24 @@ export const remainingDays = (date1 : Date, date2 : Date) => {
   return Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / millisecondsInDay) 
 }
 
+export const getFromTo = (dateRange: string | { from: string; to: string; } | null) => {
+  let to: Timestamp | undefined, from: Timestamp | undefined
+
+  if (dateRange) {
+      if (typeof dateRange === 'string') {
+          const fromDate = new Date(dateRange)
+          const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
+          from = dateToTimestampFormat(fromDate)
+          to = dateToTimestampFormat(toDate)
+      } else if (dateRange.from && dateRange.to) {
+          const fromDate = new Date(dateRange.from)
+          const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
+          from = dateToTimestampFormat(fromDate)
+          to = dateToTimestampFormat(toDate)
+      }
+  }
+  return [from, to]
+}
 // rules intut textfield
 
 // export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`

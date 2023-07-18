@@ -73,7 +73,7 @@ const props = withDefaults(defineProps<{
 }
 )
 
-watch(() => radius.value, async (newVal) => {
+watch(() => radius.value, async () => {
   await getFormatedData();
   if (radius.value) {
     staffList.value = staffList.value.filter((staff) => staff.distanceBusiness <= radius.value)

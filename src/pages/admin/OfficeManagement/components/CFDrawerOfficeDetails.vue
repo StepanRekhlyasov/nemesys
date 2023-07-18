@@ -93,20 +93,21 @@ watchEffect(() => {
     
 
     <HighlightTwoColumn
+        v-if="industryType"
         :is-drop-down="true"
-        :data="officeDetails[`${industryType ? `${industryType}.uniqueItems` : 'uniqueItems'}`]"
+        :data="officeDetails[`${industryType}.uniqueItems`]"
         :is-disable-edit="isLoading"
         :is-edit="isEditForm.uniqueItems"
         :label="t('clientFactory.drawer.uniqueItems')"
         theme="accent"
         @open-edit="isEditForm.uniqueItems = true"
         @close-edit="isEditForm.uniqueItems = false"
-        @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating[`${industryType ? `${industryType}.uniqueItems` : 'uniqueItems'}`] as Data[])"/>
+        @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating[`${industryType}.uniqueItems`] as Data[])"/>
 
     <EditableColumnsCF
-        v-if="isEditForm.uniqueItems"
-        @data-changed="e => getNewDataToUpdate(e, `${industryType ? `${industryType}.uniqueItems` : 'uniqueItems'}`)"
-        :data="officeDetails[`${industryType ? `${industryType}.uniqueItems` : 'uniqueItems'}`]" theme="accent"/>
+        v-if="isEditForm.uniqueItems && industryType"
+        @data-changed="e => getNewDataToUpdate(e, `${industryType}.uniqueItems`)"
+        :data="officeDetails[`${industryType}.uniqueItems`]" theme="accent"/>
 </template>
 
 <style lang="scss" scoped>

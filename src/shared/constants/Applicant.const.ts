@@ -270,20 +270,24 @@ export const applicantClassification = computed(() => {
 export const qualificationList = computed(() => {
   return [
     {
-      label: t('applicant.add.registeredNurse'),
+      label: t('applicant.qualification.registeredNurse'),
       value: 'registeredNurse'
     },
     {
-      label: t('applicant.add.assistantNurse'),
+      label: t('applicant.qualification.assistantNurse'),
       value: 'assistantNurse'
     },
     {
-      label: t('applicant.add.newcomer'),
+      label: t('applicant.qualification.newcomer'),
       value: 'newcomer'
     },
     {
-      label: t('applicant.add.careWorker'),
+      label: t('applicant.qualification.careWorker'),
       value: 'careWorker'
+    },
+    {
+      label: t('applicant.qualification.worker'),
+      value: 'worker'
     },
   ]
 })
@@ -558,4 +562,16 @@ export const applicantStatusCharge = {
   [ApplicantStatus.WAIT_ENTRY] : 'chargeOfOffer',
   [ApplicantStatus.WORKING] : 'chargeOfAdmission',
   [ApplicantStatus.WAIT_TERMINATION] : 'chargeOfAdmission',
+}
+
+export const ApplicantOrFixColumn = {
+  [ApplicantStatus.WAIT_CONTACT] : 'applicants',
+  [ApplicantStatus.WAIT_ATTEND] : 'applicants',
+  [ApplicantStatus.WAIT_FIX] : 'applicants',
+  [ApplicantStatus.RETIRED] : 'applicants',
+  [ApplicantStatus.WAIT_VISIT] : 'fix',
+  [ApplicantStatus.WAIT_OFFER] : 'fix',
+  [ApplicantStatus.WAIT_ENTRY] : 'fix',
+  [ApplicantStatus.WAIT_TERMINATION] : 'fix',
+  [ApplicantStatus.WORKING] : 'fix',
 }

@@ -2,7 +2,9 @@ import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
 import { computed ,ComputedRef} from 'vue';
 const { t } = i18n.global;
-export const dataNames = ['report.companyAverage', 'report.allAverage'];
+export const itemList = ['fix', 'inspection', 'offer', 'admission'] as const
+export const itemListRight = ['BO', 'BOIsfirst', 'BOIsnotfirst'] as const
+export const dataNames = ['report.companyAverage', 'report.allAverage'] as const;
 export const chartOptions = computed(() => {
   return {
 
@@ -90,24 +92,24 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: true,
     },
     {
-      name: 'inspection_rate',
+      name: 'inspectionRate',
       align: 'center',
       label: t('report.categories.inspectionRate'),
-      field: 'inspection_rate',
+      field: 'inspectionRate',
       sortable: true,
     },
     {
-      name: 'offer_rate',
+      name: 'offerRate',
       align: 'center',
       label: t('report.categories.offerRate'),
-      field: 'offer_rate',
+      field: 'offerRate',
       sortable: true,
     },
     {
-      name: 'admission_rate',
+      name: 'admissionRate',
       align: 'center',
       label: t('report.categories.admissionRate'),
-      field: 'admission_rate',
+      field: 'admissionRate',
       sortable: true,
     },
   ];
@@ -186,24 +188,25 @@ export const columnsR:ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: true,
     },
     {
-      name: 'BO_total',
+      name: 'BOTotal',
       align: 'center',
-      label: t('report.categoriesBOTotal'),
-      field: 'BO_total',
+      label: t('report.categories.BOTotal'),
+      field: 'BO',
       sortable: true,
     },
     {
-      name: 'BO_New',
+      name: 'BONew',
       align: 'center',
-      label: t('report.categoriesBONew'),
-      field: 'BO_New',
+      label: t('report.categories.BONew'),
+      field: 'BOIsfirst',
+
       sortable: true,
     },
     {
-      name: 'BO_Existing',
+      name: 'BOExisting',
       align: 'center',
       label: t('report.categories.BOExisting'),
-      field: 'BO_Existing',
+      field: 'BOIsnotfirst',
       sortable: true,
     },
   ];

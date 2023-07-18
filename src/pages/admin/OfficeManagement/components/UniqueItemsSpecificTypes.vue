@@ -30,8 +30,8 @@ const newSpecificTypeHandle = () => {
 
 <template>
     <div v-if="activeIndustry">
-        <div v-if="activeIndustry.uniqueItems.typeSpecificItems.length">
-            <div v-for="(line, idx) in activeIndustry.uniqueItems.typeSpecificItems" :key="line.id" class="row items-center q-mt-md">
+        <div v-if="Object.keys(activeIndustry.uniqueItems.typeSpecificItems).length">
+            <div v-for="(line, key, idx) in activeIndustry.uniqueItems.typeSpecificItems" :key="key" class="row items-center q-mt-md">
                 <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
 
                 <div class="q-mr-md">{{ t('KPI.item') + ` ${idx + 1}` }}</div>
@@ -45,7 +45,7 @@ const newSpecificTypeHandle = () => {
         <div class="row items-center q-mt-md">
             <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
 
-            <div class="q-mr-md">{{ t('KPI.item') + ` ${activeIndustry.uniqueItems.typeSpecificItems.length + 1}` }}</div>
+            <div class="q-mr-md">{{ t('KPI.item') + ` ${Object.keys(activeIndustry.uniqueItems.typeSpecificItems).length + 1}` }}</div>
 
             <q-input
                 class="q-mr-md" outlined dense

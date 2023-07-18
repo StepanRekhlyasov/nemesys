@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
+import { ref, watch, withDefaults } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     modelValue: string
-}>();
+    theme?: string
+}>(), {
+    theme: 'primary'
+})
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -23,8 +26,14 @@ watch(localHead, (newVal) => {
                 {{ t('client.list.officeHead') }}
                 <span class="text-red-5">*</span>
             </q-item-label>
-            <q-input outlined dense v-model="localHead" :placeholder="t('client.add.clientLabel')" lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']" hide-bottom-space />
+            <q-input
+                :color="theme"
+                outlined dense
+                v-model="localHead"
+                :placeholder="t('client.add.clientLabel')"
+                lazy-rules
+                :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
+                hide-bottom-space />
         </q-item-section>
     </q-item>
 </template>

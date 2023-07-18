@@ -75,9 +75,9 @@
       </template>
       <template v-slot:body-cell-posting="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ timestampToDateFormat(props.row.postingStartDate, 'YYYY/MM/DD') }}
+          {{ myDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}}
           <br />
-          {{ timestampToDateFormat(props.row.postingEndDate, 'YYYY/MM/DD') }}
+          {{ myDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}}
         </q-td>
       </template>
       <template v-slot:body-cell-amount="props">
@@ -140,14 +140,16 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { BudgetData, DateOption, selectedYearMonth } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { orderBy, where, Timestamp } from 'firebase/firestore';
-
-const yearOptions = ref<[DateOption]>([]);
-const monthOptions = ref<[DateOption]>([]);
+import { useOrganization } from 'src/stores/organization';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
+const yearOptions = ref<DateOption[]>([]);
+const monthOptions = ref<DateOption[]>([]);
 const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });
+const organization = useOrganization()
 
 const columns = ref(budgetColumns);
 const selected = ref(false);
@@ -183,7 +185,7 @@ const start = Timestamp.fromDate(new Date(`${selectedYear.value}-${('0' + select
 const end = Timestamp.fromDate(new Date(`${nextYear}-${('0' + nextMonth).slice(-2)}-01`))
 const pagination = ref({
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 5,
   path: 'budgets',
   order: orderBy('created_at', 'asc'),
   constraints: [
@@ -274,15 +276,21 @@ const exportCSV = async () => {
 
 watch(() => selectedYear.value, async (newValue) => {
   loading.value = true;
-  await budgetStore.getBudgetList(newValue, selectedMonth.value);
+  await budgetStore.getBudgetList(newValue, selectedMonth.value, organization.currentOrganizationId);
   loading.value = false;
 
 })
 watch(() => selectedMonth.value, async (newValue) => {
   loading.value = true;
-  await budgetStore.getBudgetList(selectedYear.value, newValue);
+  await budgetStore.getBudgetList(selectedYear.value, newValue, organization.currentOrganizationId);
   loading.value = false;
 });
+
+watchCurrentOrganization(async (v) => {
+  loading.value = true;
+  await budgetStore.getBudgetList(selectedYear.value, selectedMonth.value, v);
+  loading.value = false;
+})
 watch(() => selected.value, (newValue) => {
   for (let i = 0; i < budgetList.value.length; i++) {
     budgetList.value[i]['selected'] = newValue
@@ -301,8 +309,7 @@ onMounted(async () => {
     monthOptions.value.push({ label: ('0' + month).slice(-2), value: month });
   }
 
-
-  await budgetStore.getBudgetList(selectedYear.value, selectedMonth.value);
+  await budgetStore.getBudgetList(selectedYear.value, selectedMonth.value, organization.currentOrganizationId);
   loading.value = false;
 
 })

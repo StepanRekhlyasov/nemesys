@@ -1,0 +1,23 @@
+export interface SaaRowData {
+  name: string,
+  chargeOfFix: number,
+  chargeOfInspection: number,
+  chargeOfOffer: number,
+  chargeOfAdmission: number,
+  chargeOfInspectionRate: string,
+  chargeOfOfferRate: string,
+  chargeOfAdmissionRate: string,
+  personOK: number,
+  personNG: number,
+  companyOK: number,
+  companyNG: number,
+  personOKRate: string,
+  companyOKRate: string,
+  numberOfFax:number,
+  numberOfCalls:number,
+  introduction:number,
+  dispatch:number,
+  BO_NC:number,
+  BO_N:number,
+  TTP:number
+}

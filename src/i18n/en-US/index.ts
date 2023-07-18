@@ -53,6 +53,7 @@ export default {
     update: 'Successfully updated!',
     clear: 'Clear',
     submit: 'Submit',
+    register: 'Register',
     remove: 'Remove',
     ok: 'OK',
     preview: 'Preview',
@@ -94,7 +95,8 @@ export default {
       '12' : 'December',
     },
     more: 'More',
-    downloadCSV: 'Download CSV'
+    downloadCSV: 'Download CSV',
+    branch: 'Branch',
   },
   smoking: {
     no: 'No',
@@ -312,6 +314,7 @@ export default {
       editProfile: 'Edit Profile',
       accauntSettings: 'Accaunt Settings',
       deletedInfo: 'All data related to this template will be deleted.',
+      delete: 'This user account will no longer be able to log in.',
       logout: 'Logout',
       adminPage: 'Open system administration page',
     },
@@ -777,13 +780,16 @@ export default {
       others: 'Others',
       qualification: 'Qualification',
       applicationDate: 'Application Date',
+      applicationMedia: 'Application Media',
+      applicationMetod: 'Application Metod',
+      image: 'Applicant Image',
+    },
+    qualification: {
       registeredNurse: 'Registered Nurse',
       assistantNurse: 'Assistant Nurse',
       newcomer: 'Newcomer',
       careWorker: 'Care Worker',
-      applicationMedia: 'Application Media',
-      applicationMetod: 'Application Metod',
-      image: 'Applicant Image',
+      worker: 'Worker',
     },
     shift:{
       workinghoursearly: 'Early Shift',
@@ -953,7 +959,7 @@ export default {
       waitOffer: 'Wait Offer',
       waitEntry: 'Wait Entry',
       working: 'Working',
-      waitTermintion: 'Wait Termintion',
+      waitTermination: 'Wait Termintion',
       waitRetire: 'Wait Retire',
       retired: 'Retired',
     },
@@ -1266,12 +1272,6 @@ export default {
       levelOfCare: 'Level of care',
       memo: 'Memo',
       nameQualification: 'Qualification Name'
-    },
-    qualification: {
-      registeredNurse: 'Registered Nurse',
-      assistantNurse: 'Aassistant Nurse',
-      newcomer: 'Newcomer',
-      careWorker: 'Care Worker',
     },
     travelingExpenses:{
       yesRegular: 'Yes / Regular',
@@ -1674,7 +1674,21 @@ export default {
     ageComposition:'age composition',
     daysToWork:'days to Work',
     yen:'yen',
+    item:'item',
+    base:'base',
+    totalingMethod:'totaling method',
+    jobCategory:'job category',
     categories:{
+      totalingMethod:{
+        totallingDailyData:'totalling daily data',
+        totallingAttractionDataByBranch:'totalling attraction data by branch',
+        totallingAttractionDataByMedia:'totalling attraction data by media',
+      },
+      item:{
+        actualValue:'actual value',
+        unitPricePerLeadtime:'unitPrice L/T',
+        applicationAttribute:'application attribute',
+      },
       validApplicant:'ValidApplicant',
       numberOfContacts:'NumberOfContacts',
       numberOfInvitations:'NumberOfInvitations',
@@ -1758,6 +1772,7 @@ export default {
     waitList: ' waiting list'
   },
   KPI: {
+    parameters: 'Parameters',
     targetPeriod: 'Period',
     numberOfFix: 'FIX Qty.',
     numberOfVisit: 'Visit Qty.',
@@ -1775,7 +1790,7 @@ export default {
     modeMedia: 'Media Data Aggregation',
     modeBranch: 'Branch Data Aggregation',
     modeIndividual: 'Individual Data Aggregation',
-    modeDay: 'Date and Time Aggregation',
+    dailyTotal: 'daily total',
     item: 'Item',
     actualFigures: 'Actual figures',
     unitPrice: 'Unit price/LT',
@@ -1890,5 +1905,13 @@ export default {
     tempFile: 'Click here for the template file',
     updatedAt: 'Last edited date',
     recordNumber:'Record No.',
+  },
+  pentagon: {
+    chargeOfAdmission : 'Entry Qty.',
+    chargeOfOffer : 'Offer Qty.',
+    chargeOfInspection : 'Visit Qty.',
+    chargeOfFix : 'FIX Qty.',
+    BoQty : 'BO Qty.',
+    average: 'Average'
   }
 }

@@ -1,4 +1,4 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, collectionGroup, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp } from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp } from 'firebase/firestore';
 import { getStorage, ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { defineStore } from 'pinia';
 import { exportFile, date } from 'quasar';
@@ -7,8 +7,11 @@ import { occupationList } from 'src/shared/constants/Applicant.const';
 import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
-import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
+import { useBranch } from './branch';
 import { BudgetData, selectedYearMonth } from 'src/pages/user/budget/type/budget'
+
+import { useOrganization } from 'src/stores/organization';
 
 export const useBudget = defineStore('budget', () => {
   const db = getFirestore();
@@ -16,12 +19,13 @@ export const useBudget = defineStore('budget', () => {
   const budgetList = ref(<DocumentData[]>[]);
   const unsubscribe = ref();
   const auth = getAuth();
-
+	const branchStore = useBranch()
+  const organization = useOrganization();
   async function saveBudget(budgetData: BudgetData) {
     const data = JSON.parse(JSON.stringify(budgetData));
     if (data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
-    if (data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
-    if (data.accountingMonth) data.accountingMonthDate = dateToTimestampFormat(new Date(data.accountingMonth));
+    if  (data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
+    if  (data.accountingMonth) data.accountingMonthDate = dateToTimestampFormat(new Date(data.accountingMonth));
 
     if (!data['id']) {
       const snapshot = await getDocs(query(collection(db, '/budgets')))
@@ -43,7 +47,7 @@ export const useBudget = defineStore('budget', () => {
     return true
   }
 
-  async function getOptionData() {
+  async function getOptionData(organizationId: string) {
     const docsMedia = await getDocs(query(collection(db, 'media')));
     const mediaList: DocumentData = [];
     docsMedia.forEach((doc) => {
@@ -51,23 +55,20 @@ export const useBudget = defineStore('budget', () => {
     });
     options.value['media'] = mediaList;
 
-    const docsBranch = await getDocs(query(collectionGroup(db, 'branches')));
-    const branchList: DocumentData = [];
-    docsBranch.forEach((doc) => {
-      branchList.push({ value: doc.id, label: doc.data().name });
-    });
-    options.value['branch'] = branchList;
-
-    return options.value;
+    const branches = Object.values((await branchStore.getBranchesInOrganization(organizationId)))
+		options.value['branch'] = branches.map((b) => {
+			return { value: b.id, label: b.name }
+		})
+		return options.value;
 
   }
-  async function getBudgetList(selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) {
-    await getOptionData();
+  async function getBudgetList(selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth,organizationId: string) {
+    await getOptionData(organizationId);
     const constraints = [where('deleted', '==', false)]
     if (selectedYear && selectedMonth) {
       constraints.push(where('accountingMonth', '==', `${selectedYear}/${('0' + selectedMonth).slice(-2)}`))
     }
-    const q = query(collection(db, 'budgets'), ...constraints, orderBy('recordNumber'));
+    const q = query(collection(db, 'budgets'), where('deleted', '==', false), where('organizationId', '==', organizationId), ...constraints, orderBy('recordNumber'));
     if (unsubscribe.value) {
       unsubscribe.value();
     }
@@ -116,24 +117,24 @@ export const useBudget = defineStore('budget', () => {
     return true;
   };
 
-  const downloadSampleFile = async () => {
-    const storage = getStorage();
-    const resumeRef = refStorage(storage, 'gs://dev-nemesys-firebase.appspot.com/meta/budget_sample.csv');
-    const url = await getDownloadURL(resumeRef)
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'blob';
-    xhr.onload = () => {
-      const status = exportFile(
-        'budget_sample.csv',
-        xhr.response,
-        'text/csv'
-      )
-      if (status !== true) {
-        Alert.warning('Browser denied file download...', { color: 'negative' })
-      }
-    };
-    xhr.open('GET', url);
-    xhr.send();
+	const downloadSampleFile = async () => {
+		const storage = getStorage();
+		const resumeRef = refStorage(storage, 'gs://dev-nemesys-firebase.appspot.com/meta/budget_sample.csv');
+		const url = await getDownloadURL(resumeRef)
+		const xhr = new XMLHttpRequest();
+		xhr.responseType = 'blob';
+		xhr.onload = () => {
+			const status = exportFile(
+				'budget_sample.csv',
+				xhr.response,
+				'text/csv'
+			)
+			if (status !== true) {
+				Alert.warning('Browser denied file download...', { color: 'negative' })
+			}
+		};
+		xhr.open('GET', url);
+		xhr.send();
 
 
   };
@@ -156,8 +157,8 @@ export const useBudget = defineStore('budget', () => {
   const exportTable = async (rows: BudgetData[]) => {
     // naive encoding to csv format
     for (let i = 0; i < rows.length; i++) {
-      rows[i]['postingStartDate'] = timestampToDateFormat(rows[i]['postingStartDate'] as Timestamp)
-      rows[i]['postingEndDate'] = timestampToDateFormat(rows[i]['postingEndDate'] as Timestamp)
+      rows[i]['postingStartDate'] = myDateFormat(rows[i]['postingStartDate'] as Timestamp)
+      rows[i]['postingEndDate'] = myDateFormat(rows[i]['postingEndDate'] as Timestamp)
     }
 
     const content = '\uFEFF' + [budgetAddItem.value.map(col => wrapCsvValue(col.label))].concat(
@@ -167,23 +168,23 @@ export const useBudget = defineStore('budget', () => {
     const timeStamp = Date.now()
     const formattedString = date.formatDate(timeStamp, 'YYYYMMDDHHmmss')
 
-    const status = exportFile(
-      `budget_export_${formattedString}.csv`,
-      content,
-      {
-        encoding: 'utf-8-sig',
-        mimeType: 'text/csv;charset=utf-8-sig;'
-      }
-    )
-    if (status !== true) {
-      Alert.warning('Browser denied file download...', { color: 'negative' })
-    }
-  }
+		const status = exportFile(
+			`budget_export_${formattedString}.csv`,
+			content,
+			{
+				encoding: 'utf-8-sig',
+				mimeType: 'text/csv;charset=utf-8-sig;'
+			}
+		)
+		if (status !== true) {
+			Alert.warning('Browser denied file download...', { color: 'negative' })
+		}
+	}
 
   const processData = async (data, selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) => {
     const rows = data.split('\r\n')
     const batch = writeBatch(db);
-    await getOptionData();
+    await getOptionData(organization.currentOrganizationId);
     const snapshot = await getDocs(query(collection(db, '/budgets')))
     let recordNumber = snapshot.docs.length + 1;
 
@@ -219,7 +220,7 @@ export const useBudget = defineStore('budget', () => {
       }
     }
     await batch.commit()
-    await getBudgetList(selectedYear, selectedMonth);
+    await getBudgetList(selectedYear, selectedMonth,organization.currentOrganizationId);
   }
 
   const getColoumnsData = (key: string, value: string) => {

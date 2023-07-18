@@ -14,7 +14,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['name']" bg-color="white"
-                  :rules="[(val) => !!val || '']" hide-bottom-space />
+                  :rules="[creationRule]" hide-bottom-space />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -23,7 +23,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['kanaName']" 
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -32,7 +32,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['postCode']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -41,7 +41,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" 
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" 
                   :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
@@ -51,7 +51,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['municipalities']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -60,7 +60,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['street']"
-                :rules="[(val) => !!val || '']" hide-bottom-space bg-color="white" />
+                :rules="[creationRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -95,7 +95,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                :rules="[(val) => !!val || '']" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                :rules="[creationRule]" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -106,7 +106,7 @@
                 <select-branch 
                   :organization-id="organizationStore.currentOrganizationId" 
                   v-model="applicantData['branchIncharge']" 
-                  :rules="[(val) => !!val || '']" 
+                  :rules="[creationRule]" 
                   hide-bottom-space
                   @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
                   @on-end-loading="disableSubmit = false"
@@ -123,7 +123,7 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['sex']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  :rules="[creationRule]" hide-bottom-space> 
                   <template v-slot:control>      
                     <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
                     <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
@@ -143,7 +143,7 @@
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                         <q-date v-model="applicantData['dob']" default-view="Years" :options="limitDate">
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -160,7 +160,7 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['occupation']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  :rules="[creationRule]" hide-bottom-space> 
                   <template v-slot:control>                    
                     <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
                     <q-radio v-model="applicantData['occupation']" val="nursingCare"
@@ -182,16 +182,18 @@
                 <q-field                
                   ref="toggle" borderless dense
                   v-model="applicantData['qualification']"
-                  :rules="[(val) => !!val || '']" hide-bottom-space> 
+                  hide-bottom-space> 
                   <template v-slot:control>       
                     <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
-                      :label="$t('applicant.add.registeredNurse')" />
+                      :label="$t('applicant.qualification.registeredNurse')" />
                     <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
-                      :label="$t('applicant.add.assistantNurse')" />
+                      :label="$t('applicant.qualification.assistantNurse')" />
                     <q-checkbox v-model="applicantData['qualification']" val="newcomer"
-                      :label="$t('applicant.add.newcomer')" />
+                      :label="$t('applicant.qualification.newcomer')" />
                     <q-checkbox v-model="applicantData['qualification']" val="careWorker"
-                      :label="$t('applicant.add.careWorker')" />
+                      :label="$t('applicant.qualification.careWorker')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="worker"
+                      :label="$t('applicant.qualification.worker')" />
                   </template>
                 </q-field>
               </div>
@@ -203,14 +205,25 @@
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
                 :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
-                  <template v-slot:append>
+                  <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD">
+                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat />
+                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                           </div>
                         </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                          </div>
+                        </q-time>
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -240,7 +253,7 @@
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
+          <q-btn :label="$t('common.register')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
@@ -262,6 +275,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate} from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { creationRule } from 'src/components/handlers/rules';
 
 const applicantDataSample = {
   qualification: [],
@@ -314,6 +328,7 @@ async function onSubmit() {
     data.applicationDate = new Date()
   }
   data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
+  data['invitationDate'] = data['applicationDate'];
   data['currentStatusTimestamp'] = data['applicationDate'] ;
   data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
   data['currentStatusMonth'] = toMonthYear(data['applicationDate']);

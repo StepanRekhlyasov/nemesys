@@ -1,5 +1,6 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 
 const { t } = i18n.global
 
@@ -89,7 +90,7 @@ export const budgetAddItem = computed(() => {
   ]
 });
 
-export const budgetColumns = computed(() => {
+export const budgetColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       label: '',

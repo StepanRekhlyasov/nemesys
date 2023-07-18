@@ -81,7 +81,9 @@ import { ref, onMounted } from 'vue';
 import { budgetAddItem } from '../consts/Budget.const';
 import { useBudget } from 'src/stores/budgetData';
 import { OptionData, BudgetData } from '../type/budget'
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
+import { useOrganization } from 'src/stores/organization';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()
@@ -93,29 +95,36 @@ const budgetStore = useBudget();
 const loading = ref(true);
 const edit = ref(props.edit);
 const monthPicker = ref();
-
+const organization = useOrganization()
 const budgetDataSample = {
-  accountingMonth: props.budgetData['accountingMonth'] || '',
-  amount: props.budgetData['amount'] || '',
-  branch: props.budgetData['branch'] || '',
-  id: props.budgetData['id'] || '',
-  media: props.budgetData['media'] || '',
-  numberOfSlots: props.budgetData['numberOfSlots'] || '',
-  occupation: props.budgetData['occupation'] || '',
-  postingEndDate: timestampToDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
-  postingStartDate: timestampToDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
-  unitPrice: props.budgetData['unitPrice'] || '',
-  remark: props.budgetData['remark'] || '',
-  agency: props.budgetData['agency'] || '',
+    accountingMonth: props.budgetData['accountingMonth'] || '',
+    amount: props.budgetData['amount'] || '',
+    branch: props.budgetData['branch'] || '',
+    id: props.budgetData['id'] || '',
+    media: props.budgetData['media'] || '',
+    numberOfSlots: props.budgetData['numberOfSlots'] || '',
+    occupation: props.budgetData['occupation'] || '',
+    postingEndDate: myDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
+    postingStartDate: myDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
+    unitPrice: props.budgetData['unitPrice'] || '',
+    remark: props.budgetData['remark'] || '',
+    agency: props.budgetData['agency'] || '',
 
 }
 const budgetData = ref<BudgetData>(JSON.parse(JSON.stringify(budgetDataSample)));
 
 onMounted(async () => {
-  options.value = await budgetStore.getOptionData();
-  onReset(true);
-  loading.value = false;
+    options.value = await budgetStore.getOptionData(organization.currentOrganizationId);
+    onReset(true);
+    loading.value = false;
 });
+
+watchCurrentOrganization(async (v) => {
+    loading.value = true
+    options.value = await budgetStore.getOptionData(v);
+    onReset(true);
+    loading.value = false;
+})
 
 const optionsEnd = (date: string) => {
   return date >= budgetData.value['postingStartDate'];
@@ -129,17 +138,22 @@ const optionsStart = (date: string) => {
 
 
 const onSubmit = async () => {
-  const save = await budgetStore.saveBudget(budgetData.value);
-  if (save) {
-    if (!budgetData.value['id']) {
-      onReset();
-      budgetForm.value.reset();
-    } else {
-      emit('close')
+    if (!edit.value) {
+        budgetData.value['organizationId'] = organization.currentOrganizationId
+    }
+
+    const save = await budgetStore.saveBudget(budgetData.value);
+    if (save) {
+        if (!budgetData.value['id']) {
+            onReset();
+            budgetForm.value.reset();
+        } else {
+            emit('close')
+        }
     }
   }
 
-};
+
 
 const onReset = (mount = false) => {
   if (props.edit) {
@@ -152,8 +166,8 @@ const onReset = (mount = false) => {
 };
 
 const checkValue = (val: string, reason: string) => {
-  if (reason === 'month') {
-    monthPicker.value[0].hide();
-  }
+    if (reason === 'month') {
+        monthPicker.value[0].hide();
+    }
 }
 </script>

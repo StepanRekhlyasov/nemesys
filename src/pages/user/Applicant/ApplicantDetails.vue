@@ -36,7 +36,7 @@
               </div>
               <div class="row">
                 <span class="q-pr-md">
-                  {{ $t('applicant.add.applicationDate') }}: {{ timestampToDateFormat(selectedApplicant.applicationDate,
+                  {{ $t('applicant.add.applicationDate') }}: {{ myDateFormat(selectedApplicant.applicationDate,
                     'YYYY/MM/DD') }}
                 </span>
               </div>
@@ -68,6 +68,35 @@
                 </span>
               </div>
             </div>
+            <div class="row">
+              <span class="q-pr-md">
+                {{ $t('applicant.add.applicationDate') }}: {{ myDateFormat(selectedApplicant.applicationDate, 'YYYY/MM/DD')  }}
+              </span>
+            </div>
+            <div class="row">
+              <span class="col-6 ">
+                {{ $t('applicant.add.applicationMedia') }}: {{selectedApplicant.media?selectedApplicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : ''}}
+              </span>
+              <span class="col-3 relative-position"><hidden-text v-if="selectedApplicant.phone"
+                  :value="'TEL: ' + selectedApplicant.phone" /></span>
+              <span class="col-3 q-pl-md">
+                <span class="q-mr-md">{{ $t('applicant.add.occupation') }}</span>
+                {{selectedApplicant.occupation && $t('applicant.add.' + selectedApplicant.occupation) }}
+              </span>
+            </div>
+            <div class="row">
+              <span class="col-6 q-pr-md">
+                {{ $t('applicant.add.applicationMetod') }}: {{selectedApplicant.applicationMetod ? $t('applicant.add.' + selectedApplicant.applicationMetod): '' }}
+              </span>
+              <span class="col-3 relative-position "><hidden-text v-if="selectedApplicant.email"
+                  :value="'MAIL: ' + selectedApplicant.email" /></span>
+              <span class="col-3 q-pl-md">
+                <span class="q-mr-md">
+                  {{ $t('applicant.list.category') }}
+                </span>
+                {{selectedApplicant.classification ? $t('applicant.list.info.classification.' + selectedApplicant.classification.toLowerCase()) : ''}}
+              </span>
+            </div>
           </div>
         </q-card-section>
         <q-separator />
@@ -95,7 +124,10 @@
               <div v-if="!bo" class="col-3 text-right">
                 <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
               </div>
+            <div class="col-6 q-pl-md" v-if="selectedApplicant.qualification">
+              {{ selectedApplicant.qualification.map(applic => $t('applicant.qualification.' + applic)).join(', ') }}
             </div>
+          </div>
           </div>
           <div class="row">
             <div class="col-6 row">
@@ -148,7 +180,7 @@ import { statusList } from 'src/shared/constants/Applicant.const';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { BackOrderModel } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
@@ -160,8 +192,8 @@ const statusOption = ref(statusList);
 const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
 const db = getFirestore();
-const age = computed(() => selectedApplicant.value && selectedApplicant.value['dob'] ? RankCount.ageCount(timestampToDateFormat(selectedApplicant.value['dob'])) : '0')
-const openDrawer = async (data: Applicant) => {
+const age = computed(()=>selectedApplicant.value&&selectedApplicant.value['dob']?RankCount.ageCount(myDateFormat(selectedApplicant.value['dob'])):'0')
+const openDrawer = async (data : Applicant) => {
   if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
     drawerRight.value = false;
   }

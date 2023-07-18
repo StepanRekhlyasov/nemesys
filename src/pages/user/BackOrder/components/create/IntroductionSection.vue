@@ -13,7 +13,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="data['dateOfRegistration']" default-view="Years" >
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -76,7 +76,7 @@
           <q-radio
             v-for="key in TypeQualifications"
             v-model="data['qualifications']"
-            :label="$t('backOrder.qualification.'+key)"
+            :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading || !data['requiredQualifications']"

@@ -7,116 +7,114 @@
       :on-click-clear="() => { refresh() }" v-model:model-value="search">
       <template #rigthButton>
         <DefaultButton label-key="menu.admin.organizationsTable.addOrganization" icon="mdi-plus" @click="() => {
-            dialogType = 'Organization'
-            closeDialog = false;
-          }" />
+          dialogType = 'Organization'
+          closeDialog = false;
+        }" />
       </template>
     </SearchField>
   </q-card>
 
-
   <AddDialog @update:model-value="(v) => closeDialog = !v" :organization="organization!" :open-dialog="!closeDialog"
     @close-dialog="async (v) => { closeDialog = v; await forceReRender() }" :dialog-type="dialogType"
     @on-organization-added="async () => {
-        await refresh();
-        await forceReRender()
-      }" />
+      await refresh();
+      await forceReRender()
+    }" />
+  <q-form ref="formRef" @submit.prevent>
+    <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination :rows-per-page-options="[0]">
+      <template v-slot:header-cell-organizationCodeAndName="props">
+        <q-th :props="props" class="no-breaks items-center row">
+          {{ props.col.label }}
+        </q-th>
+      </template>
 
-  <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination :rows-per-page-options="[0]">
-    <template v-slot:header-cell-organizationCodeAndName="props">
-      <q-th :props="props" class="no-breaks items-center row">
-        {{ props.col.label }}
-      </q-th>
-    </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="accent" />
+      </template>
 
-    <template v-slot:loading>
-      <q-inner-loading showing color="accent" />
-    </template>
+      <template v-slot:body="props">
 
-    <template v-slot:body="props">
+        <q-tr :props="props">
+          <EditButton cancelButton color="accent"
+            :on-edit="() => { sortable = false; editableRow = cloneToRaw(props.row); }"
+            :on-save="async () => { return await onRowSave(props) }" :editable-row="editableRowNumber"
+            @on-editable-row-change="async (row) => { editableRowNumber = row }" :row-index="props.rowIndex"
+            :props="props" @on-exit-editing-mode="{ editableRowNumber = -1; }" />
 
-      <q-tr :props="props">
+          <q-td>
+            {{ props.row.number }}
+          </q-td>
 
-        <EditButton color="accent" :on-edit="() => { sortable = false; editableRow = cloneToRaw(props.row); }" :on-save="async () => {
-            isEqual = deepEqualClone(editableRow, props.row)
-            if (!isEqual) {
-              await editOrganization(editableRow, props.rowIndex)
-            }
-            sortable = true
-          }" :editable-row="editableRowNumber" @on-editable-row-change="(row) => editableRowNumber = row"
-          :row-index="props.rowIndex" :props="props" />
+          <q-td>
+            <template v-if="!isRowSelected(props.rowIndex)">
+              {{ props.row.organizationCodeAndName }}
+            </template>
+            <q-input v-else v-model:model-value="editableRow!.name" color="accent" :rules="[creationRule]"
+              hide-bottom-space />
+          </q-td>
 
-        <q-td>
-          {{ props.row.number }}
-        </q-td>
+          <q-td>
+            <template v-if="!isRowSelected(props.rowIndex)">
+              {{ props.row.operatorName || t('common.userNotFound') }}
+            </template>
 
-        <q-td>
-          <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.organizationCodeAndName }}
-          </template>
-          <q-input v-else v-model:model-value="editableRow!.name" color="accent" />
-        </q-td>
+            <SelectUser v-else :model-value="editableRow!.operatorName"
+              @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName; }"
+              hide-bottom-space />
+          </q-td>
 
-        <q-td>
-          <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.operatorName || t('common.userNotFound') }}
-          </template>
-          <SelectUser v-else :model-value="editableRow!.operatorName"
-            @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName }" />
-        </q-td>
+          <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
+            @update:model-value="(v) => editableRow!.tel = v" type="tel" mask="phone" hide-bottom-space
+            :rules="[creationRule, validateLength]" />
 
-        <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
-          @update:model-value="(v) => editableRow!.tel = v" type="tel" mask="phone" />
+          <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
+            @update:model-value="(v) => editableRow!.fax = v" type="tel" mask="phone" hide-bottom-space
+            :rules="[creationRule, validateLength]" />
 
-        <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
-          @update:model-value="(v) => editableRow!.fax = v" type="tel" mask="phone" />
 
-        <q-td>
-          {{ props.row.mailaddress }}
-        </q-td>
+          <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.mailaddress"
+            @update:model-value="(v) => { editableRow!.mailaddress = v; }" :rules="[validateEmail]" hide-bottom-space />
 
-        <q-td>
-          <template v-if="!isRowSelected(props.rowIndex)">
-            {{ t('menu.admin.organizationsTable.' + props.row.invoiceRequest) }}
-          </template>
-          <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequestOptions"
-            color="accent" emit-value map-options />
-        </q-td>
+          <q-td>
+            <template v-if="!isRowSelected(props.rowIndex)">
+              {{ t('menu.admin.organizationsTable.' + props.row.invoiceRequest) }}
+            </template>
+            <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequestOptions"
+              color="accent" emit-value map-options />
+          </q-td>
 
-        <q-td>
-          <DefaultButton size="sm" label-key="menu.admin.organizationsTable.addBusiness" clear
-            @click="{ closeDialog=false; organization=props.row; dialogType='Business' }" />
-          <DefaultButton size="sm" label-key="menu.admin.organizationsTable.addBranch" clear
-            @click="{ closeDialog=false; organization=props.row; dialogType='Branch' }" />
-        </q-td>
+          <q-td>
+            <DefaultButton size="sm" label-key="menu.admin.organizationsTable.addBusiness" clear
+              @click="{ closeDialog = false; organization = props.row; dialogType = 'Business' }" />
+            <DefaultButton size="sm" label-key="menu.admin.organizationsTable.addBranch" clear
+              @click="{ closeDialog = false; organization = props.row; dialogType = 'Branch' }" />
+          </q-td>
 
-        <q-td auto-width>
-          <q-btn unelevated dense @click="props.expand = !props.expand" size="1px">
-            <q-icon v-if="props.expand" name="mdi-menu-up" size="xl" color="accent" />
-            <q-icon v-else name="mdi-menu-down" size="xl" color="accent" />
-          </q-btn>
-        </q-td>
-      </q-tr>
+          <q-td auto-width>
+            <q-btn unelevated dense @click="props.expand = !props.expand" size="1px">
+              <q-icon v-if="props.expand" name="mdi-menu-up" size="xl" color="accent" />
+              <q-icon v-else name="mdi-menu-down" size="xl" color="accent" />
+            </q-btn>
+          </q-td>
+        </q-tr>
 
-      <q-tr v-if="props.expand" :props="props">
-        <ExpandedTable :props="props" v-if="renderComponent" />
-      </q-tr>
-
-    </template>
-
-  </q-table>
-
+        <q-tr v-if="props.expand" :props="props">
+          <ExpandedTable :props="props" v-if="renderComponent" />
+        </q-tr>
+      </template>
+    </q-table>
+  </q-form>
   <div class="row justify-start q-mt-md q-mb-md pagination">
     <TablePagination :isAdmin="true" ref="paginationRef" :pagination="pagination" @on-data-update="async (newData) => {
-        rows = await mapOrganizationsToRow(newData as Organization[])
-        await forceReRender()
-      }" @on-loading-state-change="(v) => loading = v" :disable="!sortable" />
+      rows = await mapOrganizationsToRow(newData as Organization[])
+      await forceReRender()
+    }" @on-loading-state-change="(v) => loading = v" :disable="!sortable" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, nextTick } from 'vue';
-import { QInput } from 'quasar';
+import { QForm, QInput } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
@@ -136,6 +134,8 @@ import { useOrganization } from 'src/stores/organization';
 import TablePagination from 'src/components/pagination/TablePagination.vue'
 import { Organization } from 'src/shared/model';
 import { columns, sortable } from './consts/OrganizationsListColumns'
+import { validateEmail } from 'src/shared/constants/Form.const';
+import { creationRule } from 'src/components/handlers/rules';
 
 const pagination = ref({
   rowsPerPage: 100,
@@ -172,7 +172,28 @@ const forceReRender = async () => {
   await nextTick();
   renderComponent.value = true;
 };
+const formRef = ref<QForm | null>(null)
 
+function validateLength(v: string) {
+  const validLength = 16
+  if (v.length != validLength) {
+    return ''
+  }
+  return true
+}
+
+async function onRowSave(props: { row: Row, rowIndex: number }) {
+  const valid = await formRef.value?.validate()
+
+  if (!valid) {
+    return false
+  }
+  isEqual.value = deepEqualClone(editableRow.value, props.row)
+  if (!isEqual.value) {
+    await editOrganization(editableRow.value, props.rowIndex)
+  }
+  sortable.value = true
+}
 
 async function searchOrganizations(name: string) {
   loading.value = true

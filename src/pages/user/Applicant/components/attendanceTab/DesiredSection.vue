@@ -7,8 +7,7 @@
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? timestampToDateFormat(applicant.timeToWork) :
-          timestampToDateFormat(applicant.attendingDate) }}</span>
+        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? myDateFormat(applicant.timeToWork) : myDateFormat(applicant.attendingDate) }}</span>
         <template v-if="desiredEdit">
           <q-checkbox v-model="data['timeAvailable']"
             :label="data['timeAvailable'] ? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')" />
@@ -19,7 +18,7 @@
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="data['timeToWork']" mask="YYYY/MM/DD">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -181,9 +180,12 @@
         {{ $t('applicant.attendant.hourlyRate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ applicant.hourlyRate ? applicant.hourlyRate + ' ' + $t('common.yen') : '' }}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" min="0" v-model="data['hourlyRate']"
-          :disable="loading" type="number" />
+        <span v-if="!desiredEdit">{{ applicant.hourlyRate?applicant.hourlyRate+' '+$t('common.yen'):''}}</span>
+        <div v-if="desiredEdit" class="flex items-center no-wrap">
+          <q-input dense outlined bg-color="white" min="0"
+            v-model="data['hourlyRate']" :disable="loading" type="number"/>
+          <span class="q-ml-sm">{{ $t('common.yen') }}</span>
+        </div>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.transportationServices') }}
@@ -201,22 +203,28 @@
         {{ $t('applicant.attendant.jobSearchPriorities') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit"
-          :value="applicant.jobSearchPriorities1 ? '① ' + applicant.jobSearchPriorities1 : ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['jobSearchPriorities1']"
-          :disable="loading" />
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities1 ? '① '+applicant.jobSearchPriorities1 : ''" />
+        <label v-if="desiredEdit" class="flex items-center no-wrap" >
+          <span class="q-mr-sm text-body1">①</span>
+          <q-input dense outlined bg-color="white"
+            v-model="data['jobSearchPriorities1']" :disable="loading" style="width:100%" />
+        </label>
       </div>
-      <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit"
-          :value="applicant.jobSearchPriorities2 ? '② ' + applicant.jobSearchPriorities2 : ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['jobSearchPriorities2']"
-          :disable="loading" />
+      <div class="col-3 q-pl-sm blue ">
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities2 ? '② ' + applicant.jobSearchPriorities2: ''" />
+        <label v-if="desiredEdit" class="flex items-center no-wrap" >
+          <span class="q-mr-sm text-body1">②</span>
+          <q-input dense outlined bg-color="white"
+            v-model="data['jobSearchPriorities2']" :disable="loading" style="width:100%"/>
+        </label>
       </div>
-      <div class="col-3 q-pl-md blue ">
-        <hidden-text v-if="!desiredEdit"
-          :value="applicant.jobSearchPriorities3 ? '③ ' + applicant.jobSearchPriorities3 : ''" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white" v-model="data['jobSearchPriorities3']"
-          :disable="loading" />
+      <div class="col-3 q-pl-sm blue ">
+        <hidden-text v-if="!desiredEdit" :value="applicant.jobSearchPriorities3 ? '③ ' + applicant.jobSearchPriorities3: ''" />
+        <label v-if="desiredEdit" class="flex items-center no-wrap" >
+          <span class="q-mr-sm text-body1">③</span>
+          <q-input v-if="desiredEdit" dense outlined bg-color="white"
+            v-model="data['jobSearchPriorities3']" :disable="loading" style="width:100%"/>
+        </label>
       </div>
     </div>
   </DropDownEditGroup>
@@ -229,7 +237,7 @@ import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { timestampToDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
@@ -287,7 +295,7 @@ watch(
 
 function resetData() {
   defaultData.value = {
-    timeToWork: timestampToDateFormat(props.applicant['timeToWork']),
+    timeToWork: myDateFormat(props.applicant['timeToWork']),
     daysToWork: props.applicant['daysToWork'],
     daysPerWeek: Array.isArray(props.applicant['daysPerWeek']) ? props.applicant['daysPerWeek'] : [],
     timeAvailable: props.applicant['timeAvailable'] || false,

@@ -53,6 +53,7 @@ export default {
     update: '正常に更新されました！',
     clear: 'クリア',
     submit: '送信',
+    register: '登録',
     remove: '除外',
     ok: 'OK',
     preview: '確認',
@@ -94,7 +95,8 @@ export default {
       '12' : '12月',
     },
     more: 'もっと',
-    downloadCSV: 'CSVダウンロード'
+    downloadCSV: 'CSVダウンロード',
+    branch: '支店',
   },
   smoking: {
     no: '無',
@@ -311,6 +313,7 @@ export default {
       editProfile: 'プロフィール編集',
       accauntSettings: 'アカウント設定',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
+      delete: 'このユーザーアカウントはログインできなくなります。',
       logout: 'ログアウト',
       adminPage: 'システム管理ページを開く',
     },
@@ -772,13 +775,16 @@ export default {
       others: 'その他',
       qualification: '持っている資格',
       applicationDate: '応募日',
+      applicationMedia: '応募媒体',
+      applicationMetod: '応募方法',
+      image: '応募者画像',
+    },
+    qualification: {
       registeredNurse: '正看護師',
       assistantNurse: '準看護師',
       newcomer: '初任者',
       careWorker: '介護福祉士',
-      applicationMedia: '応募媒体',
-      applicationMetod: '応募方法',
-      image: '応募者画像',
+      worker: '実務者',
     },
     shift:{
       workinghoursearly: '早番',
@@ -949,7 +955,7 @@ export default {
       waitOffer: '内定待ち',
       waitEntry: '入職待ち',
       working: '稼働中',
-      waitTermintion: '終了待ち',
+      waitTermination: '終了待ち',
       waitRetire: '退職待ち',
       retired: '退職済み',
     },
@@ -1262,12 +1268,6 @@ export default {
       levelOfCare: '介護度',
       memo: 'メモ欄',
       nameQualification: '資格名',
-    },
-    qualification: {
-      registeredNurse: '正看護師',
-      assistantNurse: '準看護師',
-      newcomer: '初任者',
-      careWorker: '介護福祉士',
     },
     travelingExpenses:{
       yesRegular: '有り／定期',
@@ -1667,7 +1667,21 @@ export default {
     ageComposition:'年齢構成',
     daysToWork:'勤務日数',
     yen:'円',
+    item:'項目',
+    base:'拠点',
+    totalingMethod:'集計方法',
+    jobCategory:'職種',
     categories:{
+      totalingMethod:{
+      totallingDailyData:'日次データ集計',
+      totallingAttractionDataByBranch:'支店別集客データ集計',
+      totallingAttractionDataByMedia:'媒体別集客データ集計'
+    },
+    item:{
+      actualValue:'実績値',
+      unitPricePerLeadtime:'単価L/T',
+      applicationAttribute:'応募属性'
+    },
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
       numberOfInvitations:'誘致数',
@@ -1751,6 +1765,7 @@ export default {
     waitList: 'リスト'
   },
   KPI: {
+    parameters: 'パラメータ',
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     numberOfVisit: '職見数',
@@ -1768,7 +1783,7 @@ export default {
     modeMedia: '媒体別集客データ集計',
     modeIndividual: '個人別データ集計',
     modeBranch: '支店別集客データ集計',
-    modeDay: '日時集計',
+    dailyTotal: '日次集計',
     item: '項目',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',
@@ -1883,5 +1898,13 @@ export default {
     tempFile: 'テンプレートファイルはこちら',
     updatedAt: '最終編集日',
     recordNumber:'レコードNo',
+  },
+  pentagon: {
+    chargeOfAdmission : '入職数',
+    chargeOfOffer : '内定数',
+    chargeOfInspection : '職見数',
+    chargeOfFix : 'FIX数',
+    BoQty : 'BO数',
+    average: '平均'
   }
 };
