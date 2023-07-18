@@ -384,7 +384,7 @@ import DoubleNumberInput from './components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import {useApplicantSaveSearch} from 'src/stores/applicantSaveSearch'
 import {checkValidity} from 'src/pages/user/Applicant/const/index'
-
+import { dataa } from "./searchData"
 const db = getFirestore();
 const saveSearch = useApplicantSaveSearch()
 const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
@@ -508,7 +508,7 @@ const searchStaff = async () => {
     if (user == null) {
         return false
     }
-    //const token = await user.getIdToken();
+    searchData.value = dataa.value
     emit('loadSearchStaff', searchData.value)
     emit('isLoading', false)
 };

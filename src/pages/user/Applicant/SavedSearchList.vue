@@ -8,7 +8,10 @@ import TablePagination from 'src/pages/user/Applicant/components/TablePagination
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
 import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
+import { useRouter } from 'vue-router';
+import { updateSharedVariable } from "./components/search/searchData"
 
+const router = useRouter()
 const saveSearch = useApplicantSaveSearch()
 const tableData = ref<DocumentData>([])
 const rowForEdit = ref<DocumentData>({})
@@ -66,6 +69,10 @@ const callRow = (row) => {
       rowForEdit.value = row
     };
 
+const handle = (row) =>{
+  updateSharedVariable(row)
+  router.push('/applicant/search')
+}
 const save = async () => {
   isSaving.value = true;
   let edit_data = searchData.value
@@ -137,6 +144,8 @@ const clearSearch = ()=>{
               <q-td class="table__btn-wrapper q-ml-sm q-py-none q-my-none">
                 <q-icon size="sm" color="primary" class="table__edit-btn" name="edit"
                   @click="callRow(props.row)"/>
+                <q-icon size="sm" class="table__search-btn" name="search"
+                  @click="handle(props.row)"/>
               </q-td>
 
               <q-td class="text-left  no-wrap">{{ props.row.keyword ? `${props.row.keyword}` : ''}}</q-td>
@@ -285,6 +294,12 @@ const clearSearch = ()=>{
   }
 
   &__edit-btn {
+    display: block;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  &__search-btn {
     display: block;
     cursor: pointer;
     padding: 5px;
