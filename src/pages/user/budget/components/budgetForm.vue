@@ -136,7 +136,6 @@ const optionsStart = (date: string) => {
   return true;
 }
 
-
 const onSubmit = async () => {
     if (!edit.value) {
         budgetData.value['organizationId'] = organization.currentOrganizationId
@@ -152,8 +151,6 @@ const onSubmit = async () => {
         }
     }
   }
-
-
 
 const onReset = (mount = false) => {
   if (props.edit) {

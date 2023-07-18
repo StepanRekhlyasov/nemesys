@@ -222,8 +222,6 @@ export const useBudget = defineStore('budget', () => {
   const getColoumnsData = (key: string, value: string) => {
     let correctValue = '';
     options.value[key].forEach(item => {
-      console.log(item.label)
-      // console.log(value)
       if (item.label === value) {
         correctValue = item.value
       }
