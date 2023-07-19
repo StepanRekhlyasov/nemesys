@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, defineEmits, withDefaults } from 'vue'
-import { BackOrderModel } from 'src/shared/model';
 import { isEditable } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 
 const show = ref(false)
