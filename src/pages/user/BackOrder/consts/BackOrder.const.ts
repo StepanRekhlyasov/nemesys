@@ -6,8 +6,6 @@ export const radius = ref<number>(0);
 export const drawerValue = ref<boolean>(false);
 export const mapDrawerValue = ref<boolean>(false);
 
-export const isEditable = ref<boolean>(true);
-
 export const BackOrderColumns = computed(() => {
   const { t } = i18n.global;
   return [

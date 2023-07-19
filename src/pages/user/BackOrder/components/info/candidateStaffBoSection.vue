@@ -50,7 +50,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, ApplicantForCandidateSearch } from 'src/shared/model';
 import { ref, onMounted, watch, ComputedRef } from 'vue';
-import { BackOrderStaff, isEditable } from '../../consts/BackOrder.const';
+import { BackOrderStaff } from '../../consts/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useApplicant } from 'src/stores/applicant'
 import { useClient } from 'src/stores/client'
@@ -77,7 +77,6 @@ const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
 const matchedData = ref({});
 
 const openDrawer = (data: Applicant) => {
-  isEditable.value = false;
   detailsDrawer.value?.openDrawer(data)
 };
 const props = withDefaults(defineProps<{
