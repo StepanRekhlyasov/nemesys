@@ -26,7 +26,7 @@ export const dataNames = [
 
 export const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.individualPerformanceStatus'),
@@ -135,7 +135,7 @@ export const columns: ComputedRef<QTableProps['columns']> = computed(() => {
 
 export const chartOptionsR = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.BOAcquisitionStatus'),

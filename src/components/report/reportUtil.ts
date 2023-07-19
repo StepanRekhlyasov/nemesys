@@ -32,3 +32,10 @@ export const getListFromObject = (
   }
   return itemList;
 };
+
+export const listToFixed = (arr: (number|string)[],fix=2) => {
+  return arr.map((num) => {
+    if (typeof num === 'string') return num;
+    return Number(num.toFixed(fix));
+  });
+};

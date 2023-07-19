@@ -1746,8 +1746,8 @@ export default {
       BOExisting:'BO既存',
       female:'女性',
       male:'男性',
-      startUnitPrice:'開始単価',
-      applicationUnitPrice:'応募単価',
+      startUnitPrice:'開始単価 平均',
+      applicationUnitPrice:'応募単価 平均',
       applicationUnitPriceAllAverage:'応募単価 全体平均',
       startUnitPriceAllAverage:'開始単価 全体平均',
       teens:'10代',
@@ -1770,6 +1770,7 @@ export default {
       daysToWork:'勤務日数',
       unitPriceTransition:'単価推移',
       mediaApplicationUnitPrice:'媒体別応募単価',
+      budget:'予算',
 
     }
   },

@@ -7,6 +7,7 @@
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptionsR, columnsR, dataNames, itemListRight } from './const';
+import { listToFixed } from '../reportUtil';
 import { useGetReport } from 'src/stores/getReport';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
@@ -106,21 +107,21 @@ const showIndividualReport = async (
     });
   }
 
-  const allDataAverage = getListFromObject(await getReport({
+  const allDataAverage = listToFixed(getListFromObject(await getReport({
     dateRange: dateRange,
     graphType: props.graph_type,
     queryNames: itemListRight,
     organizationId: undefined,
     isAverage: true,
-  }),itemListRight.map((item)=>{return item.queryName})) as number[];
+  }),itemListRight.map((item)=>{return item.queryName})) as number[]);
 
-  const dataAverage = getListFromObject(await getReport({
+  const dataAverage = listToFixed(getListFromObject(await getReport({
     dateRange: dateRange,
     graphType: props.graph_type,
     queryNames: itemListRight,
     organizationId: organizationId,
     isAverage: true,
-  }),itemListRight.map((item)=>{return item.queryName})) as number[];
+  }),itemListRight.map((item)=>{return item.queryName})) as number[]);
 
   dataAverage.unshift(0);
   allDataAverage.unshift(0);

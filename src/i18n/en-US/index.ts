@@ -1776,7 +1776,7 @@ export default {
       daysToWork:'Days to work',
       unitPriceTransition:'unit price transition',
       mediaApplicationUnitPrice:'Media application unit price',
-
+      budget:'Budget',
 
   }
 },
