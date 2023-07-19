@@ -11,6 +11,8 @@ export interface ClientFactory {
     lon: number
     distance: number
     address: string
+    prefecture: string
+    municipality: string
     fax: string
     tel: string
     homepageUrl: string
@@ -89,16 +91,11 @@ type OfficeDetails = {
     }
 } & {
     registeredInfo: {
-        prefecture: string
-        officeName: string
         parentClient: string
-        municipality: string
-        city: string
         tel: string
         street: string
         building: string
         fax: string
-        others: string
         latitude: number
         longitude: number
     }

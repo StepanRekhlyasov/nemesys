@@ -68,16 +68,16 @@
         <q-td>{{ myDateFormat(props.row.timeToWork, 'YYYY/MM/DD') }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursEarly="props">
-        <q-td>{{ props.row.workingHoursEarly?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursEarly }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursDay="props">
-        <q-td>{{ props.row.workingHoursDay?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursDay }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursLate="props">
-        <q-td>{{ props.row.workingHoursLate?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursLate }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursNight="props">
-        <q-td>{{ props.row.workingHoursNight?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursNight }}</q-td>
       </template>
       <template v-slot:body-cell-shiftRemarks="props">
         <q-td>{{ props.row.shiftRemarks }}</q-td>
