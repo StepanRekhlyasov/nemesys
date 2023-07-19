@@ -116,7 +116,7 @@ const inspectionFieldDict: FieldDict = {
   collection: fixFieldDict.collection,
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
-  uidField: 'chaegeOfInspection',
+  uidField: 'chargeOfInspection',
 };
 
 const offerFieldDict: FieldDict = {
