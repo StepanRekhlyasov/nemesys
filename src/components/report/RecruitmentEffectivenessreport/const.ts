@@ -174,7 +174,7 @@ export const chartOptionsDaysToWork = computed(() => {
 
 export const chartOptionsMedia = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     labels: [],
   };
 });
