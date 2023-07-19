@@ -1,8 +1,9 @@
 import { ClientFactoryTableColumn } from 'src/components/client-factory/types'
-import { computed, ComputedRef } from 'vue';
+import { computed, ComputedRef, ref } from 'vue';
 import { i18n } from 'boot/i18n';
 
 const { t } = i18n.global
+export const pdfViewer = ref(false);
 
 export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> = computed(() => {
     return [
