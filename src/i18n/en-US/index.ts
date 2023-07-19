@@ -116,7 +116,7 @@ export default {
     unmarried: 'Unmarried'
   },
   tattoos: {
-    nil: 'Nil',
+    nil: 'No',
     yes: 'Yes'
   },
   weekDay: {
@@ -162,6 +162,7 @@ export default {
     budgetControl: 'Budget Control',
     SAA: 'Sales Activity Aggregation',
     KPI: 'KPI',
+    faxHistory: 'FAX History',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -508,6 +509,7 @@ export default {
         paidNursingHome: 'Pay nursing home',
         groupHome: 'Group home',
         smallMultifunFacility: 'Small-scale multi-functional facility',
+        smallMultifunFacilityNurse: 'Nursing small-scale multifunctional home care',
         homeCareNursing: 'Home-visit care nursing',
         elderlyHousingServices: 'Residence for the elderly with services',
         clinic: 'Clinic',
@@ -531,6 +533,7 @@ export default {
         outpatientRehabilitation: 'Outpatient rehabilitation',
         dentalClinic: 'Dental Clinic',
         pharmacy: 'Pharmacy',
+        disablesFacility: 'Support facility for people with disabilities'
       },
       busInfoReg: 'Business Information Registration',
       mainOffice: 'Main Office',
@@ -941,7 +944,6 @@ export default {
         chargeOfAttraction: 'Charge Of Attraction',
         position: 'Position',
         period: 'Employment Period',
-
         application: '■Application Information',
         attraction: '■Information on Attraction',
         working: 'Working',
@@ -951,7 +953,11 @@ export default {
           dispatch: 'Dispatch',
           ttp: 'TTP',
           TTP:'TTP'
-        }
+        },
+        generalDispatch: 'General Dispatch',
+        fullTime: 'Full Time',
+        partTime: 'Part Time',
+        placementDispatching: 'Employment placement dispatching',
       }
     },
     statusList: {
@@ -1025,6 +1031,14 @@ export default {
       shiftRemarks: 'Available Shift Remarks',
       days: 'Days',
       meansCommuting: 'Means of commuting',
+      meansCommutingOptions: {
+        walk : 'Walk',
+        bicycle : 'Bicycle',
+        car : 'Car',
+        bike : 'Bike',
+        train : 'Train',
+        bus : 'Bus',
+      },
       nearestStation: 'Nearest Station',
       commutingTime: 'Commuting Time',
       route: 'Route',
@@ -1041,6 +1055,8 @@ export default {
       assignedEvaluation: 'Assigned Evaluation',
       sameDay: 'Same Day',
       firstPayment: 'First Payment',
+      childrenNumber: 'Number of Children',
+      childrenAge: 'Child Age',
 
       specialDays: {
         gw: 'GW',
@@ -1073,6 +1089,7 @@ export default {
       temporaryCompaniesRegistered: 'Number of temporary staffing companies registered',
       startedInCaregiving: 'How did you get started in caregiving?',
       items: 'items',
+      companies: 'companies',
       daysVisitAtWork: 'Days when you can visit us at work',
       experienceDetails: 'Experience Details',
 
@@ -1596,7 +1613,6 @@ export default {
         contractMail: 'Contract destination: MAIL',
         contractPerson: 'Contractor: Person in charge',
 
-
         // Import Logs and Reflect Logs
         executionUser: 'Execution User',
         executionDateTime: 'Execution Date and Time',
@@ -1611,6 +1627,7 @@ export default {
       }
     },
     fax: {
+      confirmAction: 'Confirm Action',
       transmissionConfirmation: 'Transmission Confirmation',
       applicantLinkage: 'Applicant Linkage',
       clientCategoryNG: 'NG client category',
@@ -1627,7 +1644,26 @@ export default {
       clientNG: 'NG client',
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
-      faxPRSheet: 'Fax the PR Sheet'
+      faxPRSheet: 'Fax the PR Sheet',
+      transMissionConfirmation:'Redirecting to Confirmation Content page.',
+      areYouSure: 'Are you sure?',
+      list: {
+        senderId: 'Sender ID',
+        sender: 'Sender',
+        jobSeeker: 'Job Seeker',
+        attachment: 'Attachment',
+        numItemsSent: 'Number Items Sent',
+        numDestinations: 'Number Destinations',
+        numTransmissions: 'Number Transmissions',
+        sentDateTime: 'Sent date and time',
+        numPages: 'Number of PDF pages',
+        selectedCF: 'Selected CF',
+        numCFsFax: 'Number of CFs with fax numbers',
+        jobApplicantName: 'Job Applicant Name',
+        branch: 'Branch',
+        responsiblePerson: 'Responsible Person',
+        sendDate: 'Send Date',
+      }
     }
   },
   inquiry: {
