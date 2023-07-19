@@ -181,13 +181,24 @@
                   </div>
                   <div class="row">
                       <div class="col-12">
-                          <q-select outlined dense :options="jobItemOptions[item['id']]" emit-value map-options
-                              v-model="jobData['jobContent'][item['name']]" option-value="name" option-label="name">
-                              <template v-if="!jobData['jobContent'][item['name']]" v-slot:selected>
-                                  <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                              </template>
-                          </q-select>
-                      </div>
+                        <q-input outlined v-model="jobData['jobContent'][item['name']]" @click="dialogVisible=true" dense />
+                        <q-dialog v-model="dialogVisible" persistent transition-show="scale" transition-hide="scale" class="my-dialog" >
+                          <q-card class="bg-white text-black" style="width: 300px" >
+                            <div v-for="options in jobItemOptions[item['id']]" :key="options['id']">
+                            <div class="row q-pt-sm">
+                                <div class="col-4 text-h6" >
+                                    {{ options['name'] }}
+                                </div>
+                            </div>
+                          </div>
+                            <q-card-section>
+                            </q-card-section>
+                            <q-card-actions align="right" class="bg-white text-teal">
+                              <q-btn flat label="OK" v-close-popup/>
+                            </q-card-actions>
+                          </q-card>
+                        </q-dialog>
+                    </div>
                   </div>
               </div>
               <div class="row text-primary text-body1 q-pt-sm">
@@ -444,7 +455,7 @@ const employmentStatusOption = ref(employmentStatusList);
 const resumeRequiredOption = ref(resumeRequiredList);
 const halfYearExpOption = ref(reqList);
 const indeedJobCategorOption = ref(indeedJobCategoryList);
-
+const dialogVisible=ref(false)
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
 const clientList:DocumentData = ref([]);
@@ -460,7 +471,10 @@ onMounted(async () => {
   jobData.value.transactionType = props?.selectedJob['transactionType'] || '';
   jobData.value.projectType = props?.selectedJob['projectType'] || '';
   jobData.value.client = props?.selectedJob['client'] || '';
-  await jobSearchStore.loadJobItemSettingData()
+  await jobSearchStore.loadJobItemSettingData(jobItemOptions,jobItems)
+  await jobSearchStore.loadJobItemData(jobItems)
+  console.log(jobItemOptions.value)
+  console.log(jobItems.value)
 })
 
 onBeforeUnmount(() => {
@@ -537,7 +551,10 @@ watch(
       }
   }
 )
-
+const unknown =async(data)=>{
+  debugger
+console.log(data)
+}
 const saveJob = async () => {
   try {
       if (jobData.value.id) {
@@ -569,3 +586,8 @@ const saveJob = async () => {
 
 }
 </script>
+<style >
+.my-dialog .q-dialog__backdrop {
+  background-color:transparent;
+}
+</style>

@@ -88,23 +88,45 @@ export const useJobSearch = defineStore('jobSearch', () => {
     await addDoc(collection(db, 'jobs'), data);
   };
 
-  const loadJobItemSettingData = async () => {
+  const loadJobItemSettingData = async (jobItemOptions,jobItems) => {
+    debugger;
     const q = query(collection(db, 'jobItem'), where('deleted', '==', false));
     const querySnapshotJobItem = await getDocs(q);
     querySnapshotJobItem.forEach(async (doc) => {
-      const data = doc.data();
-      if (data['dataType']) {
-          data['dataType'] = t('jobItem.dataTypeList.' + data['dataType']);
-      }
+        const data = doc.data();
+        if (data['dataType']) {
+            data['dataType'] = t('jobItem.dataTypeList.' + data['dataType']);
+        }
+        jobItems.value[doc.id] = data;
         const qOption = query(collection(db, 'jobItem', doc.id, 'options'), where('deleted', '==', false));
         const querySnapshotqOption = await getDocs(qOption);
-        const items = []
+        const items:object[] = []
         querySnapshotqOption.forEach((docOption) => {
             items.push(docOption.data() as never);
         });
-        return items
-  });
-  }
+        jobItemOptions.value[doc.id] = items;
+
+    });
+  };
+  const loadJobItemData = async (jobItems)=>{
+    const jobItemData:object[] = [];
+    const q = await getDocs(
+      query(
+        collection(db, 'jobItem'),
+        where('deleted', '==', false),
+      )
+    );
+    q.forEach(async(doc) => {
+      const data = doc.data();
+      jobItems.value[doc.id] = data;
+      jobItemData.push({
+        ...data,
+        id: doc.id,
+      });
+    });
+
+    return jobItemData;
+  };
 
 const loadOfficeData = async (id:string) => {
   const officeData:object[] = [];
@@ -131,6 +153,7 @@ const loadOfficeData = async (id:string) => {
     updateFormData,
     addFormData,
     loadJobItemSettingData,
-    loadOfficeData
+    loadOfficeData,
+    loadJobItemData
   };
 });
