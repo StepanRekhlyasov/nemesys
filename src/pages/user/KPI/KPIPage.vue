@@ -209,6 +209,10 @@ const getBranchList = async () => {
 };
 
 async function getData() {
+  if (mode.value == 'media') {
+      mediaListToShow.value = convertObjToIdNameList([
+        ...(await getAllmedia()),
+      ]);}
   if ((dateRange.value.from == '' || dateRange.value.to == '') && mode.value !== 'day') {
     rowData.value = [];
     return;
@@ -274,9 +278,6 @@ async function getData() {
 
     if (mode.value == 'media' && item.value == 'applicationAttribute') {
       rowData.value = [];
-      mediaListToShow.value = convertObjToIdNameList([
-        ...(await getAllmedia()),
-      ]);
       let rows = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
@@ -288,9 +289,6 @@ async function getData() {
       });
       rowData.value = rows;
     } else if (mode.value == 'media' && media.value) {
-      mediaListToShow.value = convertObjToIdNameList([
-        ...(await getAllmedia()),
-      ]);
       rowData.value = [];
       let rows = await getReport({
         dateRange: dateRange.value,
@@ -310,9 +308,6 @@ async function getData() {
       rowData.value = [...rows];
     } else if (mode.value == 'media') {
       rowData.value = [];
-      mediaListToShow.value = convertObjToIdNameList([
-        ...(await getAllmedia()),
-      ]);
     }
     if (modeNow != mode.value) {
       resetData();
