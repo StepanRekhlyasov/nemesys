@@ -181,7 +181,7 @@ export const useBudget = defineStore('budget', () => {
 	}
 
   const processData = async (data:string, selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) => {
-    const rowsInString = data as string
+    const rowsInString = data
     const rows = rowsInString.split('\r\n')
     const batch = writeBatch(db);
     await getOptionData(organization.currentOrganizationId);
