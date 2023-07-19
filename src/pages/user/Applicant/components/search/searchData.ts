@@ -8,10 +8,10 @@ export const searchDataSample = {
     availableShift: [], 
     daysperweek: [] 
 };
-export const dataa = ref<DocumentData>(JSON.parse(JSON.stringify(searchDataSample)));
+export const sharedData = ref<DocumentData>(JSON.parse(JSON.stringify(searchDataSample)));
 export function updateSharedVariable(newValue: DocumentData) {
-    dataa.value = newValue;
+    sharedData.value = newValue;
 }
 export function resetSharedVariable(){
-    dataa.value = JSON.parse(JSON.stringify(searchDataSample));
+    sharedData.value = JSON.parse(JSON.stringify(searchDataSample));
 }

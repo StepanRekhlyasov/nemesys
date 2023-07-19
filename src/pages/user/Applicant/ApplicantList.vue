@@ -8,7 +8,7 @@
       <q-separator color="white" size="2px" />
 
       <q-card-section class="q-pa-xs">
-        <searchForm :searchData="dataa" @load-search-staff="loadSearchStaff" />
+        <searchForm :searchData="sharedData" @load-search-staff="loadSearchStaff" />
       </q-card-section>
 
       <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer = true" />
@@ -93,7 +93,7 @@ import { ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/appli
 import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import SmsDrawer from './components/SmsDrawer.vue';
-import { dataa } from './components/search/searchData'
+import { sharedData } from './components/search/searchData'
 const { t } = useI18n({ useScope: 'global' });
 const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
@@ -186,9 +186,9 @@ watch(
   () => (pagination.value.page),
   () => {
     if (!preventWatch.value) {
-      applicantStore.loadApplicantData({}, pagination.value);
+      applicantStore.loadApplicantData(sharedData.value, pagination.value);
     }
   },
 )
-applicantStore.loadApplicantData(dataa.value, pagination.value);
+applicantStore.loadApplicantData(sharedData.value, pagination.value);
 </script>

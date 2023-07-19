@@ -64,12 +64,12 @@ const dltSearch = async (id) => {
   loadPagination.value = loadPagination.value == 0 ? 1 : 0
 };
 
-const callRow = (row) => {
+const callRow = (row:DocumentData) => {
       drawerRight.value = true;
       rowForEdit.value = row
     };
 
-const handle = (row) =>{
+const searchApplicants = (row:DocumentData) =>{
   updateSharedVariable(row)
   router.push('/applicant/search')
 }
@@ -145,7 +145,7 @@ const clearSearch = ()=>{
                 <q-icon size="sm" color="primary" class="table__edit-btn" name="edit"
                   @click="callRow(props.row)"/>
                 <q-icon size="sm" class="table__search-btn" name="search"
-                  @click="handle(props.row)"/>
+                  @click="searchApplicants(props.row)"/>
               </q-td>
 
               <q-td class="text-left  no-wrap">{{ props.row.keyword ? `${props.row.keyword}` : ''}}</q-td>
