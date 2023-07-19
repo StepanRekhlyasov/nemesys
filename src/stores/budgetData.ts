@@ -1,4 +1,4 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp } from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp, QueryFieldFilterConstraint} from 'firebase/firestore';
 import { getStorage, ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { defineStore } from 'pinia';
 import { exportFile, date } from 'quasar';
@@ -14,6 +14,7 @@ import { BudgetData, selectedYearMonth } from 'src/pages/user/budget/type/budget
 import { useOrganization } from 'src/stores/organization';
 
 export const useBudget = defineStore('budget', () => {
+  const monthPerYear = 12;
   const db = getFirestore();
   const options = ref({ occupation: occupationList });
   const budgetList = ref(<DocumentData[]>[]);
@@ -129,7 +130,7 @@ export const useBudget = defineStore('budget', () => {
 				'text/csv'
 			)
 			if (status !== true) {
-				Alert.warning('Browser denied file download...', { color: 'negative' })
+        Alert.warning('Browser denied file download...', { color: 'negative' })
 			}
 		};
 		xhr.open('GET', url);
@@ -176,7 +177,7 @@ export const useBudget = defineStore('budget', () => {
 			}
 		)
 		if (status !== true) {
-			Alert.warning('Browser denied file download...', { color: 'negative' })
+      Alert.warning('Browser denied file download...', { color: 'negative' })
 		}
 	}
 
@@ -257,6 +258,125 @@ export const useBudget = defineStore('budget', () => {
     budgetData.value.remark = formateDataCSV[12].replace(/"/g, '');
     return budgetData;
   }
+  const getUnitPricePerOrganization = async (
+    dateRangeProps?: { from: string; to: string },
+    organization_id?: string,
+    beforeMonth = 7
+  ) => {
+    const mediaRef = collection(db, 'budgets');
+    const filters: QueryFieldFilterConstraint[] = [];
+    const filters_: QueryFieldFilterConstraint[] = [];
 
-  return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable }
+    if (organization_id !== undefined) {
+      filters.push(where('organization_id', '==', organization_id));
+    }
+    //dateRangeProps is like {from:1900/01/01,to:1900/12/01}
+    if (dateRangeProps === undefined) return;
+    const toMonth = dateRangeProps.to.split('/')[1];
+    const year = dateRangeProps.to.split('/')[0];
+
+    //get month from before 7 month
+    const fromMonth = Number(toMonth) - beforeMonth + 1;
+
+    filters.push(where('record_year', '==', Number(year)));
+    filters.push(where('record_month', '<=', Number(toMonth)));
+    filters.push(where('record_month', '>=', Number(fromMonth)));
+    if (fromMonth <= 0) {
+      filters_.push(where('record_year', '==', Number(year) - 1));
+      filters_.push(where('record_month', '>=', Number(fromMonth) + 12));
+    }
+    const querys = query(mediaRef, ...filters);
+    const docSnap = await getDocs(querys);
+    const querys_ = query(mediaRef, ...filters_);
+    const docSnap_ = await getDocs(querys_);
+
+    const budget_amount: number[] = [];
+    budget_amount.length = beforeMonth;
+    budget_amount.fill(0);
+
+    const number_of_applicants: number[] = [];
+    number_of_applicants.length = beforeMonth;
+    number_of_applicants.fill(0);
+
+    const number_of_admission: number[] = [];
+    number_of_admission.length = beforeMonth;
+    number_of_admission.fill(0);
+
+    for (const doc of [...docSnap.docs, ...docSnap_.docs]) {
+      const budget = doc.data() ;
+      let index: number;
+      if (Number(toMonth) - doc.data().record_month < 0) {
+        index =
+          -Number(toMonth) + doc.data().record_month - monthPerYear + beforeMonth - 1;
+      } else {
+        index = -Number(toMonth) + doc.data().record_month + beforeMonth - 1;
+      }
+      budget_amount[index] += budget.budget_amount;
+      number_of_applicants[index] += budget.number_of_applicants;
+      number_of_admission[index] += budget.number_of_admission;
+    }
+
+    const unitpricePerApplicants: number[] = [];
+    unitpricePerApplicants.length = beforeMonth;
+    unitpricePerApplicants.fill(0);
+
+    const unitpricePerAdmission: number[] = [];
+    unitpricePerAdmission.length = beforeMonth;
+    unitpricePerAdmission.fill(0);
+
+    for (let i = 0; i < beforeMonth; i++) {
+      if (number_of_applicants[i] === 0) continue;
+      if (number_of_admission[i] === 0) continue;
+      unitpricePerApplicants[i] = budget_amount[i] / number_of_applicants[i];
+      unitpricePerAdmission[i] = budget_amount[i] / number_of_admission[i];
+    }
+    return [unitpricePerApplicants, unitpricePerAdmission];
+  };
+
+  const getUnitPricePerOrganizationPerMedia = async (
+    mediaList: string[],
+    dateRangeProps?: { from: string; to: string },
+    organization_id?: string,
+  ) => {
+    const mediaRef = collection(db, 'budgets');
+    const filters: QueryFieldFilterConstraint[] = [];
+    if (organization_id) {
+      filters.push(where('organization_id', '==', organization_id));
+    }
+    if (!dateRangeProps) return;
+    const toMonth = dateRangeProps.to.split('/')[1];
+    const year = dateRangeProps.to.split('/')[0];
+    filters.push(where('record_year', '==', Number(year)));
+    filters.push(where('record_month', '==', Number(toMonth)));
+    const querys = query(mediaRef, ...filters);
+    const docSnap = await getDocs(querys);
+    const budget_amount: number[] = [];
+    budget_amount.length = mediaList.length;
+    budget_amount.fill(0);
+    const number_of_applicants: number[] = [];
+    number_of_applicants.length = mediaList.length;
+    number_of_applicants.fill(0);
+
+    for (const doc of docSnap.docs) {
+      const budget = doc.data();
+      if (!mediaList.includes(doc.data().media)) continue;
+      const index = mediaList.indexOf(doc.data().media);
+      budget_amount[index] += budget.budget_amount;
+      number_of_applicants[index] += budget.number_of_applicants;
+    }
+    const unitpricePerApplicants: number[] = [];
+    unitpricePerApplicants.length = mediaList.length;
+    unitpricePerApplicants.fill(0);
+    const unitpricePerAdmission: number[] = [];
+    unitpricePerAdmission.length = mediaList.length;
+    unitpricePerAdmission.fill(0);
+    for (let i = 0; i < mediaList.length; i++) {
+      if (number_of_applicants[i] === 0) continue;
+      unitpricePerApplicants[i] = budget_amount[i] / number_of_applicants[i];
+    }
+    return unitpricePerApplicants;
+  };
+
+
+  return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable ,getUnitPricePerOrganization ,getUnitPricePerOrganizationPerMedia }
 })

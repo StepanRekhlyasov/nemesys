@@ -7,16 +7,17 @@ export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'] a
 export const chartType = ['bar', 'line', 'line'] as const ;
 
 export const itemList = [
-  'applicants',
-  'validApplicants',
-  'contactApplicants',
-  'attractionApplicants',
-  'attendApplicants',
-  'fix',
-  'inspection',
-  'offer',
-  'admission',
-] as const;
+{queryName:'applicants'},
+{queryName:'validApplicants'},
+{queryName:'contactApplicants'},
+{queryName:'attractionApplicants'},
+{queryName:'attendApplicants'},
+{queryName:'fix'},
+{queryName:'inspection'},
+{queryName:'offer'},
+{queryName:'admission'},
+] as const
+
 export const chartOptions = computed(() => {
   return {
     legend: { position: 'left' },
