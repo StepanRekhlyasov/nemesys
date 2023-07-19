@@ -229,7 +229,7 @@ export const useBudget = defineStore('budget', () => {
     return correctValue;
   }
 
-  const getFormateData = (formateData: BudgetData | string[]) => {
+  const getFormateData = (formateDataCSV: string[]) => {
     const budgetData = ref<BudgetData>({
       organizationId:organization.currentOrganizationId,
       accountingMonth: '',
@@ -244,17 +244,17 @@ export const useBudget = defineStore('budget', () => {
       remark: '',
       agency: '',
     });
-    budgetData.value.media = formateData[2].replace(/"/g, '');
-    budgetData.value.branch = formateData[3].replace(/"/g, '');
-    budgetData.value.occupation = formateData[4].replace(/"/g, '');
-    budgetData.value.postingStartDate = (formateData[5]).replace(/"/g,'')
-    budgetData.value.postingEndDate = (formateData[6]).replace(/"/g,'')
-    budgetData.value.accountingMonth = formateData[7].replace(/"/g, '');
-    budgetData.value.amount = formateData[8].replace(/"/g, '');
-    budgetData.value.numberOfSlots = formateData[9].replace(/"/g, '');
-    budgetData.value.unitPrice = formateData[10].replace(/"/g, '');
-    budgetData.value.agency = formateData[11].replace(/"/g, '');
-    budgetData.value.remark = formateData[12].replace(/"/g, '');
+    budgetData.value.media = formateDataCSV[2].replace(/"/g, '');
+    budgetData.value.branch = formateDataCSV[3].replace(/"/g, '');
+    budgetData.value.occupation = formateDataCSV[4].replace(/"/g, '');
+    budgetData.value.postingStartDate = (formateDataCSV[5]).replace(/"/g,'')
+    budgetData.value.postingEndDate = (formateDataCSV[6]).replace(/"/g,'')
+    budgetData.value.accountingMonth = formateDataCSV[7].replace(/"/g, '');
+    budgetData.value.amount = formateDataCSV[8].replace(/"/g, '');
+    budgetData.value.numberOfSlots = formateDataCSV[9].replace(/"/g, '');
+    budgetData.value.unitPrice = formateDataCSV[10].replace(/"/g, '');
+    budgetData.value.agency = formateDataCSV[11].replace(/"/g, '');
+    budgetData.value.remark = formateDataCSV[12].replace(/"/g, '');
     return budgetData;
   }
 
