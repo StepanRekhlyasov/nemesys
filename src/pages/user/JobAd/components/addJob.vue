@@ -1,385 +1,377 @@
 <template>
   <q-card class="no-shadow bg-grey-3">
-      <q-form ref="jobForm" @submit="saveJob">
-          <q-card-section class="text-white bg-primary rounded-borders">
-              <div class="row">
-                  <div class="col-12 flex flex-inline">
-                      <q-btn dense flat icon="close" @click="hideDrawer" />
-                      <div class="q-mr-sm">
-                          <div>
-                              {{ transactionText }}
-                              <span v-if="projectText">/ {{ projectText }}</span>
-                          </div>
-                          <div class="text-h6">{{ jobData['name'] }}</div>
-                      </div>
-                      <q-btn size="sm" style="background: white; color: #085374; height: 30px"
-                          :label="jobData['id'] ? $t('job.jobUpdate') : $t('job.jobReg')" type="submit" />
-                      <q-btn outline size="sm" :label="$t('job.autoJobCreation')" class="q-ml-md"
-                          style="height: 30px" />
-                  </div>
+    <q-form ref="jobForm" @submit="saveJob">
+      <q-card-section class="text-white bg-primary rounded-borders">
+        <div class="row">
+          <div class="col-12 flex flex-inline">
+            <q-btn dense flat icon="close" @click="hideDrawer" />
+            <div class="q-mr-sm">
+              <div>
+                {{ transactionText }}
+                <span v-if="projectText">/ {{ projectText }}</span>
               </div>
-          </q-card-section>
-          <q-card-section v-if="isDrawer">
-              <div class="row text-primary text-body1">
-                  ■ {{ $t('job.add.basicInfo') }}
-              </div>
+              <div class="text-h6">{{ jobData['name'] }}</div>
+            </div>
+            <q-btn size="sm" style="background: white; color: #085374; height: 30px"
+              :label="jobData['id'] ? $t('job.jobUpdate') : $t('job.jobReg')" type="submit" />
+            <q-btn outline size="sm" :label="$t('job.autoJobCreation')" class="q-ml-md" style="height: 30px" />
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section v-if="isDrawer">
+        <div class="row text-primary text-body1">
+          ■ {{ $t('job.add.basicInfo') }}
+        </div>
 
-              <div class="row">
-                  {{ $t('job.add.jobName') }}
-                  <span class="text-red-5">*</span>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-input outlined dense v-model="jobData['name']" :placeholder="$t('client.add.clientLabel')"
-                          lazy-rules :rules="[(val) => (val && val.length > 0) || '']" />
-                  </div>
-              </div>
-
-
-              <div class="row">
-                  <div class="col-4">
-                      {{ $t('job.add.transactionType') }}
-                      <span class="text-red-5">*</span>
-                  </div>
-                  <div class="col-4">
-                      {{ $t('job.projectType') }}
-                      <span class="text-red-5">*</span>
-                  </div>
-                  <div class="col-4">
-                      {{ $t('client.add.facilityType') }}
-                      <span class="text-red-5">*</span>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="transactionTypeOptions" emit-value map-options
-                          v-model="jobData['transactionType']" lazy-rules
-                          :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobData['transactionType']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="projectTypeOptions" emit-value map-options
-                          v-model="jobData['projectType']" lazy-rules
-                          :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobData['projectType']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4">
-                      <q-select outlined dense :options="facilityTypeOption" emit-value map-options
-                          option-label="name" v-model="jobData['facilityType']" lazy-rules
-                          :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobData['facilityType']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.paymentType') }}
-                      <span class="text-red-5">*</span>
-                  </div>
-                  <div class="col-4">
-                      {{ $t('job.add.salaryType') }}
-                      <span class="text-red-5">*</span>
-                  </div>
-                  <div class="col-4">
-                      {{ $t('job.add.status') }}
-                      <span class="text-red-5">*</span>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="paymentTypeOption" emit-value map-options
-                          v-model="jobData['paymentType']" lazy-rules
-                          :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobData['paymentType']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="salaryTypeOption" emit-value map-options
-                          v-model="jobData['salaryType']" lazy-rules
-                          :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobData['salaryType']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4">
-                      <q-select outlined dense :options="statusOption" emit-value map-options
-                          v-model="jobData['status']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobData['status']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
+        <div class="row">
+          {{ $t('job.add.jobName') }}
+          <span class="text-red-5">*</span>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <q-input outlined dense v-model="jobData['name']" :placeholder="$t('client.add.clientLabel')" lazy-rules
+              :rules="[(val) => (val && val.length > 0) || '']" />
+          </div>
+        </div>
 
 
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('client.list.client') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('applicant.list.fixEmployment.office') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="clientList" v-model="jobData['client']">
-                          <template v-if="!jobData['client']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="officeList" v-model="jobData['office']"
-                          :disable="officeList.length == 0">
-                          <template v-if="!jobData['office']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
+        <div class="row">
+          <div class="col-4">
+            {{ $t('job.add.transactionType') }}
+            <span class="text-red-5">*</span>
+          </div>
+          <div class="col-4">
+            {{ $t('job.projectType') }}
+            <span class="text-red-5">*</span>
+          </div>
+          <div class="col-4">
+            {{ $t('client.add.facilityType') }}
+            <span class="text-red-5">*</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="transactionTypeOptions" emit-value map-options
+              v-model="jobData['transactionType']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              <template v-if="!jobData['transactionType']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="projectTypeOptions" emit-value map-options v-model="jobData['projectType']"
+              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              <template v-if="!jobData['projectType']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4">
+            <q-select outlined dense :options="facilityTypeOption" emit-value map-options option-label="name"
+              v-model="jobData['facilityType']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              <template v-if="!jobData['facilityType']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('job.add.paymentType') }}
+            <span class="text-red-5">*</span>
+          </div>
+          <div class="col-4">
+            {{ $t('job.add.salaryType') }}
+            <span class="text-red-5">*</span>
+          </div>
+          <div class="col-4">
+            {{ $t('job.add.status') }}
+            <span class="text-red-5">*</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="paymentTypeOption" emit-value map-options v-model="jobData['paymentType']"
+              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              <template v-if="!jobData['paymentType']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="salaryTypeOption" emit-value map-options v-model="jobData['salaryType']"
+              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              <template v-if="!jobData['salaryType']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4">
+            <q-select outlined dense :options="statusOption" emit-value map-options v-model="jobData['status']" lazy-rules
+              :rules="[(val) => (val && val.length > 0) || '']">
+              <template v-if="!jobData['status']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+        </div>
 
 
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.email') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('applicant.add.phone') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-input outlined dense v-model="jobData['email']"
-                          :placeholder="$t('client.add.emailLabel1') + '@' + $t('client.add.emailLabel2')"
-                          hide-bottom-space />
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-input outlined dense v-model="jobData['phone']" :placeholder="$t('client.add.phoneLabel')"
-                          hide-bottom-space />
-                  </div>
-              </div>
-
-              <div class="row text-primary text-body1 q-pt-sm">
-                  ■ {{ $t('job.add.jobContent') }}
-              </div>
-              <div v-for="item in jobItems" :key="item['id']">
-                  <div class="row q-pt-sm">
-                      <div class="col-4">
-                          {{ item['name'] }}
-                      </div>
-                  </div>
-                  <div class="row">
-                      <div class="col-12">
-                        <q-input outlined v-model="jobData['jobContent'][item['name']]" @click="dialogVisible=true" dense />
-                        <q-dialog v-model="dialogVisible" persistent transition-show="scale" transition-hide="scale" class="my-dialog" >
-                          <q-card class="bg-white text-black" style="width: 300px" >
-                            <div v-for="options in jobItemOptions[item['id']]" :key="options['id']">
-                            <div class="row q-pt-sm">
-                                <div class="col-4 text-h6" >
-                                    {{ options['name'] }}
-                                </div>
-                            </div>
-                          </div>
-                            <q-card-section>
-                            </q-card-section>
-                            <q-card-actions align="right" class="bg-white text-teal">
-                              <q-btn flat label="OK" v-close-popup/>
-                            </q-card-actions>
-                          </q-card>
-                        </q-dialog>
-                    </div>
-                  </div>
-              </div>
-              <div class="row text-primary text-body1 q-pt-sm">
-                  ■ {{ $t('job.add.employmentContract') }}
-              </div>
-
-              <div class="row q-pt-sm">
-                  <div class="col-3">
-                      {{ $t('job.add.salaryType') }}
-                  </div>
-                  <div class="col-3">
-                      {{ $t('job.add.salaryCap') }}
-                  </div>
-                  <div class="col-3">
-                      {{ $t('job.add.minSalary') }}
-                  </div>
-                  <div class="col-3">
-                      {{ $t('office.payDay') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-3 q-pr-sm">
-                      <q-input outlined dense v-model="jobData['salaryTypeText']" hide-bottom-space />
-                  </div>
-                  <div class="col-3 q-pr-sm">
-                      <q-input outlined dense v-model="jobData['salaryCap']" hide-bottom-space />
-                  </div>
-                  <div class="col-3 q-pr-sm">
-                      <q-input outlined dense v-model="jobData['minSalary']" hide-bottom-space />
-                  </div>
-                  <div class="col-3">
-                      <q-input outlined dense v-model="jobData['payday']" hide-bottom-space />
-                  </div>
-              </div>
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('client.list.client') }}
+          </div>
+          <div class="col-4">
+            {{ $t('applicant.list.fixEmployment.office') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="clientList" v-model="jobData['client']">
+              <template v-if="!jobData['client']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="officeList" v-model="jobData['office']" :disable="officeList.length == 0">
+              <template v-if="!jobData['office']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+        </div>
 
 
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('client.backOrder.employmentStatus') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('client.backOrder.bonuses') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('client.backOrder.transportationExpenses') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="employmentStatusOption" emit-value map-options
-                          v-model="jobData['employmentStatus']">
-                          <template v-if="!jobData['employmentStatus']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['bonuses']">
-                          <template v-if="!jobData['bonuses']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4">
-                      <q-input outlined dense v-model="jobData['transportationExpenses']" hide-bottom-space />
-                  </div>
-              </div>
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('job.add.email') }}
+          </div>
+          <div class="col-4">
+            {{ $t('applicant.add.phone') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-input outlined dense v-model="jobData['email']"
+              :placeholder="$t('client.add.emailLabel1') + '@' + $t('client.add.emailLabel2')" hide-bottom-space />
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-input outlined dense v-model="jobData['phone']" :placeholder="$t('client.add.phoneLabel')"
+              hide-bottom-space />
+          </div>
+        </div>
 
-              <div class="row q-pt-sm">
-                  <div class="col-12">
-                      {{ $t('job.add.treatmentBenefits') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['benefits']">
-                          <template v-if="!jobData['benefits']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
+        <div class="row text-primary text-body1 q-pt-sm">
+          ■ {{ $t('job.add.jobContent') }}
+        </div>
+        <div v-for="item in jobItems" :key="item['id']">
+          <div class="row q-pt-sm">
+            <div class="col-4">
+              {{ item['name'] }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <q-input outlined v-model="jobData['jobContent'][item['name']]"
+                @click="openJobOptionDrawer(jobItemOptions[item['id']], item['name'],item['id'])" dense />
+            </div>
+          </div>
+        </div>
+        <div class="row text-primary text-body1 q-pt-sm">
+          ■ {{ $t('job.add.employmentContract') }}
+        </div>
 
-              <!-- Employment Conditions -->
-              <div class="row text-primary text-body1 q-pt-sm">
-                  ■ {{ $t('job.add.employmentConditions') }}
-              </div>
+        <div class="row q-pt-sm">
+          <div class="col-3">
+            {{ $t('job.add.salaryType') }}
+          </div>
+          <div class="col-3">
+            {{ $t('job.add.salaryCap') }}
+          </div>
+          <div class="col-3">
+            {{ $t('job.add.minSalary') }}
+          </div>
+          <div class="col-3">
+            {{ $t('office.payDay') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3 q-pr-sm">
+            <q-input outlined dense v-model="jobData['salaryTypeText']" hide-bottom-space />
+          </div>
+          <div class="col-3 q-pr-sm">
+            <q-input outlined dense v-model="jobData['salaryCap']" hide-bottom-space />
+          </div>
+          <div class="col-3 q-pr-sm">
+            <q-input outlined dense v-model="jobData['minSalary']" hide-bottom-space />
+          </div>
+          <div class="col-3">
+            <q-input outlined dense v-model="jobData['payday']" hide-bottom-space />
+          </div>
+        </div>
 
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.experienceRequired') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12">
-                      <q-input outlined dense v-model="jobData['experienceRequired']" hide-bottom-space />
-                  </div>
-              </div>
 
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.requiredQualification') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('job.add.halfYearExp') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('job.add.upperAgeLimit') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="[]" emit-value map-options
-                          v-model="jobData['requiredQualification']">
-                          <template v-if="!jobData['requiredQualification']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="halfYearExpOption" emit-value map-options
-                          v-model="jobData['halfYearExp']">
-                          <template v-if="!jobData['halfYearExp']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4">
-                      <q-input outlined dense v-model="jobData['upperAgeLimit']" hide-bottom-space />
-                  </div>
-              </div>
-              <div class="row text-primary text-body1 q-pt-sm">
-                  ■ {{ $t('job.add.mediaInformation') }}
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.indeedJobCategory') }}
-                  </div>
-                  <div class="col-4">
-                      {{ $t('job.add.presenceAbsenceResume') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="indeedJobCategorOption" emit-value map-options
-                          v-model="jobData['indeedJobCategory']">
-                          <template v-if="!jobData['indeedJobCategory']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-                  <div class="col-4 q-pr-sm">
-                      <q-select outlined dense :options="resumeRequiredOption" emit-value map-options
-                          v-model="jobData['presenceAbsenceResume']">
-                          <template v-if="!jobData['presenceAbsenceResume']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
-                  </div>
-              </div>
-              <div class="row q-pt-sm">
-                  <div class="col-4">
-                      {{ $t('job.add.indeedTag') }}
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-12 q-pr-sm">
-                      <q-select outlined dense v-model="jobData['indeedTag']" emit-value map-options use-chips
-                          multiple input-debounce="0" :options="indeedTagOptions" options-html use-input>
-                          <template v-if="!jobData['indeedTag']" v-slot:selected>
-                              <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-                          </template>
-                      </q-select>
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('client.backOrder.employmentStatus') }}
+          </div>
+          <div class="col-4">
+            {{ $t('client.backOrder.bonuses') }}
+          </div>
+          <div class="col-4">
+            {{ $t('client.backOrder.transportationExpenses') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="employmentStatusOption" emit-value map-options
+              v-model="jobData['employmentStatus']">
+              <template v-if="!jobData['employmentStatus']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['bonuses']">
+              <template v-if="!jobData['bonuses']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4">
+            <q-input outlined dense v-model="jobData['transportationExpenses']" hide-bottom-space />
+          </div>
+        </div>
 
-                  </div>
+        <div class="row q-pt-sm">
+          <div class="col-12">
+            {{ $t('job.add.treatmentBenefits') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['benefits']">
+              <template v-if="!jobData['benefits']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+        </div>
+
+        <!-- Employment Conditions -->
+        <div class="row text-primary text-body1 q-pt-sm">
+          ■ {{ $t('job.add.employmentConditions') }}
+        </div>
+
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('job.add.experienceRequired') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <q-input outlined dense v-model="jobData['experienceRequired']" hide-bottom-space />
+          </div>
+        </div>
+
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('job.add.requiredQualification') }}
+          </div>
+          <div class="col-4">
+            {{ $t('job.add.halfYearExp') }}
+          </div>
+          <div class="col-4">
+            {{ $t('job.add.upperAgeLimit') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="[]" emit-value map-options v-model="jobData['requiredQualification']">
+              <template v-if="!jobData['requiredQualification']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="halfYearExpOption" emit-value map-options v-model="jobData['halfYearExp']">
+              <template v-if="!jobData['halfYearExp']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4">
+            <q-input outlined dense v-model="jobData['upperAgeLimit']" hide-bottom-space />
+          </div>
+        </div>
+        <div class="row text-primary text-body1 q-pt-sm">
+          ■ {{ $t('job.add.mediaInformation') }}
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('job.add.indeedJobCategory') }}
+          </div>
+          <div class="col-4">
+            {{ $t('job.add.presenceAbsenceResume') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="indeedJobCategorOption" emit-value map-options
+              v-model="jobData['indeedJobCategory']">
+              <template v-if="!jobData['indeedJobCategory']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-4 q-pr-sm">
+            <q-select outlined dense :options="resumeRequiredOption" emit-value map-options
+              v-model="jobData['presenceAbsenceResume']">
+              <template v-if="!jobData['presenceAbsenceResume']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+        </div>
+        <div class="row q-pt-sm">
+          <div class="col-4">
+            {{ $t('job.add.indeedTag') }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 q-pr-sm">
+            <q-select outlined dense v-model="jobData['indeedTag']" emit-value map-options use-chips multiple
+              input-debounce="0" :options="indeedTagOptions" options-html use-input>
+              <template v-if="!jobData['indeedTag']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+        </div>
+      </q-card-section>
+    </q-form>
+    <q-dialog v-model="dialogVisible" persistent transition-show="scale" transition-hide="scale" class="my-dialog">
+      <q-card class="bg-white text-black" style="width: 300px">
+        <q-card-section>
+          <q-list dense bordered padding class="rounded-borders">
+            <q-item clickable v-ripple v-for="(options, index) in itemOptions" :key="options['id']"
+              >
+              <q-btn icon="edit" size="md" color="primary" flat  @click="startEditing(index)"/>
+              <div class="text-h6 q-ml-md"  v-if="!isEditing(index)" @click="selectJobOption(options,jobItemId)">
+                 {{ options['name'] }}
               </div>
-          </q-card-section>
-      </q-form>
+              <q-input v-model="options['name']" dense v-if="isEditing(index)"  @blur="stopEditing()" @keyup.enter="stopEditing()" />
+            </q-item>
+            <div class="row">
+                <q-btn icon="mdi-plus-thick" size="md" color="primary"  :label="$t('common.addNew')" flat class="q-ml-md q-mt-sm text-bold" @click="addNewField"/>
+              </div>
+          </q-list>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-card>
 </template>
-
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
@@ -392,12 +384,12 @@ import { useJobSearch } from 'src/stores/jobSearch'
 const jobSearchStore = useJobSearch()
 const props = defineProps({
   selectedJob: {
-      type: Object,
-      required: true
+    type: Object,
+    required: true
   },
   isDrawer: {
-      type: Boolean,
-      required: true
+    type: Boolean,
+    required: true
   }
 }
 )
@@ -455,34 +447,47 @@ const employmentStatusOption = ref(employmentStatusList);
 const resumeRequiredOption = ref(resumeRequiredList);
 const halfYearExpOption = ref(reqList);
 const indeedJobCategorOption = ref(indeedJobCategoryList);
-const dialogVisible=ref(false)
+const dialogVisible = ref(false)
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
-const clientList:DocumentData = ref([]);
-const officeList:DocumentData = ref([]);
+const clientList: DocumentData = ref([]);
+const officeList: DocumentData = ref([]);
 const transactionText = ref('')
 const projectText = ref('')
 const jobForm = ref();
 const jobItems = ref({});
 const jobItemOptions = ref({});
+const itemOptions:DocumentData = ref({})
+const currentJobContent = ref('')
+const editingIndex = ref(-1);
+const jobItemId = ref({})
+const optionId = ref('')
+const startEditing = (index) => {
+  editingIndex.value = index;
+};
+const isEditing = (index) => {
+  return editingIndex.value === index;
+};
+const stopEditing = () => {
+  editingIndex.value = -1;
+};
 
 onMounted(async () => {
   clientList.value = await jobSearchStore.loadClientsData()
   jobData.value.transactionType = props?.selectedJob['transactionType'] || '';
   jobData.value.projectType = props?.selectedJob['projectType'] || '';
   jobData.value.client = props?.selectedJob['client'] || '';
-  await jobSearchStore.loadJobItemSettingData(jobItemOptions,jobItems)
+  await jobSearchStore.loadJobItemSettingData(jobItemOptions, jobItems)
   await jobSearchStore.loadJobItemData(jobItems)
-  console.log(jobItemOptions.value)
-  console.log(jobItems.value)
+  console.log(jobData.value['jobContent'])
 })
 
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
-      unsubscribe.value();
+    unsubscribe.value();
   }
   if (unsubscribeOffice.value) {
-      unsubscribeOffice.value();
+    unsubscribeOffice.value();
   }
 
 })
@@ -490,90 +495,127 @@ onBeforeUnmount(() => {
 watch(
   () => (jobData.value.transactionType),
   (newVal,) => {
-      transactionText.value = '';
-      let obj = transactionTypeOptions.value.find(o => o.value === newVal);
-      if (obj) {
-          transactionText.value = obj.label;
-      }
+    transactionText.value = '';
+    let obj = transactionTypeOptions.value.find(o => o.value === newVal);
+    if (obj) {
+      transactionText.value = obj.label;
+    }
   }
 )
 
 watch(
   () => (jobData.value.projectType),
   (newVal,) => {
-      projectText.value = '';
-      let obj = projectTypeOptions.value.find(o => o.value === newVal);
-      if (obj) {
-          projectText.value = obj.label;
-      }
+    projectText.value = '';
+    let obj = projectTypeOptions.value.find(o => o.value === newVal);
+    if (obj) {
+      projectText.value = obj.label;
+    }
   }
 )
 
 watch(
   () => (jobData.value.indeedTag),
   (newVal,) => {
-      let jobType = 0;
-      let coronaType = 0;
-      for (var i = 0; i < newVal.length; i++) {
-          if (indeedTagJobType.includes(newVal[i])) {
-              jobType += 1;
-          }
-          else if (indeedTagCoronaType.includes(newVal[i])) {
-              coronaType += 1;
-          }
+    let jobType = 0;
+    let coronaType = 0;
+    for (var i = 0; i < newVal.length; i++) {
+      if (indeedTagJobType.includes(newVal[i])) {
+        jobType += 1;
       }
-      for (var i = 0; i < indeedTagOptions.value.length; i++) {
-          indeedTagOptions.value[i]['disable'] = false;
-          if (indeedTagOptions.value[i]['type'] == 'job') {
-              if (jobType > 4 && !newVal.includes(indeedTagOptions.value[i]['value'])) {
-                  indeedTagOptions.value[i]['disable'] = true;
-              }
+      else if (indeedTagCoronaType.includes(newVal[i])) {
+        coronaType += 1;
+      }
+    }
+    for (var i = 0; i < indeedTagOptions.value.length; i++) {
+      indeedTagOptions.value[i]['disable'] = false;
+      if (indeedTagOptions.value[i]['type'] == 'job') {
+        if (jobType > 4 && !newVal.includes(indeedTagOptions.value[i]['value'])) {
+          indeedTagOptions.value[i]['disable'] = true;
+        }
 
-          }
-          if (indeedTagOptions.value[i]['type'] == 'corona') {
-              if (coronaType > 2 && !newVal.includes(indeedTagOptions.value[i]['value'])) {
-                  indeedTagOptions.value[i]['disable'] = true;
-              }
-          }
       }
+      if (indeedTagOptions.value[i]['type'] == 'corona') {
+        if (coronaType > 2 && !newVal.includes(indeedTagOptions.value[i]['value'])) {
+          indeedTagOptions.value[i]['disable'] = true;
+        }
+      }
+    }
   }
 )
 
 watch(
   () => (jobData.value.client),
-  async(newVal,) => {
-      officeList.value = [];
-      if (unsubscribeOffice.value) {
-          unsubscribeOffice.value();
-      }
-      if (newVal) {
-         officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
-      }
+  async (newVal,) => {
+    officeList.value = [];
+    if (unsubscribeOffice.value) {
+      unsubscribeOffice.value();
+    }
+    if (newVal) {
+      officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
+    }
   }
 )
-const unknown =async(data)=>{
-  debugger
-console.log(data)
-}
+
 const saveJob = async () => {
   try {
-      if (jobData.value.id) {
-          await jobSearchStore.updateFormData(jobData.value)
-          hideDrawer()
+    if (jobData.value.id) {
+      await jobSearchStore.updateFormData(jobData.value)
+      hideDrawer()
+
+    } else {
+      await jobSearchStore.addFormData(jobData.value)
+      hideDrawer()
+    }
+
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: t('success'),
+    });
+    jobData.value = { ...jobDataObject }
+    jobForm.value.resetValidation();
+  } catch (error) {
+    console.log(error);
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('failed'),
+    });
+  }
+
+}
+const openJobOptionDrawer = (options, jobContent,itemId) => {
+  itemOptions.value = options;
+  currentJobContent.value = jobContent;
+  jobItemId.value = itemId
+  dialogVisible.value = true
+}
+
+const selectJobOption = async(data,id) => {
+  if (jobData.value['jobContent'][currentJobContent.value] !== data['name']) {
+    jobData.value['jobContent'][currentJobContent.value] = data['name']
+  }
+  try {
+    if (data['id'] && jobData.value['jobContent'][currentJobContent.value] === data['name']) {
+      jobData.value['jobContent'][currentJobContent.value] = data['name']
+      await jobSearchStore.updateOption(id,data)
 
       } else {
-         await jobSearchStore.addFormData(jobData.value)
-         hideDrawer()
+        jobData.value['jobContent'][currentJobContent.value] = data['name']
+         optionId.value = await jobSearchStore.addNewOption(id,data)
+         await jobSearchStore.addId(id,data,optionId.value)
       }
-
+      dialogVisible.value = false
       $q.notify({
           color: 'green-4',
           textColor: 'white',
           icon: 'cloud_done',
           message: t('success'),
       });
-      jobData.value = { ...jobDataObject }
-      jobForm.value.resetValidation();
+
   } catch (error) {
       console.log(error);
       $q.notify({
@@ -585,9 +627,12 @@ const saveJob = async () => {
   }
 
 }
+const addNewField = () => {
+  itemOptions.value.unshift({ 'name': '' } as never)
+};
 </script>
 <style >
 .my-dialog .q-dialog__backdrop {
-  background-color:transparent;
+  background-color: transparent;
 }
 </style>

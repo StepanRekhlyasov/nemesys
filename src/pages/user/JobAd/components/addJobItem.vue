@@ -252,7 +252,6 @@ const addNewItem = () => {
 }
 
 const addNewOption = async (data: object, updatedName) => {
-  debugger
   try {
     if (data['id']) {
       data['name'] = updatedName;

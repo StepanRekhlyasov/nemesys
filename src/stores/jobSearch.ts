@@ -89,7 +89,6 @@ export const useJobSearch = defineStore('jobSearch', () => {
   };
 
   const loadJobItemSettingData = async (jobItemOptions,jobItems) => {
-    debugger;
     const q = query(collection(db, 'jobItem'), where('deleted', '==', false));
     const querySnapshotJobItem = await getDocs(q);
     querySnapshotJobItem.forEach(async (doc) => {
@@ -145,7 +144,25 @@ const loadOfficeData = async (id:string) => {
   return officeData;
 };
 
+const addNewOption = async (id: string, data: object) => {
+  data['created_at'] = serverTimestamp();
+  data['deleted'] = false;
+  data['created_by'] = auth.currentUser?.uid;
+  const docRef = await addDoc(collection(db, 'jobItem', id, 'options'), data);
+  const docRefId = docRef.id
+  return docRefId
+};
 
+const updateOption = async (id,data:object) => {
+  data['updated_at'] = serverTimestamp();
+  data['updated_by'] = auth.currentUser?.uid;
+  data['name'] = data['name']
+  await updateDoc(docDb(db, 'jobItem',id,'options', data['id']), data);
+};
+const addId = async (id,data:object,optionId) => {
+  data['id'] = optionId
+  await updateDoc(docDb(db, 'jobItem',id,'options', data['id']), data);
+};
   return {
     loadJobSearchData,
     deleteJobSearch,
@@ -154,6 +171,9 @@ const loadOfficeData = async (id:string) => {
     addFormData,
     loadJobItemSettingData,
     loadOfficeData,
-    loadJobItemData
+    loadJobItemData,
+    updateOption,
+    addNewOption,
+    addId
   };
 });
