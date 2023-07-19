@@ -508,7 +508,7 @@ export default {
         elderlyHousingServices: 'サービス付き高齢者向け住宅',
         clinic: 'クリニック',
         hospital: '病院',
-        careHouse: '軽費老人ホーム（ケアハウス',
+        careHouse: '軽費老人ホーム（ケアハウス)',
         nursingCareClinic: '介護医療院',
         dementiaLivingCare: '認知症対応型共同生活介護',
         longCareWelfareFacilityElderly: '介護老人福祉施設',
