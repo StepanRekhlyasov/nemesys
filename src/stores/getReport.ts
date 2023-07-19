@@ -376,7 +376,6 @@ const getQuery = async (
       return amountSum;
     }
   }
-
   if (isAverage) {
     return (
       (await getCountFromServer(queryNow)).data().count /
@@ -391,7 +390,7 @@ const queryPatternToData = async (stateAndOthers: reportStateAndOthers) => {
   const db = getFirestore();
   const countedData = await Promise.all(
     stateAndOthers.queryNames.map(async (queryName) => {
-      return getQuery(stateAndOthers.reportState, queryName, db);
+      return getQuery(stateAndOthers.reportState, queryName, db,stateAndOthers.isAverage);
     })
   );
   return countedData;
