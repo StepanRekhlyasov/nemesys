@@ -87,13 +87,24 @@ export const applicationMethod = computed(() => {
 })
 
 export const employmentStatus = computed(() => {
-  return [{
-    label: t('applicant.list.info.working'),
-    value: 'working'
-  },{
-    label: t('applicant.list.info.notWorking'),
-    value: 'notWorking'
-  },]
+  return [
+    {
+      label: t('applicant.list.info.generalDispatch'),
+      value: 'generalDispatch'
+    },
+    {
+      label: t('applicant.list.info.placementDispatching'),
+      value: 'placementDispatching'
+    },
+    {
+      label: t('applicant.list.info.fullTime'),
+      value: 'fullTime'
+    },
+    {
+      label: t('applicant.list.info.partTime'),
+      value: 'partTime'
+    },
+  ]
 })
 
 export const attendantStatus = computed(() =>{
@@ -230,13 +241,16 @@ export const marriedStatusList = computed(() => [{
   value: 'unmarried'
 },])
 
-export const tattoosStatusList = computed(() => [{
-  label: t('tattoos.nil'),
-  value: 'nil'
-},{
-  label: t('tattoos.yes'),
-  value: 'yes'
-},])
+export const tattoosStatusList = computed(() => [
+  {
+    label: t('tattoos.yes'),
+    value: 'yes'
+  },
+  {
+    label: t('tattoos.nil'),
+    value: 'nil'
+  },
+])
 
 export const applicantClassification = computed(() => {
   return [{

@@ -69,12 +69,11 @@
       </label>
       <label class="text-subtitle1" v-if="mode === 'day'">
         {{ $t('applicant.progress.filters.month') }}
-        <DateRange
-          v-model="day"
+        <YearMonthPicker
+          v-model="month"
           :width="'150px'"
           :height="'40px'"
           @update:model-value="getData()"
-          :range="false"
         />
       </label>
       <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
@@ -113,7 +112,6 @@
           :options="occupationList"
           :width="'100px'"
           v-model="occupation"
-          :clearable="false"
           @update:model-value="getData()"
         />
       </label>
@@ -131,27 +129,31 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import DateRange from 'src/components/inputs/DateRange.vue';
+import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import KpiTable from './components/KPITable.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useOrganization } from 'src/stores/organization';
 import ApplicantDetails from '../Applicant/ApplicantDetails.vue';
-import { useUserStore } from 'src/stores/user';
-import { where } from 'firebase/firestore';
 import { occupationList } from 'src/shared/constants/Applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { useBranch } from 'src/stores/branch';
-import { mediaItemList, dayItemList } from './const/kpi.const';
+import {
+  mediaItemList,
+  dayItemList,
+  mediaItemRateList,
+  applicationAttributeItemList,
+} from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
-const dummyDataDateRange  = { from: '1900/01/01', to: '1900/12/31' };
-const dummyDate = '1900/07/01';
-const day = ref(dummyDate);
-const media = ref<string | undefined>(undefined);
-const dateRange = ref(dummyDataDateRange);
+// const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
+// const dummyDate = '1900/07/01';
+const media = ref<string>('');
+const dateRange = ref<{ from: string; to: string }>({ from: '', to: '' });
 const branch = ref('');
 const occupation = ref('');
+const month = ref('');
 const user = ref('');
 const userListToShow = ref<{ value: string; label: string }[]>([]);
 const mediaListToShow = ref<{ value: string; label: string }[]>([]);
@@ -160,18 +162,32 @@ const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
-  day.value = '';
-  dateRange.value = dummyDataDateRange;
   branch.value = '';
-  occupation.value = '';
+  month.value = '';
 };
 
 const loading = ref(false);
 const rowData = ref<{ [key: string]: number | string }[]>([]);
-const userStore = useUserStore();
 const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
+
+const devideByAmount = (rows) => {
+  for (const row of rows) {
+    for (const key of Object.keys(row)) {
+      const num = row[key];
+      if (
+        typeof num == 'number' &&
+        typeof row['amount'] == 'number' &&
+        num != 0 &&
+        key != 'amount'
+      ) {
+        row[key] = row['amount'] / num;
+      }
+    }
+  }
+  return [...rows];
+};
 
 const convertObjToIdNameList = (objList) => {
   return objList.map((obj) => {
@@ -193,50 +209,79 @@ const getBranchList = async () => {
 };
 
 async function getData() {
+  if (mode.value == 'media') {
+    mediaListToShow.value = convertObjToIdNameList([...(await getAllmedia())]);
+  }
+  if (
+    (dateRange.value.from == '' || dateRange.value.to == '') &&
+    mode.value !== 'day'
+  ) {
+    rowData.value = [];
+    return;
+  }
   if (organizationStore.currentOrganizationId) {
+    rowData.value = [];
     loading.value = true;
-    let users;
-    if (mode.value == 'media') {
-      rowData.value = [];
-      mediaListToShow.value = convertObjToIdNameList([
-        ...(await getAllmedia()),
-      ]);
-    }
-    if (user.value) {
-      users = [await userStore.getUserById(user.value)];
-    } else if (branch.value) {
-      users = await userStore.getUsersByConstrains([
-        where('branch_id', '==', branch.value),
-        where('deleted', '==', false),
-        where(
-          'organization_ids',
-          'array-contains',
-          organizationStore.currentOrganizationId
-        ),
-      ]);
-      userListToShow.value = convertObjToIdNameList(users);
-    } else {
-      users = await userStore.getAllUsers(
-        organizationStore.currentOrganizationId
-      );
-      userListToShow.value = convertObjToIdNameList(users);
-    }
-    if (mode.value == 'day') {
-      rowData.value = [];
-      const rows = await getDailyReport({
+    // we need to care switching mode while loading
+    const modeNow = mode.value;
+    if (mode.value == 'day' && month.value) {
+      rowData.value = await getDailyReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         queryNames: dayItemList,
-        dateInMonth: day.value,
+        dateInMonth: month.value,
         branch: branch.value,
         isAverage: false,
       });
-      rowData.value = rows;
     }
-
-    if (mode.value == 'media' && media.value) {
-      rowData.value = [];
-      const rows = await getReport({
+    if (mode.value == 'branch' && item.value == 'applicationAttribute') {
+      rowData.value = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branch: branch.value,
+        queryNames: applicationAttributeItemList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+    } else if (mode.value == 'branch' && branch.value) {
+      rowData.value = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branch: branch.value,
+        queryNames: mediaItemList,
+        rateNames: mediaItemRateList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+      if (item.value == 'unitPrice')
+        rowData.value = devideByAmount(rowData.value);
+    } else if (mode.value == 'branch' && occupation.value) {
+      rowData.value = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        queryNames: mediaItemList,
+        rateNames: mediaItemRateList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+      if (item.value == 'unitPrice')
+        rowData.value = devideByAmount(rowData.value);
+    }
+    if (mode.value == 'media' && item.value == 'applicationAttribute') {
+      rowData.value = await getReport({
+        dateRange: dateRange.value,
+        graphType: 'BasedOnEachItemDate',
+        branch: branch.value,
+        queryNames: applicationAttributeItemList,
+        medias: [...(await getAllmedia())],
+        isAverage: false,
+        occupation: occupation.value,
+      });
+    } else if (mode.value == 'media' && media.value) {
+      rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branches: Object.values(
@@ -245,12 +290,20 @@ async function getData() {
           )
         ),
         queryNames: mediaItemList,
+        rateNames: mediaItemRateList,
         media: media.value,
         isAverage: false,
+        occupation: occupation.value,
       });
-      rowData.value = rows;
+      if (item.value == 'unitPrice')
+        rowData.value = devideByAmount(rowData.value);
+    } else if (mode.value == 'media') {
+      rowData.value = [];
     }
-
+    if (modeNow != mode.value) {
+      resetData();
+      rowData.value = [];
+    }
     loading.value = false;
   }
 }
@@ -262,17 +315,13 @@ watch(
   }
 );
 watch(
-  () => mode.value,
-  () => {
+  () => [mode.value, item.value, branch.value],
+  async () => {
     resetData();
+    await getData();
   }
 );
-watch(
-  () => branch.value,
-  () => {
-    resetData();
-  }
-);
+
 function downloadCSV() {
   kpiTableRef.value?.exportTable();
 }

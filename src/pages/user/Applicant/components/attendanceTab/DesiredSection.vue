@@ -44,10 +44,11 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.daysPerWeek') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ daysPerWeekComputed }}</span>
         <template v-if="desiredEdit">
           <q-option-group 
+            class="flex"
             type="checkbox"
             :disable="loading"
             :options="days"
@@ -58,10 +59,11 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.specialDay') }}
       </div>
-      <div class="col-3 q-pl-md blue self-center">
+      <div class="col-9 q-pl-md blue self-center">
         <span v-if="!desiredEdit">{{ specialDayComputed }}</span>
         <template v-if="desiredEdit">
           <q-option-group 
+            class="flex"
             type="checkbox"
             :disable="loading"
             :options="specialDays"
@@ -159,9 +161,13 @@
         {{ $t('applicant.attendant.meansCommuting') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ applicant.meansCommuting }}</span>
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['meansCommuting']" :disable="loading" />
+        <span v-if="!desiredEdit && Array.isArray(applicant.meansCommuting)">
+          {{ applicant.meansCommuting.map((row)=> $t('applicant.attendant.meansCommutingOptions.' + row)).join('・') }}
+        </span>
+        <template v-if="desiredEdit">
+          <q-checkbox dense outlined bg-color="white"
+            v-model="data['meansCommuting']" :disable="loading" v-for="option in meansCommutingOptions" :val="option.value" :label="option.label" :key="option.value" />
+        </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.route') }}
@@ -176,10 +182,18 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.commutingTime') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-md blue flex items-center">
         <hidden-text v-if="!desiredEdit" :value="applicant.commutingTime" />
-        <q-input v-if="desiredEdit" dense outlined bg-color="white"
-          v-model="data['commutingTime']" :disable="loading" />
+        <q-input 
+          v-if="desiredEdit" 
+          dense 
+          outlined 
+          bg-color="white"
+          v-model="data['commutingTime']" 
+          :disable="loading"
+          type="number"
+        /> 
+        <span class="q-ml-sm" v-if="data['commutingTime'] || desiredEdit">分</span>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.nearestStation') }}
@@ -246,10 +260,21 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.transportationServices') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-md blue flex items-center">
         <span v-if="!desiredEdit">{{ applicant.transportationServices? $t('applicant.attendant.'+applicant.transportationServices) : '' }}</span>
-        <q-select v-if="desiredEdit" outlined dense :options="transportationServicesOptions"
-        emit-value map-options v-model="data['transportationServices']" :disable="loading"/>
+        <div v-if="desiredEdit" clas="flex">
+          <q-radio
+            v-for="option in transportationServicesOptions"
+            outlined
+            dense
+            v-model="data['transportationServices']"
+            :disable="loading"
+            :val="option.value"
+            :label="option.label"
+            :key="option.value"
+            class="q-mr-sm"
+          />
+        </div>
       </div>
     </div>
 
@@ -317,6 +342,14 @@ const defaultData = ref<Partial<ApplicantInputs>>({});
 const data = ref<Partial<ApplicantInputs>>({});
 const routeData = ref([]);
 const stationData = ref([]);
+const meansCommutingOptions = computed(()=>[
+  {value:'walk', label: t('applicant.attendant.meansCommutingOptions.walk')},
+  {value:'bicycle', label: t('applicant.attendant.meansCommutingOptions.bicycle')},
+  {value:'car', label: t('applicant.attendant.meansCommutingOptions.car')},
+  {value:'bike', label: t('applicant.attendant.meansCommutingOptions.bike')},
+  {value:'train', label: t('applicant.attendant.meansCommutingOptions.train')},
+  {value:'bus', label: t('applicant.attendant.meansCommutingOptions.bus')},
+])
 
 const daysPerWeekComputed = computed(()=>{
   if(Array.isArray(props.applicant.daysPerWeek)){
@@ -337,15 +370,19 @@ onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
 });
 
-watch(
-    () => (data.value['route']),
-    async (newVal,) => {
-        if (newVal) {
-          data.value['neareststation'] = '';
-          stationData.value = [];
-          stationData.value = await metadataStore.getStationByID(newVal)
-        }
+watch(() => data.value['route'], async (newVal) => {
+    if (newVal) {
+      data.value['nearestStation'] = '';
+      stationData.value = [];
+      stationData.value = await metadataStore.getStationByID(newVal)
     }
+  }
+)
+watch(() => desiredEdit.value, (newVal) => {
+    if (newVal) {
+      data.value['nearestStation'] = props.applicant['nearestStation'];
+    }
+  }
 )
 
 
@@ -357,7 +394,7 @@ function resetData() {
     timeAvailable: props.applicant['timeAvailable'] || false,
     specialDay: Array.isArray(props.applicant['specialDay'])?props.applicant['specialDay']:[],
     shiftRemarks: props.applicant['shiftRemarks'],
-    meansCommuting: props.applicant['meansCommuting'],
+    meansCommuting: Array.isArray(props.applicant['meansCommuting'])?props.applicant['meansCommuting']:[],
     nearestStation: props.applicant['nearestStation'],
     commutingTime: props.applicant['commutingTime'],
     commutingTimeRemarks: props.applicant['commutingTimeRemarks'],
@@ -373,6 +410,7 @@ function resetData() {
     workingHoursLate: props.applicant['workingHoursLate'] || '×',
     workingHoursNight: props.applicant['workingHoursNight'] || '×',
     shortTime: props.applicant['shortTime'] || false,
+    route: props.applicant['route'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
