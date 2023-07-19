@@ -649,7 +649,7 @@ export const useApplicant = defineStore('applicant', () => {
     /** update fixes with filtered data */
     if(saveData.prefecture || saveData.organizationId || saveData.branchIncharge){
       const batch = writeBatch(db)
-      const fixes = await getDocs(query(collection(db, 'fix'), where('applicant_id', '==', state.value.selectedApplicant.id)))
+      const fixes = await getDocs(query(collection(db, 'fix'), where('applicant_id', '==', state.value.selectedApplicant.id), where('deleted', '==', false)))
       await Promise.all(fixes.docs.map(async (row)=>{
         const data = await fixStore.formatDataFix(row.id, row.data())
         const docRef = doc(db, 'fix/'+row.id)

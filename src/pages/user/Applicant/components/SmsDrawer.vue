@@ -1,49 +1,50 @@
 <template>
   <q-card-section>
-    <div class="row bg-white cover">
-      <p class="text-h7 text-primary">■{{ t('backOrder.sms.sendContent') }}</p>
-    </div>
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm">
-      <p>{{ t('backOrder.sms.form') }}</p>
-    </div>
+    <div class="contentsOfTransmission">
+      <div class="row bg-white cover">
+        <p class="text-h7 text-primary">■{{ t('backOrder.sms.sendContent') }}</p>
+      </div>
 
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl">
-      <div class="col-2 q-pl-xl">
-        <p>{{ t('backOrder.sms.template') }}</p>
-      </div>
-      <div class="col-3 q-pl-sm">
-        <q-select class="bg-white" outlined v-model="template" :options="options" dense />
-      </div>
-    </div>
-
-    <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm q-pb-sm cover">
-      <div class="col-2 q-pl-xl">
-        <p>{{ t('backOrder.sms.content') }}</p>
-      </div>
-      <div class="col-3 cover80">
-        <textarea v-model="messsage" class="bg-white SmsContent" outlined dense></textarea>
-        <div>
-          <p>46 {{ t('backOrder.sms.characters') }}</p>
+      <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm">
+        <div class="col-2 q-pl-xl">
+          <p>{{ t('backOrder.sms.template') }}</p>
         </div>
-        <div class="row">
-          <q-btn :disable="messsage === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
-            class="bg-primary text-white"></q-btn>
-          <q-btn @click="messsage = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
+        <div class="col-3 q-pl-sm">
+          <q-select class="bg-white" :label="t('common.pleaseSelect')" outlined v-model="template" :options="templates"
+            dense clearable />
         </div>
       </div>
-    </div>
 
-    <div class="notes">
-      <ol>
-        <li><strong class="text-negative">{{ t('applicant.smsNotes.note') }}</strong></li>
-        <div class="q-ml-sm">
-          <li><strong>{{ t('applicant.smsNotes.note1') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note2') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note3') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note4') }}</strong></li>
-          <li><strong>{{ t('applicant.smsNotes.note5') }}</strong></li>
+      <div class="row q-ml-sm text-h7 bg-grey-3 q-pl-xl q-pt-sm q-pb-sm cover">
+        <div class="col-2 q-pl-xl">
+          <p>{{ t('backOrder.sms.sendContent') }}</p>
         </div>
-      </ol>
+        <div class="col-3 cover80">
+          <textarea v-model="message" class="bg-white SmsContent" outlined dense :style="{ whiteSpace: 'pre-wrap' }">
+          </textarea>
+          <div>
+            <p>{{ countCharacters(message) }} {{ t('backOrder.sms.characters') }}</p>
+          </div>
+          <div class="row">
+            <q-btn :disable="message === ''" @click="sendMsg" :label="t('backOrder.sms.send')"
+              class="bg-primary text-white"></q-btn>
+            <q-btn @click="message = ''" :label="t('common.cancel')" class="text-primary q-ml-md"></q-btn>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes">
+        <ol>
+          <li><strong class="text-negative">{{ t('applicant.smsNotes.note') }}</strong></li>
+          <div class="q-ml-sm">
+            <li><strong>{{ t('applicant.smsNotes.note1') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note2') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note3') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note4') }}</strong></li>
+            <li><strong>{{ t('applicant.smsNotes.note5') }}</strong></li>
+          </div>
+        </ol>
+      </div>
     </div>
 
 
@@ -70,7 +71,7 @@
             :options="statusOption" />
         </div>
         <div class="col-4 q-pl-sm">
-          <q-input v-model="date"  dense outlined type="date" class="bg-white" />
+          <q-input v-model="date" dense outlined type="date" class="bg-white" />
         </div>
       </div>
       <div class="row q-mb-sm q-mt-sm">
@@ -78,7 +79,8 @@
         <q-btn @click="clear" :label="t('common.clear')" class="text-primary q-ml-md"></q-btn>
       </div>
       <q-table :columns="destinationApplicant" :loading="loading" :rows-per-page="row.length" :rows="row" row-key="id"
-        class="no-shadow" table-class="text-grey-8" table-header-class="text-grey-9">
+        class="no-shadow" table-class="text-grey-8" table-header-class="text-grey-9"
+        :rows-per-page-label="t('backOrder.sms.recordsPerPage')">
 
         <template v-slot:header-cell-staffApplication="props">
           <q-th :props="props" class="q-pa-none">
@@ -128,9 +130,9 @@
         </template>
 
         <template v-slot:body-cell-occupationAdress="props">
-          <q-td v-if="props.row.classification" :props="props" class="no-wrap q-pa-none">
+          <q-td v-if="Array.isArray(props.row.classification)" :props="props" class="no-wrap q-pa-none">
             {{ t(`applicant.add.${props.row.occupation}`) }}/
-            {{ t(`applicant.list.info.classification.${props.row.classification.toLowerCase()}`) }}
+            {{ props.row.classification.map(((row : string)=>row.toLowerCase())).join(', ') }}
             <br />
             {{ props.row.address }}
           </q-td>
@@ -164,34 +166,58 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, ComputedRef } from 'vue';
+import { ref, onMounted, ComputedRef, watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
-import { destinationApplicant, options } from 'src/pages/user/Applicant/const/sms';
+import { destinationApplicant } from 'src/pages/user/Applicant/const/sms';
 import { useSMS } from 'src/stores/sms'
 import { useApplicant } from 'src/stores/applicant'
-import { where } from 'firebase/firestore';
+import { DocumentData, where } from 'firebase/firestore';
 import { statusList, StatusOption } from 'src/shared/constants/Applicant.const';
 import { Applicant } from 'src/shared/model/Applicant.model'
+import { QSelectProps } from 'quasar';
+
 
 const loading = ref<boolean>(false)
 const statusOption = ref<StatusOption | ComputedRef>(statusList)
-const selected = ref<Record<string, { selected: boolean; phoneNumber: string | undefined}>>({})
-const messsage = ref<string>('')
+const selected = ref<Record<string, { selected: boolean; phoneNumber: string | undefined }>>({})
+const message = ref<string>('')
 const row = ref<Applicant[]>([])
 const keyword = ref<string | null>(null)
 const status = ref<string | null>(null)
 const date = ref<string | null>(null)
 const template = ref<string | null>(null)
 const getApplicant = useApplicant();
+const templates = ref<DocumentData | QSelectProps>([]);
+const smsStore = useSMS();
 
 const { t } = useI18n({ useScope: 'global' });
 
+const countCharacters = (message) => {
+  const lineBreaks = message.match(/\r\n|\r|\n/g);
+  const lineBreakCount = lineBreaks ? lineBreaks.length : 0;
+  const characterCount = message.length;
+  const totalCount = characterCount + lineBreakCount;
+  return totalCount;
+}
+
+watch(template, (newTemplate) => {
+  if (newTemplate) {
+    const subject = newTemplate.subject
+    const content = newTemplate.contents
+    message.value = `${subject}\n\n${content}`;
+
+  }
+  else {
+    message.value = ''
+  }
+})
+
 const sendMsg = async () => {
   try {
-    await useSMS().send(messsage.value, selected.value)
+    await smsStore.send(message.value, selected.value)
     Alert.success()
-    messsage.value = ''
+    message.value = ''
   } catch (error) {
     Alert.warning(error)
   }
@@ -203,13 +229,13 @@ const updateSelected = (rowItem) => {
 
 const search = async () => {
   loading.value = true
-  row.value = await useSMS().filterData(status.value, keyword.value, date.value);
+  row.value = await smsStore.filterData(status.value, keyword.value, date.value);
   loading.value = false
 }
 
 const getFormatedData = async () => {
   const data = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]);
-  return useSMS().getApplicantWithFormatedDate(data)
+  return smsStore.getApplicantWithFormatedDate(data)
 }
 
 const clear = async () => {
@@ -222,6 +248,7 @@ const clear = async () => {
 }
 
 onMounted(async () => {
+  templates.value = await smsStore.options
   loading.value = true;
   row.value = await getFormatedData();
   row.value.forEach(data => {
@@ -236,6 +263,15 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.contentsOfTransmission {
+  overflow-x: hidden;
+}
+
+.destination {
+  width: 950px;
+  overflow-x: auto;
+}
+
 .cover {
   width: 100%
 }
@@ -250,6 +286,10 @@ onMounted(async () => {
   width: 90%;
   padding: 5px;
   resize: none
+}
+
+h1 {
+  color: Green;
 }
 </style>
 

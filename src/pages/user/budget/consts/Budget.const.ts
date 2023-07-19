@@ -7,6 +7,18 @@ const { t } = i18n.global
 export const budgetAddItem = computed(() => {
   return [
     {
+      label: 'ID',
+      key: 'id',
+      type: '',
+      required: true,
+    },
+    {
+      label: t('budget.recordNumber'),
+      key: 'recordNumber',
+      type: '',
+      required: true,
+    },
+    {
       label: t('budget.media'),
       key: 'media',
       type: 'select',
@@ -40,7 +52,7 @@ export const budgetAddItem = computed(() => {
       label: t('budget.accountingMonth'),
       key: 'accountingMonth',
       type: 'date',
-      required: false,
+      required: true,
       format: 'month'
     },
     {
@@ -84,6 +96,12 @@ export const budgetColumns = computed<QTableProps['columns']>(() => {
       label: '',
       field: 'select',
       name: 'select',
+      align: 'left',
+    },
+    {
+      label: t('budget.recordNumber'),
+      field: 'recordNumber',
+      name: 'recordNumber',
       align: 'left',
     },
     {

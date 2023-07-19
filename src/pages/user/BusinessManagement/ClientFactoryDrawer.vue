@@ -78,12 +78,15 @@ const saveHandler = async () => {
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
+    (e: 'openFaxDrawer',id:string)
 }>()
 
 const hideDrawer = () => {
     emit('hideDrawer')
 }
-
+const openFaxDrawer = () => {
+    emit('openFaxDrawer',props.selectedItem.id)
+}
 watchEffect(() => {
     initializeIndustry()
 })
@@ -125,6 +128,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                             @edit-draft="editDraftHandler"
                             @cancel-draft="cancelHandler"
                             @save-draft="saveHandler"
+                            @open-fax-drawer="openFaxDrawer"
                             :clientFactory="modifiedCF ?? selectedItem"
                             :draft="draft"
                             :is-loading="isLoading"/>
