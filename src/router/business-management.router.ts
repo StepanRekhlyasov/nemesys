@@ -26,6 +26,13 @@ const businessManagementRouters = [
     component: () => import('src/pages/user/BusinessManagement/AdvancedSearch.vue'),
     meta: {requiresAuth: true},
     title: 'menu.advancedSearch'
+  },
+  {
+    path: 'faxHistoryList',
+    component: () => import('src/pages/user/BusinessManagement/FaxHistoryList.vue'),
+    meta: {requiresAuth: true},
+    menuParent: MenuParent.BusinessMenagment,
+    title: 'menu.faxHistory'
   }
 ]
 

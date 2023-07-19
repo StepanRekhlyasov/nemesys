@@ -163,6 +163,7 @@ export default {
     budgetControl: 'Budget Control',
     SAA: 'Sales Activity Aggregation',
     KPI: 'KPI',
+    faxHistory: 'FAX History',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -1249,7 +1250,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
-      required: 'Required', 
+      required: 'Required',
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',
@@ -1605,6 +1606,7 @@ export default {
       }
     },
     fax: {
+      confirmAction: 'Confirm Action',
       transmissionConfirmation: 'Transmission Confirmation',
       applicantLinkage: 'Applicant Linkage',
       clientCategoryNG: 'NG client category',
@@ -1621,7 +1623,26 @@ export default {
       clientNG: 'NG client',
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
-      faxPRSheet: 'Fax the PR Sheet'
+      faxPRSheet: 'Fax the PR Sheet',
+      transMissionConfirmation:'Redirecting to Confirmation Content page.',
+      areYouSure: 'Are you sure?',
+      list: {
+        senderId: 'Sender ID',
+        sender: 'Sender',
+        jobSeeker: 'Job Seeker',
+        attachment: 'Attachment',
+        numItemsSent: 'Number Items Sent',
+        numDestinations: 'Number Destinations',
+        numTransmissions: 'Number Transmissions',
+        sentDateTime: 'Sent date and time',
+        numPages: 'Number of PDF pages',
+        selectedCF: 'Selected CF',
+        numCFsFax: 'Number of CFs with fax numbers',
+        jobApplicantName: 'Job Applicant Name',
+        branch: 'Branch',
+        responsiblePerson: 'Responsible Person',
+        sendDate: 'Send Date',
+      }
     }
   },
   inquiry: {
