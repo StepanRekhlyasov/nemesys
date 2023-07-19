@@ -235,7 +235,7 @@ async function getData() {
     }
     if (mode.value == 'branch' && item.value == 'applicationAttribute') {
       rowData.value = [];
-      let rows = await getReport({
+      rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
@@ -243,8 +243,7 @@ async function getData() {
         medias: [...(await getAllmedia())],
         isAverage: false,
         occupation: occupation.value,
-      });
-      rowData.value = rows;
+      });;
     } else if (mode.value == 'branch' && branch.value) {
       rowData.value = [];
       let rows = await getReport({
