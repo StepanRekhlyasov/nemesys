@@ -105,7 +105,9 @@ export default {
     electronic: 'Electronic cigarettes',
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
-    notPossible: 'Not possible'
+    notPossible: 'Not possible',
+    can: 'Can stop smoking while working',
+    cant: 'Cannot stop smoking while working',
   },
   marriedStatus: {
     married: 'Married',
@@ -158,6 +160,7 @@ export default {
     budgetControl: 'Budget Control',
     SAA: 'Sales Activity Aggregation',
     KPI: 'KPI',
+    faxHistory: 'FAX History',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -924,7 +927,7 @@ export default {
         birth: 'Date of birth',
         lon: 'Longitude',
         lat: 'Latitude',
-
+        shortTime: 'Short Time',
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
         classiffication: 'Classification',
@@ -1244,7 +1247,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
-      required: 'Required', 
+      required: 'Required',
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',
@@ -1536,7 +1539,7 @@ export default {
         parentClient: 'Parent client',
         officeName: 'Office name',
         prefecture: 'Office Address: Prefecture',
-        city: 'Business address: City',
+        municipality: 'Business address: Municipality',
         townAndStreet: 'Office address: Town name/street number',
         others: 'Office address: Building name, others',
         longitude: 'Business Address: Longitude',
@@ -1600,6 +1603,7 @@ export default {
       }
     },
     fax: {
+      confirmAction: 'Confirm Action',
       transmissionConfirmation: 'Transmission Confirmation',
       applicantLinkage: 'Applicant Linkage',
       clientCategoryNG: 'NG client category',
@@ -1616,7 +1620,26 @@ export default {
       clientNG: 'NG client',
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
-      faxPRSheet: 'Fax the PR Sheet'
+      faxPRSheet: 'Fax the PR Sheet',
+      transMissionConfirmation:'Redirecting to Confirmation Content page.',
+      areYouSure: 'Are you sure?',
+      list: {
+        senderId: 'Sender ID',
+        sender: 'Sender',
+        jobSeeker: 'Job Seeker',
+        attachment: 'Attachment',
+        numItemsSent: 'Number Items Sent',
+        numDestinations: 'Number Destinations',
+        numTransmissions: 'Number Transmissions',
+        sentDateTime: 'Sent date and time',
+        numPages: 'Number of PDF pages',
+        selectedCF: 'Selected CF',
+        numCFsFax: 'Number of CFs with fax numbers',
+        jobApplicantName: 'Job Applicant Name',
+        branch: 'Branch',
+        responsiblePerson: 'Responsible Person',
+        sendDate: 'Send Date',
+      }
     }
   },
   inquiry: {

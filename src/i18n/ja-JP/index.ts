@@ -105,7 +105,9 @@ export default {
     electronic: '電子たばこ',
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
-    notPossible: '不可'
+    notPossible: '不可',
+    can: '就業中禁煙可能',
+    cant: '就業中禁煙不可',
   },
   marriedStatus: {
     married: '既婚',
@@ -158,6 +160,7 @@ export default {
     budgetControl: '予算管理',
     SAA: '営業活動集計',
     KPI: 'KPI',
+    faxHistory: 'FAX送信履歴',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -919,7 +922,7 @@ export default {
         birth: '生年月日',
         lon: '経度',
         lat: '緯度',
-
+        shortTime: '時短',
         attractionsStatus: '誘致ステータス',
         employmentStatus: '就業状況',
         classiffication: '区分',
@@ -1529,7 +1532,7 @@ export default {
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
-        city: '事業所住所：市区町村',
+        municipality: '事業所住所：自治体',
         townAndStreet: '事業所住所：町名・番地',
         others: '事業所住所：ビル名・その他',
         longitude: '事業所住所：経度',
@@ -1593,7 +1596,8 @@ export default {
       }
     },
     fax: {
-      transmissionConfirmation: '送信内容確認',
+      confirmAction:'送信内容確認',
+      transmissionConfirmation: 'この内容で送信する',
       applicantLinkage: '応募者紐付け',
       clientCategoryNG: 'NGクライアント種別',
       clientFacilityNG: 'NGクライアント・施設',
@@ -1610,6 +1614,25 @@ export default {
       refinementConditions: '絞り込み条件',
       maxTransmissions: '最大送信件数',
       faxPRSheet: 'PRシートをFAX送信します。',
+      transMissionConfirmation:'送信確認画面へ移動します。',
+      areYouSure: 'よろしいですか？',
+      list: {
+        senderId: '送信ID',
+        sender: '送信者',
+        jobSeeker: '求職者',
+        attachment: '添付ファイル',
+        numItemsSent: '送信対象件数',
+        numDestinations: '正常宛先件数',
+        numTransmissions: '実送信件数',
+        sentDateTime: '送信日時',
+        numPages: '一送信件数',
+        selectedCF: '宛先事業所数',
+        numCFsFax: '正常宛先事業所数',
+        jobApplicantName: '求職者名',
+        branch: '支店',
+        responsiblePerson: '担当',
+        sendDate: '送信日',
+      }
     }
   },
   inquiry: {
