@@ -416,6 +416,7 @@ const getMonthDateList = (date: string) => {
   return dateList;
 };
 
+
 export const useGetReport = defineStore('getReport', () => {
   const getDailyReport = async (state: dailyBasedReportState) => {
     const rows: { [key: string]: string | number }[] = [];

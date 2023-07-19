@@ -69,12 +69,11 @@
       </label>
       <label class="text-subtitle1" v-if="mode === 'day'">
         {{ $t('applicant.progress.filters.month') }}
-        <DateRange
-          v-model="day"
+        <YearMonthPicker
+          v-model="month"
           :width="'150px'"
           :height="'40px'"
           @update:model-value="getData()"
-          :range="false"
         />
       </label>
       <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
@@ -130,6 +129,7 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import DateRange from 'src/components/inputs/DateRange.vue';
+import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import KpiTable from './components/KPITable.vue';
 import { ref, onMounted, watch } from 'vue';
 import { useOrganization } from 'src/stores/organization';
@@ -149,11 +149,11 @@ const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
 // const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
 // const dummyDate = '1900/07/01';
-const day = ref('');
 const media = ref<string>('');
 const dateRange = ref<{ from: string; to: string }>({ from: '', to: '' });
 const branch = ref('');
 const occupation = ref('');
+const month = ref('')
 const user = ref('');
 const userListToShow = ref<{ value: string; label: string }[]>([]);
 const mediaListToShow = ref<{ value: string; label: string }[]>([]);
@@ -162,8 +162,8 @@ const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
-  day.value = '';
   branch.value = '';
+  month.value = ''
 };
 
 const loading = ref(false);
@@ -222,13 +222,13 @@ async function getData() {
     loading.value = true;
     // we need to care switching mode while loading
     const modeNow = mode.value;
-    if (mode.value == 'day' && day.value) {
+    if (mode.value == 'day' && month.value) {
       rowData.value = [];
       rowData.value = await getDailyReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         queryNames: dayItemList,
-        dateInMonth: day.value,
+        dateInMonth: month.value,
         branch: branch.value,
         isAverage: false,
       });
