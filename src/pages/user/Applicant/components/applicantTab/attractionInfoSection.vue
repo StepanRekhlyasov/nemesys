@@ -91,9 +91,18 @@
         {{ $t('applicant.list.info.classiffication') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.classification? $t('applicant.list.info.classification.'+applicant.classification.toLowerCase()):''}}</span>
-        <q-select v-if="edit" outlined dense :options="classificationOption" v-model="data['classification']"
-          bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
+        <template v-if="!edit" >
+          <span v-for="item, index in applicant.classification" :key="index">{{ $t('applicant.list.info.classification.'+item.toLowerCase()) }}<template v-if="applicant.classification && applicant.classification.length > index + 1">, </template></span>
+        </template>
+        <template v-else>
+          <q-checkbox 
+            v-for="option in classificationOption" 
+            v-model="data['classification']"
+            :val="option.value"
+            :label="option.label"
+            :key="option.value"
+          />
+        </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.add.occupation') }}
@@ -156,8 +165,8 @@
         {{ $t('applicant.list.info.memo') }}
       </div>
       <div class="col-9 q-pl-md blue relative-position">
-        <hidden-text v-if="!edit" :value="applicant.memo" />
-        <q-input v-if="edit" outlined dense v-model="data['memo']" bg-color="white" />
+        <hidden-text v-if="!edit" :value="applicant.attractionMemo" />
+        <q-input v-if="edit" outlined dense v-model="data['attractionMemo']" bg-color="white" />
       </div>
     </div>
   </DropDownEditGroup>
@@ -217,13 +226,13 @@ async function resetData() {
     invitationDate: props?.applicant['invitationDate']?myDateFormat(props?.applicant['invitationDate'], 'YYYY/MM/DD HH:mm'):myDateFormat(props?.applicant['applicationDate'], 'YYYY/MM/DD HH:mm'),
     employmentStatus: props?.applicant['employmentStatus'],
     chargeOfAttraction: props?.applicant['chargeOfAttraction'],
-    classification: props?.applicant['classification'],
+    classification: Array.isArray(props?.applicant['classification']) ? props?.applicant['classification'] : [],
     occupation: props?.applicant['occupation'],
     position: props?.applicant['position'],
     qualification: props?.applicant['qualification'],
     period: props?.applicant['period'],
     branchIncharge: props?.applicant['branchIncharge'],
-    memo: props?.applicant['memo'],
+    attractionMemo: props?.applicant['attractionMemo'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
   branches.value = mapToSelectOptions(await branchStore.getBranchesInOrganization(organizationStore.currentOrganizationId))

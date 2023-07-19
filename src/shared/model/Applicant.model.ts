@@ -78,6 +78,7 @@ export interface ApplicantBase {
   attractionsReasonNG?: string;
   attractionsReasonNGDetail?: string;
   chargeOfAttraction?: string;
+  attractionMemo?: string;
   employmentStatus?: string;
   period?: string;
   position?: string[];
@@ -125,7 +126,7 @@ export interface DesiredConditions {
   workingHoursNight?: string;
   shortTime?: boolean;
   shiftRemarks?: string;
-  meansCommuting?: string;
+  meansCommuting?: string[];
   nearestStation?: string;
   commutingTime?: string;
   route?: string;
@@ -144,7 +145,7 @@ export interface Attendance {
   attendingReasonNG?: string;
   attendingReasonNGDetail?: string;
   chargeOfAttending?: string;
-  memo?: string;
+  attendanceMemo?: string;
 }
 
 export interface PersonalStatus {
@@ -155,7 +156,8 @@ export interface PersonalStatus {
   marriedStatus?: MarriedStatus;
   liveTogether?: TattoosStatus;
   cohabitation?: string;
-  children?: string;
+  childrenNumber?: string;
+  childrenAge?: string;
   medicalHistory?: string;
   vaccinationStatus?: string;
   startCaring?: string;
@@ -234,7 +236,8 @@ export enum ApplicantQualification {
   REGISTEREDNURSE = 'registeredNurse',
   ASSISTANTNURSE = 'assistantNurse',
   NEWCOMER = 'newcomer',
-  CAREWORKER = 'careWorker'
+  CAREWORKER = 'careWorker',
+  WORKER = 'worker',
 }
 
 export enum ApplicantStatus {

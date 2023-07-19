@@ -503,12 +503,13 @@ export default {
         specialElderlyNursingHome: '特別養護老人ホーム',
         paidNursingHome: '有料老人ホーム',
         groupHome: 'グループホーム',
-        smallMultifunFacility: '小規模多機能',
+        smallMultifunFacility: '小規模多機能型居宅介護',
+        smallMultifunFacilityNurse: '看護小規模多機能型居宅介護',
         homeCareNursing: '訪問介護看護',
         elderlyHousingServices: 'サービス付き高齢者向け住宅',
         clinic: 'クリニック',
         hospital: '病院',
-        careHouse: 'ケアハウス',
+        careHouse: '軽費老人ホーム',
         nursingCareClinic: '介護医療院',
         dementiaLivingCare: '認知症対応型共同生活介護',
         longCareWelfareFacilityElderly: '介護老人福祉施設',
@@ -524,6 +525,7 @@ export default {
         outpatientRehabilitation: '通所リハビリ',
         dentalClinic: '歯科診療所',
         pharmacy: '薬局',
+        disablesFacility: '障害者支援施設'
       },
       busInfoReg: '事業情報登録',
       mainOffice: '本社',
@@ -932,7 +934,6 @@ export default {
         chargeOfAttraction: '誘致担当ユーザー',
         position: '職種',
         period: '就業期間',
-
         application: '■応募情報',
         attraction: '■誘致情報',
         working: '就業中',
@@ -941,7 +942,11 @@ export default {
           introduction: '紹介',
           dispatch: '派遣',
           ttp: 'TTP'
-        }
+        },
+        generalDispatch: '一般派遣',
+        fullTime: '正社員',
+        partTime: 'アルバイト・パート',
+        placementDispatching: '紹介予定派遣',
       }
 
     },
@@ -1016,6 +1021,14 @@ export default {
       shiftRemarks: '勤務可能シフト備考',
       days: '日',
       meansCommuting: '通勤手段',
+      meansCommutingOptions: {
+        walk : '徒歩',
+        bicycle : '自転車',
+        car : '車',
+        bike : 'バイク',
+        train : '電車',
+        bus : 'バス',
+      },
       nearestStation: '最寄り駅',
       commutingTime: '通勤可能時間',
       route: '路線',
@@ -1032,6 +1045,8 @@ export default {
       assignedEvaluation: '担当評価',
       sameDay: '即日',
       firstPayment: '先付け',
+      childrenNumber: '子供人数',
+      childrenAge: '子供年齢',
 
       specialDays: {
         gw: 'GW',
@@ -1064,10 +1079,11 @@ export default {
       temporaryCompaniesRegistered: '派遣登録社数',
       startedInCaregiving: '選考状況備考',
       items: '件',
+      companies: '社',
       daysVisitAtWork: '当社での職場見学可能日',
+      experienceDetails: '経験詳細',
 
       // Work Experience Component
-      experienceDetails: '経験詳細',
       experience: '経験業務',
       facilityType: '施設形態',
       startMonth: '就業開始月',
@@ -1532,14 +1548,13 @@ export default {
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
-        municipality: '事業所住所：自治体',
+        municipality: '事業所住所：市区町村',
         townAndStreet: '事業所住所：町名・番地',
         others: '事業所住所：ビル名・その他',
         longitude: '事業所住所：経度',
         latitude: '事業所住所：緯度',
         tel: '事業所TEL',
         fax: '事業所FAX',
-
         referralFeePer: '紹介料の規定％',
         referralFeeFix: '紹介料の規定金額',
         salaryHour: '時給',
