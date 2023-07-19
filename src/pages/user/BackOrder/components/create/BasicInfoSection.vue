@@ -7,7 +7,7 @@
       <labelField :label="$t('client.list.client')" :edit="false" 
         labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " :value="backOrder['client_id'] && client ? client['name']  : ''">
       </labelField>
-      <labelField :label="$t('backOrder.officeName')" :edit="false" :value="backOrder['client_id'] && office ? office?.name : ''"
+      <labelField :label="$t('backOrder.officeName')" :edit="false" :value="offices.find(office => office.id == backOrder['office_id'])?.name"
         labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " >
       </labelField>
     </div>
@@ -83,26 +83,13 @@
 <script lang="ts" setup>
 import labelField from 'src/components/form/LabelField.vue';
 import { BackOrderModel, Client, ClientOffice } from 'src/shared/model';
-import { ref, watch } from 'vue';
 
-const props = defineProps<{
+defineProps<{
   backOrder: Partial<BackOrderModel>,
   loading: boolean,
   client?: Client,
   officeID?: string,
+  offices: ClientOffice[]
 }>()
-
-const office = ref<ClientOffice>();
-
-watch(props, () => {
-  if ( props.client?.office &&  props.officeID){
-    const offices = props.client?.office.find(office => office.id == props.officeID)
-    if (offices){
-      office.value = offices;
-      return
-    } 
-  }
-  office.value = undefined
-}, {deep: true, immediate: true})
 
 </script>

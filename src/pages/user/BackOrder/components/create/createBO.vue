@@ -48,7 +48,7 @@
         <!-- Basic Info Section -->
         <basic-info-section :backOrder="data" :loading="loading"
           :client="data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id']) : undefined"
-          :officeID="data['office_id']"/>
+          :officeID="data['office_id']" :offices="clientFactoryList"/>
 
         <!-- Working Type Section -->
         <q-card-section>
