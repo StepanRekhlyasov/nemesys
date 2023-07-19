@@ -157,17 +157,17 @@
           {{ $t('applicant.attendant.interviewsWaitingList') }}
         </div>
         <div class="col-3 q-pl-md blue flex items-center">
-          <span v-if="!edit">{{ applicant.interviewsWaitingList? applicant.interviewsWaitingList+' '+$t('applicant.attendant.items') : ''}}</span>
+          <span v-if="!edit">{{ applicant.interviewsWaitingList? applicant.interviewsWaitingList : ''}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
-            v-model="data['interviewsWaitingList']" :disable="loading" type="number"/><span class="q-ml-sm">件</span>
+            v-model="data['interviewsWaitingList']" :disable="loading" type="number"/><span class="q-ml-sm">{{$t('applicant.attendant.items')}}</span>
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.temporaryCompaniesRegistered') }}
         </div>
         <div class="col-3 q-pl-md blue flex items-center">
-          <span v-if="!edit">{{ applicant.temporaryCompaniesRegistered? applicant.temporaryCompaniesRegistered+' '+$t('applicant.attendant.items') : ''}}</span>
+          <span v-if="!edit">{{ applicant.temporaryCompaniesRegistered? applicant.temporaryCompaniesRegistered : ''}}</span>
           <q-input v-if="edit" dense outlined bg-color="white"
-            v-model="data['temporaryCompaniesRegistered']" :disable="loading" type="number" /><span class="q-ml-sm">件</span>
+            v-model="data['temporaryCompaniesRegistered']" :disable="loading" type="number" /><span class="q-ml-sm">{{ $t('applicant.attendant.companies') }}</span>
         </div>
       </div>
 

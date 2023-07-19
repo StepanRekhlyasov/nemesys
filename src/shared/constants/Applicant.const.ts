@@ -100,6 +100,10 @@ export const employmentStatus = computed(() => {
       label: t('applicant.list.info.fullTime'),
       value: 'fullTime'
     },
+    {
+      label: t('applicant.list.info.partTime'),
+      value: 'partTime'
+    },
   ]
 })
 
@@ -237,13 +241,16 @@ export const marriedStatusList = computed(() => [{
   value: 'unmarried'
 },])
 
-export const tattoosStatusList = computed(() => [{
-  label: t('tattoos.nil'),
-  value: 'nil'
-},{
-  label: t('tattoos.yes'),
-  value: 'yes'
-},])
+export const tattoosStatusList = computed(() => [
+  {
+    label: t('tattoos.yes'),
+    value: 'yes'
+  },
+  {
+    label: t('tattoos.nil'),
+    value: 'nil'
+  },
+])
 
 export const applicantClassification = computed(() => {
   return [{

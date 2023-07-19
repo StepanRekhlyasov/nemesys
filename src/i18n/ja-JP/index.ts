@@ -508,7 +508,7 @@ export default {
         elderlyHousingServices: 'サービス付き高齢者向け住宅',
         clinic: 'クリニック',
         hospital: '病院',
-        careHouse: '軽費老人ホーム（ケアハウス)',
+        careHouse: '軽費老人ホーム',
         nursingCareClinic: '介護医療院',
         dementiaLivingCare: '認知症対応型共同生活介護',
         longCareWelfareFacilityElderly: '介護老人福祉施設',
@@ -517,7 +517,7 @@ export default {
         dayCareFacility: '通所介護',
         homeCare: '居宅介護',
         specifiedWelfareSales: '特定福祉用具販売',
-        shortResidentialCare: '短期入所生活介護（ショートステイ）',
+        shortResidentialCare: '短期入所生活介護',
         lendingWelfareEquipment: '福祉用具貸与',
         homeBathingCare: '訪問入浴介護',
         livelihoodResidentFacility: '認知症対応型共同生活介護',
@@ -944,6 +944,7 @@ export default {
         },
         generalDispatch: '一般派遣',
         fullTime: '正社員',
+        partTime: 'アルバイト・パート',
         placementDispatching: '紹介予定派遣',
       }
 
@@ -1077,10 +1078,11 @@ export default {
       temporaryCompaniesRegistered: '派遣登録社数',
       startedInCaregiving: '選考状況備考',
       items: '件',
+      companies: '社',
       daysVisitAtWork: '当社での職場見学可能日',
+      experienceDetails: '経験詳細',
 
       // Work Experience Component
-      experienceDetails: '経験詳細',
       experience: '経験業務',
       facilityType: '施設形態',
       startMonth: '就業開始月',

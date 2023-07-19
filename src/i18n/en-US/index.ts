@@ -949,6 +949,7 @@ export default {
         },
         generalDispatch: 'General Dispatch',
         fullTime: 'Full Time',
+        partTime: 'Part Time',
         placementDispatching: 'Employment placement dispatching',
       }
     },
@@ -1081,6 +1082,7 @@ export default {
       temporaryCompaniesRegistered: 'Number of temporary staffing companies registered',
       startedInCaregiving: 'How did you get started in caregiving?',
       items: 'items',
+      companies: 'companies',
       daysVisitAtWork: 'Days when you can visit us at work',
       experienceDetails: 'Experience Details',
 

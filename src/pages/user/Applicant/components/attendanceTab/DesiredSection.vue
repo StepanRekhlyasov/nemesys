@@ -162,10 +162,7 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit && Array.isArray(applicant.meansCommuting)">
-          <template v-for="item, index in applicant.meansCommuting" :key="index">
-            {{ $t('applicant.attendant.meansCommutingOptions.' + item) }} 
-            <template v-if="applicant.meansCommuting.length > index + 1"> ,</template>
-          </template>
+          {{ applicant.meansCommuting.map((row)=> $t('applicant.attendant.meansCommutingOptions.' + row)).join(', ') }}
         </span>
         <template v-if="desiredEdit">
           <q-checkbox dense outlined bg-color="white"
@@ -373,15 +370,21 @@ onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
 });
 
-watch(
-    () => (data.value['route']),
-    async (newVal,) => {
-        if (newVal) {
-          data.value['neareststation'] = '';
-          stationData.value = [];
-          stationData.value = await metadataStore.getStationByID(newVal)
-        }
+watch( () => data.value['route'],
+  async (newVal) => {
+    if (newVal) {
+      data.value['nearestStation'] = '';
+      stationData.value = [];
+      stationData.value = await metadataStore.getStationByID(newVal)
     }
+  }
+)
+watch( () => desiredEdit.value,
+  (newVal) => {
+    if (newVal) {
+      data.value['nearestStation'] = props.applicant['nearestStation'];
+    }
+  }
 )
 
 
