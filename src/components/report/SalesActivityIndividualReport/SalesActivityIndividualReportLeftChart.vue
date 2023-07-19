@@ -132,8 +132,6 @@ const showIndividualReport = async (
   const dataAverageCvr = listToFixed(calculateCVR(dataAverage as number[]));
   const allDataAverageCvr = listToFixed(calculateCVR(allDataAverage));
   dataToShow.value = [dataAverage, allDataAverage];
-  //number[]のすべての要素にtofixed(2)をかける関数
-
   dataToShowCVR.value = [dataAverageCvr, allDataAverageCvr];
 };
 
