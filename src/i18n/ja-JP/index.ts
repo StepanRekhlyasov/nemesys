@@ -1725,6 +1725,7 @@ export default {
       daysToWork:'勤務日数',
       unitPriceTransition:'単価推移',
       mediaApplicationUnitPrice:'媒体別応募単価',
+      budget:'予算',
 
     }
   },
