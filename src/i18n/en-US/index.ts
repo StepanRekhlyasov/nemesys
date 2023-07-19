@@ -1777,6 +1777,8 @@ export default {
       unitPriceTransition:'unit price transition',
       mediaApplicationUnitPrice:'Media application unit price',
       budget:'Budget',
+      companyBOStatus:'BO Status',
+      AverageBOStatus:'Average BO Status',
 
   }
 },
