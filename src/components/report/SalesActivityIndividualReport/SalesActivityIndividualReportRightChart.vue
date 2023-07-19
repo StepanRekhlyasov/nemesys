@@ -98,9 +98,9 @@ const showIndividualReport = async (
       data: [
         0,
         0,
-        row[itemListRight[0]],
-        row[itemListRight[0]],
-        row[itemListRight[2]],
+        row[itemListRight[0].queryName],
+        row[itemListRight[0].queryName],
+        row[itemListRight[2].queryName],
       ],
       type: 'bar',
     });
@@ -112,7 +112,7 @@ const showIndividualReport = async (
     queryNames: itemListRight,
     organizationId: undefined,
     isAverage: true,
-  }),itemListRight) as number[];
+  }),itemListRight.map((item)=>{return item.queryName})) as number[];
 
   const dataAverage = getListFromObject(await getReport({
     dateRange: dateRange,
@@ -120,7 +120,7 @@ const showIndividualReport = async (
     queryNames: itemListRight,
     organizationId: organizationId,
     isAverage: true,
-  }),itemListRight) as number[];
+  }),itemListRight.map((item)=>{return item.queryName})) as number[];
 
   dataAverage.unshift(0);
   allDataAverage.unshift(0);

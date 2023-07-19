@@ -16,7 +16,11 @@
         <q-td>{{ props.row.occupation && $t('applicant.add.' + props.row.occupation) }}</q-td>
       </template>
       <template v-slot:body-cell-classification="props">
-        <q-td>{{ props.row.classification && $t('applicant.list.info.classification.' + props.row.classification.toLowerCase()) }}</q-td>
+        <q-td>
+          <template v-if="Array.isArray(props.row.classification)">
+            {{ props.row.classification.map(((row : string)=>row.toLowerCase())).join(', ') }}
+          </template>
+        </q-td>
       </template>
       <template v-slot:body-cell-name="props">
         <q-td 

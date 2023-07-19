@@ -128,9 +128,9 @@
         </template>
 
         <template v-slot:body-cell-occupationAdress="props">
-          <q-td v-if="props.row.classification" :props="props" class="no-wrap q-pa-none">
+          <q-td v-if="Array.isArray(props.row.classification)" :props="props" class="no-wrap q-pa-none">
             {{ t(`applicant.add.${props.row.occupation}`) }}/
-            {{ t(`applicant.list.info.classification.${props.row.classification.toLowerCase()}`) }}
+            {{ props.row.classification.map(((row : string)=>row.toLowerCase())).join(', ') }}
             <br />
             {{ props.row.address }}
           </q-td>

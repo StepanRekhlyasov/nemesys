@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { useBudget } from 'stores/budget';
+import { useBudget } from 'stores/budgetData';
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
 import { unitPricenames, chartTypeUnitPrice } from './const';

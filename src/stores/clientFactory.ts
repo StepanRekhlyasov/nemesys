@@ -358,12 +358,8 @@ export const useClientFactory = defineStore('client-factory', () => {
                     } as ModifiedCF
                 })
             }
-
-            Alert.success()
-
         } catch(e) {
             Alert.warning(e)
-
             console.log(e)
         }
 
