@@ -35,7 +35,7 @@
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date v-model="data['startMonth']" mask="YYYY/MM/DD">
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Close" color="primary" flat />
+                        <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -53,7 +53,7 @@
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date v-model="data['endMonth']" mask="YYYY/MM/DD">
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Close" color="primary" flat />
+                        <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -117,7 +117,7 @@ import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/fir
 import { employmentStatus } from 'src/shared/constants/Applicant.const';
 import { ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { dateToTimestampFormat, timestampToDateFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
 import { useApplicant } from 'src/stores/applicant';
 import { Ref, ref } from 'vue';
 
@@ -137,8 +137,8 @@ if(props.editExperience){
     employmentType: props.editExperience.employmentType,
     reasonResignation: props.editExperience.reasonResignation,
     pastInterviews: props.editExperience.pastInterviews,
-    startMonth: timestampToDateFormat(props.editExperience.startMonth),
-    endMonth: timestampToDateFormat(props.editExperience.endMonth),
+    startMonth: myDateFormat(props.editExperience.startMonth),
+    endMonth: myDateFormat(props.editExperience.endMonth),
   }
 }
 

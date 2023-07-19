@@ -17,7 +17,7 @@
     </div>
     <div class='row q-gutter-sm items-center'>
       <div class='col-1' v-html="statusDateName[status]"></div>
-      <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ timestampToDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
+      <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ myDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
       <div class='col' v-else>{{ fix[applicantStatusDates[status]]?fix[applicantStatusDates[status]]:'-' }}</div>
     </div>
     <q-btn
@@ -43,7 +43,7 @@ import { RankCount } from 'src/shared/utils/RankCount.utils'
 import { i18n } from 'boot/i18n'
 import { useApplicant } from 'src/stores/applicant'
 import { applicantStatusDates } from 'src/shared/constants/Applicant.const'
-import { timestampToDateFormat } from 'src/shared/utils/utils'
+import { myDateFormat } from 'src/shared/utils/utils'
 
 const props = defineProps<{
   fix: ApplicantFix,
@@ -52,13 +52,13 @@ const props = defineProps<{
 const { t } = i18n.global
 const statusDateName = computed(()=>{
   return {
-    'wait_contact' : t('applicant.progress.card.applicationDate'),
-    'wait_attend' : t('applicant.progress.card.invitationDate'),
-    'wait_FIX' : t('applicant.progress.card.attendingDate'),
-    'wait_visit' : t('applicant.progress.card.FIXDate'),
-    'wait_offer' : t('applicant.progress.card.jobDate'),
-    'wait_entry' : t('applicant.progress.card.appointmentDate'),
-    'wait_termination' : '&#128337;',
+    [ApplicantStatus.WAIT_CONTACT] : t('applicant.progress.card.applicationDate'),
+    [ApplicantStatus.WAIT_ATTEND] : t('applicant.progress.card.invitationDate'),
+    [ApplicantStatus.WAIT_FIX] : t('applicant.progress.card.attendingDate'),
+    [ApplicantStatus.WAIT_VISIT] : t('applicant.progress.card.FIXDate'),
+    [ApplicantStatus.WAIT_OFFER] : t('applicant.progress.card.jobDate'),
+    [ApplicantStatus.WAIT_ENTRY] : t('applicant.progress.card.appointmentDate'),
+    [ApplicantStatus.WAIT_TERMINATION] : '&#128337;',
   }
 })
 
@@ -69,7 +69,9 @@ const applicant = computed(()=>{
 const countFixes = computed(()=>{
   if(applicantStore.state.applicantFixes[props.fix.applicant_id]){
     const notWorkingFix = applicantStore.state.applicantFixes[props.fix.applicant_id].filter((row)=>{
-      return row['status'] !== 'working'
+      if(row.status){
+        return [ApplicantStatus.WAIT_VISIT, ApplicantStatus.WAIT_OFFER, ApplicantStatus.WAIT_ENTRY, ApplicantStatus.WAIT_TERMINATION].includes(row.status)
+      }
     })
     return notWorkingFix.length
   }

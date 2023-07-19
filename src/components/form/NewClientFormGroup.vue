@@ -30,7 +30,7 @@ const formRef = ref<QForm | null>(null);
 const newClient = ref<Client>({} as Client)
 const clientName = ref('')
 const headName = ref('')
-const addressSection = ref<{[key: string]: string | number}>({
+const addressSection = ref<{ [key: string]: string | number }>({
     prefecture: prefectureList.value[0].value,
     municipality: '',
     street: '',
@@ -48,7 +48,7 @@ const clientInfo = ref<{ [key: string]: string | number}>({
 const headInfoSection = ref<{ [key: string]: string | number | boolean }>({
     tel: '',
     fax: '',
-    mailaddress: '',
+    mail: '',
     flg_faxng: false,
     homePage: '',
     numberEmployees: ''
@@ -59,9 +59,9 @@ const contractInfo = ref<{ [key: string]: string | number | boolean }>({
     contractUnit: contractUnits.value[0].value,
     conclusionContract: false,
     personInChargeTel: '',
-    personInchargeFax: '',
-    personInchargeMail: '',
-    personIncharge: ''
+    personInChargeFax: '',
+    personInChargeMail: '',
+    personInCharge: ''
 })
 const clientTypes = ref<string[]>([])
 const facilityTypes = ref<string[]>([])
@@ -69,7 +69,6 @@ const facilityTypes = ref<string[]>([])
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const validateAndSubmit = async () => {
     const isValid = await formRef.value?.validate();
-
     if (isValid) {
         newClient.value = {
             name: clientName.value,
@@ -79,7 +78,7 @@ const validateAndSubmit = async () => {
             ...headInfoSection.value,
             ...contractInfo.value,
             industry: clientTypes.value,
-            facilityType: facilityTypes.value
+            facilityType: facilityTypes.value,
         } as Client
 
         emit('submit', newClient.value);

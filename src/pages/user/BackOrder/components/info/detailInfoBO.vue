@@ -105,12 +105,12 @@
     <div class="row "  >
       <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" v-if="selectedBo['requiredQualifications']"
-        :value="selectedBo['qualifications']? $t('backOrder.qualification.'+data['qualifications']) : ''">
+        :value="selectedBo['qualifications']? $t('applicant.qualification.'+data['qualifications']) : ''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationRule(val) : true]">
           <q-radio
             v-for="key in TypeQualifications"
             v-model="data['qualifications']"
-            :label="$t('backOrder.qualification.'+key)"
+            :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading || !data['requiredQualifications']"
@@ -259,7 +259,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursEarly_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -274,7 +274,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursEarly_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -309,7 +309,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursDay_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -324,7 +324,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursDay_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -354,7 +354,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursLate_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -369,7 +369,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursLate_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -398,7 +398,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursNight_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -413,7 +413,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursNight_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>

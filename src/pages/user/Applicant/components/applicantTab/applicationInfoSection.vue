@@ -10,16 +10,27 @@
         {{ $t('applicant.list.info.date') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!edit">{{ timestampToDateFormat(applicant['applicationDate']) || ''}}</span>
+        <span v-if="!edit">{{ myDateFormat(applicant['applicationDate'], "YYYY/MM/DD HH:mm") || ''}}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="data['applicationDate']" mask="YYYY/MM/DD">
+                <q-date v-model="data['applicationDate']" mask="YYYY/MM/DD HH:mm">
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+          <template v-slot:append>
+            <q-icon name="access_time" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-time v-model="data['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                  </div>
+                </q-time>
               </q-popup-proxy>
             </q-icon>
           </template>
@@ -87,14 +98,14 @@
         {{ $t('applicant.list.info.birth') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{timestampToDateFormat(applicant['dob'])}} {{age?`(${age})`:''}}</span>
+        <span v-if="!edit">{{ myDateFormat(applicant['dob'], 'YYYY/MM/DD')}} {{age?`(${age})`:''}}</span>
         <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="data['dob']" default-view="Years" :options="limitDate">
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -169,7 +180,7 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant, ApplicantInputs } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
-import { limitDate, timestampToDateFormat } from 'src/shared/utils/utils'
+import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
@@ -185,13 +196,13 @@ const applicationMethodOption = ref(applicationMethod)
 
 function resetData() {
   defaultData.value = {
-    applicationDate: timestampToDateFormat(props?.applicant['applicationDate']),
+    applicationDate: myDateFormat(props?.applicant['applicationDate'], 'YYYY/MM/DD HH:mm'),
     name: props?.applicant['name'],
     media: props?.applicant['media'],
     kanaName: props?.applicant['kanaName'],
     applicationMetod: props?.applicant['applicationMetod'],
     sex: props?.applicant['sex'],
-    dob: timestampToDateFormat(props?.applicant['dob']),
+    dob: myDateFormat(props?.applicant['dob'], 'YYYY/MM/DD HH:mm'),
     phone: props?.applicant['phone'],
     email: props?.applicant['email'],
     lon: props?.applicant['lon'],

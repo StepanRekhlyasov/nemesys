@@ -62,22 +62,22 @@
         <q-td>{{ props.row.memo }}</q-td>
       </template>
       <template v-slot:body-cell-qualification="props">
-        <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('backOrder.qualification.'+q) }}</p></q-td>
+        <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('applicant.qualification.'+q) }}</p></q-td>
       </template>
       <template v-slot:body-cell-timeToWork="props">
         <q-td>{{ myDateFormat(props.row.timeToWork, 'YYYY/MM/DD') }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursEarly="props">
-        <q-td>{{ props.row.workingHoursEarly?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursEarly }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursDay="props">
-        <q-td>{{ props.row.workingHoursDay?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursDay }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursLate="props">
-        <q-td>{{ props.row.workingHoursLate?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursLate }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursNight="props">
-        <q-td>{{ props.row.workingHoursNight?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursNight }}</q-td>
       </template>
       <template v-slot:body-cell-shiftRemarks="props">
         <q-td>{{ props.row.shiftRemarks }}</q-td>
@@ -117,6 +117,7 @@ import { applicantFixesTableColumns, updateFixesTableColumns } from 'src/pages/u
 import { computed, ref, watch } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useOrganization } from 'src/stores/organization';
+import { ApplicantOrFixColumn } from 'src/shared/constants/Applicant.const';
 
 const emit = defineEmits<{
   (e: 'openDrawer', applicant: Applicant)
@@ -131,7 +132,7 @@ const organizationStore = useOrganization()
 const boIdList = ref<{[id: string] : BackOrderModel}>({})
 const backOrderStore = useBackOrder()
 const mode = computed(()=>{
-  if([ApplicantStatus.WAIT_CONTACT, ApplicantStatus.WAIT_ATTEND, ApplicantStatus.WAIT_FIX].includes(props.status as ApplicantStatus)){
+  if(ApplicantOrFixColumn[props.status]==='applicants'){
     return 'applicant'
   } else if (props.status === ApplicantStatus.WAIT_TERMINATION){
     return 'update'

@@ -53,6 +53,7 @@ export default {
     update: '正常に更新されました！',
     clear: 'クリア',
     submit: '送信',
+    register: '登録',
     remove: '除外',
     ok: 'OK',
     preview: '確認',
@@ -104,7 +105,9 @@ export default {
     electronic: '電子たばこ',
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
-    notPossible: '不可'
+    notPossible: '不可',
+    can: '就業中禁煙可能',
+    cant: '就業中禁煙不可',
   },
   marriedStatus: {
     married: '既婚',
@@ -774,13 +777,16 @@ export default {
       others: 'その他',
       qualification: '持っている資格',
       applicationDate: '応募日',
+      applicationMedia: '応募媒体',
+      applicationMetod: '応募方法',
+      image: '応募者画像',
+    },
+    qualification: {
       registeredNurse: '正看護師',
       assistantNurse: '準看護師',
       newcomer: '初任者',
       careWorker: '介護福祉士',
-      applicationMedia: '応募媒体',
-      applicationMetod: '応募方法',
-      image: '応募者画像',
+      worker: '実務者',
     },
     shift:{
       workinghoursearly: '早番',
@@ -915,7 +921,7 @@ export default {
         birth: '生年月日',
         lon: '経度',
         lat: '緯度',
-
+        shortTime: '時短',
         attractionsStatus: '誘致ステータス',
         employmentStatus: '就業状況',
         classiffication: '区分',
@@ -1262,12 +1268,6 @@ export default {
       memo: 'メモ欄',
       nameQualification: '資格名',
     },
-    qualification: {
-      registeredNurse: '正看護師',
-      assistantNurse: '準看護師',
-      newcomer: '初任者',
-      careWorker: '介護福祉士',
-    },
     travelingExpenses:{
       yesRegular: '有り／定期',
       yesDaily: '有り／日額',
@@ -1531,7 +1531,7 @@ export default {
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
-        city: '事業所住所：市区町村',
+        municipality: '事業所住所：自治体',
         townAndStreet: '事業所住所：町名・番地',
         others: '事業所住所：ビル名・その他',
         longitude: '事業所住所：経度',
@@ -1764,6 +1764,7 @@ export default {
     waitList: 'リスト'
   },
   KPI: {
+    parameters: 'パラメータ',
     targetPeriod: '対象期間',
     numberOfFix: 'FIX数',
     numberOfVisit: '職見数',
@@ -1895,5 +1896,13 @@ export default {
     agency: '代理店',
     tempFile: 'テンプレートファイルはこちら',
     updatedAt: '最終編集日',
+  },
+  pentagon: {
+    chargeOfAdmission : '入職数',
+    chargeOfOffer : '内定数',
+    chargeOfInspection : '職見数',
+    chargeOfFix : 'FIX数',
+    BoQty : 'BO数',
+    average: '平均'
   }
 };
