@@ -112,8 +112,10 @@ const getColor = (clientFactoryId: string) => {
   return 'white'
 }
 const searchClientsByCondition = () =>{
+  clientFactoryStore.selectedCFsId = []
   officeData.value.forEach((item)=>{
-    clientFactoryStore.selectedCFsId.push(item.id)
+    const id:string = item.id || ''
+    clientFactoryStore.selectedCFsId.push(id)
   })
   router.push('/client-factories')
 }

@@ -2,9 +2,11 @@
 import { useI18n } from 'vue-i18n';
 import { defineEmits, defineProps, withDefaults } from 'vue';
 import {ActionsType} from './types'
+
 const { t } = useI18n({ useScope: 'global' });
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
+    isReset:boolean
     actionsType?: ActionsType
     theme?: string
 }>(), {
@@ -16,7 +18,12 @@ const emit = defineEmits<{
     (e: 'openClientDrawer'),
     (e: 'openClientFactoryDrawer'),
     (e:'openFaxDrawer')
+    (e:'resetSelectedId')
 }>()
+
+const resetSelectedCFsId = () =>{
+    emit('resetSelectedId')
+}
 
 const openNewClientDrawer = () => {
     emit('openClientDrawer')
@@ -74,6 +81,9 @@ const openNewFaxDrawer=()=>{
                     </div>
                     <div class="q-gutter-md q-ml-sm">
                       <q-btn class="action_btn"  @click="openNewFaxDrawer" :color="theme"> {{ t('actions.faxBatchTransmission') }}</q-btn>
+                    </div>
+                    <div class="q-gutter-md q-ml-sm">
+                        <q-btn @click="resetSelectedCFsId" label="reset" v-if="props.isReset" :color="theme"/>
                     </div>
                 </div>
             </div> 
