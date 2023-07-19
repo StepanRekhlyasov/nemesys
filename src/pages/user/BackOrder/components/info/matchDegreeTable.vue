@@ -166,7 +166,6 @@
 
 <script lang="ts" setup>
 import { DocumentData } from 'firebase/firestore';
-import { BackOrderModel } from 'src/shared/model';
 
 const props = defineProps<{
   bo: DocumentData,
