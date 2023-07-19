@@ -1489,7 +1489,8 @@ export default {
     delivered: 'delivered',
     'not delivered': 'not delivered',
     form: {
-      name: 'Notification Creation Form',
+      open: 'Open Notification Creation Form',
+      close: 'Close Notification Creation Form',
       category: 'category',
       options: {
         op1: 'category 1',
@@ -1666,7 +1667,8 @@ export default {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID company name',
+      companyID: 'companyID',
+      companyName: 'Company name',
       recievedDate: 'date issued',
       responseDate: 'response date'
     },

@@ -5,7 +5,7 @@
       :rows="inquiresTableRows"
       row-key="id"
       v-model:pagination="pagination"
-      hide-pagination class="no-shadow bg-grey-2"
+      class="no-shadow bg-grey-2"
       color="primary"
       table-header-style="background-color: #ffffff"
       :loading="loading"
@@ -25,26 +25,19 @@
               {{ $t('inquiry.'+props.row.status) }}
             </span>
 
-            <q-btn v-else-if="col.name === 'delete'" icon="delete" flat @click="deleteInquiry(props.row.id)" />
             <span v-else>{{ col.value }}</span>
           </q-td>
 
         </q-tr>
       </template>
     </q-table>
-    <div class="row justify-start q-mt-md q-mb-md pagination q-mx-md">
-      <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-        :max="(inquiresTableRows.length / pagination.rowsPerPage) >= 1 ? inquiresTableRows.length / pagination.rowsPerPage : 1"
-        direction-links outline />
-    </div>
   </q-card-section>
 </template>
 
 <script lang="ts" setup>
-  import { QTableProps, useQuasar } from 'quasar';
+  import { QTableProps } from 'quasar';
   import { ref, onMounted, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { Alert } from 'src/shared/utils/Alert.utils';
   import { useInquiry } from 'src/stores/inquiry';
   import { cloneToRaw } from 'src/shared/utils/utils';
   import { InquiryDataRow } from 'src/shared/model';
@@ -52,7 +45,6 @@
 
 
   const { t } = useI18n({ useScope: 'global' });
-  const $q = useQuasar();
 
   const inquiryStore = useInquiry()
 
@@ -66,53 +58,57 @@
   }, {
       name: 'number',
       label: 'No.',
-      field: 'number'
+      field: 'number',
+      sortable: true,
   }, {
       name: 'status',
       required: true,
       label: t('inquiry.table.status'),
       field: 'status',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'category',
       required: true,
       label: t('inquiry.table.category'),
       field: 'category',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'subject',
       required: true,
       label: t('inquiry.table.subject'),
       field: 'subject',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'companyID',
       required: true,
       label: t('inquiry.table.companyID'),
       field: 'companyID',
       align: 'left',
-      sortable: false,
+      sortable: true,
+  }, {
+      name: 'companyName',
+      required: true,
+      label: t('inquiry.table.companyName'),
+      field: 'companyName',
+      align: 'left',
+      sortable: true,
   }, {
       name: 'recievedDate',
       required: true,
       label: t('inquiry.table.recievedDate'),
       field: 'issueDate',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'responseDate',
       required: true,
       label: t('inquiry.table.responseDate'),
       field: 'answerDate',
       align: 'left',
-      sortable: false,
-  }, {
-      name: 'delete',
-      label: '',
-      field: ''
+      sortable: true,
   }])
 
   const pagination = ref({
@@ -134,31 +130,4 @@
 
   }
 
-
-
-
-  const deleteInquiry = (inquiryId: string) => {
-    $q.dialog({
-        title: t('common.delete'),
-        message: t('releaseNotes.table.deletedInfo'),
-        ok: {
-            label: t('common.delete'),
-            color: 'negative',
-            class: 'no-shadow',
-            unelevated: true
-        },
-    }).onOk(async () => {
-        try {
-            loading.value = true;
-            await inquiryStore.deleteInquiryData(inquiryId)
-            await loadCurrentInquires();
-            loading.value = false;
-            Alert.success()
-        } catch (e) {
-            console.error(e)
-            Alert.warning(e)
-            loading.value = false;
-        }
-    })
-  }
 </script>
