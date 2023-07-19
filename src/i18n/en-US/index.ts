@@ -1601,7 +1601,6 @@ export default {
         contractMail: 'Contract destination: MAIL',
         contractPerson: 'Contractor: Person in charge',
 
-
         // Import Logs and Reflect Logs
         executionUser: 'Execution User',
         executionDateTime: 'Execution Date and Time',
