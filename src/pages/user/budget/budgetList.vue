@@ -20,7 +20,7 @@
     <div class="row q-pl-lg">
       <q-input outlined :placeholder="$t('form.searchPlaceholder')" style="width: 350px" color="black" dense
         bg-color="white" v-model="searchText" />
-      <q-btn dense @click="filterBudget" style="color: white" :label="$t('common.search')"
+      <q-btn dense style="color: white" :label="$t('common.search')"
         class="q-ml-sm q-px-lg buttonbg" />
       <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg" @click="clear" />
     </div>
@@ -205,10 +205,6 @@ const budgetList = computed(() => {
     return el['media'].toLowerCase().includes(needle) || el['branch'].toLowerCase().includes(needle)
   });
 });
-
-const filterBudget = () => {
-  //
-}
 
 const selectedCount = () => {
   return budgetList.value.filter(row => row['selected']).length;
