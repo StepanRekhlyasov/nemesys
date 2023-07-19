@@ -1,7 +1,6 @@
 <template>
   <q-form @submit="save">
     <DropDownEditGroup
-      :bo="bo"
       :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
       @openEdit="edit = true"

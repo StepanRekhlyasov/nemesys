@@ -135,7 +135,7 @@
 </template>
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import detailTabs from '../Applicant/components/detailTabs.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 import { QFile } from 'quasar';
@@ -149,6 +149,7 @@ import { BackOrderModel } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { useBackOrder } from 'src/stores/backOrder';
+import { isEditable } from '../BackOrder/consts/BackOrder.const';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
@@ -163,6 +164,12 @@ const openDrawer = async (data: Applicant) => {
   applicantStore.state.selectedApplicant = data;
   setTimeout(() => drawerRight.value = true, 300);
 }
+
+watch(drawerRight,(newVal)=>{
+  if(!newVal){
+    isEditable.value = true;
+  }
+})
 
 const backOrderStore = useBackOrder();
 

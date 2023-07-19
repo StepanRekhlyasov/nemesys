@@ -1,11 +1,11 @@
 <template>
-  <DropDownEditGroup :bo="bo" :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
+  <DropDownEditGroup :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
     @closeEdit="resetData(); edit = false;" @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.date') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-md blue">
         <span v-if="!edit">{{ myDateFormat(applicant['applicationDate'], "YYYY/MM/DD HH:mm") || ''}}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
           <template v-slot:prepend>
