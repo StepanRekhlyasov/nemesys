@@ -82,14 +82,15 @@
 
 <script lang="ts" setup>
 import labelField from 'src/components/form/LabelField.vue';
-import { BackOrderModel, Client, ClientOffice } from 'src/shared/model';
+import { BackOrderModel, Client } from 'src/shared/model';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 
 defineProps<{
   backOrder: Partial<BackOrderModel>,
   loading: boolean,
   client?: Client,
   officeID?: string,
-  offices: ClientOffice[]
+  offices: ClientFactory[]
 }>()
 
 </script>
