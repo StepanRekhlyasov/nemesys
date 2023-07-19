@@ -1,5 +1,5 @@
 <template>
-  <DropDownEditGroup :isEdit="edit" :label="'2.' + $t('applicant.attendant.workExperience')"
+  <DropDownEditGroup :isHiddenActions="bo?true:false" :isEdit="edit" :label="'2.' + $t('applicant.attendant.workExperience')"
     @openEdit="edit = true" @closeEdit="edit = false; resetData()" @onSave="save">
     <div class="row ">
       <div class="text-blue text-weight-regular self-center text-subtitle1 ">

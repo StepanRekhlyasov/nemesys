@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, defineEmits, withDefaults } from 'vue'
-import { isEditable } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 
 const show = ref(false)
 
@@ -15,12 +14,14 @@ withDefaults(defineProps<{
   isDisabledButton?: boolean
   isWithoutCancel?: boolean
   theme?: string
+  isHiddenActions?:boolean
 }>(), {
   isButton: true,
   isDisabledButton: false,
   isLabelSquare: false,
   isWithoutCancel: false,
   theme: 'primary',
+  isHiddenActions:false,
 })
 
 const emit = defineEmits<{
@@ -45,7 +46,7 @@ const emit = defineEmits<{
           @click="show = true" v-else />
       </div>
     </div>
-    <div class="col-3 text-right" v-if="isEditable && (show || !isButton)">
+    <div class="col-3 text-right" v-if="!isHiddenActions && (show || !isButton)">
       <q-btn v-if="!isEdit" :label="t('common.edit')" :color="theme" outline icon="edit" @click="emit('openEdit')"
         class="no-shadow q-ml-lg" size="sm" :disable="isDisabledButton" />
       <q-btn v-if="isEdit" :label="t('common.save')" :color="theme" @click="emit('onSave')" size="sm"

@@ -1,5 +1,5 @@
 <template>
-  <DropDownEditGroup :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
+  <DropDownEditGroup :isHiddenActions="bo?true:false" :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
     @closeEdit="resetData(); edit = false;" @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">

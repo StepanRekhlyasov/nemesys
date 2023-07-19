@@ -1,6 +1,7 @@
 <template>
   <q-form @submit="save">
     <DropDownEditGroup
+      :isHiddenActions="bo?true:false"
       :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
       @openEdit="edit = true"

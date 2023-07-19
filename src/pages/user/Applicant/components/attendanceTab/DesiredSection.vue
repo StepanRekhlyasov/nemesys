@@ -1,5 +1,5 @@
 <template>
-  <DropDownEditGroup :isEdit="desiredEdit" :label="'1.' + $t('applicant.attendant.desiredConditions')"
+  <DropDownEditGroup :isHiddenActions="bo?true:false" :isEdit="desiredEdit" :label="'1.' + $t('applicant.attendant.desiredConditions')"
     @openEdit="desiredEdit = true" @closeEdit="desiredEdit = false; resetData();" @onSave="saveDesired">
 
     <div class="row q-pb-sm">
