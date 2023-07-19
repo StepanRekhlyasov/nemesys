@@ -458,8 +458,9 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         return headClientFactory;
     }
-
+    const selectedCFsId:string[] = []
     return {
+        selectedCFsId,
         clientFactories,
         modifiedCFs,
         getClientFactories,

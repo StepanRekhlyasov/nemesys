@@ -10,7 +10,9 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { storeToRefs } from 'pinia'
 import { useClient } from 'src/stores/client';
 import { useClientFactory } from 'src/stores/clientFactory';
+import { useRouter} from 'vue-router';
 
+const router = useRouter()
 const props = defineProps<{ theme: string }>()
 const emit = defineEmits<{ (e: 'getClients', clients: Client[]), (e: 'openCFDrawer', ClientFactoryData: ClientFactory) }>()
 
@@ -109,7 +111,12 @@ const getColor = (clientFactoryId: string) => {
   }
   return 'white'
 }
-
+const searchClientsByCondition = () =>{
+  officeData.value.forEach((item)=>{
+    clientFactoryStore.selectedCFsId.push(item.id)
+  })
+  router.push('/client-factories')
+}
 watch([clientFactories], () => {
   clientFactoriesList.value = []
   clientFactories.value.forEach((clientFactory) => {
@@ -144,7 +151,7 @@ watch([radiusKm], () => {
       <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme"
         class="no-shadow text-weight-bold" icon="add" />
       <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
-        @click="searchClients" />
+        @click="searchClientsByCondition" />
     </q-card-actions>
     <div style="height: 5px;">
       <q-separator v-if="!isLoadingProgress" />
