@@ -51,11 +51,9 @@ import applicantMemo from './memoTab.vue';
 import { Applicant, BackOrderModel } from 'src/shared/model';
 
 const tab = ref('contactInfo');
-withDefaults(defineProps<{
+defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
 
 </script>

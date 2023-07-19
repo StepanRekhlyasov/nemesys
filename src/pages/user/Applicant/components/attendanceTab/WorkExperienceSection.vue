@@ -200,12 +200,11 @@ import { useApplicant } from 'src/stores/applicant';
 import { workExpColumns as columns } from 'src/shared/constants/Applicant.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
+
 const applicantStore = useApplicant();
 
 const loading = ref(false);

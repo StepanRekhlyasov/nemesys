@@ -111,7 +111,6 @@ export const useBudget = defineStore('budget', () => {
         updateData
       );
     }
-    // Commit the batch
     await batch.commit();
 
     return true;
@@ -231,12 +230,10 @@ export const useBudget = defineStore('budget', () => {
 
   const getFormateData = (formateData: BudgetData) => {
     const budgetData = ref<BudgetData>({
-      // recordNumber: '',
       organizationId:organization.currentOrganizationId,
       accountingMonth: '',
       amount: '',
       branch: '',
-      // id: '',
       media: '',
       numberOfSlots: '',
       occupation: '',

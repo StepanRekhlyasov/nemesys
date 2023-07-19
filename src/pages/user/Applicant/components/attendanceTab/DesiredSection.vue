@@ -281,12 +281,11 @@ import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
+
 const applicantStore = useApplicant();
 const { t } = i18n.global;
 const shiftOptions = [
@@ -324,8 +323,8 @@ onMounted(async () => {
 });
 
 watch(
-  () => (data.value['route']),
-  async (newVal,) => {
+  () => data.value['route'],
+  async (newVal) => {
     if (newVal) {
       data.value['neareststation'] = '';
       stationData.value = [];

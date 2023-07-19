@@ -167,12 +167,11 @@ import { useApplicant } from 'src/stores/applicant';
 import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
+
 const defaultData = ref<Partial<ApplicantInputs>>({})
 const data = ref<Partial<ApplicantInputs>>({})
 const edit = ref(false);

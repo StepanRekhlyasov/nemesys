@@ -39,6 +39,7 @@ import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useClient } from 'src/stores/client'
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const staffList = ref<ApplicantForCandidateSearch[]>([])
 const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
@@ -71,7 +72,7 @@ onMounted(async () => {
       await getFormatedData(applicantIds.value)
     }
   } catch (error) {
-
+    Alert.warning(error)
   }
   loading.value = false
 });

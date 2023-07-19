@@ -3,7 +3,6 @@ import { watch, ref, defineProps, defineEmits, computed, onMounted } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { Alert } from 'src/shared/utils/Alert.utils';
-// import { ApplicantForCandidateSearch } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
 import { where } from 'firebase/firestore';
 import { useApplicant } from 'src/stores/applicant'

@@ -16,12 +16,11 @@ import { Applicant, BackOrderModel } from 'src/shared/model';
 import applicationInfoComponent from './applicationInfoSection.vue';
 import attractionInfoComponent from './attractionInfoSection.vue';
 
-withDefaults(defineProps<{
+defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
+
 </script>
 
 <style lang="scss">

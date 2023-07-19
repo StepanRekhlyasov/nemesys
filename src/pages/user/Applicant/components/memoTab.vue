@@ -65,12 +65,10 @@ import { getAuth, User } from '@firebase/auth';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
 
 
 const db = getFirestore();

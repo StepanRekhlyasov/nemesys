@@ -248,9 +248,6 @@ const clear = async () => {
 
 onMounted(async () => {
   templates.value = await options.value
-
-  console.log(template.value)
-  console.log(templates.value)
   loading.value = true;
   row.value = await getFormatedData();
   row.value.forEach(data => {

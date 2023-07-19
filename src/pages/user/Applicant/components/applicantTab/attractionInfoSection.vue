@@ -84,8 +84,8 @@
         {{ $t('applicant.list.info.classiffication') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ applicant.classification ?
-          $t('applicant.list.info.classification.' + applicant.classification.toLowerCase()) : '' }}</span>
+        <span v-if="!edit">{{ applicant.classification ? applicant.classification.map(a =>
+          $t('applicant.list.info.classification.' + a.toLowerCase())).join(', ') : '' }}</span>
         <q-select v-if="edit" outlined dense :options="classificationOption" v-model="data['classification']"
           bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
       </div>
@@ -171,12 +171,11 @@ import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = withDefaults(defineProps<{
+const props =defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
+
 const defaultData: Ref<Partial<ApplicantInputs>> = ref({})
 const data: Ref<Partial<ApplicantInputs>> = ref({})
 const edit = ref(false);

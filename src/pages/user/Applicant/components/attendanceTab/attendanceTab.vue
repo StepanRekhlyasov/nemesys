@@ -29,10 +29,8 @@ import workExperienceComponent from './WorkExperienceSection.vue';
 import assignedEvaluationComponent from './AssignedEvaluationSection.vue';
 import personalStatusComponent from './PersonalSection.vue';
 import { Applicant, BackOrderModel } from 'src/shared/model';
-withDefaults(defineProps<{
+defineProps<{
   applicant: Applicant,
-  bo: BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?: BackOrderModel
+}>()
 </script>

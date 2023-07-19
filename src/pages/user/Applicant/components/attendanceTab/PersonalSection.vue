@@ -176,12 +176,11 @@ import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   applicant: Applicant,
-  bo:BackOrderModel | null
-}>(), {
-  bo: null
-})
+  bo?:BackOrderModel
+}>()
+
 const applicantStore = useApplicant();
 const edit = ref(false);
 const loading = ref(false);
