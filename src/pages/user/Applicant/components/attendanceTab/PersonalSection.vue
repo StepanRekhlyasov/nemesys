@@ -1,6 +1,7 @@
 <template>
   <q-form @submit="save">
     <DropDownEditGroup
+      :isHiddenActions="bo?true:false"
       :isEdit="edit"
       :label="'3.'+ $t('applicant.attendant.personal')"
       @openEdit="edit = true"
@@ -204,13 +205,15 @@
 import { ref } from 'vue';
 import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
-import { Applicant, ApplicantInputs } from 'src/shared/model';
+import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 const props = defineProps<{
-  applicant: Applicant
-}>();
+  applicant: Applicant,
+  bo?:BackOrderModel
+}>()
+
 const applicantStore = useApplicant();
 const edit = ref(false);
 const loading = ref(false);

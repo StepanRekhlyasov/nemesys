@@ -80,6 +80,8 @@ export default {
     week: 'Week',
     month: 'Month',
     reputation: 'Reputation',
+    desiredBo:'BO',
+    desiredCondition:'Desired condition',
     months: {
       '1' : 'January',
       '2' : 'February',
@@ -824,6 +826,9 @@ export default {
       yearsExperience: 'Years of Experience',
       availableShift: 'Available Shift',
       station:'station',
+      commutesDisatnce:'Commuting distance',
+      shift:'Shift',
+      accuracy:'Accuracy',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -948,7 +953,8 @@ export default {
         classification: {
           introduction : 'Introduction',
           dispatch: 'Dispatch',
-          ttp: 'TTP'
+          ttp: 'TTP',
+          TTP:'TTP'
         },
         generalDispatch: 'General Dispatch',
         fullTime: 'Full Time',
@@ -1110,6 +1116,7 @@ export default {
       companyInCharge: 'Company in Charge',
       operationMemo: 'Memo',
       operatingSites: '■Operating Sites',
+      assignToBo:'Assign this candidate to BO',
 
       // Memo Tab
       content: 'Content'
@@ -1223,6 +1230,8 @@ export default {
       content:'Content',
       template:'Template',
       form:'Submission form',
+      recordsPerPage:'Records per page',
+      all:'All',
     },
     create: {
       employmentConditions: '■ Employment Conditions',
@@ -1943,6 +1952,7 @@ export default {
     agency: 'Agency',
     tempFile: 'Click here for the template file',
     updatedAt: 'Last edited date',
+    recordNumber:'Record No.',
   },
   pentagon: {
     chargeOfAdmission : 'Entry Qty.',
