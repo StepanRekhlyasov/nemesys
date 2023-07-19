@@ -180,8 +180,9 @@ export const useBudget = defineStore('budget', () => {
 		}
 	}
 
-  const processData = async (data, selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) => {
-    const rows = data.split('\r\n')
+  const processData = async (data:string, selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) => {
+    const rowsInString = data as string
+    const rows = rowsInString.split('\r\n')
     const batch = writeBatch(db);
     await getOptionData(organization.currentOrganizationId);
     const snapshot = await getDocs(query(collection(db, '/budgets'),where('deleted','==',false)))
@@ -228,7 +229,7 @@ export const useBudget = defineStore('budget', () => {
     return correctValue;
   }
 
-  const getFormateData = (formateData: BudgetData) => {
+  const getFormateData = (formateData: BudgetData | string[]) => {
     const budgetData = ref<BudgetData>({
       organizationId:organization.currentOrganizationId,
       accountingMonth: '',

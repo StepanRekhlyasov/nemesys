@@ -147,14 +147,14 @@ import { myDateFormat } from 'src/shared/utils/utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { BackOrderModel } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
-import { serverTimestamp, addDoc, collection, getFirestore } from 'firebase/firestore';
+import { serverTimestamp, DocumentData } from 'firebase/firestore';
+import { useBackOrder } from 'src/stores/backOrder';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
 const statusOption = ref(statusList);
 const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
-const db = getFirestore();
 const age = computed(() => selectedApplicant.value && selectedApplicant.value['dob'] ? RankCount.ageCount(myDateFormat(selectedApplicant.value['dob'])) : '0')
 const openDrawer = async (data: Applicant) => {
   if (selectedApplicant.value?.id && selectedApplicant.value.id !== data.id) {
@@ -164,8 +164,10 @@ const openDrawer = async (data: Applicant) => {
   setTimeout(() => drawerRight.value = true, 300);
 }
 
+const backOrderStore = useBackOrder();
+
 const assignToBo = async () => {
-  const data = ref({
+  const data = ref<DocumentData>({
     applicant_id: selectedApplicant.value?.id,
     backOrder: props.bo?.id,
     client: props.bo?.client_id,
@@ -176,19 +178,15 @@ const assignToBo = async () => {
     updated_at: serverTimestamp(),
   })
   try {
-    const collectionRef = collection(db, 'fix');
-    await addDoc(collectionRef, data.value);
-    Alert.success();
+    backOrderStore.addToFix(data)
   } catch (error) {
     Alert.warning(error);
   }
 }
 
-const props = withDefaults(defineProps<{
-  bo: BackOrderModel | null,
-}>(), {
-  bo: null
-})
+const props = defineProps<{
+  bo?: BackOrderModel,
+}>()
 
 defineExpose({ openDrawer })
 const changeApplicantStatus = async () => {
