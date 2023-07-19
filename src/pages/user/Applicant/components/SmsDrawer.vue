@@ -169,7 +169,7 @@
 import { ref, onMounted, ComputedRef, watch } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
-import { destinationApplicant, options } from 'src/pages/user/Applicant/const/sms';
+import { destinationApplicant } from 'src/pages/user/Applicant/const/sms';
 import { useSMS } from 'src/stores/sms'
 import { useApplicant } from 'src/stores/applicant'
 import { DocumentData, where } from 'firebase/firestore';
@@ -189,6 +189,7 @@ const date = ref<string | null>(null)
 const template = ref<string | null>(null)
 const getApplicant = useApplicant();
 const templates = ref<DocumentData | QSelectProps>([]);
+const smsStore = useSMS();
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -214,7 +215,7 @@ watch(template, (newTemplate) => {
 
 const sendMsg = async () => {
   try {
-    await useSMS().send(message.value, selected.value)
+    await smsStore.send(message.value, selected.value)
     Alert.success()
     message.value = ''
   } catch (error) {
@@ -228,13 +229,13 @@ const updateSelected = (rowItem) => {
 
 const search = async () => {
   loading.value = true
-  row.value = await useSMS().filterData(status.value, keyword.value, date.value);
+  row.value = await smsStore.filterData(status.value, keyword.value, date.value);
   loading.value = false
 }
 
 const getFormatedData = async () => {
   const data = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]);
-  return useSMS().getApplicantWithFormatedDate(data)
+  return smsStore.getApplicantWithFormatedDate(data)
 }
 
 const clear = async () => {
@@ -247,7 +248,7 @@ const clear = async () => {
 }
 
 onMounted(async () => {
-  templates.value = await options.value
+  templates.value = await smsStore.options
   loading.value = true;
   row.value = await getFormatedData();
   row.value.forEach(data => {

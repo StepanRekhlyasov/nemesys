@@ -1,7 +1,9 @@
-
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia';
-import { collection, where, getFirestore, doc, serverTimestamp, DocumentData, writeBatch } from 'firebase/firestore';
+import { collection, where, getFirestore, doc, serverTimestamp, DocumentData, writeBatch, query, getDocs } from 'firebase/firestore';
 import { useApplicant } from 'src/stores/applicant'
+import { useOrganization } from 'src/stores/organization';
+import { templateCollection } from 'src/shared/utils/utils';
 
 export const useSMS = defineStore('sms', () => {
   const db = getFirestore();
@@ -61,5 +63,25 @@ export const useSMS = defineStore('sms', () => {
     return rowData;
   }
 
-  return { send, filterData, getApplicantWithFormatedDate }
+const options = computed(async () => {
+    const organization = useOrganization();
+    const templates = ref<DocumentData[]>([]);
+    const db = getFirestore();
+    const q = query(templateCollection(db, organization.currentOrganizationId), where('deleted', '==', false));
+    const querySnapshot = await getDocs(q);
+
+    const fetchedTemplates: DocumentData[] = [];
+
+    querySnapshot.forEach((doc) => {
+      const template = doc.data();
+      template['label'] = template.name;
+      fetchedTemplates.push(template);
+    });
+
+    templates.value = fetchedTemplates;
+
+    return templates.value;
+  });
+
+  return { options, send, filterData, getApplicantWithFormatedDate }
 })
