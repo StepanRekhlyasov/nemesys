@@ -197,6 +197,7 @@ const getNumberFromString = (number) => {
 
 .popup-table th {
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .popup-table .header {
