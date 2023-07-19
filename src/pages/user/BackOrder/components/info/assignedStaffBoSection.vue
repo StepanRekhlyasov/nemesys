@@ -20,10 +20,22 @@
       </template>
       <template v-slot:body-cell-matchDegree="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ props.row.matchDegree }}%
+          <q-btn @click="openPopup(props.row)" dense no-caps color="primary" :label='props.row.matchDegree' flat>%</q-btn>
         </q-td>
       </template>
     </q-table>
+
+    <q-dialog v-model="popupVisible">
+      <q-card>
+        <q-card-section>
+          <matchDegreeTable :bo="bo" :staff="popupStaff" :matchedData="matchedData"/>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn color="primary" label="Close" @click="closePopup" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </q-card-section>
   <ApplicantDetails ref="detailsDrawer" />
 </template>
@@ -40,6 +52,7 @@ import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useClient } from 'src/stores/client'
 import { Alert } from 'src/shared/utils/Alert.utils';
+import matchDegreeTable from './matchDegreeTable.vue';
 
 const staffList = ref<ApplicantForCandidateSearch[]>([])
 const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
@@ -49,6 +62,7 @@ const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const backOrderStore = useBackOrder()
 const applicantIds = ref<string[]>([]);
 const getClient = useClient();
+const matchedData = ref({});
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -62,6 +76,18 @@ const props = defineProps<{
 
 const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
+};
+
+const popupVisible = ref(false);
+const popupStaff = ref({});
+
+const openPopup = (staff) => {
+  popupStaff.value = staff;
+  popupVisible.value = true;
+};
+
+const closePopup = () => {
+  popupVisible.value = false;
 };
 
 onMounted(async () => {
@@ -86,7 +112,7 @@ const getFormatedData = async (applicantIds) => {
 const calculateMatchDegree = () => {
 
   staffList.value.forEach((staff) => {
-    backOrderStore.matchData(staff, props.bo);
+    matchedData.value[staff.id] = backOrderStore.matchData(staff, props.bo);
   })
   staffList.value.sort((a, b) => b.matchDegree - a.matchDegree);
 }
