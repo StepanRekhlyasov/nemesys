@@ -75,7 +75,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <label :class="`text-${theme} line__label`">
                     {{ row.label }}
                 </label>
-                <q-input v-if="row.editType === InputType.NUMBER && typeof row.value === 'number'" v-model.number="row.value" class="line__value q-pl-sm" type="number" dense hide-bottom-space :color="theme"/>
+                <q-input v-if="row.editType === InputType.NUMBER && (typeof row.value === 'number' || row.value === '')" v-model.number="row.value" class="line__value q-pl-sm" type="number" dense hide-bottom-space :color="theme" @input="val => (row.value = val || 0)"/>
                 <q-input v-else-if="row.editType === InputType.TEXT && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme"/>
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
@@ -106,7 +106,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <label :class="`text-${theme} line__label`">
                     {{ row.label }}
                 </label>
-                <q-input v-if="row.editType === InputType.NUMBER && typeof row.value === 'number'" v-model.number="row.value" class="line__value q-pl-sm" type="number" dense hide-bottom-space :color="theme"/>
+                <q-input v-if="row.editType === InputType.NUMBER && (typeof row.value === 'number' || row.value === '')" v-model.number="row.value" class="line__value q-pl-sm" step="any" type="number" dense hide-bottom-space :color="theme"/>
                 <q-input v-else-if="row.editType === InputType.TEXT && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme"/>
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />

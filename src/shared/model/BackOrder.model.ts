@@ -12,6 +12,7 @@ export interface BackOrderModel {
   created_at: string;
   deleted: false;
   registrant?: string;
+  organizationId: string;
 
   // Introduction Section
   dateOfRegistration: Timestamp | undefined | string;
@@ -58,10 +59,6 @@ export interface BackOrderModel {
   stipulatedAmount: number;
   retirementAge_house: number;
   memo_house: string;
-}
-export interface BackOrderState {
-  BOList: BackOrderModel[];
-  selectedBo: BackOrderModel | null;
 }
 
 export enum TypeOfCase {

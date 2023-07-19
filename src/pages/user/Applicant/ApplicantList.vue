@@ -171,6 +171,7 @@ const getClassification = (classification: string) => {
 };
 
 const openDrawer = (data: Applicant) => {
+  console.log(data)
   detailsDrawer.value?.openDrawer(data)
 };
 

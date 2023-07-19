@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
 import { getAuth } from 'firebase/auth';
 import { storeToRefs } from 'pinia'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -18,7 +17,6 @@ import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { ChangedData } from 'src/components/client-factory/types';
 import { ImportLog } from 'src/shared/model/ImportLog';
-const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
     isDrawer: boolean,
@@ -41,8 +39,8 @@ const isLoading = ref({
 const localData = ref<ClientFactory>(deepCopy(props.selectedItem))
 const localDraft = ref<Partial<ClientFactory>>(deepCopy(props.selectedItem.draft))
 const selectedModifiedCF = ref<ModifiedCF>()
-const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean, ts: string }>)
-const selectedIndustry = ref<{ value: string, isSelected: boolean, ts: string }>({} as { value: string, isSelected: boolean, ts: string })
+const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean }>)
+const selectedIndustry = ref<{ value: string, isSelected: boolean }>({} as { value: string, isSelected: boolean })
 
 const initializeIndustry = () => {
     dropDownIndustryValue.value = props.selectedItem.industry?.reduce((acc, industry, index) => {
@@ -50,17 +48,16 @@ const initializeIndustry = () => {
             acc.push({
                 value: industry,
                 isSelected: index === 0,
-                ts: t(`client.add.${industry}`)
             })
         }
 
         return acc
-    }, [] as Array<{ value: string, isSelected: boolean, ts: string }>)
+    }, [] as Array<{ value: string, isSelected: boolean }>)
 
     selectedIndustry.value = dropDownIndustryValue.value[0] ?? {}
 }
 
-const industryHandler = (value: { value: string, isSelected: boolean, ts: string }) => {
+const industryHandler = (value: { value: string, isSelected: boolean }) => {
     selectedIndustry.value = value
 }
 

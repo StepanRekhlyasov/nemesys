@@ -105,7 +105,9 @@ export default {
     electronic: 'Electronic cigarettes',
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
-    notPossible: 'Not possible'
+    notPossible: 'Not possible',
+    can: 'Can stop smoking while working',
+    cant: 'Cannot stop smoking while working',
   },
   marriedStatus: {
     married: 'Married',
@@ -924,7 +926,7 @@ export default {
         birth: 'Date of birth',
         lon: 'Longitude',
         lat: 'Latitude',
-
+        shortTime: 'Short Time',
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
         classiffication: 'Classification',
@@ -1536,7 +1538,7 @@ export default {
         parentClient: 'Parent client',
         officeName: 'Office name',
         prefecture: 'Office Address: Prefecture',
-        city: 'Business address: City',
+        municipality: 'Business address: Municipality',
         townAndStreet: 'Office address: Town name/street number',
         others: 'Office address: Building name, others',
         longitude: 'Business Address: Longitude',

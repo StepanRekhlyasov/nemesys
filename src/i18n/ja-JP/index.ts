@@ -105,7 +105,9 @@ export default {
     electronic: '電子たばこ',
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
-    notPossible: '不可'
+    notPossible: '不可',
+    can: '就業中禁煙可能',
+    cant: '就業中禁煙不可',
   },
   marriedStatus: {
     married: '既婚',
@@ -919,7 +921,7 @@ export default {
         birth: '生年月日',
         lon: '経度',
         lat: '緯度',
-
+        shortTime: '時短',
         attractionsStatus: '誘致ステータス',
         employmentStatus: '就業状況',
         classiffication: '区分',
@@ -1529,7 +1531,7 @@ export default {
         parentClient: '親クライアント',
         officeName: '事業所名',
         prefecture: '事業所住所：都道府県',
-        city: '事業所住所：市区町村',
+        municipality: '事業所住所：自治体',
         townAndStreet: '事業所住所：町名・番地',
         others: '事業所住所：ビル名・その他',
         longitude: '事業所住所：経度',

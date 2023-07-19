@@ -77,16 +77,12 @@ const validateAndSubmit = async () => {
             address: addressSection.value.prefecture + ' ' +  addressSection.value.municipality + ' ' + addressSection.value.street + ' ' + addressSection.value.building,
             officeDetails: {
                 registeredInfo: {
-                    prefecture: addressSection.value.prefecture,
-                    officeName: clientFactoryName.value,
                     tel: clientFactoryInfo.value.tel,
                     fax: clientFactoryInfo.value.fax,
                     latitude: addressSection.value.lat,
                     longitude: addressSection.value.lon,
                     street: addressSection.value.street,
                     building: addressSection.value.building,
-                    others: '',
-                    city: '',
                     parentClient: parentClient.value
                 },
                 commonItems: {}
