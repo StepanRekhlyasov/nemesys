@@ -70,7 +70,7 @@ export interface ApplicantBase {
   qualification?: ApplicantQualification[];
   totalYear?: string;
   address?: string;
-  classification?: string;
+  classification?: string[];
   currentStatusMonth?: string;
   deleted?: boolean;
   imageURL?: string;
