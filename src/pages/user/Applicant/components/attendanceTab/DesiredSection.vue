@@ -162,7 +162,7 @@
       </div>
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit && Array.isArray(applicant.meansCommuting)">
-          {{ applicant.meansCommuting.map((row)=> $t('applicant.attendant.meansCommutingOptions.' + row)).join(', ') }}
+          {{ applicant.meansCommuting.map((row)=> $t('applicant.attendant.meansCommutingOptions.' + row)).join('・') }}
         </span>
         <template v-if="desiredEdit">
           <q-checkbox dense outlined bg-color="white"
