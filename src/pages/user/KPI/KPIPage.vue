@@ -153,7 +153,7 @@ const media = ref<string>('');
 const dateRange = ref<{ from: string; to: string }>({ from: '', to: '' });
 const branch = ref('');
 const occupation = ref('');
-const month = ref('')
+const month = ref('');
 const user = ref('');
 const userListToShow = ref<{ value: string; label: string }[]>([]);
 const mediaListToShow = ref<{ value: string; label: string }[]>([]);
@@ -163,7 +163,7 @@ const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
   branch.value = '';
-  month.value = ''
+  month.value = '';
 };
 
 const loading = ref(false);
@@ -210,10 +210,12 @@ const getBranchList = async () => {
 
 async function getData() {
   if (mode.value == 'media') {
-      mediaListToShow.value = convertObjToIdNameList([
-        ...(await getAllmedia()),
-      ]);}
-  if ((dateRange.value.from == '' || dateRange.value.to == '') && mode.value !== 'day') {
+    mediaListToShow.value = convertObjToIdNameList([...(await getAllmedia())]);
+  }
+  if (
+    (dateRange.value.from == '' || dateRange.value.to == '') &&
+    mode.value !== 'day'
+  ) {
     rowData.value = [];
     return;
   }
@@ -223,7 +225,6 @@ async function getData() {
     // we need to care switching mode while loading
     const modeNow = mode.value;
     if (mode.value == 'day' && month.value) {
-      rowData.value = [];
       rowData.value = await getDailyReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
@@ -234,7 +235,6 @@ async function getData() {
       });
     }
     if (mode.value == 'branch' && item.value == 'applicationAttribute') {
-      rowData.value = [];
       rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
@@ -243,10 +243,9 @@ async function getData() {
         medias: [...(await getAllmedia())],
         isAverage: false,
         occupation: occupation.value,
-      });;
+      });
     } else if (mode.value == 'branch' && branch.value) {
-      rowData.value = [];
-      let rows = await getReport({
+      rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
@@ -256,11 +255,10 @@ async function getData() {
         isAverage: false,
         occupation: occupation.value,
       });
-      if (item.value == 'unitPrice') rows = devideByAmount(rows);
-      rowData.value = rows;
+      if (item.value == 'unitPrice')
+        rowData.value = devideByAmount(rowData.value);
     } else if (mode.value == 'branch' && occupation.value) {
-      rowData.value = [];
-      let rows = await getReport({
+      rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         queryNames: mediaItemList,
@@ -269,15 +267,11 @@ async function getData() {
         isAverage: false,
         occupation: occupation.value,
       });
-      if (item.value == 'unitPrice') rows = devideByAmount(rows);
-      rowData.value = rows;
-    } else if (mode.value == 'branch') {
-      rowData.value = [];
+      if (item.value == 'unitPrice')
+        rowData.value = devideByAmount(rowData.value);
     }
-
     if (mode.value == 'media' && item.value == 'applicationAttribute') {
-      rowData.value = [];
-      let rows = await getReport({
+      rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
@@ -286,10 +280,8 @@ async function getData() {
         isAverage: false,
         occupation: occupation.value,
       });
-      rowData.value = rows;
     } else if (mode.value == 'media' && media.value) {
-      rowData.value = [];
-      let rows = await getReport({
+      rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branches: Object.values(
@@ -303,8 +295,8 @@ async function getData() {
         isAverage: false,
         occupation: occupation.value,
       });
-      if (item.value == 'unitPrice') rows = devideByAmount(rows);
-      rowData.value = [...rows];
+      if (item.value == 'unitPrice')
+        rowData.value = devideByAmount(rowData.value);
     } else if (mode.value == 'media') {
       rowData.value = [];
     }
