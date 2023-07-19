@@ -385,14 +385,14 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
     {
       name: '',
       field: 'admissionRate',
-      label: t('KPI.tables.unitPrice.15'),
+      label: t('KPI.tables.unitPrice.16'),
       align: 'center',
       sortable: true,
     },
     {
       name: '',
       field: 'applicantsFixRate',
-      label: t('KPI.tables.unitPrice.15'),
+      label: t('KPI.tables.unitPrice.17'),
       align: 'center',
       sortable: true,
     },

@@ -5,6 +5,7 @@
 
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
+import { listToFixed } from '../reportUtil';
 import { useI18n } from 'vue-i18n';
 import { usecalcLeadtime } from 'src/stores/leadtime';
 import { chartOptionsLeadtime, columnsLeadtime } from './const';
@@ -60,7 +61,7 @@ const showLeadtime = async (
   organizationId: string
 ) => {
   if (!dateRange) return;
-  const dataAverage = await Leadtime.calcLeadtime(dateRange, organizationId);
+  const dataAverage = listToFixed(await Leadtime.calcLeadtime(dateRange, organizationId));
   dataToshow.value = [dataAverage];
 };
 
