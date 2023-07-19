@@ -370,8 +370,7 @@ onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
 });
 
-watch( () => data.value['route'],
-  async (newVal) => {
+watch(() => data.value['route'], async (newVal) => {
     if (newVal) {
       data.value['nearestStation'] = '';
       stationData.value = [];
@@ -379,8 +378,7 @@ watch( () => data.value['route'],
     }
   }
 )
-watch( () => desiredEdit.value,
-  (newVal) => {
+watch(() => desiredEdit.value, (newVal) => {
     if (newVal) {
       data.value['nearestStation'] = props.applicant['nearestStation'];
     }
