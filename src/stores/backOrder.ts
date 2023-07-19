@@ -264,6 +264,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   function getDistance(loc1: { lat: number; lon: number }, loc2: { lat: number; lon: number }) {
     const easrtRadiusInKm = 6371;
+    const accuracyVar = 0.165
     const dLat = degToRad(loc2.lat - loc1.lat);
     const dLon = degToRad(loc2.lon - loc1.lon);
     const a =
@@ -273,7 +274,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = easrtRadiusInKm * c + 0.165;
+    const distance = easrtRadiusInKm * c + accuracyVar;
     return Number(distance.toFixed(2));
   }
 
