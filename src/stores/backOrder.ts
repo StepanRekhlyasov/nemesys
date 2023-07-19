@@ -457,18 +457,6 @@ export const useBackOrder = defineStore('backOrder', () => {
 
     //commute distance
     commuteDistance = 1;
-    // let commuteTime = '';
-    // if(!staff.commutingTime){
-    //   commuteDistance = 1
-    // }
-    // else{
-    //   for(let i=0;i<staff.commutingTime.length-1;i++){
-        // if(staff.commuteDistance[i]!=' '){
-        //   commuteTime += staff.commuteDistance[i];
-        // }
-      // }
-      // commuteDistance = (Number(commuteTime)*0.5)/staff.distanceBusiness;
-    // }
     matchedData.commuteDistance.label = staff.distanceBusiness.toString();
     matchedData['commuteDistance'].value = Number((commuteDistance*100).toFixed(2));
 
