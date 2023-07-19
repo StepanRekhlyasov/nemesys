@@ -132,7 +132,8 @@
         <template v-slot:body-cell-occupationAdress="props">
           <q-td v-if="props.row.classification" :props="props" class="no-wrap q-pa-none">
             {{ t(`applicant.add.${props.row.occupation}`) }}/
-            {{ t(`applicant.list.info.classification.${props.row.classification.toLowerCase()}`) }}
+            {{props.row.classification.map(applicant =>
+              $t('applicant.list.info.classification.' + applicant.toLowerCase())).join(', ')}}
             <br />
             {{ props.row.address }}
           </q-td>
