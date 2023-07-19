@@ -350,8 +350,6 @@ export const useBackOrder = defineStore('backOrder', () => {
         matchedData['expReq'].label = staff.totalYear;
         if (Number(staff.totalYear) >= Number(bo.experience_req)) {
           expReq = 1;
-        } else {
-          expReq = Number(staff.totalYear) / Number(bo.experience_req);
         }
       }
     }
@@ -404,7 +402,7 @@ export const useBackOrder = defineStore('backOrder', () => {
         age--;
       }
       matchedData.agePercent.label = age.toString();
-      agePercent = age <= bo.upperAgeLimit ? 1 : bo.upperAgeLimit / age;
+      agePercent = age <= bo.upperAgeLimit ? 1 : 0;
     }
     matchedData['agePercent'].value = agePercent*100;
 
@@ -498,5 +496,5 @@ export const useBackOrder = defineStore('backOrder', () => {
     return applicantIds
   }
 
-  return { getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
+  return {stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
 })

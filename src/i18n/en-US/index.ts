@@ -80,6 +80,8 @@ export default {
     week: 'Week',
     month: 'Month',
     reputation: 'Reputation',
+    desiredBo:'BO',
+    desiredCondition:'Desired condition',
     months: {
       '1' : 'January',
       '2' : 'February',
@@ -819,6 +821,9 @@ export default {
       yearsExperience: 'Years of Experience',
       availableShift: 'Available Shift',
       station:'station',
+      commutesDisatnce:'Commuting distance',
+      shift:'Shift',
+      accuracy:'Accuracy',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',

@@ -2,84 +2,84 @@
   <table class="popup-table">
     <thead>
       <tr>
-        <th class="header bg-grey">items</th>
-        <th class="header bg-blue text-white">BO</th>
-        <th class="header bg-red text-white">desired</th>
-        <th class="header bg-yellow text-white">accuracy</th>
+        <th class="header bg-grey">{{$t('applicant.attendant.items')}}</th>
+        <th class="header bg-blue text-white">{{$t('common.desiredBo')}}</th>
+        <th class="header bg-red text-white">{{$t('common.desiredCondition')}}</th>
+        <th class="header bg-yellow text-white">{{$t('applicant.list.accuracy')}}</th>
       </tr>
     </thead>
     <tbody>
 
       <tr>
-        <td class="item-cell bg-grey">Possible days week</td>
-        <td>{{ props.bo.daysPerWeekList?props.bo.daysPerWeekList:'-' }}</td>
+        <td class="item-cell bg-grey">{{$t('applicant.attendant.daysToWork')}}</td>
+        <td>{{ props.bo.daysPerWeekList?getNumberFromString(props.bo.daysPerWeekList):'-' }}</td>
         <td>{{ props.staff.daysToWork?props.staff.daysToWork:'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].daysToWork.value }}%</td>
       </tr>
 
       <tr>
-        <td class="item-cell bg-grey">Available Days</td>
+        <td class="item-cell bg-grey">{{$t('applicant.attendant.daysPerWeek')}}</td>
         <td>
           <table class="sub-table">
             <tr>
-              <td>Monday</td>
-              <td>{{ props.bo.working_days_week.includes('monday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.monday')}}</th>
+              <td>{{props.bo.working_days_week?props.bo.working_days_week.includes('monday')?'△':'×':'-' }}</td>
             </tr>
             <tr>
-              <td>Tuesday</td>
-              <td>{{ props.bo.working_days_week.includes('tuesday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.tuesday')}}</th>
+              <td>{{props.bo.working_days_week? props.bo.working_days_week.includes('tuesday')?'△':'×':'-' }}</td>
             </tr>
             <tr>
-              <td>Wednesday</td>
-              <td>{{ props.bo.working_days_week.includes('wednesday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.wednesday')}}</th>
+              <td>{{props.bo.working_days_week?  props.bo.working_days_week.includes('wednesday')?'△':'×':'-' }}</td>
             </tr>
             <tr>
-              <td>Thursday</td>
-              <td>{{ props.bo.working_days_week.includes('thursday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.thursday')}}</th>
+              <td>{{ props.bo.working_days_week? props.bo.working_days_week.includes('thursday')?'△':'×':'-' }}</td>
             </tr>
             <tr>
-              <td>Friday</td>
-              <td>{{ props.bo.working_days_week.includes('friday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.friday')}}</th>
+              <td>{{ props.bo.working_days_week? props.bo.working_days_week.includes('friday')?'△':'×':'-' }}</td>
             </tr>
             <tr>
-              <td>Saturday</td>
-              <td>{{ props.bo.working_days_week.includes('saturday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.saturday')}}</th>
+              <td>{{ props.bo.working_days_week? props.bo.working_days_week.includes('saturday')?'△':'×':'-' }}</td>
             </tr>
             <tr>
-              <td>Sunday</td>
-              <td>{{ props.bo.working_days_week.includes('sunday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.sunday')}}</th>
+              <td>{{ props.bo.working_days_week? props.bo.working_days_week.includes('sunday')?'△':'×':'-' }}</td>
             </tr>
           </table>
         </td>
         <td>
           <table class="sub-table">
             <tr>
-              <td>Monday</td>
-              <td>{{ props.staff.daysPerWeek.includes('monday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.monday')}}</th>
+              <td>{{props.staff.daysPerWeek? props.staff.daysPerWeek.includes('monday')?'△':'×':'-'  }}</td>
             </tr>
             <tr>
-              <td>Tuesday</td>
-              <td>{{ props.staff.daysPerWeek.includes('tuesday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.tuesday')}}</th>
+              <td>{{props.staff.daysPerWeek? props.staff.daysPerWeek.includes('tuesday')?'△':'×':'-'  }}</td>
             </tr>
             <tr>
-              <td>Wednesday</td>
-              <td>{{ props.staff.daysPerWeek.includes('wednesday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.wednesday')}}</th>
+              <td>{{props.staff.daysPerWeek? props.staff.daysPerWeek.includes('wednesday')?'△':'×':'-'  }}</td>
             </tr>
             <tr>
-              <td>Thursday</td>
-              <td>{{ props.staff.daysPerWeek.includes('thursday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.thursday')}}</th>
+              <td>{{ props.staff.daysPerWeek?props.staff.daysPerWeek.includes('thursday')?'△':'×' :'-' }}</td>
             </tr>
             <tr>
-              <td>Friday</td>
-              <td>{{ props.staff.daysPerWeek.includes('friday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.friday')}}</th>
+              <td>{{props.staff.daysPerWeek? props.staff.daysPerWeek.includes('friday')?'△':'×' :'-' }}</td>
             </tr>
             <tr>
-              <td>Saturday</td>
-              <td>{{ props.staff.daysPerWeek.includes('saturday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.saturday')}}</th>
+              <td>{{ props.staff.daysPerWeek?props.staff.daysPerWeek.includes('saturday')?'△':'×' :'-' }}</td>
             </tr>
             <tr>
-              <td>Sunday</td>
-              <td>{{ props.staff.daysPerWeek.includes('sunday')?'△':'×' }}</td>
+              <th>{{$t('weekDay.sunday')}}</th>
+              <td>{{props.staff.daysPerWeek? props.staff.daysPerWeek.includes('sunday')?'△':'×':'-'  }}</td>
             </tr>
           </table>
         </td>
@@ -87,23 +87,23 @@
       </tr>
 
       <tr>
-        <td class="item-cell bg-grey">Shift</td>
+        <td class="item-cell bg-grey">{{$t('applicant.list.shift')}}</td>
         <td>
           <table class="sub-table">
             <tr>
-              <th>Day</th>
-              <td>{{ props.bo.workingHoursDay_min?'△':props.bo.workingHoursDay_max?'△':'×' }}</td>
-            </tr>
-            <tr>
-              <th>Early</th>
+              <th>{{$t('applicant.shift.workinghoursearly')}}</th>
               <td>{{ props.bo.workingHoursEarly_min?'△':props.bo.workingHoursEarly_max?'△':'×' }}</td>
             </tr>
             <tr>
-              <th>Late</th>
+              <th>{{$t('applicant.shift.workinghoursday')}}</th>
+              <td>{{ props.bo.workingHoursDay_min?'△':props.bo.workingHoursDay_max?'△':'×' }}</td>
+            </tr>
+            <tr>
+              <th>{{$t('applicant.shift.workinghourslate')}}</th>
               <td>{{ props.bo.workingHoursLate_min?'△':props.bo.workingHoursLate_max?'△':'×' }}</td>
             </tr>
             <tr>
-              <th>Night</th>
+              <th>{{$t('applicant.shift.workinghoursnight')}}</th>
               <td>{{ props.bo.workingHoursNight_min?'△':props.bo.workingHoursNight_max?'△':'×' }}</td>
             </tr>
           </table>
@@ -111,19 +111,19 @@
         <td>
           <table class="sub-table">
             <tr>
-              <th>Day</th>
-              <td>{{ props.staff.workingHoursDay===true || props.staff.workingHoursDay==='△'?'△':'×' }}</td>
-            </tr>
-            <tr>
-              <th>Early</th>
+              <th>{{$t('applicant.shift.workinghoursearly')}}</th>
               <td>{{ props.staff.workingHoursEarly===true || props.staff.workingHoursEarly==='△'?'△':'×' }}</td>
             </tr>
             <tr>
-              <th>Late</th>
+              <th>{{$t('applicant.shift.workinghoursday')}}</th>
+              <td>{{ props.staff.workingHoursDay===true || props.staff.workingHoursDay==='△'?'△':'×' }}</td>
+            </tr>
+            <tr>
+              <th>{{$t('applicant.shift.workinghourslate')}}</th>
               <td>{{ props.staff.workingHoursLate===true || props.staff.workingHoursLate==='△'?'△':'×' }}</td>
             </tr>
             <tr>
-              <th>Night</th>
+              <th>{{$t('applicant.shift.workinghoursnight')}}</th>
               <td>{{ props.staff.workingHoursNight===true || props.staff.workingHoursNight==='△'?'△':'×' }}</td>
             </tr>
           </table>
@@ -132,31 +132,30 @@
       </tr>
 
       <tr>
-        <td class="item-cell bg-grey">commute distance</td>
+        <td class="item-cell bg-grey">{{$t('applicant.list.commutesDisatnce')}}</td>
         <td>{{ props.staff.distanceBusiness }}Km</td>
         <td>-</td>
         <td>{{ props.matchedData[props.staff.id].commuteDistance.value }}%</td>
       </tr>
 
       <tr>
-        <td class="item-cell bg-grey">Experience required</td>
+        <td class="item-cell bg-grey">{{$t('applicant.list.yearsExperience')}}</td>
         <td>{{ props.bo.experience_req?props.bo.experience_req + ` ${$t('common.year')}`:'-' }}</td>
         <td>{{ props.staff.totalYear?props.staff.totalYear + ` ${$t('common.year')}`:'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].expReq.value }}%</td>
       </tr>
 
       <tr>
-        <td class="item-cell bg-grey">Age</td>
+        <td class="item-cell bg-grey">{{$t('common.age')}}</td>
         <td>{{ props.bo.upperAgeLimit?props.bo.upperAgeLimit + ` ${$t('common.year')}`:'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].agePercent.label + ` ${$t('common.year')}` }}</td>
         <td>{{ props.matchedData[props.staff.id].agePercent.value }}%</td>
       </tr>
 
       <tr>
-        <td class="item-cell bg-grey">Qualification</td>
-        <td>{{ props.bo.qualifications }}</td>
-        <td v-if="props.matchedData[staff.id].qualification==100">{{ props.bo.qualifications }}</td>
-        <td v-else>{{ props.staff.qualification[0]}}</td>
+        <td class="item-cell bg-grey">{{$t('applicant.list.qualification')}}</td>
+        <td>{{ $t('applicant.qualification.'+props.bo.qualifications) }}</td>
+        <td>{{ props.staff.qualification.map(q => $t('applicant.qualification.' + q)).join(', ') }}</td>
         <td>{{ props.matchedData[props.staff.id].qualification.value }}%</td>
       </tr>
 
@@ -166,6 +165,7 @@
 
 <script lang="ts" setup>
 import { DocumentData } from 'firebase/firestore';
+import { useBackOrder } from 'src/stores/backOrder';
 
 const props = defineProps<{
   bo: DocumentData,
@@ -173,6 +173,11 @@ const props = defineProps<{
   matchedData,
 }>()
 
+const backOrderStore = useBackOrder();
+
+const getNumberFromString = (number) => {
+  return backOrderStore.stringToNumber(number);
+}
 
 </script>
 

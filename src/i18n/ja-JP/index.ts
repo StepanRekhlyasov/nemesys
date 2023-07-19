@@ -80,6 +80,8 @@ export default {
     week: '週',
     month: '月',
     reputation: '名',
+    desiredBo:'BO情報',
+    desiredCondition:'希望条件',
     months: {
       '1' : '1月',
       '2' : '2月',
@@ -814,6 +816,9 @@ export default {
       yearsExperience: '経験年数',
       availableShift: '勤務可能シフト',
       station:'駅',
+      commutesDisatnce:'通勤距離',
+      shift:'シフト',
+      accuracy:'精度',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
