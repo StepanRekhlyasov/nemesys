@@ -106,8 +106,10 @@ export default {
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
     notPossible: '不可',
-    can: '就業中禁煙可能',
-    cant: '就業中禁煙不可',
+    can: '可',
+    cant: '不可',
+    type: '種類',
+    stop: '就業中禁煙',
   },
   marriedStatus: {
     married: '既婚',

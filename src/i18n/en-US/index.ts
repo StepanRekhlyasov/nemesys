@@ -106,8 +106,10 @@ export default {
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
     notPossible: 'Not possible',
-    can: 'Can stop smoking while working',
-    cant: 'Cannot stop smoking while working',
+    can: 'I can',
+    cant: 'I can\'t',
+    type: 'Cigarettes type',
+    stop: 'Can you stop smoking during work?',
   },
   marriedStatus: {
     married: 'Married',
