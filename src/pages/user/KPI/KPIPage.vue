@@ -147,11 +147,11 @@ import { useMedia } from 'src/stores/media';
 const { getReport, getDailyReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
-const dummyDataDateRange = { from: '1900/01/01', to: '1900/12/31' };
-const dummyDate = '1900/07/01';
-const day = ref(dummyDate);
-const media = ref<string | undefined>(undefined);
-const dateRange = ref(dummyDataDateRange);
+// const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
+// const dummyDate = '1900/07/01';
+const day = ref('');
+const media = ref<string>('');
+const dateRange = ref<{ from: string; to: string }>({ from: '', to: '' });
 const branch = ref('');
 const occupation = ref('');
 const user = ref('');
@@ -162,10 +162,8 @@ const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
-  day.value =  dummyDate;
-  dateRange.value = dummyDataDateRange;
+  day.value = '';
   branch.value = '';
-
 };
 
 const loading = ref(false);
@@ -211,8 +209,12 @@ const getBranchList = async () => {
 };
 
 async function getData() {
+  if ((dateRange.value.from == '' || dateRange.value.to == '') && mode.value !== 'day') {
+    rowData.value = [];
+    return;
+  }
   if (organizationStore.currentOrganizationId) {
-    rowData.value = []
+    rowData.value = [];
     loading.value = true;
     // we need to care switching mode while loading
     const modeNow = mode.value;

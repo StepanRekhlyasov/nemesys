@@ -56,15 +56,31 @@ export const applicationAttributeItemList = [
 ] as const;
 
 export const rateCalcuPattern = [
-  { before: 'applicants', after: 'validApplicants' ,name:'validApplicantsRate'},
-  { before: 'validApplicants', after: 'contactApplicants' ,name:'contactApplicantsRate'},
-  { before: 'contactApplicants', after: 'attractionApplicants' ,name:'attractionApplicantsRate'},
-  { before: 'attractionApplicants', after: 'attendApplicants' ,name:'attendApplicantsRate'},
-  { before: 'attendApplicants', after: 'fix' ,name:'fixRate'},
-  { before: 'fix', after: 'inspection' ,name:'inspectionRate'},
-  { before: 'inspection', after: 'offer' ,name:'offerRate'},
-  { before: 'offer', after: 'admission' ,name:'admissionRate'},
-  {before:'applicants',after:'fix',name:'applicantsFixRate'},
+  {
+    before: 'applicants',
+    after: 'validApplicants',
+    name: 'validApplicantsRate',
+  },
+  {
+    before: 'validApplicants',
+    after: 'contactApplicants',
+    name: 'contactApplicantsRate',
+  },
+  {
+    before: 'contactApplicants',
+    after: 'attractionApplicants',
+    name: 'attractionApplicantsRate',
+  },
+  {
+    before: 'attractionApplicants',
+    after: 'attendApplicants',
+    name: 'attendApplicantsRate',
+  },
+  { before: 'attendApplicants', after: 'fix', name: 'fixRate' },
+  { before: 'fix', after: 'inspection', name: 'inspectionRate' },
+  { before: 'inspection', after: 'offer', name: 'offerRate' },
+  { before: 'offer', after: 'admission', name: 'admissionRate' },
+  { before: 'applicants', after: 'fix', name: 'applicantsFixRate' },
 ];
 export const dayItemList = [
   { queryName: 'applicants' },

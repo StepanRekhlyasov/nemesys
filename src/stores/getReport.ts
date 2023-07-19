@@ -282,7 +282,9 @@ const getQuery = async (
   reportState: ReportState,
   queryName: {
     queryName: typeOfQuery;
-    filtersInput?: readonly [QueryFieldFilterConstraint] |QueryFieldFilterConstraint[];
+    filtersInput?:
+      | readonly [QueryFieldFilterConstraint]
+      | QueryFieldFilterConstraint[];
     fieldName?: string;
   },
   db: Firestore,
@@ -338,30 +340,36 @@ const getQuery = async (
 
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
-    if (fromDateTrue.getMonth() == toDateTrue.getMonth()) {
-      const amount = docSnap.docs[0].data().amount;
+    if (fromDateTrue.getMonth() == toDateTrue.getMonth() && docSnap.docs.length == 1) {
+      const amount = docSnap.docs[0].data().amount ? docSnap.docs[0].data().amount :0;
       const rate = proratedRate(fromDateTrue, fromDateTrue, toDateTrue);
       return amount * rate;
     } else {
       let amountSum = 0;
       docSnap.docs.forEach((doc, index) => {
         let amount = 0;
-        if (index == 0) {
-          const rate = proratedRate(
-            fromDateTrue,
-            fromDateTrue,
-            new Date(fromDateTrue.getFullYear(), fromDateTrue.getMonth() + 1, 0)
-          );
-          amount = doc.data().amount * rate;
-        } else if (index == docSnap.docs.length - 1) {
-          const rate = proratedRate(
-            toDateTrue,
-            new Date(toDateTrue.getFullYear(), toDateTrue.getMonth(), 1),
-            toDateTrue
-          );
-          amount = doc.data().amount * rate;
-        } else {
-          amount = doc.data().amount;
+        if (doc.data().amount) {
+          if (index == 0) {
+            const rate = proratedRate(
+              fromDateTrue,
+              fromDateTrue,
+              new Date(
+                fromDateTrue.getFullYear(),
+                fromDateTrue.getMonth() + 1,
+                0
+              )
+            );
+            amount = doc.data().amount * rate;
+          } else if (index == docSnap.docs.length - 1) {
+            const rate = proratedRate(
+              toDateTrue,
+              new Date(toDateTrue.getFullYear(), toDateTrue.getMonth(), 1),
+              toDateTrue
+            );
+            amount = doc.data().amount * rate;
+          } else {
+            amount = doc.data().amount;
+          }
         }
         amountSum += amount;
       });
