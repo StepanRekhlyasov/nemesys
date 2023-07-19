@@ -35,7 +35,7 @@ const series: ComputedRef<
 
 const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.unitPriceTransition'),
