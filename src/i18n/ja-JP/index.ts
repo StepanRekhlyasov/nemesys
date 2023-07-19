@@ -160,6 +160,7 @@ export default {
     budgetControl: '予算管理',
     SAA: '営業活動集計',
     KPI: 'KPI',
+    faxHistory: 'FAX送信履歴',
     admin: {
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
@@ -1595,7 +1596,8 @@ export default {
       }
     },
     fax: {
-      transmissionConfirmation: '送信内容確認',
+      confirmAction:'送信内容確認',
+      transmissionConfirmation: 'この内容で送信する',
       applicantLinkage: '応募者紐付け',
       clientCategoryNG: 'NGクライアント種別',
       clientFacilityNG: 'NGクライアント・施設',
@@ -1612,6 +1614,25 @@ export default {
       refinementConditions: '絞り込み条件',
       maxTransmissions: '最大送信件数',
       faxPRSheet: 'PRシートをFAX送信します。',
+      transMissionConfirmation:'送信確認画面へ移動します。',
+      areYouSure: 'よろしいですか？',
+      list: {
+        senderId: '送信ID',
+        sender: '送信者',
+        jobSeeker: '求職者',
+        attachment: '添付ファイル',
+        numItemsSent: '送信対象件数',
+        numDestinations: '正常宛先件数',
+        numTransmissions: '実送信件数',
+        sentDateTime: '送信日時',
+        numPages: '一送信件数',
+        selectedCF: '宛先事業所数',
+        numCFsFax: '正常宛先事業所数',
+        jobApplicantName: '求職者名',
+        branch: '支店',
+        responsiblePerson: '担当',
+        sendDate: '送信日',
+      }
     }
   },
   inquiry: {
