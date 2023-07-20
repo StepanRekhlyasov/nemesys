@@ -36,9 +36,9 @@
       </template>
 
       <template v-slot:body-cell-experience="props">
-        <q-td :props="props">
+        <q-td :props="props" style="white-space: normal;min-width: 320px;">
           {{ props.row.experience }}<br />
-          {{ props.row.facilityType }}<br />
+          {{ Array.isArray(props.row.facilityType) ? props.row.facilityType.map((row : string)=>$t('client.add.facilityOp.'+row)).join(', ') : props.row.facilityType }}<br />
         </q-td>
       </template>
 
