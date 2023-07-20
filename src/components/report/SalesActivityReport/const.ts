@@ -9,7 +9,8 @@ export const itemList = [
   { queryName: 'admission' },
   { queryName: 'BO' },
 ] as const;
-
+export const donutGraphItem = [{ queryName: 'nurse' }, { queryName: 'nursingCare' }] as const;
+export const donutLabelNames =[t('client.add.nurse'), t('client.add.nursing')] as const
 export const dataNames = [
   'report.companyTotal',
   'report.CVR',

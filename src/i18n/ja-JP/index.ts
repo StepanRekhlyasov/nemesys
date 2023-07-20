@@ -1774,7 +1774,8 @@ export default {
       unitPriceTransition:'単価推移',
       mediaApplicationUnitPrice:'媒体別応募単価',
       budget:'予算',
-
+      companyBOStatus:'自社BO状況',
+      AverageBOStatus:'平均BO状況',
     }
   },
   billing: {
