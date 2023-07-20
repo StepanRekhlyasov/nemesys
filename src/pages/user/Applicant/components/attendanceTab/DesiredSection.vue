@@ -6,7 +6,7 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-md blue">
         <span v-if="!desiredEdit">{{ data['timeAvailable'] ? myDateFormat(applicant.timeToWork) : myDateFormat(applicant.attendingDate) }}</span>
         <template v-if="desiredEdit">
           <q-checkbox v-model="data['timeAvailable']"
@@ -49,6 +49,7 @@
             :disable="loading"
             :options="days"
             v-model="data['daysPerWeek']"
+            class="flex"
           />
         </template>
       </div>
@@ -63,15 +64,17 @@
             :disable="loading"
             :options="specialDays"
             v-model="data['specialDay']"
+            class="flex"
           />
         </template>
       </div>
     </div>
 
     <div class="row q-pb-sm">
-      <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.availableShift') }}
       </div>
+      <div class="col-9 flex">
       <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('office.earlyShift') }}
       </div>
@@ -83,57 +86,58 @@
           :options="shiftOptions"
           emit-value
           dense
-          style="width:50px"
+          style="width:40px"
         />
       </div>
-      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('office.dayShift') }}
-      </div>
-      <div class="col-1 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursDay }}</span>
-        <q-select
-          v-if="desiredEdit"
-          v-model="data['workingHoursDay']"
-          :options="shiftOptions"
-          emit-value
-          dense
-          style="width:50px"
-        />
-      </div>
-      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('office.lateShift') }}
-      </div>
-      <div class="col-1 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursLate }}</span>
-        <q-select
-          v-if="desiredEdit"
-          v-model="data['workingHoursLate']"
-          :options="shiftOptions"
-          emit-value
-          dense
-          style="width:50px;"
-        />
-      </div>
-      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('office.nightShift') }}
-      </div>
-      <div class="col-1 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.workingHoursNight }}</span>
-        <q-select
-          v-if="desiredEdit"
-          v-model="data['workingHoursNight']"
-          :options="shiftOptions"
-          emit-value
-          dense
-          style="width:50px;"
-        />
-      </div>
-      <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.info.shortTime') }}
-      </div>
-      <div class="col-1 q-pl-md blue self-center">
-        <span v-if="!desiredEdit">{{ applicant.shortTime ? '✓' : '×' }}</span>
-        <q-checkbox v-if="desiredEdit" v-model="data['shortTime']" />
+        <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+          {{ $t('office.dayShift') }}
+        </div>
+        <div class="col-1 q-pl-md blue self-center">
+          <span v-if="!desiredEdit">{{ applicant.workingHoursDay }}</span>
+          <q-select
+            v-if="desiredEdit"
+            v-model="data['workingHoursDay']"
+            :options="shiftOptions"
+            emit-value
+            dense
+            style="width:40px"
+          />
+        </div>
+        <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+          {{ $t('office.lateShift') }}
+        </div>
+        <div class="col-1 q-pl-md blue self-center">
+          <span v-if="!desiredEdit">{{ applicant.workingHoursLate }}</span>
+          <q-select
+            v-if="desiredEdit"
+            v-model="data['workingHoursLate']"
+            :options="shiftOptions"
+            emit-value
+            dense
+            style="width:40px;"
+          />
+        </div>
+        <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+          {{ $t('office.nightShift') }}
+        </div>
+        <div class="col-1 q-pl-md blue self-center">
+          <span v-if="!desiredEdit">{{ applicant.workingHoursNight }}</span>
+          <q-select
+            v-if="desiredEdit"
+            v-model="data['workingHoursNight']"
+            :options="shiftOptions"
+            emit-value
+            dense
+            style="width:40px;"
+          />
+        </div>
+        <div class="col-1 q-pl-md text-right text-blue text-weight-regular self-center">
+          {{ $t('applicant.list.info.shortTime') }}
+        </div>
+        <div class="col-1 q-pl-md blue self-center">
+          <span v-if="!desiredEdit">{{ applicant.shortTime ? '✓' : '×' }}</span>
+          <q-checkbox v-if="desiredEdit" v-model="data['shortTime']" />
+        </div>
       </div>
 
     </div>
@@ -160,7 +164,7 @@
         </span>
         <template v-if="desiredEdit">
           <q-checkbox dense outlined bg-color="white"
-            v-model="data['meansCommuting']" :disable="loading" v-for="option in meansCommutingOptions" :val="option.value" :label="option.label" :key="option.value" />
+            v-model="data['meansCommuting']" :disable="loading" v-for="option in meansCommutingOptions" :val="option.value" :label="option.label" :key="option.value" class="q-mr-sm" />
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -242,10 +246,16 @@
         {{ $t('applicant.attendant.hourlyRate') }}
       </div>
       <div class="col-3 q-pl-md blue ">
-        <span v-if="!desiredEdit">{{ applicant.hourlyRate?applicant.hourlyRate+' '+$t('common.yen'):''}}</span>
+        <span v-if="!desiredEdit">{{ applicant.hourlyRate?parseInt(applicant.hourlyRate).toLocaleString('en-US')+' '+$t('common.yen'):''}}</span>
         <div v-if="desiredEdit" class="flex items-center no-wrap">
-          <q-input dense outlined bg-color="white" min="0"
-            v-model="data['hourlyRate']" :disable="loading" type="number"/>
+          <q-input 
+            dense 
+            outlined 
+            bg-color="white" 
+            min="0"
+            v-model="data['hourlyRate']" 
+            :disable="loading" 
+          />
           <span class="q-ml-sm">{{ $t('common.yen') }}</span>
         </div>
       </div>

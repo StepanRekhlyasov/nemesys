@@ -81,7 +81,8 @@ export const useInquiry = defineStore('inquiry', () => {
                 type: item.type
               }
             }),
-            companyID: `${organisation.code} ${organisation.name}`,
+            companyID: organisation.code,
+            companyName: organisation.name,
             issueDate: findTheLastDate(recievedMessageDate),
             answerDate: findTheLastDate(answeredMessageDate),
         }]
