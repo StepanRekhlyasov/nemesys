@@ -53,7 +53,7 @@ export interface mediaBasedReportState extends basedReportState {
 
 export interface branchBasedReportState extends basedReportState {
   medias: Media[];
-  branch: string;
+  branch?: string;
 }
 
 export interface userBasedReportState extends basedReportState {
