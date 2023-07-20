@@ -10,30 +10,30 @@
   </div>
   <div class="row">
     <div class="col">
-      <ApplicantReportLeftDownChart
+      <SalesActivityReportLeftDownChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
         :branch_user_list="branch_user_list"
         :graph_type="graph_type"
-      ></ApplicantReportLeftDownChart>
+      ></SalesActivityReportLeftDownChart>
     </div>
     <div class="col">
-      <ApplicantReportRightDownChart
+      <SalesActivityReportRightDownChart
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
         :branch_user_list="branch_user_list"
         :graph_type="graph_type"
-      ></ApplicantReportRightDownChart>
+      ></SalesActivityReportRightDownChart>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import SalesActivityReportUpLeftChart from './SalesActivityReportUpLeftChart.vue';
-import ApplicantReportRightDownChart from './ApplicantReportRightDownChart.vue';
-import ApplicantReportLeftDownChart from './ApplicantReportLeftDownChart.vue';
+import SalesActivityReportRightDownChart from './SalesActivityReportRightDownChart.vue';
+import SalesActivityReportLeftDownChart from './SalesActivityReportLeftDownChart.vue';
 import { graphType } from '../Models';
 
 defineProps<{
