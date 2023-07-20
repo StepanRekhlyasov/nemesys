@@ -6,7 +6,7 @@
           icon="add" />
         <q-btn :label="$t('client.list.settingFromArea')" unelevated color="primary" class="no-shadow text-weight-bold"
           icon="add" />
-        <q-btn :label="$t('client.list.searchByCondition')" outline color="primary" class="text-weight-bold" />
+        <q-btn :label="$t('client.list.searchByCondition')" type="submit" outline color="primary" class="text-weight-bold" />
       </q-card-actions>
       <q-separator />
 
@@ -400,7 +400,7 @@ export default {
     );
 
     const searchClients = async () => {
-      return false;
+      console.log(backOrderData)
     };
 
     return {

@@ -5,7 +5,11 @@ import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
 import SearchField from '../SearchField.vue';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { useRouter} from 'vue-router';
 
+const router = useRouter()
+const clientFactoryStore = useClientFactory()
 const props = defineProps<{
     theme: string
 }>()
@@ -128,9 +132,15 @@ const searchClients = async () => {
                 timeout: 30000,
             }
         )
-
         officeData.value = response.data
         isLoadingProgress.value = false
+        clientFactoryStore.condition = true
+        clientFactoryStore.selectedCFsId = []
+        officeData.value.forEach((item)=>{
+            const id:string = item.id
+            clientFactoryStore.selectedCFsId.push(id)
+        })
+        router.push('/client-factories')
         emit('getClients', response.data)
     } catch(error) {
         isLoadingProgress.value = false

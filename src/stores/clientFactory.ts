@@ -454,8 +454,10 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         return headClientFactory;
     }
+    const condition = false
     const selectedCFsId:string[] = []
     return {
+        condition,
         selectedCFsId,
         clientFactories,
         modifiedCFs,

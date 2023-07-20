@@ -17,7 +17,7 @@ const hideDrawer = () => {
     emit('hideDrawer')
 }
 const onGetGlients = (clients: Client[]) => {
-    console.log(clients)
+    // console.log(clients)
 }
 </script>
 

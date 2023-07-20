@@ -27,7 +27,7 @@ const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
 
 const selectedCFsId = ref<string[]>(clientFactoryStore.selectedCFsId);
-
+const condition = ref<boolean>(clientFactoryStore.condition);
 // drawers
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
@@ -46,10 +46,14 @@ const paginatedTableRows = computed(() => {
     const end = start + pagination.value.rowsPerPage;
     return tableRows.value.slice(start, end);
 });
+
 const resetSelectedCFsId = () =>{
+    condition.value = false
+    clientFactoryStore.condition = false
     selectedCFsId.value = []
     clientFactoryStore.selectedCFsId = []
 }
+
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
 
@@ -73,16 +77,15 @@ watch([clients], () => {
 
 }, { deep: true, immediate: true });
 
-watch([clientFactories,selectedCFsId], () => {
+watch([clientFactories,condition], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    if(selectedCFsId.value.length>0){
+    if(condition.value){
         tableRows.value = clientFactoriesToTableRows(clientFactories.value).filter((item)=>selectedCFsId.value.includes(item.id))
     }
     else{
         tableRows.value = clientFactoriesToTableRows(clientFactories.value)
     }
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
-
 }, { deep: true, immediate: true })
 
 // client-factory drawer
@@ -142,7 +145,7 @@ const openFaxDrawer = (id:string) =>{
             </q-card-section>
             <q-separator color="grey-4" size="2px" />
             <CFPageActions
-                :isReset="selectedCFsId.length>0"
+                :isReset="condition"
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
                 @open-fax-drawer="openNewFaxDrawer"
