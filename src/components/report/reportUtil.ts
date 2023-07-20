@@ -36,6 +36,6 @@ export const getListFromObject = (
 export const listToFixed = (arr: (number|string)[],fix=2) => {
   return arr.map((num) => {
     if (typeof num === 'string') return num;
-    return Number(num.toFixed(fix));
+    return Math.floor(num * Math.pow(10, fix)) / Math.pow(10, fix);
   });
 };
