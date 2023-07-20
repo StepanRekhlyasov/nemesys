@@ -118,7 +118,7 @@
                               @save="addNewOption(element, $event)">
                               <q-input v-model="scope.value" dense autofocus />
                           </q-popup-edit></td>
-                          <td>{{ selectedCategoryJobDataCount}}</td>
+                          <td></td>
 
                      </tr>
                    </template>
@@ -132,7 +132,7 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount ,computed} from 'vue';
+import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
@@ -240,11 +240,6 @@ const saveJobItem = async () => {
 
 }
 
-const selectedCategoryJobDataCount = computed(() => {
-  const selectedCategory = jobItem.value.content;
-  const selectedJobData = optionItem.value.filter(data => data.content === selectedCategory);
-  return selectedJobData.length;
-});
 
 const addNewItem = () => {
   optionItem.value.unshift({ 'name': '' } as never)
