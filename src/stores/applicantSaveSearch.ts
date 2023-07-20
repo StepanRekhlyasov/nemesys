@@ -1,16 +1,13 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, doc, DocumentData, DocumentReference, getDocs, query, where } from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp,doc, DocumentData,DocumentReference} from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { useOrganization } from './organization';
 
-export const useApplicantSaveSearch = defineStore('applicantSaveSearch', () => {
+export const useApplicantSaveSearch = defineStore('applicantSaveSearch',()=>{
 
-  const db = getFirestore();
-  const organization = useOrganization()
+const db = getFirestore();
 
-  async function saveSearch(data: DocumentData) {
-    let docRef: DocumentReference<DocumentData>;
-    if (!data['id']) {
-      data['organizationId'] = organization.currentOrganizationId
+  async function saveSearch(data:DocumentData) {
+    let docRef:DocumentReference<DocumentData>;
+    if (!data['id']){
       data['created_at'] = serverTimestamp();
       data['deleted'] = false;
       docRef = doc(collection(db, 'applicantSaveSearch'));
@@ -25,12 +22,5 @@ export const useApplicantSaveSearch = defineStore('applicantSaveSearch', () => {
     return true
   }
 
-
-  async function getSaveSearch() {
-    const collectionRef = query(collection(db, 'applicantSaveSearch'), where('organizationId', '==', organization.currentOrganizationId));
-    const querySnapshot = await getDocs(collectionRef);
-    return querySnapshot.docs.map(doc => doc.data());
-  }
-
-  return { saveSearch, getSaveSearch }
+  return {saveSearch}
 })
