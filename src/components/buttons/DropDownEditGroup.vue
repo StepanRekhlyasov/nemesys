@@ -1,24 +1,27 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { ref, defineEmits, withDefaults } from 'vue'
+
 const show = ref(false)
 
 const { t } = useI18n({ useScope: 'global' });
 
 withDefaults(defineProps<{
-    isEdit: boolean
-    isLabelSquare?: boolean
-    isButton?: boolean
-    label?: string
-    isDisabledButton?: boolean
-    isWithoutCancel?: boolean
-    theme?: string
+  isEdit: boolean
+  isLabelSquare?: boolean
+  isButton?: boolean
+  label?: string
+  isDisabledButton?: boolean
+  isWithoutCancel?: boolean
+  theme?: string
+  isHiddenActions?:boolean
 }>(), {
   isButton: true,
   isDisabledButton: false,
   isLabelSquare: false,
   isWithoutCancel: false,
-  theme: 'primary'
+  theme: 'primary',
+  isHiddenActions:false,
 })
 
 const emit = defineEmits<{
@@ -30,37 +33,31 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="row justify-between">
-        <div class="row items-center">
-          <div class="row items-center">
-            <div v-if="isLabelSquare" :class="`bg-${theme} square`"></div>
-            <span :class="`text-${theme} subtitle`">{{ label }}</span>
-          </div>
-          <div v-if="isButton">
-            <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
-              class="text-grey-9" @click="show = false" v-if="show" />
-            <q-btn :label="t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
-              class="text-grey-9" @click="show = true" v-else />
-          </div>
-        </div>
-        <div class="col-3 text-right" v-if="show || !isButton">
-          <q-btn v-if="!isEdit" 
-            :label="t('common.edit')" :color="theme" 
-            outline  icon="edit" @click="emit('openEdit')" 
-            class="no-shadow q-ml-lg" size="sm" :disable="isDisabledButton" />
-          <q-btn v-if="isEdit" 
-            :label="t('common.save')" :color="theme" 
-            @click="emit('onSave')" size="sm" 
-            :disable="isDisabledButton" />
-          <q-btn v-if="(isEdit && !isWithoutCancel)" 
-            :label="t('common.cancel')" class="q-ml-md" 
-            outline :color="theme" @click="emit('closeEdit')"
-            size="sm" />
-        </div>
+  <div class="row justify-between">
+    <div class="row items-center">
+      <div class="row items-center">
+        <div v-if="isLabelSquare" :class="`bg-${theme} square`"></div>
+        <span :class="`text-${theme} subtitle`">{{ label }}</span>
+      </div>
+      <div v-if="isButton">
+        <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md" class="text-grey-9"
+          @click="show = false" v-if="show" />
+        <q-btn :label="t('common.openArea')" :icon="'arrow_drop_down'" flat size="md" class="text-grey-9"
+          @click="show = true" v-else />
+      </div>
     </div>
-    <template v-if="show">
-        <slot></slot>
-    </template>
+    <div class="col-3 text-right" v-if="!isHiddenActions && (show || !isButton)">
+      <q-btn v-if="!isEdit" :label="t('common.edit')" :color="theme" outline icon="edit" @click="emit('openEdit')"
+        class="no-shadow q-ml-lg" size="sm" :disable="isDisabledButton" />
+      <q-btn v-if="isEdit" :label="t('common.save')" :color="theme" @click="emit('onSave')" size="sm"
+        :disable="isDisabledButton" />
+      <q-btn v-if="(isEdit && !isWithoutCancel)" :label="t('common.cancel')" class="q-ml-md" outline :color="theme"
+        @click="emit('closeEdit')" size="sm" />
+    </div>
+  </div>
+  <template v-if="show">
+    <slot></slot>
+  </template>
 </template>
 
 <style lang="scss" scoped>

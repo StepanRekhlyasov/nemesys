@@ -14,12 +14,13 @@ import { useMedia } from 'stores/media';
 import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
 import { Media } from 'src/shared/model/Media.model';
-
+import { i18n } from 'boot/i18n';
 const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[]> = ref([]);
 const media = useMedia();
 const applicant = useApplicant();
 const mediaList = ref<Media[]>([]);
+const { t } = i18n.global;
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
@@ -29,7 +30,13 @@ const props = defineProps<{
 }>();
 const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
+    title:{
+      text: t('report.title.budget'),
+      style: {
+        color: 'gray',
+      },
+    },
     labels: [...mediaList.value.map((media) => media.name)],
   };
 });
