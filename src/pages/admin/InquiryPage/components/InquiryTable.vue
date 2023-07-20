@@ -59,7 +59,7 @@
       name: 'number',
       label: 'No.',
       field: 'number',
-      sortable: true,
+      sortable: false,
   }, {
       name: 'status',
       required: true,
@@ -101,14 +101,14 @@
       label: t('inquiry.table.recievedDate'),
       field: 'issueDate',
       align: 'left',
-      sortable: true,
+      sortable: false,
   }, {
       name: 'responseDate',
       required: true,
       label: t('inquiry.table.responseDate'),
       field: 'answerDate',
       align: 'left',
-      sortable: true,
+      sortable: false,
   }])
 
   const pagination = ref({
