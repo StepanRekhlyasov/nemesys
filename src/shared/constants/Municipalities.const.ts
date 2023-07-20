@@ -2,7 +2,7 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 
 export const getMunicipalities = async (prefecture: string) => {
   const db = getFirestore();
-  
+
   const docRef = doc(db, 'metadata', 'regionData');
   const docData = await getDoc(docRef);
 
@@ -16,11 +16,19 @@ export const getMunicipalities = async (prefecture: string) => {
         return pref.hasOwnProperty(prefecture)
       })
 
-      if(foundPrefecture) {
+      if (foundPrefecture) {
         municipalitiesValue = foundPrefecture[prefecture]
       }
     })
   }
 
   return municipalitiesValue
+}
+
+export const getAllMunicipalities = async () => {
+  const db = getFirestore();
+
+  const docRef = doc(db, 'metadata', 'regionData');
+  const docData = await getDoc(docRef);
+  return docData.data();
 }
