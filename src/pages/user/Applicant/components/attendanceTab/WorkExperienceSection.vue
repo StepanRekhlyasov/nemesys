@@ -45,7 +45,8 @@
       <template v-slot:body-cell-years="props">
         <q-td :props="props">
           <template v-if="(props.row.startMonth instanceof Timestamp) && (props.row.endMonth instanceof Timestamp)">
-            {{ differentDateYear(toDate(props.row.startMonth), toDate(props.row.endMonth)) + ' ' + $t('common.year') }}
+            {{ Math.floor(differentDateMonth(toDate(props.row.startMonth), toDate(props.row.endMonth))/12) + ' ' + $t('common.year') }}
+            {{ differentDateMonth(toDate(props.row.startMonth), toDate(props.row.endMonth))%12 + ' ' + $t('common.month').toLowerCase() }}
           </template>
         </q-td>
       </template>
@@ -85,11 +86,9 @@
         {{ $t('applicant.attendant.totalYearsExperience') }}
       </div>
 
-      <div class="row q-pb-sm">
+      <div class="row">
         <div class="col-4 q-pl-md blue self-center">
-          <span v-if="!edit">{{ applicant.totalYear? applicant.totalYear + $t('common.year') : ''}}</span>
-          <q-input v-if="edit" dense outlined bg-color="white" type="number"
-            v-model="data['totalYear']" :disable="loading" />
+          <span v-if="!edit" style="white-space: nowrap;">{{ totalYear() }}</span>
         </div>
       </div>
     </div>
@@ -110,7 +109,7 @@ import { useI18n } from 'vue-i18n';
 import { collection, getFirestore, onSnapshot, query, where, Timestamp } from '@firebase/firestore';
 import workExperienceForm from './WorkExperienceForm.vue';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, BackOrderModel } from 'src/shared/model';
-import { differentDateYear, myDateFormat, toDate } from 'src/shared/utils/utils';
+import { differentDateMonth, myDateFormat, toDate } from 'src/shared/utils/utils';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useApplicant } from 'src/stores/applicant';
 import { workExpColumns as columns } from 'src/shared/constants/Applicant.const';
@@ -144,6 +143,17 @@ const db = getFirestore();
 
 load();
 resetData();
+function totalYear() {
+  let years = 0
+  let month = 0
+  experienceData.value.forEach((row)=>{
+    if(row.startMonth && row.endMonth){
+      years += Math.floor(differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))/12)
+      month += differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))%12
+    }
+  })
+  return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.month').toLowerCase() 
+}
 
 function resetData() {
   data.value = {
