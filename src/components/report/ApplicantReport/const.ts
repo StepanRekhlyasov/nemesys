@@ -5,8 +5,7 @@ const { t } = i18n.global;
 
 export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'] as const;
 export const chartType = ['bar', 'line', 'line'] as const ;
-export const donutGraphItem = [{ queryName: 'nurse' }, { queryName: 'nursingCare' }] as const;
-export const donutLabelNames =[t('client.add.nurse'), t('client.add.nursing')] as const
+
 export const itemList = [
 {queryName:'applicants'},
 {queryName:'validApplicants'},
