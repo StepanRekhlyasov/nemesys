@@ -83,7 +83,6 @@ export const differentDateMonth = (date1: string, date2: string):number => {
   const diff = Math.floor((d2.getDate() - d1.getDate()) / 30 ) +
   d2.getMonth() - d1.getMonth() +
   (12 * (d2.getFullYear() - d1.getFullYear()));
-  console.log(diff)
   return diff
 }
 
