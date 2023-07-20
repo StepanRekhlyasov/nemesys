@@ -86,7 +86,7 @@
               {{selectedApplicant.totalYear ? selectedApplicant.totalYear + ' ' + $t('common.year') : ''}}
             </span>
             <div v-if="!bo" class="col-3 text-right">
-              <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
+              <q-btn @click="openMapDrawer" outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
             </div>
           </div>
         </div>
@@ -165,6 +165,10 @@ const openDrawer = async (data: Applicant) => {
 }
 
 const backOrderStore = useBackOrder();
+
+const openMapDrawer = () => {
+  //
+}
 
 const assignToBo = async () => {
   const data = ref<DocumentData>({
