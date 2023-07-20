@@ -7,7 +7,7 @@ const { t } = i18n.global
 export const creationRule = (val: string) => val && val.length > 0 && val.trim().length >= val.length || '';
 
 export const phoneRule = (val: string) => {
-  if (!/^[a-zA-Z0-9]+$/.test(val)) {
+  if (!/^[0-9]+$/.test(val)) {
     return t('rule.onlyNumber')
   }
   return true
