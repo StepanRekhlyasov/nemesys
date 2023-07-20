@@ -9,14 +9,25 @@
       @onSave="save">
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular">
-          <div style="height: 40px;" class="flex items-center justify-end">{{ $t('applicant.attendant.smoking') }}</div>
-          <div v-if="data['smokingWhat'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.type') }}</div>
-          <div v-if="data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.stop') }}</div>
+          <div class="flex items-center justify-end">{{ $t('applicant.attendant.smoking') }}</div>
+          <div v-if="edit && data['smokingWhat'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.type') }}</div>
+          <div v-if="edit && data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.stop') }}</div>
         </div>
-        <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit" style="height: 40px;" class="flex items-center justify-start">{{ applicant.smoking?$t('smoking.'+applicant.smoking):''}}</span>
+        <div class="col-4 q-pl-md blue ">
+          <span v-if="!edit" class="flex items-center justify-start">
+            <span>
+              {{ $t('smoking.'+applicant.smoking) }}
+            </span>
+            <span>
+              {{ applicant.smoking === 'yes'?' / ' + $t('smoking.type') + ' : ' + $t('smoking.'+applicant.smokingWhat) : ''}}
+            </span>
+            <span>
+              {{ applicant.smoking === 'yes'?' / ' + $t('smoking.stop') + ' : ' + $t('smoking.'+applicant.smokingStop) : ''}}
+            </span>
+          </span>
+          <!-- 
           <span v-if="!edit && data['smokingWhat'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-start">{{ $t('smoking.'+applicant.smokingWhat) }}</span>
-          <span v-if="!edit && data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-start">{{ $t('smoking.'+applicant.smokingStop) }}</span>
+          <span v-if="!edit && data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-start">{{ $t('smoking.'+applicant.smokingStop) }}</span> -->
           <q-select v-if="edit" outlined dense :options="smokingStatusOptions"
             emit-value map-options v-model="data['smoking']" :disable="loading"/>
           <q-select v-if="edit && data['smoking']==='yes'" outlined dense :options="[
@@ -40,7 +51,7 @@
           ]"
             emit-value map-options v-model="data['smokingStop']" :disable="loading"/>
         </div>
-        <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        <div class="col-2 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.tattoos') }}
         </div>
         <div class="col-3 q-pl-md blue flex items-center">
