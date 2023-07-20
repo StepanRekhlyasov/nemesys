@@ -9,12 +9,12 @@
       @onSave="save">
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular">
-          <div class="flex items-center justify-end">{{ $t('applicant.attendant.smoking') }}</div>
+          <div class="flex items-center justify-end" style="height: 40px;">{{ $t('applicant.attendant.smoking') }}</div>
           <div v-if="edit && data['smokingWhat'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.type') }}</div>
           <div v-if="edit && data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.stop') }}</div>
         </div>
         <div class="col-4 q-pl-md blue ">
-          <span v-if="!edit" class="flex items-center justify-start">
+          <span v-if="!edit" class="flex items-center justify-start" style="height: 40px;">
             <span>
               {{ $t('smoking.'+applicant.smoking) }}
             </span>
@@ -25,9 +25,6 @@
               {{ applicant.smoking === 'yes'?' / ' + $t('smoking.stop') + ' : ' + $t('smoking.'+applicant.smokingStop) : ''}}
             </span>
           </span>
-          <!-- 
-          <span v-if="!edit && data['smokingWhat'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-start">{{ $t('smoking.'+applicant.smokingWhat) }}</span>
-          <span v-if="!edit && data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-start">{{ $t('smoking.'+applicant.smokingStop) }}</span> -->
           <q-select v-if="edit" outlined dense :options="smokingStatusOptions"
             emit-value map-options v-model="data['smoking']" :disable="loading"/>
           <q-select v-if="edit && data['smoking']==='yes'" outlined dense :options="[
