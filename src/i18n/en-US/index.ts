@@ -100,6 +100,9 @@ export default {
     downloadCSV: 'Download CSV',
     branch: 'Branch',
   },
+  rule: {
+    onlyNumber: 'only number, without "-"'
+  },
   smoking: {
     no: 'No',
     yes: 'Yes',
