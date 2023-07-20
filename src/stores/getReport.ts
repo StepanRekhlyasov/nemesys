@@ -24,6 +24,7 @@ import {
 } from 'src/shared/model/GetReport';
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
+import {round} from 'src/shared/utils/KPI.utils';
 const userStore = useUserStore();
 
 const applicantFieldDict: FieldDict = {
@@ -373,7 +374,7 @@ const getQuery = async (
         }
         amountSum += amount;
       });
-      return amountSum;
+      return round(amountSum, 1);
     }
   }
   if (isAverage) {
