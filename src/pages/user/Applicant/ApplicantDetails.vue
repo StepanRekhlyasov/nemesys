@@ -135,7 +135,7 @@
 </template>
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import detailTabs from '../Applicant/components/detailTabs.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 import { QFile } from 'quasar';

@@ -111,8 +111,10 @@ export default {
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
     notPossible: 'Not possible',
-    can: 'Can stop smoking while working',
-    cant: 'Cannot stop smoking while working',
+    can: 'I can',
+    cant: 'I can\'t',
+    type: 'Cigarettes type',
+    stop: 'Can you stop smoking during work?',
   },
   marriedStatus: {
     married: 'Married',
@@ -1499,7 +1501,8 @@ export default {
     delivered: 'delivered',
     'not delivered': 'not delivered',
     form: {
-      name: 'Notification Creation Form',
+      open: 'Open Notification Creation Form',
+      close: 'Close Notification Creation Form',
       category: 'category',
       options: {
         op1: 'category 1',
@@ -1676,7 +1679,8 @@ export default {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID company name',
+      companyID: 'companyID',
+      companyName: 'Company name',
       recievedDate: 'date issued',
       responseDate: 'response date'
     },

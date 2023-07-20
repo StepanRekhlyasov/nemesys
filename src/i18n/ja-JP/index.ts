@@ -111,8 +111,10 @@ export default {
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
     notPossible: '不可',
-    can: '就業中禁煙可能',
-    cant: '就業中禁煙不可',
+    can: '可',
+    cant: '不可',
+    type: '種類',
+    stop: '就業中禁煙',
   },
   marriedStatus: {
     married: '既婚',
@@ -1492,7 +1494,8 @@ export default {
     delivered: '配信',
     'not delivered': '未配信',
     form: {
-      name: '通知作成フォームを閉じる',
+      open: '通知作成フォームを開く',
+      close: '通知作成フォームを閉じる',
       category: 'カテゴリ',
       options: {
         op1: 'カテゴリ 1',
@@ -1669,7 +1672,8 @@ export default {
       status: 'ステータス',
       category: 'カテゴリ',
       subject: '件名',
-      companyID: '企業ID 企業名',
+      companyID: '企業ID',
+      companyName: '企業名',
       recievedDate: '送受信日',
       responseDate: '返信日'
     },
