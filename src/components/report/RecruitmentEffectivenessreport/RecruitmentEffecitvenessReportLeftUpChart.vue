@@ -13,6 +13,8 @@ import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
 import { unitPricenames, chartTypeUnitPrice } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
+import { useGetReport } from 'src/stores/getReport';
+const { getReport } = useGetReport();
 const monthPerYear = 12;
 const beforeMonth = 7;
 const { t } = i18n.global;
@@ -104,6 +106,57 @@ const showChart = async () => {
     }
     return month_;
   }).reverse();
+  interface monthYear {
+    month: number;
+    year: number;
+  }
+  const getMonthList = (date: string, len: number): monthYear[] => {
+    const date_ = new Date(date);
+    const year = date_.getFullYear();
+    const month = date_.getMonth() + 1;
+    const monthList = Array.from({ length: len }, (_, i) => {
+      const month_ = month - i;
+      if (month_ <= 0) {
+        return { year: year - 1, month: month_ + monthPerYear };
+      }
+      return { year: year, month: month_ };
+    }).reverse();
+    return monthList;
+  };
+
+  const getMonthRange = (
+    monthYear: monthYear
+  ): { from: string; to: string } => {
+    const from = new Date(monthYear.year, monthYear.month -1, 1, 0, 0, 0);
+    const to = new Date(monthYear.year, monthYear.month, 0, 23, 59, 59);
+    //return {from:1900/01/01,to:1900/01/31}のようにstringで返したい
+    return { from: from.toISOString(), to: to.toISOString() };
+  };
+  const monthList_ = getMonthList(props.dateRangeProps.to, beforeMonth).map(
+    (monthYear) => {
+      console.log(monthYear);
+      return getMonthRange(monthYear);
+    }
+  );
+  console.log(monthList_);
+
+  for (const month of monthList_) {
+    const rows = await getReport({
+      dateRange: month,
+      queryNames: [{ queryName: 'applicants' }],
+      organizationId: props.organization_id,
+      graphType: props.graph_type,
+      isAverage: false,
+    });
+
+    const amount = await getReport({
+      dateRange: month,
+      queryNames: [{ queryName: 'amount' }],
+      graphType: props.graph_type,
+      isAverage: false,
+    });
+    console.log(rows, amount, month);
+  }
 
   const company_average = await budget.getUnitPricePerOrganization(
     props.dateRangeProps,
