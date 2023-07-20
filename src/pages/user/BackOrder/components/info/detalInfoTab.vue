@@ -23,15 +23,21 @@
 
 <script lang="ts" setup>
 import { BackOrderModel } from 'src/shared/model';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import boCommonInfoSections from './boCommonInfoSections.vue';
 import CandidateStaffBoSection from './candidateStaffBoSection.vue';
 import AssignedStaffBoSection from './assignedStaffBoSection.vue';
+import { drawerValue } from '../../consts/BackOrder.const';
 
 defineProps<{
   bo: BackOrderModel
 }>();
 const emit = defineEmits(['openSearchByMap']);
 const tab = ref('boCommonInformation');
+
+watch(drawerValue, async () => {
+  tab.value = 'boCommonInformation'
+})
+
 
 </script>

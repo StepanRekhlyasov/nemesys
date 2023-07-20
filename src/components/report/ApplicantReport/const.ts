@@ -20,7 +20,7 @@ export const itemList = [
 
 export const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.applicationToAdmission'),

@@ -4,12 +4,14 @@
       <span class="text-h6 text-primary ">{{ $t('budget.search') }}</span>
       <span class="q-pl-md q-pt-sm">{{ $t('client.variousAchievement.displayPeriod') }}</span>
       <q-select v-model="selectedYear" :options="yearOptions" class="q-ml-sm" outlined
-        style="max-width: 250px;min-width: 100px;" color="black" dense bg-color="white" emit-value map-options />
+        style="max-width: 250px;min-width: 150px;" color="black" dense bg-color="white" emit-value map-options />
       <span class="q-ml-sm q-pt-sm">{{ $t('common.year') }}</span>
       <q-select v-model="selectedMonth" :options="monthOptions" class="q-ml-sm" outlined
-        style="max-width: 150px;min-width: 100px;" color="black" dense bg-color="white" emit-value map-options />
+        style="max-width: 200px;min-width: 150px;" color="black" dense bg-color="white" emit-value map-options />
 
       <span class="q-ml-sm q-pt-sm">{{ $t('common.month') }}</span>
+      <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg"
+        @click="selectedMonth = null; selectedYear = null" />
     </div>
 
     <div class="row q-pt-md q-pl-lg q-mt-xs q-pb-sm q-mb-xs">
@@ -18,7 +20,8 @@
     <div class="row q-pl-lg">
       <q-input outlined :placeholder="$t('form.searchPlaceholder')" style="width: 350px" color="black" dense
         bg-color="white" v-model="searchText" />
-      <q-btn dense style="color: white" :label="$t('common.search')" class="q-ml-sm q-px-lg buttonbg" />
+      <q-btn dense style="color: white" :label="$t('common.search')"
+        class="q-ml-sm q-px-lg buttonbg" />
       <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg" @click="clear" />
     </div>
     <div class="row q-pt-md q-mt-xs q-pb-sm q-mb-xs">
@@ -30,14 +33,14 @@
       <q-btn :label="$t('common.export')" dense class="q-ml-md q-px-md"
         :class="selectedCount() == 0 ? 'bg-secondary' : 'text-bold buttonbg'" :outline="selectedCount() > 0"
         @click="exportCSV" :disable="selectedCount() == 0" />
-      <q-btn :label="$t('common.import')" outline dense class="q-ml-md q-px-md text-bold buttonbg">
+      <q-btn :label="$t('common.import')" outline dense class="q-ml-md q-px-md text-bold buttonbg" @click="importCsv">
       </q-btn>
       <q-btn :label="$t('budget.tempFile')" flat dense class="q-ml-md q-px-md" style="text-decoration: underline"
         @click="budgetStore.downloadSampleFile">
       </q-btn>
     </div>
     <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
-      :loading="loading">
+      :loading="loading" class="budgetTable">
       <template v-slot:header-cell-branch="props">
         <q-th :props="props" class="q-pa-none">
           <div> {{ $t('settings.branch.name') }} </div>
@@ -72,9 +75,9 @@
       </template>
       <template v-slot:body-cell-posting="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ myDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}} 
+          {{ myDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}}
           <br />
-          {{ myDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}} 
+          {{ myDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}}
         </q-td>
       </template>
       <template v-slot:body-cell-amount="props">
@@ -104,7 +107,7 @@
       </template>
     </q-table>
     <div class="row justify-start q-mt-md pagination q-ml-sm">
-      <TablePagination :pagination="pagination" :isAdmin="true" v-model="pagination.page" :key="loadPagination" />
+      <TablePagination :pagination="pagination" :isAdmin="false" v-model="pagination.page" :key="loadPagination" />
     </div>
 
 
@@ -126,7 +129,7 @@
     </q-drawer>
   </div>
 </template>
-   
+
 <script lang="ts" setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { budgetColumns } from './consts/Budget.const';
@@ -135,7 +138,7 @@ import { toDate } from 'src/shared/utils/utils';
 import budgetForm from './components/budgetForm.vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import { BudgetData, DateOption } from './type/budget'
+import { BudgetData, DateOption, selectedYearMonth } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { myDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
@@ -157,13 +160,28 @@ const loading = ref(true);
 
 
 const searchText = ref('')
-const selectedYear = ref(new Date().getFullYear());
-const selectedMonth = ref(new Date().getMonth() + 1);
+const selectedYear = ref<selectedYearMonth>(new Date().getFullYear());
+const selectedMonth = ref<selectedYearMonth>(new Date().getMonth() + 1);
 const drawerRight = ref(false)
-const budgetData = ref<BudgetData>({ id: '' });
+const budgetData = ref<BudgetData>({
+  recordNumber: '',
+  accountingMonth: '',
+  amount: '',
+  branch: '',
+  id: '',
+  media: '',
+  numberOfSlots: '',
+  occupation: '',
+  postingEndDate: '',
+  postingStartDate: '',
+  unitPrice: '',
+  remark: '',
+  agency: '',
+  organizationId:organization.currentOrganizationId,
+});
 
-const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value + 1;
-const nextYear = selectedMonth.value == 12 ? selectedYear.value + 1 : selectedYear.value;
+const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value as number + 1;
+const nextYear = selectedMonth.value == 12 ? selectedYear.value as number + 1 : selectedYear.value;
 const start = Timestamp.fromDate(new Date(`${selectedYear.value}-${('0' + selectedMonth.value).slice(-2)}-01`))
 const end = Timestamp.fromDate(new Date(`${nextYear}-${('0' + nextMonth).slice(-2)}-01`))
 const pagination = ref({
@@ -187,7 +205,6 @@ const budgetList = computed(() => {
     return el['media'].toLowerCase().includes(needle) || el['branch'].toLowerCase().includes(needle)
   });
 });
-
 
 const selectedCount = () => {
   return budgetList.value.filter(row => row['selected']).length;
@@ -217,6 +234,27 @@ const showDeleteDialog = async (budgetIds) => {
 
   })
 }
+
+const importCsv = async () => {
+  const csvFileInput = document.createElement('input');
+  csvFileInput.type = 'file';
+  csvFileInput.accept = '.csv';
+  csvFileInput.addEventListener('change', (event) => {
+    const file = event.target?.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const contents = e.target?.result;
+        budgetStore.processData(contents, selectedYear.value, selectedMonth.value);
+        Alert.success()
+      };
+      reader.readAsText(file);
+    }
+  });
+  csvFileInput.click();
+
+}
+
 const deleteSelected = () => {
   const budgetItem = budgetList.value.filter(row => row['selected']);
   let items: string[] = []
@@ -230,13 +268,14 @@ const exportCSV = async () => {
   if (budgetItem.length == 0) {
     return false
   }
-  await budgetStore.exportTable(budgetItem);
+  await budgetStore.exportTable(budgetItem as BudgetData[]);
 }
 
 watch(() => selectedYear.value, async (newValue) => {
   loading.value = true;
   await budgetStore.getBudgetList(newValue, selectedMonth.value, organization.currentOrganizationId);
   loading.value = false;
+
 })
 watch(() => selectedMonth.value, async (newValue) => {
   loading.value = true;
@@ -266,15 +305,19 @@ onMounted(async () => {
   for (let month = 1; month <= 12; month++) {
     monthOptions.value.push({ label: ('0' + month).slice(-2), value: month });
   }
-
   await budgetStore.getBudgetList(selectedYear.value, selectedMonth.value, organization.currentOrganizationId);
   loading.value = false;
 
 })
 </script>
 <style lang="scss">
-thead tr:first-child th {
-  background-color: #f3f0f0;
+.budgetTable {
+  overflow: auto;
+
+  th {
+    background-color: #f3f0f0;
+    border-color: #f3f0f0;
+  }
 }
 
 .buttonbg {
