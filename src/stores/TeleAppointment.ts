@@ -16,30 +16,33 @@ import { defineStore } from 'pinia';
 import { toDate } from 'src/shared/utils/utils';
 import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
 import { getAuth } from 'firebase/auth';
+import { useOrganization } from './organization';
 
 export const useTele = defineStore('TeleAppoint', () => {
   const db = getFirestore();
-  const auth =getAuth()
+  const auth = getAuth()
+  const organization = useOrganization()
   const loadTeleAppointmentData = async (clientId: string) => {
     const teleAppointmentData: TeleAppointmentHistory[] = [];
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-    const userData = await getDoc(docDb(collection(db,'users'),auth.currentUser?.uid))
+    const userData = await getDoc(docDb(collection(db, 'users'), auth.currentUser?.uid))
     const q = await getDocs(
       query(
         collection(db, 'clients', clientId, 'teleAppointments'),
         where('deleted', '==', false),
         where('created_at', '>=', ninetyDaysAgo),
+        where('organizationId', '==', organization.currentOrganizationId),
         orderBy('created_at', 'desc')
       )
     );
-    q.forEach(async(doc) => {
+    q.forEach(async (doc) => {
       const data = doc.data();
       const registerUser = userData.data()
       teleAppointmentData.push({
         ...data,
         id: doc.id,
-        user:registerUser,
+        user: registerUser,
         created_at: toDate(data.created_at)
       });
     });
@@ -79,7 +82,7 @@ export const useTele = defineStore('TeleAppoint', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
-
+    data['organizationId'] = organization.currentOrganizationId
     await addDoc(collection(db, 'clients', clientId, 'teleAppointments'), data);
   };
 
