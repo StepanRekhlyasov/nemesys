@@ -20,12 +20,12 @@ export const convertToPercentage = (data: number[][]): number[][] => {
 
 export const getListFromObject = (
   objs: { [key: string]: string | number }[],
-  targetList:Readonly<string[]>,
+  targetList: Readonly<string[]>
 ) => {
   const itemList: (string | number)[] = [];
-  for(const obj of objs){
-    for(const target of targetList){
-      if(target in obj){
+  for (const obj of objs) {
+    for (const target of targetList) {
+      if (target in obj) {
         itemList.push(obj[target]);
       }
     }
@@ -33,9 +33,4 @@ export const getListFromObject = (
   return itemList;
 };
 
-export const listToFixed = (arr: (number|string)[],fix=2) => {
-  return arr.map((num) => {
-    if (typeof num === 'string') return num;
-    return Number(num.toFixed(fix));
-  });
-};
+

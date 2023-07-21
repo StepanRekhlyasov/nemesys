@@ -28,7 +28,7 @@
     <div class="row" v-if="data['workingDays'] == 'fixed'">      
       <labelField :label="$t('backOrder.create.workingDays')" :edit="true" 
         labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
-        <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationRule]">
+        <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationArrayRule]">
           <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" 
             :val="day.value" :disable="loading"
             :label="day.label" :key="day.value" />
@@ -227,7 +227,7 @@ import { ref, watch} from 'vue';
 import labelField from 'src/components/form/LabelField.vue';
 import { daysList } from 'src/shared/constants/Applicant.const';
 import { validateTime } from 'src/shared/constants/Form.const';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
   loading: boolean,
