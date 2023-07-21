@@ -682,6 +682,7 @@ export default {
       leaveChildcare: '育児・介護他休暇',
       otherNotes: 'その他メモ欄',
       regBOButton: 'BO 登録',
+      assignToBo:'このBOにアサインする',
       list: {
         id: 'BOID',
         dateBO: 'BO発生日',

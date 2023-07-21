@@ -395,7 +395,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     matchedData['daysPerWeek'].value = daysPerWeek*100;
     //age
-    if (bo.upperAgeLimit && staff.dob) {
+    if (staff.dob) {
       const currentDate = new Date();
       const dob = new Date(staff.dob.seconds * 1000);
       let age = currentDate.getFullYear() - dob.getFullYear();
@@ -403,8 +403,14 @@ export const useBackOrder = defineStore('backOrder', () => {
         age--;
       }
       matchedData.agePercent.label = age.toString();
-      agePercent = age <= bo.upperAgeLimit ? 1 : 0;
+      if(bo.upperAgeLimit){
+        agePercent = age <= bo.upperAgeLimit ? 1 : 0;
+      }
+      else{
+        agePercent = 1;
+      }
     }
+
     matchedData['agePercent'].value = agePercent*100;
 
     //workingHoursDay
@@ -491,5 +497,5 @@ export const useBackOrder = defineStore('backOrder', () => {
       Alert.success();
   }
 
-  return {addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
+  return { getBOByConstraints, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
 })

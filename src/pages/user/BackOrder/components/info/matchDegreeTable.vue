@@ -148,7 +148,7 @@
       <tr>
         <td class="item-cell bg-grey">{{$t('common.age')}}</td>
         <td>{{ props.bo.upperAgeLimit?props.bo.upperAgeLimit + ` ${$t('common.year')}`:'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].agePercent.label + ` ${$t('common.year')}` }}</td>
+        <td>{{ props.staff.dob?props.matchedData[props.staff.id].agePercent.label + ` ${$t('common.year')}`:'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].agePercent.value }}%</td>
       </tr>
 

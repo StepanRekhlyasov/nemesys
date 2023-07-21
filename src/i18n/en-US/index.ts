@@ -687,6 +687,7 @@ export default {
       leaveChildcare: 'Leave for childcare, nursing care, etc.',
       otherNotes: 'Other notes',
       regBOButton: 'BO Registration',
+      assignToBo:'Assign to this BO',
       list: {
         id: 'BOID',
         dateBO: 'Date of BO',

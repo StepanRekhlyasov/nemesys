@@ -1,7 +1,9 @@
 <template>
   <q-card-section class="bg-white ">
     <div class="row q-pb-md">
-      <div class="col-9"></div>
+      <div class="col-9">
+        <q-btn v-if="props.isHiddenDetails" class="bg-primary text-white" :label="$t('client.backOrder.assignToBo')"/>
+      </div>
       <div class="col-3 text-right">
         <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline icon="edit" @click="edit = true"
           class="no-shadow q-ml-lg" size="sm" />
@@ -537,6 +539,10 @@ import detalInfoTab from './detalInfoTab.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateTime } from 'src/shared/constants/Form.const';
 import { daysList } from 'src/shared/constants/Applicant.const';
+
+const props = defineProps<{
+  isHiddenDetails?: boolean,
+}>()
 
 const emit = defineEmits(['openSearchByMap']);
 

@@ -18,7 +18,7 @@
             </div>
           </div>
         </q-card-section>
-        <detailInfoBO @openSearchByMap="emit('openSearchByMap')" />
+        <detailInfoBO :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -34,6 +34,10 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import detailInfoBO from './detailInfoBO.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
+
+defineProps<{
+  isHiddenDetails?: boolean,
+}>()
 
 const backOrderStore = useBackOrder();
 const db = getFirestore();
