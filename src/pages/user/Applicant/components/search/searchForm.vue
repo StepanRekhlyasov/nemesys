@@ -480,9 +480,9 @@ const updateArea = (selectedPrefectures: string, selectedMunicipality: string) =
   for (var i = 0; i < selectedPrefectures.length; i++) {
     prefectures.push(Object.keys(prefJP.value).find(key => prefJP.value[key] === selectedPrefectures[i]) as never)
   }
-  searchData.value['prefecture'] = [...prefectures, ...selectedPrefectures];
+  searchData.value['prefectureArea'] = [...prefectures, ...selectedPrefectures];
 
-  searchData.value['municipalities'] = selectedMunicipality;
+  searchData.value['municipalitiesArea'] = selectedMunicipality;
 
   //
 }
