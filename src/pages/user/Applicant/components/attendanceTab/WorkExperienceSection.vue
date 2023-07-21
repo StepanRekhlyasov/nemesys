@@ -80,7 +80,7 @@
     </q-table>
 
     <div class="row">
-      <div class="col-12 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
+      <div class="col-12 q-pb-sm flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
         [{{ $t('applicant.attendant.totalYearsExperience') }}]
       </div>
     </div>
