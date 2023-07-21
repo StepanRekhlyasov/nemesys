@@ -74,7 +74,6 @@ const openDrawer = async (data: BackOrderModel) => {
 
 watch(() => selectedBo, async () => {
   if (selectedBo.value && selectedBo.value.client_id) {
-    console.log(selectedBo.value?.office_id)
     clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
   }
 }, { deep: true, immediate: true })
