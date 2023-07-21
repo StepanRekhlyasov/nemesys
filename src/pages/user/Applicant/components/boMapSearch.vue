@@ -44,30 +44,6 @@ watch(boMapDrawerValue, async () => {
       bo['marker'] = 'white'
     })
     boList.value.push(allBo[0])
-    // boList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ApplicantForCandidateSearch[];
-    // boList.value.push({
-    //   id:1,
-    //   lat:Number(props.applicant?.lat)+0.2,
-    //   lon:Number(props.applicant?.lon)+0.2,
-    // })
-    // boList.value.push({
-    //   id:2,
-    //   lat:Number(props.applicant?.lat)-0.2,
-    //   lon:Number(props.applicant?.lon)-0.2,
-    // })
-    // boList.value.push({
-    //   id:3,
-    //   lat:Number(props.applicant?.lat)+0.2,
-    //   lon:Number(props.applicant?.lon)-0.2,
-    // })
-    // boList.value.push({
-    //   id:4,
-    //   lat:Number(props.applicant?.lat)-0.2,
-    //   lon:Number(props.applicant?.lon)+0.2,
-    // })
-    // boList.value.forEach((bo) => {
-    //   bo['marker'] = 'white';
-    // });
   }
 })
 

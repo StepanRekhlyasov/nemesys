@@ -2,7 +2,7 @@
   <q-card-section class="bg-white ">
     <div class="row q-pb-md">
       <div class="col-9">
-        <q-btn v-if="props.isHiddenDetails" class="bg-primary text-white" :label="$t('client.backOrder.assignToBo')"/>
+        <q-btn @click="assignToBo" v-if="props.isHiddenDetails" class="bg-primary text-white" :label="$t('client.backOrder.assignToBo')"/>
       </div>
       <div class="col-3 text-right">
         <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline icon="edit" @click="edit = true"
@@ -539,7 +539,12 @@ import detalInfoTab from './detalInfoTab.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateTime } from 'src/shared/constants/Form.const';
 import { daysList } from 'src/shared/constants/Applicant.const';
+import { useApplicant } from 'src/stores/applicant';
+import { serverTimestamp, DocumentData } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
+const applicantStore = useApplicant()
 const props = defineProps<{
   isHiddenDetails?: boolean,
 }>()
@@ -563,6 +568,25 @@ async function save() {
   }
   loading.value = false;
 }
+
+const assignToBo = async () => {
+  const data = ref<DocumentData>({
+    applicant_id: applicantStore.state.selectedApplicant?.id,
+    backOrder: backOrderStore.state.selectedBo?.id,
+    client: backOrderStore.state.selectedBo?.client_id,
+    office: backOrderStore.state.selectedBo?.office_id,
+    deleted: false,
+    created_by: getAuth().currentUser?.uid,
+    created_at: serverTimestamp(),
+    updated_at: serverTimestamp(),
+  })
+  try {
+    backOrderStore.addToFix(data)
+  } catch (error) {
+    Alert.warning(error);
+  }
+}
+
 watch([backOrderStore.state.selectedBo], () => {
   data.value = backOrderStore.state?.selectedBo as BackOrderModel
 }, { deep: true })
