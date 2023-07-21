@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
-import { listToFixed } from '../reportUtil';
+import { listToFixed } from 'src/shared/utils/KPI.utils';
 import { useI18n } from 'vue-i18n';
 import { usecalcLeadtime } from 'src/stores/leadtime';
 import { chartOptionsLeadtime, columnsLeadtime } from './const';
