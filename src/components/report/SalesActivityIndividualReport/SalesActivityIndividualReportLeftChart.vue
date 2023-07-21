@@ -14,7 +14,9 @@ import {
   itemRateList,
 } from './const';
 import { useGetReport } from 'src/stores/getReport';
-import { calculateCVR, listToFixed } from '../reportUtil';
+import { calculateCVR } from '../reportUtil';
+import { listToFixed } from 'src/shared/utils/KPI.utils';
+'src/shared/KPI.utils'
 import { useUserStore } from 'src/stores/user';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
