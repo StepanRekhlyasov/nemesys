@@ -127,7 +127,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { Ref, ref, computed, ComputedRef, watch } from 'vue';
+import { Ref, ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
 import SearchByMapDrawer from './components/info/searchByMapDrawer.vue';
@@ -203,6 +203,10 @@ backOrderStore.loadBackOrder({}, pagination.value);
 
 watch(() => pagination.value.page, async () => {
   await backOrderStore.loadBackOrder({}, pagination.value);
+})
+
+onMounted(async () => {
+  await applicantStore.getClients()
 })
 
 </script>
