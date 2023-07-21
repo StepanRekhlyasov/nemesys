@@ -79,11 +79,15 @@
       </template>
     </q-table>
 
-    <div class="row q-pa-sm"></div>
+    <div class="row">
+      <div class="col-12 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
+        [{{ $t('applicant.attendant.totalYearsExperience') }}]
+      </div>
+    </div>
 
     <div class="row q-pb-sm">
       <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.totalYearsExperience') }}
+        {{ $t('applicant.list.yearsExperience') }}
       </div>
       <div class="row">
         <div class="col-10 q-pl-md blue self-center">
@@ -93,7 +97,7 @@
     </div>
     <div class="row q-pb-sm" v-if="data['totalYear'] > 0 || edit">
       <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
-        {{ $t('applicant.attendant.totalYearsExperience') }} (additional)
+        {{ $t('common.add') }}
       </div>
       <div class="row">
         <div class="col-10 q-pl-md blue self-center flex">
@@ -103,6 +107,16 @@
             <q-input dense outlined bg-color="white" type="number" :rules="[(val:number)=>val>=0]" v-model="data['totalYear']" :disable="loading" class="q-pb-none"/>
             <span class="q-ml-sm">{{ $t('common.month').toLowerCase()  }}</span>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row q-pb-sm" v-if="data['totalYear']">
+      <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
+        {{ $t('applicant.attendant.totalYearsExperience') }}
+      </div>
+      <div class="row">
+        <div class="col-10 q-pl-md blue self-center flex">
+          <span style="white-space: nowrap;">{{ totalYear(data['totalYear'], true) }}</span>
         </div>
       </div>
     </div>
@@ -157,14 +171,27 @@ const db = getFirestore();
 
 load();
 resetData();
-function totalYear( add?: number ) {
+function totalYear( add?: string | number, sum = false ) {
   let years = 0
   let month = 0
+  if(typeof add === 'string'){
+    add = parseInt(add)
+  }
+  if(sum && add){
+    experienceData.value.forEach((row)=>{
+      if(row.startMonth && row.endMonth){
+        month += differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))
+      }
+    })
+    return totalYear(month + add)
+  }
+
   if(add){
     years += Math.floor(add/12)
     month += add%12
     return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.month').toLowerCase() 
   }
+  
   experienceData.value.forEach((row)=>{
     if(row.startMonth && row.endMonth){
       years += Math.floor(differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))/12)
