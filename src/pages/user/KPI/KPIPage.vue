@@ -144,6 +144,7 @@ import {
   applicationAttributeItemList,
 } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
+import { devideByAmount ,convertObjToIdNameList } from 'src/shared/utils/KPI.utils';
 const { getReport, getDailyReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
@@ -172,31 +173,7 @@ const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
-const devideByAmount = (rows) => {
-  for (const row of rows) {
-    for (const key of Object.keys(row)) {
-      const num = row[key];
-      if (
-        typeof num == 'number' &&
-        typeof row['amount'] == 'number' &&
-        num != 0 &&
-        key != 'amount'
-      ) {
-        row[key] = row['amount'] / num;
-      }
-    }
-  }
-  return [...rows];
-};
 
-const convertObjToIdNameList = (objList) => {
-  return objList.map((obj) => {
-    return {
-      value: obj.id,
-      label: obj.name,
-    };
-  });
-};
 
 const getBranchList = async () => {
   branchs.value = convertObjToIdNameList(
