@@ -85,10 +85,24 @@
       <div class="col-2 flex justify-between items-center q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.totalYearsExperience') }}
       </div>
-
       <div class="row">
-        <div class="col-4 q-pl-md blue self-center">
-          <span v-if="!edit" style="white-space: nowrap;">{{ totalYear() }}</span>
+        <div class="col-10 q-pl-md blue self-center">
+          <span style="white-space: nowrap;">{{ totalYear() }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row q-pb-sm" v-if="data['totalYear'] > 0 || edit">
+      <div class="col-2 flex justify-between items-center q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.attendant.totalYearsExperience') }} (additional)
+      </div>
+      <div class="row">
+        <div class="col-10 q-pl-md blue self-center flex">
+          <span v-if="!edit" style="white-space: nowrap;">{{ totalYear(data['totalYear']) }}</span>
+
+          <div v-if="edit" class="flex items-center no-wrap">
+            <q-input dense outlined bg-color="white" type="number" :rules="[(val:number)=>val>=0]" v-model="data['totalYear']" :disable="loading" class="q-pb-none"/>
+            <span class="q-ml-sm">{{ $t('common.month').toLowerCase()  }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -143,9 +157,14 @@ const db = getFirestore();
 
 load();
 resetData();
-function totalYear() {
+function totalYear( add?: number ) {
   let years = 0
   let month = 0
+  if(add){
+    years += Math.floor(add/12)
+    month += add%12
+    return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.month').toLowerCase() 
+  }
   experienceData.value.forEach((row)=>{
     if(row.startMonth && row.endMonth){
       years += Math.floor(differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))/12)
