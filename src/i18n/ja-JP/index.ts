@@ -1105,8 +1105,7 @@ export default {
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
-      totalYearsExperience: '経験',
-      yearsOfTotalExperience: '総経験年数',
+      totalYearsExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',
@@ -1690,7 +1689,8 @@ export default {
     },
     message: {
       issueDate: '送信日',
-      responseDate: '受信日'
+      responseDate: '受信日',
+      sendDate: '送信日',
     }
   },
   industry: {

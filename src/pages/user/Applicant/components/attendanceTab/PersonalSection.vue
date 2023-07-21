@@ -10,19 +10,19 @@
       <div class="row q-pb-sm">
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular">
           <div class="flex items-center justify-end" style="height: 40px;">{{ $t('applicant.attendant.smoking') }}</div>
-          <div v-if="edit && data['smokingWhat'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.type') }}</div>
-          <div v-if="edit && data['smokingStop'] && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.stop') }}</div>
+          <div v-if="edit && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.type') }}</div>
+          <div v-if="edit && data['smoking']==='yes'" style="height: 40px;" class="flex items-center justify-end">{{ $t('smoking.stop') }}</div>
         </div>
         <div class="col-4 q-pl-md blue ">
           <span v-if="!edit" class="flex items-center justify-start" style="height: 40px;">
-            <span>
+            <span v-if="applicant.smoking">
               {{ $t('smoking.'+applicant.smoking) }}
             </span>
-            <span>
-              {{ applicant.smoking === 'yes'?' / ' + $t('smoking.type') + ' : ' + $t('smoking.'+applicant.smokingWhat) : ''}}
+            <span v-if="applicant.smoking === 'yes' && applicant.smokingWhat">
+              {{ ' / ' + $t('smoking.type') + ' : ' + $t('smoking.'+applicant.smokingWhat) }}
             </span>
-            <span>
-              {{ applicant.smoking === 'yes'?' / ' + $t('smoking.stop') + ' : ' + $t('smoking.'+applicant.smokingStop) : ''}}
+            <span v-if="applicant.smoking === 'yes' && applicant.smokingStop">
+              {{ ' / ' + $t('smoking.stop') + ' : ' + $t('smoking.'+applicant.smokingStop) }}
             </span>
           </span>
           <q-select v-if="edit" outlined dense :options="smokingStatusOptions"
@@ -37,7 +37,7 @@
             }
           ]"
             emit-value map-options v-model="data['smokingWhat']" :disable="loading"/>
-          <q-select v-if="edit && data['smokingWhat'] && data['smoking']==='yes'" outlined dense :options="[
+          <q-select v-if="edit && data['smoking']==='yes'" outlined dense :options="[
             {
               label: $t('smoking.can'),
               value: 'can'
