@@ -1,6 +1,6 @@
-export const round = (num: number, digit: number):number => {
-  return Math.floor(num * Math.pow(10, digit)) / Math.pow(10, digit)
-}
+export const round = (num: number, digit: number): number => {
+  return Math.floor(num * Math.pow(10, digit)) / Math.pow(10, digit);
+};
 
 export const devideByAmount = (rows, digit = 1) => {
   for (const row of rows) {
@@ -12,7 +12,7 @@ export const devideByAmount = (rows, digit = 1) => {
         num != 0 &&
         key != 'amount'
       ) {
-        row[key] =round(row['amount'] /num , digit)
+        row[key] = round(row['amount'] / num, digit);
       }
     }
   }
@@ -25,5 +25,12 @@ export const convertObjToIdNameList = (objList) => {
       value: obj.id,
       label: obj.name,
     };
+  });
+};
+
+export const listToFixed = (arr: (number | string)[], fix = 2) => {
+  return arr.map((num) => {
+    if (typeof num === 'string') return num;
+    return round(num, fix);
   });
 };
