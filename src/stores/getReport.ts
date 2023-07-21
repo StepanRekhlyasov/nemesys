@@ -24,7 +24,7 @@ import {
 } from 'src/shared/model/GetReport';
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
-import {round} from 'src/shared/utils/KPI.utils';
+import { round } from 'src/shared/utils/KPI.utils';
 const userStore = useUserStore();
 
 const applicantFieldDict: FieldDict = {
@@ -341,8 +341,13 @@ const getQuery = async (
 
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
-    if (fromDateTrue.getMonth() == toDateTrue.getMonth() && docSnap.docs.length == 1) {
-      const amount = docSnap.docs[0].data().amount ? docSnap.docs[0].data().amount :0;
+    if (
+      fromDateTrue.getMonth() == toDateTrue.getMonth() &&
+      docSnap.docs.length == 1
+    ) {
+      const amount = docSnap.docs[0].data().amount
+        ? docSnap.docs[0].data().amount
+        : 0;
       const rate = proratedRate(fromDateTrue, fromDateTrue, toDateTrue);
       return amount * rate;
     } else {
@@ -391,7 +396,12 @@ const queryPatternToData = async (stateAndOthers: reportStateAndOthers) => {
   const db = getFirestore();
   const countedData = await Promise.all(
     stateAndOthers.queryNames.map(async (queryName) => {
-      return getQuery(stateAndOthers.reportState, queryName, db,stateAndOthers.isAverage);
+      return getQuery(
+        stateAndOthers.reportState,
+        queryName,
+        db,
+        stateAndOthers.isAverage
+      );
     })
   );
   return countedData;
@@ -415,7 +425,6 @@ const getMonthDateList = (date: string) => {
   }
   return dateList;
 };
-
 
 export const useGetReport = defineStore('getReport', () => {
   const getDailyReport = async (state: dailyBasedReportState) => {
