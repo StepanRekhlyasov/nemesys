@@ -259,6 +259,7 @@ async function editUser(user: User) {
       updated_at: serverTimestamp(),
       email
     })
+    organization.state.currentOrganizationUsers = await organization.getCurrentUsersInChrage()
     await refresh();
     Alert.success();
   } catch (error) {

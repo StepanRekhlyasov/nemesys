@@ -1,6 +1,6 @@
 <template>
   <q-card-section class="q-pa-none">
-    <q-table :columns="notificationTableColumns" :rows="notificationTableRows" row-key="id" v-model:pagination="pagination" hide-pagination class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
+    <q-table :columns="notificationTableColumns" :rows="notificationTableRows" row-key="id" v-model:pagination="pagination" class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
       <template v-slot:body-cell-edit="props">
         <EditButton color="accent" :props="props"
           :on-edit="() => {editableNotification = JSON.parse(JSON.stringify(props.row))}"
@@ -40,11 +40,6 @@
       </template>
 
     </q-table>
-    <div class="row justify-start q-mt-md q-mb-md pagination q-mx-md">
-      <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-        :max="(notificationTableRows.length / pagination.rowsPerPage) >= 1 ? notificationTableRows.length / pagination.rowsPerPage : 1"
-        direction-links outline />
-    </div>
   </q-card-section>
 </template>
 
@@ -80,56 +75,57 @@
   }, {
       name: 'number',
       label: 'No.',
-      field: 'number'
+      field: 'number',
+      sortable: true,
   }, {
       name: 'status',
       required: true,
       label: t('releaseNotes.table.status'),
       field: 'status',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'category',
       required: true,
       label: t('releaseNotes.form.category'),
       field: 'category',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'subject',
       required: true,
       label: t('releaseNotes.form.subject'),
       field: 'subject',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'content',
       required: true,
       label: t('releaseNotes.form.content'),
       field: 'content',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'author',
       required: true,
       label: t('releaseNotes.table.author'),
       field: 'author',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'creationDate',
       required: true,
       label: t('releaseNotes.table.creationDate'),
       field: 'creationDate',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'deliveryDate',
       required: true,
       label: t('releaseNotes.table.deliveryDate'),
       field: 'deliveryDate',
       align: 'left',
-      sortable: false,
+      sortable: true,
   }, {
       name: 'delete',
       label: '',
