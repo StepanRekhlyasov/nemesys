@@ -82,7 +82,7 @@
     <div class="row q-pa-sm"></div>
 
     <div class="row q-pb-sm">
-      <div class="col-2 flex justify-between items-center q-pl-md text-right text-blue text-weight-regular self-center">
+      <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.totalYearsExperience') }}
       </div>
       <div class="row">
@@ -92,7 +92,7 @@
       </div>
     </div>
     <div class="row q-pb-sm" v-if="data['totalYear'] > 0 || edit">
-      <div class="col-2 flex justify-between items-center q-pl-md text-right text-blue text-weight-regular self-center">
+      <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.totalYearsExperience') }} (additional)
       </div>
       <div class="row">
