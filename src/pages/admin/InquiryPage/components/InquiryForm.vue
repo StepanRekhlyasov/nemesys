@@ -57,6 +57,7 @@
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useInquiry } from 'src/stores/inquiry';
   import { INQUIRY_MESSAGE_TYPE, INQUIRY_STATUS } from '../types/inquiryTypes'
+  import { Timestamp } from 'firebase/firestore';
 
   const inquiryStore = useInquiry()
 
@@ -72,26 +73,26 @@
         await inquiryStore.replyOnInquiry({
           inquiryId: inquiryId.value,
           message: {
-            date: new Date(),
+            date: Timestamp.fromDate(new Date()),
             content: responseContent.value,
-            type: INQUIRY_MESSAGE_TYPE.response
+            type: INQUIRY_MESSAGE_TYPE.response,
           },
-         data: {status: INQUIRY_STATUS.answered}
+         data: {status: INQUIRY_STATUS.answered, warning: []}
         })
         Alert.success()
         await inquiryStore.getAllInquires()
         inquiryStore.updateCurrentRowDataMessages({message: {
-            date: new Date(),
+            date: Timestamp.fromDate(new Date()),
             content: responseContent.value,
-            type: INQUIRY_MESSAGE_TYPE.response
+            type: INQUIRY_MESSAGE_TYPE.response,
           },
-         data: {status: INQUIRY_STATUS.answered}})
+         data: {status: INQUIRY_STATUS.answered, warning: []}})
 
          responseContent.value = ''
         loading.value = false;
       } catch(e) {
         Alert.warning(e)
-
+        console.log(e)
         loading.value = false;
       }
     }

@@ -1681,7 +1681,10 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      responseDate: 'response date'
+      responseDate: 'response date',
+      notificationType: 'Notification Type',
+      inquiry: 'Inquiry',
+      releaseNote: 'Release note',
     },
     detail: {
       inquiryTitle: 'Inquiry details',

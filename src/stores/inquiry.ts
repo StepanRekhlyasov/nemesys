@@ -127,11 +127,13 @@ export const useInquiry = defineStore('inquiry', () => {
     }
   }
 
-  const replyOnInquiry = async({inquiryId, message,  data} : {inquiryId: string, message: InquiryMessage,  data: Partial<InquiryData>}) => {
+  const replyOnInquiry = async({inquiryId, message,  data} : {inquiryId: string, message?: InquiryMessage,  data: Partial<InquiryData>}) => {
     const inquiryRef = doc(db, 'inquires/' + inquiryId);
-    await updateDoc(inquiryRef, {
-      messages: arrayUnion(message)
-    });
+    if(message){
+      await updateDoc(inquiryRef, {
+        messages: arrayUnion(message)
+      });
+    }
     await updateDoc(inquiryRef, data);
   }
 

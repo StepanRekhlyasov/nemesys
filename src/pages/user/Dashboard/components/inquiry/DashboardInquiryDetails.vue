@@ -17,6 +17,9 @@ import { watch, ref, onMounted } from 'vue'
 import InquiryDetails from './InquiryDetails.vue'
 import InquiryMessages from './InquiryMessages.vue'
 import InquiryForm from './InquiryForm.vue'
+import { InquiryData } from 'src/shared/model/Inquiry.model'
+import { getAuth } from 'firebase/auth'
+import { arrayUnion } from 'firebase/firestore'
 
 const inquiryStore = useInquiry() 
 const props = defineProps<{
@@ -24,11 +27,28 @@ const props = defineProps<{
 }>()
 const inquiryData = ref()
 const loading = ref(false)
+const emit = defineEmits<{
+  (e: 'readinquiry', inquiryData: InquiryData)
+}>()
+
+const auth = getAuth();
+const currentUserId = auth.currentUser?.uid
 
 async function updateInquery(){
   if(props.id){
     loading.value = true
     inquiryData.value = await inquiryStore.getCurrentInquiry(props.id)
+    if(!inquiryData.value.warning){
+      inquiryData.value.warning = []
+    }
+    if(!inquiryData.value.warning.includes(currentUserId)){
+      inquiryStore.replyOnInquiry({
+        inquiryId: props.id,
+        data: {warning: arrayUnion(currentUserId)}
+      })
+      inquiryData.value.warning.push(currentUserId)
+    }
+    emit('readinquiry', inquiryData.value)
     loading.value = false
   }
 }
