@@ -36,6 +36,7 @@ const applicantFieldDict: FieldDict = {
   branchField: 'branchInCharge',
   mediaField: 'media',
   occupationField: 'occupation',
+  organizationIdField: 'organization_id',
 };
 
 const fixFieldDict: FieldDict = {
@@ -48,6 +49,7 @@ const fixFieldDict: FieldDict = {
   branchField: 'branchInCharge',
   uidField: 'chargeOfFix',
   mediaField: 'media',
+  organizationIdField: 'organization_id',
 };
 
 const BOFieldDict: FieldDict = {
@@ -58,6 +60,7 @@ const BOFieldDict: FieldDict = {
   collection: 'BO',
   uidField: 'id_registerUser',
   mediaField: 'media',
+  organizationIdField: 'organization_id',
 };
 
 const validApplicantsFieldDict: FieldDict = {
@@ -70,6 +73,7 @@ const validApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
 };
 
 const contatApplicantsFieldDict: FieldDict = {
@@ -82,6 +86,8 @@ const contatApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
+
 };
 
 const attractionApplicantsFieldDict: FieldDict = {
@@ -94,6 +100,8 @@ const attractionApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
+
 };
 
 const attendApplicantsFieldDict: FieldDict = {
@@ -106,6 +114,8 @@ const attendApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
+
 };
 
 const inspectionFieldDict: FieldDict = {
@@ -118,6 +128,7 @@ const inspectionFieldDict: FieldDict = {
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
   uidField: 'chargeOfInspection',
+  organizationIdField: fixFieldDict.organizationIdField,
 };
 
 const offerFieldDict: FieldDict = {
@@ -130,6 +141,7 @@ const offerFieldDict: FieldDict = {
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
   uidField: 'chargeOfOffer',
+  organizationIdField: fixFieldDict.organizationIdField,
 };
 
 const admissionFieldDict: FieldDict = {
@@ -142,6 +154,7 @@ const admissionFieldDict: FieldDict = {
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
   uidField: 'chargeOfAdmission',
+  organizationIdField: fixFieldDict.organizationIdField,
 };
 
 const BOIsfirstFieldDict: FieldDict = {
@@ -152,6 +165,7 @@ const BOIsfirstFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const BOIsNotfirstFieldDict: FieldDict = {
@@ -162,6 +176,7 @@ const BOIsNotfirstFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const generalDispatchFieldDict: FieldDict = {
@@ -172,6 +187,7 @@ const generalDispatchFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const introductionFieldDict: FieldDict = {
@@ -182,6 +198,7 @@ const introductionFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const TTPFieldDict: FieldDict = {
@@ -192,6 +209,7 @@ const TTPFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const nurseFieldDict: FieldDict = {
@@ -202,6 +220,7 @@ const nurseFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const nurseCareFieldDict: FieldDict = {
@@ -212,6 +231,7 @@ const nurseCareFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const amountFieldDict: FieldDict = {
@@ -291,10 +311,10 @@ const getQuery = async (
   db: Firestore,
   isAverage = false
 ): Promise<number> => {
-  const fromDate = new Date(reportState.dateRange.from);
-  const toDate = new Date(reportState.dateRange.to);
-  const fromDateTrue = new Date(reportState.dateRange.from);
-  const toDateTrue = new Date(reportState.dateRange.to);
+  const fromDate = typeof reportState.dateRange.from == 'string'  ? new Date(reportState.dateRange.from)  : reportState.dateRange.from;
+  const toDate = typeof reportState.dateRange.to == 'string'  ? new Date(reportState.dateRange.to)  : reportState.dateRange.to;
+  const fromDateTrue = typeof reportState.dateRange.from == 'string'  ? new Date(reportState.dateRange.from)  : reportState.dateRange.from;
+  const toDateTrue = typeof reportState.dateRange.to == 'string'  ? new Date(reportState.dateRange.to)  : reportState.dateRange.to;
   if (queryName.queryName == 'amount') {
     fromDate.setMonth(fromDate.getMonth() - 1);
   }
@@ -328,8 +348,8 @@ const getQuery = async (
   if (reportState.uid && fieldDict.uidField) {
     filters.push(where(fieldDict.uidField, '==', reportState.uid));
   }
-  if (reportState.organizationId) {
-    filters.push(where('organization_id', '==', reportState.organizationId));
+  if (reportState.organizationId && fieldDict.organizationIdField) {
+    filters.push(where(fieldDict.organizationIdField, '==', reportState.organizationId));
   }
   if (reportState.occupation && fieldDict.occupationField) {
     filters.push(

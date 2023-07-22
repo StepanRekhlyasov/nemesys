@@ -4,7 +4,7 @@ import { User, Branch } from 'src/shared/model';
 import { Media } from 'src/shared/model/Media.model';
 import { QueryFieldFilterConstraint } from 'firebase/firestore';
 export interface ReportState {
-  dateRange: { from: string; to: string };
+  dateRange: { from: string; to: string }|{ from: Date; to: Date };
   dateType: graphType;
   media?: string;
   branch?: string;
@@ -37,7 +37,7 @@ export interface reportStateAndOthers {
 }
 
 export interface basedReportState {
-  dateRange: { from: string; to: string };
+  dateRange: { from: string; to: string }|{ from: Date; to: Date };
   graphType: graphType;
   queryNames:queryNameType|queryNameTypeNotReadonly;
   organizationId?: string;
@@ -76,4 +76,5 @@ export interface FieldDict {
   readonly mediaField: string;
   readonly uidField?: string;
   readonly occupationField?: string;
+  readonly organizationIdField?: string;
 }
