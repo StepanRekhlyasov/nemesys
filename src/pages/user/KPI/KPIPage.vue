@@ -144,8 +144,12 @@ import {
   applicationAttributeItemList,
 } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
-import { devideByAmount ,convertObjToIdNameList } from 'src/shared/utils/KPI.utils';
-const { getReport, getDailyReport } = useGetReport();
+import {
+  devideByAmount,
+  convertObjToIdNameList,
+} from 'src/shared/utils/KPI.utils';
+
+const { getReport, getDailyReport, getAgeReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
 // const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
@@ -172,8 +176,6 @@ const rowData = ref<{ [key: string]: number | string }[]>([]);
 const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
-
-
 
 const getBranchList = async () => {
   branchs.value = convertObjToIdNameList(
@@ -221,6 +223,12 @@ async function getData() {
         isAverage: false,
         occupation: occupation.value,
       });
+      const medias = await getAllmedia();
+      for (const [i, media] of Object.entries(medias)) {
+        const AgeData = await getAgeReport(dateRange.value, media);
+        rowData.value[i] = { ...rowData.value[i], ...AgeData };
+      }
+      console.log(rowData.value);
     } else if (mode.value == 'branch' && branch.value) {
       rowData.value = await getReport({
         dateRange: dateRange.value,

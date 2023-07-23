@@ -25,8 +25,10 @@ import {
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
 import { round } from 'src/shared/utils/KPI.utils';
+import { useApplicant } from 'stores/applicant';
 const userStore = useUserStore();
-
+const applicant = useApplicant();
+const { agesListOfApplicants } = applicant;
 const applicantFieldDict: FieldDict = {
   name: 'applicants',
   dateBasedOnEachItemDate: 'applicationDate',
@@ -87,7 +89,6 @@ const contatApplicantsFieldDict: FieldDict = {
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
   organizationIdField: applicantFieldDict.organizationIdField,
-
 };
 
 const attractionApplicantsFieldDict: FieldDict = {
@@ -101,7 +102,6 @@ const attractionApplicantsFieldDict: FieldDict = {
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
   organizationIdField: applicantFieldDict.organizationIdField,
-
 };
 
 const attendApplicantsFieldDict: FieldDict = {
@@ -115,7 +115,6 @@ const attendApplicantsFieldDict: FieldDict = {
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
   organizationIdField: applicantFieldDict.organizationIdField,
-
 };
 
 const inspectionFieldDict: FieldDict = {
@@ -311,10 +310,22 @@ const getQuery = async (
   db: Firestore,
   isAverage = false
 ): Promise<number> => {
-  const fromDate = typeof reportState.dateRange.from == 'string'  ? new Date(reportState.dateRange.from)  : reportState.dateRange.from;
-  const toDate = typeof reportState.dateRange.to == 'string'  ? new Date(reportState.dateRange.to)  : reportState.dateRange.to;
-  const fromDateTrue = typeof reportState.dateRange.from == 'string'  ? new Date(reportState.dateRange.from)  : reportState.dateRange.from;
-  const toDateTrue = typeof reportState.dateRange.to == 'string'  ? new Date(reportState.dateRange.to)  : reportState.dateRange.to;
+  const fromDate =
+    typeof reportState.dateRange.from == 'string'
+      ? new Date(reportState.dateRange.from)
+      : reportState.dateRange.from;
+  const toDate =
+    typeof reportState.dateRange.to == 'string'
+      ? new Date(reportState.dateRange.to)
+      : reportState.dateRange.to;
+  const fromDateTrue =
+    typeof reportState.dateRange.from == 'string'
+      ? new Date(reportState.dateRange.from)
+      : reportState.dateRange.from;
+  const toDateTrue =
+    typeof reportState.dateRange.to == 'string'
+      ? new Date(reportState.dateRange.to)
+      : reportState.dateRange.to;
   if (queryName.queryName == 'amount') {
     fromDate.setMonth(fromDate.getMonth() - 1);
   }
@@ -349,7 +360,9 @@ const getQuery = async (
     filters.push(where(fieldDict.uidField, '==', reportState.uid));
   }
   if (reportState.organizationId && fieldDict.organizationIdField) {
-    filters.push(where(fieldDict.organizationIdField, '==', reportState.organizationId));
+    filters.push(
+      where(fieldDict.organizationIdField, '==', reportState.organizationId)
+    );
   }
   if (reportState.occupation && fieldDict.occupationField) {
     filters.push(
@@ -590,5 +603,40 @@ export const useGetReport = defineStore('getReport', () => {
     }
     return rows;
   };
-  return { getReport, getDailyReport };
+
+  const getAgeReport = async (
+    dataRange: { from: string; to: string },
+    media?: Media,
+    branch?: Branch
+  ) => {
+    let ageData = {
+      '10s': 0,
+      '20s': 0,
+      '30s': 0,
+      '40s': 0,
+      '50s': 0,
+      '60s over': 0,
+    };
+    const filters: QueryFieldFilterConstraint[] = [];
+    if (media) {
+      filters.push(where('media', '==', media.id));
+    }
+    if (branch) {
+      filters.push(where('branch_id', '==', branch.id));
+    }
+    const listofages = await agesListOfApplicants(dataRange, filters);
+    if (listofages) {
+      ageData = {
+        '10s': listofages.filter((age) => age >= 10 && age < 20).length,
+        '20s': listofages.filter((age) => age >= 20 && age < 30).length,
+        '30s': listofages.filter((age) => age >= 30 && age < 40).length,
+        '40s': listofages.filter((age) => age >= 40 && age < 50).length,
+        '50s': listofages.filter((age) => age >= 50 && age < 60).length,
+        '60s over': listofages.filter((age) => age >= 60).length,
+      };
+    }
+    return ageData;
+  };
+
+  return { getReport, getDailyReport, getAgeReport };
 });

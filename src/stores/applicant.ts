@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch, QueryFieldFilterConstraint} from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
@@ -406,7 +406,7 @@ export const useApplicant = defineStore('applicant', () => {
 
   }
 
-  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter): Promise<number[] | undefined> => {
+  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: QueryFieldFilterConstraint[]): Promise<number[] | undefined> => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
     const filters = [
@@ -414,10 +414,8 @@ export const useApplicant = defineStore('applicant', () => {
       where('applicationDate', '<=', targetDateTo)
     ]
     if (filterData) {
-      for (const [key, value] of Object.entries(filterData)) {
-        if (value) {
-          filters.push(where(key, '==', value))
-        }
+      for(const filter of filterData){
+        filters.push(filter)
       }
     }
     const applicantRef = collection(db, 'applicants')
