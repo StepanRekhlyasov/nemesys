@@ -30,7 +30,7 @@ import { BackOrderModel, Client, ClientFactory } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import detailInfoBO from './detailInfoBO.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
