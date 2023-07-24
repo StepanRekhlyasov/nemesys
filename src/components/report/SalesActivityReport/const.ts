@@ -9,7 +9,8 @@ export const itemList = [
   { queryName: 'admission' },
   { queryName: 'BO' },
 ] as const;
-
+export const donutGraphItem = [{ queryName: 'nurse' }, { queryName: 'nursingCare' }] as const;
+export const donutLabelNames =[t('client.add.nurse'), t('client.add.nursing')] as const
 export const dataNames = [
   'report.companyTotal',
   'report.CVR',
@@ -20,7 +21,7 @@ export const chartNames = ['bar', 'line', 'line'] as const;
 export const chartNamesR = ['bar', 'bar'] as const;
 export const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
 
     chart: {},
     title: {
@@ -80,7 +81,7 @@ export const chartOptions = computed(() => {
 
 export const chartOptionsR = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.salseProductivity'),

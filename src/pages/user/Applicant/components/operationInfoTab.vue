@@ -19,6 +19,13 @@
           }}</span>
         </q-td>
       </template>
+      
+      <template v-slot:body-cell-backOrder="props">
+        <q-td :props="props">
+          <q-spinner color="primary" class="row" v-if="backOrderLoading[props.row.backOrder]"></q-spinner>
+          <span class="row" v-else>{{ backOrderList[props.row.backOrder]?.boId?backOrderList[props.row.backOrder]?.boId:'-' }}</span>
+        </q-td>
+      </template>
 
       <template v-slot:body-cell-chargeOfAdmission="props">
         <td :props="props">
@@ -32,13 +39,14 @@
 </template>
 
 <script setup  lang="ts">
-import { computed, Ref, ref} from 'vue';
+import { computed, Ref, ref, watch} from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ApplicantFix, selectOptions, UserPermissionNames } from 'src/shared/model';
+import { ApplicantFix, BackOrderModel, selectOptions, UserPermissionNames } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
 import { useUserStore } from 'src/stores/user';
+import { useBackOrder } from 'src/stores/backOrder';
 const props = defineProps({
   applicant: {
     type: Object,
@@ -48,6 +56,7 @@ const props = defineProps({
 const { t } = useI18n({ useScope: 'global' });
 const organization = useOrganization();
 const applicantStore = useApplicant();
+const backOrderStore = useBackOrder();
 const fixStore = useFix();
 const userStore = useUserStore()
 const list: Ref<ApplicantFix[]> = ref([])
@@ -104,6 +113,22 @@ const columns = computed(() => {
     },
   ];
 });
+
+const backOrderList = ref<{[id: string] : BackOrderModel}>({})
+const backOrderLoading = ref<{[id: string] : boolean}>({})
+
+const getBoId = async (id : string) => {
+  backOrderLoading.value[id] = true
+  const bo = await backOrderStore.getBoById(id)
+  backOrderList.value[bo.id] = bo
+  backOrderLoading.value[id] = false
+}
+
+watch(()=>list.value, (newValue)=>{
+  newValue.forEach((row)=>{
+    getBoId(row.backOrder)
+  })
+})
 
 loadOperationInfo()
 async function loadOperationInfo() {
