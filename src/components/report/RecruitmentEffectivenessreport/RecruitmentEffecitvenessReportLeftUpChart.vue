@@ -95,7 +95,7 @@ const props = defineProps<{
 }>();
 
 const showChart = async () => {
-  dataToshow.value = [[],[]];
+  dataToshow.value = [[], [], [], []];
   if (!props.dateRangeProps) return;
   interface MonthYear {
     month: number;
@@ -121,7 +121,11 @@ const showChart = async () => {
   ) => {
     const numOfApplicantsAmount = await getReport({
       dateRange: month,
-      queryNames: [{ queryName: 'applicants' }, { queryName: 'amount' }],
+      queryNames: [
+        { queryName: 'applicants' },
+        { queryName: 'admission' },
+        { queryName: 'amount' },
+      ],
       organizationId: organizationId,
       graphType: props.graph_type,
       isAverage: false,
@@ -133,6 +137,12 @@ const showChart = async () => {
       } else return sum;
     }, 0);
 
+    const numOfAdmissionSum = numOfApplicantsAmount.reduce((sum, current) => {
+      if (typeof current.admission === 'number') {
+        return sum + current.admission;
+      } else return sum;
+    }, 0);
+
     const amountSum = numOfApplicantsAmount.reduce((sum, current) => {
       if (typeof current.amount === 'number') {
         return sum + current.amount;
@@ -141,12 +151,29 @@ const showChart = async () => {
 
     const unitPrice =
       numOfApplicantsSum !== 0 ? round(amountSum / numOfApplicantsSum, 1) : 0;
-    return unitPrice;
+
+    const startPrice =
+      numOfAdmissionSum !== 0 ? round(amountSum / numOfAdmissionSum, 1) : 0;
+    return { unitPrice: unitPrice, startPrice: startPrice };
   };
 
   const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
-    const from = new Date(monthYear.year, monthYear.month - 1, 1, 0, 0, 0);
-    const to = new Date(monthYear.year, monthYear.month, 0, 23, 59, 59);
+    const from = new Date(
+      { ...monthYear }.year,
+      { ...monthYear }.month - 1,
+      1,
+      0,
+      0,
+      0
+    );
+    const to = new Date(
+      { ...monthYear }.year,
+      { ...monthYear }.month,
+      0,
+      23,
+      59,
+      59
+    );
     return { from: from, to: to };
   };
   const monthRangeList = getMonthList(props.dateRangeProps.to, beforeMonth).map(
@@ -157,10 +184,13 @@ const showChart = async () => {
   monthList.value = monthRangeList.map((month) => {
     return month.from.getMonth() + 1;
   });
-
   for (const month of monthRangeList) {
-    dataToshow.value[0].push(await calcUnitPrice(month, props.organization_id));
-    dataToshow.value[1].push(await calcUnitPrice(month));
+    const price = await calcUnitPrice(month, props.organization_id);
+    const priceAll = await calcUnitPrice(month);
+    dataToshow.value[0].push(price.unitPrice);
+    dataToshow.value[1].push(price.startPrice);
+    dataToshow.value[2].push(priceAll.unitPrice);
+    dataToshow.value[3].push(priceAll.startPrice);
   }
 };
 
