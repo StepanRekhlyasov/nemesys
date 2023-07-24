@@ -10,16 +10,14 @@
 <script setup lang="ts">
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, computed, watch } from 'vue';
-import { useMedia } from 'stores/media';
-import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
-import { Media } from 'src/shared/model/Media.model';
 import { i18n } from 'boot/i18n';
+import { useGetReport } from 'src/stores/getReport';
+import { donutGraphItem, donutLabelNames } from './const';
 const apexchart = VueApexCharts;
+const { getReport } = useGetReport();
 const dataToshow: Ref<(number | string)[]> = ref([]);
-const media = useMedia();
-const applicant = useApplicant();
-const mediaList = ref<Media[]>([]);
+
 const { t } = i18n.global;
 const props = defineProps<{
   branch_id: string;
@@ -31,27 +29,29 @@ const props = defineProps<{
 const chartOptions = computed(() => {
   return {
     legend: { position: 'right' },
-    title:{
-      text: t('report.title.budget'),
+    title: {
+      text: t('report.title.companyBOStatus'),
       style: {
         color: 'gray',
       },
     },
-    labels: [...mediaList.value.map((media) => media.name)],
+    labels: donutLabelNames,
   };
 });
 
 const showChart = async () => {
-  mediaList.value = await media.getAllmedia();
   if (!props.dateRangeProps) return;
-  const dateRange = props.dateRangeProps;
-  dataToshow.value = await Promise.all(
-    mediaList.value.map(async (media) => {
-      return await applicant.countApplicantsByMedia(media.id, dateRange);
-    })
+  const rows = await getReport({
+    queryNames: donutGraphItem,
+    graphType: props.graph_type,
+    dateRange: props.dateRangeProps,
+    isAverage: false,
+  });
+  console.log(Object.values(rows[0]));
+  dataToshow.value = Object.values(rows[0]).filter(
+    (value) => typeof value !== 'string'
   );
 };
-
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {

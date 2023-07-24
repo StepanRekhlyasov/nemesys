@@ -22,7 +22,7 @@ const media = useMedia();
 const mediaList = ref<Media[]>([]);
 const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.mediaApplicationUnitPrice'),

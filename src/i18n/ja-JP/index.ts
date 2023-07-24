@@ -100,6 +100,9 @@ export default {
     downloadCSV: 'CSVダウンロード',
     branch: '支店',
   },
+  rule: {
+    onlyNumber: '数字のみ、ハイフンなし'
+  },
   smoking: {
     no: '無',
     yes: '有',
@@ -108,8 +111,10 @@ export default {
     noWhileWworking: '就業中禁煙',
     acceptable: '可',
     notPossible: '不可',
-    can: '就業中禁煙可能',
-    cant: '就業中禁煙不可',
+    can: '可',
+    cant: '不可',
+    type: '種類',
+    stop: '就業中禁煙',
   },
   marriedStatus: {
     married: '既婚',
@@ -1101,8 +1106,7 @@ export default {
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
-      totalYearsExperience: '経験',
-      yearsOfTotalExperience: '総経験年数',
+      totalYearsExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',
@@ -1490,7 +1494,8 @@ export default {
     delivered: '配信',
     'not delivered': '未配信',
     form: {
-      name: '通知作成フォームを閉じる',
+      open: '通知作成フォームを開く',
+      close: '通知作成フォームを閉じる',
       category: 'カテゴリ',
       options: {
         op1: 'カテゴリ 1',
@@ -1667,7 +1672,8 @@ export default {
       status: 'ステータス',
       category: 'カテゴリ',
       subject: '件名',
-      companyID: '企業ID 企業名',
+      companyID: '企業ID',
+      companyName: '企業名',
       recievedDate: '送受信日',
       responseDate: '返信日'
     },
@@ -1684,7 +1690,8 @@ export default {
     },
     message: {
       issueDate: '送信日',
-      responseDate: '受信日'
+      responseDate: '受信日',
+      sendDate: '送信日',
     }
   },
   industry: {
@@ -1747,8 +1754,8 @@ export default {
       BOExisting:'BO既存',
       female:'女性',
       male:'男性',
-      startUnitPrice:'開始単価',
-      applicationUnitPrice:'応募単価',
+      startUnitPrice:'開始単価 平均',
+      applicationUnitPrice:'応募単価 平均',
       applicationUnitPriceAllAverage:'応募単価 全体平均',
       startUnitPriceAllAverage:'開始単価 全体平均',
       teens:'10代',
@@ -1771,7 +1778,9 @@ export default {
       daysToWork:'勤務日数',
       unitPriceTransition:'単価推移',
       mediaApplicationUnitPrice:'媒体別応募単価',
-
+      budget:'予算',
+      companyBOStatus:'自社BO状況',
+      AverageBOStatus:'平均BO状況',
     }
   },
   billing: {

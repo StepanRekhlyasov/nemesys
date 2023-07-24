@@ -50,7 +50,7 @@ export const unitPricenamesPerMedia = [
 ] as const;
 export const chartOptionsSex = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: { stacked: true },
     title: {
       text: t('report.title.sex'),
@@ -92,7 +92,7 @@ export const chartOptionsSex = computed(() => {
 
 export const chartOptionsAges = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: { stacked: true },
     title: {
       text: t('report.title.age'),
@@ -133,7 +133,7 @@ export const chartOptionsAges = computed(() => {
 
 export const chartOptionsDaysToWork = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: { stacked: true },
     title: {
       text: t('report.title.daysToWork'),
@@ -174,7 +174,7 @@ export const chartOptionsDaysToWork = computed(() => {
 
 export const chartOptionsMedia = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     labels: [],
   };
 });

@@ -100,6 +100,9 @@ export default {
     downloadCSV: 'Download CSV',
     branch: 'Branch',
   },
+  rule: {
+    onlyNumber: 'only number, without "-"'
+  },
   smoking: {
     no: 'No',
     yes: 'Yes',
@@ -108,8 +111,10 @@ export default {
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
     notPossible: 'Not possible',
-    can: 'Can stop smoking while working',
-    cant: 'Cannot stop smoking while working',
+    can: 'I can',
+    cant: 'I can\'t',
+    type: 'Cigarettes type',
+    stop: 'Can you stop smoking during work?',
   },
   marriedStatus: {
     married: 'Married',
@@ -1106,7 +1111,6 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
-      yearsOfTotalExperience: 'Years of total experience',
 
       // Operation Info Component
       placeOperation: 'Place of operation',
@@ -1497,7 +1501,8 @@ export default {
     delivered: 'delivered',
     'not delivered': 'not delivered',
     form: {
-      name: 'Notification Creation Form',
+      open: 'Open Notification Creation Form',
+      close: 'Close Notification Creation Form',
       category: 'category',
       options: {
         op1: 'category 1',
@@ -1674,7 +1679,8 @@ export default {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID company name',
+      companyID: 'companyID',
+      companyName: 'Company name',
       recievedDate: 'date issued',
       responseDate: 'response date'
     },
@@ -1691,7 +1697,8 @@ export default {
     },
     message: {
       issueDate: 'Date of issue',
-      responseDate: 'Date of response'
+      responseDate: 'Date of response',
+      sendDate: 'Date sent',
     }
   },
   industry: {
@@ -1777,7 +1784,9 @@ export default {
       daysToWork:'Days to work',
       unitPriceTransition:'unit price transition',
       mediaApplicationUnitPrice:'Media application unit price',
-
+      budget:'Budget',
+      companyBOStatus:'BO Status',
+      AverageBOStatus:'Average BO Status',
 
   }
 },

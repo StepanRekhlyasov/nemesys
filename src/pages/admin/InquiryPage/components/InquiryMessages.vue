@@ -4,7 +4,7 @@
 
       <div class="row items-start q-gutter-md q-mb-xs">
         <div class="col-3 text-right ">
-          {{ message.type === INQUIRY_MESSAGE_TYPE.issue ? $t('inquiry.message.issueDate') : $t('inquiry.message.responseDate') }}
+          {{ message.type === INQUIRY_MESSAGE_TYPE.issue ? $t('inquiry.message.responseDate') : $t('inquiry.message.sendDate') }}
         </div>
         <div class="col-8">
           {{ message.messageDate }}

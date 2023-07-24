@@ -1,14 +1,8 @@
 <template>
   <q-card class="no-shadow full-width q-ma-none">
     <q-card-section class="bg-grey-3 q-ma-xs q-pa-xs" v-if="!showAddForm">
-      <q-btn
-        :label="$t('client.tele.openTeleAppointForm')"
-        :icon="'mdi-arrow-down-bold-circle-outline'"
-        flat
-        size="md"
-        class="text-grey-9"
-        @click="showAddForm = true"
-      />
+      <q-btn :label="$t('client.tele.openTeleAppointForm')" :icon="'mdi-arrow-down-bold-circle-outline'" flat size="md"
+        class="text-grey-9" @click="showAddForm = true" />
     </q-card-section>
     <q-card-section class="q-ma-sm q-pa-sm bg-grey-2" v-if="showAddForm">
       <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
@@ -27,19 +21,26 @@
           </div>
           <div class="col-9 q-pl-sm">
             <q-radio v-model="teleData['jobResult']" val="noJobOffer" :label="$t('client.tele.noJobOffer')" />
-            <q-radio v-model="teleData['jobResult']" val="noNeedContact" :label="$t('client.tele.noNeedContact')" class="q-ml-sm" />
-            <q-radio v-model="teleData['jobResult']" val="needForRecruiting" :label="$t('client.tele.needForRecruiting')" class="q-ml-sm" />
+            <q-radio v-model="teleData['jobResult']" val="noNeedContact" :label="$t('client.tele.noNeedContact')"
+              class="q-ml-sm" />
+            <q-radio v-model="teleData['jobResult']" val="needForRecruiting" :label="$t('client.tele.needForRecruiting')"
+              class="q-ml-sm" />
           </div>
         </div>
-        <div class="row q-pt-md q-pb-sm" v-if="teleData['result'] != 'notConnected' && teleData['jobResult'] != 'noJobOffer' && teleData['jobResult'] != 'noNeedContact'">
+        <div class="row q-pt-md q-pb-sm"
+          v-if="teleData['result'] != 'notConnected' && teleData['jobResult'] != 'noJobOffer' && teleData['jobResult'] != 'noNeedContact'">
           <div class="col-2 text-right self-center q-pr-sm">
             {{ $t('detal.teleAppoint.requiredService') }}
           </div>
           <div class="col-9 q-pl-sm">
-            <q-checkbox v-model="teleData['requiredService']" val="referral" :label="$t('client.tele.reqRecruitmentServicesOption.referral')" />
-            <q-checkbox v-model="teleData['requiredService']" val="introduction" :label="$t('client.tele.reqRecruitmentServicesOption.introduction')" />
-            <q-checkbox v-model="teleData['requiredService']" val="referralNTTP" :label="$t('client.tele.reqRecruitmentServicesOption.referralNTTP')" />
-            <q-checkbox v-model="teleData['requiredService']" val="dispatch" :label="$t('client.tele.reqRecruitmentServicesOption.dispatch')" />
+            <q-checkbox v-model="teleData['requiredService']" val="referral"
+              :label="$t('client.tele.reqRecruitmentServicesOption.referral')" />
+            <q-checkbox v-model="teleData['requiredService']" val="introduction"
+              :label="$t('client.tele.reqRecruitmentServicesOption.introduction')" />
+            <q-checkbox v-model="teleData['requiredService']" val="referralNTTP"
+              :label="$t('client.tele.reqRecruitmentServicesOption.referralNTTP')" />
+            <q-checkbox v-model="teleData['requiredService']" val="dispatch"
+              :label="$t('client.tele.reqRecruitmentServicesOption.dispatch')" />
           </div>
         </div>
         <div class="row">
@@ -51,12 +52,14 @@
           </div>
         </div>
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.addNew')" type="submit" color="primary" icon="mdi-plus-thick" class="no-shadow q-ml-md" />
+          <q-btn :label="$t('common.addNew')" type="submit" color="primary" icon="mdi-plus-thick"
+            class="no-shadow q-ml-md" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
     </q-card-section>
-    <q-table :columns="columns" :rows="historyData" row-key="id" v-model:pagination="pagination" hide-pagination class="q-pl-sm q-mr-xs" :loading="loading">
+    <q-table :columns="columns" :rows="historyData" row-key="id" v-model:pagination="pagination" hide-pagination
+      class="q-pl-sm q-mr-xs" :loading="loading">
       <template v-slot:body-cell-edit="props">
         <q-td :props="props">
           <q-btn icon="mdi-pencil" size="sm" round color="primary" flat @click="showEditDialog(props.row)" />
@@ -109,15 +112,16 @@ import { ref, onBeforeUnmount, onMounted, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
 import { useTele } from 'src/stores/TeleAppointment';
-import {  TeleAppointmentHistory  } from 'src/shared/model/TeleAppoint.model';
+import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
 import { DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { QTableProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
   columns: QTableProps['columns'];
-  historyData:QTableProps['rows']
+  historyData: QTableProps['rows']
   clientId: string;
 }>();
 const historyData: DocumentData = ref([]);
@@ -132,11 +136,11 @@ const pagination = ref({
 });
 const loading = ref(false);
 const showAddForm = ref(false);
-const teleData:DocumentData = ref({
-      requiredService: [],
-      result:'',
-      jobResult:'',
-    });
+const teleData: DocumentData = ref({
+  requiredService: [],
+  result: '',
+  jobResult: '',
+});
 const $q = useQuasar();
 const unsubscribe = ref();
 const unsubscribeUsers = ref();
@@ -147,6 +151,10 @@ const fetchTeleData = async () => {
   historyData.value = await teleStore.loadTeleAppointmentData(props.clientId);
   loading.value = false;
 };
+
+watchCurrentOrganization(async () => {
+  await fetchTeleData()
+})
 
 const showDeleteDialog = async (Teleid: string[]) => {
   $q.dialog({
@@ -190,17 +198,17 @@ const onSubmit = async () => {
   loading.value = true;
   let data: TeleAppointmentHistory[] = teleData.value;
   if (!data['result']) {
-   Alert.warning()
+    Alert.warning()
     return;
   }
 
   try {
     if (dialogType.value == 'update') {
-       await teleStore.updateData(props.clientId, data);
-        historyData.value = fetchTeleData();
+      await teleStore.updateData(props.clientId, data);
+      historyData.value = fetchTeleData();
     } else {
-       await teleStore.addData(props.clientId, data);
-        historyData.value = fetchTeleData();
+      await teleStore.addData(props.clientId, data);
+      historyData.value = fetchTeleData();
     }
     loading.value = false;
     Alert.success()
@@ -255,11 +263,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-  .row {
-    margin-bottom: 10px;
-  }
-  .delete_btn{
-    background-color: white;
-    width: 1px;
-  }
-</style>
+.row {
+  margin-bottom: 10px;
+}
+
+.delete_btn {
+  background-color: white;
+  width: 1px;
+}</style>

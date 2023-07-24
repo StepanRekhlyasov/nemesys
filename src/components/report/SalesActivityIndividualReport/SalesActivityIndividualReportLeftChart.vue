@@ -6,9 +6,17 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, dataNames, itemList, itemRateList } from './const';
+import {
+  chartOptions,
+  columns,
+  dataNames,
+  itemList,
+  itemRateList,
+} from './const';
 import { useGetReport } from 'src/stores/getReport';
 import { calculateCVR } from '../reportUtil';
+import { listToFixed } from 'src/shared/utils/KPI.utils';
+'src/shared/KPI.utils'
 import { useUserStore } from 'src/stores/user';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
@@ -24,6 +32,7 @@ const { t } = useI18n({ useScope: 'global' });
 const dataToShow = ref<(number | string)[][]>([]);
 const dataToShowCVR = ref<(number | string)[][]>([]);
 const rowsIndividual = ref<RowsType>([]);
+
 const seriesList = ref<
   { name: string; data: (number | string)[]; type: string }[]
 >([]);
@@ -95,29 +104,35 @@ const showIndividualReport = async (
     });
   }
 
-  const allDataAverage = getListFromObject(
+  const allDataAverage = listToFixed(getListFromObject(
     await getReport({
       dateRange: range,
       graphType: props.graph_type,
       queryNames: itemList,
       isAverage: true,
     }),
-    itemList.map((item)=>{return item.queryName})
-  ) as number[];
+    itemList.map((item) => {
+      return item.queryName;
+    })
+  ) as number[]);
 
-  const dataAverage = getListFromObject(
-    await getReport({
-      dateRange: range,
-      graphType: props.graph_type,
-      queryNames: itemList,
-      isAverage: true,
-      organizationId: organizationId.value,
-    }),
-    itemList.map((item)=>{return item.queryName})
-  ) as number[];
+  const dataAverage = listToFixed(
+    getListFromObject(
+      await getReport({
+        dateRange: range,
+        graphType: props.graph_type,
+        queryNames: itemList,
+        isAverage: true,
+        organizationId: organizationId.value,
+      }),
+      itemList.map((item) => {
+        return item.queryName;
+      })
+    ) as number[]
+  );
 
-  const dataAverageCvr = calculateCVR(dataAverage);
-  const allDataAverageCvr = calculateCVR(allDataAverage);
+  const dataAverageCvr = listToFixed(calculateCVR(dataAverage as number[]));
+  const allDataAverageCvr = listToFixed(calculateCVR(allDataAverage as number[]));
   dataToShow.value = [dataAverage, allDataAverage];
   dataToShowCVR.value = [dataAverageCvr, allDataAverageCvr];
 };

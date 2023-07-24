@@ -188,5 +188,6 @@ export const useOrganization = defineStore('organization', () => {
     getOrganizationsByName,
     getDataById,
     getAllOrganizations,
+    getCurrentUsersInChrage
   }
 })

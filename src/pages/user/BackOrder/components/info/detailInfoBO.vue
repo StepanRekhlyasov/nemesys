@@ -286,7 +286,7 @@
       <labelField :label="$t('backOrder.create.workingDays')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" v-if="selectedBo['type'] == 'dispatch'"
         valueClass="q-pl-md col-4 flex self-center"
-        :value="selectedBo['workingDays'] ? $t('backOrder.workingDays.' + data['workingDays']) : ''">
+        :value="`${selectedBo['workingDays'] ? $t('backOrder.workingDays.' + selectedBo['workingDays']) : ''} ${selectedBo['workingDays'] == 'fixed' && selectedBo['working_days_week'] ? '(' + selectedBo['working_days_week'].map(day => $t('weekDay.' + day)).join(', ') + ')' : ''}`">
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')" val="shiftSystem"
             v-model="data['workingDays']" />

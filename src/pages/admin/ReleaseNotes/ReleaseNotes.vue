@@ -13,8 +13,10 @@
           expand-icon-class="text-accent"
           header-class="q-pa-none"
           switch-toggle-side
-          :label="$t('releaseNotes.form.name')"
         >
+        <template v-slot:header="{ expanded }">
+          <div class="flex items-center">{{expanded? $t('releaseNotes.form.close') : $t('releaseNotes.form.open')}}</div>
+        </template>
         <NotificationForm />
       </q-expansion-item>
     </div>

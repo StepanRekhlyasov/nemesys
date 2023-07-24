@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { getFirestore } from 'firebase/firestore';
-import { BackOrderModel, Client } from 'src/shared/model';
+import { BackOrderModel, Client, ClientFactory } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
@@ -34,18 +34,21 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import detailInfoBO from './detailInfoBO.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
+import { useClientFactory } from 'src/stores/clientFactory';
 
 defineProps<{
   isHiddenDetails?: boolean,
 }>()
 
 const backOrderStore = useBackOrder();
+const clientFactoryStore = useClientFactory();
 const db = getFirestore();
 const applicantStore = useApplicant();
 const { t } = useI18n({ useScope: 'global' });
 const emit = defineEmits(['closeDialog', 'openSearchByMap', 'passClientToMapSearch'])
 
 const client = ref<Client | undefined>(undefined);
+const clientFactoryList = ref<ClientFactory[]>([])
 const selectedBo = computed(() => backOrderStore.state.selectedBo);
 const drawerRight = ref(false);
 
@@ -54,9 +57,8 @@ const nameBo = computed(() => {
   let officeName = t('backOrder.officeName');
   if (selectedBo.value?.client_id) {
     clientName = applicantStore.state.clientList.find(client => client.id === selectedBo.value?.client_id)?.name || '';
-    const offices = applicantStore.state.clientList.find(client => client.id === selectedBo.value?.client_id)?.office
     if (selectedBo.value?.office_id) {
-      officeName = offices?.find(office => office.id === selectedBo.value?.office_id)?.name || ''
+      officeName = clientFactoryList.value?.find(office => office.id === selectedBo.value?.office_id)?.name || ''
     }
   }
   return `${clientName} / ${officeName} / ${selectedBo.value?.boId}`
@@ -73,6 +75,12 @@ const openDrawer = async (data: BackOrderModel) => {
   backOrderStore.state.selectedBo = data;
   drawerRight.value = true
 }
+
+watch(() => selectedBo, async () => {
+  if (selectedBo.value && selectedBo.value.client_id) {
+    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
+  }
+}, { deep: true, immediate: true })
 
 onMounted(async () => {
   if (selectedBo.value && selectedBo.value['client_id']) {

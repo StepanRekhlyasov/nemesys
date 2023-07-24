@@ -8,10 +8,8 @@
       <q-separator color="white" size="2px" />
 
       <q-card-section class="q-pa-xs">
-        <searchForm :searchData="sharedData" @load-search-staff="loadSearchStaff" />
+        <searchForm :searchData="sharedData" @load-search-staff="loadSearchStaff" @openSMSDrawer="openSMSDrawer" />
       </q-card-section>
-
-      <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer = true" />
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
@@ -172,6 +170,9 @@ const getClassification = (classification: string) => {
 
 const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
+};
+const openSMSDrawer = () => {
+  sendSMSDrawer.value = true
 };
 
 const preventWatch = ref(false)
