@@ -12,6 +12,7 @@ export interface InquiryData {
   subject: string
   messages: InquiryMessage[] | never[]
   warning?: string[] | FieldValue
+  updated_at?: Timestamp | string
 }
 
 export type InquiryDataRow = Partial<InquiryData> & {

@@ -96,20 +96,22 @@
       align: 'left',
       sortable: true,
   }, {
-      name: 'recievedDate',
+      name: 'updated_at',
       required: true,
       label: t('inquiry.table.recievedDate'),
-      field: 'issueDate',
+      field: 'updated_at',
       align: 'left',
       sortable: false,
-  }, {
-      name: 'responseDate',
-      required: true,
-      label: t('inquiry.table.responseDate'),
-      field: 'answerDate',
-      align: 'left',
-      sortable: false,
-  }])
+  }, 
+  // {
+  //     name: 'responseDate',
+  //     required: true,
+  //     label: t('inquiry.table.responseDate'),
+  //     field: 'answerDate',
+  //     align: 'left',
+  //     sortable: false,
+  // }
+])
 
   const pagination = ref({
       sortBy: 'desc',

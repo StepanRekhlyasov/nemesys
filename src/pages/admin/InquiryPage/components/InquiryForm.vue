@@ -77,7 +77,7 @@
             content: responseContent.value,
             type: INQUIRY_MESSAGE_TYPE.response,
           },
-         data: {status: INQUIRY_STATUS.answered, warning: []}
+         data: {status: INQUIRY_STATUS.answered, updated_at: Timestamp.fromDate(new Date()), warning: []}
         })
         Alert.success()
         await inquiryStore.getAllInquires()
@@ -86,7 +86,7 @@
             content: responseContent.value,
             type: INQUIRY_MESSAGE_TYPE.response,
           },
-         data: {status: INQUIRY_STATUS.answered, warning: []}})
+         data: {status: INQUIRY_STATUS.answered, updated_at: Timestamp.fromDate(new Date()), warning: []}})
 
          responseContent.value = ''
         loading.value = false;

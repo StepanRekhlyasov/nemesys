@@ -46,7 +46,7 @@ export const useInquiry = defineStore('inquiry', () => {
 
   const getAllInquires = async () => {
     state.value.wholeInquiresData = []
-    const docWholeSnap =  await getDocs(query(collection(db, 'inquires'), orderBy('recievedDate', 'desc')));
+    const docWholeSnap =  await getDocs(query(collection(db, 'inquires'), orderBy('updated_at', 'desc')));
 
     if (!docWholeSnap.empty) {
       setCurrentInquiresData(docWholeSnap.docs)
@@ -85,6 +85,7 @@ export const useInquiry = defineStore('inquiry', () => {
             companyName: organisation.name,
             issueDate: findTheLastDate(recievedMessageDate),
             answerDate: findTheLastDate(answeredMessageDate),
+            updated_at: myDateFormat(item.data().updated_at, 'YYYY-MM-DD HH:mm:ss'),
         }]
       }
   })

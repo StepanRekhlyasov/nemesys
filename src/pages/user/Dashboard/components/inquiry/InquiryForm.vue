@@ -76,7 +76,7 @@ const sendResponse = async () => {
           content: responseContent.value,
           type: INQUIRY_MESSAGE_TYPE.issue
         },
-        data: {status: INQUIRY_STATUS.unanswered}
+        data: {status: INQUIRY_STATUS.unanswered, updated_at: Timestamp.fromDate(new Date())}
       })
       emit('inquiryUpdated')
       Alert.success()
