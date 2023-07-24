@@ -103,14 +103,6 @@
       align: 'left',
       sortable: false,
   }, 
-  // {
-  //     name: 'responseDate',
-  //     required: true,
-  //     label: t('inquiry.table.responseDate'),
-  //     field: 'answerDate',
-  //     align: 'left',
-  //     sortable: false,
-  // }
 ])
 
   const pagination = ref({
