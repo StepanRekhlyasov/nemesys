@@ -6,15 +6,15 @@
           icon="add" />
         <q-btn :label="$t('client.list.settingFromArea')" unelevated color="primary" class="no-shadow text-weight-bold"
           icon="add" />
-        <q-btn :label="$t('client.list.searchByCondition')" type="submit" outline color="primary" class="text-weight-bold" />
+        <q-btn :label="$t('client.list.searchByCondition')" type="submit" outline color="primary"
+          class="text-weight-bold" />
       </q-card-actions>
       <q-separator />
 
       <q-card-actions>
         <q-select outlined v-model="backOrderData['saved']" dense :label="$t('client.list.savedSearchList')"
           style="width: 250px" />
-        <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary"
-          class="text-weight-bold q-ml-md" />
+        <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" />
 
       </q-card-actions>
       <q-separator />
@@ -27,8 +27,7 @@
               <q-item-label class="q-pb-xs">
                 {{ $t('client.list.keyboard') }}
               </q-item-label>
-              <q-input outlined dense v-model="backOrderData['client_name']"
-                :placeholder="$t('client.list.keyboard')" />
+              <q-input outlined dense v-model="backOrderData['client_name']" :placeholder="$t('client.list.keyboard')" />
             </q-item-section>
           </q-item>
 
@@ -39,18 +38,17 @@
                 {{ $t('client.add.clientType') }}
               </q-item-label>
               <div>
-                <q-checkbox v-model="backOrderData['nursing']" dense :label="$t('client.add.nurse')" val="nurse" />
-                <q-checkbox v-model="backOrderData['nursing']" dense :label="$t('client.add.nursing')" class="q-ml-md"
+                <q-checkbox v-model="backOrderData['industry']" dense :label="$t('client.add.nurse')" val="nurse" />
+                <q-checkbox v-model="backOrderData['industry']" dense :label="$t('client.add.nursing')" class="q-ml-md"
                   val="nursing" />
               </div>
-              <q-item v-if="backOrderData['nursing'].length > 0">
+              <q-item v-if="backOrderData['industry'].length > 0">
                 <div class="q-gutter-sm">
                   <q-item-label class="q-pb-xs">{{
                     $t('client.add.facilityType')
                   }}</q-item-label>
-                  <q-checkbox size="xs" v-model="backOrderData['office_facilityType']" :val="option.value"
-                    :label="option.name" v-for="option in facilityOp" :key="option"
-                    :disable="backOrderData['nursing'].length == 0" />
+                  <q-checkbox size="xs" v-model="backOrderData['facilityType']" :val="option.value" :label="option.name"
+                    v-for="option in facilityOp" :key="option" :disable="backOrderData['industry'].length == 0" />
                 </div>
               </q-item>
             </q-item-section>
@@ -305,13 +303,12 @@
                 {{ $t('client.list.appointLastMonths') }}
               </q-item-label>
               <div class="q-gutter-sm q-mt-xs">
-                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt"
-                  unchecked-icon="panorama_fish_eye" val="teleAppointment"
-                  :label="$t('client.list.allTeleAppointedCompanies')" />
-                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt"
-                  unchecked-icon="panorama_fish_eye" val="viaFax" :label="$t('client.list.connectedCompanies')" />
-                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt"
-                  unchecked-icon="panorama_fish_eye" val="others" :label="$t('client.list.companiesOutService')" />
+                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                  val="teleAppointment" :label="$t('client.list.allTeleAppointedCompanies')" />
+                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                  val="viaFax" :label="$t('client.list.connectedCompanies')" />
+                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                  val="others" :label="$t('client.list.companiesOutService')" />
               </div>
             </q-item-section>
           </q-item>
@@ -346,15 +343,22 @@ import { reactive, computed, watch, ref } from 'vue'; //ref,
 // import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { facilityList } from 'src/shared/constants/Organization.const';
+import { getAuth } from '@firebase/auth';
+import { api } from 'src/boot/axios';
+import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'advanceSearch',
 
   setup() {
+    const router = useRouter()
+    const clientFactoryStore = useClientFactory()
     const { t } = useI18n({ useScope: 'global' });
     const backOrderData = reactive({
-      nursing: [],
-      office_facilityType: [],
+      industry: [],
+      facilityType: [],
       basic_contract_signed: false,
       avail_job_postings: false,
       status: [],
@@ -391,16 +395,47 @@ export default {
     });
 
     watch(
-      () => (backOrderData.nursing),
+      () => (backOrderData.industry),
       (newVal) => {
         if (newVal.length == 0) {
-          backOrderData.office_facilityType = [];
+          backOrderData.facilityType = [];
         }
       },
     );
-
+    const searchClientsByCondition = (officeData) => {
+      clientFactoryStore.condition = true
+      clientFactoryStore.selectedCFsId = []
+      officeData.forEach((item) => {
+        clientFactoryStore.selectedCFsId.push(item.id)
+      })
+      router.push('/client-factories')
+    }
     const searchClients = async () => {
-      console.log(backOrderData)
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user == null) {
+          throw new Error('invalid user')
+        }
+
+        const token = await user.getIdToken();
+        let data = { 'searchType':'advance', 'keyword': backOrderData['client_name'], 'facilityType': backOrderData.facilityType, 'industry': backOrderData.industry }
+        
+        const response = await api.post(
+          searchConfig.getOfficeDataURL,
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            timeout: 30000,
+          }
+        )
+        searchClientsByCondition(response.data)
+      } catch (error) {
+        throw new Error('Failed to create user')
+      }
     };
 
     return {

@@ -459,7 +459,7 @@ export default {
       clientType: 'Client Type',
       jobType: 'Job Categories',
       nurse: 'Nurse',
-      nursing: 'Nurse Care',
+      nursing: 'Nursing',
       clientRepresentative: 'Client Representative',
       clientRepLabel: 'Ex) General Affairs Department: Taro Suzuki',
       address: 'Address',

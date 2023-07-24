@@ -134,13 +134,7 @@ const searchClients = async () => {
         )
         officeData.value = response.data
         isLoadingProgress.value = false
-        clientFactoryStore.condition = true
-        clientFactoryStore.selectedCFsId = []
-        officeData.value.forEach((item)=>{
-            const id:string = item.id
-            clientFactoryStore.selectedCFsId.push(id)
-        })
-        router.push('/client-factories')
+        searchClientsByCondition()
         emit('getClients', response.data)
     } catch(error) {
         isLoadingProgress.value = false
@@ -148,6 +142,16 @@ const searchClients = async () => {
         throw new Error('Failed to create user')
     }
 };
+
+const searchClientsByCondition = () =>{
+  clientFactoryStore.condition = true
+  clientFactoryStore.selectedCFsId = []
+  officeData.value.forEach((item)=>{
+    const id:string = item.id || ''
+    clientFactoryStore.selectedCFsId.push(id)
+  })
+  router.push('/client-factories')
+}
 
 const onInputSubmit = () => {
     //
