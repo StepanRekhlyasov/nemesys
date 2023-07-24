@@ -158,15 +158,8 @@ const showChart = async () => {
   };
 
   const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
-    const from = new Date(
-      { ...monthYear }.year,
-      { ...monthYear }.month - 1,
-      1,
-      0,
-      0,
-      0
-    );
-    const to = new Date(
+    const from_ = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
+    const to_ = new Date(
       { ...monthYear }.year,
       { ...monthYear }.month,
       0,
@@ -174,18 +167,18 @@ const showChart = async () => {
       59,
       59
     );
-    return { from: from, to: to };
+    return { from: from_, to: to_ };
   };
   const monthRangeList = getMonthList(props.dateRangeProps.to, beforeMonth).map(
     (monthYear) => {
       return getMonthRange(monthYear);
     }
   );
-  monthList.value = monthRangeList.map((month) => {
+  monthList.value = [...monthRangeList].map((month) => {
     return month.from.getMonth() + 1;
   });
   for (const month of monthRangeList) {
-    const price = await calcUnitPrice(month, props.organization_id);
+    const price = await calcUnitPrice(JSON.parse(JSON.stringify(month)), props.organization_id);
     const priceAll = await calcUnitPrice(month);
     dataToshow.value[0].push(price.unitPrice);
     dataToshow.value[1].push(price.startPrice);
