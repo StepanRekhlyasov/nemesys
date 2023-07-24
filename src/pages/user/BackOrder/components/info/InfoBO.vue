@@ -72,6 +72,10 @@ const openDrawer = async (data: BackOrderModel) => {
   if (selectedBo.value?.id && selectedBo.value.id !== data.id) {
     drawerRight.value = false;
   }
+  if (selectedBo.value && selectedBo.value['client_id']) {
+    client.value = await getClient(db, selectedBo.value['client_id'])
+    emit('passClientToMapSearch', client.value)
+  }
   backOrderStore.state.selectedBo = data;
   drawerRight.value = true
 }
