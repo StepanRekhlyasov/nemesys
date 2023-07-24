@@ -67,7 +67,7 @@
                   </q-card-actions>
                 </div>
               </div>
-              <div class="row">
+              <div class="row" v-if="allowDelete">
                 <div class="col-3"></div>
                 <div class="col-9">
                   <q-card-actions>
@@ -108,6 +108,7 @@ import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useRole } from 'src/stores/role';
 import { useOrganization } from 'src/stores/organization';
+import { adminRolesIds } from 'src/components/handlers/consts';
 
 export default {
   name: 'EditProfile',
@@ -122,10 +123,16 @@ export default {
     const profileData = ref({})
     const organizations = ref([]);
     const organizationStore = useOrganization()
+    const allowDelete = ref(false)
+
     loadUserData()
     async function loadUserData() {
+      allowDelete.value = false
       const currentUser = (await getDoc(doc(db, 'users/',auth.currentUser.uid))).data()
       const role = await roleStore.getRole(currentUser.role)
+      if(adminRolesIds.includes(role.id)){
+        allowDelete.value = true
+      }
 
       user.value = {
         ...user.value,
@@ -172,7 +179,7 @@ export default {
       profileData,
       showDeleteDialog,
       organizations,
-
+      allowDelete,
       updateUser,
       resetData
     }
