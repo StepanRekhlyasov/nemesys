@@ -2,7 +2,7 @@ import { FieldValue, Timestamp } from 'firebase/firestore'
 
 export interface NotificationData {
   id?: string
-  warning?: string[] | FieldValue
+  readBy?: string[] | FieldValue
   status: string
   category: string
   subject: string

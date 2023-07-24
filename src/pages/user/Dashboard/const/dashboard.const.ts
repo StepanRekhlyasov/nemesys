@@ -9,8 +9,8 @@ const { t } = i18n.global
 export const dashboardNotificationTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
-      name: 'warning',
-      field: 'warning',
+      name: 'readBy',
+      field: 'readBy',
       label: '',
       align: 'left',
       sortable: false,
@@ -60,7 +60,7 @@ export interface DashboardinquiryRows {
   organization?: string
   recievedDate:  Timestamp
   messages?: InquiryMessage[] | never[]
-  warning?: string[] | FieldValue
+  readBy?: string[] | FieldValue
   type: string
 }
 export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() => {

@@ -38,15 +38,15 @@ async function updateInquery(){
   if(props.id){
     loading.value = true
     inquiryData.value = await inquiryStore.getCurrentInquiry(props.id)
-    if(!inquiryData.value.warning){
-      inquiryData.value.warning = []
+    if(!inquiryData.value.readBy){
+      inquiryData.value.readBy = []
     }
-    if(!inquiryData.value.warning.includes(currentUserId)){
+    if(!inquiryData.value.readBy.includes(currentUserId)){
       inquiryStore.replyOnInquiry({
         inquiryId: props.id,
-        data: {warning: arrayUnion(currentUserId)}
+        data: {readBy: arrayUnion(currentUserId)}
       })
-      inquiryData.value.warning.push(currentUserId)
+      inquiryData.value.readBy.push(currentUserId)
     }
     emit('readinquiry', inquiryData.value)
     loading.value = false

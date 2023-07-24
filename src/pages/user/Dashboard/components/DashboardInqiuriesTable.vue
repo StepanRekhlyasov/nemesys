@@ -33,9 +33,9 @@
       {{ $t('inquiry.table.' + props.row.type) }}
     </q-td>
   </template>
-  <template v-slot:body-cell-warning="props">
+  <template v-slot:body-cell-readBy="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''" class="warningMark">
-      <template v-if="Array.isArray(props.row.warning) && props.row.warning.includes(currentUserId)"></template>
+      <template v-if="Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId)"></template>
       <template v-else>!</template>
     </q-td>
   </template>
@@ -61,7 +61,8 @@
       {{ $t('dashboard.closeList') }}
     </template>
     </q-btn>
-    <q-dialog v-model="showNote">
+  </div>
+  <q-dialog v-model="showNote">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">{{ noteSubject }}</div>
@@ -74,7 +75,6 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-  </div>
 </template>
 <script setup lang="ts">
 import { DashboardinquiryRows, dashboardNotificationTableColumns as columns } from '../const/dashboard.const'
@@ -127,7 +127,7 @@ const updateInqueries = async () => {
     docWholeSnap.docs.forEach(async (item) => {
       releaseNotes.value = [...releaseNotes.value, {
         id: item.id,
-        warning: item.data().warning,
+        readBy: item.data().readBy,
         status: item.data().status,
         category: item.data().category,
         subject: item.data().subject,
@@ -168,14 +168,15 @@ function openDetails(id : string, type : string){
       showNote.value = true
       noteSubject.value = row.subject
       noteText.value = row.inquiryContent
+     console.log(showNote.value)
       if(currentUserId){
         releaseNoteStore.updateNotificationData(id, {
-          warning: arrayUnion(currentUserId)
+          readBy: arrayUnion(currentUserId)
         })
-        if(!row.warning){
-          row.warning = []
+        if(!row.readBy){
+          row.readBy = []
         }
-        (row.warning as string[]).push(currentUserId)
+        (row.readBy as string[]).push(currentUserId)
       }
     }
   }
@@ -183,7 +184,7 @@ function openDetails(id : string, type : string){
 function readinquiry(inquiryData : InquiryData){
   inqueries.value.forEach((row)=>{
     if(row.id === inquiryData.id){
-      row.warning = inquiryData.warning
+      row.readBy = inquiryData.readBy
       row.status = inquiryData.status
     }
   })

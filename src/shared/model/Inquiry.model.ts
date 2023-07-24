@@ -11,7 +11,7 @@ export interface InquiryData {
   recievedDate:  Timestamp
   subject: string
   messages: InquiryMessage[] | never[]
-  warning?: string[] | FieldValue
+  readBy?: string[] | FieldValue
   updated_at?: Timestamp | string
 }
 
