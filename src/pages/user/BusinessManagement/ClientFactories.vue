@@ -154,7 +154,7 @@ const openFaxDrawer = (id:string) =>{
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
                     @selected-id="selectedCFHandler"
-                    :isFetching="fetchData"
+                    :isFetching="fetchData && !(condition && selectedCFsId.length==0)"
                     :rows="paginatedTableRows"
                     :pagination="pagination"
                     :table-columns="tableColumnsClientFactory"/>
