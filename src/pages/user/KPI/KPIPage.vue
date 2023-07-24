@@ -228,7 +228,6 @@ async function getData() {
         const AgeData = await getAgeReport(dateRange.value, media);
         rowData.value[i] = { ...rowData.value[i], ...AgeData };
       }
-      console.log(rowData.value);
     } else if (mode.value == 'branch' && branch.value) {
       rowData.value = await getReport({
         dateRange: dateRange.value,
@@ -256,15 +255,28 @@ async function getData() {
         rowData.value = devideByAmount(rowData.value);
     }
     if (mode.value == 'media' && item.value == 'applicationAttribute') {
+      const organizationList = Object.values(
+        await UserBranch.getBranchesInOrganization(
+          organizationStore.currentOrganizationId
+        )
+      );
       rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
-        branch: branch.value,
+        branches: organizationList,
         queryNames: applicationAttributeItemList,
-        medias: [...(await getAllmedia())],
+        media: media.value,
         isAverage: false,
         occupation: occupation.value,
       });
+      for (const [i, organization] of Object.entries(organizationList)) {
+        const AgeData = await getAgeReport(
+          dateRange.value,
+          undefined,
+          organization
+        );
+        rowData.value[i] = { ...rowData.value[i], ...AgeData };
+      }
     } else if (mode.value == 'media' && media.value) {
       rowData.value = await getReport({
         dateRange: dateRange.value,

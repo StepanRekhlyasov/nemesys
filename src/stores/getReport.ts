@@ -25,10 +25,8 @@ import {
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
 import { round } from 'src/shared/utils/KPI.utils';
-import { useApplicant } from 'stores/applicant';
 const userStore = useUserStore();
-const applicant = useApplicant();
-const { agesListOfApplicants } = applicant;
+const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
 const applicantFieldDict: FieldDict = {
   name: 'applicants',
   dateBasedOnEachItemDate: 'applicationDate',
@@ -459,6 +457,36 @@ const getMonthDateList = (date: string) => {
   return dateList;
 };
 
+const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: QueryFieldFilterConstraint[]): Promise<number[] | undefined> => {
+  const db = getFirestore();
+  const targetDateFrom = new Date(dateRange.from);
+  const targetDateTo = new Date(dateRange.to);
+  const filters = [
+    where('applicationDate', '>=', targetDateFrom),
+    where('applicationDate', '<=', targetDateTo)
+  ]
+  if (filterData) {
+    for(const filter of filterData){
+      filters.push(filter)
+    }
+  }
+  const applicantRef = collection(db, 'applicants')
+  const querys = query(applicantRef, ...filters)
+  const docSnap = await getDocs(querys)
+  const applicants = docSnap.docs.map((doc) => {
+    if (!doc.data().dob) return undefined
+    const dob = doc.data().dob
+    const now = new Date()
+    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
+    return age
+  })
+  if (applicants.length === 0) return undefined
+  //remove undefined in applicants
+  const filteredApplicants = applicants.filter((applicant): applicant is number => typeof applicant == 'number')
+  return filteredApplicants
+}
+
+
 export const useGetReport = defineStore('getReport', () => {
   const getDailyReport = async (state: dailyBasedReportState) => {
     const rows: { [key: string]: string | number }[] = [];
@@ -615,7 +643,7 @@ export const useGetReport = defineStore('getReport', () => {
       '30s': 0,
       '40s': 0,
       '50s': 0,
-      '60s over': 0,
+      '60sOver': 0,
     };
     const filters: QueryFieldFilterConstraint[] = [];
     if (media) {
@@ -632,7 +660,7 @@ export const useGetReport = defineStore('getReport', () => {
         '30s': listofages.filter((age) => age >= 30 && age < 40).length,
         '40s': listofages.filter((age) => age >= 40 && age < 50).length,
         '50s': listofages.filter((age) => age >= 50 && age < 60).length,
-        '60s over': listofages.filter((age) => age >= 60).length,
+        '60sOver': listofages.filter((age) => age >= 60).length,
       };
     }
     return ageData;
