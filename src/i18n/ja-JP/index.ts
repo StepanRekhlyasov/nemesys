@@ -101,7 +101,8 @@ export default {
     branch: '支店',
   },
   rule: {
-    onlyNumber: '数字のみ、ハイフンなし'
+    onlyNumber: '数字のみ、ハイフンなし',
+    emailAlreadyRegistred: 'このメールアドレスは既に使われています'
   },
   smoking: {
     no: '無',

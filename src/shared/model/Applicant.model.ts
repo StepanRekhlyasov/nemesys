@@ -128,7 +128,7 @@ export interface DesiredConditions {
   shiftRemarks?: string;
   meansCommuting?: string[];
   nearestStation?: string;
-  commutingTime?: string;
+  commutingTime?: number;
   route?: string;
   commutingTimeRemarks?: string;
   facilityDesired?: string[];

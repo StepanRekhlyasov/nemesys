@@ -77,7 +77,7 @@
                 {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']"
+                <q-input outlined dense v-model="applicantData['phone']" :placeholder="$t('rule.onlyNumber')"
                   @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g, '') }"
                   :rules="[creationRule, phoneRule]" hide-bottom-space bg-color="white" />
               </div>
