@@ -1675,6 +1675,7 @@ export default {
       companyID: '企業ID',
       companyName: '企業名',
       recievedDate: '送受信日',
+      recieve: '受信',
       responseDate: '返信日',
       notificationType: '通知種別',
       inquiry: '問い合わせ',

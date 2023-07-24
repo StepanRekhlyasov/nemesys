@@ -68,7 +68,8 @@ export interface ApplicantBase {
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
-  totalYear?: string;
+  totalMonthes?: number;
+  addMonthes?: number;
   address?: string;
   classification?: string[];
   currentStatusMonth?: string;

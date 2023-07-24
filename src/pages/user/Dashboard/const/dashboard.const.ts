@@ -18,7 +18,7 @@ export const dashboardNotificationTableColumns = computed<QTableProps['columns']
     {
       name: 'recievedDate',
       field: 'recievedDate',
-      label: t('inquiry.table.recievedDate'),
+      label: t('inquiry.table.recieve'),
       align: 'left',
       sortable: true,
     },
