@@ -91,7 +91,7 @@
                 {{ $t('applicant.list.experience') }}
               </span>
               <span class="col-3 q-pl-md">
-                {{ selectedApplicant.totalYear ? selectedApplicant.totalYear + ' ' + $t('common.year') : '' }}
+                {{ selectedApplicant.totalMonthes ? Math.floor(selectedApplicant.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
               </span>
               <div v-if="!bo" class="col-3 text-right">
                 <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />

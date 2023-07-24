@@ -6,7 +6,7 @@
     <q-card-section>
      <q-form  class="q-mb-xs inquiry-form">
         <div class="row items-start q-gutter-md q-mb-xs">
-          <div class="col-2 text-right ">
+          <div class="col-2 text-right text-primary">
             {{ $t('inquiry.detail.replyContent') }}
           </div>
           <div class="col-8 text-right">
@@ -76,7 +76,7 @@ const sendResponse = async () => {
           content: responseContent.value,
           type: INQUIRY_MESSAGE_TYPE.issue
         },
-        data: {status: INQUIRY_STATUS.unanswered}
+        data: {status: INQUIRY_STATUS.unanswered, updated_at: Timestamp.fromDate(new Date())}
       })
       emit('inquiryUpdated')
       Alert.success()

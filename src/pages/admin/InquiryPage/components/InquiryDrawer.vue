@@ -61,24 +61,17 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, watch, computed } from 'vue';
-  import InquiryForm from './InquiryForm.vue'
-  import InquiryDetails from './InquiryDetails.vue'
-  import { useInquiry } from 'src/stores/inquiry';
+import { ref, watch, computed } from 'vue';
+import InquiryForm from './InquiryForm.vue'
+import InquiryDetails from './InquiryDetails.vue'
+import { useInquiry } from 'src/stores/inquiry';
 import InquiryMessages from './InquiryMessages.vue';
 
+const drawerRight = ref(false);
+const organisation = computed(() => inquiryStore.state.currentOrganisationInfo);
+const inquiryStore = useInquiry()
 
-  const drawerRight = ref(false);
-  const organisation = computed(() => inquiryStore.state.currentOrganisationInfo);
-
-  const inquiryStore = useInquiry()
-
-  watch(() => inquiryStore.state.showDrawer, (newVal)=>{
-    drawerRight.value = newVal
-  })
-
-
-
-
-
+watch(() => inquiryStore.state.showDrawer, (newVal)=>{
+  drawerRight.value = newVal
+})
 </script>

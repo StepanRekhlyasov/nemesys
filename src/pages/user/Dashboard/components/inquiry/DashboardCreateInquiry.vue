@@ -4,7 +4,7 @@
       <div class="text-primary text-bold">■{{ $t('inquiry.detail.inquiryTitle') }}</div>
     </div>
     <div class="row q-mb-sm q-gutter-sm ">
-      <div class="col-3 text-right text-accent">
+      <div class="col-3 text-right text-primary">
         {{ $t('inquiry.detail.category') }}
       </div>
       <div class="col-8">
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="row q-mb-sm q-gutter-sm">
-      <div class="col-3 text-right text-accent">
+      <div class="col-3 text-right text-primary">
         {{ $t('inquiry.detail.subject') }}
       </div>
       <div class="col-8">
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="row q-mb-sm q-gutter-sm">
-      <div class="col-3 text-right text-accent">
+      <div class="col-3 text-right text-primary">
         {{ $t('inquiry.detail.content') }}
       </div>
       <div class="col-8">
