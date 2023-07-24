@@ -79,6 +79,7 @@ export default {
     ageShort: '歳',
     week: '週',
     month: '月',
+    addMonth: 'か月',
     reputation: '名',
     desiredBo:'BO情報',
     desiredCondition:'希望条件',

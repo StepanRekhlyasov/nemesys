@@ -105,7 +105,7 @@
 
           <div v-if="edit" class="flex items-center no-wrap">
             <q-input dense outlined bg-color="white" type="number" :rules="[(val:number)=>val>=0]" v-model="data['totalYear']" :disable="loading" class="q-pb-none"/>
-            <span class="q-ml-sm">{{ $t('common.month').toLowerCase()  }}</span>
+            <span class="q-ml-sm text-no-wrap">{{ $t('common.addMonth').toLowerCase()  }}</span>
           </div>
         </div>
       </div>

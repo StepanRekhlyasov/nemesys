@@ -79,6 +79,7 @@ export default {
     ageShort: 'Age',
     week: 'Week',
     month: 'Month',
+    addMonth: 'Add monthes',
     reputation: 'Reputation',
     desiredBo:'BO',
     desiredCondition:'Desired condition',
