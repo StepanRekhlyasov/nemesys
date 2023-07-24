@@ -42,8 +42,7 @@ onMounted(async () => {
 watch(
   () => (wards.value),
   (newVal) => {
-    selectedWards.value = newVal;
-    emit('updateArea', selectedPrefectures.value, selectedWards.value);
+    emit('updateArea', selectedPrefectures.value, [...selectedWards.value, ...newVal]);
   }, { deep: true, immediate: true }
 );
 
