@@ -86,13 +86,6 @@ watch(() => selectedBo, async () => {
   }
 }, { deep: true, immediate: true })
 
-onMounted(async () => {
-  if (selectedBo.value && selectedBo.value['client_id']) {
-    client.value = await getClient(db, selectedBo.value['client_id'])
-    emit('passClientToMapSearch', client.value)
-  }
-})
-
 defineExpose({ openDrawer })
 
 </script>
