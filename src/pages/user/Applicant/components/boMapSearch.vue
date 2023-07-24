@@ -19,12 +19,12 @@ const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
 const center = ref<{ lat: number, lng: number }>({ lat: 0, lng: 0 });
 const searchRadius = ref<number>(0);
 const inputRadius = ref<number>(0);
-const isLoadingProgress = ref(false)
-const searchInput = ref('')
+const isLoadingProgress = ref<boolean>(false)
+const searchInput = ref<string>('')
 const boList = ref<BackOrderModel[]>([])
 const backOrderStore = useBackOrder()
 const selectedClient = ref<Client | undefined>(undefined);
-const showSearchByMap = ref(false);
+const showSearchByMap = ref<boolean>(false);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 
 watch(boMapDrawerValue, async () => {
@@ -37,6 +37,7 @@ watch(boMapDrawerValue, async () => {
       }
     backOrderStore.state.BOList = allBo;
     searchRadius.value = 0;
+    inputRadius.value = 0;
     await getApplicantLocation();
     allBo.forEach(bo=>{
       bo['lat'] = Number(props.applicant?.lat)-0.2
@@ -107,7 +108,6 @@ const getMarkerColor = () => {
 watch(searchRadius, (newVal) => {
   isLoadingProgress.value = true
   getMarkerColor();
-  // radius.value = searchRadius.value
   let center = circleOption.value.center;
   if (!newVal) {
     newVal = 0
