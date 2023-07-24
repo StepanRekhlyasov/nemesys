@@ -97,20 +97,20 @@ const props = defineProps<{
 const showChart = async () => {
   dataToshow.value = [[],[]];
   if (!props.dateRangeProps) return;
-  interface monthYear {
+  interface MonthYear {
     month: number;
     year: number;
   }
-  const getMonthList = (date: string, len: number): monthYear[] => {
-    const date_ = new Date(date);
-    const year = date_.getFullYear();
-    const month = date_.getMonth() + 1;
+  const getMonthList = (dateString: string, len: number): MonthYear[] => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
     const monthList = Array.from({ length: len }, (_, i) => {
-      const month_ = month - i;
-      if (month_ <= 0) {
-        return { year: year - 1, month: month_ + monthPerYear };
+      const monthBefore = month - i;
+      if (monthBefore <= 0) {
+        return { year: year - 1, month: monthBefore + monthPerYear };
       }
-      return { year: year, month: month_ };
+      return { year: year, month: monthBefore };
     }).reverse();
     return monthList;
   };
@@ -144,7 +144,7 @@ const showChart = async () => {
     return unitPrice;
   };
 
-  const getMonthRange = (monthYear: monthYear): { from: Date; to: Date } => {
+  const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
     const from = new Date(monthYear.year, monthYear.month - 1, 1, 0, 0, 0);
     const to = new Date(monthYear.year, monthYear.month, 0, 23, 59, 59);
     return { from: from, to: to };
