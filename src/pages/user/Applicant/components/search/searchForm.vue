@@ -67,8 +67,7 @@
               </div>
 
               <div class="col-2 text-right">
-                <q-btn size="sm" :label="$t('menu.mapSearch')" color="primary" outline
-                  @click="drawerRight = true; drawerType = 'map'" />
+                <q-btn size="sm" :label="$t('menu.mapSearch')" color="primary" outline @click="openDrawerRight('map')" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -76,7 +75,7 @@
               <div class="col-4 q-pl-sm"> {{ $t('applicant.add.occupation') }}</div>
               <div class="col-4 text-right">
                 <q-btn size="sm" :label="$t('menu.areaSearch')" color="primary" outline
-                  @click="drawerRight = true; drawerType = 'area'" />
+                  @click="openDrawerRight('area')" />
               </div>
             </div>
             <div class="row">
@@ -354,7 +353,7 @@
             </div>
           </div>
           <q-expansion-item hide-expand-icon :header-style="{ display: 'none' }" v-model="expandedArea">
-            <AreaSearch theme="primary" @update-area="updateArea" v-if="drawerType == 'area'" />
+            <AreaSearch theme="primary" @update-area="updateArea" v-if="drawerType == 'area'" :key="mapDrawerKey" />
             <MapSearch theme="primary" @update-map="updateMap" v-if="drawerType == 'map'" />
           </q-expansion-item>
         </q-card>
@@ -365,6 +364,7 @@
 </template>
 
 <script lang="ts" setup>
+import { uid } from 'quasar'
 import { ref, onMounted, defineEmits, watch, ComputedRef } from 'vue'; //ref,
 import { statusList, StatusOption, applicantClassification, occupationList, qualificationList, availableShiftList, daysList, sexList, rankList } from 'src/shared/constants/Applicant.const';
 import { DocumentData, doc, getDoc, getFirestore } from 'firebase/firestore';
@@ -402,6 +402,7 @@ const drawerRight = ref<boolean>(false);
 const drawerType = ref<string>('')
 const prefJP = ref<DocumentData>({})
 const routeData = ref<DocumentData>([]);
+const mapDrawerKey = ref<string>(uid());
 
 const emit = defineEmits<{
   (e: 'loadSearchStaff', staffList)
@@ -480,9 +481,9 @@ const updateArea = (selectedPrefectures: string, selectedMunicipality: string) =
   for (var i = 0; i < selectedPrefectures.length; i++) {
     prefectures.push(Object.keys(prefJP.value).find(key => prefJP.value[key] === selectedPrefectures[i]) as never)
   }
-  searchData.value['prefecture'] = [...prefectures, ...selectedPrefectures];
+  searchData.value['prefectureArea'] = [...prefectures, ...selectedPrefectures];
 
-  searchData.value['municipalities'] = selectedMunicipality;
+  searchData.value['municipalitiesArea'] = selectedMunicipality;
 
   //
 }
@@ -517,6 +518,13 @@ const reset = () => {
   searchData.value = JSON.parse(JSON.stringify(searchDataSample));
   resetSharedVariable();
   searchStaff();
+  mapDrawerKey.value = uid();
+}
+const openDrawerRight = (dType: string) => {
+  searchData.value.prefecture = '';
+  searchData.value.municipalities = '';
+  drawerType.value = dType;
+  drawerRight.value = true;
 }
 
 const save = async () => {

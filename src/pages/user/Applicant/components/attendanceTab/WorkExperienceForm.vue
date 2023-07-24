@@ -16,11 +16,10 @@
             {{ $t('applicant.attendant.facilityType') }}
           </div>
           <div class="col-4 q-pl-md blue self-center">
-            <q-input
-              v-model="data['facilityType']" name="facilityType" :disable="loading"
-              outlined dense
-            />
+            <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options 
+              option-label="name" v-model="data['facilityType']" :disable="loading" />
           </div>
+          
         </div>
 
 
@@ -114,6 +113,7 @@
 
 <script lang="ts" setup>
 import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
+import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { employmentStatus } from 'src/shared/constants/Applicant.const';
 import { ApplicantExperience, ApplicantExperienceInputs } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -132,7 +132,7 @@ if(props.editExperience){
   data.value = {
     id: props.editExperience.id,
     experience: props.editExperience.experience,
-    facilityType: props.editExperience.facilityType,
+    facilityType: Array.isArray(props.editExperience.facilityType) ? props.editExperience.facilityType : [],
     nameEstablishment: props.editExperience.nameEstablishment,
     employmentType: props.editExperience.employmentType,
     reasonResignation: props.editExperience.reasonResignation,

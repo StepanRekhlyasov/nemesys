@@ -14,6 +14,7 @@ import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/Appl
 import { useRoute } from 'vue-router';
 import { useFix } from './fix';
 import { getMostCompletedFix } from 'src/shared/utils/Fix.utils';
+import { deepCopy } from 'src/shared/utils';
 
 interface ApplicantState {
   clientList: Client[],
@@ -200,6 +201,7 @@ export const useApplicant = defineStore('applicant', () => {
 
     const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
     const queryString = searchData['keyword'] ? searchData['keyword'] : ''
+    searchData = deepCopy(searchData);
 
     if (searchData['status']) {
       filters['all'].push({
@@ -231,7 +233,20 @@ export const useApplicant = defineStore('applicant', () => {
         'dob': { 'from': getDate(parseInt(searchData.ageMax) + 1) }
       });
     }
-
+    if (searchData['prefectureArea']) {
+      if (searchData['prefecture']) {
+        searchData['prefecture'] = [...[searchData['prefecture']], ...searchData['prefectureArea']]
+      } else {
+        searchData['prefecture'] = searchData['prefectureArea']
+      }
+    }
+    if (searchData['municipalitiesArea']) {
+      if (searchData['municipalities']) {
+        searchData['municipalities'] = [...[searchData['municipalities']], ...searchData['municipalitiesArea']]
+      } else {
+        searchData['municipalities'] = searchData['municipalitiesArea']
+      }
+    }
     const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
