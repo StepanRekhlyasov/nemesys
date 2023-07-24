@@ -46,7 +46,7 @@
         <q-td :props="props">
           <template v-if="(props.row.startMonth instanceof Timestamp) && (props.row.endMonth instanceof Timestamp)">
             {{ Math.floor(differentDateMonth(toDate(props.row.startMonth), toDate(props.row.endMonth))/12) + ' ' + $t('common.year') }}
-            {{ differentDateMonth(toDate(props.row.startMonth), toDate(props.row.endMonth))%12 + ' ' + $t('common.month').toLowerCase() }}
+            {{ differentDateMonth(toDate(props.row.startMonth), toDate(props.row.endMonth))%12 + ' ' + $t('common.addMonth').toLowerCase() }}
           </template>
         </q-td>
       </template>
@@ -91,32 +91,34 @@
       </div>
       <div class="row">
         <div class="col-10 q-pl-md blue self-center">
-          <span style="white-space: nowrap;">{{ totalYear() }}</span>
+          <span style="white-space: nowrap;">{{ totalMonthes() }}</span>
         </div>
       </div>
     </div>
-    <div class="row q-pb-sm" v-if="data['totalYear'] > 0 || edit">
+    <div class="row q-pb-sm" v-if="data.addMonthes || edit">
       <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
         {{ $t('common.add') }}
       </div>
       <div class="row">
         <div class="col-10 q-pl-md blue self-center flex">
-          <span v-if="!edit" style="white-space: nowrap;">{{ totalYear(data['totalYear']) }}</span>
+          <span v-if="!edit" style="white-space: nowrap;">{{ totalMonthes(data.addMonthes) }}</span>
 
           <div v-if="edit" class="flex items-center no-wrap">
-            <q-input dense outlined bg-color="white" type="number" :rules="[(val:number)=>val>=0]" v-model="data['totalYear']" :disable="loading" class="q-pb-none"/>
-            <span class="q-ml-sm">{{ $t('common.month').toLowerCase()  }}</span>
+            <q-input dense outlined bg-color="white" type="number" :rules="[(val:number)=>val>=0]" v-model="addYears" :disable="loading" class="q-pb-none"/>
+            <span class="q-mx-sm text-no-wrap">{{ $t('common.year').toLowerCase()  }}</span>
+            <q-input dense outlined bg-color="white" type="number" :rules="[(val:number)=>val>=0]" v-model="addMonthes" :disable="loading" class="q-pb-none"/>
+            <span class="q-ml-sm text-no-wrap">{{ $t('common.addMonth').toLowerCase()  }}</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="row q-pb-sm" v-if="data['totalYear']">
+    <div class="row q-pb-sm" v-if="data.totalMonthes">
       <div class="col-2 flex justify-between items-center q-pl-md text-left text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.totalYearsExperience') }}
       </div>
       <div class="row">
         <div class="col-10 q-pl-md blue self-center flex">
-          <span style="white-space: nowrap;">{{ totalYear(data['totalYear'], true) }}</span>
+          <span style="white-space: nowrap;">{{ totalMonthes(data.totalMonthes, false) }}</span>
         </div>
       </div>
     </div>
@@ -150,10 +152,16 @@ const props = defineProps<{
 
 const applicantStore = useApplicant();
 
+const addYears = ref('0')
+const addMonthes = ref('0')
+
 const loading = ref(false);
 const openDialog = ref(false);
 const edit = ref(false);
-const data = ref({})
+const data = ref({
+  addMonthes: props.applicant.addMonthes,
+  totalMonthes: props.applicant.totalMonthes,
+})
 const editExperience: Ref<ApplicantExperience | undefined> = ref(undefined)
 const experienceData: Ref<ApplicantExperience[]> = ref([]);
 const pagination = ref({
@@ -171,7 +179,7 @@ const db = getFirestore();
 
 load();
 resetData();
-function totalYear( add?: string | number, sum = false ) {
+function totalMonthes( add?: string | number, sum = false, returnMonth = false ) {
   let years = 0
   let month = 0
   if(typeof add === 'string'){
@@ -183,13 +191,16 @@ function totalYear( add?: string | number, sum = false ) {
         month += differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))
       }
     })
-    return totalYear(month + add)
+    return totalMonthes(month + add, false, returnMonth)
   }
 
   if(add){
     years += Math.floor(add/12)
     month += add%12
-    return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.month').toLowerCase() 
+    if(returnMonth){
+      return add
+    }
+    return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.addMonth').toLowerCase() 
   }
   
   experienceData.value.forEach((row)=>{
@@ -198,12 +209,18 @@ function totalYear( add?: string | number, sum = false ) {
       month += differentDateMonth(toDate(row.startMonth), toDate(row.endMonth))%12
     }
   })
-  return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.month').toLowerCase() 
+  if(returnMonth){
+    return years*12 + month
+  }
+  return years  + ' ' + t('common.year') + ' ' + month + ' ' + t('common.addMonth').toLowerCase() 
 }
 
 function resetData() {
-  data.value = {
-    totalYear: props.applicant['totalYear']
+  data.value.totalMonthes = props.applicant.totalMonthes
+  data.value.addMonthes = props.applicant.addMonthes
+  if(props.applicant.addMonthes){
+    addYears.value = Math.floor(props.applicant.addMonthes / 12).toString()
+    addMonthes.value = (props.applicant.addMonthes % 12).toString()
   }
 }
 
@@ -232,6 +249,8 @@ function deleteExperience(experience: Partial<ApplicantExperienceInputs>) {
   })
 }
 async function save() {
+  data.value.addMonthes = parseInt(addYears.value)*12 + parseInt(addMonthes.value)
+  data.value.totalMonthes = totalMonthes(data.value.addMonthes, true, true) as number
   loading.value = true
   try {
     await applicantStore.updateApplicant(data.value);

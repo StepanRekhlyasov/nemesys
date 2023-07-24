@@ -79,6 +79,7 @@ export default {
     ageShort: 'Age',
     week: 'Week',
     month: 'Month',
+    addMonth: 'Add monthes',
     reputation: 'Reputation',
     desiredBo:'BO',
     desiredCondition:'Desired condition',
@@ -1682,7 +1683,11 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      responseDate: 'response date'
+      recieve: 'date issued',
+      responseDate: 'response date',
+      notificationType: 'Notification Type',
+      inquiry: 'Inquiry',
+      releaseNote: 'Release note',
     },
     detail: {
       inquiryTitle: 'Inquiry details',

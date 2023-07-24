@@ -34,7 +34,7 @@ export class RankCount {
 		count+= this.countQualification(applicant)
 
 		// total year
-		if (applicant['totalYear'] < 1) {
+		if (applicant.totalMonthes < 12) {
 			count+= -10
 		}
 		// Tattoos

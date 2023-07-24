@@ -79,6 +79,7 @@ export default {
     ageShort: '歳',
     week: '週',
     month: '月',
+    addMonth: 'か月',
     reputation: '名',
     desiredBo:'BO情報',
     desiredCondition:'希望条件',
@@ -1675,7 +1676,11 @@ export default {
       companyID: '企業ID',
       companyName: '企業名',
       recievedDate: '送受信日',
-      responseDate: '返信日'
+      recieve: '受信',
+      responseDate: '返信日',
+      notificationType: '通知種別',
+      inquiry: '問い合わせ',
+      releaseNote: 'リリースノート',
     },
     detail: {
       inquiryTitle: '問い合わせ内容',

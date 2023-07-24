@@ -14,7 +14,7 @@
         {{ $t('inquiry.message.issueDate') }}
       </div>
       <div class="col-3">
-        {{ myDateFormat(inquiryData.recievedDate, 'YYYY-MM-DD HH:SS') }}
+        {{ myDateFormat(inquiryData.recievedDate, 'YYYY-MM-DD HH:mm') }}
       </div>
     </div>
     <div class="row q-mb-sm q-gutter-sm">
