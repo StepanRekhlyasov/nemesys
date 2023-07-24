@@ -7,17 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import { useBudget } from 'stores/budgetData';
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
 import { unitPricenames, chartTypeUnitPrice } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
+import { useGetReport } from 'src/stores/getReport';
+import { round } from 'src/shared/utils/KPI.utils';
+const { getReport } = useGetReport();
 const monthPerYear = 12;
 const beforeMonth = 7;
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
-const budget = useBudget();
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const monthList: Ref<number[]> = ref([]);
 const series: ComputedRef<
@@ -94,34 +95,73 @@ const props = defineProps<{
 }>();
 
 const showChart = async () => {
-  dataToshow.value = [];
+  dataToshow.value = [[],[]];
   if (!props.dateRangeProps) return;
-  const month = props.dateRangeProps.to.split('/')[1];
-  monthList.value = Array.from({ length: beforeMonth }, (_, i) => {
-    const month_ = Number(month) - i;
-    if (month_ <= 0) {
-      return month_ + monthPerYear;
+  interface MonthYear {
+    month: number;
+    year: number;
+  }
+  const getMonthList = (dateString: string, len: number): MonthYear[] => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const monthList = Array.from({ length: len }, (_, i) => {
+      const monthBefore = month - i;
+      if (monthBefore <= 0) {
+        return { year: year - 1, month: monthBefore + monthPerYear };
+      }
+      return { year: year, month: monthBefore };
+    }).reverse();
+    return monthList;
+  };
+
+  const calcUnitPrice = async (
+    month: { from: Date; to: Date },
+    organizationId?: string
+  ) => {
+    const numOfApplicantsAmount = await getReport({
+      dateRange: month,
+      queryNames: [{ queryName: 'applicants' }, { queryName: 'amount' }],
+      organizationId: organizationId,
+      graphType: props.graph_type,
+      isAverage: false,
+    });
+
+    const numOfApplicantsSum = numOfApplicantsAmount.reduce((sum, current) => {
+      if (typeof current.applicants === 'number') {
+        return sum + current.applicants;
+      } else return sum;
+    }, 0);
+
+    const amountSum = numOfApplicantsAmount.reduce((sum, current) => {
+      if (typeof current.amount === 'number') {
+        return sum + current.amount;
+      } else return sum;
+    }, 0);
+
+    const unitPrice =
+      numOfApplicantsSum !== 0 ? round(amountSum / numOfApplicantsSum, 1) : 0;
+    return unitPrice;
+  };
+
+  const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
+    const from = new Date(monthYear.year, monthYear.month - 1, 1, 0, 0, 0);
+    const to = new Date(monthYear.year, monthYear.month, 0, 23, 59, 59);
+    return { from: from, to: to };
+  };
+  const monthRangeList = getMonthList(props.dateRangeProps.to, beforeMonth).map(
+    (monthYear) => {
+      return getMonthRange(monthYear);
     }
-    return month_;
-  }).reverse();
-
-  const company_average = await budget.getUnitPricePerOrganization(
-    props.dateRangeProps,
-    props.organization_id,
-    beforeMonth
   );
-  if (!company_average) return;
-  dataToshow.value.push(company_average[0]);
-  dataToshow.value.push(company_average[1]);
+  monthList.value = monthRangeList.map((month) => {
+    return month.from.getMonth() + 1;
+  });
 
-  const all_average = await budget.getUnitPricePerOrganization(
-    props.dateRangeProps,
-    undefined,
-    beforeMonth
-  );
-  if (!all_average) return;
-  dataToshow.value.push(all_average[0]);
-  dataToshow.value.push(all_average[1]);
+  for (const month of monthRangeList) {
+    dataToshow.value[0].push(await calcUnitPrice(month, props.organization_id));
+    dataToshow.value[1].push(await calcUnitPrice(month));
+  }
 };
 
 watch(
