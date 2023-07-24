@@ -102,7 +102,8 @@ export default {
     branch: 'Branch',
   },
   rule: {
-    onlyNumber: 'only number, without "-"'
+    onlyNumber: 'only number, without "-"',
+    emailAlreadyRegistred: 'This email has already been taken'
   },
   smoking: {
     no: 'No',
