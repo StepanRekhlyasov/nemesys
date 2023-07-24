@@ -25,7 +25,7 @@
   >
   <template v-slot:body-cell-recievedDate="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:SS') }}
+      {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}
     </q-td>
   </template>
   <template v-slot:body-cell-type="props">
