@@ -11,18 +11,13 @@
             <div class="col-3 text-center">
               <q-img :src="urlImage" spinner-color="primary" style="height: 150px; max-width: 150px" />
             </div>
-            <div class="col-9">
-              <!-- <div class="row note warning text-grey-8 text-weight-regular">
-                <q-icon name="mdi-alert"  color="warning" size="xs" class="q-pa-xs"/>
-                {{$t('settings.users.infoEditUser')}}<br/>
-                {{$t('settings.users.infoContact')}}
-              </div> -->
+            <div class="col-9 profileCard">
               <div class="row">
                 <div class="col-3 text-right q-pa-sm q-pr-md text-primary">
                   {{$t('settings.users.email')}}
                 </div>
                 <div class="col-9 q-pt-sm q-pb-sm">
-                  {{user.email}}
+                  <q-input outlined dense v-model="profileData['email']" />
                 </div>
               </div>
               <div class="row">
@@ -159,14 +154,21 @@ export default {
     async function resetData() {
       profileData.value = {
         displayName: user.value.displayName,
-        contact: user.value.contact
+        contact: user.value.contact,
+        email: user.value.email
       }
     }
 
     async function updateUser() {
       const userRef = doc(db, 'users/'+user.value.uid);
+      for (const [key, value] of Object.entries(profileData.value)){
+        if(!value){
+          delete profileData.value[key]
+        }
+      }
       try {
         await updateDoc(userRef, profileData.value)
+        await loadUserData()
         Alert.success()
       } catch(e) {
         Alert.warning(e)
@@ -186,7 +188,10 @@ export default {
   }
 }
 </script>
-
-<style>
-
+<style scoped>
+.profileCard .text-right{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
 </style>
