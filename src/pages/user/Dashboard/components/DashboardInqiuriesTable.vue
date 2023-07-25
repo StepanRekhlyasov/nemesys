@@ -39,6 +39,12 @@
       <template v-else>!</template>
     </q-td>
   </template>
+  <template v-slot:body-cell-category="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      <template v-if="props.row.type === 'releaseNote'">{{ $t('releaseNotes.form.options.' + props.value) }}</template>
+      <template v-else>{{props.value}}</template>
+    </q-td>
+  </template>
   <template v-slot:body-cell="props">
     <q-td :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
       {{ props.value }}

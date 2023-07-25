@@ -12,11 +12,11 @@
               <q-img :src="urlImage" spinner-color="primary" style="height: 150px; max-width: 150px" />
             </div>
             <div class="col-9">
-              <div class="row note warning text-grey-8 text-weight-regular">
+              <!-- <div class="row note warning text-grey-8 text-weight-regular">
                 <q-icon name="mdi-alert"  color="warning" size="xs" class="q-pa-xs"/>
                 {{$t('settings.users.infoEditUser')}}<br/>
                 {{$t('settings.users.infoContact')}}
-              </div>
+              </div> -->
               <div class="row">
                 <div class="col-3 text-right q-pa-sm q-pr-md text-primary">
                   {{$t('settings.users.email')}}
