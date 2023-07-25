@@ -95,10 +95,14 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const userRef = doc(db, 'users/' + id);
-    await updateDoc(userRef, {
-      ...user
-    })
-
+    try{
+      await updateDoc(userRef, {
+        ...user
+      })
+    } catch (e) {
+      console.log(e)
+      return
+    }
     if (user.email) {
       const functions = getFunctions(getApp(), 'asia-northeast1')
       const updateUserEmail = httpsCallable(functions, 'update_user_email');

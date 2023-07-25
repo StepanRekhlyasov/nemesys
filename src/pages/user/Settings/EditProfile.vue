@@ -163,7 +163,7 @@ export default {
 
     async function updateUser() {
       for (const [key, value] of Object.entries(profileData.value)){
-        if(!value){
+        if(typeof value === 'undefined'){
           delete profileData.value[key]
         }
       }
@@ -172,6 +172,7 @@ export default {
         await loadUserData()
         Alert.success()
       } catch(e) {
+        resetData()
         Alert.warning(e)
       }
     }
