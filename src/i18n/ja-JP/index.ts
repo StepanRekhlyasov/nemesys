@@ -227,7 +227,7 @@ export default {
         branch: '支店',
         details:'■申請内容',
         targetBranch: '対象支店',
-        numberOfSlots: '枠数',
+        numberOfSlots: 'ライセンス数',
         execution: '実行',
         cancel: 'キャンセル',
         licenseFee: 'ライセンス料金',
