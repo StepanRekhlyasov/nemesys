@@ -1724,7 +1724,7 @@ export default {
     jobCategory:'職種',
     ourCompany: '自社',
     all: '全体',
-        categories:{
+    categories:{
       totalingMethod:{
       totallingDailyData:'日次データ集計',
       totallingAttractionDataByBranch:'支店別集客データ集計',
