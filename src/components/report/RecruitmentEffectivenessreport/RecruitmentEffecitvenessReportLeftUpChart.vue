@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
-import { unitPricenames, chartTypeUnitPrice ,queryNamesList} from './const';
+import { unitPricenames, chartTypeUnitPrice, queryNamesList } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
