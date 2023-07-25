@@ -128,10 +128,10 @@ import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 import { getAuth } from '@firebase/auth';
-import { Applicant, ApplicantStatus } from 'src/shared/model';
-import { usersInCharge, contactColumns as columns } from 'src/shared/constants/Applicant.const';
+import { Applicant, ApplicantStatus, User } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useUserStore } from 'src/stores/user';
 
 const props = defineProps<{
   applicant: Applicant
@@ -157,19 +157,21 @@ const contactData = ref({
 const db = getFirestore();
 const $q = useQuasar();
 const applicantStore = useApplicant()
+const userStore = useUserStore();
 const user : {
   uid: string
 } | null = $q.localStorage.getItem('user');
 
-const users = usersInCharge
+const users = ref<User[]>([]);
 function isRowSelected(row ) {
   return row == editableRow.value
 }
 const updateContactList = async () => {
   contactListData.value = await applicantStore.getApplicantContactData(props.applicant.id, [where('deleted', '==', false), orderBy('created_at', 'desc')])
 }
-onMounted( () => {
-  updateContactList()
+onMounted( async () => {
+  updateContactList();
+  users.value = await userStore.getAllUsers();
 });
 
 async function onSubmit() {
@@ -231,10 +233,11 @@ async function onUpdate(index : number) {
     loading.value = false;
   }
 }
+
 function getUserName(uid : string) {
-  const value = users.value.find(x => x['value'] === uid)
+  const value = users.value.find(x => x['id'] === uid)
   if (value) {
-    return value['label'];
+    return value['displayName'] || value['name'] ||'';
   }
   return '';
 }
