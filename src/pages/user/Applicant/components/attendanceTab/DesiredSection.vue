@@ -1,5 +1,5 @@
 <template>
-  <DropDownEditGroup :isHiddenActions="bo?true:false" :isEdit="desiredEdit" :label="'1.' + $t('applicant.attendant.desiredConditions')"
+  <DropDownEditGroup :isHiddenActions="bo ? true : false" :isEdit="desiredEdit" :label=" '1.'+$t('applicant.attendant.desiredConditions')"
     @openEdit="desiredEdit = true" @closeEdit="desiredEdit = false; resetData();" @onSave="saveDesired">
 
     <div class="row q-pb-sm">
@@ -400,7 +400,7 @@ function resetData() {
     shiftRemarks: props.applicant['shiftRemarks'],
     meansCommuting: Array.isArray(props.applicant['meansCommuting'])?props.applicant['meansCommuting']:[],
     nearestStation: props.applicant['nearestStation'],
-    commutingTime: props.applicant['commutingTime'],
+    commutingTime: props.applicant['commutingTime'] || 0,
     commutingTimeRemarks: props.applicant['commutingTimeRemarks'],
     facilityDesired: props.applicant['facilityDesired'] || [],
     ngFacilityType: props.applicant['ngFacilityType'] || [],
@@ -426,6 +426,7 @@ const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(
 async function saveDesired() {
   loading.value = true;
   try {
+    data.value['commutingTime'] = Number(data.value['commutingTime']);
     await applicantStore.updateApplicant(data.value);
     desiredEdit.value = false;
     Alert.success()
