@@ -77,6 +77,7 @@ const showIndividualReport = async (
   range: { from: string; to: string } | undefined
 ) => {
   if (!range) return;
+  seriesList.value = [];
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
     where('deleted', '==', false),
