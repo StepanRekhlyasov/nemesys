@@ -99,7 +99,6 @@ export default {
     more: 'もっと',
     downloadCSV: 'CSVダウンロード',
     branch: '支店',
-
   },
   rule: {
     onlyNumber: '数字のみ、ハイフンなし'
