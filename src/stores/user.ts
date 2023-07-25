@@ -95,15 +95,18 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const userRef = doc(db, 'users/' + id);
+    try{
+      if (user.email) {
+        const functions = getFunctions(getApp(), 'asia-northeast1')
+        const updateUserEmail = httpsCallable(functions, 'update_user_email');
+        await updateUserEmail({ id, email: user.email })
+      }
+    } catch (e) {
+      throw(e)
+    }
     await updateDoc(userRef, {
       ...user
     })
-
-    if (user.email) {
-      const functions = getFunctions(getApp(), 'asia-northeast1')
-      const updateUserEmail = httpsCallable(functions, 'update_user_email');
-      await updateUserEmail({ id, email: user.email })
-    }
   }
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {

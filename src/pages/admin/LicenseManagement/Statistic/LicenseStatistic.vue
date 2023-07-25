@@ -85,7 +85,6 @@ onMounted(async () => {
   loading.value = true;
   try {
     await loadCurrentData()
-    Alert.success();
   } catch (error) {
     Alert.warning(error);
   }

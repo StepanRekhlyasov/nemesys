@@ -1,4 +1,8 @@
 import { Timestamp } from 'firebase/firestore'
+import { computed } from 'vue'
+import { i18n } from 'boot/i18n';
+
+const { t } = i18n.global
 
 export interface LicenseRequest {
   id: string,
@@ -12,7 +16,13 @@ export interface LicenseRequest {
   requestUserId: string
 }
 
-export const requestType = ['Addition', 'Delete'] as const
+export const requestType = ['Addition', 'Delete']
+export const requestTypeOptions = computed(()=>{
+  return [
+    {label: t('common.add'), value: 'Addition'},
+    {label: t('common.delete'), value: 'Delete'},
+  ]
+});
 
 type RequestType = typeof requestType[number]
 

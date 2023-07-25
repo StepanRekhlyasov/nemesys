@@ -4,7 +4,7 @@
       <q-card-section>
         <q-inner-loading :showing="loading" color="accent" class="loading" :transition-duration="0" />
         <div class="text-weight-bolder text-h6">
-          {{ props.licenseRequest.requestType == 'Addition' ? t('menu.admin.licenseManagement.additionHeader') :
+          {{ props.licenseRequest.requestType === 'Addition' ? t('menu.admin.licenseManagement.additionHeader') :
             t('menu.admin.licenseManagement.deleteHeader') }}
         </div>
         <div class="q-mt-md">
@@ -101,24 +101,27 @@ async function execute() {
 }
 
 async function fetchData() {
-
   loading.value = true
   const { priceForOneUserInYen } = props.dialogData
-  const { organizationId, businessId, branchId, requestQuantity, } = props.licenseRequest
+  const { organizationId, businessId, branchId, requestQuantity } = props.licenseRequest
+  const requestQuantityChecked = typeof requestQuantity === 'string'? parseInt(requestQuantity) : requestQuantity
 
   currentSlotsCount.value = (await branchStore.getBranch(organizationId, businessId, branchId)).licensesSlots
   currentLicenceFee.value = await branchStore.calculateLicenceFee(organizationId)
 
+  if(typeof currentSlotsCount.value === 'string'){
+    currentSlotsCount.value = parseInt(currentSlotsCount.value)
+  }
+
   if (props.licenseRequest.requestType == 'Addition') {
-    changedSlotsCount.value = requestQuantity + currentSlotsCount.value
-    changedLicenceFee.value = currentLicenceFee.value + (requestQuantity * priceForOneUserInYen)
+    changedSlotsCount.value = requestQuantityChecked + currentSlotsCount.value
+    changedLicenceFee.value = currentLicenceFee.value + (requestQuantityChecked * priceForOneUserInYen)
   } else {
-    changedSlotsCount.value = currentSlotsCount.value - requestQuantity
-    changedLicenceFee.value = currentLicenceFee.value - (requestQuantity * priceForOneUserInYen)
+    changedSlotsCount.value = currentSlotsCount.value - requestQuantityChecked
+    changedLicenceFee.value = currentLicenceFee.value - (requestQuantityChecked * priceForOneUserInYen)
     if (changedSlotsCount.value < 0) {
       changedSlotsCount.value = 0
     }
-
     if (changedLicenceFee.value < 0) {
       changedLicenceFee.value = 0
     }
