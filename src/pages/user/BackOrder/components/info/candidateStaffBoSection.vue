@@ -129,7 +129,6 @@ const calculateDistance = async () => {
 };
 
 const calculateMatchDegree = () => {
-
   staffList.value.forEach((staff) => {
    matchedData.value[staff.id] = backOrderStore.matchData(staff, props.bo);
   })
