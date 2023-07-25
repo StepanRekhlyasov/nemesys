@@ -1218,6 +1218,7 @@ const selectJobOption = async(data,id) => {
 }
 const addNewField = () => {
   itemOptions.value.unshift({ 'name': '' })
+  startEditing(0);
 };
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
@@ -1283,17 +1284,21 @@ watch(
 
 watch(
   () => (jobData.value.client),
-  async (newVal,) => {
+  async (newVal,oldVale) => {
+    debugger
     officeList.value = [];
     if (unsubscribeOffice.value) {
       unsubscribeOffice.value();
     }
+    if(oldVale){
+      jobData.value.office=''
+    }
     if (newVal) {
       officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
+
     }
   }
 )
-
 watch(
   () => selectedIndustry.value,
   (newValue) => {
