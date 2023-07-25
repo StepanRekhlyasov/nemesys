@@ -102,8 +102,7 @@ export const useUserStore = defineStore('user', () => {
         await updateUserEmail({ id, email: user.email })
       }
     } catch (e) {
-      console.log(e)
-      return;
+      throw(e)
     }
     await updateDoc(userRef, {
       ...user
