@@ -97,13 +97,14 @@
 
 <script>
 import { getAuth } from '@firebase/auth';
-import { doc, getDoc, getFirestore, updateDoc } from '@firebase/firestore';
+import { doc, getDoc, getFirestore } from '@firebase/firestore';
 import { getDownloadURL, getStorage, ref as refStorage } from '@firebase/storage';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useRole } from 'src/stores/role';
 import { useOrganization } from 'src/stores/organization';
 import { adminRolesIds } from 'src/components/handlers/consts';
+import { useUserStore } from 'src/stores/user';
 
 export default {
   name: 'EditProfile',
@@ -119,6 +120,7 @@ export default {
     const organizations = ref([]);
     const organizationStore = useOrganization()
     const allowDelete = ref(false)
+    const userStore = useUserStore()
 
     loadUserData()
     async function loadUserData() {
@@ -160,14 +162,13 @@ export default {
     }
 
     async function updateUser() {
-      const userRef = doc(db, 'users/'+user.value.uid);
       for (const [key, value] of Object.entries(profileData.value)){
         if(!value){
           delete profileData.value[key]
         }
       }
       try {
-        await updateDoc(userRef, profileData.value)
+        await userStore.editUser(user.value.uid, profileData.value)
         await loadUserData()
         Alert.success()
       } catch(e) {
