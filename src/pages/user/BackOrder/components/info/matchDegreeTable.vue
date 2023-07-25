@@ -134,7 +134,7 @@
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.commutesDisatnce')}}</td>
         <td>{{ props.staff.distanceBusiness }}Km</td>
-        <td>-</td>
+        <td>{{ props.staff.commutingTime?props.matchedData[props.staff.id].commuteDistance.label+'Km':'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].commuteDistance.value }}%</td>
       </tr>
 

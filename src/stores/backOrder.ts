@@ -462,8 +462,11 @@ export const useBackOrder = defineStore('backOrder', () => {
     matchedData['workingHours']['night'] = workingHoursNight;
 
     //commute distance
-    commuteDistance = 1;
-    matchedData.commuteDistance.label = staff.distanceBusiness.toString();
+    if(staff.commutingTime){
+      const distance = 30*staff.commutingTime;
+      commuteDistance = distance>=staff.distanceBusiness?1:distance/staff.distanceBusiness;
+      matchedData.commuteDistance.label = distance.toString();
+    }
     matchedData['commuteDistance'].value = Number((commuteDistance*100).toFixed(2));
 
     const matchPercent = ((agePercent + qualification + daysPerWeek + daysToWork + expReq + workingHours + commuteDistance) / 7) * 100;
