@@ -17,9 +17,12 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    approved: '申請許可',
+    denied: '申請却下',
     minimum:'最小',
     maximum:'最大',
     BO: 'BO',
+    deny: '却下',
     select: '選択',
     reflect: '反映',
     capture: '取込',
@@ -211,6 +214,7 @@ export default {
       },
       licenseManagement: {
         licenseRequest: '枠変更申請一覧',
+        showList: '覧表示',
         licenseManagement: 'ライセンス管理',
         targetSystem: '対象システム',
         request: {
@@ -224,12 +228,15 @@ export default {
         deleteSlots: '- 枠数削除',
         deleteHeader: '枠数の削除を実行します。',
         additionHeader: '枠数の追加を実行します。',
+        deleteHeaderDeny: '枠数の削除を却下します。',
+        additionHeaderDeny: '枠数の追加を却下します。',
         userInfo: '■申請者情報',
         branch: '支店',
         details:'■申請内容',
         targetBranch: '対象支店',
         numberOfSlots: 'ライセンス数',
         execution: '実行',
+        deny: '却下',
         cancel: 'キャンセル',
         licenseFee: 'ライセンス料金',
         licenseHistory: '枠変更履歴',

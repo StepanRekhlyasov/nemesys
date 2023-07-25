@@ -17,9 +17,12 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    approved: 'Approved',
+    denied: 'Denied',
     minimum:'min',
     maximum:'max',
     BO: 'BO',
+    deny: 'Deny',
     select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',
@@ -212,6 +215,7 @@ export default {
       licenseManagement: {
         licenseRequest: 'Applications license request',
         licenseManagement: 'License management',
+        showList: 'Show list',
         targetSystem: 'Target system',
         request: {
           addition: 'Addition',
@@ -224,12 +228,15 @@ export default {
         deleteSlots: '- Delete slots',
         deleteHeader: 'Execute slots reduction',
         additionHeader: 'Execute slots adding',
+        deleteHeaderDeny: 'Deny slots reduction',
+        additionHeaderDeny: 'Deny slots adding',
         userInfo: '■ User information',
         branch: 'Branch',
         details: '■ Details',
         targetBranch: 'Target branch:',
         numberOfSlots: 'Number of slots:',
         execution: 'execution',
+        deny: 'Deny',
         cancel:'cancel',
         licenseFee: 'License fee:',
         licenseHistory: 'License history',
