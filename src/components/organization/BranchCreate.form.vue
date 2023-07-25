@@ -16,7 +16,7 @@
       </DialogItemContainer>
 
       <DialogItemContainer name-key="settings.branch.phone">
-        <q-input v-model="branchData['phone']" :disable="loading" mask="phone" type="tel" name="tel" outlined dense
+        <q-input v-model="branchData['phone']" :disable="loading" type="tel" name="tel" outlined dense
           :color="color" hide-bottom-space />
       </DialogItemContainer>
 
