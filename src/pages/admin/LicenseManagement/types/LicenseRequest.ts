@@ -16,14 +16,15 @@ export interface LicenseRequest {
   requestUserId: string
 }
 
-export const requestType = computed(()=>{
+export const requestType = ['Addition', 'Delete']
+export const requestTypeOptions = computed(()=>{
   return [
     {label: t('common.add'), value: 'Addition'},
     {label: t('common.delete'), value: 'Delete'},
   ]
 });
 
-type RequestType = typeof requestType.value[number]
+type RequestType = typeof requestType[number]
 
 type TargetSystem = typeof targetSystem[number]
 

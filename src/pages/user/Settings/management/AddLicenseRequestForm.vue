@@ -15,7 +15,7 @@
       </DialogItemContainer>
 
       <DialogItemContainer name-key="menu.admin.licenseManagement.numberOfSlots">
-        <q-input v-model:model-value="numberOfSlots" outlined dense type="number" min="1" :disable="loading"
+        <q-input v-model.number:model-value="numberOfSlots" outlined dense type="number" min="1" :disable="loading"
           :rules="[creationRule]" />
       </DialogItemContainer>
 
@@ -32,7 +32,7 @@ import { serverTimestamp, Timestamp } from '@firebase/firestore';
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
-import { LicenseRequest, requestType as requestTypeOptions } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
+import { LicenseRequest, requestTypeOptions } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
 import { Branch } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useLicense } from 'src/stores/license';
