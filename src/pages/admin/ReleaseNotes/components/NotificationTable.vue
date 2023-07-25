@@ -8,11 +8,11 @@
           dense 
           :options="[
             {
-              label: DELIVERY_STATUS.delivered,
+              label: $t('releaseNotes.' + DELIVERY_STATUS.delivered),
               value: DELIVERY_STATUS.delivered
             },
             {
-              label: DELIVERY_STATUS.notDelivered,
+              label: $t('releaseNotes.' + DELIVERY_STATUS.notDelivered),
               value: DELIVERY_STATUS.notDelivered
             },
           ]" 
@@ -26,7 +26,7 @@
         />
       </div>
       <div class="col-2">
-        <p class="q-ml-md inputLabel">{{ $t("inquiry.table.category") }}</p>
+        <p class="q-ml-md inputLabel text-capitalize">{{ $t("inquiry.table.category") }}</p>
         <q-input
           v-model="filter.category"
           dense
@@ -37,7 +37,7 @@
         />
       </div>
       <div class="col-2">
-        <p class="q-ml-md inputLabel">{{ $t("releaseNotes.form.subject") }}</p>
+        <p class="q-ml-md inputLabel text-capitalize">{{ $t("releaseNotes.form.subject") }}</p>
         <q-input
           v-model="filter.subject"
           dense
@@ -48,7 +48,7 @@
         />
       </div>
       <div class="col-2">
-        <p class="q-ml-md inputLabel text-capitalize">{{ $t("inquiry.table.status") }}</p>
+        <p class="q-ml-md inputLabel text-capitalize">{{ $t("releaseNotes.table.author") }}</p>
         <q-select 
           outlined 
           dense 
