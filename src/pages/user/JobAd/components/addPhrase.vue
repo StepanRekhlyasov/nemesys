@@ -135,7 +135,7 @@ const props = defineProps({
   isDrawer: {
       type: Boolean,
       required: true
-  }
+  },
 }
 )
 const emit = defineEmits<{
@@ -167,10 +167,8 @@ const formatForm = ref();
 const phraseCategoryOptions = ref(phraseCategoryList);
 const mediaOptions = ref(mediaList);
 const columns = ref(jobItemOptionColumns);
-
 const jobItems = ref({});
 const jobItemOptions = ref({});
-
 const loading = ref(true);
 
 onMounted(async () => {

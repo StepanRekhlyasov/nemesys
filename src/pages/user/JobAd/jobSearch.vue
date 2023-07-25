@@ -118,7 +118,7 @@
 </template>
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
+import { useQuasar,QTableProps } from 'quasar';
 import { ref, onMounted } from 'vue';
 import addJobComponent from './components/addJob.vue';
 import { jobSearchColumns } from 'src/shared/constants/JobAd.const'
@@ -145,7 +145,10 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 30
 });
-
+  defineProps<{
+  columns: QTableProps['columns'];
+  jobList:QTableProps['rows']
+}>();
 const openDrawer = async (data) => {
   if (!data.id) {
       drawerRight.value = false;

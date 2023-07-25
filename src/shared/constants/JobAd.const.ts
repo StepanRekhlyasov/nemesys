@@ -1,6 +1,7 @@
 
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 
 const { t } = i18n.global
 
@@ -550,7 +551,7 @@ export const regionSalaryColumns = computed(() => {
 });
 
 
-export const regionSalaryAddColumns = computed(() => {
+export const regionSalaryAddColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       name: 'prefecture',
@@ -844,7 +845,7 @@ export const jobItemColumns = computed(() => {
   ]
 })
 
-export const jobItemOptionColumns = computed(() => {
+export const jobItemOptionColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       name: 'edit',

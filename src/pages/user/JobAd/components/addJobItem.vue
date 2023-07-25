@@ -118,8 +118,9 @@
                               @save="addNewOption(element, $event)">
                               <q-input v-model="scope.value" dense autofocus />
                           </q-popup-edit></td>
-                          <td></td>
-
+                          <td>
+                            <div>{{ getMatchingCount(element) }}</div>
+                        </td>
                      </tr>
                    </template>
                    </draggable>
@@ -132,11 +133,12 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
 import draggable from 'vuedraggable'
+import {JobOptions} from 'src/shared/model/Jobs.model'
 
 const jobItemSettingStore = useJobItemSetting()
 const props = defineProps({
@@ -178,16 +180,17 @@ const formatForm = ref();
 const phraseCategoryOptions = ref(phraseCategoryList);
 const dataTypeOptions = ref(dataTypeList);
 const columns = ref(jobItemOptionColumns);
-const optionItem:DocumentData = ref([]);
+const optionItem:Ref<JobOptions[]> = ref([]);
 const loading = ref(false);
+const optionData:DocumentData = ref({})
 
 onMounted(async () => {
+  optionData.value=await calculateOptionOccurrence()
   jobItem.value.phraseCategory = props?.selectedPhrase['phraseCategory'] || '';
   if(jobItem.value['id']) {
     optionItem.value = await jobItemSettingStore.fetchJobItemOptionsData(jobItem.value['id'])
     loading.value = false;
   }
-
 })
 
 onBeforeUnmount(() => {
@@ -240,12 +243,41 @@ const saveJobItem = async () => {
 
 }
 
+const calculateOptionOccurrence = async () => {
+
+  const optionCounts = {};
+  const jobs = await jobItemSettingStore.loadJobSearchData();
+
+  if (Array.isArray(jobs)) {
+    for (const data of jobs) {
+      for (const items in data['jobContent']) {
+        const option = data['jobContent'][items];
+        if (option in optionCounts) {
+      optionCounts[option]++;
+    } else {
+      optionCounts[option] = 1;
+    }
+  }
+}
+  return optionCounts;
+}}
 
 const addNewItem = () => {
-  optionItem.value.unshift({ 'name': '' } as never)
+  optionItem.value.unshift({ 'name': '' })
 
 }
+const getMatchingCount = (element) => {
+  let currentOptionIndex = 0;
+  const optionName = Object.keys(optionData.value);
+  while (currentOptionIndex < optionName.length) {
+    if (element['name'] === optionName[currentOptionIndex]) {
+      return optionData.value[optionName[currentOptionIndex]];
+    }
+    currentOptionIndex++;
+  }
 
+  return 0;
+};
 const addNewOption = async (data: object, updatedName) => {
   try {
     if (data['id']) {

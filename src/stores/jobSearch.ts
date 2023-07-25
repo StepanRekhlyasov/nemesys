@@ -13,7 +13,7 @@ import {
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
 import { useI18n } from 'vue-i18n';
-
+import {Client,ClientOffice} from 'src/shared/model/Client.model'
 export const useJobSearch = defineStore('jobSearch', () => {
   const db = getFirestore();
   const auth = getAuth()
@@ -21,7 +21,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
     useScope: 'global',
   });
   const loadJobSearchData = async () => {
-    const jobSearchData: object[] = [];
+    const jobSearchData:Client[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobs'),
@@ -128,7 +128,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
   };
 
 const loadOfficeData = async (id:string) => {
-  const officeData:object[] = [];
+  const officeData:ClientOffice[] = [];
   const q = await getDocs(
     query(
       collection(db, 'clients', id, 'client-factory'),
@@ -163,6 +163,23 @@ const addId = async (id,data:object,optionId) => {
   data['id'] = optionId
   await updateDoc(docDb(db, 'jobItem',id,'options', data['id']), data);
 };
+const getIndustries = async () => {
+  const industriesData: object[] = [];
+  const q = await getDocs(
+    query(
+      collection(db, 'industries'),
+    )
+  );
+  q.forEach(async(doc) => {
+    const data = doc.data();
+    industriesData.push({
+      ...data,
+      id: doc.id,
+    });
+  });
+
+  return industriesData;
+};
   return {
     loadJobSearchData,
     deleteJobSearch,
@@ -174,6 +191,7 @@ const addId = async (id,data:object,optionId) => {
     loadJobItemData,
     updateOption,
     addNewOption,
-    addId
+    addId,
+    getIndustries
   };
 });

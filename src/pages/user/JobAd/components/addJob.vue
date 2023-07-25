@@ -550,7 +550,7 @@
           </div>
           <div class="col-3 q-pr-sm">
             <q-select outlined dense  emit-value map-options v-model="jobData['smokingPermitted']"
-              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+             >
               <template v-if="!jobData['smokingPermitted']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
@@ -583,19 +583,22 @@
         </div>
         <div class="row">
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense  emit-value map-options v-model="jobData['availabilityParkingLot']"
-              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
-              <template v-if="!jobData['availabilityParkingLot']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
+            <q-select
+        outlined
+        dense
+        v-model="jobData['availabilityParkingLot']"
+        :options="industriesDataOptions"
+        option-value="id"
+        option-label="title"
+        hide-bottom-space
+      />
           </div>
           <div class="col-3 q-pr-sm">
             <q-input outlined dense v-model="jobData['parkingLotNotes']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-select outlined dense  emit-value map-options v-model="jobData['headquarterSettlement']"
-              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              >
               <template v-if="!jobData['headquarterSettlement']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
@@ -664,7 +667,7 @@
           </div>
           <div class="col-3 q-pr-sm">
           <q-select outlined dense  emit-value map-options v-model="jobData['presenceAbsenceUniform']"
-              lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+              >
               <template v-if="!jobData['presenceAbsenceUniform']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
@@ -939,7 +942,19 @@
             <q-input outlined dense v-model="jobData['onCallCorrespondence']" hide-bottom-space />
           </div>
         </div>
-
+        <!-- <div class="row text-primary text-body1 q-pt-sm">
+          ■ {{ $t('client.add.officeSpecificInformation') }}
+        </div>
+        <div class="row" v-for="items in industriesData" :key="items['id']">
+  <div class="col-6" v-for="underItem in items['uniqueItems']['typeSpecificItems']" :key="underItem['id']">
+    <div class="q-pr-sm">
+      {{ underItem['title'] }}
+    </div>
+    <div class="q-pr-sm">
+      <q-input outlined dense v-model="jobData['onCallCorrespondence']" hide-bottom-space />
+    </div>
+  </div>
+</div> -->
       </q-card-section>
     </q-form>
     <q-dialog v-model="dialogVisible" persistent transition-show="scale" transition-hide="scale" class="my-dialog">
@@ -966,13 +981,14 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount ,computed} from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, employmentStatusList, reqList, indeedJobCategoryList, indeedTagList, indeedTagJobType, indeedTagCoronaType, resumeRequiredList } from 'src/shared/constants/JobAd.const';
 import { DocumentData } from 'firebase/firestore';
 import { useJobSearch } from 'src/stores/jobSearch'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import {Client,ClientOffice} from 'src/shared/model/Client.model'
 const jobSearchStore = useJobSearch()
 const props = defineProps({
   selectedJob: {
@@ -1078,10 +1094,11 @@ const indeedJobCategorOption = ref(indeedJobCategoryList);
 const dialogVisible = ref(false)
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
-const clientList: DocumentData = ref([]);
-const officeList: DocumentData = ref([]);
+const clientList:Ref<Client[]> = ref([]);
+const officeList:Ref<ClientOffice[]> = ref([]);
 const transactionText = ref('')
 const projectText = ref('')
+const selectedIndustry = ref(null);
 const jobForm = ref();
 const jobItems = ref({});
 const jobItemOptions = ref({});
@@ -1090,7 +1107,7 @@ const currentJobContent = ref('')
 const editingIndex = ref(-1);
 const jobItemId = ref({})
 const optionId = ref('')
-const optionCounts = ref({})
+const industriesData:DocumentData = ref({})
 const startEditing = (index) => {
   editingIndex.value = index;
 };
@@ -1108,22 +1125,100 @@ onMounted(async () => {
   jobData.value.client = props?.selectedJob['client'] || '';
   await jobSearchStore.loadJobItemSettingData(jobItemOptions, jobItems)
   await jobSearchStore.loadJobItemData(jobItems)
-  optionCounts.value = countOptionOccurrences(jobData)
-  console.log(optionCounts.value)
+ industriesData.value = await jobSearchStore.getIndustries()
 })
-function countOptionOccurrences(jobData) {
-  debugger
-  const optionCounts = {};
-  for (const items in jobData.value['jobContent']) {
-    const option = jobData.value['jobContent'][items];
-    if (option in optionCounts) {
-      optionCounts[option]++;
-    } else {
-      optionCounts[option] = 1;
+
+const industriesDataOptions = computed(() => {
+  const options: object[] = [];
+  if (Array.isArray(industriesData.value)) {
+    for (const data of industriesData.value) {
+      if (
+        data &&
+        data.uniqueItems &&
+        Array.isArray(data.uniqueItems.typeSpecificItems)
+      ) {
+        for (const innerData of data.uniqueItems.typeSpecificItems) {
+          options.push({ id: innerData.id, title: innerData.title });
+        }
+      }
     }
   }
-  return optionCounts;
+  return options;
+});
+
+const saveJob = async () => {
+  try {
+    if (jobData.value.id) {
+      await jobSearchStore.updateFormData(jobData.value)
+      hideDrawer()
+
+    } else {
+      await jobSearchStore.addFormData(jobData.value)
+      hideDrawer()
+    }
+
+    $q.notify({
+      color: 'green-4',
+      textColor: 'white',
+      icon: 'cloud_done',
+      message: t('success'),
+    });
+    jobData.value = { ...jobDataObject }
+    jobForm.value.resetValidation();
+  } catch (error) {
+    console.log(error);
+    $q.notify({
+      color: 'red-5',
+      textColor: 'white',
+      icon: 'warning',
+      message: t('failed'),
+    });
+  }
+
 }
+const openJobOptionDrawer = (options, jobContent,itemId) => {
+  itemOptions.value = options;
+  currentJobContent.value = jobContent;
+  jobItemId.value = itemId
+  dialogVisible.value = true
+}
+
+const selectJobOption = async(data,id) => {
+  if (jobData.value['jobContent'][currentJobContent.value] !== data['name']) {
+    jobData.value['jobContent'][currentJobContent.value] = data['name']
+  }
+  try {
+    if (data['id'] && jobData.value['jobContent'][currentJobContent.value] === data['name']) {
+      jobData.value['jobContent'][currentJobContent.value] = data['name']
+      await jobSearchStore.updateOption(id,data)
+
+      } else {
+        jobData.value['jobContent'][currentJobContent.value] = data['name']
+         optionId.value = await jobSearchStore.addNewOption(id,data)
+         await jobSearchStore.addId(id,data,optionId.value)
+      }
+      dialogVisible.value = false
+      $q.notify({
+          color: 'green-4',
+          textColor: 'white',
+          icon: 'cloud_done',
+          message: t('success'),
+      });
+
+  } catch (error) {
+      console.log(error);
+      $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'warning',
+          message: t('failed'),
+      });
+  }
+
+}
+const addNewField = () => {
+  itemOptions.value.unshift({ 'name': '' })
+};
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
     unsubscribe.value();
@@ -1199,79 +1294,20 @@ watch(
   }
 )
 
-const saveJob = async () => {
-  try {
-    if (jobData.value.id) {
-      await jobSearchStore.updateFormData(jobData.value)
-      hideDrawer()
-
-    } else {
-      await jobSearchStore.addFormData(jobData.value)
-      hideDrawer()
-    }
-
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: t('success'),
-    });
-    jobData.value = { ...jobDataObject }
-    jobForm.value.resetValidation();
-  } catch (error) {
-    console.log(error);
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: t('failed'),
-    });
-  }
-
-}
-const openJobOptionDrawer = (options, jobContent,itemId) => {
-  itemOptions.value = options;
-  currentJobContent.value = jobContent;
-  jobItemId.value = itemId
-  dialogVisible.value = true
-}
-
-const selectJobOption = async(data,id) => {
-  if (jobData.value['jobContent'][currentJobContent.value] !== data['name']) {
-    jobData.value['jobContent'][currentJobContent.value] = data['name']
-  }
-  try {
-    if (data['id'] && jobData.value['jobContent'][currentJobContent.value] === data['name']) {
-      jobData.value['jobContent'][currentJobContent.value] = data['name']
-      await jobSearchStore.updateOption(id,data)
-
-      } else {
-        jobData.value['jobContent'][currentJobContent.value] = data['name']
-         optionId.value = await jobSearchStore.addNewOption(id,data)
-         await jobSearchStore.addId(id,data,optionId.value)
+watch(
+  () => selectedIndustry.value,
+  (newValue) => {
+    for (const data of industriesData.value) {
+      for (const innerData of data.uniqueItems.typeSpecificItems) {
+        if (innerData.id === newValue) {
+          innerData.title = selectedIndustry.value;
+          return;
+        }
       }
-      dialogVisible.value = false
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
-
-  } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+    }
   }
+);
 
-}
-const addNewField = () => {
-  itemOptions.value.unshift({ 'name': '' } as never)
-};
 </script>
 <style >
 .my-dialog .q-dialog__backdrop {

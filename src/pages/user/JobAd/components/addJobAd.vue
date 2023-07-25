@@ -234,12 +234,12 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
 import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
-import { DocumentData } from 'firebase/firestore';
+import {JobModel,JobFormat} from 'src/shared/model/Jobs.model'
 const jobPostingHistoryStore = useJobPostingHistory()
 const props = defineProps({
   selectedJob: {
@@ -281,7 +281,7 @@ const facilityText = ref('');
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
 const unsubscribePhrase = ref();
-const jobList:DocumentData = ref([]);
+const jobList:Ref<JobModel[]> = ref([]);
 const transactionText = ref('')
 const projectText = ref('')
 const paymentText = ref('')
@@ -292,7 +292,7 @@ const jobForm = ref();
 const formatSettingItems = ref(formatSettingItemList);
 const options = ref({});
 const unsubscribeFormat = ref()
-const publicationFormatOptions:DocumentData = ref([])
+const publicationFormatOptions:Ref<JobFormat[]> = ref([])
 
 onMounted(async () => {
   jobList.value = await jobPostingHistoryStore.getJobsdata()

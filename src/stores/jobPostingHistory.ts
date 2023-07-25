@@ -12,6 +12,8 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
+import {JobModel} from 'src/shared/model/Jobs.model'
+
 export const useJobPostingHistory = defineStore('jobPostingHistory', () => {
   const db = getFirestore();
   const auth = getAuth()
@@ -50,7 +52,7 @@ export const useJobPostingHistory = defineStore('jobPostingHistory', () => {
     await addDoc(collection(db, 'jobAds'), data);
   };
 const getJobsdata = async() =>{
-  const jobsData: object[] = [];
+  const jobsData: JobModel[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobs'),

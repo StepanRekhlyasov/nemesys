@@ -81,6 +81,25 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
 
   return jobItemOption;
 };
+const loadJobSearchData = async () => {
+  const jobSearchData: object[] = [];
+  const q = await getDocs(
+    query(
+      collection(db, 'jobs'),
+      where('deleted', '==', false),
+    )
+  );
+  q.forEach(async(doc) => {
+    const data = doc.data();
+    jobSearchData.push({
+      ...data,
+      id: doc.id,
+    });
+  });
+
+  return jobSearchData;
+};
+
 
   return {
    loadJobItemSettingData,
@@ -88,6 +107,7 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
    addFormData,
    addNewOption,
    updateOption,
-   fetchJobItemOptionsData
+   fetchJobItemOptionsData,
+   loadJobSearchData,
   };
 });

@@ -243,13 +243,14 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { regionSalaryAddColumns } from 'src/shared/constants/JobAd.const';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
-import { DocumentData } from 'firebase/firestore';
+import {AreaCityModel} from 'src/shared/model/Jobs.model'
+
 const regionalSalarySettingStore = useRegionalSalarySetting()
 const props = defineProps({
   selectedArea: {
@@ -299,7 +300,7 @@ const citySetting = ref({ prefecture: [], ward: {} });
 const prefectureJPList = ref([]);
 const wardJPList = ref([]);
 const wardData = ref({});
-const wardList:DocumentData = ref([]);
+const wardList:Ref<AreaCityModel[]> = ref([]);
 
 const loading = ref(false);
 
@@ -308,7 +309,6 @@ const pagination = ref({
   descending: false,
   page: 1,
   rowsPerPage: 10
-  // rowsNumber: xx if getting data from a server
 });
 
 onMounted(async () => {
