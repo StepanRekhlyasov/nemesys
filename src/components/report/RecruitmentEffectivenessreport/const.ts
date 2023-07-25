@@ -77,7 +77,7 @@ export const chartOptionsSex = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.genderRatio')],
+      categories: [t('report.ourCompany'),t('report.all')],
     },
     yaxis: [
       {

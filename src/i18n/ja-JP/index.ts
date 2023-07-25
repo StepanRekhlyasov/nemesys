@@ -99,6 +99,7 @@ export default {
     more: 'もっと',
     downloadCSV: 'CSVダウンロード',
     branch: '支店',
+
   },
   rule: {
     onlyNumber: '数字のみ、ハイフンなし'
@@ -1722,7 +1723,9 @@ export default {
     base:'拠点',
     totalingMethod:'集計方法',
     jobCategory:'職種',
-    categories:{
+    ourCompany: '自社',
+    all: '全体',
+        categories:{
       totalingMethod:{
       totallingDailyData:'日次データ集計',
       totallingAttractionDataByBranch:'支店別集客データ集計',

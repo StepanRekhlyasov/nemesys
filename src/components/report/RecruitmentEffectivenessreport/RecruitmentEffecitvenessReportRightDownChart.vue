@@ -51,42 +51,43 @@ import {
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { convertToPercentage } from '../reportUtil';
+import { useGetReport } from 'src/stores/getReport';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
+const { getReport } = useGetReport();
 const applicant = useApplicant();
 const {
-  countApplicantsBySex,
   agesListOfApplicants,
   countApplicantsdaysToWork,
 } = applicant;
 
-const dataToshow: Ref<(number | string)[][]> = ref([]);
+const dataToshowSex: Ref<(number | string)[][]> = ref([]);
 const dataToshowAges: Ref<(number | string)[][]> = ref([]);
 const dataToshowDaysToWork: Ref<(number | string)[][]> = ref([]);
 
 const seriesSex: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshow.value.map((rowdata, index) => {
+  const series = dataToshowSex.value.map((rowdata, index) => {
     return {
       name: t(rowNamesSex[index]),
       data: rowdata,
       type: chartTypeSex[index],
     };
   });
-  return series_;
+  return series;
 });
 const seriesAges: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const series_ = dataToshowAges.value.map((rowdata, index) => {
+  const series = dataToshowAges.value.map((rowdata, index) => {
     return {
       name: t(rowNamesAges[index]),
       data: rowdata,
       type: chartTypeAges[index],
     };
   });
-  return series_;
+  return series;
 });
 const seriesDaysToWork: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
@@ -111,11 +112,33 @@ const props = defineProps<{
 
 const showChart = async () => {
   if (!props.dateRangeProps) return;
-  const sexData = [
-    [await countApplicantsBySex('male', props.dateRangeProps)],
-    [await countApplicantsBySex('female', props.dateRangeProps)],
+
+  const sexDataAll = await getReport({
+    dateRange: props.dateRangeProps,
+    queryNames: [{ queryName: 'male' }, { queryName: 'female' }],
+    graphType: props.graph_type,
+    isAverage: false,
+  });
+  const sexDataCompany = await getReport({
+    dateRange: props.dateRangeProps,
+    organizationId: props.organization_id,
+    queryNames: [{ queryName: 'male' }, { queryName: 'female' }],
+    graphType: props.graph_type,
+    isAverage: false,
+  });
+  const sexDataCompanyList = convertToPercentage([
+    [sexDataCompany[0]['male']],
+    [sexDataCompany[0]['female']],
+  ] as number[][]);
+  const sexDataAllList = convertToPercentage([
+    [sexDataAll[0]['male']],
+    [sexDataAll[0]['female']],
+  ] as number[][]);
+  dataToshowSex.value = [
+    [sexDataCompanyList[0][0], sexDataAllList[0][0]] as number[],
+    [sexDataCompanyList[1][0], sexDataAllList[1][0]] as number[],
   ];
-  dataToshow.value = convertToPercentage(sexData);
+
   const listofages = await agesListOfApplicants(props.dateRangeProps);
   if (listofages) {
     const agesData = [
