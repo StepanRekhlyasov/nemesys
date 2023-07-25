@@ -16,7 +16,8 @@ export interface InquiryData {
 }
 
 export type InquiryDataRow = Partial<InquiryData> & {
-  number: number,
+  number: number
+  status: string
   companyID: string
   companyName: string
   issueDate: string
