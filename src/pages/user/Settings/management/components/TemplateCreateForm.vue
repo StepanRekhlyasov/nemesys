@@ -28,7 +28,7 @@
 
         <div class="row q-pb-sm">
           <div class="col-3 text-right self-center q-pr-sm">
-            {{ $t('client.backOrder.reqQualification') }}
+            {{ $t('settings.template.type') }}
           </div>
           <div class="col-9 q-pl-sm">
             <q-radio

@@ -228,7 +228,7 @@ export default {
         branch: '支店',
         details:'■申請内容',
         targetBranch: '対象支店',
-        numberOfSlots: '枠数',
+        numberOfSlots: 'ライセンス数',
         execution: '実行',
         cancel: 'キャンセル',
         licenseFee: 'ライセンス料金',
@@ -1728,6 +1728,8 @@ export default {
     base:'拠点',
     totalingMethod:'集計方法',
     jobCategory:'職種',
+    ourCompany: '自社',
+    all: '全体',
     categories:{
       totalingMethod:{
       totallingDailyData:'日次データ集計',

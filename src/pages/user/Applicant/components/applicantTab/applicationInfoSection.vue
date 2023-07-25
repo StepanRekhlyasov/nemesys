@@ -1,5 +1,5 @@
 <template>
-  <DropDownEditGroup :isHiddenActions="bo?true:false" :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
+  <DropDownEditGroup :isHiddenActions="bo ? true : false" :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
     @closeEdit="resetData(); edit = false;" @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -48,8 +48,8 @@
       <div class="col-3 q-pl-md blue">
         <span v-if="!edit">{{ applicant.media ? applicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : '' }}</span>
         <template v-if="edit">
-          <q-radio v-model="data['media']" label="indeed" val="indeed" />
-          <q-radio v-model="data['media']" :label="$t('applicant.add.hr')" val="hr" />
+          <q-select outlined dense v-model="data['media']" :options="mediaList" bg-color="white"
+              hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -158,7 +158,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { applicationMethod } from 'src/shared/constants/Applicant.const';
+import { applicationMethod, mediaList } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
