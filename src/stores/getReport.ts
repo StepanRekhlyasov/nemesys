@@ -42,8 +42,8 @@ const applicantFieldDict: FieldDict = {
 const fixFieldDict: FieldDict = {
   name: 'fix',
   rateName: 'fixRate',
-  dateBasedOnEachItemDate: 'data',
-  dateBasedOnLeftMostItemDate: 'data',
+  dateBasedOnEachItemDate: 'fixDate',
+  dateBasedOnLeftMostItemDate: 'fixDate',
   filters: [where('fixStatus', '==', true)],
   collection: 'fix',
   branchField: 'branchInCharge',
