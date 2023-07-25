@@ -6,7 +6,7 @@ export interface ApplicantExperienceInputs extends ApplicantExperienceBase, Appl
 export interface ApplicantExperienceBase {
   id: string;
   experience?: string;
-  facilityType?: string;
+  facilityType?: string[];
   nameEstablishment?: string;
   employmentType?: string;
   reasonResignation?: string;
@@ -68,7 +68,8 @@ export interface ApplicantBase {
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
-  totalYear?: string;
+  totalMonthes?: number;
+  addMonthes?: number;
   address?: string;
   classification?: string[];
   currentStatusMonth?: string;
@@ -128,7 +129,7 @@ export interface DesiredConditions {
   shiftRemarks?: string;
   meansCommuting?: string[];
   nearestStation?: string;
-  commutingTime?: string;
+  commutingTime?: number;
   route?: string;
   commutingTimeRemarks?: string;
   facilityDesired?: string[];

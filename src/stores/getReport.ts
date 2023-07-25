@@ -24,8 +24,9 @@ import {
 } from 'src/shared/model/GetReport';
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
+import { round } from 'src/shared/utils/KPI.utils';
 const userStore = useUserStore();
-
+const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
 const applicantFieldDict: FieldDict = {
   name: 'applicants',
   dateBasedOnEachItemDate: 'applicationDate',
@@ -35,6 +36,7 @@ const applicantFieldDict: FieldDict = {
   branchField: 'branchInCharge',
   mediaField: 'media',
   occupationField: 'occupation',
+  organizationIdField: 'organization_id',
 };
 
 const fixFieldDict: FieldDict = {
@@ -47,6 +49,7 @@ const fixFieldDict: FieldDict = {
   branchField: 'branchInCharge',
   uidField: 'chargeOfFix',
   mediaField: 'media',
+  organizationIdField: 'organization_id',
 };
 
 const BOFieldDict: FieldDict = {
@@ -57,6 +60,7 @@ const BOFieldDict: FieldDict = {
   collection: 'BO',
   uidField: 'id_registerUser',
   mediaField: 'media',
+  organizationIdField: 'organization_id',
 };
 
 const validApplicantsFieldDict: FieldDict = {
@@ -69,6 +73,7 @@ const validApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
 };
 
 const contatApplicantsFieldDict: FieldDict = {
@@ -81,6 +86,7 @@ const contatApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
 };
 
 const attractionApplicantsFieldDict: FieldDict = {
@@ -93,6 +99,7 @@ const attractionApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
 };
 
 const attendApplicantsFieldDict: FieldDict = {
@@ -105,6 +112,7 @@ const attendApplicantsFieldDict: FieldDict = {
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
+  organizationIdField: applicantFieldDict.organizationIdField,
 };
 
 const inspectionFieldDict: FieldDict = {
@@ -117,6 +125,7 @@ const inspectionFieldDict: FieldDict = {
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
   uidField: 'chargeOfInspection',
+  organizationIdField: fixFieldDict.organizationIdField,
 };
 
 const offerFieldDict: FieldDict = {
@@ -129,6 +138,7 @@ const offerFieldDict: FieldDict = {
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
   uidField: 'chargeOfOffer',
+  organizationIdField: fixFieldDict.organizationIdField,
 };
 
 const admissionFieldDict: FieldDict = {
@@ -141,6 +151,7 @@ const admissionFieldDict: FieldDict = {
   branchField: fixFieldDict.branchField,
   mediaField: fixFieldDict.mediaField,
   uidField: 'chargeOfAdmission',
+  organizationIdField: fixFieldDict.organizationIdField,
 };
 
 const BOIsfirstFieldDict: FieldDict = {
@@ -151,6 +162,7 @@ const BOIsfirstFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const BOIsNotfirstFieldDict: FieldDict = {
@@ -161,6 +173,7 @@ const BOIsNotfirstFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const generalDispatchFieldDict: FieldDict = {
@@ -171,6 +184,7 @@ const generalDispatchFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const introductionFieldDict: FieldDict = {
@@ -181,6 +195,7 @@ const introductionFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const TTPFieldDict: FieldDict = {
@@ -191,6 +206,7 @@ const TTPFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const nurseFieldDict: FieldDict = {
@@ -201,6 +217,7 @@ const nurseFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const nurseCareFieldDict: FieldDict = {
@@ -211,6 +228,7 @@ const nurseCareFieldDict: FieldDict = {
   collection: BOFieldDict.collection,
   uidField: BOFieldDict.uidField,
   mediaField: BOFieldDict.mediaField,
+  organizationIdField: BOFieldDict.organizationIdField,
 };
 
 const amountFieldDict: FieldDict = {
@@ -290,10 +308,22 @@ const getQuery = async (
   db: Firestore,
   isAverage = false
 ): Promise<number> => {
-  const fromDate = new Date(reportState.dateRange.from);
-  const toDate = new Date(reportState.dateRange.to);
-  const fromDateTrue = new Date(reportState.dateRange.from);
-  const toDateTrue = new Date(reportState.dateRange.to);
+  const fromDate =
+    typeof reportState.dateRange.from == 'string'
+      ? new Date(reportState.dateRange.from)
+      : reportState.dateRange.from;
+  const toDate =
+    typeof reportState.dateRange.to == 'string'
+      ? new Date(reportState.dateRange.to)
+      : reportState.dateRange.to;
+  const fromDateTrue =
+    typeof reportState.dateRange.from == 'string'
+      ? new Date(reportState.dateRange.from)
+      : reportState.dateRange.from;
+  const toDateTrue =
+    typeof reportState.dateRange.to == 'string'
+      ? new Date(reportState.dateRange.to)
+      : reportState.dateRange.to;
   if (queryName.queryName == 'amount') {
     fromDate.setMonth(fromDate.getMonth() - 1);
   }
@@ -327,8 +357,10 @@ const getQuery = async (
   if (reportState.uid && fieldDict.uidField) {
     filters.push(where(fieldDict.uidField, '==', reportState.uid));
   }
-  if (reportState.organizationId) {
-    filters.push(where('organization_id', '==', reportState.organizationId));
+  if (reportState.organizationId && fieldDict.organizationIdField) {
+    filters.push(
+      where(fieldDict.organizationIdField, '==', reportState.organizationId)
+    );
   }
   if (reportState.occupation && fieldDict.occupationField) {
     filters.push(
@@ -340,8 +372,13 @@ const getQuery = async (
 
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
-    if (fromDateTrue.getMonth() == toDateTrue.getMonth() && docSnap.docs.length == 1) {
-      const amount = docSnap.docs[0].data().amount ? docSnap.docs[0].data().amount :0;
+    if (
+      fromDateTrue.getMonth() == toDateTrue.getMonth() &&
+      docSnap.docs.length == 1
+    ) {
+      const amount = docSnap.docs[0].data().amount
+        ? docSnap.docs[0].data().amount
+        : 0;
       const rate = proratedRate(fromDateTrue, fromDateTrue, toDateTrue);
       return amount * rate;
     } else {
@@ -373,7 +410,7 @@ const getQuery = async (
         }
         amountSum += amount;
       });
-      return amountSum;
+      return round(amountSum, 1);
     }
   }
   if (isAverage) {
@@ -390,7 +427,12 @@ const queryPatternToData = async (stateAndOthers: reportStateAndOthers) => {
   const db = getFirestore();
   const countedData = await Promise.all(
     stateAndOthers.queryNames.map(async (queryName) => {
-      return getQuery(stateAndOthers.reportState, queryName, db,stateAndOthers.isAverage);
+      return getQuery(
+        stateAndOthers.reportState,
+        queryName,
+        db,
+        stateAndOthers.isAverage
+      );
     })
   );
   return countedData;
@@ -414,6 +456,35 @@ const getMonthDateList = (date: string) => {
   }
   return dateList;
 };
+
+const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: QueryFieldFilterConstraint[]): Promise<number[] | undefined> => {
+  const db = getFirestore();
+  const targetDateFrom = new Date(dateRange.from);
+  const targetDateTo = new Date(dateRange.to);
+  const filters = [
+    where('applicationDate', '>=', targetDateFrom),
+    where('applicationDate', '<=', targetDateTo)
+  ]
+  if (filterData) {
+    for(const filter of filterData){
+      filters.push(filter)
+    }
+  }
+  const applicantRef = collection(db, 'applicants')
+  const querys = query(applicantRef, ...filters)
+  const docSnap = await getDocs(querys)
+  const applicants = docSnap.docs.map((doc) => {
+    if (!doc.data().dob) return undefined
+    const dob = doc.data().dob
+    const now = new Date()
+    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
+    return age
+  })
+  if (applicants.length === 0) return undefined
+  //remove undefined in applicants
+  const filteredApplicants = applicants.filter((applicant): applicant is number => typeof applicant == 'number')
+  return filteredApplicants
+}
 
 
 export const useGetReport = defineStore('getReport', () => {
@@ -560,5 +631,40 @@ export const useGetReport = defineStore('getReport', () => {
     }
     return rows;
   };
-  return { getReport, getDailyReport };
+
+  const getAgeReport = async (
+    dataRange: { from: string; to: string },
+    media?: Media,
+    branch?: Branch
+  ) => {
+    let ageData = {
+      '10s': 0,
+      '20s': 0,
+      '30s': 0,
+      '40s': 0,
+      '50s': 0,
+      '60sOver': 0,
+    };
+    const filters: QueryFieldFilterConstraint[] = [];
+    if (media) {
+      filters.push(where('media', '==', media.id));
+    }
+    if (branch) {
+      filters.push(where('branch_id', '==', branch.id));
+    }
+    const listofages = await agesListOfApplicants(dataRange, filters);
+    if (listofages) {
+      ageData = {
+        '10s': listofages.filter((age) => age >= 10 && age < 20).length,
+        '20s': listofages.filter((age) => age >= 20 && age < 30).length,
+        '30s': listofages.filter((age) => age >= 30 && age < 40).length,
+        '40s': listofages.filter((age) => age >= 40 && age < 50).length,
+        '50s': listofages.filter((age) => age >= 50 && age < 60).length,
+        '60sOver': listofages.filter((age) => age >= 60).length,
+      };
+    }
+    return ageData;
+  };
+
+  return { getReport, getDailyReport, getAgeReport };
 });

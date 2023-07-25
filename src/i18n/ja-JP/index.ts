@@ -79,6 +79,7 @@ export default {
     ageShort: '歳',
     week: '週',
     month: '月',
+    addMonth: 'か月',
     reputation: '名',
     desiredBo:'BO情報',
     desiredCondition:'希望条件',
@@ -101,7 +102,8 @@ export default {
     branch: '支店',
   },
   rule: {
-    onlyNumber: '数字のみ、ハイフンなし'
+    onlyNumber: '数字のみ、ハイフンなし',
+    emailAlreadyRegistred: 'このメールアドレスは既に使われています'
   },
   smoking: {
     no: '無',
@@ -1105,8 +1107,7 @@ export default {
       reasonResignation: '退職理由',
       pastInterviews: '過去面談歴',
       deletedInfo: 'このテンプレートに関するデータはすべて削除されます',
-      totalYearsExperience: '経験',
-      yearsOfTotalExperience: '総経験年数',
+      totalYearsExperience: '総経験年数',
 
       // Operation Info Component
       placeOperation: '稼働先',
@@ -1675,7 +1676,11 @@ export default {
       companyID: '企業ID',
       companyName: '企業名',
       recievedDate: '送受信日',
-      responseDate: '返信日'
+      recieve: '受信',
+      responseDate: '返信日',
+      notificationType: '通知種別',
+      inquiry: '問い合わせ',
+      releaseNote: 'リリースノート',
     },
     detail: {
       inquiryTitle: '問い合わせ内容',
@@ -1690,7 +1695,8 @@ export default {
     },
     message: {
       issueDate: '送信日',
-      responseDate: '受信日'
+      responseDate: '受信日',
+      sendDate: '送信日',
     }
   },
   industry: {
@@ -1753,10 +1759,10 @@ export default {
       BOExisting:'BO既存',
       female:'女性',
       male:'男性',
-      startUnitPrice:'開始単価 平均',
-      applicationUnitPrice:'応募単価 平均',
-      applicationUnitPriceAllAverage:'応募単価 全体平均',
-      startUnitPriceAllAverage:'開始単価 全体平均',
+      startUnitPrice:'開始単価 自社',
+      applicationUnitPrice:'応募単価 自社',
+      applicationUnitPriceAllAverage:'応募単価 平均',
+      startUnitPriceAllAverage:'開始単価 平均',
       teens:'10代',
       twenties:'20代',
       thirties:'30代',

@@ -78,10 +78,12 @@ export const limitDate = (date : string) => {
   return date <= new Date().toLocaleDateString('ja-JP')
 }
 
-export const differentDateYear = (date1: string, date2: string):number => {
+export const differentDateMonth = (date1: string, date2: string):number => {
   const d1 = new Date(date1), d2 = new Date(date2);
-  const timeDiff = Math.abs(d2.getTime() - d1.getTime());
-  return Math.ceil(timeDiff / (1000 * 3600 * 24 * 12 * 30)) - 1;
+  const diff = Math.floor((d2.getDate() - d1.getDate()) / 30 ) +
+  d2.getMonth() - d1.getMonth() +
+  (12 * (d2.getFullYear() - d1.getFullYear()));
+  return diff
 }
 
 export const toDateObject = (timestamp: Timestamp):dataObject => {

@@ -5,9 +5,14 @@ export const rowNamesSex = [
   'report.categories.male',
   'report.categories.female',
 ] as const;
-export const chartTypeSex = ['bar', 'bar'] as const ;
-export const chartTypeUnitPrice = ['bar','bar','line','line'] as const
-export const chartTypeUnitPricePerMedia = ['bar','bar'] as const
+export const chartTypeSex = ['bar', 'bar'] as const;
+export const chartTypeUnitPrice = ['bar', 'bar', 'line', 'line'] as const;
+export const chartTypeUnitPricePerMedia = ['bar', 'bar'] as const;
+export const queryNamesList = [
+  { queryName: 'applicants' },
+  { queryName: 'admission' },
+  { queryName: 'amount' },
+] as const;
 
 export const rowNamesAges = [
   'report.categories.teens',
@@ -25,7 +30,7 @@ export const chartTypeAges = [
   'bar',
   'bar',
   'bar',
-] as const ;
+] as const;
 export const rowNamesDaysToWork = ['1', '2', '3', '4', '5', '6', '7'] as const;
 export const chartTypeDaysToWork = [
   'bar',
@@ -77,7 +82,7 @@ export const chartOptionsSex = computed(() => {
     yaxis: [
       {
         min: 0,
-        max:100,
+        max: 100,
 
         labels: {
           formatter: function (value) {
@@ -88,7 +93,6 @@ export const chartOptionsSex = computed(() => {
     ],
   };
 });
-
 
 export const chartOptionsAges = computed(() => {
   return {
@@ -119,7 +123,7 @@ export const chartOptionsAges = computed(() => {
     yaxis: [
       {
         min: 0,
-        max:100,
+        max: 100,
 
         labels: {
           formatter: function (value) {
@@ -160,7 +164,7 @@ export const chartOptionsDaysToWork = computed(() => {
     yaxis: [
       {
         min: 0,
-        max:100,
+        max: 100,
 
         labels: {
           formatter: function (value) {

@@ -79,6 +79,7 @@ export default {
     ageShort: 'Age',
     week: 'Week',
     month: 'Month',
+    addMonth: 'Add monthes',
     reputation: 'Reputation',
     desiredBo:'BO',
     desiredCondition:'Desired condition',
@@ -101,7 +102,8 @@ export default {
     branch: 'Branch',
   },
   rule: {
-    onlyNumber: 'only number, without "-"'
+    onlyNumber: 'only number, without "-"',
+    emailAlreadyRegistred: 'This email has already been taken'
   },
   smoking: {
     no: 'No',
@@ -1110,7 +1112,6 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
-      yearsOfTotalExperience: 'Years of total experience',
 
       // Operation Info Component
       placeOperation: 'Place of operation',
@@ -1682,7 +1683,11 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      responseDate: 'response date'
+      recieve: 'date issued',
+      responseDate: 'response date',
+      notificationType: 'Notification Type',
+      inquiry: 'Inquiry',
+      releaseNote: 'Release note',
     },
     detail: {
       inquiryTitle: 'Inquiry details',
@@ -1697,7 +1702,8 @@ export default {
     },
     message: {
       issueDate: 'Date of issue',
-      responseDate: 'Date of response'
+      responseDate: 'Date of response',
+      sendDate: 'Date sent',
     }
   },
   industry: {

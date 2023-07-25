@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch, QueryFieldFilterConstraint} from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
@@ -14,6 +14,7 @@ import { COLUMN_STATUSES, COUNT_STATUSES, limitQuery } from 'src/pages/user/Appl
 import { useRoute } from 'vue-router';
 import { useFix } from './fix';
 import { getMostCompletedFix } from 'src/shared/utils/Fix.utils';
+import { deepCopy } from 'src/shared/utils';
 
 interface ApplicantState {
   clientList: Client[],
@@ -200,6 +201,7 @@ export const useApplicant = defineStore('applicant', () => {
 
     const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
     const queryString = searchData['keyword'] ? searchData['keyword'] : ''
+    searchData = deepCopy(searchData);
 
     if (searchData['status']) {
       filters['all'].push({
@@ -231,7 +233,20 @@ export const useApplicant = defineStore('applicant', () => {
         'dob': { 'from': getDate(parseInt(searchData.ageMax) + 1) }
       });
     }
-
+    if (searchData['prefectureArea']) {
+      if (searchData['prefecture']) {
+        searchData['prefecture'] = [...[searchData['prefecture']], ...searchData['prefectureArea']]
+      } else {
+        searchData['prefecture'] = searchData['prefectureArea']
+      }
+    }
+    if (searchData['municipalitiesArea']) {
+      if (searchData['municipalities']) {
+        searchData['municipalities'] = [...[searchData['municipalities']], ...searchData['municipalitiesArea']]
+      } else {
+        searchData['municipalities'] = searchData['municipalitiesArea']
+      }
+    }
     const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
@@ -406,7 +421,7 @@ export const useApplicant = defineStore('applicant', () => {
 
   }
 
-  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter): Promise<number[] | undefined> => {
+  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: QueryFieldFilterConstraint[]): Promise<number[] | undefined> => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
     const filters = [
@@ -414,10 +429,8 @@ export const useApplicant = defineStore('applicant', () => {
       where('applicationDate', '<=', targetDateTo)
     ]
     if (filterData) {
-      for (const [key, value] of Object.entries(filterData)) {
-        if (value) {
-          filters.push(where(key, '==', value))
-        }
+      for(const filter of filterData){
+        filters.push(filter)
       }
     }
     const applicantRef = collection(db, 'applicants')
