@@ -5,18 +5,17 @@
 
     <q-card-section class="q-pb-none">
 
-      <DialogItemContainer name-key="menu.admin.licenseManagement.targetSystem">
-        <q-select :options="targetSystemOptions" v-model:model-value="targetSystem" outlined dense :disable="loading"
-          :rules="[creationRule]" />
+      <DialogItemContainer class="q-mb-md" name-key="menu.admin.licenseManagement.targetSystem">
+        <div class="q-my-sm" >{{ targetSystem }}</div>
       </DialogItemContainer>
 
       <DialogItemContainer name-key="menu.admin.licenseManagement.requestType">
         <q-select :options="requestTypeOptions" v-model:model-value="requestType" outlined dense :disable="loading"
-          :rules="[creationRule]" />
+          :rules="[creationRule]" emit-value map-options/>
       </DialogItemContainer>
 
       <DialogItemContainer name-key="menu.admin.licenseManagement.numberOfSlots">
-        <q-input v-model:model-value="numberOfSlots" outlined dense type="number" min="1" :disable="loading"
+        <q-input v-model.number:model-value="numberOfSlots" outlined dense type="number" min="1" :disable="loading"
           :rules="[creationRule]" />
       </DialogItemContainer>
 
@@ -33,7 +32,7 @@ import { serverTimestamp, Timestamp } from '@firebase/firestore';
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
-import { LicenseRequest, requestType as requestTypeOptions, targetSystem as targetSystemOptions } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
+import { LicenseRequest, requestTypeOptions } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
 import { Branch } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useLicense } from 'src/stores/license';
@@ -43,7 +42,7 @@ import { ref } from 'vue';
 const loading = ref(false)
 const organization = useOrganization()
 const requestType = ref<LicenseRequest['requestType']>()
-const targetSystem = ref<LicenseRequest['targetSystem']>()
+const targetSystem = ref<LicenseRequest['targetSystem']>('nemesys')
 const numberOfSlots = ref<number>()
 const license = useLicense()
 const props = defineProps<{
