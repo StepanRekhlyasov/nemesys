@@ -66,7 +66,7 @@
       </template>
 
       <template v-slot:body-cell-content="props">
-        <q-td :props="props">
+        <q-td :props="props" style="white-space: break-spaces;">
           <q-input v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.content" />
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.content }}
@@ -75,14 +75,13 @@
       </template>
 
       <template v-slot:body-cell-note="props">
-        <q-td :props="props">
+        <q-td :props="props" style="white-space: break-spaces;">
           <q-input v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.note" />
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.note }}
           </template>
         </q-td>
       </template>
-
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
           {{ toDate(props.value) }}
@@ -109,6 +108,7 @@
           :key="props.rowIndex"
         />
       </template>
+       style="white-space: break-spaces;"
       <template v-slot:body-cell-delete="props">
         <q-td :props="props">
           <q-btn icon="mdi-delete-outline" flat @click="showDeleteDialog(props.row.id)"/>
@@ -129,6 +129,7 @@ import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 import { getAuth } from '@firebase/auth';
 import { Applicant, ApplicantStatus, User } from 'src/shared/model';
+import { contactColumns as columns } from 'src/shared/constants/Applicant.const';
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useUserStore } from 'src/stores/user';
