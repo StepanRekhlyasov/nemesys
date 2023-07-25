@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
-import { unitPricenames, chartTypeUnitPrice } from './const';
+import { unitPricenames, chartTypeUnitPrice ,queryNamesList} from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
@@ -121,11 +121,7 @@ const showChart = async () => {
   ) => {
     const numOfApplicantsAmount = await getReport({
       dateRange: month,
-      queryNames: [
-        { queryName: 'applicants' },
-        { queryName: 'admission' },
-        { queryName: 'amount' },
-      ],
+      queryNames: queryNamesList,
       organizationId: organizationId,
       graphType: props.graph_type,
       isAverage: false,
@@ -178,7 +174,10 @@ const showChart = async () => {
     return month.from.getMonth() + 1;
   });
   for (const month of monthRangeList) {
-    const price = await calcUnitPrice(JSON.parse(JSON.stringify(month)), props.organization_id);
+    const price = await calcUnitPrice(
+      JSON.parse(JSON.stringify(month)),
+      props.organization_id
+    );
     const priceAll = await calcUnitPrice(month);
     dataToshow.value[0].push(price.unitPrice);
     dataToshow.value[1].push(price.startPrice);
