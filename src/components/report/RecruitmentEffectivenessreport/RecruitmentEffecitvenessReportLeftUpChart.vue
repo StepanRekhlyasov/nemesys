@@ -158,8 +158,8 @@ const showChart = async () => {
   };
 
   const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
-    const from_ = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
-    const to_ = new Date(
+    const from = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
+    const to = new Date(
       { ...monthYear }.year,
       { ...monthYear }.month,
       0,
@@ -167,7 +167,7 @@ const showChart = async () => {
       59,
       59
     );
-    return { from: from_, to: to_ };
+    return { from: from, to: to };
   };
   const monthRangeList = getMonthList(props.dateRangeProps.to, beforeMonth).map(
     (monthYear) => {
