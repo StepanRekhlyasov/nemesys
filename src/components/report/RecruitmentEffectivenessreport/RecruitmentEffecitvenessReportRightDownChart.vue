@@ -34,7 +34,6 @@
 </template>
 
 <script setup lang="ts">
-import { useApplicant } from 'stores/applicant';
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, ComputedRef, computed, watch } from 'vue';
 import {
@@ -47,19 +46,16 @@ import {
   chartTypeAges,
   chartTypeDaysToWork,
   chartTypeSex,
+  daysToWorkQueryNamesList
 } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
-import { convertToPercentage } from '../reportUtil';
+import { convertToPercentage, calculateValues } from '../reportUtil';
 import { useGetReport } from 'src/stores/getReport';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
-const { getReport } = useGetReport();
-const applicant = useApplicant();
-const {
-  agesListOfApplicants,
-  countApplicantsdaysToWork,
-} = applicant;
+const { getReport, getAgeReport } = useGetReport();
+
 
 const dataToshowSex: Ref<(number | string)[][]> = ref([]);
 const dataToshowAges: Ref<(number | string)[][]> = ref([]);
@@ -113,50 +109,70 @@ const props = defineProps<{
 const showChart = async () => {
   if (!props.dateRangeProps) return;
 
-  const sexDataAll = await getReport({
-    dateRange: props.dateRangeProps,
-    queryNames: [{ queryName: 'male' }, { queryName: 'female' }],
-    graphType: props.graph_type,
-    isAverage: false,
-  });
-  const sexDataCompany = await getReport({
-    dateRange: props.dateRangeProps,
-    organizationId: props.organization_id,
-    queryNames: [{ queryName: 'male' }, { queryName: 'female' }],
-    graphType: props.graph_type,
-    isAverage: false,
-  });
-  const sexDataCompanyList = convertToPercentage([
-    [sexDataCompany[0]['male']],
-    [sexDataCompany[0]['female']],
+  const sexDataAll = Object.values(
+    (
+      await getReport({
+        dateRange: props.dateRangeProps,
+        queryNames: [{ queryName: 'male' }, { queryName: 'female' }],
+        graphType: props.graph_type,
+        isAverage: false,
+      })
+    )[0]
+  ).filter((data) => typeof data === 'number') as number[];
+  const sexDataCompany = Object.values(
+    (
+      await getReport({
+        dateRange: props.dateRangeProps,
+        organizationId: props.organization_id,
+        queryNames: [{ queryName: 'male' }, { queryName: 'female' }],
+        graphType: props.graph_type,
+        isAverage: false,
+      })
+    )[0]
+  ).filter((data) => typeof data === 'number') as number[];
+  dataToshowSex.value = calculateValues([
+    [sexDataCompany[0], sexDataAll[0]],
+    [sexDataCompany[1], sexDataAll[1]],
   ] as number[][]);
-  const sexDataAllList = convertToPercentage([
-    [sexDataAll[0]['male']],
-    [sexDataAll[0]['female']],
-  ] as number[][]);
-  dataToshowSex.value = [
-    [sexDataCompanyList[0][0], sexDataAllList[0][0]] as number[],
-    [sexDataCompanyList[1][0], sexDataAllList[1][0]] as number[],
-  ];
 
-  const listofages = await agesListOfApplicants(props.dateRangeProps);
-  if (listofages) {
-    const agesData = [
-      [listofages.filter((age) => age >= 10 && age < 20).length],
-      [listofages.filter((age) => age >= 20 && age < 30).length],
-      [listofages.filter((age) => age >= 30 && age < 40).length],
-      [listofages.filter((age) => age >= 40 && age < 50).length],
-      [listofages.filter((age) => age >= 50 && age < 60).length],
-      [listofages.filter((age) => age >= 60).length],
-    ];
-    dataToshowAges.value = convertToPercentage(agesData);
-  } else {
-    const agesData = [[0], [0], [0], [0], [0], [0]];
-    dataToshowAges.value = convertToPercentage(agesData);
+  const ageDataAll = convertToPercentage(
+    Object.values(await getAgeReport({dateRange:props.dateRangeProps})).map((age) => [age])
+  );
+
+  const ageDataCompany = convertToPercentage(
+    Object.values(
+      await getAgeReport({
+        dateRange:props.dateRangeProps,
+        organizationId:props.organization_id
+      }
+      )
+    ).map((age) => [age])
+  );
+
+  for (const [all, company] of ageDataAll.map((age, index) => [
+    age,
+    ageDataCompany[index],
+  ])) {
+    dataToshowAges.value.push([company[0], all[0]]);
   }
+  const daysDataCompany = convertToPercentage(Object.values((await getReport({
+    dateRange: props.dateRangeProps,
+    queryNames: daysToWorkQueryNamesList,
+    organizationId: props.organization_id,
+    graphType: props.graph_type,
+    isAverage: false,
+  }))[0]).filter((data) => typeof data === 'number').map((data) => [data]) as number[][]);
 
-  const daysData = await countApplicantsdaysToWork(props.dateRangeProps);
-  dataToshowDaysToWork.value = convertToPercentage(daysData);
+  const daysDataAll = convertToPercentage(Object.values((await getReport({
+    dateRange: props.dateRangeProps,
+    queryNames: daysToWorkQueryNamesList,
+    graphType: props.graph_type,
+    isAverage: false,
+  }))[0]).filter((data) => typeof data === 'number').map((data) => [data]) as number[][]);
+
+  for(const [all,company] of daysDataAll.map((days,index)=>[days,daysDataCompany[index]])){
+    dataToshowDaysToWork.value.push([company[0],all[0]]);
+  }
 };
 watch(
   () => [props.branch_user_list, props.dateRangeProps, props.graph_type],

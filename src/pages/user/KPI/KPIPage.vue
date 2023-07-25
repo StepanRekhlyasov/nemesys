@@ -230,7 +230,7 @@ async function getData() {
       });
       //add age data
       for (const [i, media] of Object.entries(medias)) {
-        const ageData = await getAgeReport(dateRange.value, media);
+        const ageData = await getAgeReport({dataRange:dateRange.value,media:media});
         rowData.value[i] = { ...rowData.value[i], ...ageData };
       }
     } else if (mode.value == 'branch' && branch.value) {
@@ -264,10 +264,10 @@ async function getData() {
       });
       //add age data
       for (const [i, organization] of Object.entries(organizationList)) {
-        const ageData = await getAgeReport(
-          dateRange.value,
-          undefined,
-          organization
+        const ageData = await getAgeReport({
+          dataRange:dateRange.value,
+          branch:organization
+        }
         );
         rowData.value[i] = { ...rowData.value[i], ...ageData };
       }
