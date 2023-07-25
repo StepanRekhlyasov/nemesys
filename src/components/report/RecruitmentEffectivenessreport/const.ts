@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
-import {where } from '@firebase/firestore';
+import { where } from '@firebase/firestore';
 const { t } = i18n.global;
 export const rowNamesSex = [
   'report.categories.male',
@@ -15,41 +15,43 @@ export const queryNamesList = [
   { queryName: 'amount' },
 ] as const;
 
-export const daysToWorkQueryNamesList = [ {
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 1)],
-  fieldName: 'daysToWork1',
-},
-{
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 2)],
-  fieldName: 'daysToWork2',
-},
-{
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 3)],
-  fieldName: 'daysToWork3',
-},
-{
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 4)],
-  fieldName: 'daysToWork4',
-},
-{
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 5)],
-  fieldName: 'daysToWork5',
-},
-{
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 6)],
-  fieldName: 'daysToWork6',
-},
-{
-  queryName: 'applicants',
-  filtersInput: [where('daysToWork', '==', 7)],
-  fieldName: 'daysToWork7',
-},] as const
+export const daysToWorkQueryNamesList = [
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 1)],
+    fieldName: 'daysToWork1',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 2)],
+    fieldName: 'daysToWork2',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 3)],
+    fieldName: 'daysToWork3',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 4)],
+    fieldName: 'daysToWork4',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 5)],
+    fieldName: 'daysToWork5',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 6)],
+    fieldName: 'daysToWork6',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 7)],
+    fieldName: 'daysToWork7',
+  },
+] as const;
 
 export const rowNamesAges = [
   'report.categories.teens',
@@ -114,7 +116,7 @@ export const chartOptionsSex = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.ourCompany'),t('report.all')],
+      categories: [t('report.ourCompany'), t('report.all')],
     },
     yaxis: [
       {
@@ -155,7 +157,7 @@ export const chartOptionsAges = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.ourCompany'),t('report.all')],
+      categories: [t('report.ourCompany'), t('report.all')],
     },
     yaxis: [
       {
@@ -196,7 +198,7 @@ export const chartOptionsDaysToWork = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.ourCompany'),t('report.all')],
+      categories: [t('report.ourCompany'), t('report.all')],
     },
     yaxis: [
       {
