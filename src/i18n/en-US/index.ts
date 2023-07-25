@@ -1735,6 +1735,8 @@ export default {
     base:'base',
     totalingMethod:'totaling method',
     jobCategory:'job category',
+    ourCompany: 'Our Company',
+    all: 'All',
     categories:{
       totalingMethod:{
         totallingDailyData:'totalling daily data',

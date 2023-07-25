@@ -1728,6 +1728,8 @@ export default {
     base:'拠点',
     totalingMethod:'集計方法',
     jobCategory:'職種',
+    ourCompany: '自社',
+    all: '全体',
     categories:{
       totalingMethod:{
       totallingDailyData:'日次データ集計',

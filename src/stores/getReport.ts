@@ -632,10 +632,15 @@ export const useGetReport = defineStore('getReport', () => {
     return rows;
   };
 
+  interface getAgeReportInput {
+    dateRange: { from: string; to: string };
+    media?: Media;
+    branch?: Branch;
+    organizationId?: string;
+  }
+
   const getAgeReport = async (
-    dataRange: { from: string; to: string },
-    media?: Media,
-    branch?: Branch
+    getAgeReportInput: getAgeReportInput
   ) => {
     let ageData = {
       '10s': 0,
@@ -646,13 +651,16 @@ export const useGetReport = defineStore('getReport', () => {
       '60sOver': 0,
     };
     const filters: QueryFieldFilterConstraint[] = [];
-    if (media) {
-      filters.push(where('media', '==', media.id));
+    if (getAgeReportInput.media) {
+      filters.push(where('media', '==', getAgeReportInput.media.id));
     }
-    if (branch) {
-      filters.push(where('branch_id', '==', branch.id));
+    if (getAgeReportInput.branch) {
+      filters.push(where('branch_id', '==', getAgeReportInput.branch.id));
     }
-    const listofages = await agesListOfApplicants(dataRange, filters);
+    if (getAgeReportInput.organizationId) {
+      filters.push(where('organization_id', '==', getAgeReportInput.organizationId));
+    }
+    const listofages = await agesListOfApplicants(getAgeReportInput.dateRange, filters);
     if (listofages) {
       ageData = {
         '10s': listofages.filter((age) => age >= 10 && age < 20).length,
