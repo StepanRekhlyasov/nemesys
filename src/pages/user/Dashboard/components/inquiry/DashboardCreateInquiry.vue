@@ -59,6 +59,7 @@ async function submitInquiry(){
   submitData.messages = []
   submitData.organization = organization.currentOrganizationId
   submitData.recievedDate = serverTimestamp()
+  submitData.updated_at = serverTimestamp()
   try{
     await inquiryStore.addInquiry(submitData)
     inquirySaveData.value = {}
