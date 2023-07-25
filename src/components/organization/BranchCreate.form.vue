@@ -9,8 +9,7 @@
         <q-input v-model="branchData['name']" name="name" :disable="loading" outlined dense :rules="[creationRule]"
           :color="color" hide-bottom-space />
       </DialogItemContainer>
-
-      <DialogItemContainer name-key="client.backOrder.reqQualification">
+      <DialogItemContainer name-key="settings.branch.prefectures">
         <q-select outlined dense :options="prefectureOption" v-model="branchData['prefecture']" bg-color="white"
           :label="$t('common.pleaseSelect')" emit-value map-options :rules="[creationRule]" :disable="loading"
           :color="color" hide-bottom-space />

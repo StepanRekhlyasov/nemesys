@@ -18,8 +18,8 @@ export interface LicenseRequest {
 
 export const requestType = computed(()=>{
   return [
-    {label: t('common.add'), value: 'addition'},
-    {label: t('common.delete'), value: 'delete'},
+    {label: t('common.add'), value: 'Addition'},
+    {label: t('common.delete'), value: 'Delete'},
   ]
 });
 
