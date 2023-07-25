@@ -172,6 +172,7 @@ export default {
         await loadUserData()
         Alert.success()
       } catch(e) {
+        console.log(e)
         resetData()
         Alert.warning(e)
       }

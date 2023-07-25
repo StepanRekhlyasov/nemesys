@@ -142,6 +142,9 @@ export const useOrganization = defineStore('organization', () => {
   }
 
   async function getDataById<T extends RequestType>(ids: string[], type: T): Promise<ReturnedObjectType<T>[]> {
+    if(!ids){
+      return []
+    }
     const constraints = [where('working', '==', true)]
     let collectionId = 'businesses'
     if (type == 'Branch') {
