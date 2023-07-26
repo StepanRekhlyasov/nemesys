@@ -13,16 +13,19 @@ import {
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
 import {JobModel} from 'src/shared/model/Jobs.model'
+import { useOrganization } from './organization';
 
 export const useJobPostingHistory = defineStore('jobPostingHistory', () => {
   const db = getFirestore();
   const auth = getAuth()
+  const organization = useOrganization()
   const loadJobAdsData = async () => {
     const jobAdsData: object[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobAds'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -48,6 +51,7 @@ export const useJobPostingHistory = defineStore('jobPostingHistory', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
+    data['organizationId'] = organization.currentOrganizationId
 
     await addDoc(collection(db, 'jobAds'), data);
   };
@@ -57,6 +61,7 @@ const getJobsdata = async() =>{
       query(
         collection(db, 'jobs'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -76,6 +81,7 @@ const getJobsdata = async() =>{
       query(
         collection(db, 'jobFormat'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -95,6 +101,7 @@ const getJobsdata = async() =>{
       query(
         collection(db, 'jobPhrase'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     options.value['occupation'] = [];

@@ -128,6 +128,7 @@ import { toDate } from 'src/shared/utils/utils';
 import { useJobSearch } from 'src/stores/jobSearch'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { DocumentData } from 'firebase/firestore';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -145,11 +146,13 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 30
 });
+
   defineProps<{
   columns: QTableProps['columns'];
   jobList:QTableProps['rows']
 }>();
 const openDrawer = async (data) => {
+  debugger
   if (!data.id) {
       drawerRight.value = false;
   }
@@ -215,7 +218,11 @@ const showDeleteDialog = async (ids: string) => {
  const deleteJob = (id) => {
   showDeleteDialog(id);
 };
-
+watchCurrentOrganization(async () => {
+  loading.value = true;
+  fetchJobSearchData()
+  loading.value = false;
+})
 onMounted(() => {
   fetchJobSearchData();
 });

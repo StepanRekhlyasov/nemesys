@@ -104,6 +104,7 @@ import { toDate } from 'src/shared/utils/utils';
 import { useJobPhrase } from 'src/stores/jobPhrase'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const drawerRight = ref(false);
 const selectedPhrase = ref({ key: 'null' });
@@ -113,6 +114,7 @@ const phraseList:DocumentData= ref([]);
 const selected = ref([]);
 const loading = ref(true);
 const userData = ref({});
+
 defineProps<{
   columns: QTableProps['columns'];
   phraseList:QTableProps['rows']
@@ -157,7 +159,11 @@ const getPhraseCategory = (phraseCategory : string) => {
   }
   return phraseCategoryText;
 }
-
+watchCurrentOrganization(async () => {
+  loading.value = true;
+  fetchPhraseSettingData()
+  loading.value = false;
+})
 onMounted(() => {
   fetchPhraseSettingData();
 });

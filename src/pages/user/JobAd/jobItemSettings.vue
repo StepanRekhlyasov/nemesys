@@ -103,6 +103,7 @@ import { toDate } from 'src/shared/utils/utils';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const drawerRight = ref(false);
 const selectedPhrase = ref({ key: 'null' });
@@ -170,6 +171,11 @@ const getDataType = (dataType: string) => {
   }
   return dataTypeListText;
 }
+watchCurrentOrganization(async () => {
+  loading.value = true;
+  fetchItemSettingData()
+  loading.value = false;
+})
 
 onMounted(() => {
   fetchItemSettingData();

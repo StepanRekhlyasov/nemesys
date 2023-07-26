@@ -12,15 +12,18 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
+import { useOrganization } from './organization';
 export const useJobItemSetting = defineStore('jobItemSetting', () => {
   const db = getFirestore();
   const auth = getAuth()
+  const organization = useOrganization()
   const loadJobItemSettingData = async () => {
     const itemSettingData: object[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobItem'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -46,7 +49,7 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
-
+    data['organizationId'] = organization.currentOrganizationId
     await addDoc(collection(db, 'jobItem'), data);
   };
 
@@ -60,6 +63,7 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
     data['created_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
+    data['organizationId'] = organization.currentOrganizationId
     await addDoc(collection(db, 'jobItem',id,'options'), data);
 
   };
@@ -69,6 +73,7 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
     query(
       collection(db, 'jobItem',id,'options'),
       where('deleted', '==', false),
+      where('organizationId', '==', organization.currentOrganizationId)
     )
   );
   q.forEach(async(doc) => {
@@ -87,6 +92,7 @@ const loadJobSearchData = async () => {
     query(
       collection(db, 'jobs'),
       where('deleted', '==', false),
+      where('organizationId', '==', organization.currentOrganizationId)
     )
   );
   q.forEach(async(doc) => {

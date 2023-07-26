@@ -120,12 +120,15 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
-import { ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+
+import { Ref,ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
 import { useFormatSetting } from 'src/stores/formatSetting'
+import { Alert } from 'src/shared/utils/Alert.utils';
+import {MediaList} from 'src/shared/model/Jobs.model'
+import { DocumentData } from 'firebase/firestore';
+import { useOrganization } from 'src/stores/organization';
 
 const formatSettingStore = useFormatSetting()
 const props = defineProps({
@@ -146,10 +149,7 @@ const hideDrawer = () => {
   formartData.value = { ...formartDataObject }
   emit('hideDrawer')
 }
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
+const organization = useOrganization()
 const formartDataObject = {
   id: props?.selectedFormat['id'] || null,
   name: props?.selectedFormat['name'] || '',
@@ -157,6 +157,7 @@ const formartDataObject = {
   projectType: '',
   desc: props?.selectedFormat['desc'] || '',
   media: props?.selectedFormat['media'] || '',
+  organizationId:organization.currentOrganizationId,
 }
 const formartData = ref({ ...formartDataObject })
 const transactionText = ref('')
@@ -165,9 +166,9 @@ const formatForm = ref();
 const transactionTypeOptions = ref(applicantClassification);
 const projectTypeOptions = ref(occupationList);
 const formatSettingItems = ref(formatSettingItemList);
-const mediaOptions = ref(mediaList);
+const mediaOptions:Ref<MediaList[]> = ref(mediaList);
 const unsubscribePhrase = ref();
-const options = ref({});
+const options:DocumentData = ref({});
 
 onMounted(async () => {
   formartData.value.transactionType = props?.selectedFormat['transactionType'] || '';
@@ -222,21 +223,10 @@ const saveFormat = async () => {
          hideDrawer()
       }
 
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
+      Alert.success()
       formatForm.value.resetValidation();
   } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+      Alert.warning(error)
   }
 }
 

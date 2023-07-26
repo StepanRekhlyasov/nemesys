@@ -1,3 +1,5 @@
+
+
 <template>
   <q-card class="no-shadow bg-grey-3">
     <q-form ref="jobForm" @submit="saveJob">
@@ -869,8 +871,6 @@
   </q-card>
 </template>
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
@@ -879,6 +879,9 @@ import { DocumentData } from 'firebase/firestore';
 import { useJobSearch } from 'src/stores/jobSearch'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import {Client,ClientOffice} from 'src/shared/model/Client.model'
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { QForm } from 'quasar';
+import { useOrganization } from 'src/stores/organization';
 const jobSearchStore = useJobSearch()
 const props = defineProps({
   selectedJob: {
@@ -898,10 +901,7 @@ const hideDrawer = () => {
   jobData.value = { ...jobDataObject }
   emit('hideDrawer')
 }
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
+const organization = useOrganization()
 const jobDataObject = {
   id: props?.selectedJob['id'] || null,
   name: props?.selectedJob['name'] || '',
@@ -985,7 +985,7 @@ const jobDataObject = {
   indeedJobCategory: props?.selectedJob['indeedJobCategory'] || '',
   presenceAbsenceResume: props?.selectedJob['presenceAbsenceResume'] || '',
   halfYearExp: props?.selectedJob['halfYearExp'] || '',
-
+  organizationId:organization.currentOrganizationId,
 }
 const jobData = ref({ ...jobDataObject })
 const transactionTypeOptions = ref(applicantClassification);
@@ -1004,10 +1004,10 @@ const unsubscribe = ref();
 const unsubscribeOffice = ref();
 const clientList:Ref<Client[]> = ref([]);
 const officeList:Ref<ClientOffice[]> = ref([]);
-const transactionText = ref('')
-const projectText = ref('')
-const selectedIndustry = ref(null);
-const jobForm = ref();
+const transactionText:Ref<string> = ref('')
+const projectText:Ref<string> = ref('')
+const selectedIndustry:DocumentData= ref(null);
+const jobForm:Ref<QForm | null> = ref(null);
 const jobItems = ref({});
 const jobItemOptions = ref({});
 const itemOptions:DocumentData = ref({})
@@ -1048,22 +1048,11 @@ const saveJob = async () => {
       hideDrawer()
     }
 
-    $q.notify({
-      color: 'green-4',
-      textColor: 'white',
-      icon: 'cloud_done',
-      message: t('success'),
-    });
+    Alert.success()
     jobData.value = { ...jobDataObject }
-    jobForm.value.resetValidation();
+    jobForm.value?.resetValidation();
   } catch (error) {
-    console.log(error);
-    $q.notify({
-      color: 'red-5',
-      textColor: 'white',
-      icon: 'warning',
-      message: t('failed'),
-    });
+    Alert.warning(error)
   }
 
 }
@@ -1089,21 +1078,11 @@ const selectJobOption = async(data,id) => {
          await jobSearchStore.addId(id,data,optionId.value)
       }
       dialogVisible.value = false
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
+      Alert.success()
 
   } catch (error) {
       console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+      Alert.warning(error)
   }
 
 }
@@ -1225,3 +1204,4 @@ watch(
   background-color: transparent;
 }
 </style>
+

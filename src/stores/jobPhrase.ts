@@ -12,16 +12,20 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
+import { useOrganization } from './organization';
 
 export const useJobPhrase = defineStore('jobPhrase', () => {
   const db = getFirestore();
   const auth = getAuth()
+  const organization = useOrganization()
+
   const loadJobPhraseData = async () => {
     const jobPhraseData: object[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobPhrase'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -48,7 +52,7 @@ export const useJobPhrase = defineStore('jobPhrase', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
-
+    data['organizationId'] = organization.currentOrganizationId
     await addDoc(collection(db, 'jobPhrase'), data);
   };
 

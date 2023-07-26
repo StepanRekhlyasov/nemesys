@@ -226,6 +226,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -324,5 +325,9 @@ const showDeleteDialog = async (ids: string) => {
 onMounted(() => {
   fetchRegionalSalaryData();
 });
-
+watchCurrentOrganization(async () => {
+  loading.value = true;
+  fetchRegionalSalaryData()
+  loading.value = false;
+})
 </script>

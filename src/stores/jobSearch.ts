@@ -14,9 +14,12 @@ import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
 import { useI18n } from 'vue-i18n';
 import {Client,ClientOffice} from 'src/shared/model/Client.model'
+import { useOrganization } from './organization';
+
 export const useJobSearch = defineStore('jobSearch', () => {
   const db = getFirestore();
   const auth = getAuth()
+  const organization = useOrganization()
   const { t } = useI18n({
     useScope: 'global',
   });
@@ -26,6 +29,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
       query(
         collection(db, 'jobs'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -84,6 +88,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
+    data['organizationId'] = organization.currentOrganizationId
 
     await addDoc(collection(db, 'jobs'), data);
   };
@@ -97,7 +102,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
             data['dataType'] = t('jobItem.dataTypeList.' + data['dataType']);
         }
         jobItems.value[doc.id] = data;
-        const qOption = query(collection(db, 'jobItem', doc.id, 'options'), where('deleted', '==', false));
+        const qOption = query(collection(db, 'jobItem', doc.id, 'options'), where('deleted', '==', false),where('organizationId', '==', organization.currentOrganizationId));
         const querySnapshotqOption = await getDocs(qOption);
         const items:object[] = []
         querySnapshotqOption.forEach((docOption) => {
@@ -113,6 +118,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
       query(
         collection(db, 'jobItem'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -148,6 +154,7 @@ const addNewOption = async (id: string, data: object) => {
   data['created_at'] = serverTimestamp();
   data['deleted'] = false;
   data['created_by'] = auth.currentUser?.uid;
+  data['organizationId'] = organization.currentOrganizationId
   const docRef = await addDoc(collection(db, 'jobItem', id, 'options'), data);
   const docRefId = docRef.id
   return docRefId

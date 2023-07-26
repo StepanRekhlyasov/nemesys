@@ -141,6 +141,8 @@ import { toDate } from 'src/shared/utils/utils';
 import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
+
 const jobAdList:DocumentData = ref([]);
 const selected = ref([]);
 const drawerRight = ref(false);
@@ -149,6 +151,7 @@ const jobPostingHistoryStore = useJobPostingHistory()
 const userData = ref({});
 const columns = ref(jobAdColumns);
 const loading = ref(true);
+
 defineProps<{
   columns: QTableProps['columns'];
   jobAdList:QTableProps['rows'];
@@ -211,6 +214,11 @@ const getFacilityText = (facilityType: string) => {
   }
   return facilityText;
 };
+watchCurrentOrganization(async () => {
+  loading.value = true;
+  fetchJobAdsData()
+  loading.value = false;
+})
 onMounted(() => {
   fetchJobAdsData();
 });

@@ -131,14 +131,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
 import draggable from 'vuedraggable'
 import {JobOptions} from 'src/shared/model/Jobs.model'
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { useOrganization } from 'src/stores/organization';
 
 const jobItemSettingStore = useJobItemSetting()
 const props = defineProps({
@@ -152,6 +152,7 @@ const props = defineProps({
   }
 }
 )
+const organization = useOrganization()
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -159,10 +160,6 @@ const hideDrawer = () => {
   jobItem.value = { ...jobItemObject }
   emit('hideDrawer')
 }
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 const jobItemObject = {
   id: props?.selectedPhrase['id'] || null,
   name: props?.selectedPhrase['name'] || '',
@@ -172,6 +169,7 @@ const jobItemObject = {
   media: props?.selectedPhrase['media'] || '',
   recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
   dataType: props?.selectedPhrase['dataType'] || '',
+  organizationId:organization.currentOrganizationId,
 }
 const jobItem = ref({ ...jobItemObject })
 const unsubscribe = ref();
@@ -224,21 +222,10 @@ const saveJobItem = async () => {
          hideDrawer()
       }
 
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
+      Alert.success()
       formatForm.value.resetValidation();
   } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+      Alert.warning(error)
   }
 
 }
@@ -289,21 +276,10 @@ const addNewOption = async (data: object, updatedName) => {
         await jobItemSettingStore.addNewOption(jobItem.value['id'],data)
       }
 
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
+      Alert.success()
       formatForm.value.resetValidation();
   } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+      Alert.warning(error)
   }
 }
 

@@ -93,6 +93,7 @@ import { toDate } from 'src/shared/utils/utils';
 import { useFormatSetting } from 'src/stores/formatSetting'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const drawerRight = ref(false);
 const selectedFormat = ref({ key: 'null' });
@@ -102,6 +103,7 @@ const formatSettingStore = useFormatSetting()
 const selected = ref([]);
 const loading = ref(true);
 const userData = ref({});
+
 defineProps<{
   columns: QTableProps['columns'];
   formatList:QTableProps['rows']
@@ -139,7 +141,11 @@ const hideDrawer = () => {
   selectedFormat.value = { key: `${Math.floor(Math.random() * 1000)}` };
   drawerRight.value = false
 };
-
+watchCurrentOrganization(async () => {
+  loading.value = true;
+  fetchFormatSettingData()
+  loading.value = false;
+})
 onMounted(() => {
   fetchFormatSettingData();
 });

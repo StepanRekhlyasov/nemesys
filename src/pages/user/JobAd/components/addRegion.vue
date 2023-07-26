@@ -250,6 +250,8 @@ import { regionSalaryAddColumns } from 'src/shared/constants/JobAd.const';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
 import {AreaCityModel} from 'src/shared/model/Jobs.model'
+import { DocumentData } from 'firebase/firestore';
+import { useOrganization } from 'src/stores/organization';
 
 const regionalSalarySettingStore = useRegionalSalarySetting()
 const props = defineProps({
@@ -263,7 +265,7 @@ const props = defineProps({
   }
 }
 )
-
+const organization = useOrganization()
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
@@ -284,6 +286,7 @@ const areaDataObject = {
   projectType: '',
   desc: props?.selectedArea['desc'] || '',
   facilityType: props?.selectedArea['facilityType'] || '',
+  organizationId:organization.currentOrganizationId,
 
 }
 const areaData = ref({ ...areaDataObject })
@@ -297,9 +300,9 @@ const facilityTypeOption = ref(facilityList);
 const columns = ref(regionSalaryAddColumns);
 const prompt = ref(false)
 const citySetting = ref({ prefecture: [], ward: {} });
-const prefectureJPList = ref([]);
-const wardJPList = ref([]);
-const wardData = ref({});
+const wardJPList:DocumentData = ref([]);
+const prefectureJPList:Ref<string[]> = ref([]);
+const wardData:DocumentData = ref({});
 const wardList:Ref<AreaCityModel[]> = ref([]);
 
 const loading = ref(false);

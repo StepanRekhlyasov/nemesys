@@ -232,14 +232,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
 import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
 import {JobModel,JobFormat} from 'src/shared/model/Jobs.model'
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { DocumentData } from 'firebase/firestore';
+import { QForm } from 'quasar';
+import { useOrganization } from 'src/stores/organization';
 const jobPostingHistoryStore = useJobPostingHistory()
 const props = defineProps({
   selectedJob: {
@@ -255,15 +257,11 @@ const props = defineProps({
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-
+const organization = useOrganization()
 const hideDrawer = () => {
   jobAdData.value = { ...jobAdDataObject }
   emit('hideDrawer')
 }
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 const jobAdDataObject = {
   id: props?.selectedJob['id'] || null,
   name: props?.selectedJob['name'] || '',
@@ -273,6 +271,7 @@ const jobAdDataObject = {
   media: props?.selectedJob['media'] || '',
   dateIssue: props?.selectedJob['dateIssue'] || '',
   publicationFormat: '',
+  organizationId:organization.currentOrganizationId,
 
 }
 const jobAdData = ref({ ...jobAdDataObject })
@@ -280,6 +279,7 @@ const mediaOptions = ref(mediaList);
 const facilityText = ref('');
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
+const options = ref({});
 const unsubscribePhrase = ref();
 const jobList:Ref<JobModel[]> = ref([]);
 const transactionText = ref('')
@@ -288,9 +288,8 @@ const paymentText = ref('')
 const salaryTypeText = ref('')
 const statusText = ref('')
 const formatedPublicationPeriod = ref('')
-const jobForm = ref();
-const formatSettingItems = ref(formatSettingItemList);
-const options = ref({});
+const jobForm:Ref<QForm | null> = ref(null);
+const formatSettingItems:DocumentData = ref(formatSettingItemList);
 const unsubscribeFormat = ref()
 const publicationFormatOptions:Ref<JobFormat[]> = ref([])
 
@@ -407,23 +406,11 @@ const saveJobAd = async () => {
          await jobPostingHistoryStore.addFormData(jobAdData.value)
          hideDrawer()
       }
-
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
+      Alert.success()
       jobAdData.value = { ...jobAdDataObject }
-      jobForm.value.resetValidation();
+      jobForm.value?.resetValidation();
   } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+      Alert.warning(error)
   }
 }
 

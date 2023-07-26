@@ -121,11 +121,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { ref, watch, defineProps, onMounted } from 'vue';
 import { mediaList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobPhrase } from 'src/stores/jobPhrase'
+import { Alert } from 'src/shared/utils/Alert.utils';
+import { useOrganization } from 'src/stores/organization';
 
 const props = defineProps({
   selectedPhrase: {
@@ -145,10 +145,7 @@ const hideDrawer = () => {
   phraseData.value = { ...phraseDataObject }
   emit('hideDrawer')
 }
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
+const organization = useOrganization()
 const jobPhraseStore = useJobPhrase()
 const phraseDataObject = {
   id: props?.selectedPhrase['id'] || null,
@@ -159,6 +156,7 @@ const phraseDataObject = {
   media: props?.selectedPhrase['media'] || '',
   recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
   dataType: props?.selectedPhrase['dataType'] || '',
+  organizationId:organization.currentOrganizationId,
 
 }
 const phraseData = ref({ ...phraseDataObject })
@@ -199,23 +197,11 @@ const savePhrase = async () => {
          await jobPhraseStore.addFormData(phraseData.value)
          hideDrawer()
       }
-
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
+     Alert.success()
       phraseData.value = { ...phraseDataObject }
       formatForm.value.resetValidation();
   } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+     Alert.warning(error)
   }
 
 }

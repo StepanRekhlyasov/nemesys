@@ -12,16 +12,18 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
+import { useOrganization } from './organization';
 const auth = getAuth()
 export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () => {
   const db = getFirestore();
-
+  const organization = useOrganization()
   const loadJobAreaData = async () => {
     const jobAreaData: object[] = [];
     const q = await getDocs(
       query(
         collection(db, 'jobArea'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -41,6 +43,7 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
       query(
         collection(db, 'areaCity'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
       )
     );
     q.forEach(async(doc) => {
@@ -79,6 +82,7 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
+    data['organizationId'] = organization.currentOrganizationId
     data['created_by'] = auth.currentUser?.uid;
 
     await addDoc(collection(db, 'jobArea'), data);
@@ -93,6 +97,7 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
     cityData['monthlySalaryMin'] = data['monthlySalaryMin'];
     cityData['hourlySalaryCap'] = data['hourlySalaryCap'];
     cityData['hourlySalaryMin'] = data['hourlySalaryMin'];
+    cityData['organizationId'] = organization.currentOrganizationId
     for (let i = 0; i < data['prefecture'].length; i++) {
         cityData['prefecture'] = data['prefecture'][i];
         await addDoc(collection(db, 'jobArea', id, 'areaCity'),cityData);
@@ -105,6 +110,8 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
       query(
         collection(db, 'jobArea' , id , 'areaCity'),
         where('deleted', '==', false),
+        where('organizationId', '==', organization.currentOrganizationId)
+
       )
     );
     q.forEach(async(doc) => {
