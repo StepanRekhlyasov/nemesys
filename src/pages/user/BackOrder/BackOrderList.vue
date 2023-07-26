@@ -35,8 +35,8 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.caseType
-                  ? $t(`applicant.add.${props.row.caseType}`)
+                  props.row.typeCase
+                  ? $t(`applicant.add.${props.row.typeCase}`)
                   : '-'
                 }}
               </div>
@@ -54,7 +54,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.status ? $t(`backOrder.${props.row.status}`) : '-'
+                  props.row.employmentType ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
                 }}
               </div>
             </q-td>
@@ -63,6 +63,16 @@
           <template v-slot:body-cell-info="props">
             <q-td :props="props" class="q-pa-none">
               <q-btn icon="mdi-information-outline" round style="color: #175680" flat @click="showDialog(props.row)" />
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-distance="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  officeNames[props.row.boId]
+                }} Km
+              </div>
             </q-td>
           </template>
 
@@ -82,21 +92,15 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row['client_id']
-                  ? applicantStore.state.clientList.find(
-                    (client) => client.id === props.row['client_id']
-                  )?.name
-                  : ''
+                   officeNames[props.row.boId]
                 }}
               </div>
               <div>
                 {{
-                  props.row['client_id'] && props.row['office_id']
-                  ? applicantStore.state.clientList
-                    .find((client) => client.id === props.row['client_id'])
-                    ?.office?.find(
-                      (office) => office.id === props.row['office_id']
-                    )?.name
+                  props.row['client_id']
+                  ? applicantStore.state.clientList.find(
+                    (client) => client.id === props.row['client_id']
+                  )?.name
                   : ''
                 }}
               </div>
@@ -141,6 +145,8 @@ import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
+import { useClientFactory } from 'src/stores/clientFactory';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -152,10 +158,12 @@ const showSearchByMap = ref(false);
 const selected = ref<BackOrderModel[]>([]);
 const cteateBoDrawer = ref(false);
 const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
+const clientFactoryStore = useClientFactory();
 const selectedBo = ref<BackOrderModel | ComputedRef>(
   computed(() => backOrderStore.state.selectedBo)
 );
 const selectedClient = ref<Client | undefined>(undefined);
+const officeNames = {}
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const pagination = ref({
   sortBy: 'desc',
@@ -163,7 +171,6 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 30,
 });
-
 
 watchCurrentOrganization(async ()=>{
  await backOrderStore.loadBackOrder({});
@@ -205,8 +212,29 @@ watch(() => pagination.value.page, async () => {
   await backOrderStore.loadBackOrder({}, pagination.value);
 })
 
+const getOfficeName = async () => {
+  state.BOList.forEach(async (bo)=>{
+    try {
+    const clientFactoryList = await clientFactoryStore.getClientFactoryList(bo.client_id);
+    const clientFactory = clientFactoryList.find((office) => office.id === bo.office_id);
+    officeNames[bo.boId] = {
+      name:clientFactory?.name,
+      distance:clientFactory?.distance,
+    }
+  } catch (error) {
+    Alert.warning(error);
+    officeNames[bo.boId] = {
+      name:'',
+      distance:'',
+    }
+  }
+  })
+};
+
+
 onMounted(async () => {
   await applicantStore.getClients()
+  await getOfficeName();
 })
 
 </script>

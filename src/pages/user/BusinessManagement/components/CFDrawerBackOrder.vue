@@ -148,6 +148,7 @@ const selectedClient = ref<Client | undefined>(undefined);
 const cteateBoDrawer = ref(false);
 const columns = ref(BackOrderColumns);
 const loading = ref(false);
+const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const $q = useQuasar();
 const pagination = ref({
   sortBy: 'desc',
@@ -199,7 +200,7 @@ const fetchBOData = async () => {
 const openDrawer = (data) => {
   if (data) {
     selectedBo.value = data;
-    cteateBoDrawer.value = true;
+    infoDrawer.value?.openDrawer(data);
   }
 }
 watch(() => selected.value, (newValue) => {

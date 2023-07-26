@@ -276,7 +276,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
             } as ClientFactory;
         })
-    } 
+    }
 
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
@@ -339,7 +339,7 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory) => {
         let modifiedCF: ModifiedCF | undefined
-        
+
         try {
             const foundModifiedCF = await getDocs(query(
                 collection(db, 'clients', originalClientFactory.clientID, 'client-factory', originalClientFactory.id, 'modifiedCF'),
