@@ -8,10 +8,12 @@ export interface Industry {
 }
 
 export interface SpecificItem {
-    title: string;
+    title: string
     dataType: string
+    order: number
 }
 
 export interface FacilityForm {
     title: string
+    order: number
 }

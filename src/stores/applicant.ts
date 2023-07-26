@@ -1,4 +1,4 @@
-import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch, QueryFieldFilterConstraint} from 'firebase/firestore';
+import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
@@ -82,7 +82,6 @@ type ApplicantsByColumn = {
 
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
-  const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const organization = useOrganization()
   const fixStore = useFix()
   const route = useRoute()
@@ -378,33 +377,6 @@ export const useApplicant = defineStore('applicant', () => {
     return result
   }
 
-  const countApplicantsdaysToWork = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
-    const targetDateFrom = new Date(dateRange.from);
-    const targetDateTo = new Date(dateRange.to);
-
-    const result: number[][] = []
-    for (let i = 1; i <= 7; i++) {
-
-      const filters = [
-        where('applicationDate', '>=', targetDateFrom),
-        where('applicationDate', '<=', targetDateTo)
-      ]
-      filters.push(where('daysToWork', '==', i))
-      if (filterData) {
-        for (const [key, value] of Object.entries(filterData)) {
-          if (value) {
-            filters.push(where(key, '==', value))
-          }
-        }
-      }
-      const applicantRef = collection(db, 'applicants')
-      const querys = query(applicantRef, ...filters)
-      const docCount = await getCountFromServer(querys)
-      result.push([docCount.data().count])
-      filters.length = 0
-    }
-    return result
-  }
   const countApplicantsByMedia = async (media: string, dateRange: { from: string; to: string }) => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
@@ -419,34 +391,6 @@ export const useApplicant = defineStore('applicant', () => {
     const result = docCount.data().count
     return result
 
-  }
-
-  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: QueryFieldFilterConstraint[]): Promise<number[] | undefined> => {
-    const targetDateFrom = new Date(dateRange.from);
-    const targetDateTo = new Date(dateRange.to);
-    const filters = [
-      where('applicationDate', '>=', targetDateFrom),
-      where('applicationDate', '<=', targetDateTo)
-    ]
-    if (filterData) {
-      for(const filter of filterData){
-        filters.push(filter)
-      }
-    }
-    const applicantRef = collection(db, 'applicants')
-    const querys = query(applicantRef, ...filters)
-    const docSnap = await getDocs(querys)
-    const applicants = docSnap.docs.map((doc) => {
-      if (!doc.data().dob) return undefined
-      const dob = doc.data().dob
-      const now = new Date()
-      const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
-      return age
-    })
-    if (applicants.length === 0) return undefined
-    //remove undefined in applicants
-    const filteredApplicants = applicants.filter((applicant): applicant is number => typeof applicant == 'number')
-    return filteredApplicants
   }
 
   const getApplicantsByColumns = async (status: ApplicantStatus, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
@@ -778,6 +722,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, countApplicantsBySex, getApplicantContactData, saveWorkExperience, agesListOfApplicants, countApplicantsdaysToWork, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, changeApplicantStatusByOkFields, getApplicantById }
+  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, countApplicantsBySex, getApplicantContactData, saveWorkExperience, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, changeApplicantStatusByOkFields, getApplicantById }
 })
 

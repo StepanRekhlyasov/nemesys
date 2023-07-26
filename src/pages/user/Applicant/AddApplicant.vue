@@ -189,6 +189,15 @@
                 </q-field>
               </div>
             </div>
+            <div class="row q-pt-md q-pb-sm ">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.applicationMedia') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
+                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
+            </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span>
@@ -259,7 +268,7 @@ import { Ref, ref, watch } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-import { statusList } from 'src/shared/constants/Applicant.const';
+import { mediaList, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
