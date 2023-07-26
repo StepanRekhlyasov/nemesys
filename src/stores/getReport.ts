@@ -21,7 +21,7 @@ import {
   dailyBasedReportState,
   reportStateAndOthers,
   branchBasedReportState,
-  getAgeReportInput
+  GetAgeReportInput
 } from 'src/shared/model/GetReport';
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
@@ -639,7 +639,7 @@ export const useGetReport = defineStore('getReport', () => {
     return rows;
   };
 
-  const getAgeReport = async (getAgeReportInput: getAgeReportInput) => {
+  const getAgeReport = async (getAgeReportInput: GetAgeReportInput) => {
     let ageData = {
       '10s': 0,
       '20s': 0,

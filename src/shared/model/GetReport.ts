@@ -77,7 +77,7 @@ export interface FieldDict {
   readonly organizationIdField?: string;
 }
 
-export interface getAgeReportInput {
+export interface GetAgeReportInput {
   dateRange: { from: string; to: string };
   media?: Media;
   branch?: Branch;
