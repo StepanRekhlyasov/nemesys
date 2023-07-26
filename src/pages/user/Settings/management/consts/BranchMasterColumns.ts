@@ -13,12 +13,12 @@ export const columns = computed<QTableProps['columns']>(() => [
     align: 'center',
   },
   {
-    name: 'edit',
+    name: 'list',
     label: '',
     field: '',
   },
   {
-    name: 'list',
+    name: 'edit',
     label: '',
     field: '',
   },
