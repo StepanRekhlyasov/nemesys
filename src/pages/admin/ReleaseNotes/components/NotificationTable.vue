@@ -62,6 +62,17 @@
           clearable
         />
       </div>
+      <div class="col-2">
+        <p class="q-ml-md inputLabel text-capitalize">{{ $t('releaseNotes.form.content') }}</p>
+        <q-input
+          v-model="filter.content"
+          dense
+          bg-color="white"
+          color="accent"
+          outlined
+          :label="$t('common.keyboard')"
+        />
+      </div>
     </div>
   </q-card-section>
   <q-card-section class="q-pa-none">
@@ -138,6 +149,7 @@ const filter = ref({
   category : '',
   subject : '',
   author : '',
+  content: '',
 })
 
 const loading = ref(true)
