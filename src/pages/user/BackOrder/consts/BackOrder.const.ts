@@ -180,11 +180,3 @@ export const qualificationOption = computed(() => {
     },
   ];
 });
-
-export const getTodayDate = () => {
-  const date = new Date();
-  const day = date.getDate(),
-      month = date.getMonth(),
-      year = date.getFullYear();
-  return [year, month, day].join('/')
-}
