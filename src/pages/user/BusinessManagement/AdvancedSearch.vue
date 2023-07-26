@@ -1,7 +1,7 @@
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-form class="q-gutter-none" @submit="searchClients">
-      <q-card-actions>
+      <q-card-actions v-if="!props.isDrawer">
         <q-btn :label="$t('client.list.settingFromMap')" unelevated color="primary" class="no-shadow text-weight-bold"
           icon="add" />
         <q-btn :label="$t('client.list.settingFromArea')" unelevated color="primary" class="no-shadow text-weight-bold"
@@ -9,13 +9,17 @@
         <q-btn :label="$t('client.list.searchByCondition')" type="submit" outline color="primary"
           class="text-weight-bold" />
       </q-card-actions>
+      <q-card-actions v-else>
+        <q-btn dense flat icon="close" @click="hideCSDrawer" />
+        <q-btn label="add conditions" unelevated color="primary" class="no-shadow text-weight-bold"
+          icon="add" @click="addCondition"/>
+      </q-card-actions>
       <q-separator />
 
       <q-card-actions>
         <q-select outlined v-model="backOrderData['saved']" dense :label="$t('client.list.savedSearchList')"
           style="width: 250px" />
         <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" />
-
       </q-card-actions>
       <q-separator />
 
@@ -317,9 +321,7 @@
         </q-list>
 
       </q-card-section>
-
     </q-form>
-
     <q-dialog v-model="confirmSaveDialog" persistent transition-show="scale" transition-hide="scale">
       <q-card style="width: 400px; max-width: 80vw">
         <q-card-section class="row items-center">
@@ -338,9 +340,8 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { reactive, computed, watch, ref } from 'vue'; //ref,
-// import { useQuasar } from 'quasar';
+<script lang="ts" setup>
+import { defineProps, withDefaults, defineEmits, reactive, computed, watch, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { getAuth } from '@firebase/auth';
@@ -348,106 +349,120 @@ import { api } from 'src/boot/axios';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
-
-export default {
-  name: 'advanceSearch',
-
-  setup() {
-    const router = useRouter()
-    const clientFactoryStore = useClientFactory()
-    const { t } = useI18n({ useScope: 'global' });
-    const backOrderData = reactive({
-      industry: [],
-      facilityType: [],
-      basic_contract_signed: false,
-      avail_job_postings: false,
-      status: [],
-    });
-    const confirmSaveDialog = ref(false);
-    //const $q = useQuasar();
-    const facilityOp = facilityList;
-
-    const recordOp = computed(() => {
-      return [
-        { name: t('client.list.numBOs'), value: 'numBOs', label: t('client.list.numBOsAcquired') },
-        { name: t('client.list.numFixResults'), value: 'numFixResults', label: t('client.list.numFixResults') },
-        { name: t('client.list.jobSearchResults'), value: 'jobSearchResults', label: t('client.list.jobSearchResults') },
-        { name: t('client.list.numJobOffers'), value: 'numJobOffers', label: t('client.list.numJobOffers') },
-        { name: t('client.list.hiringRecord'), value: 'hiringRecord', label: t('client.list.hiringRecord') },
-      ];
-    });
-
-    const dispatchOp = computed(() => {
-      return [
-        { name: t('client.list.dispatchRecord'), value: 'dispatchRecord', class: '' },
-        { name: t('client.list.referralResults'), value: 'referralResults', class: '' },
-        { name: t('client.list.dispatchedOtherCompanies'), value: 'dispatchedOtherCompanies', class: 'bg-yellow-1' },
-        { name: t('client.list.otherCompanyReferralResults'), value: 'otherCompanyReferralResults', class: 'bg-yellow-1' },
-      ];
-    });
-
-    const numEmployees = computed(() => {
-      return [
-        { name: t('client.list.numFullTimeEmployees'), value: 'numFullTimeEmployees' },
-        { name: t('client.list.numPartTimeEmployees'), value: 'numPartTimeEmployees' },
-        { name: t('client.list.numTempEmployees'), value: 'numTempEmployees' },
-      ];
-    });
-
-    watch(
-      () => (backOrderData.industry),
-      (newVal) => {
-        if (newVal.length == 0) {
-          backOrderData.facilityType = [];
-        }
-      },
-    );
-    const searchClientsByCondition = (officeData) => {
-      clientFactoryStore.condition = true
-      clientFactoryStore.selectedCFsId = []
-      officeData.forEach((item) => {
-        clientFactoryStore.selectedCFsId.push(item.id)
-      })
-      router.push('/client-factories')
-    }
-    const searchClients = async () => {
-      try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user == null) {
-          throw new Error('invalid user')
-        }
-
-        const token = await user.getIdToken();
-        let data = { 'searchType':'advance', 'keyword': backOrderData['client_name'], 'facilityType': backOrderData.facilityType, 'industry': backOrderData.industry }
-        
-        const response = await api.post(
-          searchConfig.getOfficeDataURL,
-          data,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            timeout: 30000,
-          }
-        )
-        searchClientsByCondition(response.data)
-      } catch (error) {
-        throw new Error('Failed to create user')
-      }
-    };
-
-    return {
-      backOrderData,
-      facilityOp,
-      recordOp,
-      dispatchOp,
-      numEmployees,
-      confirmSaveDialog,
-
-      searchClients
-    }
-  }
+import { useAdvanceSearch } from 'src/stores/advanceSearch';
+const props = withDefaults(defineProps<{
+    isDrawer: boolean,
+    from: string
+}>(), {
+    isDrawer: false,
+    from: ''
+})
+const emit = defineEmits<{
+    (e: 'hideCSDrawer')
+}>()
+const advanceSearch = useAdvanceSearch()
+const router = useRouter()
+const clientFactoryStore = useClientFactory()
+const { t } = useI18n({ useScope: 'global' });
+const backOrderData = reactive({
+  client_name: '',
+  industry: [],
+  facilityType: [],
+  basic_contract_signed: false,
+  avail_job_postings: false,
+  status: [],
+});
+if(props.from=='map'){
+  backOrderData['client_name'] = advanceSearch.mapConditionData.keyword;
+  backOrderData['industry'] = advanceSearch.mapConditionData.industry
 }
+else if(props.from=='map'){
+  backOrderData['client_name'] = advanceSearch.areaConditionData.keyword;
+  backOrderData['industry'] = advanceSearch.areaConditionData.industry
+}
+const confirmSaveDialog = ref(false);
+const facilityOp = facilityList;
+const recordOp = computed(() => {
+  return [
+    { name: t('client.list.numBOs'), value: 'numBOs', label: t('client.list.numBOsAcquired') },
+    { name: t('client.list.numFixResults'), value: 'numFixResults', label: t('client.list.numFixResults') },
+    { name: t('client.list.jobSearchResults'), value: 'jobSearchResults', label: t('client.list.jobSearchResults') },
+    { name: t('client.list.numJobOffers'), value: 'numJobOffers', label: t('client.list.numJobOffers') },
+    { name: t('client.list.hiringRecord'), value: 'hiringRecord', label: t('client.list.hiringRecord') },
+  ];
+});
+
+const dispatchOp = computed(() => {
+  return [
+    { name: t('client.list.dispatchRecord'), value: 'dispatchRecord', class: '' },
+    { name: t('client.list.referralResults'), value: 'referralResults', class: '' },
+    { name: t('client.list.dispatchedOtherCompanies'), value: 'dispatchedOtherCompanies', class: 'bg-yellow-1' },
+    { name: t('client.list.otherCompanyReferralResults'), value: 'otherCompanyReferralResults', class: 'bg-yellow-1' },
+  ];
+});
+
+const numEmployees = computed(() => {
+  return [
+    { name: t('client.list.numFullTimeEmployees'), value: 'numFullTimeEmployees' },
+    { name: t('client.list.numPartTimeEmployees'), value: 'numPartTimeEmployees' },
+    { name: t('client.list.numTempEmployees'), value: 'numTempEmployees' },
+  ];
+});
+watch(
+  () => (backOrderData.industry),
+  (newVal) => {
+    if (newVal.length == 0) {
+      backOrderData.facilityType = [];
+    }
+  },
+);
+const addCondition = () =>{
+  let data = { 'searchType': 'advance', 'keyword': backOrderData['client_name'], 'facilityType': backOrderData.facilityType, 'industry': backOrderData.industry }
+  if(props.from=='map'){
+    advanceSearch.mapSelected = true
+    advanceSearch.mapConditionData = data
+  }
+  else if(props.from=='area'){
+    advanceSearch.areaSelected = true
+    advanceSearch.areaConditionData = data
+  }
+  hideCSDrawer()
+}
+const hideCSDrawer = () => {
+  emit('hideCSDrawer')
+}
+const searchClientsByCondition = (officeData) => {
+  clientFactoryStore.condition = true
+  clientFactoryStore.selectedCFsId = []
+  officeData.forEach((item) => {
+    clientFactoryStore.selectedCFsId.push(item.id)
+  })
+  router.push('/client-factories')
+}
+const searchClients = async () => {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user == null) {
+      throw new Error('invalid user')
+    }
+    let data = { 'searchType': 'advance', 'keyword': backOrderData['client_name'], 'facilityType': backOrderData.facilityType, 'industry': backOrderData.industry }
+      const token = await user.getIdToken();
+      const response = await api.post(
+        searchConfig.getOfficeDataURL,
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        timeout: 30000,
+        }
+      )
+      searchClientsByCondition(response.data)
+  } catch (error) {
+    throw new Error('Failed to create user')
+  }
+};
+
 </script>

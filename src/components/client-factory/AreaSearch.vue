@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, watch, onMounted } from 'vue';
+import { ref, defineProps, watch, onMounted } from 'vue';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
@@ -7,13 +7,14 @@ import SearchField from '../SearchField.vue';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
-
+import { useAdvanceSearch } from 'src/stores/advanceSearch';
+import AdvancedSearch from 'src/pages/user/BusinessManagement/AdvancedSearch.vue'
+const advanceSearch = useAdvanceSearch();
 const router = useRouter()
 const clientFactoryStore = useClientFactory()
 const props = defineProps<{
-    theme: string
+    theme: string,
 }>()
-const emit = defineEmits<{ (e: 'getClients', clients) }>()
 const db = getFirestore();
 
 const searchInput = ref('')
@@ -144,8 +145,18 @@ const searchClients = async () => {
         )
         officeData.value = response.data
         isLoadingProgress.value = false
-        searchClientsByCondition()
-        emit('getClients', response.data)
+        if(advanceSearch.areaSelected){
+            const office = advanceSearch.getCFsId(officeData.value,advanceSearch.areaConditionData);
+            clientFactoryStore.condition = true
+            clientFactoryStore.selectedCFsId = []
+            office.forEach((id)=>{
+                clientFactoryStore.selectedCFsId.push(id)
+            })
+            router.push('/client-factories')
+        }
+        else{
+            searchClientsByCondition()
+        }
     } catch (error) {
         isLoadingProgress.value = false
 
@@ -201,15 +212,24 @@ const removeSearchKeyword = (value: never) => {
         prefectures.value = [...pref]
     }
 }
+const drrawer = ref(false)
+const openCSDrawer = () =>{
+  drrawer.value = true
+}
+const hideCSDrawer = () =>{
+  drrawer.value = false
+}
 </script>
 
 <template>
     <q-card class="no-shadow full-height q-pb-sm">
         <q-card-actions>
             <q-btn unelevated :label="$t('client.list.conditionalSearch')" :color="props.theme"
-                class="no-shadow text-weight-bold" icon="add" />
+                class="no-shadow text-weight-bold" icon="add" @click="openCSDrawer"/>
             <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
                 @click="searchClients" />
+            <q-btn label="Reset Condtions" outline color="red" class="text-weight-bold"
+                @click="advanceSearch.resetArea" v-if="advanceSearch.areaSelected"/>
         </q-card-actions>
         <div style="height: 5px;">
             <q-separator v-if="!isLoadingProgress" />
@@ -244,6 +264,9 @@ const removeSearchKeyword = (value: never) => {
         </q-list>
         <q-separator />
     </q-card>
+    <q-drawer :model-value="drrawer" :width="900" overlay elevated bordered side="right" show>
+        <AdvancedSearch from="area" :isDrawer="true" @hide-c-s-drawer="hideCSDrawer" />
+    </q-drawer>
 </template>
 
 <style lang="scss" scoped></style>

@@ -3,9 +3,8 @@ import { defineEmits, defineProps } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MapSearchVue from 'src/components/client-factory/MapSearch.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-
 const props = defineProps<{
-    isDrawer: boolean
+    isDrawer: boolean,
 }>()
 const emit = defineEmits<{
     (e: 'hideDrawer'),
@@ -21,11 +20,10 @@ const hideDrawer = () => {
 const openCFDrawer = (clientFactoryData: ClientFactory) => {
     emit('openCFDrawer', clientFactoryData)
 }
-
 </script>
 
 <template>
-    <q-drawer :model-value="props.isDrawer" :width="900" :breakpoint="500" overlay elevated bordered side="right" show>
+    <q-drawer :model-value="props.isDrawer" :width="1100" :breakpoint="500" overlay elevated bordered side="right" show>
         <q-scroll-area class="fit text-left">
             <q-card class="no-shadow bg-grey-3">
                 <q-card-section class="text-white bg-primary">

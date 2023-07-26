@@ -11,10 +11,12 @@ import { storeToRefs } from 'pinia'
 import { useClient } from 'src/stores/client';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter} from 'vue-router';
-
+import { useAdvanceSearch } from 'src/stores/advanceSearch';
+import AdvancedSearch from 'src/pages/user/BusinessManagement/AdvancedSearch.vue'
+const advanceSearch = useAdvanceSearch();
 const router = useRouter()
 const props = defineProps<{ theme: string }>()
-const emit = defineEmits<{ (e: 'getClients', clients: Client[]), (e: 'openCFDrawer', ClientFactoryData: ClientFactory) }>()
+const emit = defineEmits<{ (e: 'openCFDrawer', ClientFactoryData: ClientFactory) }>()
 
 const center = ref<{ lat: number, lng: number }>({ lat: 36.0835255, lng: 140.0 });
 const officeData = ref<Client[]>([]);
@@ -113,13 +115,24 @@ const getColor = (clientFactoryId: string) => {
   return 'white'
 }
 const searchClientsByCondition = () =>{
-  clientFactoryStore.condition = true
-  clientFactoryStore.selectedCFsId = []
-  officeData.value.forEach((item)=>{
-    const id:string = item.id || ''
-    clientFactoryStore.selectedCFsId.push(id)
-  })
-  router.push('/client-factories')
+  if(advanceSearch.mapSelected){
+    const office = advanceSearch.getCFsId(officeData.value,advanceSearch.mapConditionData);
+    clientFactoryStore.condition = true
+    clientFactoryStore.selectedCFsId = []
+    office.forEach((id)=>{
+      clientFactoryStore.selectedCFsId.push(id)
+    })
+    router.push('/client-factories')
+  }
+  else{
+    clientFactoryStore.condition = true
+    clientFactoryStore.selectedCFsId = []
+    officeData.value.forEach((item)=>{
+      const id:string = item.id || ''
+      clientFactoryStore.selectedCFsId.push(id)
+    })
+    router.push('/client-factories')
+  }
 }
 watch([clientFactories], () => {
   clientFactoriesList.value = []
@@ -154,16 +167,24 @@ const clearRadius = () => {
   radiusKm.value = 0
   inputRadiusKm.value = 0
 }
-
+const drrawer = ref(false)
+const openCSDrawer = () =>{
+  drrawer.value = true
+}
+const hideCSDrawer = () =>{
+  drrawer.value = false
+}
 </script>
 
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-card-actions>
       <q-btn :label="$t('client.list.conditionalSearch')" unelevated :color="props.theme"
-        class="no-shadow text-weight-bold" icon="add" />
+        class="no-shadow text-weight-bold" icon="add" @click="openCSDrawer"/>
       <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
         @click="searchClientsByCondition" />
+      <q-btn label="Reset Condtions" outline color="red" class="text-weight-bold"
+        @click="advanceSearch.resetMap" v-if="advanceSearch.mapSelected"/>
     </q-card-actions>
     <div style="height: 5px;">
       <q-separator v-if="!isLoadingProgress" />
@@ -216,5 +237,8 @@ const clearRadius = () => {
     </q-card-section>
 
   </q-card>
+  <q-drawer :model-value="drrawer" :width="900" overlay elevated bordered side="right" show>
+    <AdvancedSearch from="map" :isDrawer="true" @hide-c-s-drawer="hideCSDrawer"/>
+</q-drawer>
 </template>
 
