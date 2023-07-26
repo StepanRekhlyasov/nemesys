@@ -364,15 +364,15 @@
         </div>
         <div class="row">
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="clientList" v-model="jobData['client']">
-              <template v-if="!jobData['client']" v-slot:selected>
+            <q-select outlined dense :options="clientList" v-model="jobData['cfClient']">
+              <template v-if="!jobData['cfClient']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
             </q-select>
           </div>
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="officeList" v-model="jobData['office']" :disable="officeList.length == 0">
-              <template v-if="!jobData['office']" v-slot:selected>
+            <q-select outlined dense :options="officeList" v-model="jobData['cfOffice']" :disable="officeList.length == 0">
+              <template v-if="!jobData['cfOffice']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
             </q-select>
@@ -456,21 +456,21 @@
         </div>
         <div class="row">
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="salaryTypeOption" emit-value map-options v-model="jobData['salaryType']"
+            <q-select outlined dense :options="salaryTypeOption" emit-value map-options v-model="jobData['cfSalaryType']"
               lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
-              <template v-if="!jobData['salaryType']" v-slot:selected>
+              <template v-if="!jobData['cfSalaryType']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
             </q-select>
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['salary']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfSsalary']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['bonuses']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfBonuses']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['payday']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfPayday']" hide-bottom-space />
           </div>
         </div>
 
@@ -493,7 +493,7 @@
             <q-input outlined dense v-model="jobData['overtime']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['retirementAge']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfRetirementAge']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-input outlined dense v-model="jobData['welfare']" hide-bottom-space />
@@ -518,16 +518,16 @@
         </div>
         <div class="row">
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['workingHoursEarly']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfWorkingHoursEarly']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['workingHoursDay']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfWorkingHoursDay']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['workingHoursLate']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfWorkingHoursLate']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['workingHoursNight']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfWorkingHoursNight']" hide-bottom-space />
           </div>
         </div>
         <div class="row q-mt-md">
@@ -546,7 +546,7 @@
         </div>
         <div class="row">
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['businessContent']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfBusinessContent']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-select outlined dense  emit-value map-options v-model="jobData['smokingPermitted']"
@@ -557,7 +557,7 @@
             </q-select>
           </div>
           <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['holidayAnnual']" hide-bottom-space />
+            <q-input outlined dense v-model="jobData['cfHolidayAnnual']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-input outlined dense v-model="jobData['holidaysWeekly']" hide-bottom-space />
@@ -567,113 +567,16 @@
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('client.add.officeSpecificInformation') }}
         </div>
-        <div class="row q-mt-sm">
-          <div class="col-3">
-            {{ $t('office.availabilityParkingLot') }}
+        <div class="row" v-for="items in industriesData" :key="items['id']">
+        <div class="col-6" v-for="underItem in items['uniqueItems']['typeSpecificItems']" :key="underItem['id']">
+          <div class="q-pr-sm">
+            {{ underItem['title'] }}
           </div>
-          <div class="col-3">
-            {{ $t('client.add.parkingLotNotes') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.headquarterSettlement') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.presenceAbsenceApproval') }}
+          <div class="q-pr-sm">
+            <q-input outlined dense v-model="underItem['dataType']" hide-bottom-space />
           </div>
         </div>
-        <div class="row">
-          <div class="col-3 q-pr-sm">
-            <q-select
-        outlined
-        dense
-        v-model="jobData['availabilityParkingLot']"
-        :options="industriesDataOptions"
-        option-value="id"
-        option-label="title"
-        hide-bottom-space
-      />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['parkingLotNotes']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-select outlined dense  emit-value map-options v-model="jobData['headquarterSettlement']"
-              >
-              <template v-if="!jobData['headquarterSettlement']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-select outlined dense  emit-value map-options
-              v-model="jobData['presenceAbsenceApproval']">
-              <template v-if="!jobData['presenceAbsenceApproval']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>
-        </div>
-        <div class="row q-mt-sm">
-          <div class="col-3">
-            {{ $t('office.hiringDate') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.averageLevelCare') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.vaccination') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.numberUsers') }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['hiringDate']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['averageLevelCare']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['vaccination']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['numberUsers']" hide-bottom-space />
-          </div>
-        </div>
-        <div class="row q-mt-sm">
-          <div class="col-3">
-            {{ $t('clientFactory.drawer.details.healthCheck') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.withWithoutLunch') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.onCallCorrespondence') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.presenceAbsenceUniform') }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['healthCheck']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['withWithoutLunch']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="jobData['onCallCorrespondence']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-          <q-select outlined dense  emit-value map-options v-model="jobData['presenceAbsenceUniform']"
-              >
-              <template v-if="!jobData['presenceAbsenceUniform']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>
-        </div>
+      </div>
 
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('backOrder.boCommonInformation') }}
@@ -942,19 +845,6 @@
             <q-input outlined dense v-model="jobData['onCallCorrespondence']" hide-bottom-space />
           </div>
         </div>
-        <!-- <div class="row text-primary text-body1 q-pt-sm">
-          ■ {{ $t('client.add.officeSpecificInformation') }}
-        </div>
-        <div class="row" v-for="items in industriesData" :key="items['id']">
-  <div class="col-6" v-for="underItem in items['uniqueItems']['typeSpecificItems']" :key="underItem['id']">
-    <div class="q-pr-sm">
-      {{ underItem['title'] }}
-    </div>
-    <div class="q-pr-sm">
-      <q-input outlined dense v-model="jobData['onCallCorrespondence']" hide-bottom-space />
-    </div>
-  </div>
-</div> -->
       </q-card-section>
     </q-form>
     <q-dialog v-model="dialogVisible" persistent transition-show="scale" transition-hide="scale" class="my-dialog">
@@ -981,7 +871,7 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount ,computed} from 'vue';
+import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, employmentStatusList, reqList, indeedJobCategoryList, indeedTagList, indeedTagJobType, indeedTagCoronaType, resumeRequiredList } from 'src/shared/constants/JobAd.const';
@@ -1016,6 +906,7 @@ const jobDataObject = {
   id: props?.selectedJob['id'] || null,
   name: props?.selectedJob['name'] || '',
   client: '',
+  cfClient:'',
   indeedTag: props?.selectedJob['indeedTag'] || [],
   transactionType: '',
   projectType: '',
@@ -1026,6 +917,7 @@ const jobDataObject = {
   boSalaryType: props?.selectedJob['boSalaryType'] || '',
   status: props?.selectedJob['status'] || '',
   office: props?.selectedJob['office'] || '',
+  cfOffice: props?.selectedJob['cfOffice'] || '',
   email: props?.selectedJob['email'] || '',
   phone: props?.selectedJob['phone'] || '',
   jobContent: props?.selectedJob['jobContent'] || {},
@@ -1038,6 +930,7 @@ const jobDataObject = {
   bonuses: props?.selectedJob['bonuses'] || '',
   transportationExpenses: props?.selectedJob['transportationExpenses'] || '',
   businessContent: props?.selectedJob['businessContent'] || '',
+  cfBusinessContent: props?.selectedJob['cfBusinessContent'] || '',
   payCheck: props?.selectedJob['payCheck'] || '',
   boPayDay: props?.selectedJob['boPayDay'] || '',
   benefits: props?.selectedJob['benefits'] || '',
@@ -1051,6 +944,10 @@ const jobDataObject = {
   workingHoursDay: props?.selectedJob['workingHoursDay'] || '',
   workingHoursLate: props?.selectedJob['workingHoursLate'] || '',
   workingHoursNight: props?.selectedJob['workingHoursNight'] || '',
+  cfWorkingHoursEarly: props?.selectedJob['cfWorkingHoursEarly'] || '',
+  cfWorkingHoursDay: props?.selectedJob['cfWorkingHoursDay'] || '',
+  cfWorkingHoursLate: props?.selectedJob['cfWorkingHoursLate'] || '',
+  cfWorkingHoursNight: props?.selectedJob['cfWorkingHoursNight'] || '',
   referralFee: props?.selectedJob['referralFee'] || '',
   referralFeeAmount: props?.selectedJob['referralFeeAmount'] || '',
   ageLimit: props?.selectedJob['ageLimit'] || '',
@@ -1073,6 +970,17 @@ const jobDataObject = {
   municipalities: props?.selectedJob['municipalities'] || '',
   street: props?.selectedJob['street'] || '',
   buildingName: props?.selectedJob['buildingName'] || '',
+  cfSalaryType: props?.selectedJob['cfSalaryType'] || '',
+  salary: props?.selectedJob['salary'] || '',
+  cfBonuses: props?.selectedJob['cfBonuses'] || '',
+  cfPayday: props?.selectedJob['cfPayday'] || '',
+  overtime: props?.selectedJob['overtime'] || '',
+  cfRetirementAge: props?.selectedJob['cfRetirementAge'] || '',
+  welfare: props?.selectedJob['welfare'] || '',
+  leaveChildcare: props?.selectedJob['leaveChildcare'] || '',
+  smokingPermitted: props?.selectedJob['smokingPermitted'] || '',
+  cfHolidayAnnual: props?.selectedJob['cfHolidayAnnual'] || '',
+  holidaysWeekly: props?.selectedJob['holidaysWeekly'] || '',
   upperAgeLimit: props?.selectedJob['upperAgeLimit'] || '',
   indeedJobCategory: props?.selectedJob['indeedJobCategory'] || '',
   presenceAbsenceResume: props?.selectedJob['presenceAbsenceResume'] || '',
@@ -1128,23 +1036,6 @@ onMounted(async () => {
  industriesData.value = await jobSearchStore.getIndustries()
 })
 
-const industriesDataOptions = computed(() => {
-  const options: object[] = [];
-  if (Array.isArray(industriesData.value)) {
-    for (const data of industriesData.value) {
-      if (
-        data &&
-        data.uniqueItems &&
-        Array.isArray(data.uniqueItems.typeSpecificItems)
-      ) {
-        for (const innerData of data.uniqueItems.typeSpecificItems) {
-          options.push({ id: innerData.id, title: innerData.title });
-        }
-      }
-    }
-  }
-  return options;
-});
 
 const saveJob = async () => {
   try {
@@ -1284,14 +1175,29 @@ watch(
 
 watch(
   () => (jobData.value.client),
-  async (newVal,oldVale) => {
-    debugger
+    async (newVal,oldVale) => {
     officeList.value = [];
     if (unsubscribeOffice.value) {
       unsubscribeOffice.value();
     }
     if(oldVale){
       jobData.value.office=''
+    }
+    if (newVal) {
+      officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
+
+    }
+  }
+)
+watch(
+  () => (jobData.value.cfClient),
+    async (newVal,oldVale) => {
+    officeList.value = [];
+    if (unsubscribeOffice.value) {
+      unsubscribeOffice.value();
+    }
+    if(oldVale){
+      jobData.value.cfOffice=''
     }
     if (newVal) {
       officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
