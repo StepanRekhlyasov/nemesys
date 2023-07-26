@@ -9,7 +9,8 @@
             {{ scope.opt.label }}
             <div class="text-bold">
 
-              {{ `${t('settings.users.availableSlots')}: ${usersInBranch[scope.opt.value] + '/' +
+              {{ `${t('settings.users.availableSlots')}: ${branches[scope.opt.value].licensesSlots -
+                usersInBranch[scope.opt.value] + '/' +
                 branches[scope.opt.value].licensesSlots}` }}
             </div>
           </div>
@@ -17,7 +18,8 @@
       </template>
 
       <template v-slot:hint v-if="showAvalibleSlots && modelValue">
-        {{ `${t('settings.users.availableSlots')}: ${usersInBranch[modelValue] + '/' +
+        {{ `${t('settings.users.availableSlots')}: ${branches[modelValue].licensesSlots -
+                usersInBranch[modelValue] + '/' +
                 branches[modelValue].licensesSlots}` }}
       </template>
 
