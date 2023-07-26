@@ -214,6 +214,7 @@ export default {
       },
       licenseManagement: {
         licenseRequest: '枠変更申請一覧',
+        licenseRequestAdd: 'ライセンス変更申請',
         showList: '覧表示',
         licenseManagement: 'ライセンス管理',
         targetSystem: '対象システム',
