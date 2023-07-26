@@ -9,15 +9,16 @@
             {{ scope.opt.label }}
             <div class="text-bold">
 
-              {{ `${t('settings.users.availableSlots')}: ${branches[scope.opt.value].licensesSlots -
-                usersInBranch[scope.opt.value]}` }}
+              {{ `${t('settings.users.availableSlots')}: ${usersInBranch[scope.opt.value] + '/' +
+                branches[scope.opt.value].licensesSlots}` }}
             </div>
           </div>
         </q-item>
       </template>
 
       <template v-slot:hint v-if="showAvalibleSlots && modelValue">
-        {{ `${t('settings.users.availableSlots')}: ${branches[modelValue].licensesSlots - usersInBranch[modelValue]}` }}
+        {{ `${t('settings.users.availableSlots')}: ${usersInBranch[modelValue] + '/' +
+                branches[modelValue].licensesSlots}` }}
       </template>
 
     </q-select>
@@ -72,6 +73,9 @@ async function display(organizationId: string) {
       })))
     }
     options.value = mapToSelectOptions(branches.value)
+    options.value.forEach((row)=>{
+      row.disable = usersInBranch.value[row.value] >= branches.value[row.value].licensesSlots
+    })
   } catch (error) {
     console.log(error)
     Alert.warning(error)
