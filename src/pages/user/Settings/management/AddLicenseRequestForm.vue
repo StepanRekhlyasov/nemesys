@@ -86,7 +86,7 @@ async function addLicenseRequest() {
       requestQuantity: numberOfSlots.value,
       requestDate: serverTimestamp() as Timestamp,
       requestUserId: userId,
-      status: 'new'
+      status: 'pending'
     }
     await license.createLicenseRequest(licenseRequest)
     Alert.success()

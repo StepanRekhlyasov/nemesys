@@ -18,6 +18,7 @@ export default {
   },
   common: {
     approved: '申請許可',
+    pending: '申請中',
     denied: '申請却下',
     minimum:'最小',
     maximum:'最大',

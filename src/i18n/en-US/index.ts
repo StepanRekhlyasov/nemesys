@@ -18,6 +18,7 @@ export default {
   },
   common: {
     approved: 'Approved',
+    pending: 'Pending',
     denied: 'Denied',
     minimum:'min',
     maximum:'max',
