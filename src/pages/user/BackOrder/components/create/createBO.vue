@@ -110,6 +110,7 @@ import { QForm } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { date } from 'quasar'
 
 const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
@@ -147,6 +148,9 @@ function closeDialog() {
 function resetData() {
   data.value = {
     working_days_week: [] as string[],
+    dateOfRegistration: date.formatDate(Date.now(), 'YYYY/MM/DD'),
+    lon: 0,
+    lat: 0,
     type: props.type
   } as Partial<BackOrderModel>
 }
