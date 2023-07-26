@@ -108,7 +108,7 @@ const props = defineProps<{
 
 const showChart = async () => {
   if (!props.dateRangeProps) return;
-
+  dataToshowDaysToWork.value = [];
   const sexDataAll = Object.values(
     (
       await getReport({
