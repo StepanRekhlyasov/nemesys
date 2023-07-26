@@ -14,7 +14,7 @@ export interface LicenseRequest {
   requestQuantity: number,
   requestDate: Timestamp,
   requestUserId: string,
-  status: string
+  status: 'approved' | 'denied'
 }
 
 export const requestType = ['Addition', 'Delete']
