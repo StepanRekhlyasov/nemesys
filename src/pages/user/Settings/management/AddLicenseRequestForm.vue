@@ -6,10 +6,10 @@
     <q-card-section class="q-pb-none">
 
       <div class="row q-pb-sm">
-        <div class="col-5 text-right q-pr-sm  q-pt-sm">
+        <div class="col-5 text-right q-pr-sm q-pt-sm">
           {{ $t('menu.admin.licenseManagement.targetSystem') }}
         </div>
-        <div class="col-7 q-pl-sm ">
+        <div class="col-7 q-pl-sm">
           <div class="q-my-sm" >{{ targetSystem }}</div>
         </div>
       </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="col-7 q-pl-sm ">
           <q-select :options="requestTypeOptions" v-model:model-value="requestType" outlined dense :disable="loading"
-          :rules="[creationRule]" emit-value map-options/>
+          :rules="[creationRule]" emit-value map-options hide-bottom-space/>
         </div>
       </div>
       <div class="row q-pb-sm">
@@ -28,7 +28,7 @@
         </div>
         <div class="col-7 q-pl-sm ">
           <q-input v-model.number:model-value="numberOfSlots" outlined dense type="number" min="1" :disable="loading"
-          :rules="[creationRule]"/>
+          :rules="[creationRule]" hide-bottom-space/>
         </div>
       </div>
 

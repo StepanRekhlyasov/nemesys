@@ -74,7 +74,7 @@
         />
       </div>
       <div class="col-2 flex items-center">
-        <p class="q-ml-md inputLabel text-capitalize q-mt-md">{{ $t('applicant.add.applicationDate') }}</p>
+        <p class="q-ml-md inputLabel text-capitalize q-mt-md">{{ $t('releaseNotes.table.deliveryDate') }}</p>
         <div class="flex items-center no-wrap">
           <q-input 
             type="date" 
