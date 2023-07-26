@@ -1960,6 +1960,8 @@ export default {
   },
   errors: {
     'BO_occupied' : 'Selected BO is occupied',
+    'error' : 'Error',
+    'deleteBranchesFirst' : 'Please, delete all branches first'
   },
   budget: {
     search: 'Budget Search',
