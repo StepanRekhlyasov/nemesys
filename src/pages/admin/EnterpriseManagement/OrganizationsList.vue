@@ -64,12 +64,12 @@
           </q-td>
 
           <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
-            @update:model-value="(v) => editableRow!.tel = v" type="tel" mask="phone" hide-bottom-space
-            :rules="[creationRule, validateLength]" />
+            @update:model-value="(v) => editableRow!.tel = v" type="tel" hide-bottom-space
+            :rules="[creationRule]" />
 
           <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
-            @update:model-value="(v) => editableRow!.fax = v" type="tel" mask="phone" hide-bottom-space
-            :rules="[creationRule, validateLength]" />
+            @update:model-value="(v) => editableRow!.fax = v" type="tel" hide-bottom-space
+            :rules="[creationRule]" />
 
 
           <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.mailaddress"
@@ -173,14 +173,6 @@ const forceReRender = async () => {
   renderComponent.value = true;
 };
 const formRef = ref<QForm | null>(null)
-
-function validateLength(v: string) {
-  const validLength = 16
-  if (v.length != validLength) {
-    return ''
-  }
-  return true
-}
 
 async function onRowSave(props: { row: Row, rowIndex: number }) {
   const valid = await formRef.value?.validate()

@@ -37,6 +37,17 @@
                 <q-btn icon="delete" flat @click=" deleteBranch(props.row)" />
               </q-td>
             </template>
+            <template v-slot:body-cell-edit="props">
+              <q-td :props="props" auto-width>
+                <q-btn icon="edit" flat @click="editBranch = props.row; openDialog = true; dialogType = 'Branch'"/>
+              </q-td>
+            </template>
+            <template v-slot:body-cell-list="props">
+              <q-td :props="props" auto-width>
+                <q-btn :label="$t('menu.admin.licenseManagement.showList')" unelevated size="sm" color="primary" text-color="white" @click="()=>{showList = true;
+showListRow = props.row}" />
+              </q-td>
+            </template>
 
             <template v-slot:body-cell-hidden="props">
               <q-td :props="props">
@@ -89,13 +100,14 @@
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog" @hide=" editBranch = undefined">
-    <DialogWrapper>
+    <DialogWrapper style="max-width: 300px;">
       <BranchCreateForm v-if="dialogType === 'Branch'" @closeDialog=" loadBranchesList(); openDialog = false;"
         :editBranch="editBranch" color="primary" />
       <AddLicenseRequestForm v-if="dialogType === 'LicenseRequest'" :branch="branch"
         @close-dialog=" openDialog = false;" />
     </DialogWrapper>
   </q-dialog>
+  <RequestList v-model="showList" :branch="showListRow" v-if="showListRow" @hide="showListRow = undefined"/>
 </template>
 
 <script setup lang="ts">
@@ -113,6 +125,7 @@ import { useBranch } from 'src/stores/branch';
 import { columns } from './consts/BranchMasterColumns'
 import AddLicenseRequestForm from './AddLicenseRequestForm.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
+import RequestList from './components/RequestList.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -133,7 +146,8 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 10
 });
-
+const showList = ref(false)
+const showListRow = ref<Branch>()
 
 const organization = useOrganization()
 const branchStore = useBranch()
