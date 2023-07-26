@@ -76,6 +76,14 @@ export const statusList = computed(() => {
   ];
 });
 
+export const mediaList = computed(() => [{
+  label: t('applicant.add.hr'),
+  value: 'hr'
+},{
+  label: 'indeed',
+  value: 'indeed'
+}])
+
 export const applicationMethod = computed(() => {
   return [{
     label: t('applicant.add.web'),
