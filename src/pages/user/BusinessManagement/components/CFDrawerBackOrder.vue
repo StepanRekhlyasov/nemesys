@@ -73,7 +73,6 @@
       <q-td :props="props">
         {{ props.row.upperAgeLimit }}<br />
         {{ props.row.employmentType && $t('client.backOrder.' + props.row.employmentType) }}<br />
-        {{ props.row.unitPrice }}
       </q-td>
     </template>
 
