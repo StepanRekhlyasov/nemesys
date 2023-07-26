@@ -22,8 +22,8 @@ const calcLeadtime = async (
     query(
       collection(db, 'fix'),
       where('organization_id', '==', organization_id),
-      where('data', '>=', targetDateFrom),
-      where('data', '<=', targetDateTo)
+      where('fixDate', '>=', targetDateFrom),
+      where('fixDate', '<=', targetDateTo)
     )
   );
   let num_i_d = 0;
@@ -34,7 +34,7 @@ const calcLeadtime = async (
     snapshot.docs.map(async (doc_) => {
       const data = doc_.data();
       const offerDate = data.offerDate;
-      const dataDate = data.data;
+      const dataDate = data.fixDate;
       const inspectiondate = data.inspectionDate;
       const admissiondate = data.admissionDate;
       const applicantData = (
@@ -42,8 +42,8 @@ const calcLeadtime = async (
       ).data();
 
       if (
-        applicantData !== undefined &&
-        applicantData.attractionDate !== undefined
+        applicantData &&
+        applicantData.attractionDate
       ) {
         data_average[0] +=
           (applicantData.attractionDate - applicantData.applicationDate) /

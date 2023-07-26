@@ -71,6 +71,7 @@ const showIndividualReport = async (
   dateRange?: { from: string; to: string }
 ) => {
   if (!dateRange) return;
+  seriesIndividual.value = [];
 
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
