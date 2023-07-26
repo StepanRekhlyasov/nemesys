@@ -56,9 +56,9 @@ showListRow = props.row}" />
               </q-td>
             </template>
 
-            <template v-slot:body-cell-prefectures="props">
+            <template v-slot:body-cell-prefecture="props">
               <q-td :props="props">
-                <span v-if="props.row.prefectures">{{ $t('prefectures.' + props.row.prefectures) }}</span>
+                <span v-if="props.row.prefecture">{{ $t('prefectures.' + (prefectureLocaleKey[props.row.prefecture]?prefectureLocaleKey[props.row.prefecture]:props.row.prefecture)) }}</span>
               </q-td>
             </template>
 
@@ -126,6 +126,7 @@ import { columns } from './consts/BranchMasterColumns'
 import AddLicenseRequestForm from './AddLicenseRequestForm.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import RequestList from './components/RequestList.vue';
+import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();

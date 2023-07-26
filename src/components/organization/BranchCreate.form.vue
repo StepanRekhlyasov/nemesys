@@ -66,7 +66,7 @@ const props = defineProps<{
   color: string
 }>()
 
-const branchData = ref<Partial<Branch>>(props.editBranch || {
+const branchData = ref<Partial<Branch>>(JSON.parse(JSON.stringify(props.editBranch)) || {
   hidden: false,
   working: true
 })
