@@ -247,6 +247,7 @@ export default {
         licenseStatistic: '枠数集計',
         totalLicenseNumber: '枠数集計（月別・企業別）',
         issueDate: '発行日',
+        statisticMonth: '集計月',
         numberIdName: 'No./企業ID/企業名',
         businessName: '事業名',
         branchName: '支店名',

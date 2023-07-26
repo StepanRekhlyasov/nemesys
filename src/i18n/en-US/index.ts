@@ -247,6 +247,7 @@ export default {
         licenseStatistic: 'License statistic',
         totalLicenseNumber: 'Total number of license (by month/company)',
         issueDate: 'issue date',
+        statisticMonth: 'Statistic Month',
         numberIdName: 'No./organization ID/organization name',
         businessName: 'Business Name',
         branchName: 'Branch name',
