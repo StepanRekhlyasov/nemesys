@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, selectOptions, UserPermissionNames } from 'src/shared/model';
+import { BackOrderModel, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
 import { onMounted, Ref, ref, watch } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
@@ -148,6 +148,7 @@ function closeDialog() {
 function resetData() {
   data.value = {
     working_days_week: [] as string[],
+    qualifications: [] as TypeQualifications[],
     dateOfRegistration: date.formatDate(Date.now(), 'YYYY/MM/DD'),
     lon: 0,
     lat: 0,
