@@ -1,14 +1,18 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { tableColumnsSavedCriteriaList,searchData, checkValidity } from './const/index';
-import { collection, getDocs, getFirestore, orderBy, doc, deleteDoc, DocumentData } from 'firebase/firestore';
+import { tableColumnsSavedCriteriaList, searchData, checkValidity } from './const/index';
+import { getFirestore, orderBy, doc, deleteDoc, DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
 import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
+import { useRouter } from 'vue-router';
+import { updateSharedVariable } from './components/search/searchData'
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
+const router = useRouter()
 const saveSearch = useApplicantSaveSearch()
 const tableData = ref<DocumentData>([])
 const rowForEdit = ref<DocumentData>({})
@@ -18,7 +22,7 @@ const db = getFirestore();
 const drawerRight = ref<boolean>(false);
 const loading = ref<boolean>(false)
 const searchKeyword = ref<string | null>(null);
-const pagination = ref<DocumentData>({
+const pagination = ref({
   page: 1,
   rowsPerPage: 100,
   path: 'applicantSaveSearch',
@@ -33,19 +37,13 @@ onMounted(async () => {
 
 const getSearchData = async () => {
   loading.value = true;
-  let newData = ref<DocumentData>([]);
-  const collectionRef = collection(db, 'applicantSaveSearch');
-  const querySnapshot = await getDocs(collectionRef);
-  querySnapshot.forEach((doc) => {
-    newData.value.push(doc.data());
-  });
-
-  newData.value.sort((a, b) => b.created_at.seconds - a.created_at.seconds);
-
-  tableData.value = newData.value;
+  tableData.value = (await saveSearch.getSaveSearch()).sort((a, b) => b.created_at.seconds - a.created_at.seconds)
   loading.value = false;
 }
 
+watchCurrentOrganization(async () => {
+  await getSearchData()
+})
 
 const dltSearch = async (id) => {
   loading.value = true;
@@ -61,23 +59,27 @@ const dltSearch = async (id) => {
   loadPagination.value = loadPagination.value == 0 ? 1 : 0
 };
 
-const callRow = (row) => {
-      drawerRight.value = true;
-      rowForEdit.value = row
-    };
+const callRow = (row: DocumentData) => {
+  drawerRight.value = true;
+  rowForEdit.value = row
+};
 
+const searchApplicants = (row: DocumentData) => {
+  updateSharedVariable(row)
+  router.push('/applicant/search')
+}
 const save = async () => {
   isSaving.value = true;
   let edit_data = searchData.value
   let valid = true;
-  try{
-      checkValidity(edit_data)
-    }
-    catch(error){
-      valid = false
-      Alert.warning(error)
-    }
-  if(valid) {
+  try {
+    checkValidity(edit_data)
+  }
+  catch (error) {
+    valid = false
+    Alert.warning(error)
+  }
+  if (valid) {
     const save = await saveSearch.saveSearch(searchData.value);
     getSearchData();
     drawerRight.value = false;
@@ -87,21 +89,21 @@ const save = async () => {
   isSaving.value = false;
 }
 
-const filterData = ()=>{
-  if(searchKeyword.value){
+const filterData = () => {
+  if (searchKeyword.value) {
     loading.value = true;
-    const filteredData = tableData.value.filter((item:DocumentData) => item.keyword === searchKeyword.value);
+    const filteredData = tableData.value.filter((item: DocumentData) => item.keyword === searchKeyword.value);
     tableData.value = filteredData
     loading.value = false;
   }
- else{
-  getSearchData()
- }
+  else {
+    getSearchData()
+  }
 }
 
-const clearSearch = ()=>{
- searchKeyword.value = null
- getSearchData();
+const clearSearch = () => {
+  searchKeyword.value = null
+  getSearchData();
 }
 
 </script>
@@ -135,14 +137,16 @@ const clearSearch = ()=>{
             <tr class="table__row wrapper_animate_left_border_client">
 
               <q-td class="table__btn-wrapper q-ml-sm q-py-none q-my-none">
-                <q-icon size="sm" color="primary" class="table__edit-btn" name="edit"
-                  @click="callRow(props.row)"/>
+                <q-icon size="sm" color="primary" class="table__edit-btn" name="edit" @click="callRow(props.row)" />
+                <q-icon size="sm" class="table__search-btn" name="search" @click="searchApplicants(props.row)" />
               </q-td>
 
-              <q-td class="text-left  no-wrap">{{ props.row.keyword ? `${props.row.keyword}` : ''}}</q-td>
+              <q-td class="text-left  no-wrap">{{ props.row.keyword ? `${props.row.keyword}` : '' }}</q-td>
 
-              <q-td class="text-left  no-wrap">{{ props.row.ageMin && props.row.ageMax ? `${props.row.ageMin}-${props.row.ageMax}`
-                : (props.row.ageMin ? `${props.row.ageMin}(${t('common.minimum')})` : (props.row.ageMax ? `${props.row.ageMax}(${t('common.maximum')})` : ''))
+              <q-td class="text-left  no-wrap">{{ props.row.ageMin && props.row.ageMax ?
+                `${props.row.ageMin}-${props.row.ageMax}`
+                : (props.row.ageMin ? `${props.row.ageMin}(${t('common.minimum')})` : (props.row.ageMax ?
+                  `${props.row.ageMax}(${t('common.maximum')})` : ''))
               }}</q-td>
 
               <q-td class="text-left" v-if="props.row.sex.length">
@@ -169,7 +173,8 @@ const clearSearch = ()=>{
               </q-td>
               <q-td v-else></q-td>
 
-              <q-td class="text-left no-wrap" v-if="props.row.prefecture">{{ t(`prefectures.${prefectureLocaleKey[props.row.prefecture]}`) }}</q-td>
+              <q-td class="text-left no-wrap" v-if="props.row.prefecture">{{
+                t(`prefectures.${prefectureLocaleKey[props.row.prefecture]}`) }}</q-td>
               <q-td v-else></q-td>
 
               <q-td class="text-left no-wrap" v-if="props.row.municipalities">{{ props.row.municipalities }}</q-td>
@@ -183,7 +188,7 @@ const clearSearch = ()=>{
 
               <q-td class="text-left" v-if="props.row.qualification.length">
                 <div class="no-wrap" :key="qua" v-for="qua in props.row.qualification">
-                  {{ t(`applicant.add.${qua}`) }}<br>
+                  {{ t(`applicant.qualification.${qua}`) }}<br>
                 </div>
               </q-td>
               <q-td v-else></q-td>
@@ -191,9 +196,9 @@ const clearSearch = ()=>{
               <q-td class="text-left no-wrap" v-if="props.row.yearsExperienceMin && props.row.yearsExperienceMax">{{
                 props.row.yearsExperienceMin }}-{{ props.row.yearsExperienceMax }}</q-td>
               <q-td class="text-left no-wrap" v-else-if="props.row.yearsExperienceMin">{{ props.row.yearsExperienceMin
-              }}({{t('common.minimum')}})</q-td>
+              }}({{ t('common.minimum') }})</q-td>
               <q-td class="text-left no-wrap" v-else-if="props.row.yearsExperienceMax">{{ props.row.yearsExperienceMax
-              }}({{t('common.maximum')}})</q-td>
+              }}({{ t('common.maximum') }})</q-td>
               <q-td v-else></q-td>
 
               <q-td class="text-left" v-if="props.row.availableShift.length">
@@ -212,19 +217,22 @@ const clearSearch = ()=>{
 
               <q-td class="text-left no-wrap" v-if="props.row.workPerWeekMin && props.row.workPerWeekMax">{{
                 props.row.workPerWeekMin }}-{{ props.row.workPerWeekMax }}</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.workPerWeekMin">{{ props.row.workPerWeekMin }}({{t('common.minimum')}})</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.workPerWeekMax">{{ props.row.workPerWeekMax }}({{t('common.maximum')}})</q-td>
+              <q-td class="text-left no-wrap" v-else-if="props.row.workPerWeekMin">{{ props.row.workPerWeekMin
+              }}({{ t('common.minimum') }})</q-td>
+              <q-td class="text-left no-wrap" v-else-if="props.row.workPerWeekMax">{{ props.row.workPerWeekMax
+              }}({{ t('common.maximum') }})</q-td>
               <q-td v-else></q-td>
 
               <q-td class="text-left no-wrap" v-if="props.row.applicationDateMin && props.row.applicationDateMax">{{
                 props.row.applicationDateMin }} to {{ props.row.applicationDateMax }}</q-td>
               <q-td class="text-left no-wrap" v-else-if="props.row.applicationDateMin">{{ props.row.applicationDateMin
-              }}({{t('common.minimum')}})</q-td>
+              }}({{ t('common.minimum') }})</q-td>
               <q-td class="text-left no-wrap" v-else-if="props.row.applicationDateMax">{{ props.row.applicationDateMax
-              }}({{t('common.maximum')}})</q-td>
+              }}({{ t('common.maximum') }})</q-td>
               <q-td v-else></q-td>
 
-              <q-td class="text-left no-wrap" v-if="props.row.status">{{ t(`applicant.statusOption.${props.row.status}`) }}</q-td>
+              <q-td class="text-left no-wrap" v-if="props.row.status">{{ t(`applicant.statusOption.${props.row.status}`)
+              }}</q-td>
               <q-td v-else></q-td>
 
               <q-td class="table__btn-wrapper">
@@ -242,18 +250,18 @@ const clearSearch = ()=>{
     </q-card>
     <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
       bordered>
-        <q-card flat class="cover">
-          <q-card-section class="text-white bg-primary rounded-borders">
-            <div class="row">
-              <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md" />
-            </div>
-          </q-card-section>
+      <q-card flat class="cover">
+        <q-card-section class="text-white bg-primary rounded-borders">
+          <div class="row">
+            <q-btn dense flat icon="close" @click="drawerRight = false" class="q-mr-md" />
+          </div>
+        </q-card-section>
 
-          <searchEditDrawer v-if="drawerRight" :rowForEdit="rowForEdit"/>
+        <searchEditDrawer v-if="drawerRight" :rowForEdit="rowForEdit" />
 
-          <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save"
+        <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save"
           color="primary q-ml-sm" />
-        </q-card>
+      </q-card>
     </q-drawer>
   </div>
 </template>
@@ -262,9 +270,10 @@ const clearSearch = ()=>{
 @import "src/css/imports/colors";
 @import "src/css/animate-left-border.scss";
 
-.cover{
-  height:100%
+.cover {
+  height: 100%
 }
+
 .table {
   &__column {}
 
@@ -285,6 +294,12 @@ const clearSearch = ()=>{
   }
 
   &__edit-btn {
+    display: block;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  &__search-btn {
     display: block;
     cursor: pointer;
     padding: 5px;
@@ -334,5 +349,4 @@ const clearSearch = ()=>{
 
 .pagination {
   padding: 2% 2%;
-}
-</style>
+}</style>

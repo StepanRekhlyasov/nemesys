@@ -28,7 +28,7 @@
     <div class="row" v-if="data['workingDays'] == 'fixed'">      
       <labelField :label="$t('backOrder.create.workingDays')" :edit="true" 
         labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
-        <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationRule]">
+        <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationArrayRule]">
           <q-checkbox v-model="data['working_days_week']" v-for="day in daysList" 
             :val="day.value" :disable="loading"
             :label="day.label" :key="day.value" />
@@ -38,15 +38,15 @@
 
     <div class="row q-pt-sm">
       <labelField :label="$t('client.backOrder.workingHoursEarly')" :edit="true" 
-        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursEarly_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -55,13 +55,13 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true ]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursEarly_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -72,15 +72,15 @@
     </div>
     <div class="row q-pt-sm">
       <labelField :label="$t('client.backOrder.workingHoursDay')" :edit="true" 
-        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursDay_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -89,13 +89,13 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ '  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursDay_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -106,15 +106,15 @@
     </div>
     <div class="row q-pt-sm">
       <labelField :label="$t('client.backOrder.workingHoursLate')" :edit="true" 
-        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" >
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursLate_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -129,7 +129,7 @@
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursLate_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -141,15 +141,15 @@
     <div class="row q-pt-sm">
       
       <labelField :label="$t('client.backOrder.workingHoursNight')" :edit="true" 
-        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex" required>
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursNight_min']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -158,13 +158,13 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{'  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-time v-model="data['workingHoursNight_max']" mask="HH:mm" format24h>
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                   </div>
                 </q-time>
               </q-popup-proxy>
@@ -227,7 +227,7 @@ import { ref, watch} from 'vue';
 import labelField from 'src/components/form/LabelField.vue';
 import { daysList } from 'src/shared/constants/Applicant.const';
 import { validateTime } from 'src/shared/constants/Form.const';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
   loading: boolean,

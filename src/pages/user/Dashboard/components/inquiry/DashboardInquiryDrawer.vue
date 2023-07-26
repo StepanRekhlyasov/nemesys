@@ -35,4 +35,5 @@ import { ref } from 'vue';
 
 const drawerRight = ref(false);
 const emit = defineEmits(['closeDrawer'])
+
 </script>

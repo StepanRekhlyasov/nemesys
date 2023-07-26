@@ -1,13 +1,57 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
+import { where } from '@firebase/firestore';
 const { t } = i18n.global;
 export const rowNamesSex = [
   'report.categories.male',
   'report.categories.female',
-];
-export const chartTypeSex: string[] = ['bar', 'bar'];
-export const chartTypeUnitPrice: string[] = ['bar','bar','line','line']
-export const chartTypeUnitPricePerMedia: string[] = ['bar','bar']
+] as const;
+export const chartTypeSex = ['bar', 'bar'] as const;
+export const chartTypeUnitPrice = ['bar', 'bar', 'line', 'line'] as const;
+export const chartTypeUnitPricePerMedia = ['bar', 'bar'] as const;
+export const queryNamesList = [
+  { queryName: 'applicants' },
+  { queryName: 'admission' },
+  { queryName: 'amount' },
+] as const;
+
+export const daysToWorkQueryNamesList = [
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 1)],
+    fieldName: 'daysToWork1',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 2)],
+    fieldName: 'daysToWork2',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 3)],
+    fieldName: 'daysToWork3',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 4)],
+    fieldName: 'daysToWork4',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 5)],
+    fieldName: 'daysToWork5',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 6)],
+    fieldName: 'daysToWork6',
+  },
+  {
+    queryName: 'applicants',
+    filtersInput: [where('daysToWork', '==', 7)],
+    fieldName: 'daysToWork7',
+  },
+] as const;
 
 export const rowNamesAges = [
   'report.categories.teens',
@@ -16,18 +60,18 @@ export const rowNamesAges = [
   'report.categories.forties',
   'report.categories.fifties',
   'report.categories.sixties',
-];
+] as const;
 
-export const chartTypeAges: string[] = [
+export const chartTypeAges = [
   'bar',
   'bar',
   'bar',
   'bar',
   'bar',
   'bar',
-];
-export const rowNamesDaysToWork = ['1', '2', '3', '4', '5', '6', '7'];
-export const chartTypeDaysToWork: string[] = [
+] as const;
+export const rowNamesDaysToWork = ['1', '2', '3', '4', '5', '6', '7'] as const;
+export const chartTypeDaysToWork = [
   'bar',
   'bar',
   'bar',
@@ -35,22 +79,22 @@ export const chartTypeDaysToWork: string[] = [
   'bar',
   'bar',
   'bar',
-];
-export const chartTypeMedia: string[] = ['pie'];
+] as const;
+export const chartTypeMedia = ['pie'] as const;
 
-export const unitPricenames: string[] = [
+export const unitPricenames = [
   'report.categories.applicationUnitPrice',
   'report.categories.startUnitPrice',
   'report.categories.applicationUnitPriceAllAverage',
   'report.categories.startUnitPriceAllAverage',
-];
-export const unitPricenamesPerMedia: string[] = [
+] as const;
+export const unitPricenamesPerMedia = [
   'report.categories.applicationUnitPrice',
   'report.categories.applicationUnitPriceAllAverage',
-];
+] as const;
 export const chartOptionsSex = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: { stacked: true },
     title: {
       text: t('report.title.sex'),
@@ -72,12 +116,12 @@ export const chartOptionsSex = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.genderRatio')],
+      categories: [t('report.ourCompany'), t('report.all')],
     },
     yaxis: [
       {
         min: 0,
-        max:100,
+        max: 100,
 
         labels: {
           formatter: function (value) {
@@ -89,10 +133,9 @@ export const chartOptionsSex = computed(() => {
   };
 });
 
-
 export const chartOptionsAges = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: { stacked: true },
     title: {
       text: t('report.title.age'),
@@ -114,12 +157,12 @@ export const chartOptionsAges = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.ageComposition')],
+      categories: [t('report.ourCompany'), t('report.all')],
     },
     yaxis: [
       {
         min: 0,
-        max:100,
+        max: 100,
 
         labels: {
           formatter: function (value) {
@@ -133,7 +176,7 @@ export const chartOptionsAges = computed(() => {
 
 export const chartOptionsDaysToWork = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: { stacked: true },
     title: {
       text: t('report.title.daysToWork'),
@@ -155,12 +198,12 @@ export const chartOptionsDaysToWork = computed(() => {
       width: 2,
     },
     xaxis: {
-      categories: [t('report.daysToWork')],
+      categories: [t('report.ourCompany'), t('report.all')],
     },
     yaxis: [
       {
         min: 0,
-        max:100,
+        max: 100,
 
         labels: {
           formatter: function (value) {
@@ -174,7 +217,7 @@ export const chartOptionsDaysToWork = computed(() => {
 
 export const chartOptionsMedia = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     labels: [],
   };
 });

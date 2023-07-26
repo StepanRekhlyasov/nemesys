@@ -7,7 +7,7 @@ export const drawerValue = ref<boolean>(false);
 export const mapDrawerValue = ref<boolean>(false);
 
 export const BackOrderColumns = computed(() => {
-  const { t } = i18n.global
+  const { t } = i18n.global;
   return [
     {
       name: 'BOID',
@@ -83,9 +83,8 @@ export const BackOrderColumns = computed(() => {
   ];
 });
 
-
 export const BackOrderStaff = computed(() => {
-  const { t } = i18n.global
+  const { t } = i18n.global;
   return [
     {
       name: 'name',
@@ -100,7 +99,7 @@ export const BackOrderStaff = computed(() => {
       label: t('backOrder.distanceBusiness'),
       field: 'distanceBusiness',
       align: 'left',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'matchDegree',
@@ -108,7 +107,7 @@ export const BackOrderStaff = computed(() => {
       label: t('backOrder.matchDegree'),
       field: 'matchDegree',
       align: 'left',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'statusThisTime',
@@ -116,6 +115,68 @@ export const BackOrderStaff = computed(() => {
       label: t('backOrder.statusThisTime'),
       field: 'statusThisTime',
       align: 'left',
-    },]
-})
+    },
+  ];
+});
 
+export const moreHalfYearExpOption = computed(() => {
+  const { t } = i18n.global;
+  return [
+    {
+      label: t('client.backOrder.necessary'),
+      value: 'necessary',
+    },
+    {
+      label: t('client.backOrder.unnecessary'),
+      value: 'unnecessary',
+    },
+  ];
+});
+
+export const employmentTypeOption = computed(() => {
+  const { t } = i18n.global;
+  return [
+    {
+      label: t('client.backOrder.fullTime'),
+      value: 'fullTime',
+    },
+    {
+      label: t('client.backOrder.dispatchEm'),
+      value: 'dispatchEm',
+    },
+    {
+      label: t('client.backOrder.partTime'),
+      value: 'partTime',
+    },
+    {
+      label: t('client.backOrder.partTimeEmployee'),
+      value: 'partTimeEmployee',
+    },
+  ];
+});
+
+export const qualificationOption = computed(() => {
+  const { t } = i18n.global;
+  return [
+    {
+      label: t('applicant.qualification.registeredNurse'),
+      value: 'registeredNurse',
+    },
+    {
+      label: t('applicant.qualification.assistantNurse'),
+      value: 'assistantNurse',
+    },
+    {
+      label: t('applicant.qualification.newcomer'),
+      value: 'newcomer',
+    },
+    {
+      label: t('applicant.qualification.careWorker'),
+      value: 'careWorker',
+    },
+    {
+      label: t('applicant.qualification.worker'),
+      value: 'worker',
+    },
+  ];
+});

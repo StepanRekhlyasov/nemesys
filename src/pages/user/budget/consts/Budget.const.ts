@@ -1,10 +1,23 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 
 const { t } = i18n.global
 
 export const budgetAddItem = computed(() => {
   return [
+    {
+      label: 'ID',
+      key: 'id',
+      type: '',
+      required: true,
+    },
+    {
+      label: t('budget.recordNumber'),
+      key: 'recordNumber',
+      type: '',
+      required: true,
+    },
     {
       label: t('budget.media'),
       key: 'media',
@@ -39,7 +52,7 @@ export const budgetAddItem = computed(() => {
       label: t('budget.accountingMonth'),
       key: 'accountingMonth',
       type: 'date',
-      required: false,
+      required: true,
       format: 'month'
     },
     {
@@ -77,12 +90,18 @@ export const budgetAddItem = computed(() => {
   ]
 });
 
-export const budgetColumns = computed(() => {
+export const budgetColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       label: '',
       field: 'select',
       name: 'select',
+      align: 'left',
+    },
+    {
+      label: t('budget.recordNumber'),
+      field: 'recordNumber',
+      name: 'recordNumber',
       align: 'left',
     },
     {

@@ -1,24 +1,40 @@
 import { QTableProps } from 'quasar'
 import { i18n } from 'boot/i18n'
 import { computed } from 'vue'
+import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
+import { FieldValue, Timestamp } from 'firebase/firestore'
 
 const { t } = i18n.global
 
 export const dashboardNotificationTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
+      name: 'readBy',
+      field: 'readBy',
+      label: '',
+      align: 'left',
+      sortable: false,
+    },
+    {
       name: 'recievedDate',
       field: 'recievedDate',
-      label: t('inquiry.table.recievedDate'),
+      label: t('inquiry.table.recieve'),
       align: 'left',
-      sortable: true
+      sortable: true,
+    },
+    {
+      name: 'type',
+      field: 'type',
+      label: t('inquiry.table.notificationType'),
+      align: 'center',
+      sortable: true,
     },
     {
       name: 'category',
       field: 'category',
       label: t('inquiry.table.category'),
       align: 'left',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'subject',
@@ -34,6 +50,19 @@ export const dashboardNotificationTableColumns = computed<QTableProps['columns']
     },
   ]
 })
+
+export interface DashboardinquiryRows {
+  id: string
+  status: string
+  category: string
+  subject: string
+  inquiryContent: string
+  organization?: string
+  recievedDate:  Timestamp
+  messages?: InquiryMessage[] | never[]
+  readBy?: string[] | FieldValue
+  type: string
+}
 export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -82,13 +111,14 @@ export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() 
 })
 export const statusTitles = computed(()=>{
   return {
-    'wait_contact': t('applicant.progress.status.waitContact'),
-    'wait_attend': t('applicant.progress.status.waitAttent'),
-    'wait_FIX': t('applicant.progress.status.waitFix'),
-    'wait_visit': t('applicant.progress.status.waitVisit'),
-    'wait_offer': t('applicant.progress.status.waitOffer'),
-    'wait_entry': t('applicant.progress.status.waitEntry'),
-    'wait_termination': t('applicant.progress.status.waitTermination'),
+    'wait_contact': t('applicant.statusList.waitContact'),
+    'wait_attend': t('applicant.statusList.waitAttend'),
+    'wait_FIX': t('applicant.statusList.waitFIX'),
+    'wait_visit': t('applicant.statusList.waitVisit'),
+    'wait_offer': t('applicant.statusList.waitOffer'),
+    'wait_entry': t('applicant.statusList.waitEntry'),
+    'working': t('applicant.statusList.working'),
+    'wait_termination': t('applicant.statusList.waitTermination'),
   }
 })
 export const borderColor = {
@@ -97,6 +127,7 @@ export const borderColor = {
   'wait_FIX': '#DFFE86',
   'wait_visit': '#DFFE86',
   'wait_offer': '#DFFE86',
-  'wait_entry': '#17568080',
+  'wait_entry': '#DFFE86',
+  'working': '#17568080',
   'wait_termination': '#17568080',
 }

@@ -109,6 +109,9 @@ async function getRows(requests: LicenseRequest[]) {
     const organization = organizationObj[req.organizationId]
     const branch = branchesObj[req.branchId]
     const buissneses = buissnesesObj[req.businessId]
+    if(typeof req.requestQuantity === 'string'){
+      req.requestQuantity = parseInt(req.requestQuantity)
+    }
     return {
       ...req,
       number: index + 1,

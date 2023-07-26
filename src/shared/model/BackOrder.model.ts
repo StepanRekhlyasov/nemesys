@@ -1,6 +1,8 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface BackOrderModel {
   id: string;
-  type: 'dispatch' | 'referral';
+  type: 'dispatch' | 'referral' | 'TTP';
   BOGenerationRoute: 'coldCall' | 'fax';
   client_id: string;
   office_id: string;
@@ -9,9 +11,11 @@ export interface BackOrderModel {
   invoice?: string;
   created_at: string;
   deleted: false;
+  registrant?: string;
+  organizationId: string;
 
   // Introduction Section
-  dateOfRegistration: string;
+  dateOfRegistration: Timestamp | undefined | string;
   typeCase: TypeOfCase;
   status: BackOrderStatus;
   requiredQualifications: boolean;
@@ -55,41 +59,35 @@ export interface BackOrderModel {
   stipulatedAmount: number;
   retirementAge_house: number;
   memo_house: string;
-
-}
-export interface BackOrderState {
-  BOList: BackOrderModel[]
-  selectedBo: BackOrderModel | null,
 }
 
 export enum TypeOfCase {
   Nurse = 'nurse',
-  NursingCare = 'nursingCare'
+  NursingCare = 'nursingCare',
 }
-
 
 export enum TypeQualifications {
   Registered = 'registeredNurse',
   Assistant = 'assistantNurse',
   NewComer = 'newcomer',
-  CareWorker = 'careWorker'
+  CareWorker = 'careWorker',
 }
 
 export enum TransactionType {
   Introduction = 'introduction',
   TTP = 'ttp',
-  GeneralDispatch = 'generalDispatch'
+  GeneralDispatch = 'generalDispatch',
 }
 
 export enum BackOrderStatus {
   Wanted = 'wanted',
-  Inactive = 'inactive'
+  Inactive = 'inactive',
 }
 
 export enum EmploymentBOStatus {
   FullTime = 'fullTime',
   PartTime = 'partTime',
-  PartTimeEmployee = 'partTimeEmployee'
+  PartTimeEmployee = 'partTimeEmployee',
 }
 
 export enum WorkingDaysWeek {
@@ -97,9 +95,7 @@ export enum WorkingDaysWeek {
   Tuesday = 'tuesday',
   Wednesday = 'wednesday',
   Thursday = 'thursday',
-  Friday ='friday',
+  Friday = 'friday',
   Saturday = 'saturday',
   Holiday = 'holiday',
 }
-
-

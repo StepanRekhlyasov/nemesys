@@ -6,7 +6,7 @@ export interface ApplicantExperienceInputs extends ApplicantExperienceBase, Appl
 export interface ApplicantExperienceBase {
   id: string;
   experience?: string;
-  facilityType?: string;
+  facilityType?: string[];
   nameEstablishment?: string;
   employmentType?: string;
   reasonResignation?: string;
@@ -68,9 +68,10 @@ export interface ApplicantBase {
   branchIncharge?: string;
   occupation?: ApplicantOccupation;
   qualification?: ApplicantQualification[];
-  totalYear?: string;
+  totalMonthes?: number;
+  addMonthes?: number;
   address?: string;
-  classification?: string;
+  classification?: string[];
   currentStatusMonth?: string;
   deleted?: boolean;
   imageURL?: string;
@@ -78,6 +79,7 @@ export interface ApplicantBase {
   attractionsReasonNG?: string;
   attractionsReasonNGDetail?: string;
   chargeOfAttraction?: string;
+  attractionMemo?: string;
   employmentStatus?: string;
   period?: string;
   position?: string[];
@@ -119,14 +121,15 @@ export interface DesiredConditions {
   daysToWork?: number;
   daysPerWeek?: Days[];
   specialDay?: SpecialDay[];
-  workingHoursEarly?: boolean;
-  workingHoursDay?: boolean;
-  workingHoursLate?: boolean;
-  workingHoursNight?: boolean;
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  shortTime?: boolean;
   shiftRemarks?: string;
-  meansCommuting?: string;
+  meansCommuting?: string[];
   nearestStation?: string;
-  commutingTime?: string;
+  commutingTime?: number;
   route?: string;
   commutingTimeRemarks?: string;
   facilityDesired?: string[];
@@ -143,16 +146,19 @@ export interface Attendance {
   attendingReasonNG?: string;
   attendingReasonNGDetail?: string;
   chargeOfAttending?: string;
-  memo?: string;
+  attendanceMemo?: string;
 }
 
 export interface PersonalStatus {
   smoking?: SmokingStatus;
+  smokingWhat?: string;
+  smokingStop?: string;
   tattoos?: TattoosStatus;
   marriedStatus?: MarriedStatus;
   liveTogether?: TattoosStatus;
   cohabitation?: string;
-  children?: string;
+  childrenNumber?: string;
+  childrenAge?: string;
   medicalHistory?: string;
   vaccinationStatus?: string;
   startCaring?: string;
@@ -231,7 +237,8 @@ export enum ApplicantQualification {
   REGISTEREDNURSE = 'registeredNurse',
   ASSISTANTNURSE = 'assistantNurse',
   NEWCOMER = 'newcomer',
-  CAREWORKER = 'careWorker'
+  CAREWORKER = 'careWorker',
+  WORKER = 'worker',
 }
 
 export enum ApplicantStatus {
@@ -323,7 +330,7 @@ export interface ApplicantMemo {
   content: string;
   user: User;
   created_date: string;
-  updated_date?: string;
+  updated_at?: string;
   delited: boolean;
 }
 

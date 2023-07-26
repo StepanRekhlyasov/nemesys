@@ -3,8 +3,8 @@
     <q-card-section class="bg-grey-3 flex items-center" style="gap:20px">
       <div class="text-h6 text-primary">{{ $t("menu.dashboard") }} </div>
       <label>{{ $t("dashboard.showBranch") }}</label>
-      <MySelect 
-        @update="onBranchChange()" 
+      <MySelect
+        @update="onBranchChange()"
         v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
         :optionToFetch="'branchIncharge'"
         :width="'175px'"
@@ -32,7 +32,7 @@ const { userInCharge, prefecture, currentStatusMonth } = state.value.applicantPr
 const updateOnMounted = ref(false)
 const onBranchChange = async () => {
   COLUMN_STATUSES.map(async (status)=>{
-    applicantStore.getApplicantsByStatus(status, applicantStore.state.applicantProgressFilter, limitQuery)
+    applicantStore.getApplicantsByColumns(status, applicantStore.state.applicantProgressFilter, limitQuery)
   })
 }
 onBeforeMount(()=>{

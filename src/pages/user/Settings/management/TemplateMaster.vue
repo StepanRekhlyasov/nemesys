@@ -181,7 +181,6 @@ export default {
           })
         }
       } catch (e) {
-        console.log(e)
         loading.value = false;
         Alert.warning(e)
       }

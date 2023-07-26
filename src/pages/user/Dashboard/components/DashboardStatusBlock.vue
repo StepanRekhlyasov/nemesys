@@ -32,17 +32,18 @@ import { onMounted, ref } from 'vue';
 import DashboardChooseBanner from './DashboardChooseBanner.vue';
 import DashboardProgressPreviewTable from './DashboardProgressPreviewTable.vue';
 import { limitQuery } from '../../ApplicantProgress/const/applicantColumns';
+import { ApplicantStatus } from 'src/shared/model';
 
 const applicantStore = useApplicant()
 const props = defineProps<{
-  status: string,
+  status: ApplicantStatus,
   updateOnMounted: boolean
 }>()
 const showPreview = ref(false)
 
 onMounted(async ()=>{
   if(props.updateOnMounted || typeof applicantStore.state.applicantRowsCount[props.status] === 'undefined') {
-    await applicantStore.getApplicantsByStatus(props.status, applicantStore.state.applicantProgressFilter, limitQuery)
+    await applicantStore.getApplicantsByColumns(props.status, applicantStore.state.applicantProgressFilter, limitQuery)
   } 
 })
 </script>

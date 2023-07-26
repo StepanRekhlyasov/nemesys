@@ -1,7 +1,6 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n';
 
-
 export const destinationApplicant = computed(() => {
   const { t } = i18n.global
   return [
@@ -56,13 +55,3 @@ export const destinationApplicant = computed(() => {
     },
   ]
 })
-
-export const options = computed(() => {
-  const { t } = i18n.global
-  return [
-    {
-      label: t('common.pleaseSelect'),
-      value: 'Select',
-    },
-  ];
-});

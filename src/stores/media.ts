@@ -1,25 +1,22 @@
-import {
-  collection,
-  query,
-  getFirestore,
-  getDocs,
-
-} from 'firebase/firestore';
+import { collection, query, getFirestore, getDocs } from 'firebase/firestore';
+import { Media } from 'src/shared/model/Media.model';
 import { defineStore } from 'pinia';
 export const useMedia = defineStore('media', () => {
   const db = getFirestore();
 
-  const getAllmedia = async (
-
-  ) => {
+  const getAllmedia = async () => {
     const mediaRef = collection(db, 'media');
     const querys = query(mediaRef);
     const docSnap = await getDocs(querys);
-    const media_names:string[] = [];
-    for(const doc of docSnap.docs){
-      media_names.push(doc.data().name);
+    const mediaList: Media[] = [];
+    for (const doc of docSnap.docs) {
+      const media: Media = {
+        name: doc.data().name,
+        id: doc.id,
+      };
+      mediaList.push(media);
     }
-    return media_names;
+    return mediaList;
   };
-  return {getAllmedia};
+  return { getAllmedia };
 });

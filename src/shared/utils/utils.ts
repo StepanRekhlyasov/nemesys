@@ -78,10 +78,12 @@ export const limitDate = (date : string) => {
   return date <= new Date().toLocaleDateString('ja-JP')
 }
 
-export const differentDateYear = (date1: string, date2: string):number => {
+export const differentDateMonth = (date1: string, date2: string):number => {
   const d1 = new Date(date1), d2 = new Date(date2);
-  const timeDiff = Math.abs(d2.getTime() - d1.getTime());
-  return Math.ceil(timeDiff / (1000 * 3600 * 24 * 12 * 30)) - 1;
+  const diff = Math.floor((d2.getDate() - d1.getDate()) / 30 ) +
+  d2.getMonth() - d1.getMonth() +
+  (12 * (d2.getFullYear() - d1.getFullYear()));
+  return diff
 }
 
 export const toDateObject = (timestamp: Timestamp):dataObject => {
@@ -129,9 +131,6 @@ export const myDateFormat = (myDate?: string | undefined | Timestamp, format?: s
   }
 }
 
-export const timestampToDateFormat = (myDate : Timestamp | undefined, mask = 'YYYY/MM/DD' ) => {
-  return date.formatDate(myDate?.toDate?.(), mask);
-}
 export const dateToTimestampFormat = (myDate : Date) => {
   const result = Timestamp.fromDate?.(myDate)
   if(isNaN(result.seconds)){
@@ -163,6 +162,24 @@ export const remainingDays = (date1 : Date, date2 : Date) => {
   return Math.ceil(Math.abs(date1.getTime() - date2.getTime()) / millisecondsInDay) 
 }
 
+export const getFromTo = (dateRange: string | { from: string; to: string; } | null) => {
+  let to: Timestamp | undefined, from: Timestamp | undefined
+
+  if (dateRange) {
+      if (typeof dateRange === 'string') {
+          const fromDate = new Date(dateRange)
+          const toDate = new Date(new Date(dateRange).setHours(23, 59, 59, 999))
+          from = dateToTimestampFormat(fromDate)
+          to = dateToTimestampFormat(toDate)
+      } else if (dateRange.from && dateRange.to) {
+          const fromDate = new Date(dateRange.from)
+          const toDate = new Date(new Date(dateRange.to).setHours(23, 59, 59, 999))
+          from = dateToTimestampFormat(fromDate)
+          to = dateToTimestampFormat(toDate)
+      }
+  }
+  return [from, to]
+}
 // rules intut textfield
 
 // export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`

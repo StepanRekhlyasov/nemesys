@@ -8,10 +8,8 @@
       <q-separator color="white" size="2px" />
 
       <q-card-section class="q-pa-xs">
-        <searchForm @load-search-staff="loadSearchStaff" />
+        <searchForm :searchData="sharedData" @load-search-staff="loadSearchStaff" @openSMSDrawer="openSMSDrawer" />
       </q-card-section>
-
-      <q-btn class="q-ml-sm q-mb-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="sendSMSDrawer = true" />
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
@@ -47,7 +45,7 @@
           <template v-slot:body-cell-qualification="props">
             <q-td :props="props">
               <span v-if="props.value && props.value.length > 0">
-                {{ props.value.map(item => $t('applicant.add.' + item)).join(', ') }}
+                {{ props.value.map(item => $t('applicant.qualification.' + item)).join(', ') }}
               </span>
             </q-td>
           </template>
@@ -93,7 +91,7 @@ import { ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/appli
 import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import SmsDrawer from './components/SmsDrawer.vue';
-
+import { sharedData } from './components/search/searchData'
 const { t } = useI18n({ useScope: 'global' });
 const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
@@ -173,6 +171,9 @@ const getClassification = (classification: string) => {
 const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
+const openSMSDrawer = () => {
+  sendSMSDrawer.value = true
+};
 
 const preventWatch = ref(false)
 const loadSearchStaff = async (data: ApplicantElasticSearchData) => {
@@ -186,9 +187,9 @@ watch(
   () => (pagination.value.page),
   () => {
     if (!preventWatch.value) {
-      applicantStore.loadApplicantData({}, pagination.value);
+      applicantStore.loadApplicantData(sharedData.value, pagination.value);
     }
   },
 )
-applicantStore.loadApplicantData({}, pagination.value);
+applicantStore.loadApplicantData(sharedData.value, pagination.value);
 </script>

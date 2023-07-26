@@ -31,8 +31,7 @@
     "vue3-geolocation": "^1.0.0",
     "vue3-google-map": "^0.15.0",
     "vuedraggable": "^4.1.0",
-    "vuejs3-google-maps": "^0.2.3",
-    "vuex": "^4.0.1"
+    "vuejs3-google-maps": "^0.2.3"
   },
   "devDependencies": {
     "@quasar/app-webpack": "^3.0.0",

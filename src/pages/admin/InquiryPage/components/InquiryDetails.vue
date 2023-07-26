@@ -8,7 +8,7 @@
         {{ inquiryDetail.category }}
       </div>
       <div class="col-1 text-right text-accent">
-        {{ $t('inquiry.detail.recievedDate') }}
+        {{ $t('inquiry.message.responseDate') }}
       </div>
       <div class="col-3">
         {{ inquiryDetail.issueDate }}

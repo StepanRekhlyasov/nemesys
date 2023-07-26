@@ -90,14 +90,13 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
   officeDetails.registeredInfo = computed(() => {
     return [
         {label: t('clientFactory.drawer.details.parentClient'), value:(safeGet(draft, 'client.name') ?? safeGet(clientFactory, 'client.name')) || '', editType: 'client', key: 'client.name', isHighlight: safeGet(draft, 'client.name') !== undefined && safeGet(clientFactory, 'client.name') !== safeGet(draft, 'client.name')},
-        {label: t('clientFactory.drawer.details.prefecture'), value: (safeGet(draft, 'officeDetails.registeredInfo.prefecture') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.prefecture')) || '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.prefecture') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.prefecture') !== safeGet(draft, 'officeDetails.registeredInfo.prefecture')},
-        {label: t('clientFactory.drawer.details.officeName'), value: (safeGet(draft, 'officeDetails.registeredInfo.officeName') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.officeName')) || '', editType: 'text', key: 'officeDetails.registeredInfo.officeName', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.officeName') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.officeName') !== safeGet(draft, 'officeDetails.registeredInfo.officeName')},
-        {label: t('clientFactory.drawer.details.city'), value: (safeGet(draft, 'officeDetails.registeredInfo.city') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.city')) || '', editType: 'text', key: 'officeDetails.registeredInfo.city', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.city') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.city') !== safeGet(draft, 'officeDetails.registeredInfo.city')},
+        {label: t('clientFactory.drawer.details.prefecture'), value: (safeGet(draft, 'prefecture') ?? safeGet(clientFactory, 'prefecture')) || '', editType: 'prefecture', key: 'prefecture', isHighlight: safeGet(draft, 'prefecture') !== undefined && safeGet(clientFactory, 'prefecture') !== safeGet(draft, 'prefecture')},
+        {label: t('clientFactory.drawer.details.officeName'), value: (safeGet(draft, 'name') ?? safeGet(clientFactory, 'name')) || '', editType: 'text', key: 'text', isHighlight: safeGet(draft, 'name') !== undefined && safeGet(clientFactory, 'name') !== safeGet(draft, 'name')},
+        {label: t('clientFactory.drawer.details.municipality'), value: (safeGet(draft, 'municipality') ?? safeGet(clientFactory, 'municipality')) || '', editType: 'municipality', key: 'municipality', isHighlight: safeGet(draft, 'municipality') !== undefined && safeGet(clientFactory, 'municipality') !== safeGet(draft, 'municipality')},
         {label: '事業所TEL', value: (safeGet(draft, 'officeDetails.registeredInfo.tel') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.tel')) || '', editType: 'text', key: 'officeDetails.registeredInfo.tel', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.tel') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.tel') !== safeGet(draft, 'officeDetails.registeredInfo.tel')},
         {label: t('applicant.add.street'), value: (safeGet(draft, 'officeDetails.registeredInfo.street') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.street')) || '', editType: 'text', key: 'officeDetails.registeredInfo.street', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.street') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.street') !== safeGet(draft, 'officeDetails.registeredInfo.street')},
-        {label: t('client.add.addressBuildingName'), value: (safeGet(draft, 'officeDetails.registeredInfo.building') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.building')) || '', editType: 'text', key: 'officeDetails.registeredInfo.building', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.building') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.building') !== safeGet(draft, 'officeDetails.registeredInfo.building')},
         {label: '事業所FAX', value: (safeGet(draft, 'officeDetails.registeredInfo.fax') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.fax')) || '', editType: 'text', key: 'officeDetails.registeredInfo.fax', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.fax') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.fax') !== safeGet(draft, 'officeDetails.registeredInfo.fax')},
-        {label: t('clientFactory.drawer.details.others'), value: (safeGet(draft, 'officeDetails.registeredInfo.others') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.others')) || '', editType: 'text', key: 'officeDetails.registeredInfo.others', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.others') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.others') !== safeGet(draft, 'officeDetails.registeredInfo.others')},
+        {label: t('client.add.addressBuildingName'), value: (safeGet(draft, 'officeDetails.registeredInfo.building') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.building')) || '', editType: 'text', key: 'officeDetails.registeredInfo.building', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.building') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.building') !== safeGet(draft, 'officeDetails.registeredInfo.building')},
         {label: t('clientFactory.drawer.details.latitude'), value: (safeGet(draft, 'officeDetails.registeredInfo.latitude') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.latitude')) || 0, editType: 'number', key: 'officeDetails.registeredInfo.latitude', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.latitude') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.latitude') !== safeGet(draft, 'officeDetails.registeredInfo.latitude')},
         {label: t('clientFactory.drawer.details.longitude'), value: (safeGet(draft, 'officeDetails.registeredInfo.longitude') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.longitude')) || 0, editType: 'number', key: 'officeDetails.registeredInfo.longitude', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.longitude') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.longitude') !== safeGet(draft, 'officeDetails.registeredInfo.longitude')}
     ]
@@ -131,7 +130,7 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
 
       const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
           if(key) {
-            return {label: key, value: (safeGet(draft, key) ?? safeGet(clientFactory, key)) || '', key: `clientFactory.officeDetails.${industryType}.uniqueItems.${key}`, editType: 'text', isHighlight: safeGet(draft, key) !== undefined && safeGet(clientFactory, key) !== safeGet(draft, key)}
+            return {label: key, value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`)) || typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 0 : '', key: `officeDetails.${industryType}.uniqueItems.${key}`, editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 'number' : 'text', isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`)}
           }
 
         return {label: '', value: '', editType: '', key: '', isHighlight: false}
@@ -163,19 +162,6 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
         {label: t('clientFactory.drawer.details.workingHourNight'), value: (safeGet(draft, 'officeDetails.commonItems.workingHourNight') ?? safeGet(clientFactory, 'officeDetails.commonItems.workingHourNight')) || '', editType: 'text', key: 'officeDetails.commonItems.workingHourNight', isHighlight: safeGet(draft, 'officeDetails.commonItems.workingHourNight') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.workingHourNight') !== safeGet(draft, 'officeDetails.commonItems.workingHourNight')}
       ]
     }).value 
-
-    officeDetails.uniqueItems = computed(() => {
-
-      const uniqueItems = Object.keys(safeGet(clientFactory, 'clientFactory.officeDetails.uniqueItems') ?? {}).map((key) => {
-          if(key) {
-            return {label: key, value: (safeGet(draft, key) ?? safeGet(clientFactory, key)) || '', key: `clientFactory.officeDetails.uniqueItems.${key}`, editType: 'text', isHighlight: safeGet(draft, key) !== undefined && safeGet(clientFactory, key) !== safeGet(draft, key)}
-          }
-
-          return {label: '', value: '', editType: '', key: '', isHighlight: false}
-      })
-
-      return uniqueItems
-    }).value
   }
 
   return officeDetails
