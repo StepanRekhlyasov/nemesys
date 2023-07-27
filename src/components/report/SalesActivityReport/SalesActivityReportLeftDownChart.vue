@@ -47,7 +47,6 @@ const showChart = async () => {
     dateRange: props.dateRangeProps,
     isAverage: false,
   });
-  console.log(Object.values(rows[0]));
   dataToshow.value = Object.values(rows[0]).filter(
     (value) => typeof value !== 'string'
   );

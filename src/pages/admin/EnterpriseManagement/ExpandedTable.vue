@@ -8,10 +8,13 @@
     </template>
 
     <template #buisneses="props">
-      <q-toggle v-model="props.buisnesesItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
-        color="accent" @update:model-value="async (working) =>
-            await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id })
-          " />
+      <div class="flex justify-between full-width">
+        <q-toggle v-model="props.buisnesesItem.working" :label="t('menu.admin.organizationsTable.working')" left-label
+          color="accent" @update:model-value="async (working) =>
+              await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id })
+            " />
+        <q-btn flat icon="delete" color="accent" @click="deleteConfirm = true; deleteBusinessData = props.buisnesesItem; deleteOrganizationId = props.organizationItem.id; deleteItem = 'business'" />
+      </div>
     </template>
 
     <template #branch="props">
@@ -20,6 +23,7 @@
           color="accent"
           @update:model-value="async (working) => await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id, branchId: props.branchItem.id })" />
         <q-btn flat icon="edit" color="accent" @click="openDialog = true; organizationId=props.organizationItem.id; branchToEdit=props.branchItem" />
+        <q-btn flat icon="delete" color="accent" @click="deleteConfirm = true; deleteBusinessData = props.buisnesesItem; deleteOrganizationId = props.organizationItem.id; deleteBranchId = props.branchItem.id; deleteItem = 'branch'" />
       </div>
     </template>
 
@@ -30,10 +34,22 @@
       <BranchCreateForm @closeDialog="openDialog = false; loadTableData()" color="accent" :defaultOrganizationid="organizationId" :editBranch="JSON.parse(JSON.stringify(branchToEdit))" @onCatchError="loadTableData"/>
     </DialogWrapper>
   </q-dialog>
+
+  <q-dialog v-model="deleteConfirm" persistent @hide="deleteBusinessData=''; deleteOrganizationId=''">
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">{{ $t('common.deleteInfo') }}</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn flat label="Delete" color="primary" v-close-popup @click="()=>deleteBusinessHandler()" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { QTableProps, QTableSlots } from 'quasar';
+import { QTableProps, QTableSlots, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Row, Table } from './types'
@@ -61,10 +77,43 @@ const branchStore = useBranch()
 const business = useBusiness()
 const openDialog = ref(false)
 const loading = ref(false)
+const deleteConfirm = ref(false)
+const deleteBusinessData = ref()
+const deleteItem = ref('')
+const deleteOrganizationId = ref('')
+const deleteBranchId = ref('')
 const organizationId = ref<string>()
 const branchToEdit = ref<Branch>()
+const $q = useQuasar()
 
 const componentProps = defineProps<ExpandedTableProps>()
+
+async function deleteBusinessHandler(){
+  if(deleteItem.value === 'business' && deleteBusinessData.value?.branches?.[0]?.id){
+    $q.dialog({
+      title: t('errors.error'),
+      message: t('errors.deleteBranchesFirst')
+    })
+    return
+  }
+  if(deleteItem.value === 'business'){
+    try {
+      await business.deleteBusiness(deleteOrganizationId.value, deleteBusinessData.value.id)
+      Alert.success();
+      await loadTableData();
+    } catch (error) {
+      Alert.warning(error);
+    }
+  } else {
+    try {
+      await business.deleteBranch(deleteOrganizationId.value, deleteBusinessData.value.id, deleteBranchId.value)
+      Alert.success();
+      await loadTableData();
+    } catch (error) {
+      Alert.warning(error);
+    }
+  }
+}
 
 const { t } = useI18n({ useScope: 'global' });
 

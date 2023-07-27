@@ -45,7 +45,7 @@ export const useIndsutry = defineStore('industries', () => {
         }
     };
 
-    const addIndustry = async (industry: Industry) => {
+    const addIndustry = async (industry: Omit<Industry, 'id'>) => {
         try {
             const docRef = await addDoc(collection(db, 'industries'), industry);
             

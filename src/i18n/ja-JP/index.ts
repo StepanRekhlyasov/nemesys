@@ -17,9 +17,13 @@ export default {
     searchPlaceholder: 'キーワードを入力してください'
   },
   common: {
+    approved: '申請許可',
+    pending: '申請中',
+    denied: '申請却下',
     minimum:'最小',
     maximum:'最大',
     BO: 'BO',
+    deny: '却下',
     select: '選択',
     reflect: '反映',
     capture: '取込',
@@ -211,6 +215,8 @@ export default {
       },
       licenseManagement: {
         licenseRequest: '枠変更申請一覧',
+        licenseRequestAdd: 'ライセンス変更申請',
+        showList: '一覧表示',
         licenseManagement: 'ライセンス管理',
         targetSystem: '対象システム',
         request: {
@@ -224,12 +230,15 @@ export default {
         deleteSlots: '- 枠数削除',
         deleteHeader: '枠数の削除を実行します。',
         additionHeader: '枠数の追加を実行します。',
+        deleteHeaderDeny: '枠数の削除を却下します。',
+        additionHeaderDeny: '枠数の追加を却下します。',
         userInfo: '■申請者情報',
         branch: '支店',
         details:'■申請内容',
         targetBranch: '対象支店',
         numberOfSlots: 'ライセンス数',
         execution: '実行',
+        deny: '却下',
         cancel: 'キャンセル',
         licenseFee: 'ライセンス料金',
         licenseHistory: '枠変更履歴',
@@ -238,6 +247,7 @@ export default {
         licenseStatistic: '枠数集計',
         totalLicenseNumber: '枠数集計（月別・企業別）',
         issueDate: '発行日',
+        statisticMonth: '集計月',
         numberIdName: 'No./企業ID/企業名',
         businessName: '事業名',
         branchName: '支店名',
@@ -1704,7 +1714,8 @@ export default {
     nurse: '看護',
     uniqueItemSetting: 'クライアント種別独自項目設定',
     specificTypeItems: '種別独自項目',
-    addLine: '行追加'
+    addLine: '行追加',
+    newIndustry: '新しい産業'
   },
   report:{
     salesActivityIndividualReport:'営業活動個人レポート',
@@ -1943,6 +1954,8 @@ export default {
   },
   errors: {
     'BO_occupied' : '選択されたBOは既に使用されています',
+    'error' : 'エラー',
+    'deleteBranchesFirst' : 'まずすべてのブランチを削除してください'
   },
   budget: {
     search: '予算検索',

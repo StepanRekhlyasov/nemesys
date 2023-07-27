@@ -21,6 +21,7 @@ import {
   dailyBasedReportState,
   reportStateAndOthers,
   branchBasedReportState,
+  GetAgeReportInput
 } from 'src/shared/model/GetReport';
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
@@ -42,8 +43,8 @@ const applicantFieldDict: FieldDict = {
 const fixFieldDict: FieldDict = {
   name: 'fix',
   rateName: 'fixRate',
-  dateBasedOnEachItemDate: 'data',
-  dateBasedOnLeftMostItemDate: 'data',
+  dateBasedOnEachItemDate: 'fixDate',
+  dateBasedOnLeftMostItemDate: 'fixDate',
   filters: [where('fixStatus', '==', true)],
   collection: 'fix',
   branchField: 'branchInCharge',
@@ -457,35 +458,41 @@ const getMonthDateList = (date: string) => {
   return dateList;
 };
 
-const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: QueryFieldFilterConstraint[]): Promise<number[] | undefined> => {
+const agesListOfApplicants = async (
+  dateRange: { from: string; to: string },
+  filterData?: QueryFieldFilterConstraint[]
+): Promise<number[] | undefined> => {
   const db = getFirestore();
   const targetDateFrom = new Date(dateRange.from);
   const targetDateTo = new Date(dateRange.to);
   const filters = [
     where('applicationDate', '>=', targetDateFrom),
-    where('applicationDate', '<=', targetDateTo)
-  ]
+    where('applicationDate', '<=', targetDateTo),
+  ];
   if (filterData) {
-    for(const filter of filterData){
-      filters.push(filter)
+    for (const filter of filterData) {
+      filters.push(filter);
     }
   }
-  const applicantRef = collection(db, 'applicants')
-  const querys = query(applicantRef, ...filters)
-  const docSnap = await getDocs(querys)
+  const applicantRef = collection(db, 'applicants');
+  const querys = query(applicantRef, ...filters);
+  const docSnap = await getDocs(querys);
   const applicants = docSnap.docs.map((doc) => {
-    if (!doc.data().dob) return undefined
-    const dob = doc.data().dob
-    const now = new Date()
-    const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
-    return age
-  })
-  if (applicants.length === 0) return undefined
+    if (!doc.data().dob) return undefined;
+    const dob = doc.data().dob;
+    const now = new Date();
+    const age = Math.floor(
+      (now.getTime() - dob.seconds * 1000) / miliSecondsPerYear
+    );
+    return age;
+  });
+  if (applicants.length === 0) return undefined;
   //remove undefined in applicants
-  const filteredApplicants = applicants.filter((applicant): applicant is number => typeof applicant == 'number')
-  return filteredApplicants
-}
-
+  const filteredApplicants = applicants.filter(
+    (applicant): applicant is number => typeof applicant == 'number'
+  );
+  return filteredApplicants;
+};
 
 export const useGetReport = defineStore('getReport', () => {
   const getDailyReport = async (state: dailyBasedReportState) => {
@@ -632,16 +639,7 @@ export const useGetReport = defineStore('getReport', () => {
     return rows;
   };
 
-  interface getAgeReportInput {
-    dateRange: { from: string; to: string };
-    media?: Media;
-    branch?: Branch;
-    organizationId?: string;
-  }
-
-  const getAgeReport = async (
-    getAgeReportInput: getAgeReportInput
-  ) => {
+  const getAgeReport = async (getAgeReportInput: GetAgeReportInput) => {
     let ageData = {
       '10s': 0,
       '20s': 0,
@@ -658,9 +656,14 @@ export const useGetReport = defineStore('getReport', () => {
       filters.push(where('branch_id', '==', getAgeReportInput.branch.id));
     }
     if (getAgeReportInput.organizationId) {
-      filters.push(where('organization_id', '==', getAgeReportInput.organizationId));
+      filters.push(
+        where('organization_id', '==', getAgeReportInput.organizationId)
+      );
     }
-    const listofages = await agesListOfApplicants(getAgeReportInput.dateRange, filters);
+    const listofages = await agesListOfApplicants(
+      getAgeReportInput.dateRange,
+      filters
+    );
     if (listofages) {
       ageData = {
         '10s': listofages.filter((age) => age >= 10 && age < 20).length,

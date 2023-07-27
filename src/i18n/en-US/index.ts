@@ -17,9 +17,13 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
+    approved: 'Approved',
+    pending: 'Pending',
+    denied: 'Denied',
     minimum:'min',
     maximum:'max',
     BO: 'BO',
+    deny: 'Deny',
     select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',
@@ -211,6 +215,8 @@ export default {
       },
       licenseManagement: {
         licenseRequest: 'Applications license request',
+        licenseRequestAdd: 'Add applications license request',
+        showList: 'Show list',
         licenseManagement: 'License management',
         targetSystem: 'Target system',
         request: {
@@ -224,12 +230,15 @@ export default {
         deleteSlots: '- Delete slots',
         deleteHeader: 'Execute slots reduction',
         additionHeader: 'Execute slots adding',
+        deleteHeaderDeny: 'Deny slots reduction',
+        additionHeaderDeny: 'Deny slots adding',
         userInfo: '■ User information',
         branch: 'Branch',
         details: '■ Details',
         targetBranch: 'Target branch:',
         numberOfSlots: 'Number of slots:',
         execution: 'execution',
+        deny: 'Deny',
         cancel:'cancel',
         licenseFee: 'License fee:',
         licenseHistory: 'License history',
@@ -238,6 +247,7 @@ export default {
         licenseStatistic: 'License statistic',
         totalLicenseNumber: 'Total number of license (by month/company)',
         issueDate: 'issue date',
+        statisticMonth: 'Statistic Month',
         numberIdName: 'No./organization ID/organization name',
         businessName: 'Business Name',
         branchName: 'Branch name',
@@ -1711,7 +1721,8 @@ export default {
     nurse: 'Nurse',
     uniqueItemSetting: 'Client type unique item setting',
     specificTypeItems: 'Type-specific item',
-    addLine: 'ADD LINE'
+    addLine: 'ADD LINE',
+    newIndustry: 'New Industry'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',
@@ -1950,6 +1961,8 @@ export default {
   },
   errors: {
     'BO_occupied' : 'Selected BO is occupied',
+    'error' : 'Error',
+    'deleteBranchesFirst' : 'Please, delete all branches first'
   },
   budget: {
     search: 'Budget Search',

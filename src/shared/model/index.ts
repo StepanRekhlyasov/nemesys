@@ -1,6 +1,7 @@
 export interface selectOptions {
   value: string;
   label: string;
+  disable?: boolean;
 }
 
 export interface dataTable {

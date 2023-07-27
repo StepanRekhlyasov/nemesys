@@ -18,7 +18,12 @@
             >
               <q-date v-model="dateRange" range>
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                  <q-btn
+                    v-close-popup
+                    :label="$t('common.close')"
+                    color="primary"
+                    flat
+                  />
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -42,7 +47,7 @@
       v-bind:is="report_componets[model_report.value]"
       :organization_id="currentOrganizationId"
       :dateRangeProps="dateRange"
-      :branch_id="branch_input"
+      :branch_id="branch_input['value']"
       :branch_user_list="branch_user_list"
       :graph_type="graph_type"
     ></component>
@@ -50,13 +55,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, computed,onMounted } from 'vue';
+import { ref, Ref, watch, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user';
 import { useBranch } from 'src/stores/branch';
-
+import { convertObjToIdNameList } from 'src/shared/utils/KPI.utils';
 import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport/SalesActivityIndividualReport.vue';
 import ApplicantReport from '../../../components/report/ApplicantReport/ApplicantReport.vue';
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
@@ -66,11 +71,10 @@ const UserStore = useUserStore();
 const UserBranch = useBranch();
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type = ref<graphType>('BasedOnLeftMostItemDate');
-const branch_input = ref('');
+const branch_input = ref({ value: '', label: '' });
 const organizationStore = useOrganization();
-// currentOrganizationBranches: { [id: string]: Branch; },のような形をしているのでbranchをlist化するmapを使ってbranchの名前を取り出
-const {currentOrganizationId} = storeToRefs(organizationStore);
-const branchs = ref<string[]>([]);
+const { currentOrganizationId } = storeToRefs(organizationStore);
+const branchs = ref<[]>([]);
 const branch_user_list = ref<{ id: string; name: string }[]>([]);
 const reportType = computed<{ label: string; value: number }[]>(() => {
   return [
@@ -118,12 +122,15 @@ const dateRange: Ref<{ from: string; to: string } | null> = ref({
 
 watch(branch_input, async () => {
   branch_user_list.value = await UserStore.getAllUsersInBranch(
-    branch_input.value
+    branch_input.value['value']
   );
 });
 
 onMounted(async () => {
-  branchs.value = Object.keys(await UserBranch.getBranchesInOrganization(currentOrganizationId.value))
+  branchs.value = convertObjToIdNameList(
+    Object.values(
+      await UserBranch.getBranchesInOrganization(currentOrganizationId.value)
+    )
+  );
 });
-
 </script>

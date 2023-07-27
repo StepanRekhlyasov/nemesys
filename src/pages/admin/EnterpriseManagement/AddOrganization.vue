@@ -15,12 +15,12 @@
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.phoneNumber">
           <q-input v-model="organization.tel" outlined dense color="accent" :rules="[creationRule]" :disable="loading"
-            type="tel" mask="phone" />
+            type="tel" />
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.fax">
           <q-input v-model="organization.fax" outlined dense color="accent" :rules="[creationRule]" :disable="loading"
-            type="tel" mask="phone" />
+            type="tel" />
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.email">

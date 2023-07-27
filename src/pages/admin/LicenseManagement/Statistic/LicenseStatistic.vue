@@ -3,7 +3,7 @@
     {{ t('menu.admin.licenseManagement.totalLicenseNumber') }}
   </PageHeader>
   <div class="q-pt-sm q-px-lg row items-center">
-    {{ t('menu.admin.licenseManagement.issueDate') }}
+    {{ t('menu.admin.licenseManagement.statisticMonth') }}
     <YearMonthPicker :model-value="selectedDate" isAdmin class="q-ml-sm" :clearable="false" @pickerHide="onDateChange"
       :max-year-month="currentDate.replace('-', '/')" :disable="loading" />
   </div>

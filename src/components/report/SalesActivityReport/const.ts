@@ -16,7 +16,7 @@ export const dataNames = [
   'report.CVR',
   'report.allCVR',
 ] as const;
-export const dataNamesR = ['report.companyTotal', 'report.allCVR'] as const;
+export const dataNamesR = ['report.companyAverage', 'report.allAverage'] as const;
 export const chartNames = ['bar', 'line', 'line'] as const;
 export const chartNamesR = ['bar', 'bar'] as const;
 export const chartOptions = computed(() => {
@@ -68,7 +68,7 @@ export const chartOptions = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1);
+            return value.toFixed(1) + '%';
           },
         },
       },

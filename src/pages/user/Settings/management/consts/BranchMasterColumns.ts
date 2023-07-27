@@ -13,6 +13,16 @@ export const columns = computed<QTableProps['columns']>(() => [
     align: 'center',
   },
   {
+    name: 'list',
+    label: '',
+    field: '',
+  },
+  {
+    name: 'edit',
+    label: '',
+    field: '',
+  },
+  {
     name: 'name',
     required: true,
     label: t('settings.branch.name'),
@@ -63,5 +73,50 @@ export const columns = computed<QTableProps['columns']>(() => [
     name: 'delete',
     label: '',
     field: '',
-  }
+  },
+])
+
+export const listColumns = computed<QTableProps['columns']>(()=>[
+  {
+    name: 'branchId',
+    label: t('menu.admin.organizationsTable.branchName'),
+    field: 'branchId',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'requestDate',
+    label: t('menu.admin.licenseManagement.requestDate'),
+    field: 'requestDate',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'requestType',
+    label: t('menu.admin.licenseManagement.requestType'),
+    field: 'requestType',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'requestQuantity',
+    label: t('menu.admin.licenseManagement.requestQuantity'),
+    field: 'requestQuantity',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'requestUserId',
+    label: t('menu.admin.licenseManagement.requestUser'),
+    field: 'requestUserId',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'status',
+    label: t('backOrder.status'),
+    field: 'status',
+    align: 'left',
+    sortable: true,
+  },
 ])

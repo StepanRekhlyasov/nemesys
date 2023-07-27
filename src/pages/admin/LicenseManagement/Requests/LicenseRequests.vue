@@ -44,6 +44,19 @@
               dialogData.userName = props.row.requestUser
               dialogData.priceForOneUserInYen = props.row.priceForOneUserInYen
               licenseRequest = props.row.licenseRequest
+              licenseRequest.status = 'approved'
+              dialog = true
+            }" />
+        <DefaultButton
+          :label-key="'common.deny'"
+          :size="'sm'" @click="() => {
+              requestType = props.row.requestType
+              dialogData.branchName = props.row.branchName
+              dialogData.organizationCodeAndName = props.row.organizationCodeAndName
+              dialogData.userName = props.row.requestUser
+              dialogData.priceForOneUserInYen = props.row.priceForOneUserInYen
+              licenseRequest = props.row.licenseRequest
+              licenseRequest.status = 'denied'
               dialog = true
             }" />
       </q-td>
