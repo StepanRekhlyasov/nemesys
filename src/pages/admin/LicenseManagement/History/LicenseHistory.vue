@@ -33,6 +33,11 @@
         {{ props.row.executor || t('common.userNotFound')   }}
       </q-td>
     </template>
+    <template v-slot:body-cell-status="props">
+      <q-td :props="props" >
+        <template v-if="props.row.status">{{ t('common.' + props.row.status) }}</template>
+      </q-td>
+    </template>
   </q-table>
   <TablePagination ref="paginationRef" :pagination="pagination" :isAdmin="true" @on-data-update="async (newData) => {
       rows = await getRows(newData as LicenseHistory[])

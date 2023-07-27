@@ -39,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import { getAuth } from 'firebase/auth';
 import { serverTimestamp } from 'firebase/firestore';
 import { InquiryData } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -52,6 +53,9 @@ const organization = useOrganization()
 const emit = defineEmits(['closeDrawer', 'inquiryAdded'])
 const inquirySaveData = ref<Partial<InquiryData>>({})
 const disable = computed(()=> loading.value || !inquirySaveData.value.category || !inquirySaveData.value.subject || !inquirySaveData.value.inquiryContent)
+const auth = getAuth();
+const currentUserId = auth.currentUser?.uid
+
 async function submitInquiry(){
   loading.value = true
   const submitData = JSON.parse(JSON.stringify(inquirySaveData.value))
@@ -60,6 +64,7 @@ async function submitInquiry(){
   submitData.organization = organization.currentOrganizationId
   submitData.recievedDate = serverTimestamp()
   submitData.updated_at = serverTimestamp()
+  submitData.readBy = [currentUserId]
   try{
     await inquiryStore.addInquiry(submitData)
     inquirySaveData.value = {}

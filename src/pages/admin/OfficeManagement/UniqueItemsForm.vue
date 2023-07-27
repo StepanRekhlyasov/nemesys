@@ -14,7 +14,7 @@ const { t } = useI18n({ useScope: 'global' });
 
 const industryStore = useIndsutry()
 const {industries, isFirstLoading } = storeToRefs(industryStore)
-const { updateIndustry } = industryStore
+const { updateIndustry, addIndustry } = industryStore
 
 const activeIndustry = ref<Industry | null>(null)
 const industryToUpdate = ref<Industry | null>(null)
@@ -32,6 +32,7 @@ const isCanBeSaved = ref({
     facilityForms: false
 })
 const isLoading = ref(isFirstLoading)
+const isNewIndustryPopup = ref(false)
 
 const resetSaveButtons = () => {
     Object.keys(isCanBeSaved.value).forEach((key) => {
@@ -57,6 +58,20 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
         await updateIndustry(activeIndustry.value.id, updatedIndustry)
 
     }
+
+    isLoading.value = false
+}
+
+const onNewIndustry = async (industryName: string) => {
+    isLoading.value = true
+
+    await addIndustry({
+        industryName: industryName,
+        uniqueItems: {
+            typeSpecificItems: {},
+            facilityForms: {}
+        }
+    })
 
     isLoading.value = false
 }
@@ -138,6 +153,10 @@ const updateFacilityForm = () => {
     isCanBeSaved.value.facilityForms = true
 }
 
+const isNewIndustryPopupHandler = (val: boolean) => {
+    isNewIndustryPopup.value = val
+}
+
 watch(() => industries.value, () => {
     if(!activeIndustry.value && industries.value.length) {
         activeIndustry.value = industries.value[0]
@@ -158,7 +177,10 @@ watch(() => industries.value, () => {
             <UniqueItemsIndustrySelect 
                 :industries="industries"
                 :active-industry="activeIndustry"
-                @update:active-industry="handleActiveIndustry"/>
+                :is-new-industry-popup="isNewIndustryPopup"
+                @update:active-industry="handleActiveIndustry"
+                @update:is-new-industry-popup="isNewIndustryPopupHandler"
+                @new-industry="onNewIndustry"/>
 
             <DropDownEditGroup
                 :label="t('industry.specificTypeItems') + ' (' + t('client.add.officeInfo') + ')'"
