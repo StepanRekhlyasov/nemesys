@@ -12,7 +12,7 @@
           :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md" required>
           <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['admissionStatus']" :rules="[() => 'admissionStatus' in data || '']">
-            <q-checkbox v-model="data['admissionStatus']" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"
+            <q-checkbox v-model="data['admissionStatus']" label="OK" @click="emit('disableChange')" :disable="disableLevel < 3"
               checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
             <q-checkbox v-model="data['admissionStatus']" label="NG" class="q-ml-sm" :disable="disableLevel < 3"
               unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>

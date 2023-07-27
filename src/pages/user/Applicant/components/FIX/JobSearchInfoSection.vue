@@ -13,7 +13,7 @@
 					:value="fixData.inspectionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md" required>
 					<q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['inspectionStatus']" :rules="[() => 'inspectionStatus' in data || '']">
-						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" 
+						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="emit('disableChange')" 
 							checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
 						<q-checkbox v-model="data['inspectionStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
 							unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
@@ -56,7 +56,7 @@
 					:edit="edit.includes(tabKey)" 
 					:label="$t('applicant.list.fixEmployment.'+reasonKey)"
 					:reasonValue="data[reasonKey]"
-					@update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
+					@update:reasonValue="(newValue : string) => data[reasonKey as string] = newValue"
 					:detailedValue="data[detailKey]"
 					@update:detailedValue="(newValue : string) => data[detailKey] = newValue"
 					:disable="loading"

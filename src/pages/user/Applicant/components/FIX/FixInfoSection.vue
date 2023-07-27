@@ -11,7 +11,7 @@
         :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md self-center" required>
         <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['fixStatus']" :rules="[() => 'fixStatus' in data || '']">
-          <q-checkbox v-model="data['fixStatus']" label="OK" @click="data['data'] = '';emit('disableChange')"
+          <q-checkbox v-model="data['fixStatus']" label="OK" @click="emit('disableChange')"
             checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
           <q-checkbox v-model="data['fixStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
             unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
