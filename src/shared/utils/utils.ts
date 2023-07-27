@@ -204,6 +204,9 @@ export const getLastMonthString = (num: 3) => {
   return { monthsJp: monthsJp.reverse(), monthsEn: monthsEn.reverse() }
 }
 
+export const formatNumber = (text: string) => {
+  return text?.toString().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
 // rules intut textfield
 
 // export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`
