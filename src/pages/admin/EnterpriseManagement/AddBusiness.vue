@@ -56,7 +56,6 @@ async function addBusiness() {
     name: name.value,
     working: working.value
   }
-  console.log(props.editBusiness, props.organization)
   if(props.editBusiness){
     try {
       await businessStore.editBusiness(business, props.organization.id, props.editBusiness.id)
