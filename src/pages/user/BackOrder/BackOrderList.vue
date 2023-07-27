@@ -66,12 +66,22 @@
             </q-td>
           </template>
 
+          <template v-slot:body-cell-personnel="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  getUserDisplayName(props.row.registrant)
+                 }}
+              </div>
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-distance="props">
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  officeNames[props.row.boId]
-                }} Km
+                  0
+                }} km
               </div>
             </q-td>
           </template>
@@ -92,16 +102,12 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                   officeNames[props.row.boId]
+                  props.row.officeName
                 }}
               </div>
               <div>
                 {{
-                  props.row['client_id']
-                  ? applicantStore.state.clientList.find(
-                    (client) => client.id === props.row['client_id']
-                  )?.name
-                  : ''
+                  props.row.clientName
                 }}
               </div>
             </q-td>
@@ -145,9 +151,9 @@ import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
-import { useClientFactory } from 'src/stores/clientFactory';
-import { Alert } from 'src/shared/utils/Alert.utils';
+import { useUserStore } from 'src/stores/user'
 
+const userStore = useUserStore();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const $q = useQuasar();
@@ -158,12 +164,10 @@ const showSearchByMap = ref(false);
 const selected = ref<BackOrderModel[]>([]);
 const cteateBoDrawer = ref(false);
 const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
-const clientFactoryStore = useClientFactory();
 const selectedBo = ref<BackOrderModel | ComputedRef>(
   computed(() => backOrderStore.state.selectedBo)
 );
 const selectedClient = ref<Client | undefined>(undefined);
-const officeNames = {}
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const pagination = ref({
   sortBy: 'desc',
@@ -171,7 +175,27 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 30,
 });
+const userNames = ref({})
+const getUserDisplayName = (registrant: string | undefined) => {
+  const userDisplayName = ref('');
 
+  if (registrant && !userNames.value[registrant]) {
+    userStore
+      .getUserById(registrant)
+      .then((user) => {
+        userNames.value[registrant] = user?.displayName || '';
+        userDisplayName.value = userNames.value[registrant];
+      })
+      .catch((error) => {
+        console.error(error);
+        userDisplayName.value = '';
+      });
+  } else {
+    userDisplayName.value = userNames.value[registrant];
+  }
+
+  return userDisplayName;
+};
 watchCurrentOrganization(async ()=>{
  await backOrderStore.loadBackOrder({});
 })
@@ -212,29 +236,8 @@ watch(() => pagination.value.page, async () => {
   await backOrderStore.loadBackOrder({}, pagination.value);
 })
 
-const getOfficeName = async () => {
-  state.BOList.forEach(async (bo)=>{
-    try {
-    const clientFactoryList = await clientFactoryStore.getClientFactoryList(bo.client_id);
-    const clientFactory = clientFactoryList.find((office) => office.id === bo.office_id);
-    officeNames[bo.boId] = {
-      name:clientFactory?.name,
-      distance:clientFactory?.distance,
-    }
-  } catch (error) {
-    Alert.warning(error);
-    officeNames[bo.boId] = {
-      name:'',
-      distance:'',
-    }
-  }
-  })
-};
-
-
 onMounted(async () => {
   await applicantStore.getClients()
-  await getOfficeName();
 })
 
 </script>
