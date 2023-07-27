@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineProps, watch, onMounted } from 'vue';
+import { ref, defineProps, watch, onMounted, defineEmits } from 'vue';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
@@ -8,12 +8,17 @@ import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
-import AdvancedSearch from 'src/pages/user/BusinessManagement/AdvancedSearch.vue'
+import AdvanceSearchDrawer from 'src/pages/user/BusinessManagement/AdvanceSearchDrawer.vue'
+// import { emit } from 'process';
 const advanceSearch = useAdvanceSearch();
 const router = useRouter()
 const clientFactoryStore = useClientFactory()
 const props = defineProps<{
     theme: string,
+    from: string
+}>()
+const emit = defineEmits<{
+    (e: 'hideDrawer')
 }>()
 const db = getFirestore();
 
@@ -145,8 +150,13 @@ const searchClients = async () => {
         )
         officeData.value = response.data
         isLoadingProgress.value = false
-        if(advanceSearch.areaSelected){
-            const office = advanceSearch.getCFsId(officeData.value,advanceSearch.areaConditionData);
+        if(props.from=='advance'){
+            advanceSearch.advanceAreaSelected=true;
+            advanceSearch.advanceAreaCFs=officeData.value;
+            emit('hideDrawer')
+        }
+        else if(advanceSearch.areaSelected){
+            const office = advanceSearch.getCFsId(officeData.value,'area');
             clientFactoryStore.condition = true
             clientFactoryStore.selectedCFsId = []
             office.forEach((id)=>{
@@ -223,7 +233,11 @@ const hideCSDrawer = () =>{
 
 <template>
     <q-card class="no-shadow full-height q-pb-sm">
-        <q-card-actions>
+        <q-card-actions v-if="props.from == 'advance'">
+            <q-btn label="add conditions" unelevated color="primary" class="no-shadow text-weight-bold"
+                icon="add" @click="searchClients" />
+        </q-card-actions>
+        <q-card-actions v-else>
             <q-btn unelevated :label="$t('client.list.conditionalSearch')" :color="props.theme"
                 class="no-shadow text-weight-bold" icon="add" @click="openCSDrawer"/>
             <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
@@ -264,9 +278,7 @@ const hideCSDrawer = () =>{
         </q-list>
         <q-separator />
     </q-card>
-    <q-drawer :model-value="drrawer" :width="900" overlay elevated bordered side="right" show>
-        <AdvancedSearch from="area" :isDrawer="true" @hide-c-s-drawer="hideCSDrawer" />
-    </q-drawer>
+    <AdvanceSearchDrawer from="area" :isDrawer="drrawer" :width="900" @hide-c-s-drawer="hideCSDrawer"/>
 </template>
 
 <style lang="scss" scoped></style>

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
+import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue'
 import { OfficeMenuItem } from './types'
 import ClientFactoryDrawer from 'src/pages/user/BusinessManagement/ClientFactoryDrawer.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -13,7 +14,8 @@ const { t } = useI18n({ useScope: 'global' });
 const router = useRouter()
 const isDrawer = ref({
     mapSearchDrawer: false,
-    areaSearchDrawer: false
+    areaSearchDrawer: false,
+    advanceSearchDrawer: false
 })
 const activeItem = ref<null | OfficeMenuItem>(null)
 
@@ -43,7 +45,8 @@ const menu = computed(() => {
             name: t('menu.advancedSearch'),
             right: require('assets/admin-office-managment/advanced-search-image.png'),
             click() {
-                router.push('advancedSearch');
+                isDrawer.value.advanceSearchDrawer = true
+                // router.push('advancedSearch');
             },
         },
         {
@@ -63,6 +66,10 @@ const menu = computed(() => {
     ]
 })
 
+const hideAdvanceDrawer = () =>{
+    isDrawer.value.advanceSearchDrawer = false;
+}
+
 const hideMapDrawer = () => {
     isDrawer.value.mapSearchDrawer = false
 }
@@ -74,7 +81,8 @@ const hideAreaDrawer = () => {
 const onMenuItem = (item: OfficeMenuItem) => {
     isDrawer.value = {
         mapSearchDrawer: false,
-        areaSearchDrawer: false
+        areaSearchDrawer: false,
+        advanceSearchDrawer: false
     }
 
     activeItem.value = item
@@ -129,8 +137,9 @@ const hideClientFactoryDrawer = () => {
             </q-card-section>
         </q-card>
 
-        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" @open-c-f-drawer="openCFDrawer" :key="mapSearchKey"/>
-        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" />
+        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" :width="1100" @open-c-f-drawer="openCFDrawer" :key="mapSearchKey"/>
+        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" :width="1100"/>
+        <AdvanceSearchDrawer @hide-c-s-drawer="hideAdvanceDrawer" :isDrawer="isDrawer.advanceSearchDrawer" :width="1100"/>
         <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
             :isDrawer="isClientFactoryDrawer" @hide-drawer="hideClientFactoryDrawer" />
 

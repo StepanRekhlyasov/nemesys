@@ -1,11 +1,16 @@
 <script lang="ts" setup>
-import { defineEmits, defineProps } from 'vue';
+import { defineEmits, defineProps, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MapSearchVue from 'src/components/client-factory/MapSearch.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     isDrawer: boolean,
-}>()
+    from: string,
+    width: number
+}>(),{
+    from:'',
+    width: 1100
+})
 const emit = defineEmits<{
     (e: 'hideDrawer'),
     (e: 'openCFDrawer', ClientFactoryData: ClientFactory)
@@ -23,7 +28,7 @@ const openCFDrawer = (clientFactoryData: ClientFactory) => {
 </script>
 
 <template>
-    <q-drawer :model-value="props.isDrawer" :width="1100" :breakpoint="500" overlay elevated bordered side="right" show>
+    <q-drawer :model-value="props.isDrawer" :width="props.width" :breakpoint="500" overlay elevated bordered side="right" show>
         <q-scroll-area class="fit text-left">
             <q-card class="no-shadow bg-grey-3">
                 <q-card-section class="text-white bg-primary">
@@ -34,7 +39,7 @@ const openCFDrawer = (clientFactoryData: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <MapSearchVue theme="primary" @open-c-f-drawer="openCFDrawer" />
+                    <MapSearchVue :from="props.from" theme="primary" @hide-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer" />
                 </q-card-section>
             </q-card>
         </q-scroll-area>

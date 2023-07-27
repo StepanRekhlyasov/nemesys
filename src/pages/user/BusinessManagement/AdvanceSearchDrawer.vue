@@ -1,25 +1,25 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
-import AreaSearch from 'src/components/client-factory/AreaSearch.vue';
-
+import AdvancedSearch from './AdvancedSearch.vue';
 const props = withDefaults(defineProps<{
     isDrawer: boolean,
     from: string,
     width: number
 }>(),{
     from:'',
-    width: 1100
+    width:1100
 })
 const emit = defineEmits<{
-    (e: 'hideDrawer')
+    (e: 'hideCSDrawer'),
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
 
 const hideDrawer = () => {
-    emit('hideDrawer')
+    emit('hideCSDrawer')
 }
+
 </script>
 
 <template>
@@ -29,16 +29,15 @@ const hideDrawer = () => {
                 <q-card-section class="text-white bg-primary">
                     <div class="text-h6">
                         <q-btn dense flat icon="close" @click="hideDrawer" />
-                        {{ t('menu.areaSearch') }}
+                        {{ t('menu.advancedSearch') }}
                     </div>
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AreaSearch theme="primary" @hide-drawer="hideDrawer" :from="props.from"/>
+                    <AdvancedSearch :from="props.from" @hide-c-s-drawer="hideDrawer"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>
-
     </q-drawer>
 </template>
 
