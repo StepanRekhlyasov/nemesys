@@ -53,6 +53,7 @@ import { useBackOrder } from 'src/stores/backOrder';
 import { useClient } from 'src/stores/client'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import matchDegreeTable from './matchDegreeTable.vue';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const staffList = ref<ApplicantForCandidateSearch[]>([])
 const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
@@ -91,6 +92,10 @@ const closePopup = () => {
 };
 
 onMounted(async () => {
+ await fetchData()
+});
+
+async function fetchData() {
   loading.value = true;
   try {
     applicantIds.value = await backOrderStore.getApplicantIds(props.bo);
@@ -101,7 +106,11 @@ onMounted(async () => {
     Alert.warning(error)
   }
   loading.value = false
-});
+}
+
+watchCurrentOrganization(async()=>{
+  await fetchData()
+})
 
 const getFormatedData = async (applicantIds) => {
   staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', applicantIds)]) as ApplicantForCandidateSearch[];
