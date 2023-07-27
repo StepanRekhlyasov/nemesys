@@ -8,6 +8,7 @@ import { where } from 'firebase/firestore';
 import { useApplicant } from 'src/stores/applicant'
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const backOrderStore = useBackOrder()
 const props = defineProps<{ theme: string }>()
@@ -54,11 +55,21 @@ const getMarkerColor = () => {
 }
 
 onMounted(async () => {
+  await fetchData()
+})
+
+
+async function fetchData() {
   applicantList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]);
   applicantList.value.forEach((applicant) => {
     applicant['marker'] = 'white';
   });
   getMarkerColor();
+}
+
+
+watchCurrentOrganization(async()=>{
+  await fetchData()
 })
 
 const circleOption = computed(() => {
