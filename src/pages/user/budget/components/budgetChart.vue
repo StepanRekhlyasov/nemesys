@@ -2,12 +2,12 @@
   <div>
     <branchDropdown @getBranchId="getBranchId" />
     <apexchart width="1000px" type="bar" height="200px" :options="chartOptions" :series="series"></apexchart>
-    <div class="row flex justify-center centers" :style="'width: 1050px'" v-if="allBudget">
+    <div class="row flex justify-center centers" :style="'width: 1050px'" v-if="budgetSum">
       <div class="q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal bugetTotalRight">
         {{ t('budget.total') }}
       </div>
       <div class="q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal">
-        ¥ {{ allBudget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
+        ¥ {{ budgetSum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
       </div>
     </div>
   </div>
@@ -34,7 +34,7 @@ const organization = useOrganization()
 const options = ref<OptionData>({ occupation: [] });
 const loading = ref(true);
 const monthItems = ref(getLastMonthString(3));
-const allBudget = ref(<number>0)
+const budgetSum = ref(<number>0)
 const branchId = ref(<string>'')
 chartOptions.value.xaxis.categories = monthItems.value.monthsJp as never[]
 
@@ -61,9 +61,9 @@ const getBranchId = (branch: string) => {
 
 const updateSeries = async () => {
   series.value = await budgetStore.getChartData(options.value['media'], monthItems.value.monthsEn, branchId.value, organization.currentOrganizationId)
-  allBudget.value = 0
+  budgetSum.value = 0
   series.value.forEach(item => {
-    allBudget.value += item.data.reduce((a, b) => a + b, 0)
+    budgetSum.value += item.data.reduce((a, b) => a + b, 0)
 
   })
 }
