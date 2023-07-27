@@ -1721,7 +1721,8 @@ export default {
     nurse: 'Nurse',
     uniqueItemSetting: 'Client type unique item setting',
     specificTypeItems: 'Type-specific item',
-    addLine: 'ADD LINE'
+    addLine: 'ADD LINE',
+    newIndustry: 'New Industry'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',
