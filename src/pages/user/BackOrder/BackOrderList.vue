@@ -70,7 +70,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  getUserDisplayName(props.row.registrant)
+                  getUserDisplayName(props.row.registrant).value
                  }}
               </div>
             </q-td>
@@ -80,7 +80,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  0
+                  props.row.distance
                 }} km
               </div>
             </q-td>
