@@ -104,7 +104,7 @@
     <div class="row ">
       <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" v-if="selectedBo['requiredQualifications']"
-        :value="selectedBo['qualifications']? data['qualifications'].map(q => $t('applicant.qualification.'+q)).join(',') : ''">
+        :value="selectedBo['qualifications'] && typeof selectedBo['qualifications'] === 'Array'? selectedBo['qualifications'].map(q => $t('applicant.qualification.'+q)).join(',') : ''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationArrayRule(val) : true]">
           <q-checkbox v-model="data['qualifications']" v-for="key in TypeQualifications" 
             :val="key"
