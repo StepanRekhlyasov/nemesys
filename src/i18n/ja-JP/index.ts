@@ -215,6 +215,7 @@ export default {
       },
       licenseManagement: {
         licenseRequest: '枠変更申請一覧',
+        licenseRequestList: 'ライセンス変更申請一覧',
         licenseRequestAdd: 'ライセンス変更申請',
         showList: '一覧表示',
         licenseManagement: 'ライセンス管理',
@@ -1687,6 +1688,8 @@ export default {
       companyName: '企業名',
       recievedDate: '送受信日',
       recieve: '受信',
+      recieved: '受信',
+      sent: '送信',
       responseDate: '返信日',
       notificationType: '通知種別',
       inquiry: '問い合わせ',
@@ -1955,7 +1958,7 @@ export default {
   errors: {
     'BO_occupied' : '選択されたBOは既に使用されています',
     'error' : 'エラー',
-    'deleteBranchesFirst' : 'まずすべてのブランチを削除してください'
+    'deleteBranchesFirst' : 'まずすべての支店を削除してください'
   },
   budget: {
     search: '予算検索',

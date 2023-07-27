@@ -215,6 +215,7 @@ export default {
       },
       licenseManagement: {
         licenseRequest: 'Applications license request',
+        licenseRequestList: 'Applications license request',
         licenseRequestAdd: 'Add applications license request',
         showList: 'Show list',
         licenseManagement: 'License management',
@@ -1694,6 +1695,8 @@ export default {
       companyName: 'Company name',
       recievedDate: 'date issued',
       recieve: 'date issued',
+      recieved: 'Recieved',
+      sent: 'Sent',
       responseDate: 'response date',
       notificationType: 'Notification Type',
       inquiry: 'Inquiry',
