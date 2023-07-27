@@ -1714,7 +1714,8 @@ export default {
     nurse: '看護',
     uniqueItemSetting: 'クライアント種別独自項目設定',
     specificTypeItems: '種別独自項目',
-    addLine: '行追加'
+    addLine: '行追加',
+    newIndustry: '新しい産業'
   },
   report:{
     salesActivityIndividualReport:'営業活動個人レポート',
