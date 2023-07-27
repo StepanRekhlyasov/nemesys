@@ -11,12 +11,18 @@ import {
   addDoc
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
+import {ref} from 'vue'
 import { getAuth } from 'firebase/auth';
 import { useI18n } from 'vue-i18n';
 import {Client,ClientOffice} from 'src/shared/model/Client.model'
 import { useOrganization } from './organization';
+import { JobDataObject } from 'src/shared/model/Jobs.model';
 
 export const useJobSearch = defineStore('jobSearch', () => {
+
+ const state = ref<JobDataObject>({
+  selectedJob:{}
+ })
   const db = getFirestore();
   const auth = getAuth()
   const organization = useOrganization()
@@ -199,6 +205,7 @@ const getIndustries = async () => {
     updateOption,
     addNewOption,
     addId,
-    getIndustries
+    getIndustries,
+    state
   };
 });

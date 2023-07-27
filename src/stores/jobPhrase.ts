@@ -11,10 +11,16 @@ import {
 
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
+import {ref} from 'vue'
 import { getAuth } from 'firebase/auth';
 import { useOrganization } from './organization';
+import { JobPhraseData } from 'src/shared/model/Jobs.model';
 
 export const useJobPhrase = defineStore('jobPhrase', () => {
+
+ const state = ref<JobPhraseData>({
+  selectedJobPhrase:{}
+ })
   const db = getFirestore();
   const auth = getAuth()
   const organization = useOrganization()
@@ -59,6 +65,7 @@ export const useJobPhrase = defineStore('jobPhrase', () => {
   return {
     loadJobPhraseData,
     updateFormData,
-    addFormData
+    addFormData,
+    state
   };
 });

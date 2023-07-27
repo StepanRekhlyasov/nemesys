@@ -1,30 +1,33 @@
 <template>
+   <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
+    elevated bordered>
+   <q-scroll-area class="fit text-left">
   <q-card class="no-shadow bg-grey-3">
       <q-form ref="formatForm" @submit="saveJobItem">
           <q-card-section class="text-white bg-primary rounded-borders">
               <div class="row">
                   <div class="col-12 flex flex-inline">
-                      <q-btn dense flat icon="close" @click="hideDrawer" />
+                      <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
                       <div class="q-mr-sm">
                           <div>
                               {{ phraseCategoryText }}
                           </div>
-                          <div class="text-h6">{{ jobItem['name'] }}</div>
+                          <div class="text-h6">{{ selectedJobItem['name'] }}</div>
                       </div>
                       <q-btn size="sm" style="background: white; color: #085374; height: 30px"
-                          :label="jobItem['id'] ? $t('jobItem.add.jobItemUpdate') : $t('jobItem.add.jobItemReg')"
+                          :label="selectedJobItem['id'] ? $t('jobItem.add.jobItemUpdate') : $t('jobItem.add.jobItemReg')"
                           type="submit" />
                   </div>
               </div>
           </q-card-section>
-          <q-card-section v-if="isDrawer">
+          <q-card-section v-if="drawerRight">
               <div class="row">
                   {{ $t('phraseSettings.add.recruitmentItemName') }}
                   <span class="text-red-5">*</span>
               </div>
               <div class="row">
                   <div class="col-12">
-                      <q-input outlined dense v-model="jobItem['name']" hide-bottom-space lazy-rules
+                      <q-input outlined dense v-model="selectedJobItem['name']" hide-bottom-space lazy-rules
                           :rules="[(val) => (val && val.length > 0) || '']" />
                   </div>
               </div>
@@ -46,17 +49,17 @@
               <div class="row">
                   <div class="col-6 q-pr-sm">
                       <q-select outlined dense :options="phraseCategoryOptions" emit-value map-options
-                          v-model="jobItem['phraseCategory']" lazy-rules hide-bottom-space
+                          v-model="selectedJobItem['phraseCategory']" lazy-rules hide-bottom-space
                           :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobItem['phraseCategory']" v-slot:selected>
+                          <template v-if="!selectedJobItem['phraseCategory']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
                   </div>
                   <div class="col-6">
                       <q-select outlined dense :options="dataTypeOptions" emit-value map-options hide-bottom-space
-                          v-model="jobItem['dataType']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobItem['dataType']" v-slot:selected>
+                          v-model="selectedJobItem['dataType']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+                          <template v-if="!selectedJobItem['dataType']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
@@ -68,7 +71,7 @@
               </div>
               <div class="row">
                   <div class="col-12">
-                      <q-input outlined dense v-model="jobItem['desc']" hide-bottom-space />
+                      <q-input outlined dense v-model="selectedJobItem['desc']" hide-bottom-space />
                   </div>
 
               </div>
@@ -83,17 +86,17 @@
                       <span class="text-red-5">*</span>
                   </div>
                   <div class="col-6">
-                      <q-input outlined  dense v-model="jobItem['dataType']" hide-bottom-space />
+                      <q-input outlined  dense v-model="selectedJobItem['dataType']" hide-bottom-space />
                   </div>
               </div>
 
-              <div class="row text-primary text-body1 q-pt-sm" v-if="jobItem.dataType === 'option'">
+              <div class="row text-primary text-body1 q-pt-sm" v-if="selectedJobItem.dataType === 'option'">
                   ■ {{ $t('jobItem.add.optionSetting') }}
                   <q-btn color="primary" size="sm" class="q-ml-md" dense :label="$t('common.addNew')" icon="add"
-                      @click="addNewItem" :disable="!jobItem.id" />
+                      @click="addNewItem" :disable="!selectedJobItem.id" />
               </div>
               <q-markup-table
-                v-if="jobItem.dataType === 'option'"
+                v-if="selectedJobItem.dataType === 'option'"
                 class="table"
                 :bordered="false"
                 :square="false"
@@ -128,65 +131,43 @@
           </q-card-section>
       </q-form>
   </q-card>
+</q-scroll-area>
+</q-drawer>
 </template>
 
 <script lang="ts" setup>
-import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch,computed,ComputedRef, onMounted, onBeforeUnmount } from 'vue';
 import { dataTypeList, phraseCategoryList, jobItemOptionColumns } from 'src/shared/constants/JobAd.const';
 import { useJobItemSetting } from 'src/stores/jobItemSetting'
 import { DocumentData } from 'firebase/firestore';
 import draggable from 'vuedraggable'
 import {JobOptions} from 'src/shared/model/Jobs.model'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { useOrganization } from 'src/stores/organization';
+import {JobItem} from 'src/shared/model/Jobs.model'
+import { QForm } from 'quasar';
 
 const jobItemSettingStore = useJobItemSetting()
-const props = defineProps({
-  selectedPhrase: {
-      type: Object,
-      required: true
-  },
-  isDrawer: {
-      type: Boolean,
-      required: true
-  }
-}
-)
-const organization = useOrganization()
-const emit = defineEmits<{
-  (e: 'hideDrawer')
-}>()
-const hideDrawer = () => {
-  jobItem.value = { ...jobItemObject }
-  emit('hideDrawer')
-}
-const jobItemObject = {
-  id: props?.selectedPhrase['id'] || null,
-  name: props?.selectedPhrase['name'] || '',
-  content: props?.selectedPhrase['content'] || '',
-  phraseCategory: '',
-  desc: props?.selectedPhrase['desc'] || '',
-  media: props?.selectedPhrase['media'] || '',
-  recruitmentItemName: props?.selectedPhrase['recruitmentItemName'] || '',
-  dataType: props?.selectedPhrase['dataType'] || '',
-  organizationId:organization.currentOrganizationId,
-}
-const jobItem = ref({ ...jobItemObject })
 const unsubscribe = ref();
 const phraseCategoryText = ref('')
-const formatForm = ref();
+const formatForm:Ref<QForm | null | undefined> = ref();
 const phraseCategoryOptions = ref(phraseCategoryList);
 const dataTypeOptions = ref(dataTypeList);
 const columns = ref(jobItemOptionColumns);
 const optionItem:Ref<JobOptions[]> = ref([]);
 const loading = ref(false);
 const optionData:DocumentData = ref({})
+const drawerRight = ref(false);
+const drawerValue = ref<boolean>(false);
+const optionId = ref('')
+const selectedJobItem = ref<JobItem | ComputedRef>(
+  computed(() => jobItemSettingStore.state.selectedJobItem)
+);
 
 onMounted(async () => {
   optionData.value=await calculateOptionOccurrence()
-  jobItem.value.phraseCategory = props?.selectedPhrase['phraseCategory'] || '';
-  if(jobItem.value['id']) {
-    optionItem.value = await jobItemSettingStore.fetchJobItemOptionsData(jobItem.value['id'])
+  jobItemSettingStore.state.selectedJobItem.phraseCategory = selectedJobItem.value['phraseCategory'] || '';
+  if(selectedJobItem.value['id']) {
+    optionItem.value = await jobItemSettingStore.fetchJobItemOptionsData(selectedJobItem.value['id'])
     loading.value = false;
   }
 })
@@ -198,32 +179,20 @@ onBeforeUnmount(() => {
 
 })
 
-watch(
-  () => (jobItem.value.phraseCategory),
-  (newVal,) => {
-      phraseCategoryText.value = '';
-
-      const obj = phraseCategoryList.value.find(o => o.value === newVal);
-      if (obj) {
-          phraseCategoryText.value = obj.label;
-      }
-  }
-)
-
 const saveJobItem = async () => {
   try {
-      if (jobItem.value.id) {
+      if (selectedJobItem.value.id) {
 
-          await jobItemSettingStore.updateFormData(jobItem.value)
-          hideDrawer()
+          await jobItemSettingStore.updateFormData(selectedJobItem.value)
+          drawerRight.value=false
 
       } else {
-         await jobItemSettingStore.addFormData(jobItem.value)
-         hideDrawer()
+         await jobItemSettingStore.addFormData(selectedJobItem.value)
+         drawerRight.value=false
       }
 
       Alert.success()
-      formatForm.value.resetValidation();
+      formatForm.value?.resetValidation();
   } catch (error) {
       Alert.warning(error)
   }
@@ -269,20 +238,52 @@ const addNewOption = async (data: object, updatedName) => {
   try {
     if (data['id']) {
       data['name'] = updatedName;
-        await jobItemSettingStore.updateOption(jobItem.value['id'],data)
+        await jobItemSettingStore.updateOption(selectedJobItem.value['id'],data)
 
       } else {
         data['name'] = updatedName;
-        await jobItemSettingStore.addNewOption(jobItem.value['id'],data)
+      optionId.value=  await jobItemSettingStore.addNewOption(selectedJobItem.value['id'],data)
+      await jobItemSettingStore.addId(selectedJobItem.value['id'],data,optionId.value)
       }
 
       Alert.success()
-      formatForm.value.resetValidation();
+      formatForm.value?.resetValidation();
   } catch (error) {
       Alert.warning(error)
   }
 }
+watch(drawerRight, () => {
+  drawerValue.value = drawerRight.value;
+})
+const showDrawerWithData = async (data: JobItem) => {
+  if (selectedJobItem.value.id && selectedJobItem.value.id !== data.id) {
+    drawerRight.value = false;
+  }
+  jobItemSettingStore.state.selectedJobItem = data;
+  drawerRight.value = true
+}
+const openDrawer = async () => {
+  jobItemSettingStore.state.selectedJobItem={}
+  drawerRight.value = true
+}
+watch(
+  () => (selectedJobItem.value.phraseCategory),
+  (newVal,) => {
+      phraseCategoryText.value = '';
 
+      const obj = phraseCategoryList.value.find(o => o.value === newVal);
+      if (obj) {
+          phraseCategoryText.value = obj.label;
+      }
+  }
+)
+watch(drawerRight, async(newValue) => {
+  if (newValue === true) {
+    optionItem.value = await jobItemSettingStore.fetchJobItemOptionsData(selectedJobItem.value['id'])
+  } else {
+  }
+});
+defineExpose({ showDrawerWithData ,openDrawer})
 </script>
 <style lang="scss">
 .handle {

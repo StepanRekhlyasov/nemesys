@@ -11,8 +11,14 @@ import {
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { getAuth } from 'firebase/auth';
+import {ref} from 'vue'
+import { JobFormatData } from 'src/shared/model/Jobs.model';
 import { useOrganization } from './organization';
 export const useFormatSetting = defineStore('formatSetting', () => {
+
+ const state = ref<JobFormatData>({
+  selectedFormat:{}
+ })
   const db = getFirestore();
   const auth = getAuth()
   const organization = useOrganization()
@@ -37,7 +43,7 @@ export const useFormatSetting = defineStore('formatSetting', () => {
     return formatSettingData;
   };
 
-  const updateFormData = async (data:object) => {
+  const updateFormData = async (data) => {
     data['updated_at'] = serverTimestamp();
     data['updated_by'] = auth.currentUser?.uid;
 
@@ -45,7 +51,7 @@ export const useFormatSetting = defineStore('formatSetting', () => {
   };
 
 
-  const addFormData = async (data:object) => {
+  const addFormData = async (data) => {
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
@@ -85,6 +91,7 @@ export const useFormatSetting = defineStore('formatSetting', () => {
    loadFormatSettingData,
    updateFormData,
    addFormData,
-   getPhraseData
+   getPhraseData,
+   state
   };
 });

@@ -122,13 +122,7 @@
                   direction-links outline />
           </div>
       </q-card-section>
-      <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
-          elevated bordered>
-          <q-scroll-area class="fit text-left">
-              <addJobAdComponent :selectedJob="selectedJob" :isDrawer="drawerRight" @hideDrawer="hideDrawer"
-                  :key="selectedJob?.key" />
-          </q-scroll-area>
-      </q-drawer>
+      <addJobAdComponent ref="jobPostingDrawer" />
   </q-card>
 </template>
 <script lang="ts" setup>
@@ -142,11 +136,10 @@ import { useJobPostingHistory } from 'src/stores/jobPostingHistory'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
-
+const jobPostingDrawer = ref<InstanceType<typeof addJobAdComponent> | null>(null);
 const jobAdList:DocumentData = ref([]);
 const selected = ref([]);
-const drawerRight = ref(false);
-const selectedJob = ref({ key: 'null' });
+const selectedJobAd = ref({ key: 'null' });
 const jobPostingHistoryStore = useJobPostingHistory()
 const userData = ref({});
 const columns = ref(jobAdColumns);
@@ -173,21 +166,12 @@ const fetchJobAdsData = async () => {
 };
 
 const openDrawer = async (data) => {
-  if (!data.id) {
-      drawerRight.value = false;
-  }
   data['key'] = data.id;
-  selectedJob.value = data;
-  setTimeout(() => drawerRight.value = true, 300);
+  selectedJobAd.value = data;
+  jobPostingDrawer.value?.showDrawerWithData(data);
 };
-
 const openAddDrawer = async () => {
-  selectedJob.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  setTimeout(() => drawerRight.value = true, 300);
-};
-const hideDrawer = () => {
-  selectedJob.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  drawerRight.value = false
+  jobPostingDrawer.value?.openDrawer();
 };
 
 const getTransactionText = (transactionType: string) => {

@@ -107,13 +107,7 @@
                   direction-links outline />
           </div>
       </q-card-section>
-      <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
-          elevated bordered>
-          <q-scroll-area class="fit text-left">
-              <addJobComponent :selectedJob="selectedJob" :isDrawer="drawerRight" @hideDrawer="hideDrawer"
-                  :key="selectedJob?.key" />
-          </q-scroll-area>
-      </q-drawer>
+      <addJobComponent ref="jobDrawer" />
   </q-card>
 </template>
 <script lang="ts" setup>
@@ -135,9 +129,9 @@ const $q = useQuasar();
 const jobList:DocumentData = ref([]);
 const selected = ref([]);
 const jobSearchStore = useJobSearch()
-const drawerRight = ref(false);
 const selectedJob = ref({ key: 'null' });
 const userData = ref({});
+const jobDrawer = ref<InstanceType<typeof addJobComponent> | null>(null);
 const columns = ref(jobSearchColumns);
 const loading = ref(true);
 const pagination = ref({
@@ -152,22 +146,12 @@ const pagination = ref({
   jobList:QTableProps['rows']
 }>();
 const openDrawer = async (data) => {
-  debugger
-  if (!data.id) {
-      drawerRight.value = false;
-  }
   data['key'] = data.id;
   selectedJob.value = data;
-  setTimeout(() => drawerRight.value = true, 300);
+  jobDrawer.value?.showDrawerWithData(data);
 };
-
 const openAddDrawer = async () => {
-  selectedJob.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  setTimeout(() => drawerRight.value = true, 300);
-};
-const hideDrawer = () => {
-  selectedJob.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  drawerRight.value = false
+  jobDrawer.value?.openDrawer();
 };
 const fetchJobSearchData = async () => {
   loading.value = true;

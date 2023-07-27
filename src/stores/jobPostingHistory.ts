@@ -11,11 +11,17 @@ import {
 
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
+import {ref} from 'vue'
 import { getAuth } from 'firebase/auth';
 import {JobModel} from 'src/shared/model/Jobs.model'
 import { useOrganization } from './organization';
+import { JobAdDataObject } from 'src/shared/model/Jobs.model';
 
 export const useJobPostingHistory = defineStore('jobPostingHistory', () => {
+
+ const state = ref<JobAdDataObject>({
+  selectedJobPosting:{}
+ })
   const db = getFirestore();
   const auth = getAuth()
   const organization = useOrganization()
@@ -128,6 +134,7 @@ const getJobsdata = async() =>{
     addFormData,
     getJobsdata,
     getJobFormatData,
-    getPhraseData
+    getPhraseData,
+    state
   };
 })

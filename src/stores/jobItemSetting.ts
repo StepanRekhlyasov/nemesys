@@ -11,9 +11,15 @@ import {
 
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
+import {ref} from 'vue'
 import { getAuth } from 'firebase/auth';
 import { useOrganization } from './organization';
+import { JobItemData } from 'src/shared/model/Jobs.model';
 export const useJobItemSetting = defineStore('jobItemSetting', () => {
+
+  const state = ref<JobItemData>({
+  selectedJobItem:{}
+ })
   const db = getFirestore();
   const auth = getAuth()
   const organization = useOrganization()
@@ -64,8 +70,14 @@ export const useJobItemSetting = defineStore('jobItemSetting', () => {
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
     data['organizationId'] = organization.currentOrganizationId
-    await addDoc(collection(db, 'jobItem',id,'options'), data);
+    const docRef = await addDoc(collection(db, 'jobItem',id,'options'), data);
+    const docRefId = docRef.id
+    return docRefId
 
+  };
+  const addId = async (id,data:object,optionId) => {
+    data['id'] = optionId
+    await updateDoc(docDb(db, 'jobItem',id,'options', data['id']), data);
   };
   const fetchJobItemOptionsData = async (id) => {
   const jobItemOption: object[] = [];
@@ -115,5 +127,7 @@ const loadJobSearchData = async () => {
    updateOption,
    fetchJobItemOptionsData,
    loadJobSearchData,
+   state,
+   addId
   };
 });

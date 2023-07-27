@@ -18,6 +18,95 @@ export interface JobModel {
   }
 }
 
+export interface JobData {
+  id?: string;
+  name?: string;
+  client?: string;
+  cfClient?: string;
+  indeedTag?: string[];
+  transactionType?: string;
+  projectType?: string;
+  boProjectType?: string;
+  facilityType?: string;
+  paymentType?: string;
+  salaryType?: string;
+  boSalaryType?: string;
+  status?: string;
+  office?: string;
+  cfOffice?: string;
+  email?: string;
+  phone?: string;
+  jobContent?: Record<string, never> | unknown;
+  salaryTypeText?: string;
+  salaryCap?: string;
+  minSalary?: string;
+  payday?: string;
+  employmentStatus?: string;
+  boEmploymentStatus?: string;
+  bonuses?: string;
+  transportationExpenses?: string;
+  businessContent?: string;
+  cfBusinessContent?: string;
+  payCheck?: string;
+  boPayDay?: string;
+  benefits?: string;
+  boBenefit?: string;
+  shiftRemarks?: string;
+  numberWorkingDays?: string;
+  workingDays?: string;
+  bonus?: string;
+  holidayAnnual?: string;
+  workingHoursEarly?: string;
+  workingHoursDay?: string;
+  workingHoursLate?: string;
+  workingHoursNight?: string;
+  cfWorkingHoursEarly?: string;
+  cfWorkingHoursDay?: string;
+  cfWorkingHoursLate?: string;
+  cfWorkingHoursNight?: string;
+  referralFee?: string;
+  referralFeeAmount?: string;
+  ageLimit?: string;
+  retirementAge?: string;
+  botransportationExpenses?: string;
+  overtimeWork?: string;
+  overtimeRemarks?: string;
+  memo?: string;
+  experienceRequired?: string;
+  requiredQualification?: string;
+  boRequiredQualification?: string;
+  qualificationRemarks?: string;
+  experienceReq?: string;
+  experienceRemarks?: string;
+  numberEmployees?: string;
+  pickDrop?: string;
+  availabilityOnCallSupport?: string;
+  onCallCorrespondence?: string;
+  prefectures?: string;
+  municipalities?: string;
+  street?: string;
+  buildingName?: string;
+  cfSalaryType?: string;
+  salary?: string;
+  cfBonuses?: string;
+  cfPayday?: string;
+  overtime?: string;
+  cfRetirementAge?: string;
+  welfare?: string;
+  leaveChildcare?: string;
+  smokingPermitted?: string;
+  cfHolidayAnnual?: string;
+  holidaysWeekly?: string;
+  upperAgeLimit?: string;
+  indeedJobCategory?: string;
+  presenceAbsenceResume?: string;
+  halfYearExp?: string;
+  organizationId?: string;
+}
+ export interface JobContent {
+  [key: string]: string;
+}
+
 export interface JobFormat {
   id?: string;
   appealPoint?:string;
@@ -136,12 +225,83 @@ export interface jobDataModel {
   cfClient:string;
   cfOffice:string;
 }
+export interface JobFormatData {
+  selectedFormat:FormatData
+  };
+export interface JobItemData {
+  selectedJobItem:JobItem
+  };
+export interface JobPhraseData {
+  selectedJobPhrase:PhraseDataObject
+  };
+export interface JobAdDataObject {
+  selectedJobPosting:JobAdData
+  };
+export interface JobDataObject {
+  selectedJob:JobData
+  };
+ export interface AreaData {
+  regionSalary:AreaDataObject
+  };
+export interface FormatData {
+  id?: string ;
+  name?: string;
+  transactionType?: TransactionType;
+  projectType?: ProjectType;
+  desc?: string;
+  media?: string;
+  status?:string;
+  organizationId?: string;
+}
+ export interface PhraseDataObject {
+  id?: string;
+  name?: string;
+  content?: string;
+  phraseCategory?: string;
+  desc?: string;
+  media?: string;
+  recruitmentItemName?: string;
+  dataType?: string;
+  organizationId?: string;
+}
+
+export interface AreaDataObject {
+  id?: string;
+  name?: string;
+  transactionType?: TransactionType;
+  projectType?: string;
+  desc?: string;
+  facilityType?: string;
+  organizationId?: string;
+}
 
 export interface MediaList {
   label?:string;
   value?:string;
 }
 
+export interface JobItem {
+  id?: string ;
+  name?: string;
+  content?: string;
+  phraseCategory?: string;
+  desc?: string;
+  media?: string;
+  recruitmentItemName?: string;
+  dataType?: string;
+  organizationId?: string;
+}
+export interface JobAdData {
+  id?: string;
+  name?: string;
+  jobId?: string;
+  publicationPeriod?: string;
+  areaFlag?: boolean;
+  media?: string;
+  dateIssue?: string;
+  publicationFormat?: string;
+  organizationId?: string;
+}
 export interface AddFormatModel {
   selectedFormat: {
     id: number | null;

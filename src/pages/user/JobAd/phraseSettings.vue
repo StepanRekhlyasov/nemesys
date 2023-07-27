@@ -86,13 +86,7 @@
                   direction-links outline />
           </div>
       </q-card-section>
-      <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
-          elevated bordered>
-          <q-scroll-area class="fit text-left">
-              <addPhraseComponent :selectedPhrase="selectedPhrase" :isDrawer="drawerRight" @hideDrawer="hideDrawer"
-                  :key="selectedPhrase?.key" />
-          </q-scroll-area>
-      </q-drawer>
+      <addPhraseComponent ref="jobPhraseDrawer" />
       </q-card>
 </template>
 
@@ -105,8 +99,7 @@ import { useJobPhrase } from 'src/stores/jobPhrase'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
-
-const drawerRight = ref(false);
+const jobPhraseDrawer = ref<InstanceType<typeof addPhraseComponent> | null>(null);
 const selectedPhrase = ref({ key: 'null' });
 const jobPhraseStore = useJobPhrase()
 const columns = ref(phraseColumns);
@@ -127,26 +120,17 @@ const pagination = ref({
 });
 
 const openDrawer = async (data) => {
-  if (!data.id) {
-      drawerRight.value = false;
-  }
   data['key'] = data.id;
   selectedPhrase.value = data;
-  setTimeout(() => drawerRight.value = true, 300);
+  jobPhraseDrawer.value?.showDrawerWithData(data);
 };
-
+const openAddDrawer = async () => {
+  jobPhraseDrawer.value?.openDrawer();
+};
 const fetchPhraseSettingData = async () => {
   loading.value = true;
   phraseList.value = await jobPhraseStore.loadJobPhraseData();
   loading.value = false;
-};
-const openAddDrawer = async () => {
-  selectedPhrase.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  setTimeout(() => drawerRight.value = true, 300);
-};
-const hideDrawer = () => {
-  selectedPhrase.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  drawerRight.value = false
 };
 
 const getPhraseCategory = (phraseCategory : string) => {

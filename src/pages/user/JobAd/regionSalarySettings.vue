@@ -204,13 +204,7 @@
                   direction-links outline />
           </div>
       </q-card-section>
-      <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
-          elevated bordered>
-          <q-scroll-area class="fit text-left">
-              <addRegionComponent :selectedArea="selectedArea" :isDrawer="drawerRight" @hideDrawer="hideDrawer"
-                  :key="selectedArea?.key" />
-          </q-scroll-area>
-      </q-drawer>
+      <addRegionComponent ref="regionSalaryDrawer"/>
   </q-card>
 </template>
 <script lang="ts" setup>
@@ -240,13 +234,13 @@ const areaList:DocumentData = ref([]);
 const regionalSalarySettingStore = useRegionalSalarySetting()
 const selected = ref([]);
 const selectedWard = ref([]);
-const drawerRight = ref(false);
 const selectedArea = ref({ key: 'null' });
 const userData = ref({});
 const columns = ref(regionSalaryColumns);
 const columnsWard = ref(regionSalaryAddColumns);
 const loading = ref(true);
 const areaFlag = ref(true);
+const regionSalaryDrawer = ref<InstanceType<typeof addRegionComponent> | null>(null);
 const wardList:DocumentData = ref([]);
 
 const pagination = ref({
@@ -264,21 +258,12 @@ const fetchRegionalSalaryData = async () => {
 };
 
 const openDrawer = async (data) => {
-  if (!data.id) {
-      drawerRight.value = false;
-  }
   data['key'] = data.id;
   selectedArea.value = data;
-  setTimeout(() => drawerRight.value = true, 300);
+  regionSalaryDrawer.value?.showDrawerWithData(data);
 };
-
 const openAddDrawer = async () => {
-  selectedArea.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  setTimeout(() => drawerRight.value = true, 300);
-};
-const hideDrawer = () => {
-  selectedArea.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  drawerRight.value = false
+  regionSalaryDrawer.value?.openDrawer();
 };
 
 const getTransactionText = (transactionType: string) => {

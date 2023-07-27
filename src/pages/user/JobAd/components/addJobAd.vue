@@ -1,20 +1,23 @@
 
 <template>
+ <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
+  elevated bordered>
+  <q-scroll-area class="fit text-left">
   <q-card class="no-shadow bg-grey-3">
       <q-form ref="jobForm" @submit="saveJobAd">
           <q-card-section class="text-white bg-primary rounded-borders">
               <div class="row">
                   <div class="col-12 flex flex-inline">
-                      <q-btn dense flat icon="close" @click="hideDrawer" />
+                      <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
                       <div class="q-mr-sm">
                           <div>
                               {{ transactionText }}
                               <span v-if="projectText">/ {{ projectText }}</span>
                           </div>
-                          <div class="text-h6">{{ jobAdData['name'] }}</div>
+                          <div class="text-h6">{{ selectedJobPosting['name'] }}</div>
                       </div>
                       <q-btn size="sm" style="background: white; color: #085374; height: 30px"
-                          :label="jobAdData['id'] ? $t('job.jobUpdate') : $t('jobAd.issuanceJobAd')" type="submit" />
+                          :label="selectedJobPosting['id'] ? $t('job.jobUpdate') : $t('jobAd.issuanceJobAd')" type="submit" />
                       <q-btn outline size="sm" :label="$t('jobAd.showPreview')" class="q-ml-md"
                           style="height: 30px" />
 
@@ -36,7 +39,7 @@
                   </div>
               </div>
           </q-card-section>
-          <q-card-section v-if="isDrawer">
+          <q-card-section v-if="drawerRight">
               <div class="row text-primary text-body1">
                   ■ {{ $t('jobAd.add.job') }}
               </div>
@@ -47,9 +50,9 @@
               </div>
               <div class="row">
                   <div class="col-12">
-                      <q-select outlined dense :options="jobList" emit-value map-options v-model="jobAdData['jobId']"
+                      <q-select outlined dense :options="jobList" emit-value map-options v-model="selectedJobPosting['jobId']"
                           lazy-rules :rules="[(val) => (val && val.length > 0) || '']" option-label="name">
-                          <template v-if="!jobAdData['jobId']" v-slot:selected>
+                          <template v-if="!selectedJobPosting['jobId']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
@@ -114,7 +117,7 @@
               </div>
               <div class="row q-pt-sm">
                   <div class="col-12">
-                      <q-input outlined dense v-model="jobAdData['name']" hide-bottom-space lazy-rules
+                      <q-input outlined dense v-model="selectedJobPosting['name']" hide-bottom-space lazy-rules
                           :rules="[(val) => (val && val.length > 0) || '']" />
                   </div>
               </div>
@@ -131,12 +134,12 @@
               </div>
               <div class="row">
                   <div class="col-4 q-pr-sm">
-                      <q-input outlined dense v-model="jobAdData['dateIssue']" mask="date"
+                      <q-input outlined dense v-model="selectedJobPosting['dateIssue']" mask="date"
                           :rules="['date', (val) => (val && val.length > 0) || '']" lazy-rules hide-bottom-space>
                           <template v-slot:append>
                               <q-icon name="event" class="cursor-pointer">
                                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                      <q-date v-model="jobAdData['dateIssue']">
+                                      <q-date v-model="selectedJobPosting['dateIssue']">
                                           <div class="row items-center justify-end">
                                               <q-btn v-close-popup label="Close" color="primary" flat />
                                           </div>
@@ -152,7 +155,7 @@
                           <template v-slot:append>
                               <q-icon name="event" class="cursor-pointer">
                                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                      <q-date v-model="jobAdData['publicationPeriod']" range>
+                                      <q-date v-model="selectedJobPosting['publicationPeriod']" range>
                                           <div class="row items-center justify-end">
                                               <q-btn v-close-popup label="Close" color="primary" flat />
                                           </div>
@@ -177,16 +180,16 @@
               <div class="row">
                   <div class="col-4 q-pr-sm">
                       <q-select outlined dense :options="mediaOptions" emit-value map-options
-                          v-model="jobAdData['media']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!jobAdData['media']" v-slot:selected>
+                          v-model="selectedJobPosting['media']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
+                          <template v-if="!selectedJobPosting['media']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
                   </div>
                   <div class="col-4 q-pr-sm">
                       <q-select outlined dense :options="publicationFormatOptions" emit-value map-options
-                          v-model="jobAdData['publicationFormat']" option-value="id" option-label="name">
-                          <template v-if="!jobAdData['publicationFormat']" v-slot:selected>
+                          v-model="selectedJobPosting['publicationFormat']" option-value="id" option-label="name">
+                          <template v-if="!selectedJobPosting['publicationFormat']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
@@ -198,7 +201,7 @@
               </div>
               <div class="row q-pt-sm">
                   <span class="q-ml-md">{{ $t('common.area') }}</span>
-                  <q-toggle v-model="jobAdData['areaFlag']" dense class="q-ml-sm q-mr-sm" />
+                  <q-toggle v-model="selectedJobPosting['areaFlag']" dense class="q-ml-sm q-mr-sm" />
                   <span>{{ $t('client.list.distanceStartingPoint') }}</span>
               </div>
 
@@ -214,12 +217,12 @@
                   </div>
                   <div class="row">
                       <div class="col-12">
-                          <q-input outlined dense v-model="jobAdData[item.value]" hide-bottom-space
+                          <q-input outlined dense v-model="selectedJobPosting[item.value]" hide-bottom-space
                               v-if="item.type == 'text'" readonly />
                           <q-select outlined dense :options="options[item.option]" emit-value map-options
-                              v-model="jobAdData[item.value]" v-else-if="item.type == 'select'" option-value="id"
+                              v-model="selectedJobPosting[item.value]" v-else-if="item.type == 'select'" option-value="id"
                               option-label="name">
-                              <template v-if="!jobAdData[item.value]" v-slot:selected>
+                              <template v-if="!selectedJobPosting[item.value]" v-slot:selected>
                                   <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                               </template>
                           </q-select>
@@ -229,10 +232,12 @@
           </q-card-section>
       </q-form>
   </q-card>
+  </q-scroll-area>
+  </q-drawer>
 </template>
 
 <script lang="ts" setup>
-import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch, onMounted, onBeforeUnmount,computed,ComputedRef } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { paymentTypeList, salaryTypeList, statusList, mediaList, formatSettingItemList } from 'src/shared/constants/JobAd.const';
@@ -241,45 +246,20 @@ import {JobModel,JobFormat} from 'src/shared/model/Jobs.model'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { DocumentData } from 'firebase/firestore';
 import { QForm } from 'quasar';
-import { useOrganization } from 'src/stores/organization';
+import { JobAdData } from 'src/shared/model/Jobs.model';
 const jobPostingHistoryStore = useJobPostingHistory()
-const props = defineProps({
-  selectedJob: {
-      type: Object,
-      required: true
-  },
-  isDrawer: {
-      type: Boolean,
-      required: true
-  }
-}
-)
 const emit = defineEmits<{
   (e: 'hideDrawer')
 }>()
-const organization = useOrganization()
 const hideDrawer = () => {
-  jobAdData.value = { ...jobAdDataObject }
   emit('hideDrawer')
 }
-const jobAdDataObject = {
-  id: props?.selectedJob['id'] || null,
-  name: props?.selectedJob['name'] || '',
-  jobId: '',
-  publicationPeriod: '',
-  areaFlag: true,
-  media: props?.selectedJob['media'] || '',
-  dateIssue: props?.selectedJob['dateIssue'] || '',
-  publicationFormat: '',
-  organizationId:organization.currentOrganizationId,
-
-}
-const jobAdData = ref({ ...jobAdDataObject })
+const drawerRight = ref(false);
 const mediaOptions = ref(mediaList);
 const facilityText = ref('');
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
-const options = ref({});
+const options:DocumentData = ref({});
 const unsubscribePhrase = ref();
 const jobList:Ref<JobModel[]> = ref([]);
 const transactionText = ref('')
@@ -292,21 +272,59 @@ const jobForm:Ref<QForm | null> = ref(null);
 const formatSettingItems:DocumentData = ref(formatSettingItemList);
 const unsubscribeFormat = ref()
 const publicationFormatOptions:Ref<JobFormat[]> = ref([])
+const selectedJobPosting = ref<JobAdData | ComputedRef>(
+  computed(() => jobPostingHistoryStore.state.selectedJobPosting)
+);
 
 onMounted(async () => {
   jobList.value = await jobPostingHistoryStore.getJobsdata()
-      if (props?.selectedJob['jobId'] && !jobAdData.value.jobId) {
-          jobAdData.value.jobId = props?.selectedJob['jobId'] || '';
+      if (selectedJobPosting.value['jobId'] && !selectedJobPosting.value.jobId) {
+          selectedJobPosting.value.jobId = selectedJobPosting.value['jobId'] || '';
       }
-  jobAdData.value.publicationPeriod = props?.selectedJob['publicationPeriod'] || '';
+  selectedJobPosting.value.publicationPeriod = selectedJobPosting.value['publicationPeriod'] || '';
 
   getPhrase();
   publicationFormatOptions.value = await jobPostingHistoryStore.getJobFormatData()
-      if (props?.selectedJob['publicationFormat'] && !jobAdData.value.publicationFormat) {
-          jobAdData.value.publicationFormat = props?.selectedJob['publicationFormat'] || '';
+      if (selectedJobPosting.value['publicationFormat'] && !selectedJobPosting.value.value.publicationFormat) {
+          selectedJobPosting.value.publicationFormat = selectedJobPosting.value['publicationFormat'] || '';
       }
 
 })
+const showDrawerWithData = async (data: JobAdData) => {
+  if (selectedJobPosting.value.id && selectedJobPosting.value.id !== data.id) {
+    drawerRight.value = false;
+  }
+  jobPostingHistoryStore.state.selectedJobPosting = data;
+  drawerRight.value = true
+}
+const openDrawer = async () => {
+  jobPostingHistoryStore.state.selectedJobPosting={}
+  drawerRight.value = true
+}
+const saveJobAd = async () => {
+  try {
+      if (selectedJobPosting.value.id) {
+          await jobPostingHistoryStore.updateFormData(selectedJobPosting.value)
+          hideDrawer()
+
+      } else {
+         await jobPostingHistoryStore.addFormData(selectedJobPosting.value)
+         hideDrawer()
+      }
+      Alert.success()
+      jobForm.value?.resetValidation();
+  } catch (error) {
+      Alert.warning(error)
+  }
+}
+
+const getPhrase = async () => {
+  if (unsubscribePhrase.value) {
+      unsubscribePhrase.value();
+  }
+   const data = await jobPostingHistoryStore.getPhraseData(options)
+  options.value = data
+}
 
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
@@ -325,7 +343,7 @@ onBeforeUnmount(() => {
 })
 
 watch(
-  () => (jobAdData.value.jobId),
+  () => (selectedJobPosting.value.jobId),
   (newVal,) => {
       transactionText.value = '';
       facilityText.value = '';
@@ -369,7 +387,7 @@ watch(
 )
 
 watch(
-  () => (jobAdData.value.publicationPeriod),
+  () => (selectedJobPosting.value.publicationPeriod),
   (newVal,) => {
       formatedPublicationPeriod.value = '';
       if (newVal) {
@@ -379,48 +397,21 @@ watch(
 )
 
 watch(
-  () => (jobAdData.value.publicationFormat),
+  () => (selectedJobPosting.value.publicationFormat),
   (newVal,) => {
-      if (jobAdData.value.publicationFormat) {
+      if (selectedJobPosting.value.publicationFormat) {
           const obPublicationFormat = publicationFormatOptions.value.find(o => o['value'] === newVal);
           if (obPublicationFormat) {
               formatSettingItems.value.forEach(item => {
-                  if (props?.selectedJob[item.value]) {
-                      jobAdData.value[item.value] = props?.selectedJob[item.value];
+                  if (selectedJobPosting[item.value]) {
+                      selectedJobPosting.value[item.value] = selectedJobPosting[item.value];
                   } else {
-                      jobAdData.value[item.value] = obPublicationFormat[item.value] || '';
+                      selectedJobPosting.value[item.value] = obPublicationFormat[item.value] || '';
                   }
               });
           }
       }
   }
 )
-
-const saveJobAd = async () => {
-  try {
-      if (jobAdData.value.id) {
-          await jobPostingHistoryStore.updateFormData(jobAdData.value)
-          hideDrawer()
-
-      } else {
-         await jobPostingHistoryStore.addFormData(jobAdData.value)
-         hideDrawer()
-      }
-      Alert.success()
-      jobAdData.value = { ...jobAdDataObject }
-      jobForm.value?.resetValidation();
-  } catch (error) {
-      Alert.warning(error)
-  }
-}
-
-const getPhrase = async () => {
-  if (unsubscribePhrase.value) {
-      unsubscribePhrase.value();
-  }
-   const data = await jobPostingHistoryStore.getPhraseData(options)
-  options.value = data
-}
-
-
+defineExpose({ showDrawerWithData ,openDrawer})
 </script>

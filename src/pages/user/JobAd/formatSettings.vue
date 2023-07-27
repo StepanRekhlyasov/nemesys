@@ -75,13 +75,7 @@
                   direction-links outline />
           </div>
       </q-card-section>
-      <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
-          elevated bordered>
-          <q-scroll-area class="fit text-left">
-              <addFormatComponent :selectedFormat="selectedFormat" :isDrawer="drawerRight" @hideDrawer="hideDrawer"
-                  :key="selectedFormat?.key" />
-          </q-scroll-area>
-      </q-drawer>
+        <addFormatComponent ref="formatDrawer" />
   </q-card>
 </template>
 
@@ -95,7 +89,6 @@ import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
-const drawerRight = ref(false);
 const selectedFormat = ref({ key: 'null' });
 const columns = ref(formatColumns);
 const formatList:DocumentData = ref([]);
@@ -103,6 +96,7 @@ const formatSettingStore = useFormatSetting()
 const selected = ref([]);
 const loading = ref(true);
 const userData = ref({});
+const formatDrawer = ref<InstanceType<typeof addFormatComponent> | null>(null);
 
 defineProps<{
   columns: QTableProps['columns'];
@@ -125,22 +119,15 @@ const fetchFormatSettingData = async () => {
 };
 
 const openDrawer = async (data) => {
-  if (!data.id) {
-      drawerRight.value = false;
-  }
   data['key'] = data.id;
   selectedFormat.value = data;
-  setTimeout(() => drawerRight.value = true, 300);
+  formatDrawer.value?.showDrawerWithData(data);
 };
 
 const openAddDrawer = async () => {
-  selectedFormat.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  setTimeout(() => drawerRight.value = true, 300);
+  formatDrawer.value?.openDrawer();
 };
-const hideDrawer = () => {
-  selectedFormat.value = { key: `${Math.floor(Math.random() * 1000)}` };
-  drawerRight.value = false
-};
+
 watchCurrentOrganization(async () => {
   loading.value = true;
   fetchFormatSettingData()

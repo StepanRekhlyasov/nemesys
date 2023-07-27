@@ -11,10 +11,16 @@ import {
   updateDoc
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
+import {ref} from 'vue'
 import { getAuth } from 'firebase/auth';
 import { useOrganization } from './organization';
+import { AreaData } from 'src/shared/model/Jobs.model';
 const auth = getAuth()
 export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () => {
+
+ const state = ref<AreaData>({
+  regionSalary:{}
+ })
   const db = getFirestore();
   const organization = useOrganization()
   const loadJobAreaData = async () => {
@@ -132,6 +138,7 @@ export const useRegionalSalarySetting = defineStore('regionalSalarySetting', () 
     updateFormData,
     addFormData,
     addNewCity,
-    fetchWardListData
+    fetchWardListData,
+    state
   };
 });

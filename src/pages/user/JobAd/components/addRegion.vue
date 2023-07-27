@@ -1,31 +1,34 @@
 <template>
+  <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay
+  elevated bordered>
+  <q-scroll-area class="fit text-left">
   <q-card class="no-shadow bg-grey-3">
       <q-form ref="jobForm" @submit="saveArea">
           <q-card-section class="text-white bg-primary rounded-borders">
               <div class="row">
                   <div class="col-12 flex flex-inline">
-                      <q-btn dense flat icon="close" @click="hideDrawer" />
+                      <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
                       <div class="q-mr-sm">
                           <div>
                               {{ transactionText }}
                               <span v-if="projectText">/ {{ projectText }}</span>
                           </div>
-                          <div class="text-h6">{{ areaData['name'] }}</div>
+                          <div class="text-h6">{{ selectedAreaData['name'] }}</div>
                       </div>
                       <q-btn size="sm" style="background: white; color: #085374; height: 30px"
-                          :label="areaData['id'] ? $t('regionSalary.add.areaUpdate') : $t('regionSalary.add.areaReg')"
+                          :label="selectedAreaData['id'] ? $t('regionSalary.add.areaUpdate') : $t('regionSalary.add.areaReg')"
                           type="submit" />
                   </div>
               </div>
           </q-card-section>
-          <q-card-section v-if="isDrawer">
+          <q-card-section v-if="drawerRight">
               <div class="row">
                   {{ $t('regionSalary.list.areaName') }}
                   <span class="text-red-5">*</span>
               </div>
               <div class="row">
                   <div class="col-12">
-                      <q-input outlined dense v-model="areaData['name']" hide-bottom-space lazy-rules
+                      <q-input outlined dense v-model="selectedAreaData['name']" hide-bottom-space lazy-rules
                           :rules="[(val) => (val && val.length > 0) || '']" />
                   </div>
               </div>
@@ -51,27 +54,27 @@
               <div class="row">
                   <div class="col-4 q-pr-sm">
                       <q-select outlined dense :options="transactionTypeOptions" emit-value map-options
-                          v-model="areaData['transactionType']" lazy-rules
+                          v-model="selectedAreaData['transactionType']" lazy-rules
                           :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!areaData['transactionType']" v-slot:selected>
+                          <template v-if="!selectedAreaData['transactionType']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
                   </div>
                   <div class="col-4 q-pr-sm">
                       <q-select outlined dense :options="projectTypeOptions" emit-value map-options
-                          v-model="areaData['projectType']" lazy-rules
+                          v-model="selectedAreaData['projectType']" lazy-rules
                           :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!areaData['projectType']" v-slot:selected>
+                          <template v-if="!selectedAreaData['projectType']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
                   </div>
                   <div class="col-4">
                       <q-select outlined dense :options="facilityTypeOption" emit-value map-options
-                          option-label="name" v-model="areaData['facilityType']" lazy-rules
+                          option-label="name" v-model="selectedAreaData['facilityType']" lazy-rules
                           :rules="[(val) => (val && val.length > 0) || '']">
-                          <template v-if="!areaData['facilityType']" v-slot:selected>
+                          <template v-if="!selectedAreaData['facilityType']" v-slot:selected>
                               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
                           </template>
                       </q-select>
@@ -83,14 +86,14 @@
               </div>
               <div class="row">
                   <div class="col-12">
-                      <q-input outlined dense v-model="areaData['desc']" hide-bottom-space />
+                      <q-input outlined dense v-model="selectedAreaData['desc']" hide-bottom-space />
                   </div>
               </div>
 
               <div class="row text-primary text-body1 q-pt-sm">
                   ■ {{ $t('regionSalary.add.citySetting') }}
                   <q-btn color="primary" size="sm" class="q-ml-md" dense :label="$t('common.addNew')" icon="add"
-                      @click="openCitySettingDialog" :disable="!areaData.id" />
+                      @click="openCitySettingDialog" :disable="!selectedAreaData.id" />
               </div>
 
               <q-table :columns="columns" :rows="wardList" row-key="id" class="no-shadow q-mt-sm"
@@ -238,12 +241,14 @@
           </q-card>
       </q-dialog>
   </q-card>
+  </q-scroll-area>
+  </q-drawer>
 </template>
 
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { ref,Ref, watch, defineProps, onMounted, onBeforeUnmount } from 'vue';
+import { ref,Ref, watch, onMounted, onBeforeUnmount,computed,ComputedRef } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { regionSalaryAddColumns } from 'src/shared/constants/JobAd.const';
@@ -251,49 +256,19 @@ import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
 import {AreaCityModel} from 'src/shared/model/Jobs.model'
 import { DocumentData } from 'firebase/firestore';
-import { useOrganization } from 'src/stores/organization';
+import { AreaDataObject } from 'src/shared/model/Jobs.model';
+import { QForm } from 'quasar';
 
 const regionalSalarySettingStore = useRegionalSalarySetting()
-const props = defineProps({
-  selectedArea: {
-      type: Object,
-      required: true
-  },
-  isDrawer: {
-      type: Boolean,
-      required: true
-  }
-}
-)
-const organization = useOrganization()
-const emit = defineEmits<{
-  (e: 'hideDrawer')
-}>()
-
-const hideDrawer = () => {
-  areaData.value = { ...areaDataObject }
-  emit('hideDrawer')
-}
-
 const { t } = useI18n({
   useScope: 'global',
 });
 const $q = useQuasar();
-const areaDataObject = {
-  id: props?.selectedArea['id'] || null,
-  name: props?.selectedArea['name'] || '',
-  transactionType: '',
-  projectType: '',
-  desc: props?.selectedArea['desc'] || '',
-  facilityType: props?.selectedArea['facilityType'] || '',
-  organizationId:organization.currentOrganizationId,
-
-}
-const areaData = ref({ ...areaDataObject })
 const unsubscribeWard = ref();
+const drawerRight = ref(false)
 const transactionText = ref('')
 const projectText = ref('')
-const jobForm = ref();
+const jobForm:Ref<QForm | null | undefined>  = ref();
 const transactionTypeOptions = ref(applicantClassification);
 const projectTypeOptions = ref(occupationList);
 const facilityTypeOption = ref(facilityList);
@@ -304,7 +279,9 @@ const wardJPList:DocumentData = ref([]);
 const prefectureJPList:Ref<string[]> = ref([]);
 const wardData:DocumentData = ref({});
 const wardList:Ref<AreaCityModel[]> = ref([]);
-
+const selectedAreaData = ref<AreaDataObject | ComputedRef>(
+  computed(() => regionalSalarySettingStore.state.regionSalary)
+);
 const loading = ref(false);
 
 const pagination = ref({
@@ -315,9 +292,9 @@ const pagination = ref({
 });
 
 onMounted(async () => {
-  areaData.value.transactionType = props?.selectedArea['transactionType'] || '';
-  areaData.value.projectType = props?.selectedArea['projectType'] || '';
-  let areaId = props?.selectedArea['id'] || '';
+  selectedAreaData.value.transactionType = selectedAreaData.value['transactionType'] || '';
+  selectedAreaData.value.projectType = selectedAreaData.value['projectType'] || '';
+  let areaId = selectedAreaData.value['id'] || '';
   if (areaId) {
     loading.value = true;
     wardList.value = await regionalSalarySettingStore.fetchWardListData(areaId)
@@ -332,7 +309,17 @@ onBeforeUnmount(() => {
 
 })
 
-
+const showDrawerWithData = async (data: AreaDataObject) => {
+  if (selectedAreaData.value.id && selectedAreaData.value.id !== data.id) {
+    drawerRight.value = false;
+  }
+  regionalSalarySettingStore.state.regionSalary = data;
+  drawerRight.value = true
+}
+const openDrawer = async () => {
+  regionalSalarySettingStore.state.regionSalary={}
+  drawerRight.value = true
+}
 watch(
   () => (citySetting.value.prefecture),
   (newVal, oldVal) => {
@@ -362,7 +349,7 @@ watch(
 
 
 watch(
-  () => (areaData.value.transactionType),
+  () => (selectedAreaData.value.transactionType),
   (newVal,) => {
       transactionText.value = '';
 
@@ -374,7 +361,7 @@ watch(
 )
 
 watch(
-  () => (areaData.value.projectType),
+  () => (selectedAreaData.value.projectType),
   (newVal,) => {
       projectText.value = '';
 
@@ -387,13 +374,13 @@ watch(
 
 const saveArea = async () => {
   try {
-      if (areaData.value.id) {
-          await regionalSalarySettingStore.updateFormData(areaData.value)
-          hideDrawer()
+      if (selectedAreaData.value.id) {
+          await regionalSalarySettingStore.updateFormData(selectedAreaData.value)
+          drawerRight.value=false
 
       } else {
-         await regionalSalarySettingStore.addFormData(areaData.value)
-         hideDrawer()
+         await regionalSalarySettingStore.addFormData(selectedAreaData.value)
+         drawerRight.value=false
       }
 
       $q.notify({
@@ -402,8 +389,7 @@ const saveArea = async () => {
           icon: 'cloud_done',
           message: t('success'),
       });
-      areaData.value = { ...areaDataObject }
-      jobForm.value.resetValidation();
+      jobForm.value?.resetValidation();
   } catch (error) {
       console.log(error);
       $q.notify({
@@ -422,7 +408,8 @@ const openCitySettingDialog = () => {
 }
 
 const addNewCity = async () => {
-  await regionalSalarySettingStore.addNewCity(citySetting.value,areaData.value.id)
+  await regionalSalarySettingStore.addNewCity(citySetting.value,selectedAreaData.value.id)
   prompt.value = false;
 }
+defineExpose({ showDrawerWithData ,openDrawer})
 </script>
