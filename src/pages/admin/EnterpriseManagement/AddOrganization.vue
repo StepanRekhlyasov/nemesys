@@ -4,7 +4,7 @@
     <q-card-section>
       <q-form @submit="addOrganization">
 
-        <DialogItemContainer name-key="menu.admin.organizationsTable.organizationCode">
+        <DialogItemContainer name-key="menu.admin.organizationsTable.organizationId">
           <q-input v-model="organization.code" outlined dense color="accent" :disable="loading"
             :rules="[organizationCodeRule, isCodeUniqueRule]" debounce="1000" />
         </DialogItemContainer>

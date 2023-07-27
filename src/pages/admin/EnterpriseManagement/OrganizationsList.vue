@@ -47,7 +47,8 @@
 
           <q-td>
             <template v-if="!isRowSelected(props.rowIndex)">
-              {{ props.row.organizationCodeAndName }}
+              {{ props.row.organizationCodeAndName.split(' ')?.[0] }} <br/>
+              {{ props.row.organizationCodeAndName.split(' ')?.[1] }}
             </template>
             <q-input v-else v-model:model-value="editableRow!.name" color="accent" :rules="[creationRule]"
               hide-bottom-space />
