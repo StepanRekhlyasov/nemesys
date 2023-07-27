@@ -70,6 +70,7 @@ const branchData = ref<Partial<Branch>>(props.editBranch? JSON.parse(JSON.string
   hidden: false,
   working: true
 })
+
 const loading = ref(false)
 const prefectureOption = ref(prefectureList);
 const organization = useOrganization()

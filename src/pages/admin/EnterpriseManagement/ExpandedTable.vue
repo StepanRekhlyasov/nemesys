@@ -13,6 +13,7 @@
           color="accent" @update:model-value="async (working) =>
               await onWorkingChange(working, { organizationId: props.organizationItem.id, businessId: props.buisnesesItem.id })
             " />
+        <q-btn flat icon="edit" color="accent" @click="openDialogBusiness = true; buisnesesEdit=props.buisnesesItem; organizationItemEdit = props.organizationItem" />
         <q-btn flat icon="delete" color="accent" @click="deleteConfirm = true; deleteBusinessData = props.buisnesesItem; deleteOrganizationId = props.organizationItem.id; deleteItem = 'business'" />
       </div>
     </template>
@@ -29,9 +30,14 @@
 
   </OrganizationColspanTabel>
 
+  <q-dialog v-model="openDialogBusiness">
+    <DialogWrapper>
+      <AddBusiness @closeDialog="openDialogBusiness = false; loadTableData();" color="accent" :editBusiness="JSON.parse(JSON.stringify(buisnesesEdit))" :organization="organizationItemEdit" @onCatchError="loadTableData"/>
+    </DialogWrapper>
+  </q-dialog>
   <q-dialog v-model="openDialog">
     <DialogWrapper>
-      <BranchCreateForm @closeDialog="openDialog = false; loadTableData()" color="accent" :defaultOrganizationid="organizationId" :editBranch="JSON.parse(JSON.stringify(branchToEdit))" @onCatchError="loadTableData"/>
+      <BranchCreateForm @closeDialog="openDialog = false; loadTableData(); organizationItemEdit = undefined; branchToEdit = undefined; " color="accent" :editBranch="JSON.parse(JSON.stringify(branchToEdit))" @onCatchError="loadTableData" :defaultOrganizationid="organizationId"/>
     </DialogWrapper>
   </q-dialog>
 
@@ -41,8 +47,8 @@
           <span class="q-ml-sm">{{ $t('common.deleteInfo') }}</span>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn flat label="Delete" color="primary" v-close-popup @click="()=>deleteBusinessHandler()" />
+          <q-btn flat :label="$t('common.cancel')" color="primary" v-close-popup />
+          <q-btn flat :label="$t('common.delete')" color="primary" v-close-popup @click="()=>deleteBusinessHandler()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -62,8 +68,9 @@ import { toTable } from 'src/components/organization/handlers/ToTable';
 import { useBranch } from 'src/stores/branch';
 import { useBusiness } from 'src/stores/business';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
+import AddBusiness from './AddBusiness.vue';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
-import { Branch } from 'src/shared/model';
+import { Branch, Business } from 'src/shared/model';
 
 
 type Props = Overwrite<Parameters<QTableSlots['body']>[0], { row: Row }>
@@ -76,6 +83,7 @@ const organization = useOrganization()
 const branchStore = useBranch()
 const business = useBusiness()
 const openDialog = ref(false)
+const openDialogBusiness = ref(false)
 const loading = ref(false)
 const deleteConfirm = ref(false)
 const deleteBusinessData = ref()
@@ -84,6 +92,8 @@ const deleteOrganizationId = ref('')
 const deleteBranchId = ref('')
 const organizationId = ref<string>()
 const branchToEdit = ref<Branch>()
+const buisnesesEdit = ref<Business>()
+const organizationItemEdit = ref()
 const $q = useQuasar()
 
 const componentProps = defineProps<ExpandedTableProps>()
@@ -92,7 +102,8 @@ async function deleteBusinessHandler(){
   if(deleteItem.value === 'business' && deleteBusinessData.value?.branches?.[0]?.id){
     $q.dialog({
       title: t('errors.error'),
-      message: t('errors.deleteBranchesFirst')
+      message: t('errors.deleteBranchesFirst'),
+      ok: t('common.ok')
     })
     return
   }

@@ -1958,7 +1958,7 @@ export default {
   errors: {
     'BO_occupied' : '選択されたBOは既に使用されています',
     'error' : 'エラー',
-    'deleteBranchesFirst' : 'まずすべてのブランチを削除してください'
+    'deleteBranchesFirst' : 'まずすべての支店を削除してください'
   },
   budget: {
     search: '予算検索',

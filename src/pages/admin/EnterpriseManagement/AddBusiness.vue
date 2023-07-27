@@ -28,7 +28,7 @@ import { getFirestore } from '@firebase/firestore';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
 import { useI18n } from 'vue-i18n';
 import { Row } from './types'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Business } from 'src/shared/model';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue'
 import DialogHeader from 'src/components/dialog/DialogHeader.vue';
@@ -37,7 +37,8 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useBusiness } from 'src/stores/business';
 
 interface AddBusinessProps {
-  organization: Row
+  organization: Row,
+  editBusiness?: Business
 }
 
 const name = ref<string>('')
@@ -55,15 +56,34 @@ async function addBusiness() {
     name: name.value,
     working: working.value
   }
-
-  try {
-    await businessStore.addBusiness(db, business, props.organization.id)
-    Alert.success();
-  } catch (error) {
-    Alert.warning(error);
+  console.log(props.editBusiness, props.organization)
+  if(props.editBusiness){
+    try {
+      await businessStore.editBusiness(business, props.organization.id, props.editBusiness.id)
+      Alert.success();
+    } catch (error){
+      Alert.warning(error);
+    }
+    emit('closeDialog')
+    loading.value = false
+  } else {
+    try {
+      await businessStore.addBusiness(db, business, props.organization.id)
+      Alert.success();
+    } catch (error) {
+      Alert.warning(error);
+    }
+    emit('closeDialog')
+    loading.value = false
   }
-  emit('closeDialog')
-  loading.value = false
+
 }
+
+onMounted(()=>{
+  if(props.editBusiness){
+    name.value = props.editBusiness.name
+    working.value = props.editBusiness.working
+  }
+})
 </script>
 
