@@ -66,10 +66,11 @@ const props = defineProps<{
   color: string
 }>()
 
-const branchData = ref<Partial<Branch>>(props.editBranch || {
+const branchData = ref<Partial<Branch>>(props.editBranch? JSON.parse(JSON.stringify(props.editBranch)) : {
   hidden: false,
   working: true
 })
+
 const loading = ref(false)
 const prefectureOption = ref(prefectureList);
 const organization = useOrganization()

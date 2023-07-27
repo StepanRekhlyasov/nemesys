@@ -19,7 +19,7 @@ export interface BackOrderModel {
   typeCase: TypeOfCase;
   status: BackOrderStatus;
   requiredQualifications: boolean;
-  qualifications: TypeQualifications;
+  qualifications: TypeQualifications[];
   somethingNotQuestioned: boolean;
   experienceRemarks: string;
 

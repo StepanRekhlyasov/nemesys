@@ -215,6 +215,7 @@ export default {
       },
       licenseManagement: {
         licenseRequest: '枠変更申請一覧',
+        licenseRequestList: 'ライセンス変更申請一覧',
         licenseRequestAdd: 'ライセンス変更申請',
         showList: '一覧表示',
         licenseManagement: 'ライセンス管理',
@@ -1275,7 +1276,7 @@ export default {
       welfare: '福利厚生',
       retirementAge: '定年',
       inHouseInformation: '社内情報',
-      referralFee: '紹介料の',
+      referralFee: '紹介料の規定％',
       referralFeeAmount: '紹介料の規定金額',
       regulation: '規定％',
       stipulatedAmount: '規定金額',
@@ -1687,6 +1688,8 @@ export default {
       companyName: '企業名',
       recievedDate: '送受信日',
       recieve: '受信',
+      recieved: '受信',
+      sent: '送信',
       responseDate: '返信日',
       notificationType: '通知種別',
       inquiry: '問い合わせ',
@@ -1955,7 +1958,7 @@ export default {
   errors: {
     'BO_occupied': '選択されたBOは既に使用されています',
     'error': 'エラー',
-    'deleteBranchesFirst': 'まずすべてのブランチを削除してください'
+    'deleteBranchesFirst': 'まずすべての支店を削除してください'
   },
   budget: {
     search: '予算検索',
