@@ -117,6 +117,10 @@ watch(()=>props.clientFactory, async (newValue)=>{
     loading.value = false
   }
 })
+
+watch(()=>props.modelValue, (newVal)=>{
+  inputVal.value = newVal
+})
 </script>
 <style lang="scss" scoped>
 .mySelect{

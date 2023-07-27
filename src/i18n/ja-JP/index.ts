@@ -1746,15 +1746,15 @@ export default {
     all: '全体',
     categories:{
       totalingMethod:{
-      totallingDailyData:'日次データ集計',
-      totallingAttractionDataByBranch:'支店別集客データ集計',
-      totallingAttractionDataByMedia:'媒体別集客データ集計'
-    },
-    item:{
-      actualValue:'実績値',
-      unitPricePerLeadtime:'単価L/T',
-      applicationAttribute:'応募属性'
-    },
+        totallingDailyData:'日次データ集計',
+        totallingAttractionDataByBranch:'支店別集客データ集計',
+        totallingAttractionDataByMedia:'媒体別集客データ集計'
+      },
+      item:{
+        actualValue:'実績値',
+        unitPricePerLeadtime:'単価L/T',
+        applicationAttribute:'応募属性'
+      },
       validApplicant:'有効応募者',
       numberOfContacts:'接触数',
       numberOfInvitations:'誘致数',
@@ -1983,5 +1983,21 @@ export default {
     chargeOfFix : 'FIX数',
     BoQty : 'BO数',
     average: '平均'
+  },
+  task: {
+    task: 'タスク',
+    taskType: 'タスク種別',
+    taskContent: 'タスク内容',
+    taskRegister: 'タスク登録',
+    types: {
+      'extensionConfirm': '延長の確認',
+      'finishApplicant' : '途中修了者への対応',
+      'dateManagement' : '入職日の管理',
+      'visitManagement' : '職見前日の管理',
+      'followUp' : '稼働者へのフォロー',
+      'collectDocs' : '必要書類の回収',
+      'staffRequests' : 'スタッフ依頼事項の返答',
+      'clientsRequests' : 'クライアント依頼事項の返答',
+    }
   }
 };

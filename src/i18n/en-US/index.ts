@@ -1990,5 +1990,21 @@ export default {
     chargeOfFix : 'FIX Qty.',
     BoQty : 'BO Qty.',
     average: 'Average'
+  },
+  task: {
+    task: 'Task',
+    taskType: 'Task type',
+    taskContent: 'Task Content',
+    taskRegister: 'Task Register',
+    types: {
+      'extensionConfirm': 'Extension Confirm',
+      'finishApplicant' : 'Handling mid-term finish applicant',
+      'dateManagement' : 'Management of entry date',
+      'visitManagement' : 'Management of the day before Visit',
+      'followUp' : 'Follow-up with working applicant',
+      'collectDocs' : 'Collection of necessary documents',
+      'staffRequests' : 'Response to staff requests',
+      'clientsRequests' : 'Response to client requests',
+    }
   }
 }
