@@ -20,6 +20,7 @@ export const useBudget = defineStore('budget', () => {
   const budgetList = ref(<DocumentData[]>[]);
   const unsubscribe = ref();
   const auth = getAuth();
+  const loadChartData = ref(true);
   const branchStore = useBranch()
   const organization = useOrganization();
   async function saveBudget(budgetData: BudgetData) {
@@ -98,6 +99,9 @@ export const useBudget = defineStore('budget', () => {
         items.push(data);
       });
       budgetList.value = items;
+      if (loadChartData.value === false) {
+        loadChartData.value = true
+      }
     });
   }
   async function getBudgetData(budgetId: string) {
@@ -383,10 +387,10 @@ export const useBudget = defineStore('budget', () => {
       })
       series.push({ name: md.label, data: values })
     })
-
+    loadChartData.value = false
     return series
 
   }
 
-  return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable, getItem, getChartData }
+  return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable, getItem, getChartData, loadChartData }
 })

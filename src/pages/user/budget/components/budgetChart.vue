@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 import { useBudget } from 'src/stores/budgetData';
 import { OptionData } from '../type/budget'
@@ -35,6 +35,7 @@ const options = ref<OptionData>({ occupation: [] });
 const loading = ref(true);
 const monthItems = ref(getLastMonthString(3));
 const allBudget = ref(<number>0)
+const branchId = ref(<string>'')
 chartOptions.value.xaxis.categories = monthItems.value.monthsJp as never[]
 
 const series = ref(<{ name: string, data: number[] }[]>[])
@@ -42,29 +43,36 @@ const series = ref(<{ name: string, data: number[] }[]>[])
 onMounted(async () => {
   loading.value = true
   options.value = await budgetStore.getOptionData(organization.currentOrganizationId);
-  updateSeries('');
+  updateSeries();
   loading.value = false;
 });
 
 watchCurrentOrganization(async (v) => {
   loading.value = true
   options.value = await budgetStore.getOptionData(v);
-  updateSeries('')
+  updateSeries()
   loading.value = false;
 })
 
-const getBranchId = (branchId: string) => {
-  updateSeries(branchId);
+const getBranchId = (branch: string) => {
+  branchId.value = branch
+  updateSeries();
 }
 
-const updateSeries = async (branchId: string) => {
-  series.value = await budgetStore.getChartData(options.value['media'], monthItems.value.monthsEn, branchId, organization.currentOrganizationId)
+const updateSeries = async () => {
+  series.value = await budgetStore.getChartData(options.value['media'], monthItems.value.monthsEn, branchId.value, organization.currentOrganizationId)
   allBudget.value = 0
   series.value.forEach(item => {
     allBudget.value += item.data.reduce((a, b) => a + b, 0)
 
   })
 }
+
+watch(() => budgetStore.loadChartData, (newValue) => {
+  if (newValue) {
+    updateSeries();
+  }
+})
 
 </script>
 <style scoped>
