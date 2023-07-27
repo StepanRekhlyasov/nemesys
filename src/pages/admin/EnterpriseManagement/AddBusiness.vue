@@ -15,7 +15,7 @@
         </DialogItemContainer>
 
         <q-card-actions :align="'center'">
-          <q-btn :label="t('common.addNew')" color="accent" type="submit" :loading="loading" />
+          <q-btn :label="props.editBusiness?$t('common.edit'):t('common.addNew')" color="accent" type="submit" :loading="loading" />
         </q-card-actions>
 
       </q-form>
