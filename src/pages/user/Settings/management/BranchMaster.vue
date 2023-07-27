@@ -100,7 +100,7 @@ showListRow = props.row}" />
     </q-card-section>
   </div>
   <q-dialog v-model="openDialog" @hide=" editBranch = undefined">
-    <DialogWrapper style="max-width: 300px;">
+    <DialogWrapper style="max-width: 450px;">
       <BranchCreateForm v-if="dialogType === 'Branch'" @closeDialog=" loadBranchesList(); openDialog = false;"
         :editBranch="editBranch" color="primary" />
       <AddLicenseRequestForm v-if="dialogType === 'LicenseRequest'" :branch="branch"

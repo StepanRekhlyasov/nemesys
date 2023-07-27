@@ -215,6 +215,7 @@ export default {
       },
       licenseManagement: {
         licenseRequest: 'Applications license request',
+        licenseRequestList: 'Applications license request',
         licenseRequestAdd: 'Add applications license request',
         showList: 'Show list',
         licenseManagement: 'License management',
