@@ -19,16 +19,14 @@
                 bg-color="white" clearable />
               <div v-else-if="item.type == 'number' && item.range" style="display: flex;" class="items-center">
                 <q-input outlined dense v-model="searchData[item.key + 'Min']" hide-bottom-space min="0" bg-color="white"
-                  @update:model-value="v => { searchData[item.key + 'Min'] = v?.toString().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',') }"
-                  class="q-mr-xs" clearable>
+                  @update:model-value="v => { searchData[item.key + 'Min'] = formatNumber(v) }" class="q-mr-xs" clearable>
                   <template v-slot:prepend v-if="item.icon">
                     <q-icon name="currency_yen" />
                   </template>
                 </q-input>
                 ~
                 <q-input outlined dense v-model="searchData[item.key + 'Max']" hide-bottom-space min="0" bg-color="white"
-                  @update:model-value="v => { searchData[item.key + 'Max'] = v?.toString().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',') }"
-                  class="q-ml-xs" clearable>
+                  @update:model-value="v => { searchData[item.key + 'Max'] = formatNumber(v) }" class="q-ml-xs" clearable>
                   <template v-slot:prepend v-if="item.icon">
                     <q-icon name="currency_yen" />
                   </template>
@@ -118,6 +116,7 @@ import { budgetSearchItem } from '../consts/Budget.const';
 import { OptionData, BudgetData } from '../type/budget'
 import { useBudget } from 'src/stores/budgetData';
 import { useOrganization } from 'src/stores/organization';
+import { formatNumber } from 'src/shared/utils/utils';
 
 const emit = defineEmits<{ (e: 'searchBudget', data: BudgetData) }>()
 

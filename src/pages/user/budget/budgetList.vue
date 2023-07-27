@@ -187,7 +187,7 @@ const budgetData = ref<BudgetData>({
   organizationId: organization.currentOrganizationId,
 });
 
-const searchData = ref({});
+const searchData = ref(<BudgetData>{});
 const importDialog = ref(false);
 const importDialogLoading = ref(false);
 const previewOKData = ref<BudgetData[]>([]);
@@ -220,9 +220,7 @@ const budgetList = computed(() => {
           } else if (item == 'postingEndDate') {
             return myDateFormat(el[item], 'YYYY/MM/DD') <= searchData.value[item]
           }
-          else {
-            return el[item] == searchData.value[item]
-          }
+          return el[item] == searchData.value[item]
         });
       }
     }

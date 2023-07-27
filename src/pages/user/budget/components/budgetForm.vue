@@ -18,8 +18,7 @@
             :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space bg-color="white" />
           <q-input outlined dense v-model="budgetData[item.key]" v-if="item.type == 'number'"
             :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space min="0" bg-color="white"
-            @update:model-value="v => { budgetData[item.key] = v?.toString().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',') }"
-            type="search">
+            @update:model-value="v => { budgetData[item.key] = formatNumber(v) }" type="search">
             <template v-slot:prepend v-if="item.icon">
               <q-icon name="currency_yen" />
             </template>
@@ -92,6 +91,7 @@ import { OptionData, BudgetData } from '../type/budget'
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import { useOrganization } from 'src/stores/organization';
 import { myDateFormat } from 'src/shared/utils/utils';
+import { formatNumber } from 'src/shared/utils/utils';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()

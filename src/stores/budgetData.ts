@@ -7,7 +7,7 @@ import { occupationList } from 'src/shared/constants/Applicant.const';
 import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
-import { dateToTimestampFormat, toJPDateString, toDateFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, toJPDateString, toDateFormat, formatNumber } from 'src/shared/utils/utils';
 import { deepCopy } from 'src/shared/utils';
 import { useBranch } from './branch';
 import { BudgetData } from 'src/pages/user/budget/type/budget'
@@ -203,19 +203,19 @@ export const useBudget = defineStore('budget', () => {
     const re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
     // Return NULL if input string is not well formed CSV string.
     if (!re_valid.test(text)) return null;
-    const a: string[] = [];                     // Initialize array to receive values.
+    const arr: string[] = [];                     // Initialize array to receive values.
     text.replace(re_value, // "Walk" the string using replace with callback.
       function (m0: string, m1: string, m2: string, m3: string) {
         // Remove backslash from \' in single quoted values.
-        if (m1 !== undefined) a.push(m1.replace(/\\'/g, "'"));
+        if (m1 !== undefined) arr.push(m1.replace(/\\'/g, "'"));
         // Remove backslash from \" in double quoted values.
-        else if (m2 !== undefined) a.push(m2.replace(/\\"/g, '"'));
-        else if (m3 !== undefined) a.push(m3);
+        else if (m2 !== undefined) arr.push(m2.replace(/\\"/g, '"'));
+        else if (m3 !== undefined) arr.push(m3);
         return ''; // Return empty string.
       });
     // Handle special case of empty last value.
-    if (/,\s*$/.test(text)) a.push('');
-    return a;
+    if (/,\s*$/.test(text)) arr.push('');
+    return arr;
   }
 
   const processData = async (data: string, accountingMonth: string, preview = false) => {
@@ -335,9 +335,9 @@ export const useBudget = defineStore('budget', () => {
     budgetData.value.postingStartDate = formateDataCSV[5].replace(/"/g, '')
     budgetData.value.postingEndDate = formateDataCSV[6].replace(/"/g, '')
     budgetData.value.accountingMonth = formateDataCSV[7].replace(/"/g, '');
-    budgetData.value.amount = formateDataCSV[8].replace(/"/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    budgetData.value.amount = formatNumber(formateDataCSV[8].replace(/"/g, ''));
     budgetData.value.numberOfSlots = formateDataCSV[9].replace(/"/g, '');
-    budgetData.value.unitPrice = formateDataCSV[10].replace(/"/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    budgetData.value.unitPrice = formatNumber(formateDataCSV[10].replace(/"/g, ''));
     budgetData.value.agency = formateDataCSV[11].replace(/"/g, '');
     budgetData.value.remark = formateDataCSV[12].replace(/"/g, '');
     return budgetData;
