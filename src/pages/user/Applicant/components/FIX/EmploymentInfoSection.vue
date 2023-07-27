@@ -77,7 +77,7 @@
             :options="usersListOption" :label="$t('common.pleaseSelect')" />
         </labelField>
 
-        <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.attendant.endDate')" :value="fixData.endDate">
+        <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.attendant.endDate')" :value="myDateFormat(fixData.endDate, 'YYYY/MM/DD')">
           <q-input dense outlined bg-color="white" v-model="data['endDate']" :disable="loading">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
@@ -116,6 +116,7 @@ import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import { validateDate } from 'src/shared/constants/Form.const';
 import { creationRule } from 'src/components/handlers/rules';
 import { QForm } from 'quasar';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   loading: boolean,
