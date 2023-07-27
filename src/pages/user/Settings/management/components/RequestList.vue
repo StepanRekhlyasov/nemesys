@@ -6,7 +6,7 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
       <q-card-section>
-        <q-table :columns="listColumns" :rows="listRows" :pagination="{rowsPerPage: 10}">
+        <q-table :columns="listColumns" :rows="listRows" :pagination="{rowsPerPage: 10}" :loading="loading">
           <template v-slot:body-cell-requestDate="props">
             <q-td :props="props">{{ myDateFormat(props.row.requestDate, 'YYYY-MM-DD HH:mm') }}</q-td>
           </template>
