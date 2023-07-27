@@ -215,7 +215,6 @@ const tableRows = computed(()=>{
     })
   }
   if(deliveryFrom.value){
-    console.log(deliveryFrom.value)
     result = result.filter((row)=>{
       return new Date(row.deliveryDate) >= new Date(deliveryFrom.value + ' 00:00:00')
     })

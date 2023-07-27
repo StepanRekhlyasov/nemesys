@@ -1695,6 +1695,8 @@ export default {
       companyName: 'Company name',
       recievedDate: 'date issued',
       recieve: 'date issued',
+      recieved: 'Recieved',
+      sent: 'Sent',
       responseDate: 'response date',
       notificationType: 'Notification Type',
       inquiry: 'Inquiry',
