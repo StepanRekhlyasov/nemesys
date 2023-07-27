@@ -60,19 +60,24 @@ async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
 
   const organizationIds = await organization.getAllOrganizationsIds()
-  const tableData = await Promise.all(organizationIds.map(async (id) => {
-    return licenceStore.getLicensesInMonth({
-      organizationId: id,
-      selectedMonth,
-      selectedYear,
-    })
-  }))
-  tableData.forEach((d) => {
+  try{
+    const tableData = await Promise.all(organizationIds.map(async (id) => {
+      return licenceStore.getLicensesInMonth({
+        organizationId: id,
+        selectedMonth,
+        selectedYear,
+      })
+    }))
+    tableData.forEach((d) => {
     if (d) {
-      data.value.push(d)
-    }
-  })
-
+        data.value.push(d)
+      }
+    })
+  } catch (error){
+    data.value = []
+    console.log(error)
+  }
+  
 }
 
 
