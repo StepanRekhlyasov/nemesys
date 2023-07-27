@@ -12,6 +12,7 @@ import { useBackOrder } from 'src/stores/backOrder';
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useOrganization } from 'src/stores/organization';
 
 const props = defineProps<{ theme: string, bo: BackOrderModel | undefined }>()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
@@ -25,8 +26,8 @@ const staffList = ref<ApplicantForCandidateSearch[]>([])
 const getApplicant = useApplicant();
 const backOrderStore = useBackOrder()
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
-
-watch(mapDrawerValue, async () => {
+const organization = useOrganization()
+watch(()=> [mapDrawerValue, organization.currentOrganizationId], async () => {
   if (mapDrawerValue.value) {
     searchRadius.value = 0;
     await getClientLocation();

@@ -85,6 +85,7 @@ import YearMonthPicker from 'src/components/inputs/YearMonthPicker.vue';
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { ApplicantStatus } from 'src/shared/model';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 /** consts */
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null)
@@ -135,6 +136,10 @@ onMounted( async ()=>{
 })
 watch(()=>applicantStore.state.applicantProgressFilter.currentStatusMonth, (newVal, oldVal)=>{
   if(newVal!=oldVal) fetchResults()
+})
+
+watchCurrentOrganization(async()=>{
+  await fetchResults()
 })
 </script>
 <style lang="scss">
