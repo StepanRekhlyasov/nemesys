@@ -215,13 +215,14 @@ const tableRows = computed(()=>{
     })
   }
   if(deliveryFrom.value){
+    console.log(deliveryFrom.value)
     result = result.filter((row)=>{
-      return new Date(row.deliveryDate) >= new Date(deliveryFrom.value)
+      return new Date(row.deliveryDate) >= new Date(deliveryFrom.value + ' 00:00:00')
     })
   }
   if(deliveryTo.value){
     result = result.filter((row)=>{
-      return new Date(row.deliveryDate) <= new Date(deliveryTo.value)
+      return new Date(row.deliveryDate) <= new Date(deliveryTo.value + ' 23:59:59')
     })
   }
   return result
