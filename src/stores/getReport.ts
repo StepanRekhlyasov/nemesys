@@ -688,6 +688,7 @@ export const useGetReport = defineStore('getReport', () => {
     organizationId?: string
   ) => {
     const db = getFirestore();
+    const milsecondPersecond =1000
     const dataAverageList: number[] = Array(5).fill(0);
     const querys = getQuery(
       {
@@ -717,22 +718,22 @@ export const useGetReport = defineStore('getReport', () => {
         if (applicantData && applicantData.attractionDate) {
           dataAverageList[0] +=
             (applicantData.attractionDate - applicantData.applicationDate) /
-            secondperday;
+            secondperday * milsecondPersecond;
           dataAverageList[1] +=
-            (dataDate - applicantData.attractionDate) / secondperday;
+            (dataDate - applicantData.attractionDate) / secondperday  *milsecondPersecond
           ApplicantFixCounter += 1;
         }
 
         if (inspectiondate) {
-          dataAverageList[2] += (inspectiondate - dataDate) / secondperday;
+          dataAverageList[2] += (inspectiondate - dataDate) / secondperday * milsecondPersecond;
           InspectionFixCounter += 1;
         }
         if (offerDate) {
-          dataAverageList[3] += (offerDate - inspectiondate) / secondperday;
+          dataAverageList[3] += (offerDate - inspectiondate) / secondperday * milsecondPersecond;
           OfferInspectionCounter += 1;
         }
         if (admissiondate) {
-          dataAverageList[4] += (admissiondate - offerDate) / secondperday;
+          dataAverageList[4] += (admissiondate - offerDate) / secondperday * milsecondPersecond;
           AdmissionOfferCounter += 1;
         }
       })
