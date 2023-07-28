@@ -7,7 +7,7 @@
           {{$t('task.taskRegister')}}
         </q-card-section>
         <q-card-section class="text-primary">
-          <span style="font-size: 25px;" class="q-mr-sm">■</span>{{$t('task.taskRegister')}}
+          <span style="font-size: 25px;" class="q-mr-sm">■</span>{{$t('task.taskRegisterWindow')}}
         </q-card-section>
         <q-form class="text-primary q-px-xl" greedy @submit="createTask" ref="myForm">
           <div class="row items-center q-px-xl q-mb-md">
