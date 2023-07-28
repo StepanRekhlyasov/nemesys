@@ -69,7 +69,7 @@ const showLeadtime = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps],
+  () => [props.branch_user_list, props.dateRangeProps, props.branch_id],
   async () => {
     await showLeadtime(props.dateRangeProps, props.organization_id);
   }

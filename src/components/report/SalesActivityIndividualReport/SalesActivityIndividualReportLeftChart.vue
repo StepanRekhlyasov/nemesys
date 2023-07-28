@@ -138,7 +138,7 @@ const showIndividualReport = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.branch_user_list, props.dateRangeProps, props.graph_type, props.branch_id],
   async () => {
     if (props.branch_user_list.length != 0) {
       if (props.dateRangeProps == undefined) return;

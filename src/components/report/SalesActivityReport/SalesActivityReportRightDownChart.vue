@@ -52,7 +52,12 @@ const showChart = async () => {
   );
 };
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [
+    props.branch_user_list,
+    props.dateRangeProps,
+    props.graph_type,
+    props.branch_id,
+  ],
   async () => {
     await showChart();
   }
