@@ -70,7 +70,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  getUserDisplayName(props.row.registrant).value
+                  getUserDisplayName(props.row.registrant)
                  }}
               </div>
             </q-td>
@@ -194,7 +194,7 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userDisplayName.value = userNames.value[registrant];
   }
 
-  return userDisplayName;
+  return userDisplayName.value;
 };
 watchCurrentOrganization(async ()=>{
  await backOrderStore.loadBackOrder({});
