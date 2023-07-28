@@ -32,6 +32,7 @@ import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
 import { round } from 'src/shared/utils/KPI.utils';
 const userStore = useUserStore();
 const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
+const milsecondPersecond = 1000;
 const applicantFieldDict: FieldDict = {
   name: 'applicants',
   dateBasedOnEachItemDate: 'applicationDate',
@@ -688,7 +689,7 @@ export const useGetReport = defineStore('getReport', () => {
     organizationId?: string
   ) => {
     const db = getFirestore();
-    const milsecondPersecond =1000
+
     const dataAverageList: number[] = Array(5).fill(0);
     const querys = getQuery(
       {
@@ -717,23 +718,28 @@ export const useGetReport = defineStore('getReport', () => {
 
         if (applicantData && applicantData.attractionDate) {
           dataAverageList[0] +=
-            (applicantData.attractionDate - applicantData.applicationDate) /
-            secondperday * milsecondPersecond;
+            ((applicantData.attractionDate - applicantData.applicationDate) /
+              secondperday) *
+            milsecondPersecond;
           dataAverageList[1] +=
-            (dataDate - applicantData.attractionDate) / secondperday  *milsecondPersecond
+            ((dataDate - applicantData.attractionDate) / secondperday) *
+            milsecondPersecond;
           ApplicantFixCounter += 1;
         }
 
         if (inspectiondate) {
-          dataAverageList[2] += (inspectiondate - dataDate) / secondperday * milsecondPersecond;
+          dataAverageList[2] +=
+            ((inspectiondate - dataDate) / secondperday) * milsecondPersecond;
           InspectionFixCounter += 1;
         }
         if (offerDate) {
-          dataAverageList[3] += (offerDate - inspectiondate) / secondperday * milsecondPersecond;
+          dataAverageList[3] +=
+            ((offerDate - inspectiondate) / secondperday) * milsecondPersecond;
           OfferInspectionCounter += 1;
         }
         if (admissiondate) {
-          dataAverageList[4] += (admissiondate - offerDate) / secondperday * milsecondPersecond;
+          dataAverageList[4] +=
+            ((admissiondate - offerDate) / secondperday) * milsecondPersecond;
           AdmissionOfferCounter += 1;
         }
       })
