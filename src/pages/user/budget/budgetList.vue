@@ -263,8 +263,8 @@ const showDeleteDialog = async (budgetIds) => {
     cancel: t('common.cancel'),
   }).onOk(async () => {
     const done = await budgetStore.deleteBudget(budgetIds);
-    if (done) {
-      Alert.success()
+    if (!done) {
+      Alert.warning()
     }
 
   })
@@ -307,10 +307,7 @@ const saveCsvData = async () => {
   const success = await budgetStore.processData(csvContent.value, searchData.value['accountingMonth']);
   importDialog.value = false;
   importDialogLoading.value = false;
-  if (success) {
-    Alert.success()
-  }
-  else {
+  if (!success) {
     Alert.warning()
   }
 }
