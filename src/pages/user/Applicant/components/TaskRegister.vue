@@ -1,5 +1,5 @@
 <template>
-<q-drawer class="bg-white" :width="780" :breakpoint="500" side="right" overlay elevated bordered>
+<q-drawer class="bg-white" :width="780" :breakpoint="500" side="right" overlay elevated bordered @show="()=>recreateData()">
   <q-scroll-area class="fit text-left">
       <q-card class="no-shadow bg-white">
         <q-card-section class="text-white bg-primary">
@@ -36,7 +36,7 @@
           <div class="row items-center q-px-xl q-mb-md">
             <div class="col-3 q-pr-md"></div>
             <div class="col-9 q-pr-xl">
-              <q-btn color="primary" type="submit" class="q-mr-md" :disable="loading">{{ $t('common.register') }}</q-btn>
+              <q-btn color="primary" type="submit" class="q-mr-md" :disable="loading">{{ entity==='edit' ? $t('applicant.statusOption.update') : $t('common.register')}}</q-btn>
               <q-btn @click="closeDrawer">{{ $t('common.cancel') }}</q-btn>
             </div>
           </div>
@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { taskTypeOptions } from '../const/index'
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { serverTimestamp } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
@@ -72,15 +72,15 @@ const taskContent = ref('')
 const taskUserInCharge = ref('')
 
 function closeDrawer() {
-  myForm.value?.reset()
+  resetData()
   emit('closeDrawer')
 }
 
 function resetData() {
-  myForm.value?.reset()
   taskType.value = ''
   taskContent.value = ''
   taskUserInCharge.value = ''
+  myForm.value?.reset()
   loading.value = false
 }
 
@@ -148,12 +148,12 @@ async function updateTask(){
   return
 }
 
-watch(() => props.entityData, (newValue) => {
-  if(newValue && props.entity === 'edit'){
+function recreateData(){
+  if(props.entity === 'edit'){
     taskType.value = (props.entityData as Task).taskType
     taskContent.value = (props.entityData as Task).taskContent
     taskUserInCharge.value = (props.entityData as Task).assignedUserId
   }
-}, {deep : true})
+}
 
 </script>
