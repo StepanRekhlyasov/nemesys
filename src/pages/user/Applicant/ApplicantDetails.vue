@@ -131,7 +131,7 @@
               <span class="col-3 q-pl-md">{{ selectedApplicant.daysToWork ? selectedApplicant.daysToWork + ' ' +
                 $t('applicant.attendant.days') : '' }}</span>
               <div v-if="!bo" class="col-3 text-right">
-                <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary" />
+                <q-btn outline size="sm" :label="$t('task.taskRegister')" color="primary" @click="openTaskRegister = true" />
               </div>
             </div>
           </div>
@@ -141,6 +141,12 @@
         </q-card-section>
       </q-card>
     </q-scroll-area>
+    <TaskRegister
+      :entity="'applicant'"
+      :entityData="applicantStore.state.selectedApplicant"
+      v-model="openTaskRegister"
+      @closeDrawer="openTaskRegister=false"
+    />
   </q-drawer>
 
   <q-drawer v-if="applicantStore.state.selectedApplicant" v-model="boMapDrawer" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
@@ -171,6 +177,7 @@ import { statusList } from 'src/shared/constants/Applicant.const';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
+import TaskRegister from './components/TaskRegister.vue';
 import { myDateFormat } from 'src/shared/utils/utils';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { BackOrderModel } from 'src/shared/model';
@@ -182,6 +189,7 @@ import { boMapDrawerValue } from './const';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
+
 const statusOption = ref(statusList);
 const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
@@ -193,6 +201,8 @@ const openDrawer = async (data: Applicant) => {
   applicantStore.state.selectedApplicant = data;
   setTimeout(() => drawerRight.value = true, 300);
 }
+
+const openTaskRegister = ref(false)
 
 const boMapDrawer = ref<boolean>(false)
 const backOrderStore = useBackOrder();

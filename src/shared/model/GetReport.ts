@@ -3,11 +3,12 @@ import { typeOfQuery } from '../types/totalization';
 import { User, Branch } from 'src/shared/model';
 import { Media } from 'src/shared/model/Media.model';
 import { QueryFieldFilterConstraint } from 'firebase/firestore';
+
 export interface ReportState {
   dateRange: { from: string; to: string } | { from: Date; to: Date };
   dateType: graphType;
-  media?: string;
-  branch?: string;
+  media?: Media | string;
+  branch?: Branch | string;
   uid?: string;
   organizationId?: string;
   occupation?: string;
