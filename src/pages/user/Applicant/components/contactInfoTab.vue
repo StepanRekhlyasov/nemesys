@@ -133,6 +133,7 @@ import { contactColumns as columns } from 'src/shared/constants/Applicant.const'
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useUserStore } from 'src/stores/user';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const props = defineProps<{
   applicant: Applicant
@@ -174,6 +175,10 @@ onMounted( async () => {
   updateContactList();
   users.value = await userStore.getAllUsers();
 });
+
+watchCurrentOrganization(async ()=>{
+  await updateContactList()
+})
 
 async function onSubmit() {
   loading.value = true;

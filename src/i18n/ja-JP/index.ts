@@ -1276,7 +1276,7 @@ export default {
       welfare: '福利厚生',
       retirementAge: '定年',
       inHouseInformation: '社内情報',
-      referralFee: '紹介料の',
+      referralFee: '紹介料の規定％',
       referralFeeAmount: '紹介料の規定金額',
       regulation: '規定％',
       stipulatedAmount: '規定金額',

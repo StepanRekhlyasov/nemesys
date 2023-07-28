@@ -108,6 +108,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { FaxSearchData } from './types';
 import PdfViewer from './components/PdfViewer.vue';
 import { pdfViewer } from './consts/index';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const organizationStore = useOrganization();
 const applicantStore = useApplicant();
 const columns = ref(faxColumns);
@@ -215,6 +216,11 @@ const filterFn = (val: string, update) => {
     }
   });
 };
+
+watchCurrentOrganization(async()=>{
+  await applicantStore.loadApplicantData()
+})
+
 </script>
 <style lang="scss">
 @import 'src/css/imports/colors';

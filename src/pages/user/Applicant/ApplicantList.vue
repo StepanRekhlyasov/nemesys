@@ -92,6 +92,7 @@ import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import SmsDrawer from './components/SmsDrawer.vue';
 import { sharedData } from './components/search/searchData'
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const { t } = useI18n({ useScope: 'global' });
 const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
@@ -191,5 +192,10 @@ watch(
     }
   },
 )
+
+watchCurrentOrganization(async ()=>{
+  await applicantStore.loadApplicantData()
+})
+
 applicantStore.loadApplicantData(sharedData.value, pagination.value);
 </script>
