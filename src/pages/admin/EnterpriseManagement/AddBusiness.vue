@@ -59,7 +59,7 @@ async function addBusiness() {
   if(props.editBusiness){
     try {
       await businessStore.editBusiness(business, props.organization.id, props.editBusiness.id)
-      Alert.success();
+      ;
     } catch (error){
       Alert.warning(error);
     }
@@ -68,7 +68,7 @@ async function addBusiness() {
   } else {
     try {
       await businessStore.addBusiness(db, business, props.organization.id)
-      Alert.success();
+      ;
     } catch (error) {
       Alert.warning(error);
     }

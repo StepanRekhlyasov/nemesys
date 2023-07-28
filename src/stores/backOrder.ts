@@ -191,7 +191,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['id'] = docRef.id;
     data['organizationId'] = organization.currentOrganizationId
     await setDoc(docRef, data);
-    Alert.success();
+    ;
   }
   async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
     const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId),];
@@ -488,7 +488,7 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function addToFix(data:DocumentData){
       const collectionRef = collection(db, 'fix');
       await addDoc(collectionRef, data.value);
-      Alert.success();
+      ;
   }
 
   return {addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints }

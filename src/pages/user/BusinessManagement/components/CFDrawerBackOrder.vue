@@ -168,7 +168,7 @@ const showDeleteDialog = async (ids: string[]) => {
     backOrderData.value = data.map(row => {
       return { ...row, selected: false };
     });
-    Alert.success()
+    
   });
 };
 const showAddBO = () => {

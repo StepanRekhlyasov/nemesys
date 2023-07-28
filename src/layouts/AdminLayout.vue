@@ -119,7 +119,7 @@ export default defineComponent({
       router
         .push('/auth/login')
         .then(() => {
-          Alert.success()
+          
         })
         .catch((error) => console.log('error', error));
     };

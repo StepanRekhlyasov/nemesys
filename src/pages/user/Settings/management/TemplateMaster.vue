@@ -215,10 +215,10 @@ export default {
               deleted: true
             })
 
-            Alert.success()
+            
             loadTemplateList()
           } catch {
-            Alert.success()
+            
             loading.value = false;
           }
         })

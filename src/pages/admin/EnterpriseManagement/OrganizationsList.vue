@@ -216,7 +216,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
     await organizationStore.editOrganization(organization, row.id)
     await refresh()
     loading.value = false;
-    Alert.success()
+    
   } catch (error) {
     Alert.warning(error);
     console.log(error)

@@ -228,7 +228,7 @@ const showDeleteDialog = async (budgetIds) => {
   }).onOk(async () => {
     const done = await budgetStore.deleteBudget(budgetIds);
     if (done) {
-      Alert.success()
+      
       loadPagination.value = loadPagination.value == 0 ? 1 : 0
     }
 
@@ -246,7 +246,7 @@ const importCsv = async () => {
       reader.onload = (e) => {
         const contents = e.target?.result;
         budgetStore.processData(contents, selectedYear.value, selectedMonth.value);
-        Alert.success()
+        
       };
       reader.readAsText(file);
     }

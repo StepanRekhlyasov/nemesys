@@ -564,7 +564,7 @@ const save = async () => {
     if (!data['status']) data['status'] = null;
     const save = await saveSearch.saveSearch(data);
     if (save)
-      Alert.success()
+      
   }
   isSaving.value = false;
 }

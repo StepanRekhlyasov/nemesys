@@ -349,7 +349,7 @@ export default {
       await addDoc(clientRef, data);
 
       context.emit('closeDialog')
-      Alert.success()
+      
     };
     return {
       boData,

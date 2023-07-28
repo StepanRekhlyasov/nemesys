@@ -126,7 +126,7 @@ export default {
           await addDoc(clientRef, data);
 
           context.emit('closeDialog');
-          Alert.success();
+          ;
           loading.value = false;
         } catch(e) {
           Alert.warning(e);
@@ -148,7 +148,7 @@ export default {
             })
 
             context.emit('closeDialog');
-            Alert.success();
+            ;
             loading.value = false;
         } catch (e) {
           console.log(e)

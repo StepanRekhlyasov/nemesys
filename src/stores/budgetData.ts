@@ -43,7 +43,7 @@ export const useBudget = defineStore('budget', () => {
       data['updated_by'] = auth.currentUser?.uid;
       await updateDoc(docRef, data);
     }
-    Alert.success()
+    
     return true
   }
 

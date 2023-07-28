@@ -135,7 +135,7 @@ async function addBackOrder() {
     loading.value = false;
     await backOrderStore.loadBackOrder({});
     closeDialog();
-    Alert.success()
+    
   }
 }
 
