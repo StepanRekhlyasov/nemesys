@@ -223,12 +223,12 @@
                       {{ $t('client.list.postingStartDate') }}
                     </q-item-label>
                     <div>
-                      <q-input outlined dense v-model="backOrderData['postingStartDate']" mask="date" clearable
+                      <q-input outlined dense v-model="backOrderData[dispatch.value]['postingStartDate'][record.value]" mask="date" clearable
                         clear-icon="close">
                         <template v-slot:append>
                           <q-icon name="event" class="cursor-pointer">
                             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                              <q-date v-model="backOrderData['postingStartDate']">
+                              <q-date v-model="backOrderData[dispatch.value]['postingStartDate'][record.value]">
                                 <div class="row items-center justify-end">
                                   <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                                 </div>
@@ -245,12 +245,12 @@
                       {{ $t('client.list.postingEndDate') }}
                     </q-item-label>
                     <div>
-                      <q-input outlined dense v-model="backOrderData['postingEndDate']" mask="date" clearable
+                      <q-input outlined dense v-model="backOrderData[dispatch.value]['postingEndDate'][record.value]" mask="date" clearable
                         clear-icon="close">
                         <template v-slot:append>
                           <q-icon name="event" class="cursor-pointer">
                             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                              <q-date v-model="backOrderData['postingEndDate']">
+                              <q-date v-model="backOrderData[dispatch.value]['postingEndDate'][record.value]">
                                 <div class="row items-center justify-end">
                                   <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                                 </div>
@@ -266,7 +266,7 @@
                       {{ record.label }}
                     </q-item-label>
                     <div>
-                      <q-input outlined dense v-model="backOrderData['numBOsAcquired']" type="number" />
+                      <q-input outlined dense v-model="backOrderData[dispatch.value]['quantity'][record.value]" type="number" />
                     </div>
                   </div>
                 </div>
@@ -361,6 +361,20 @@ import { useRouter } from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  serverTimestamp,
+  Timestamp,
+  query,
+  where,
+  onSnapshot,
+  DocumentData,
+  getDocs,
+  doc,
+} from 'firebase/firestore';
+const db = getFirestore();
 const props = withDefaults(defineProps<{
     from: string
 }>(), {
@@ -373,6 +387,11 @@ const advanceSearch = useAdvanceSearch()
 const router = useRouter()
 const clientFactoryStore = useClientFactory()
 const { t } = useI18n({ useScope: 'global' });
+// const dateData = ref({
+//   'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+//   'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+//   'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''}
+// })
 const backOrderData = reactive({
   client_name: '',
   industry: [],
@@ -380,6 +399,26 @@ const backOrderData = reactive({
   basic_contract_signed: false,
   avail_job_postings: false,
   status: [],
+  dispatchRecord :{
+    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+  },
+  referralResults :{
+    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+  },
+  dispatchedOtherCompanies:{
+    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+  },
+  otherCompanyReferralResults:{
+    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
+  },
 });
 if(props.from=='map'){
   backOrderData['client_name'] = advanceSearch.mapConditionData['keyword'] || '';
@@ -492,7 +531,63 @@ const searchClients = async () => {
         timeout: 30000,
         }
       )
-      searchClientsByCondition(response.data)
+      const officeData = response.data
+      const start = Timestamp.fromDate(new Date(backOrderData.dispatchRecord['postingStartDate']['numBOs']));
+      const end = Timestamp.fromDate(new Date(backOrderData.dispatchRecord['postingEndDate']['numBOs']));
+      const filters = [
+        where('dateOfRegistration', '>=', start),
+        where('dateOfRegistration', '<', end),
+      ];
+      const offices = []
+
+      // const q = collection(db, 'BO');
+
+      // onSnapshot(collection(db, 'BO'), (querySnapshot) => {
+      //   querySnapshot.forEach((doc) => {
+      //     console.log(doc.id)
+      //   })
+      // })
+      let count=0;
+      officeData.forEach(async(item)=>{
+        const q = query(collection(db, 'BO'),where('office_id','==',item.id),...filters);
+        // const snapshot = await getDocs(q);
+        // let flag=0;
+        // snapshot.docs.map((doc) => {
+        //   flag=1
+        // });
+        // if(flag==1){
+        //   offices.push(item.id)
+        // }
+        onSnapshot(q, (querySnapshot) => {
+          const office = []
+          querySnapshot.forEach((doc) => {
+            const documentData = doc.data();
+            office.push(documentData['dateOfRegistration'].toDate())
+            // office.push(doc.id)
+          });
+          if(office.length>0){
+            count++
+            offices.push(item.id)
+          }
+        });
+        // console.log(count)
+      })
+      console.log(offices)
+      console.log(offices.length)
+      // if(offices.length>=parseInt(backOrderData.dispatchRecord['quantity']['numBOs'])){
+        clientFactoryStore.condition = true
+        clientFactoryStore.selectedCFsId = offices
+        router.push('/client-factories')
+      // }
+      // const q = query(collection(db, 'BO'), ...filters);
+      // onSnapshot(q, (querySnapshot) => {
+      //   querySnapshot.forEach((doc) => {
+      //     const data = doc.data();
+      //     data['id'] = doc.id;
+      //     items.push(data);
+      //   });
+      // });
+      // searchClientsByCondition(response.data)
       }
   } catch (error) {
     throw new Error('Failed to create user')
