@@ -562,9 +562,8 @@ const save = async () => {
     if (!data['applicationDateMin']) data['applicationDateMin'] = null;
     if (!data['applicationDateMax']) data['applicationDateMax'] = null;
     if (!data['status']) data['status'] = null;
-    const save = await saveSearch.saveSearch(data);
-    if (save)
-      
+    await saveSearch.saveSearch(data);
+
   }
   isSaving.value = false;
 }

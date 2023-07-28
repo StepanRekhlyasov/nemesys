@@ -129,7 +129,6 @@ import InfoBO from 'src/pages/user/BackOrder/components/info/InfoBO.vue';
 import SearchByMapDrawer from 'src/pages/user/BackOrder/components/info/searchByMapDrawer.vue';
 import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
-import { Alert } from 'src/shared/utils/Alert.utils';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
 
@@ -168,7 +167,7 @@ const showDeleteDialog = async (ids: string[]) => {
     backOrderData.value = data.map(row => {
       return { ...row, selected: false };
     });
-    
+
   });
 };
 const showAddBO = () => {

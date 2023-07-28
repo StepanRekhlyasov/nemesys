@@ -1,51 +1,46 @@
 <template>
   <q-card style="width: 1000px; max-width: 80vw" class="no-scroll">
-    <q-form  @submit="addBackOrder">
+    <q-form @submit="addBackOrder">
       <q-card-section>
-        <span>BO</span>{{$t('common.edit')}}
+        <span>BO</span>{{ $t('common.edit') }}
       </q-card-section>
       <q-separator />
       <q-card-section>
         <div class="row">
           <div class="col-2 text-right q-pr-md">
-            {{$t('detal.boList.clientCorporationName')}}
+            {{ $t('detal.boList.clientCorporationName') }}
           </div>
           <div class="col-10">
-            {{client.name}}
+            {{ client.name }}
           </div>
         </div>
         <div class="row">
           <div class="col-2 text-right q-pr-md">
-            {{$t('client.add.officeName')}}
+            {{ $t('client.add.officeName') }}
           </div>
           <div class="col-10">
-            {{client.office_name}}
+            {{ client.office_name }}
           </div>
         </div>
         <div class="row">
           <div class="col-2 text-right q-pr-md">
-            {{$t('client.add.manager')}}
+            {{ $t('client.add.manager') }}
           </div>
           <div class="col-10">
-            {{client.manager}}
+            {{ client.manager }}
           </div>
         </div>
       </q-card-section>
 
       <q-scroll-area style="height: 65vh; max-width: 100%;">
-        <q-card-section >
+        <q-card-section>
           <div class="row q-pb-sm">
             <div class="col-2 text-right self-center q-pr-sm">
               {{ $t('client.backOrder.caseType') }}
             </div>
             <div class="col-9 q-pl-sm">
-              <q-radio
-                v-for="key in TypeOfCase"
-                v-model="boData['typeCase']"
-                :label="$t('applicant.add.'+key)"
-                :val="key"
-                :key="key"
-                class="q-pr-md"/>
+              <q-radio v-for="key in TypeOfCase" v-model="boData['typeCase']" :label="$t('applicant.add.' + key)" :val="key"
+                :key="key" class="q-pr-md" />
             </div>
           </div>
 
@@ -54,14 +49,9 @@
               {{ $t('client.backOrder.reqQualification') }}
             </div>
             <div class="col-9 q-pl-sm">
-              <q-radio
-                v-for="key in TypeQualifications"
-                v-model="boData['qualifications']"
-                :label="$t('applicant.qualification.'+key)"
-                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
-                :val="key"
-                :key="key"
-                class="q-pr-md"/>
+              <q-radio v-for="key in TypeQualifications" v-model="boData['qualifications']"
+                :label="$t('applicant.qualification.' + key)" checked-icon="mdi-checkbox-intermediate"
+                unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key" class="q-pr-md" />
             </div>
           </div>
 
@@ -79,11 +69,8 @@
               {{ $t('client.backOrder.moreHalfYearExp') }}
             </div>
             <div class="col-9 q-pl-sm">
-              <q-toggle
-                outlined
-                dense
-                v-model="boData['moreHalfYearExp']"
-                :label="boData['moreHalfYearExp']?$t('client.backOrder.necessary'):$t('client.backOrder.unnecessary')"/>
+              <q-toggle outlined dense v-model="boData['moreHalfYearExp']"
+                :label="boData['moreHalfYearExp'] ? $t('client.backOrder.necessary') : $t('client.backOrder.unnecessary')" />
             </div>
           </div>
 
@@ -101,14 +88,9 @@
               {{ $t('client.backOrder.employmentStatus') }}
             </div>
             <div class="col-9 q-pl-sm">
-              <q-radio
-                v-for="key in BackOrderStatus"
-                v-model="boData['status']"
-                :label="$t('client.backOrder.'+key)"
-                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
-                :val="key"
-                :key="key"
-                class="q-pr-md"/>
+              <q-radio v-for="key in BackOrderStatus" v-model="boData['status']" :label="$t('client.backOrder.' + key)"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
+                class="q-pr-md" />
             </div>
           </div>
 
@@ -189,14 +171,9 @@
               {{ $t('client.backOrder.workingDaysWeek') }}
             </div>
             <div class="col-9 q-pl-sm">
-              <q-radio
-                v-for="key in WorkingDaysWeek"
-                v-model="boData['workingDaysWeek']"
-                :label="$t('weekDay.'+key)"
-                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline"
-                :val="key"
-                :key="key"
-                class="q-pr-md"/>
+              <q-radio v-for="key in WorkingDaysWeek" v-model="boData['workingDaysWeek']" :label="$t('weekDay.' + key)"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
+                class="q-pr-md" />
             </div>
           </div>
 
@@ -302,7 +279,7 @@
       </q-scroll-area>
 
       <q-card-actions align="right" class="bg-white text-teal q-pb-md q-pr-md">
-        <q-btn :label="$t('common.save')" color="primary" class="no-shadow" type="submit"/>
+        <q-btn :label="$t('common.save')" color="primary" class="no-shadow" type="submit" />
         <q-btn :label="$t('common.cancel')" color="grey-8" outline />
       </q-card-actions>
     </q-form>
@@ -318,7 +295,6 @@ import {
 } from 'src/shared/model/BackOrder.model';
 import { ref, SetupContext } from 'vue';
 import { addDoc, collection, getFirestore, serverTimestamp } from '@firebase/firestore';
-import { Alert } from 'src/shared/utils/Alert.utils';
 
 export default {
   name: 'BackOrderForm',
@@ -327,19 +303,19 @@ export default {
       type: Object,
       required: true,
     },
-    BOcontent:{
+    BOcontent: {
       type: Object,
       required: false,
     }
   },
-  setup(props, context: SetupContext){
+  setup(props, context: SetupContext) {
     const db = getFirestore();
 
     const boData = ref({
       requiredService: []
     });
 
-    const addBackOrder= async () => {
+    const addBackOrder = async () => {
       let data = JSON.parse(JSON.stringify(boData.value));
       data['created_at'] = serverTimestamp();
       data['updated_at'] = serverTimestamp();
@@ -349,7 +325,7 @@ export default {
       await addDoc(clientRef, data);
 
       context.emit('closeDialog')
-      
+
     };
     return {
       boData,
@@ -363,6 +339,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
