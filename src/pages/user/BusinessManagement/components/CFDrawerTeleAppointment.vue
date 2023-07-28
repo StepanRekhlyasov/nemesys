@@ -167,7 +167,7 @@ const showDeleteDialog = async (Teleid: string[]) => {
     await teleStore.deleteTele(Teleid, props.clientId);
     loading.value = false;
     historyData.value = fetchTeleData();
-    Alert.success();
+    ;
   });
 };
 
@@ -211,7 +211,7 @@ const onSubmit = async () => {
       historyData.value = fetchTeleData();
     }
     loading.value = false;
-    Alert.success()
+    
     teleData.value = {
       requiredService: [],
     };

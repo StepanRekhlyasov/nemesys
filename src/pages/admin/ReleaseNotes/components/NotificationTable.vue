@@ -216,12 +216,12 @@ const tableRows = computed(()=>{
   }
   if(deliveryFrom.value){
     result = result.filter((row)=>{
-      return new Date(row.deliveryDate) >= new Date(deliveryFrom.value)
+      return new Date(row.deliveryDate) >= new Date(deliveryFrom.value + ' 00:00:00')
     })
   }
   if(deliveryTo.value){
     result = result.filter((row)=>{
-      return new Date(row.deliveryDate) <= new Date(deliveryTo.value)
+      return new Date(row.deliveryDate) <= new Date(deliveryTo.value + ' 23:59:59')
     })
   }
   return result
@@ -282,7 +282,7 @@ const editNotification = async (notification: NotificationDataRow) => {
           });
           await loadCurrentNotifications();
           loading.value = false
-          Alert.success();
+          ;
       } catch (error) {
           console.error(error)
           Alert.warning(error);
@@ -308,7 +308,7 @@ const deleteNotification = (notificationId: string) => {
           await releaseNoteStore.deleteNotificationData(notificationId)
           await loadCurrentNotifications();
           loading.value = false;
-          Alert.success()
+          
       } catch (e) {
           console.error(e)
           Alert.warning(e)

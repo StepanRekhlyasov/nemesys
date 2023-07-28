@@ -176,6 +176,7 @@ import { DocumentData, where } from 'firebase/firestore';
 import { statusList, StatusOption } from 'src/shared/constants/Applicant.const';
 import { Applicant } from 'src/shared/model/Applicant.model'
 import { QSelectProps } from 'quasar';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 
 const loading = ref<boolean>(false)
@@ -216,7 +217,7 @@ watch(template, (newTemplate) => {
 const sendMsg = async () => {
   try {
     await smsStore.send(message.value, selected.value)
-    Alert.success()
+    
     message.value = ''
   } catch (error) {
     Alert.warning(error)
@@ -248,6 +249,11 @@ const clear = async () => {
 }
 
 onMounted(async () => {
+ await fetchData()
+});
+
+
+async function fetchData() {
   templates.value = await smsStore.options
   loading.value = true;
   row.value = await getFormatedData();
@@ -258,7 +264,11 @@ onMounted(async () => {
     }
   });
   loading.value = false
-});
+}
+
+watchCurrentOrganization(async()=>{
+  await fetchData()
+})
 
 </script>
 

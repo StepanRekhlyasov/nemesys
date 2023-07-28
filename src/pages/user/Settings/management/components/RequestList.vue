@@ -2,11 +2,11 @@
   <q-dialog>
     <q-card style="width: 1200px; max-width: 80vw;">
       <q-card-section class="listRows items-center q-pb-none flex justify-between">
-        <div class="text-h5 text-primary">{{ $t('menu.admin.licenseManagement.licenseRequest') }}</div>
+        <div class="text-h5 text-primary">{{ $t('menu.admin.licenseManagement.licenseRequestList') }}</div>
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
       <q-card-section>
-        <q-table :columns="listColumns" :rows="listRows" :pagination="{rowsPerPage: 10}">
+        <q-table :columns="listColumns" :rows="listRows" :pagination="{rowsPerPage: 10}" :loading="loading">
           <template v-slot:body-cell-requestDate="props">
             <q-td :props="props">{{ myDateFormat(props.row.requestDate, 'YYYY-MM-DD HH:mm') }}</q-td>
           </template>

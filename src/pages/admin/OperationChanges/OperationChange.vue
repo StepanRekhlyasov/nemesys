@@ -166,7 +166,7 @@
 
         if (res.id) {
           openDialog.value = false
-          Alert.success()
+          
           store.setMaintainModeEnabled()
         }
       } catch(e) {
@@ -189,7 +189,7 @@
 
           if (res.id) {
             openDialog.value = false
-            Alert.success()
+            
             store.setMaintainModeDisabled()
           }
         } catch(e) {

@@ -72,15 +72,13 @@
     <div class="row ">
       <labelField :label="$t('backOrder.create.nameQualification')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
-        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationRule(val) : true]">
-          <q-radio
-            v-for="key in TypeQualifications"
-            v-model="data['qualifications']"
-            :label="$t('applicant.qualification.'+key)"
+        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationArrayRule(val) : true]">
+          <q-checkbox v-model="data['qualifications']" v-for="key in TypeQualifications" 
             :val="key"
             :key="key"
+            :label="$t('applicant.qualification.'+key)"
             :disable="loading || !data['requiredQualifications']"
-            class="q-pr-md"/>
+            class="q-pr-md" />
         </q-field>
       </labelField>
     </div>
@@ -139,7 +137,7 @@
 
 <script lang="ts" setup>
 import labelField from 'src/components/form/LabelField.vue';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
 import { validateDate } from 'src/shared/constants/Form.const';
 import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
 import { useUserStore } from 'src/stores/user';

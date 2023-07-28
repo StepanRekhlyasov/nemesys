@@ -1,6 +1,6 @@
 <template>
   <q-td auto-width colspan="100%" class="container">
-    <q-table flat :columns="columns" square :rows="[{}]" hide-pagination :loading="loading">
+    <q-table flat :columns="columns" square :rows="table?.length?[{}]:[]" hide-pagination :loading="loading">
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props" class="header">
