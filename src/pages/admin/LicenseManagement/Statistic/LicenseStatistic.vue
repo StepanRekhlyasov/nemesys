@@ -137,7 +137,7 @@ async function onDateChange(date: string) {
       const month = parseInt(monthString)
       await loadDataInMonth(year, month)
     }
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

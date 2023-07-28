@@ -365,7 +365,7 @@ async function onSubmit() {
   data['deleted'] = false;
   try {
     await applicantStore.createApplicant(data, applicantImage.value)
-    Alert.success();
+    ;
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   } catch (error) {

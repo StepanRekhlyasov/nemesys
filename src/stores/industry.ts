@@ -50,7 +50,7 @@ export const useIndsutry = defineStore('industries', () => {
             const docRef = await addDoc(collection(db, 'industries'), industry);
             
             if(docRef.id) {
-                Alert.success()
+                
             }
         } catch (e) {
             Alert.warning(e)
@@ -62,7 +62,7 @@ export const useIndsutry = defineStore('industries', () => {
         try {
             await setDoc(doc(db, 'industries', industryId), updatedIndustry)
 
-            Alert.success()
+            
         } catch(e) {
             Alert.warning(e)
             console.log(e)

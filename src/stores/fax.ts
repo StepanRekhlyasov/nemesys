@@ -75,7 +75,7 @@ export const useFax = defineStore('fax', () => {
     await addDoc(collection(db, '/fax'), {
       ...data,
     });
-    Alert.success();
+    ;
   };
   async function getFaxList(searchData: FaxSearchData) {
     const start = Timestamp.fromDate(new Date(searchData.selectedDate));

@@ -75,7 +75,7 @@ async function addOrganization() {
       html: `Organization name: ${organization.value.name} <br/> Organization code: ${organization.value.code} <br/> Created at: ${createdAt}`
     }
     await email.send(organization.value.mailaddress, subject, content)
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }
