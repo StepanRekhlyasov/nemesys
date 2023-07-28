@@ -175,7 +175,7 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 30,
 });
-const userNames = ref({})
+const userNames = ref<{ [key: string]: string }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
