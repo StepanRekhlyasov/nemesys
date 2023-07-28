@@ -68,7 +68,7 @@ async function submitInquiry(){
   try{
     await inquiryStore.addInquiry(submitData)
     inquirySaveData.value = {}
-    Alert.success();
+    ;
     emit('inquiryAdded')
   } catch (e) {
     Alert.warning(e);

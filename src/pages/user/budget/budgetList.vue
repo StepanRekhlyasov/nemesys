@@ -20,8 +20,7 @@
     <div class="row q-pl-lg">
       <q-input outlined :placeholder="$t('form.searchPlaceholder')" style="width: 350px" color="black" dense
         bg-color="white" v-model="searchText" />
-      <q-btn dense style="color: white" :label="$t('common.search')"
-        class="q-ml-sm q-px-lg buttonbg" />
+      <q-btn dense style="color: white" :label="$t('common.search')" class="q-ml-sm q-px-lg buttonbg" />
       <q-btn dense :label="$t('common.clear')" outline class="q-ml-sm q-px-md text-bold buttonbg" @click="clear" />
     </div>
     <div class="row q-pt-md q-mt-xs q-pb-sm q-mb-xs">
@@ -75,9 +74,9 @@
       </template>
       <template v-slot:body-cell-posting="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ myDateFormat(props.row.postingStartDate, 'YYYY/MM/DD')}}
+          {{ myDateFormat(props.row.postingStartDate, 'YYYY/MM/DD') }}
           <br />
-          {{ myDateFormat(props.row.postingEndDate, 'YYYY/MM/DD')}}
+          {{ myDateFormat(props.row.postingEndDate, 'YYYY/MM/DD') }}
         </q-td>
       </template>
       <template v-slot:body-cell-amount="props">
@@ -139,7 +138,6 @@ import budgetForm from './components/budgetForm.vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { BudgetData, DateOption, selectedYearMonth } from './type/budget'
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { myDateFormat } from 'src/shared/utils/utils';
 import TablePagination from 'src/components/pagination/TablePagination.vue';
 import { orderBy, where, Timestamp } from 'firebase/firestore';
@@ -177,7 +175,7 @@ const budgetData = ref<BudgetData>({
   unitPrice: '',
   remark: '',
   agency: '',
-  organizationId:organization.currentOrganizationId,
+  organizationId: organization.currentOrganizationId,
 });
 
 const nextMonth = selectedMonth.value == 12 ? 1 : selectedMonth.value as number + 1;
@@ -228,7 +226,7 @@ const showDeleteDialog = async (budgetIds) => {
   }).onOk(async () => {
     const done = await budgetStore.deleteBudget(budgetIds);
     if (done) {
-      Alert.success()
+
       loadPagination.value = loadPagination.value == 0 ? 1 : 0
     }
 
@@ -246,7 +244,7 @@ const importCsv = async () => {
       reader.onload = (e) => {
         const contents = e.target?.result;
         budgetStore.processData(contents, selectedYear.value, selectedMonth.value);
-        Alert.success()
+
       };
       reader.readAsText(file);
     }

@@ -189,7 +189,7 @@ async function deleteBranch(branch) {
       loading.value = true;
       await branchStore.editBranch({ deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
       loadBranchesList();
-      Alert.success()
+      
     } catch (e) {
       console.log(e)
       Alert.warning(e)

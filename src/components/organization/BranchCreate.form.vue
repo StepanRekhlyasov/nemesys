@@ -94,7 +94,7 @@ async function addBranch() {
     data['licensesSlots'] = 0
     await branchStore.createBranch(data, currentOrganizationId, businessId.value)
     emit('closeDialog');
-    Alert.success();
+    ;
     loading.value = false;
   } catch (e) {
     console.log(e)
@@ -119,7 +119,7 @@ async function saveBranch() {
     }
     await branchStore.editBranch(branch, currentOrganizationId, props?.editBranch?.businessId, props.editBranch?.id)
     emit('closeDialog');
-    Alert.success();
+    ;
     loading.value = false;
   } catch (e) {
     emit('onCatchError')

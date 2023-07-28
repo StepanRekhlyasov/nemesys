@@ -89,7 +89,7 @@ async function addLicenseRequest() {
       status: 'pending'
     }
     await license.createLicenseRequest(licenseRequest)
-    Alert.success()
+    
   } catch (error) {
     console.log(error)
     Alert.warning(error)

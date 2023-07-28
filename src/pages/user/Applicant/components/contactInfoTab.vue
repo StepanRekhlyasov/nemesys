@@ -208,7 +208,7 @@ async function onSubmit() {
     }
 
     await updateContactList()
-    Alert.success()
+    
   } catch (error) {
     loading.value = false;
     Alert.warning(error)
@@ -263,7 +263,7 @@ function showDeleteDialog(id : string) {
       updateData
     );
     await updateContactList()
-    Alert.success()
+    
   })
 }
 </script>

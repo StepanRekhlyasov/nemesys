@@ -150,7 +150,7 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
         })
 
           if (res.id) {
-            Alert.success()
+            
           }
         } catch(e) {
           Alert.warning(e)
@@ -175,7 +175,7 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
         })
 
         if (res.id) {
-          Alert.success()
+          
         }
       } catch(e) {
         Alert.warning(e)

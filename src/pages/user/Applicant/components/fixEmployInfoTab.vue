@@ -266,7 +266,7 @@ async function updateData(data){
     } catch(e){
       Alert.warning(e)
     }
-    Alert.success()
+    
   }
   data = mutateDatesInData(data)
   fixData.value = {
@@ -332,7 +332,7 @@ function showDeleteDialog(data) {
 
     await fixStore.updateFix(data.id, updateData)
     await fixStore.getFixData(props.applicant.id);
-    Alert.success()
+    
   })
 }
 </script>
