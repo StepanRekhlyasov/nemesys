@@ -282,7 +282,7 @@ const editNotification = async (notification: NotificationDataRow) => {
           });
           await loadCurrentNotifications();
           loading.value = false
-          Alert.success();
+          ;
       } catch (error) {
           console.error(error)
           Alert.warning(error);
@@ -308,7 +308,7 @@ const deleteNotification = (notificationId: string) => {
           await releaseNoteStore.deleteNotificationData(notificationId)
           await loadCurrentNotifications();
           loading.value = false;
-          Alert.success()
+          
       } catch (e) {
           console.error(e)
           Alert.warning(e)

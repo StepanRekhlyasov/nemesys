@@ -95,7 +95,7 @@ async function execute() {
 
   try {
     await licenceStore.execute(props.licenseRequest)
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

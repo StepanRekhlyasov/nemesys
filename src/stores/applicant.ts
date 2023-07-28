@@ -526,7 +526,7 @@ export const useApplicant = defineStore('applicant', () => {
         updated_at: serverTimestamp(),
         ...saveData
       })
-      Alert.success();
+      ;
     } catch (e) {
       Alert.warning(e);
     }

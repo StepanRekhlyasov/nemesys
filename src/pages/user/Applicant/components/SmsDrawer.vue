@@ -217,7 +217,7 @@ watch(template, (newTemplate) => {
 const sendMsg = async () => {
   try {
     await smsStore.send(message.value, selected.value)
-    Alert.success()
+    
     message.value = ''
   } catch (error) {
     Alert.warning(error)
