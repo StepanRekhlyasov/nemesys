@@ -975,6 +975,8 @@ export default {
         fullTime: 'Full Time',
         partTime: 'Part Time',
         placementDispatching: 'Employment placement dispatching',
+        assigned: 'Assigned',
+        unassigned: 'Unassigned',
       }
     },
     statusList: {
