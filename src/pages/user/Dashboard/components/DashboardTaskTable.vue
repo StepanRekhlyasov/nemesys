@@ -17,13 +17,6 @@
       </q-th>
     </q-tr>
   </template>
-  <template v-slot:header-cell-clientFactoryName='props'>
-    <q-th :props="props" class="no-breaks items-center row">
-      {{ $t('client.add.officeName') }}
-      <br> 
-      {{ $t('client.add.officeName') }}
-    </q-th>
-  </template>
   <template v-slot:body-cell-created_at="props">
     <q-td>{{ myDateFormat(props.row.created_at, 'YYYY/MM/DD') }}</q-td>
   </template>
