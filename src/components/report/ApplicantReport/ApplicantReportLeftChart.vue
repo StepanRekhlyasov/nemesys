@@ -81,7 +81,9 @@ const showData = async (
       organizationId: organizationId,
       isAverage: false,
     }),
-    itemList.map((item) => {return item.queryName})
+    itemList.map((item) => {
+      return item.queryName;
+    })
   ) as number[];
 
   const dataAverageAll = getListFromObject(
@@ -91,7 +93,9 @@ const showData = async (
       queryNames: itemList,
       isAverage: false,
     }),
-    itemList.map((item) => {return item.queryName})
+    itemList.map((item) => {
+      return item.queryName;
+    })
   ) as number[];
   const dataCvr = calculateCVR(dataAverage);
 
@@ -101,7 +105,12 @@ const showData = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [
+    props.branch_user_list,
+    props.dateRangeProps,
+    props.graph_type,
+    props.branch_id,
+  ],
   async () => {
     if (!props.dateRangeProps) return;
     await showData(props.dateRangeProps, props.organization_id);
