@@ -846,6 +846,8 @@ export default {
       commutesDisatnce: 'Commuting distance',
       shift: 'Shift',
       accuracy: 'Accuracy',
+      contactNote : 'Contact Note',
+      lastContact : 'Last date of Contact',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',

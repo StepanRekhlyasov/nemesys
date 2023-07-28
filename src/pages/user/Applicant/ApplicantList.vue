@@ -25,8 +25,8 @@
 
           <template v-slot:header-cell-endDate="props">
             <q-th :props="props" class="q-pa-none">
-              <div> {{ $t('applicant.list.name') }} </div>
-              <div> {{ $t('applicant.add.applicationDate') }} </div>
+              <div> {{ $t('applicant.list.lastContact') }} </div>
+              <div> {{ $t('applicant.list.contactNote') }} </div>
             </q-th>
           </template>
 
@@ -68,6 +68,17 @@
               </div>
               <div>
                 {{ props.row.address }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-endDate="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{ myDateFormat(props.row.created_at) }}
+              </div>
+              <div>
+                {{ props.row.note }}
               </div>
             </q-td>
           </template>

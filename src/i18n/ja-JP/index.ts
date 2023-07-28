@@ -841,6 +841,8 @@ export default {
       commutesDisatnce: '通勤距離',
       shift: 'シフト',
       accuracy: '精度',
+      contactNote : 'コンタクトメモ',
+      lastContact : '最終コンタクト日',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
