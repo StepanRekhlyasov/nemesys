@@ -82,7 +82,7 @@ const sendResponse = async () => {
         data: {status: INQUIRY_STATUS.unanswered, updated_at: Timestamp.fromDate(new Date()), readBy: arrayUnion(currentUserId)}
       })
       emit('inquiryUpdated')
-      Alert.success()
+      
       clearAllValues()
       loading.value = false;
     } catch(e) {

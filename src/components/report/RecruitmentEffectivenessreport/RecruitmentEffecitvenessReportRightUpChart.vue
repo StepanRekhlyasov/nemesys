@@ -11,15 +11,15 @@
 import { graphType } from '../Models';
 import { onMounted, Ref, ref, computed, watch } from 'vue';
 import { useMedia } from 'stores/media';
-import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
 import { Media } from 'src/shared/model/Media.model';
 import { i18n } from 'boot/i18n';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
+import { useGetReport } from 'src/stores/getReport';
+const { getReport } = useGetReport();
 const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[]> = ref([]);
 const media = useMedia();
-const applicant = useApplicant();
 const mediaList = ref<Media[]>([]);
 const { t } = i18n.global;
 const props = defineProps<{
@@ -32,7 +32,7 @@ const props = defineProps<{
 const chartOptions = computed(() => {
   return {
     legend: { position: 'right' },
-    title:{
+    title: {
       text: t('report.title.budget'),
       style: {
         color: 'gray',
@@ -46,11 +46,13 @@ const showChart = async () => {
   mediaList.value = await media.getAllmedia();
   if (!props.dateRangeProps) return;
   const dateRange = props.dateRangeProps;
-  dataToshow.value = await Promise.all(
-    mediaList.value.map(async (media) => {
-      return await applicant.countApplicantsByMedia(media.id, dateRange);
-    })
-  );
+  dataToshow.value = (await getReport({
+    queryNames: [{queryName:'amount'}],
+    graphType: props.graph_type,
+    dateRange: dateRange,
+    isAverage: false,
+    medias: mediaList.value
+  })).map((row) => row.amount) ;
 };
 
 watch(
@@ -60,9 +62,9 @@ watch(
   }
 );
 
-watchCurrentOrganization(async()=>{
-  await showChart()
-})
+watchCurrentOrganization(async () => {
+  await showChart();
+});
 
 onMounted(async () => {
   await showChart();

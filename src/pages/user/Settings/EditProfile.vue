@@ -170,7 +170,7 @@ export default {
       try {
         await userStore.editUser(user.value.uid, profileData.value)
         await loadUserData()
-        Alert.success()
+        
       } catch(e) {
         console.log(e)
         resetData()

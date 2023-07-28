@@ -51,7 +51,7 @@ const dltSearch = async (id) => {
     const docRef = doc(db, 'applicantSaveSearch', id);
     await deleteDoc(docRef);
     await getSearchData()
-    Alert.success()
+
   } catch (error) {
     Alert.warning(error)
   }
@@ -80,11 +80,9 @@ const save = async () => {
     Alert.warning(error)
   }
   if (valid) {
-    const save = await saveSearch.saveSearch(searchData.value);
+    await saveSearch.saveSearch(searchData.value);
     getSearchData();
     drawerRight.value = false;
-    if (save)
-      Alert.success()
   }
   isSaving.value = false;
 }
@@ -349,4 +347,5 @@ const clearSearch = () => {
 
 .pagination {
   padding: 2% 2%;
-}</style>
+}
+</style>

@@ -261,7 +261,7 @@ async function editUser(user: User) {
     })
     organization.state.currentOrganizationUsers = await organization.getCurrentUsersInChrage()
     await refresh();
-    Alert.success();
+    ;
   } catch (error) {
     console.log(error)
     Alert.warning(error);
@@ -289,7 +289,7 @@ async function deleteAccount(user: User) {
         updated_at: serverTimestamp()
       })
       await refresh();
-      Alert.success()
+      
     } catch (e) {
       console.log(e)
       Alert.warning(e)
