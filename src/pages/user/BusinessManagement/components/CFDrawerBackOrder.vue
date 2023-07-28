@@ -190,9 +190,8 @@ const deleteSelected = () => {
 const fetchBOData = async () => {
   loading.value = true;
   const data = await backOrderStore.getClientBackOrder(props.clientId);
-  let boid = data.length;
   backOrderData.value = data.map((row) => {
-    return { ...row, selected: false, boid: boid-- };
+    return { ...row, selected: false, boid: row.boId };
   });
   loading.value = false;
 };
