@@ -5,8 +5,24 @@
 <q-table :rows="rows" :columns="columns" :pagination="pagination" class="no-shadow">
   <template v-slot:header='props'>
     <q-tr class="bg-grey-3 no-border" :props="props">
-      <q-th :props="props" v-for="col in props.cols" :key="col.name">{{ col.label }}</q-th>
+      <q-th :props="props" v-for="col in props.cols" :key="col.name">
+        <template v-if="col.name === 'clientFactoryName'">
+          {{ $t('client.add.officeName') }}
+          <br> 
+          {{ $t('client.add.clientName') }}  
+        </template>
+        <template v-else>
+          {{ col.label }}
+        </template>
+      </q-th>
     </q-tr>
+  </template>
+  <template v-slot:header-cell-clientFactoryName='props'>
+    <q-th :props="props" class="no-breaks items-center row">
+      {{ $t('client.add.officeName') }}
+      <br> 
+      {{ $t('client.add.officeName') }}
+    </q-th>
   </template>
   <template v-slot:body-cell-created_at="props">
     <q-td>{{ myDateFormat(props.row.created_at, 'YYYY/MM/DD') }}</q-td>
@@ -15,7 +31,10 @@
     <q-td class="text-featured" @click="openDrawer(props.row.applicantId)"><span>{{ props.row.applicantName }}</span></q-td>
   </template>
   <template v-slot:body-cell-clientFactoryName="props">
-    <q-td class="text-featured" @click="openDrawer(props.row.clientFactoryId, props.row.clientId)"><span>{{ props.row.clientFactoryName }}</span></q-td>
+    <q-td class="text-featured" @click="openDrawer(props.row.clientFactoryId, props.row.clientId)">
+      <span>{{ props.row.clientFactoryName }}</span><br/>
+      <span>{{ props.row.clientName }}</span>
+    </q-td>
   </template>
   <template v-slot:body-cell-taskType="props">
     <q-td>{{ $t('task.types.' + props.row.taskType) }}</q-td>
