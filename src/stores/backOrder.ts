@@ -184,6 +184,8 @@ export const useBackOrder = defineStore('backOrder', () => {
       const officeData = await getDoc(officeDoc);
       if (officeData.exists()) {
         data['distance'] = officeData.data().distance;
+        data['lat'] = officeData.data().lat;
+        data['lon'] = officeData.data().lon;
       }
     }
     catch(err){
