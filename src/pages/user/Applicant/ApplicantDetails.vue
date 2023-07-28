@@ -142,6 +142,24 @@
       </q-card>
     </q-scroll-area>
   </q-drawer>
+
+  <q-drawer v-if="applicantStore.state.selectedApplicant" v-model="boMapDrawer" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
+  bordered>
+  <q-scroll-area class="fit text-left" v-if="selectedApplicant">
+    <q-card class="no-shadow bg-grey-3">
+      <q-card-section class="text-white bg-primary rounded-borders">
+        <div class="row">
+          <q-btn dense flat icon="close" @click="boMapDrawer = false" class="q-mr-md" />
+          <span class="text-h6 text-weight-bold q-pr-xs">
+                  {{ $t('menu.mapSearch') }}
+          </span>
+      </div>
+      </q-card-section>
+      <boMapSearch theme="primary" :applicant="selectedApplicant"/>
+    </q-card>
+  </q-scroll-area>
+</q-drawer>
+
 </template>
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
