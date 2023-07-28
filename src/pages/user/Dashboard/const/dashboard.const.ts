@@ -116,6 +116,125 @@ export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() 
     },
   ]
 })
+
+export const applicantTaskTableColumns = computed<QTableProps['columns']>(()=> [
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: t('client.backOrder.dateOfRegistration'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskType',
+    field: 'taskType',
+    label: t('task.taskType'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskStatus',
+    field: 'taskStatus',
+    label: t('task.taskStatus'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'applicantName',
+    field: 'applicantName',
+    label: t('task.applicantName'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'applicantStatus',
+    field: 'applicantStatus',
+    label: t('applicant.list.status'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'assignedUserName',
+    field: 'assignedUserName',
+    label: t('applicant.progress.filters.userInCharge'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskContent',
+    field: 'taskContent',
+    label: t('task.taskContent'),
+    align: 'left',
+    sortable: true
+  },
+])
+
+export const officeTaskTableColumns = computed<QTableProps['columns']>(()=> [
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: t('client.backOrder.dateOfRegistration'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskType',
+    field: 'taskType',
+    label: t('task.taskType'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskStatus',
+    field: 'taskStatus',
+    label: t('task.taskStatus'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'clientFactoryName',
+    field: 'clientFactoryName',
+    label: t('client.add.officeName'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'clientName',
+    field: 'clientName',
+    label: t('client.add.clientName'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'assignedUserName',
+    field: 'assignedUserName',
+    label: t('applicant.progress.filters.userInCharge'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskContent',
+    field: 'taskContent',
+    label: t('task.taskContent'),
+    align: 'left',
+    sortable: true
+  },
+])
+export const taskStatusOptions = computed(()=>[
+  {
+    label: t('task.statuses.new'),
+    value: 'new'
+  },
+  {
+    label: t('task.statuses.process'),
+    value: 'process'
+  },
+  {
+    label: t('task.statuses.finish'),
+    value: 'finish'
+  },
+])
+
 export const statusTitles = computed(()=>{
   return {
     'wait_contact': t('applicant.statusList.waitContact'),

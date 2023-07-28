@@ -40,6 +40,7 @@ export default {
     description: '説明',
     delete: '削除',
     deleteInfo: 'このアイテムを削除しますか?',
+    deleteBusiness: 'この事業名を削除しますか?',
     create: '作成',
     title: '題名',
     save: '保存',
@@ -1989,5 +1990,29 @@ export default {
     chargeOfFix: 'FIX数',
     BoQty: 'BO数',
     average: '平均'
+  },
+  task: {
+    task: 'タスク',
+    taskType: 'タスク種別',
+    taskStatus: 'タスクステータス',
+    taskContent: 'タスク内容',
+    taskRegister: 'タスク登録',
+    taskRegisterWindow: 'タスク内容',
+    applicantName: '応募者名',
+    types: {
+      'extensionConfirm': '延長の確認',
+      'finishApplicant' : '途中修了者への対応',
+      'dateManagement' : '入職日の管理',
+      'visitManagement' : '職見前日の管理',
+      'followUp' : '稼働者へのフォロー',
+      'collectDocs' : '必要書類の回収',
+      'staffRequests' : 'スタッフ依頼事項の返答',
+      'clientsRequests' : 'クライアント依頼事項の返答',
+    },
+    statuses: {
+      'new' : '新規',
+      'process' : '進行中',
+      'finish' : '完了',
+    }
   }
 };

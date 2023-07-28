@@ -117,6 +117,7 @@ watchEffect(() => {
 
     <CFDrawerBodyFooter 
       @open-fax-drawer="openFaxDrawer"
+      :clientFactory="clientFactory"
     />
 </template>
 
