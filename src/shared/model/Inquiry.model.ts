@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore'
+import { FieldValue, Timestamp } from 'firebase/firestore'
 import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
 import { Organization } from './Organization.model'
 
@@ -11,10 +11,13 @@ export interface InquiryData {
   recievedDate:  Timestamp
   subject: string
   messages: InquiryMessage[] | never[]
+  readBy?: string[] | FieldValue
+  updated_at?: Timestamp | string
 }
 
 export type InquiryDataRow = Partial<InquiryData> & {
-  number: number,
+  number: number
+  status: string
   companyID: string
   companyName: string
   issueDate: string

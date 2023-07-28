@@ -20,8 +20,21 @@ export const useIndsutry = defineStore('industries', () => {
 
     const getIndustries = () => {
         unsubscribe.value = onSnapshot(collection(db, 'industries'), (snapshot) => {
-            industries.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Industry));
-            isFirstLoading.value = false
+            industries.value = snapshot.docs.map(doc => {
+                const industry = { id: doc.id, ...doc.data() } as Industry;
+
+                industry.uniqueItems.typeSpecificItems = Object.entries(industry.uniqueItems.typeSpecificItems)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+
+                industry.uniqueItems.facilityForms = Object.entries(industry.uniqueItems.facilityForms)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+
+                return industry;
+            });
+
+            isFirstLoading.value = false;
         });
     };
 
@@ -32,12 +45,12 @@ export const useIndsutry = defineStore('industries', () => {
         }
     };
 
-    const addIndustry = async (industry: Industry) => {
+    const addIndustry = async (industry: Omit<Industry, 'id'>) => {
         try {
             const docRef = await addDoc(collection(db, 'industries'), industry);
             
             if(docRef.id) {
-                Alert.success()
+                
             }
         } catch (e) {
             Alert.warning(e)
@@ -47,9 +60,9 @@ export const useIndsutry = defineStore('industries', () => {
 
     const updateIndustry = async (industryId: string, updatedIndustry: Industry) => {
         try {
-            await setDoc(doc(db, 'industries', industryId), updatedIndustry, {merge: true})
+            await setDoc(doc(db, 'industries', industryId), updatedIndustry)
 
-            Alert.success()
+            
         } catch(e) {
             Alert.warning(e)
             console.log(e)

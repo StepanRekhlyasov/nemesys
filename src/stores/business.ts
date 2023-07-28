@@ -1,4 +1,4 @@
-import { collection, doc, Firestore, getDocs, getFirestore, PartialWithFieldValue, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, Firestore, getDocs, getFirestore, PartialWithFieldValue, query, setDoc, updateDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Business } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
@@ -25,6 +25,15 @@ export const useBusiness = defineStore('business', () => {
     })
   }
 
+  const deleteBusiness = async(organizationId: string, businessId: string) => {
+    const inquiryRef = doc(db, `organization/${organizationId}/businesses/` + businessId);
+    return await deleteDoc(inquiryRef)
+  }
+  const deleteBranch = async(organizationId: string, businessId: string, branchId: string) => {
+    const inquiryRef = doc(db, `organization/${organizationId}/businesses/${businessId}/branches/${branchId}`);
+    return await deleteDoc(inquiryRef)
+  }
+
   async function editBusiness(business: PartialWithFieldValue<Business>, organizationId: string, businessId: string) {
     const ref = doc(db, `organization/${organizationId}/businesses/${businessId}`)
     serializeTimestamp(business)
@@ -37,6 +46,8 @@ export const useBusiness = defineStore('business', () => {
     getBusinesses,
     addBusiness,
     editBusiness,
+    deleteBusiness,
+    deleteBranch
   }
 
 })

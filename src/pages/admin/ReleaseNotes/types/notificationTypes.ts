@@ -1,8 +1,8 @@
 import { NotificationData } from 'src/shared/model'
 
 export enum DELIVERY_STATUS {
-  'not delivered',
-  'delivered'
+  notDelivered = 'not delivered',
+  delivered = 'delivered'
  }
 
 export type NotificationDataRow = Omit<NotificationData, 'dateCreation' | 'dateDelivery'> & {

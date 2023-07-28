@@ -1,24 +1,47 @@
 import { QTableProps } from 'quasar'
 import { i18n } from 'boot/i18n'
 import { computed } from 'vue'
+import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
+import { FieldValue, Timestamp } from 'firebase/firestore'
 
 const { t } = i18n.global
 
 export const dashboardNotificationTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
+      name: 'readBy',
+      field: 'readBy',
+      label: '',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'messageDirection',
+      field: '',
+      label: '',
+      align: 'center',
+      sortable: false,
+    },
+    {
       name: 'recievedDate',
       field: 'recievedDate',
-      label: t('inquiry.table.recievedDate'),
+      label: t('inquiry.table.recieve'),
       align: 'left',
-      sortable: true
+      sortable: true,
+    },
+    {
+      name: 'type',
+      field: 'type',
+      label: t('inquiry.table.notificationType'),
+      align: 'center',
+      sortable: true,
     },
     {
       name: 'category',
       field: 'category',
       label: t('inquiry.table.category'),
       align: 'left',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'subject',
@@ -34,6 +57,19 @@ export const dashboardNotificationTableColumns = computed<QTableProps['columns']
     },
   ]
 })
+
+export interface DashboardinquiryRows {
+  id: string
+  status: string
+  category: string
+  subject: string
+  inquiryContent: string
+  organization?: string
+  recievedDate:  Timestamp
+  messages?: InquiryMessage[] | never[]
+  readBy?: string[] | FieldValue
+  type: string
+}
 export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {

@@ -19,7 +19,7 @@ import { watch, ref } from 'vue';
 
 interface InputCellProps extends Omit<QInputProps, 'modelValue'> {
   editing: boolean;
-  text: string
+  text?: string
 }
 
 const props = defineProps<InputCellProps>()

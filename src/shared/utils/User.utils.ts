@@ -18,7 +18,7 @@ export const mapToSelectOptions = (values: Record<string, { name: string, displa
     const displayName = values[key]?.displayName
     const data = {
       label: (displayName ? displayName : values[key]?.name) || '',
-      value: key
+      value: key,
     }
     list.push(data)
   })

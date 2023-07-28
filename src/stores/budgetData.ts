@@ -1,4 +1,4 @@
-import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp, QueryFieldFilterConstraint} from 'firebase/firestore';
+import { setDoc, updateDoc, collection, getFirestore, serverTimestamp, query, getDocs, DocumentData, where, doc, getDoc, onSnapshot, writeBatch, orderBy, Timestamp } from 'firebase/firestore';
 import { getStorage, ref as refStorage, getDownloadURL } from 'firebase/storage';
 import { defineStore } from 'pinia';
 import { exportFile, date } from 'quasar';
@@ -7,29 +7,38 @@ import { occupationList } from 'src/shared/constants/Applicant.const';
 import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
-import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, toJPDateString, toDateFormat, formatNumber } from 'src/shared/utils/utils';
+import { deepCopy } from 'src/shared/utils';
 import { useBranch } from './branch';
-import { BudgetData, selectedYearMonth } from 'src/pages/user/budget/type/budget'
+import { BudgetData } from 'src/pages/user/budget/type/budget'
 
 import { useOrganization } from 'src/stores/organization';
 
 export const useBudget = defineStore('budget', () => {
-  const monthPerYear = 12;
   const db = getFirestore();
   const options = ref({ occupation: occupationList });
   const budgetList = ref(<DocumentData[]>[]);
   const unsubscribe = ref();
   const auth = getAuth();
-	const branchStore = useBranch()
+  const loadChartData = ref(true);
+  const branchStore = useBranch()
   const organization = useOrganization();
   async function saveBudget(budgetData: BudgetData) {
     const data = JSON.parse(JSON.stringify(budgetData));
     if (data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
-    if  (data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
-    if  (data.accountingMonth) data.accountingMonthDate = dateToTimestampFormat(new Date(data.accountingMonth));
+    if (data.postingStartDate) data.postingStartDate = dateToTimestampFormat(new Date(data.postingStartDate));
+    if (!data.accountingMonth) {
+      return
+    }
+    const checkMonth = data.accountingMonth.split('/')
+    if (checkMonth[1].length == 1) {
+      data.accountingMonth = `${checkMonth[0]}/${('0' + checkMonth[1]).slice(-2)}`;
+    }
+
+    data.accountingMonthDate = dateToTimestampFormat(new Date(data.accountingMonth));
 
     if (!data['id']) {
-      const snapshot = await getDocs(query(collection(db, '/budgets')))
+      const snapshot = await getDocs(query(collection(db, '/budgets'), where('organizationId', '==', organization.currentOrganizationId)))
       data['recordNumber'] = snapshot.docs.length + 1;
       data['created_at'] = serverTimestamp();
       data['deleted'] = false;
@@ -44,7 +53,7 @@ export const useBudget = defineStore('budget', () => {
       data['updated_by'] = auth.currentUser?.uid;
       await updateDoc(docRef, data);
     }
-    Alert.success()
+    
     return true
   }
 
@@ -57,19 +66,21 @@ export const useBudget = defineStore('budget', () => {
     options.value['media'] = mediaList;
 
     const branches = Object.values((await branchStore.getBranchesInOrganization(organizationId)))
-		options.value['branch'] = branches.map((b) => {
-			return { value: b.id, label: b.name }
-		})
-		return options.value;
+    options.value['branch'] = branches.map((b) => {
+      return { value: b.id, label: b.name }
+    })
+    return options.value;
 
   }
-  async function getBudgetList(selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth,organizationId: string) {
+  async function getBudgetList(accountingMonth: string, organizationId: string) {
     await getOptionData(organizationId);
     const constraints = [where('deleted', '==', false)]
-    if (selectedYear && selectedMonth) {
-      constraints.push(where('accountingMonth', '==', `${selectedYear}/${('0' + selectedMonth).slice(-2)}`))
+
+    if (accountingMonth) {
+      const checkMonth = accountingMonth.split('/')
+      constraints.push(where('accountingMonth', '==', `${checkMonth[0]}/${('0' + checkMonth[1]).slice(-2)}`))
     }
-    const q = query(collection(db, 'budgets'), where('deleted', '==', false), where('organizationId', '==', organizationId), ...constraints, orderBy('recordNumber'));
+    const q = query(collection(db, 'budgets'), where('deleted', '==', false), where('organizationId', '==', organizationId), ...constraints, orderBy('recordNumber', 'desc'));
     if (unsubscribe.value) {
       unsubscribe.value();
     }
@@ -77,14 +88,20 @@ export const useBudget = defineStore('budget', () => {
       const items: DocumentData[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
+        data['mediaId'] = data['media'];
         data['media'] = getItem(data['media'], 'media')
+        data['branchId'] = data['branch'];
         data['branch'] = getItem(data['branch'], 'branch')
+        data['occupationId'] = data['occupation']
         data['occupation'] = getItem(data['occupation'], 'occupation')
         data['id'] = doc.id
         data['selected'] = false
         items.push(data);
       });
       budgetList.value = items;
+      if (loadChartData.value === false) {
+        loadChartData.value = true
+      }
     });
   }
   async function getBudgetData(budgetId: string) {
@@ -117,24 +134,24 @@ export const useBudget = defineStore('budget', () => {
     return true;
   };
 
-	const downloadSampleFile = async () => {
-		const storage = getStorage();
-		const resumeRef = refStorage(storage, 'gs://dev-nemesys-firebase.appspot.com/meta/budget_sample.csv');
-		const url = await getDownloadURL(resumeRef)
-		const xhr = new XMLHttpRequest();
-		xhr.responseType = 'blob';
-		xhr.onload = () => {
-			const status = exportFile(
-				'budget_sample.csv',
-				xhr.response,
-				'text/csv'
-			)
-			if (status !== true) {
+  const downloadSampleFile = async () => {
+    const storage = getStorage();
+    const resumeRef = refStorage(storage, 'gs://dev-nemesys-firebase.appspot.com/meta/budget_sample.csv');
+    const url = await getDownloadURL(resumeRef)
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = () => {
+      const status = exportFile(
+        'budget_sample.csv',
+        xhr.response,
+        'text/csv'
+      )
+      if (status !== true) {
         Alert.warning('Browser denied file download...', { color: 'negative' })
-			}
-		};
-		xhr.open('GET', url);
-		xhr.send();
+      }
+    };
+    xhr.open('GET', url);
+    xhr.send();
 
 
   };
@@ -156,68 +173,134 @@ export const useBudget = defineStore('budget', () => {
 
   const exportTable = async (rows: BudgetData[]) => {
     // naive encoding to csv format
-    for (let i = 0; i < rows.length; i++) {
-      rows[i]['postingStartDate'] = myDateFormat(rows[i]['postingStartDate'] as Timestamp)
-      rows[i]['postingEndDate'] = myDateFormat(rows[i]['postingEndDate'] as Timestamp)
+    const budgetData: BudgetData[] = deepCopy(rows)
+    for (let i = 0; i < budgetData.length; i++) {
+      budgetData[i]['postingStartDate'] = toDateFormat(budgetData[i]['postingStartDate'] as Timestamp)
+      budgetData[i]['postingEndDate'] = toDateFormat(budgetData[i]['postingEndDate'] as Timestamp)
+      if (budgetData[i]['accountingMonth']) {
+        budgetData[i]['accountingMonth'] = toJPDateString(budgetData[i]['accountingMonth'])
+      }
+
     }
 
     const content = '\uFEFF' + [budgetAddItem.value.map(col => wrapCsvValue(col.label))].concat(
-      rows.map(row => budgetAddItem.value.map(col => wrapCsvValue(row[col.key])).join(','))
+      budgetData.map(row => budgetAddItem.value.map(col => wrapCsvValue(row[col.key])).join(','))
     ).join('\r\n')
 
     const timeStamp = Date.now()
     const formattedString = date.formatDate(timeStamp, 'YYYYMMDDHHmmss')
 
-		const status = exportFile(
-			`budget_export_${formattedString}.csv`,
-			content,
-			{
-				encoding: 'utf-8-sig',
-				mimeType: 'text/csv;charset=utf-8-sig;'
-			}
-		)
-		if (status !== true) {
-      Alert.warning('Browser denied file download...', { color: 'negative' })
-		}
-	}
-
-  const processData = async (data:string, selectedYear: selectedYearMonth, selectedMonth: selectedYearMonth) => {
-    const rowsInString = data
-    const rows = rowsInString.split('\r\n')
-    const batch = writeBatch(db);
-    await getOptionData(organization.currentOrganizationId);
-    const snapshot = await getDocs(query(collection(db, '/budgets'),where('deleted','==',false)))
-    let recordNumber = snapshot.docs.length + 1;
-    for (let i = 1; i < rows.length; i++) {
-      const formateData = rows[i].split(',')
-      if (formateData.length < 2) continue
-      const budgetData = getFormateData(formateData);
-      if (!budgetData.value.accountingMonth) continue
-      budgetData.value.media = getColoumnsData('media', budgetData.value.media);
-      budgetData.value.branch = getColoumnsData('branch', budgetData.value.branch);
-      budgetData.value.occupation = getColoumnsData('occupation', budgetData.value.occupation);
-      budgetData.value.accountingMonthDate = dateToTimestampFormat(new Date(budgetData.value.accountingMonth));
-      budgetData.value['updated_at'] = serverTimestamp();
-      budgetData.value['deleted'] = false;
-
-      if (budgetData.value.id) {
-        budgetData.value['recordNumber'] = parseInt(budgetData.value['recordNumber'] as string);
-        budgetData.value['updated_by'] = auth.currentUser?.uid;
-        const docRef = doc(db, 'budgets', budgetData.value.id);
-        batch.update(docRef, { ...budgetData.value });
-      } else {
-        budgetData.value['created_at'] = serverTimestamp();
-        budgetData.value['recordNumber'] = recordNumber;
-        budgetData.value['added_by'] = auth.currentUser?.uid;
-        const docRef = doc(collection(db, 'budgets'));
-        budgetData.value['id'] = docRef.id;
-        batch.set(docRef, { ...budgetData.value });
-        recordNumber += 1;
+    const status = exportFile(
+      `budget_export_${formattedString}.csv`,
+      content,
+      {
+        encoding: 'utf-8-sig',
+        mimeType: 'text/csv;charset=utf-8-sig;'
       }
-
+    )
+    if (status !== true) {
+      Alert.warning('Browser denied file download...', { color: 'negative' })
     }
-    await batch.commit()
-    await getBudgetList(selectedYear, selectedMonth,organization.currentOrganizationId);
+  }
+  const CSVtoArray = (text: string) => {
+    const re_valid = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
+    const re_value = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
+    // Return NULL if input string is not well formed CSV string.
+    if (!re_valid.test(text)) return null;
+    const arr: string[] = [];                     // Initialize array to receive values.
+    text.replace(re_value, // "Walk" the string using replace with callback.
+      function (m0: string, m1: string, m2: string, m3: string) {
+        // Remove backslash from \' in single quoted values.
+        if (m1 !== undefined) arr.push(m1.replace(/\\'/g, "'"));
+        // Remove backslash from \" in double quoted values.
+        else if (m2 !== undefined) arr.push(m2.replace(/\\"/g, '"'));
+        else if (m3 !== undefined) arr.push(m3);
+        return ''; // Return empty string.
+      });
+    // Handle special case of empty last value.
+    if (/,\s*$/.test(text)) arr.push('');
+    return arr;
+  }
+
+  const processData = async (data: string, accountingMonth: string, preview = false) => {
+    try {
+      const rowsInString = data
+      const rows = rowsInString.split('\r\n')
+      const batch = writeBatch(db);
+      const previewData: { ok: BudgetData[], ng: BudgetData[] } = ({ ok: [], ng: [] });
+      await getOptionData(organization.currentOrganizationId);
+      const snapshot = await getDocs(query(collection(db, '/budgets'), where('organizationId', '==', organization.currentOrganizationId)))
+      let recordNumber = snapshot.docs.length + 1;
+      for (let i = 1; i < rows.length; i++) {
+        const formateData = CSVtoArray(rows[i]) as string[];
+        if (formateData.length < 2) continue
+        const budgetData = getFormateData(formateData);
+
+        budgetData.value.accountingMonth = budgetData.value.accountingMonth.replace(/[年]/g, '/').replace(/[月]/g, '')
+        const checkMonth = budgetData.value.accountingMonth.split('/')
+        if (checkMonth && checkMonth.length > 1 && checkMonth[1].length == 1) {
+          budgetData.value.accountingMonth = `${checkMonth[0]}/${('0' + checkMonth[1]).slice(-2)}`
+        }
+        const budgetDataCopy = deepCopy(budgetData.value)
+
+        budgetData.value.accountingMonthDate = dateToTimestampFormat(new Date(budgetData.value.accountingMonth));
+        budgetData.value.postingEndDate = dateToTimestampFormat(new Date(budgetData.value.postingEndDate as string)) as Timestamp;
+        budgetData.value.postingStartDate = dateToTimestampFormat(new Date(budgetData.value.postingStartDate as string)) as Timestamp;
+        budgetData.value.media = getColoumnsData('media', budgetData.value.media);
+        budgetData.value.branch = getColoumnsData('branch', budgetData.value.branch);
+        budgetData.value.occupation = getColoumnsData('occupation', budgetData.value.occupation);
+
+        const items = ['accountingMonth', 'postingEndDate', 'postingStartDate', 'media', 'branch', 'occupation', 'amount']
+        let ng = false;
+        items.forEach(item => {
+          if (!budgetData.value[item] || budgetData.value[item] == '-') {
+            budgetDataCopy[item] = ''
+            budgetDataCopy['ngFields'].push(item)
+            ng = true
+          }
+        });
+        if (ng) {
+          previewData.ng.push({ ...budgetDataCopy })
+          continue
+        }
+
+        budgetData.value['updated_at'] = serverTimestamp();
+        budgetData.value['deleted'] = false;
+        if (budgetData.value.id) {
+          budgetData.value['recordNumber'] = parseInt(budgetData.value['recordNumber'] as string);
+          budgetData.value['updated_by'] = auth.currentUser?.uid;
+          const docRef = doc(db, 'budgets', budgetData.value.id);
+          if (preview) {
+            previewData.ok.push({ ...budgetData.value })
+          } else {
+            batch.update(docRef, { ...budgetData.value });
+          }
+        } else {
+          budgetData.value['created_at'] = serverTimestamp();
+          budgetData.value['recordNumber'] = recordNumber;
+          budgetData.value['added_by'] = auth.currentUser?.uid;
+          const docRef = doc(collection(db, 'budgets'));
+          budgetData.value['id'] = docRef.id;
+          if (preview) {
+            previewData.ok.push({ ...budgetData.value })
+          } else {
+            batch.set(docRef, { ...budgetData.value });
+          }
+          recordNumber += 1;
+        }
+
+      }
+      if (!preview) {
+        await batch.commit()
+        await getBudgetList(accountingMonth, organization.currentOrganizationId);
+        return true
+      }
+      return previewData
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   const getColoumnsData = (key: string, value: string) => {
@@ -232,7 +315,7 @@ export const useBudget = defineStore('budget', () => {
 
   const getFormateData = (formateDataCSV: string[]) => {
     const budgetData = ref<BudgetData>({
-      organizationId:organization.currentOrganizationId,
+      organizationId: organization.currentOrganizationId,
       accountingMonth: '',
       amount: '',
       branch: '',
@@ -244,139 +327,70 @@ export const useBudget = defineStore('budget', () => {
       unitPrice: '',
       remark: '',
       agency: '',
+      id: '',
+      recordNumber: '',
     });
+    budgetData.value['ngFields'] = [];
+    budgetData.value.id = formateDataCSV[0].replace(/"/g, '');
+    budgetData.value.recordNumber = formateDataCSV[1].replace(/"/g, '');
     budgetData.value.media = formateDataCSV[2].replace(/"/g, '');
     budgetData.value.branch = formateDataCSV[3].replace(/"/g, '');
     budgetData.value.occupation = formateDataCSV[4].replace(/"/g, '');
-    budgetData.value.postingStartDate = (formateDataCSV[5]).replace(/"/g,'')
-    budgetData.value.postingEndDate = (formateDataCSV[6]).replace(/"/g,'')
+    budgetData.value.postingStartDate = formateDataCSV[5].replace(/"/g, '')
+    budgetData.value.postingEndDate = formateDataCSV[6].replace(/"/g, '')
     budgetData.value.accountingMonth = formateDataCSV[7].replace(/"/g, '');
-    budgetData.value.amount = formateDataCSV[8].replace(/"/g, '');
+    budgetData.value.amount = formatNumber(formateDataCSV[8].replace(/"/g, ''));
     budgetData.value.numberOfSlots = formateDataCSV[9].replace(/"/g, '');
-    budgetData.value.unitPrice = formateDataCSV[10].replace(/"/g, '');
+    budgetData.value.unitPrice = formatNumber(formateDataCSV[10].replace(/"/g, ''));
     budgetData.value.agency = formateDataCSV[11].replace(/"/g, '');
     budgetData.value.remark = formateDataCSV[12].replace(/"/g, '');
     return budgetData;
   }
-  const getUnitPricePerOrganization = async (
-    dateRangeProps?: { from: string; to: string },
-    organization_id?: string,
-    beforeMonth = 7
-  ) => {
-    const mediaRef = collection(db, 'budgets');
-    const filters: QueryFieldFilterConstraint[] = [];
-    const filters_: QueryFieldFilterConstraint[] = [];
+  const getChartData = async (media: { label: string, value: string }[], monthList: string[], branchId: string, organizationId: string) => {
+    const chatItems: object[] = []
+    for (let i = 0; i < monthList.length; i++) {
+      const chatItem = {}
+      const constraints = [where('deleted', '==', false), where('accountingMonth', '==', monthList[i]), where('organizationId', '==', organizationId)]
+      const q = query(collection(db, 'budgets'), ...constraints);
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        let amount = data.amount;
+        if (branchId && branchId != data.branch) {
+          return
+        }
+        if (amount) {
+          amount = parseInt(amount.replace(/,/g, ''), 10);
+          const index = media.findIndex(x => x.value === data['media']);
+          if (index > -1) {
+            if (chatItem[media[index]['label']]) {
+              chatItem[media[index]['label']] += amount;
+            } else {
+              chatItem[media[index]['label']] = amount;
+            }
 
-    if (organization_id !== undefined) {
-      filters.push(where('organization_id', '==', organization_id));
-    }
-    //dateRangeProps is like {from:1900/01/01,to:1900/12/01}
-    if (dateRangeProps === undefined) return;
-    const toMonth = dateRangeProps.to.split('/')[1];
-    const year = dateRangeProps.to.split('/')[0];
-
-    //get month from before 7 month
-    const fromMonth = Number(toMonth) - beforeMonth + 1;
-
-    filters.push(where('record_year', '==', Number(year)));
-    filters.push(where('record_month', '<=', Number(toMonth)));
-    filters.push(where('record_month', '>=', Number(fromMonth)));
-    if (fromMonth <= 0) {
-      filters_.push(where('record_year', '==', Number(year) - 1));
-      filters_.push(where('record_month', '>=', Number(fromMonth) + 12));
-    }
-    const querys = query(mediaRef, ...filters);
-    const docSnap = await getDocs(querys);
-    const querys_ = query(mediaRef, ...filters_);
-    const docSnap_ = await getDocs(querys_);
-
-    const budget_amount: number[] = [];
-    budget_amount.length = beforeMonth;
-    budget_amount.fill(0);
-
-    const number_of_applicants: number[] = [];
-    number_of_applicants.length = beforeMonth;
-    number_of_applicants.fill(0);
-
-    const number_of_admission: number[] = [];
-    number_of_admission.length = beforeMonth;
-    number_of_admission.fill(0);
-
-    for (const doc of [...docSnap.docs, ...docSnap_.docs]) {
-      const budget = doc.data() ;
-      let index: number;
-      if (Number(toMonth) - doc.data().record_month < 0) {
-        index =
-          -Number(toMonth) + doc.data().record_month - monthPerYear + beforeMonth - 1;
-      } else {
-        index = -Number(toMonth) + doc.data().record_month + beforeMonth - 1;
-      }
-      budget_amount[index] += budget.budget_amount;
-      number_of_applicants[index] += budget.number_of_applicants;
-      number_of_admission[index] += budget.number_of_admission;
+          }
+        }
+      })
+      chatItems.push(chatItem);
     }
 
-    const unitpricePerApplicants: number[] = [];
-    unitpricePerApplicants.length = beforeMonth;
-    unitpricePerApplicants.fill(0);
+    const series: { name: string, data: number[] }[] = []
+    media.forEach(md => {
+      const values: number[] = []
+      chatItems.forEach(chatItem => {
+        if (chatItem[md.label]) {
+          values.push(chatItem[md.label] as number)
+        } else {
+          values.push(0)
+        }
+      })
+      series.push({ name: md.label, data: values })
+    })
+    loadChartData.value = false
+    return series
 
-    const unitpricePerAdmission: number[] = [];
-    unitpricePerAdmission.length = beforeMonth;
-    unitpricePerAdmission.fill(0);
+  }
 
-    for (let i = 0; i < beforeMonth; i++) {
-      if (number_of_applicants[i] === 0) continue;
-      if (number_of_admission[i] === 0) continue;
-      unitpricePerApplicants[i] = budget_amount[i] / number_of_applicants[i];
-      unitpricePerAdmission[i] = budget_amount[i] / number_of_admission[i];
-    }
-    return [unitpricePerApplicants, unitpricePerAdmission];
-  };
-
-  const getUnitPricePerOrganizationPerMedia = async (
-    mediaList: string[],
-    dateRangeProps?: { from: string; to: string },
-    organization_id?: string,
-  ) => {
-    const mediaRef = collection(db, 'budgets');
-    const filters: QueryFieldFilterConstraint[] = [];
-    if (organization_id) {
-      filters.push(where('organization_id', '==', organization_id));
-    }
-    if (!dateRangeProps) return;
-    const toMonth = dateRangeProps.to.split('/')[1];
-    const year = dateRangeProps.to.split('/')[0];
-    filters.push(where('record_year', '==', Number(year)));
-    filters.push(where('record_month', '==', Number(toMonth)));
-    const querys = query(mediaRef, ...filters);
-    const docSnap = await getDocs(querys);
-    const budget_amount: number[] = [];
-    budget_amount.length = mediaList.length;
-    budget_amount.fill(0);
-    const number_of_applicants: number[] = [];
-    number_of_applicants.length = mediaList.length;
-    number_of_applicants.fill(0);
-
-    for (const doc of docSnap.docs) {
-      const budget = doc.data();
-      if (!mediaList.includes(doc.data().media)) continue;
-      const index = mediaList.indexOf(doc.data().media);
-      budget_amount[index] += budget.budget_amount;
-      number_of_applicants[index] += budget.number_of_applicants;
-    }
-    const unitpricePerApplicants: number[] = [];
-    unitpricePerApplicants.length = mediaList.length;
-    unitpricePerApplicants.fill(0);
-    const unitpricePerAdmission: number[] = [];
-    unitpricePerAdmission.length = mediaList.length;
-    unitpricePerAdmission.fill(0);
-    for (let i = 0; i < mediaList.length; i++) {
-      if (number_of_applicants[i] === 0) continue;
-      unitpricePerApplicants[i] = budget_amount[i] / number_of_applicants[i];
-    }
-    return unitpricePerApplicants;
-  };
-
-
-  return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable ,getUnitPricePerOrganization ,getUnitPricePerOrganizationPerMedia }
+  return { saveBudget, processData, getOptionData, getBudgetList, getBudgetData, deleteBudget, budgetList, downloadSampleFile, exportTable, getItem, getChartData, loadChartData }
 })

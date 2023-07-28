@@ -47,32 +47,31 @@
 
           <q-td>
             <template v-if="!isRowSelected(props.rowIndex)">
-              {{ props.row.organizationCodeAndName }}
+              {{ props.row.organizationCodeAndName.split(' ')?.[0] }} <br/>
+              {{ props.row.organizationCodeAndName.split(' ')?.[1] }}
             </template>
             <q-input v-else v-model:model-value="editableRow!.name" color="accent" :rules="[creationRule]"
-              hide-bottom-space />
+              hide-bottom-space dense />
           </q-td>
 
           <q-td>
             <template v-if="!isRowSelected(props.rowIndex)">
-              {{ props.row.operatorName || t('common.userNotFound') }}
+              {{ props.row.operatorName || props.row.operatorUser || t('common.userNotFound') }}
             </template>
-
-            <SelectUser v-else :model-value="editableRow!.operatorName"
-              @on-user-change="(user) => { editableRow!.operatorUser = user.id; editableRow!.operatorName = user.displayName; }"
-              hide-bottom-space />
+            <q-input v-else v-model="editableRow!.operatorUser" dense color="accent" :rules="[creationRule]"
+            :disable="loading" hide-bottom-space/>
           </q-td>
 
           <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
-            @update:model-value="(v) => editableRow!.tel = v" type="tel" mask="phone" hide-bottom-space
-            :rules="[creationRule, validateLength]" />
+            @update:model-value="(v) => editableRow!.tel = v" type="tel" hide-bottom-space dense
+            :rules="[creationRule]" />
 
           <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.fax"
-            @update:model-value="(v) => editableRow!.fax = v" type="tel" mask="phone" hide-bottom-space
-            :rules="[creationRule, validateLength]" />
+            @update:model-value="(v) => editableRow!.fax = v" type="tel" hide-bottom-space dense
+            :rules="[creationRule]" />
 
 
-          <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.mailaddress"
+          <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.mailaddress" dense
             @update:model-value="(v) => { editableRow!.mailaddress = v; }" :rules="[validateEmail]" hide-bottom-space />
 
           <q-td>
@@ -80,7 +79,7 @@
               {{ t('menu.admin.organizationsTable.' + props.row.invoiceRequest) }}
             </template>
             <q-select v-else v-model:model-value="editableRow!.invoiceRequest" :options="invoiceRequestOptions"
-              color="accent" emit-value map-options />
+              color="accent" emit-value map-options dense />
           </q-td>
 
           <q-td>
@@ -121,7 +120,6 @@ import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
 import { orderBy } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import SelectUser from './SelectUser.vue';
 import InputCell from './InputCell.vue';
 import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
 import { invoiceRequestOptions, mapOrganizationsToRow } from './handlers/handlers';
@@ -174,14 +172,6 @@ const forceReRender = async () => {
 };
 const formRef = ref<QForm | null>(null)
 
-function validateLength(v: string) {
-  const validLength = 16
-  if (v.length != validLength) {
-    return ''
-  }
-  return true
-}
-
 async function onRowSave(props: { row: Row, rowIndex: number }) {
   const valid = await formRef.value?.validate()
 
@@ -226,7 +216,7 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
     await organizationStore.editOrganization(organization, row.id)
     await refresh()
     loading.value = false;
-    Alert.success()
+    
   } catch (error) {
     Alert.warning(error);
     console.log(error)
