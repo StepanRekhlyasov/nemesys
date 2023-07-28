@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import MySelect from 'src/components/inputs/MySelect.vue';
 import { taskTypeOptions } from '../const/index'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { serverTimestamp } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
@@ -59,9 +59,10 @@ import { QForm } from 'quasar';
 import { Applicant, ClientFactory } from 'src/shared/model';
 
 const props = defineProps<{
-  entity: 'applicant' | 'office',
-  entityData: Applicant | ClientFactory
+  entity: 'applicant' | 'office' | 'edit',
+  entityData: Applicant | ClientFactory | Task,
 }>()
+const emit = defineEmits(['closeDrawer', 'closeDrawerWithUpdate'])
 const organizationStore = useOrganization()
 const taskStore = useTask()
 const myForm = ref<InstanceType<typeof QForm>>()
@@ -84,6 +85,13 @@ function resetData() {
 }
 
 const createTask = async () => {
+  if(props.entity === 'edit'){
+    updateTask()
+    return
+  }
+  if(!props.entityData){
+    return
+  }
   loading.value = true
   const saveData : Partial<Task> = {
     taskType: taskType.value,
@@ -101,22 +109,51 @@ const createTask = async () => {
   }
   if(props.entity === 'applicant'){
     saveData.applicantId = props.entityData.id
-    saveData.applicantName = props.entityData.name
+    saveData.applicantName = (props.entityData as Applicant).name
   } else if (props.entity === 'office'){
     saveData.clientId = (props.entityData as ClientFactory).clientID
     saveData.clientName = (props.entityData as ClientFactory).client?.name
     saveData.clientFactoryId = props.entityData.id
-    saveData.clientFactoryName = props.entityData.name
+    saveData.clientFactoryName = (props.entityData as ClientFactory).name
   }
   try {
     await taskStore.createTask(saveData)
     Alert.success()
     resetData()
     emit('closeDrawer')
-  } catch (error){
-    Alert.warning(error)
+  } catch (e){
+    Alert.warning(e)
     loading.value = false
   }
 }
-const emit = defineEmits(['closeDrawer'])
+async function updateTask(){
+  loading.value = true
+  const saveData : Partial<Task> = {
+    taskType: taskType.value,
+    taskContent: taskContent.value,
+    assignedUserId: taskUserInCharge.value,
+    assignedUserName: organizationStore.state.currentOrganizationUsers[taskUserInCharge.value]?.displayName,
+    assignedUserBranchId: organizationStore.state.currentOrganizationUsers[taskUserInCharge.value]?.branch_id,
+    updated_at: serverTimestamp(),
+  }
+  try{
+    await taskStore.updateTask(props.entityData.id, saveData)
+    Alert.success()
+    resetData()
+    emit('closeDrawerWithUpdate', props.entityData.id)
+  } catch (e) {
+    Alert.warning(e)
+    loading.value = false
+  }
+  return
+}
+
+watch(() => props.entityData, (newValue) => {
+  if(newValue && props.entity === 'edit'){
+    taskType.value = (props.entityData as Task).taskType
+    taskContent.value = (props.entityData as Task).taskContent
+    taskUserInCharge.value = (props.entityData as Task).assignedUserId
+  }
+}, {deep : true})
+
 </script>

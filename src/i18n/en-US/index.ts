@@ -1994,9 +1994,11 @@ export default {
   task: {
     task: 'Task',
     taskType: 'Task type',
+    taskStatus: 'Task status',
     taskContent: 'Task Content',
     taskRegister: 'Task Register',
     taskRegisterWindow: 'Task Register',
+    applicantName: 'Applicant Name',
     types: {
       'extensionConfirm': 'Extension Confirm',
       'finishApplicant' : 'Handling mid-term finish applicant',
@@ -2006,6 +2008,11 @@ export default {
       'collectDocs' : 'Collection of necessary documents',
       'staffRequests' : 'Response to staff requests',
       'clientsRequests' : 'Response to client requests',
+    },
+    statuses: {
+      'new' : 'New',
+      'process' : 'In process',
+      'finish' : 'Finish',
     }
   }
 }

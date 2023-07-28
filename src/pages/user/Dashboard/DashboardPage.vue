@@ -16,7 +16,7 @@
       <DashboardProgressBlocks :updateOnMounted="updateOnMounted" />
     <q-separator color="white" size="2px" />
       <DashboardTaskTable :entity="'applicant'"/>
-    <q-separator color="white" size="2px" />
+    <q-separator color="grey-3" size="2px"/>
       <DashboardTaskTable :entity="'office'" />
   </q-page>
 </template>

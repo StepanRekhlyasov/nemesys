@@ -1987,9 +1987,11 @@ export default {
   task: {
     task: 'タスク',
     taskType: 'タスク種別',
+    taskStatus: 'タスクステータス',
     taskContent: 'タスク内容',
     taskRegister: 'タスク登録',
     taskRegisterWindow: 'タスク内容',
+    applicantName: '応募者名',
     types: {
       'extensionConfirm': '延長の確認',
       'finishApplicant' : '途中修了者への対応',
@@ -1999,6 +2001,11 @@ export default {
       'collectDocs' : '必要書類の回収',
       'staffRequests' : 'スタッフ依頼事項の返答',
       'clientsRequests' : 'クライアント依頼事項の返答',
+    },
+    statuses: {
+      'new' : '新規',
+      'process' : '進行中',
+      'finish' : '完了',
     }
   }
 };
