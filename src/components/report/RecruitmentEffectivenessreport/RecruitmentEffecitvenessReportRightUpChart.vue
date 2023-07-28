@@ -15,6 +15,7 @@ import { useApplicant } from 'stores/applicant';
 import VueApexCharts from 'vue3-apexcharts';
 import { Media } from 'src/shared/model/Media.model';
 import { i18n } from 'boot/i18n';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[]> = ref([]);
 const media = useMedia();
@@ -58,6 +59,10 @@ watch(
     await showChart();
   }
 );
+
+watchCurrentOrganization(async()=>{
+  await showChart()
+})
 
 onMounted(async () => {
   await showChart();
