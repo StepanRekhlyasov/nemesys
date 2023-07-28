@@ -6,39 +6,39 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
-import { useI18n } from 'vue-i18n';
-import { usecalcLeadtime } from 'src/stores/leadtime';
-import { chartOptionsLeadtime, columnsLeadtime } from './const';
+import { chartOptionsLeadtime, columnsLeadtime, nameList } from './const';
+import { useGetReport } from 'src/stores/getReport';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
-const  Leadtime  = usecalcLeadtime();
+const { calcLeadtime } = useGetReport();
 const apexchart = VueApexCharts;
-const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
-const series: ComputedRef<{ name: string; data: (number|string)[]; type: string }[]> =
-  computed(() => {
-    const seriesList = dataToshow.value.map((rowData) => {
-      return {
-        name: t('report.companyAverage'),
-        data: rowData,
-        type: 'bar',
-      };
-    });
-    return seriesList;
+const series: ComputedRef<
+  { name: string; data: (number | string)[]; type: string }[]
+> = computed(() => {
+  const seriesList = dataToshow.value.map((rowData, index) => {
+    return {
+      name: nameList[index],
+      data: rowData,
+      type: 'bar',
+    };
   });
+  return seriesList;
+});
+
 const rows: ComputedRef<
   {
     name: string;
-    invitations: string|number;
-    fix: string|number;
-    inspection: string|number;
-    offer: string|number;
-    admission: string|number;
+    invitations: string | number;
+    fix: string | number;
+    inspection: string | number;
+    offer: string | number;
+    admission: string | number;
   }[]
 > = computed(() => {
-  const rowsList = dataToshow.value.map((rowData) => {
+  const rowsList = dataToshow.value.map((rowData, index) => {
     return {
-      name: t('report.companyAverage'),
+      name: nameList[index],
       invitations: rowData[0],
       fix: rowData[1],
       inspection: rowData[2],
@@ -61,8 +61,11 @@ const showLeadtime = async (
   organizationId: string
 ) => {
   if (!dateRange) return;
-  const dataAverage = listToFixed(await Leadtime.calcLeadtime(dateRange, organizationId));
-  dataToshow.value = [dataAverage];
+  const dataAverage = listToFixed(
+    await calcLeadtime(dateRange, organizationId)
+  );
+  const dataAverageAll = listToFixed(await calcLeadtime(dateRange));
+  dataToshow.value = [dataAverage, dataAverageAll];
 };
 
 watch(
@@ -77,4 +80,3 @@ onMounted(async () => {
   await showLeadtime(props.dateRangeProps, props.organization_id);
 });
 </script>
-

@@ -7,6 +7,10 @@ import {
   QueryFieldFilterConstraint,
   Firestore,
   getDocs,
+  Query,
+  DocumentData,
+  getDoc,
+  doc,
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, User } from 'src/shared/model';
@@ -21,13 +25,14 @@ import {
   dailyBasedReportState,
   reportStateAndOthers,
   branchBasedReportState,
-  GetAgeReportInput
+  GetAgeReportInput,
 } from 'src/shared/model/GetReport';
 import { Media } from 'src/shared/model/Media.model';
 import { secondperday } from 'src/pages/user/KPI/const/kpi.const';
 import { round } from 'src/shared/utils/KPI.utils';
 const userStore = useUserStore();
 const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
+const milsecondPersecond = 1000;
 const applicantFieldDict: FieldDict = {
   name: 'applicants',
   dateBasedOnEachItemDate: 'applicationDate',
@@ -296,8 +301,7 @@ const proratedRate = (dayForMonth: Date, fromDate: Date, toDate: Date) => {
 
   return days / numOfDayOfMonth;
 };
-
-const getQuery = async (
+const getQuery = (
   reportState: ReportState,
   queryName: {
     queryName: typeOfQuery;
@@ -306,22 +310,13 @@ const getQuery = async (
       | QueryFieldFilterConstraint[];
     fieldName?: string;
   },
-  db: Firestore,
-  isAverage = false
-): Promise<number> => {
+  db: Firestore
+): Query<DocumentData> => {
   const fromDate =
     typeof reportState.dateRange.from == 'string'
       ? new Date(reportState.dateRange.from)
       : reportState.dateRange.from;
   const toDate =
-    typeof reportState.dateRange.to == 'string'
-      ? new Date(reportState.dateRange.to)
-      : reportState.dateRange.to;
-  const fromDateTrue =
-    typeof reportState.dateRange.from == 'string'
-      ? new Date(reportState.dateRange.from)
-      : reportState.dateRange.from;
-  const toDateTrue =
     typeof reportState.dateRange.to == 'string'
       ? new Date(reportState.dateRange.to)
       : reportState.dateRange.to;
@@ -369,8 +364,30 @@ const getQuery = async (
     );
   }
   const dbRef = collection(db, fieldDict.collection);
-  const queryNow = query(dbRef, ...filters);
+  return query(dbRef, ...filters);
+};
 
+const getData = async (
+  reportState: ReportState,
+  queryName: {
+    queryName: typeOfQuery;
+    filtersInput?:
+      | readonly [QueryFieldFilterConstraint]
+      | QueryFieldFilterConstraint[];
+    fieldName?: string;
+  },
+  db: Firestore,
+  isAverage = false
+): Promise<number> => {
+  const fromDateTrue =
+    typeof reportState.dateRange.from == 'string'
+      ? new Date(reportState.dateRange.from)
+      : reportState.dateRange.from;
+  const toDateTrue =
+    typeof reportState.dateRange.to == 'string'
+      ? new Date(reportState.dateRange.to)
+      : reportState.dateRange.to;
+  const queryNow = getQuery(reportState, queryName, db);
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
     if (
@@ -428,7 +445,7 @@ const queryPatternToData = async (stateAndOthers: reportStateAndOthers) => {
   const db = getFirestore();
   const countedData = await Promise.all(
     stateAndOthers.queryNames.map(async (queryName) => {
-      return getQuery(
+      return getData(
         stateAndOthers.reportState,
         queryName,
         db,
@@ -459,23 +476,10 @@ const getMonthDateList = (date: string) => {
 };
 
 const agesListOfApplicants = async (
-  dateRange: { from: string; to: string },
-  filterData?: QueryFieldFilterConstraint[]
+  state: ReportState
 ): Promise<number[] | undefined> => {
   const db = getFirestore();
-  const targetDateFrom = new Date(dateRange.from);
-  const targetDateTo = new Date(dateRange.to);
-  const filters = [
-    where('applicationDate', '>=', targetDateFrom),
-    where('applicationDate', '<=', targetDateTo),
-  ];
-  if (filterData) {
-    for (const filter of filterData) {
-      filters.push(filter);
-    }
-  }
-  const applicantRef = collection(db, 'applicants');
-  const querys = query(applicantRef, ...filters);
+  const querys = getQuery(state, { queryName: 'applicants' }, db);
   const docSnap = await getDocs(querys);
   const applicants = docSnap.docs.map((doc) => {
     if (!doc.data().dob) return undefined;
@@ -501,12 +505,22 @@ export const useGetReport = defineStore('getReport', () => {
 
     for (const date of dateList) {
       const dateRange = {
-        from: date,
+        from: new Date(
+          new Date(date).getFullYear(),
+          new Date(date).getMonth(),
+          new Date(date).getDate(),
+          0,
+          0,
+          0
+        ),
         to: new Date(
           new Date(date).getFullYear(),
           new Date(date).getMonth(),
-          new Date(date).getDate() + 1
-        ).toLocaleDateString(),
+          new Date(date).getDate(),
+          23,
+          59,
+          59
+        ),
       };
       let data: number[] = [];
       data = await queryPatternToData({
@@ -518,7 +532,9 @@ export const useGetReport = defineStore('getReport', () => {
         isAverage: false,
         queryNames: state.queryNames,
       });
-      const row: { [key: string]: number | string } = { name: dateRange.from };
+      const row: { [key: string]: number | string } = {
+        name: dateRange.from.toLocaleDateString('JP'),
+      };
       for (let i = 0; i < state.queryNames.length; i++) {
         const fieldName = state.queryNames[i].fieldName;
         if (fieldName) row[fieldName] = data[i];
@@ -648,22 +664,13 @@ export const useGetReport = defineStore('getReport', () => {
       '50s': 0,
       '60sOver': 0,
     };
-    const filters: QueryFieldFilterConstraint[] = [];
-    if (getAgeReportInput.media) {
-      filters.push(where('media', '==', getAgeReportInput.media.id));
-    }
-    if (getAgeReportInput.branch) {
-      filters.push(where('branch_id', '==', getAgeReportInput.branch.id));
-    }
-    if (getAgeReportInput.organizationId) {
-      filters.push(
-        where('organization_id', '==', getAgeReportInput.organizationId)
-      );
-    }
-    const listofages = await agesListOfApplicants(
-      getAgeReportInput.dateRange,
-      filters
-    );
+    const listofages = await agesListOfApplicants({
+      dateRange: getAgeReportInput.dateRange,
+      dateType: 'BasedOnLeftMostItemDate',
+      media: getAgeReportInput.media,
+      branch: getAgeReportInput.branch,
+      organizationId: getAgeReportInput.organizationId,
+    });
     if (listofages) {
       ageData = {
         '10s': listofages.filter((age) => age >= 10 && age < 20).length,
@@ -677,5 +684,74 @@ export const useGetReport = defineStore('getReport', () => {
     return ageData;
   };
 
-  return { getReport, getDailyReport, getAgeReport };
+  const calcLeadtime = async (
+    dateRange: { from: string; to: string },
+    organizationId?: string
+  ) => {
+    const db = getFirestore();
+
+    const dataAverageList: number[] = Array(5).fill(0);
+    const querys = getQuery(
+      {
+        dateRange: dateRange,
+        dateType: 'BasedOnLeftMostItemDate',
+        organizationId: organizationId,
+      },
+      { queryName: 'fix' },
+      db
+    );
+    const snapshot = await getDocs(querys);
+    let InspectionFixCounter = 0;
+    let OfferInspectionCounter = 0;
+    let AdmissionOfferCounter = 0;
+    let ApplicantFixCounter = 0;
+    await Promise.all(
+      snapshot.docs.map(async (doc_) => {
+        const data = doc_.data();
+        const offerDate = data.offerDate;
+        const dataDate = data.fixDate;
+        const inspectiondate = data.inspectionDate;
+        const admissiondate = data.admissionDate;
+        const applicantData = (
+          await getDoc(doc(db, 'applicants', data.applicant_id))
+        ).data();
+
+        if (applicantData && applicantData.attractionDate) {
+          dataAverageList[0] +=
+            ((applicantData.attractionDate - applicantData.applicationDate) /
+              secondperday) *
+            milsecondPersecond;
+          dataAverageList[1] +=
+            ((dataDate - applicantData.attractionDate) / secondperday) *
+            milsecondPersecond;
+          ApplicantFixCounter += 1;
+        }
+
+        if (inspectiondate) {
+          dataAverageList[2] +=
+            ((inspectiondate - dataDate) / secondperday) * milsecondPersecond;
+          InspectionFixCounter += 1;
+        }
+        if (offerDate) {
+          dataAverageList[3] +=
+            ((offerDate - inspectiondate) / secondperday) * milsecondPersecond;
+          OfferInspectionCounter += 1;
+        }
+        if (admissiondate) {
+          dataAverageList[4] +=
+            ((admissiondate - offerDate) / secondperday) * milsecondPersecond;
+          AdmissionOfferCounter += 1;
+        }
+      })
+    );
+
+    dataAverageList[0] /= ApplicantFixCounter;
+    dataAverageList[1] /= ApplicantFixCounter;
+    dataAverageList[2] /= InspectionFixCounter;
+    dataAverageList[3] /= OfferInspectionCounter;
+    dataAverageList[4] /= AdmissionOfferCounter;
+    return dataAverageList;
+  };
+
+  return { getReport, getDailyReport, getAgeReport, calcLeadtime };
 });
