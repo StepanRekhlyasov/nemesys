@@ -63,11 +63,6 @@ export const rateCalcuPattern = [
   },
   {
     before: 'validApplicants',
-    after: 'contactApplicants',
-    name: 'contactApplicantsRate',
-  },
-  {
-    before: 'contactApplicants',
     after: 'attractionApplicants',
     name: 'attractionApplicantsRate',
   },
@@ -85,7 +80,6 @@ export const rateCalcuPattern = [
 export const dayItemList = [
   { queryName: 'applicants' },
   { queryName: 'validApplicants' },
-  { queryName: 'contactApplicants' },
   { queryName: 'attractionApplicants' },
   { queryName: 'attendApplicants' },
   { queryName: 'nursingCare' },
@@ -103,7 +97,6 @@ export const mediaItemList = [
   { queryName: 'amount' },
   { queryName: 'applicants' },
   { queryName: 'validApplicants' },
-  { queryName: 'contactApplicants' },
   { queryName: 'attractionApplicants' },
   { queryName: 'attendApplicants' },
   { queryName: 'fix' },
@@ -114,8 +107,7 @@ export const mediaItemList = [
 
 export const mediaItemRateList = [
   ['applicants', 'validApplicants'],
-  ['validApplicants', 'contactApplicants'],
-  ['contactApplicants', 'attractionApplicants'],
+  ['validApplicants', 'attractionApplicants'],
   ['attractionApplicants', 'attendApplicants'],
   ['attendApplicants', 'fix'],
   ['fix', 'inspection'],
@@ -151,13 +143,6 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'validApplicants',
       label: t('KPI.tables.actualFigures.4'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
-      field: 'contactApplicants',
-      label: t('KPI.tables.actualFigures.5'),
       align: 'center',
       sortable: true,
     },
@@ -207,13 +192,6 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'validApplicantsRate',
       label: t('KPI.tables.actualFigures.12'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
-      field: 'contactApplicantsRate',
-      label: t('KPI.tables.actualFigures.13'),
       align: 'center',
       sortable: true,
     },
@@ -293,13 +271,6 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: 'contactApplicants',
-      label: t('KPI.tables.unitPrice.3'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
       field: 'attractionApplicants',
       label: t('KPI.tables.unitPrice.4'),
       align: 'center',
@@ -337,13 +308,6 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'admission',
       label: t('KPI.tables.unitPrice.9'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
-      field: 'contactApplicantsRate',
-      label: t('KPI.tables.unitPrice.10'),
       align: 'center',
       sortable: true,
     },
