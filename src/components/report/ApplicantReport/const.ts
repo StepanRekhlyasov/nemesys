@@ -5,7 +5,7 @@ const { t } = i18n.global;
 
 export const rowNames = ['report.companyTotal', 'report.CVR', 'report.allCVR'] as const;
 export const chartType = ['bar', 'line', 'line'] as const ;
-
+export const nameList = [t('report.companyAverage'), t('report.allAverage')];
 export const itemList = [
 {queryName:'applicants'},
 {queryName:'validApplicants'},
