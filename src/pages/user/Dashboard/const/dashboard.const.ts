@@ -194,14 +194,7 @@ export const officeTaskTableColumns = computed<QTableProps['columns']>(()=> [
   {
     name: 'clientFactoryName',
     field: 'clientFactoryName',
-    label: t('client.add.officeName'),
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'clientName',
-    field: 'clientName',
-    label: t('client.add.clientName'),
+    label: 'da',
     align: 'left',
     sortable: true
   },
