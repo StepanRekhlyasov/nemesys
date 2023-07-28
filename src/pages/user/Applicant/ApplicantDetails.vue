@@ -78,84 +78,70 @@
             <div class="col-6 row">
               <q-btn @click="assignToBo()" v-if="bo" class="bg-primary text-white q-mb-md col-6"
                 :label="$t('applicant.attendant.assignToBo')" />
-            <div :class="!bo ? 'col-6 text-right text-primary text-weight-regular' : 'col-3 text-right text-primary text-weight-regular'"> {{ $t('applicant.list.qualification') }}
+              <div
+                :class="!bo ? 'col-6 text-right text-primary text-weight-regular' : 'col-3 text-right text-primary text-weight-regular'">
+                {{ $t('applicant.list.qualification') }}
+              </div>
+              <div :class="bo ? 'col-3 q-pl-md' : 'col-6 q-pl-md'" v-if="selectedApplicant.qualification">
+                {{ selectedApplicant.qualification.map(applic => $t('applicant.qualification.' + applic)).join(', ') }}
+              </div>
             </div>
-            <div :class="bo ? 'col-3 q-pl-md' : 'col-6 q-pl-md'" v-if="selectedApplicant.qualification">
-              {{ selectedApplicant.qualification.map(applic => $t('applicant.qualification.' + applic)).join(', ') }}
+            <div class="col-6 row">
+              <span class="col-6 text-right text-primary text-weight-regular">
+                {{ $t('applicant.list.experience') }}
+              </span>
+              <span class="col-3 q-pl-md">
+                {{ selectedApplicant.totalMonthes ? Math.floor(selectedApplicant.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
+              </span>
+              <div v-if="!bo" class="col-3 text-right">
+                <q-btn @click="openMapDrawer" outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
+              </div>
             </div>
           </div>
-          <div class="col-6 row">
-            <span class="col-6 text-right text-primary text-weight-regular">
-              {{$t('applicant.list.experience')}}
-            </span>
-            <span class="col-3 q-pl-md">
-              {{selectedApplicant.totalYear ? selectedApplicant.totalYear + ' ' + $t('common.year') : ''}}
-            </span>
-            <div v-if="!bo" class="col-3 text-right">
-              <q-btn @click="openMapDrawer" outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
+          <div class="row">
+            <div class="col-7 row">
+              <div class="col-5 text-right">
+                <span class="q-pl-md">
+                  <span class="text-primary">{{ $t('office.earlyShift') }}</span>:
+                  {{ selectedApplicant.workingHoursEarly }}
+                </span>
+                <span class="q-pl-md">
+                  <span class="text-primary">{{ $t('office.dayShift') }}</span>:
+                  {{ selectedApplicant.workingHoursDay }}
+                </span>
+              </div>
+              <div class="col-7">
+                <span class="q-pl-md">
+                  <span class="text-primary">{{ $t('office.lateShift') }}</span>:
+                  {{ selectedApplicant.workingHoursLate }}
+                </span>
+                <span class="q-pl-md">
+                  <span class="text-primary">{{ $t('office.nightShift') }}</span>:
+                  {{ selectedApplicant.workingHoursNight }}
+                </span>
+                <span class="q-pl-md">
+                  <span class="text-primary">{{ $t('applicant.list.info.shortTime') }}</span>:
+                  {{ selectedApplicant.shortTime ? '✓' : '×' }}
+                </span>
+              </div>
+            </div>
+            <div class="col-5 row">
+              <span
+                class="col-6 text-right text-primary text-weight-regular">{{ $t('applicant.list.availableDays') }}</span>
+              <span class="col-3 q-pl-md">{{ selectedApplicant.daysToWork ? selectedApplicant.daysToWork + ' ' +
+                $t('applicant.attendant.days') : '' }}</span>
+              <div v-if="!bo" class="col-3 text-right">
+                <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-7 row">
-            <div class="col-5 text-right">
-              <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.earlyShift') }}</span>:
-                {{ selectedApplicant.workingHoursEarly }}
-              </span>
-              <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.dayShift') }}</span>:
-                {{ selectedApplicant.workingHoursDay }}
-              </span>
-            </div>
-            <div class="col-7">
-              <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.lateShift') }}</span>:
-                {{ selectedApplicant.workingHoursLate }}
-              </span>
-              <span class="q-pl-md">
-                <span class="text-primary">{{ $t('office.nightShift') }}</span>:
-                {{ selectedApplicant.workingHoursNight }}
-              </span>
-              <span class="q-pl-md">
-                <span class="text-primary">{{ $t('applicant.list.info.shortTime') }}</span>:
-                {{ selectedApplicant.shortTime ? '✓' : '×' }}
-              </span>
-            </div>
-          </div>
-          <div class="col-5 row">
-            <span class="col-6 text-right text-primary text-weight-regular">{{$t('applicant.list.availableDays')}}</span>
-            <span class="col-3 q-pl-md">{{selectedApplicant.daysToWork ? selectedApplicant.daysToWork + ' ' + $t('applicant.attendant.days') : ''}}</span>
-            <div v-if="!bo" class="col-3 text-right">
-              <q-btn outline size="sm" :label="$t('applicant.list.locator')" color="primary" />
-            </div>
-          </div>
-        </div>
-      </q-card-section>
-      <q-card-section class="q-pt-none" v-if="drawerRight">
-        <detail-tabs :bo="bo" :applicant="applicantStore.state.selectedApplicant"/>
-      </q-card-section>
-    </q-card>
-  </q-scroll-area>
-</q-drawer>
-
-<q-drawer v-if="applicantStore.state.selectedApplicant" v-model="boMapDrawer" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
-  bordered>
-  <q-scroll-area class="fit text-left" v-if="selectedApplicant">
-    <q-card class="no-shadow bg-grey-3">
-      <q-card-section class="text-white bg-primary rounded-borders">
-        <div class="row">
-          <q-btn dense flat icon="close" @click="boMapDrawer = false" class="q-mr-md" />
-          <span class="text-h6 text-weight-bold q-pr-xs">
-                  {{ $t('menu.mapSearch') }}
-          </span>
-      </div>
-      </q-card-section>
-      <boMapSearch theme="primary" :applicant="selectedApplicant"/>
-    </q-card>
-  </q-scroll-area>
-</q-drawer>
-
+        </q-card-section>
+        <q-card-section class="q-pt-none" v-if="drawerRight">
+          <detail-tabs :bo="bo" :applicant="applicantStore.state.selectedApplicant" />
+        </q-card-section>
+      </q-card>
+    </q-scroll-area>
+  </q-drawer>
 </template>
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
@@ -228,7 +214,7 @@ const changeApplicantStatus = async () => {
   try {
     await applicantStore.updateApplicant({ status: selectedApplicant.value?.status })
     emit('statusUpdated')
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }
@@ -250,7 +236,7 @@ const onFileChange = async (image) => {
       ret['imagePath'] = snapshot.ref.fullPath;
       ret['imageURL'] = await getDownloadURL(storageRef)
       await applicantStore.updateApplicant(ret)
-      Alert.success();
+      ;
     }
     catch (error) {
       Alert.warning(error);

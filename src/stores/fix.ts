@@ -7,6 +7,7 @@ import { useApplicant } from './applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ApplicantOrFixColumn, applicantNGStatusField, applicantStatusCharge, applicantStatusDates, applicantStatusOkFields } from 'src/shared/constants/Applicant.const';
 import { useRoute } from 'vue-router';
+import { useOrganization } from './organization';
 
 export interface FixOption {
   operationFilter?: boolean;
@@ -17,6 +18,7 @@ export const useFix = defineStore('fix', () => {
   const { t } = useI18n({ useScope: 'global' });
   const applicantStore = useApplicant()  
   const route = useRoute()
+  const organization = useOrganization()
 
   async function getFixData(applicant_id: string, operationFilter?: boolean): Promise<ApplicantFix[]> {
     
@@ -52,37 +54,6 @@ export const useFix = defineStore('fix', () => {
     ))
   }
 
-  async function getFixByApplicantIDs(ids: string[] | string){
-    const constraints = Array.isArray(ids)?[where('applicant_id', 'in', ids)]:[where('applicant_id', '==', ids)]
-    const docSnap = await getDocs(query(
-      collection(db, '/fix'),
-      where('deleted', '==', false),
-      ...constraints
-    ))
-    const result = docSnap.docs.map(item => {
-      const itemData = item.data()
-      return {
-        ...itemData,
-        id: item.id,
-        fixDate: myDateFormat(itemData['fixDate'], 'YYYY/MM/DD HH:mm'),
-        offerDate: myDateFormat(itemData['offerDate'], 'YYYY/MM/DD HH:mm'),
-        admissionDate: myDateFormat(itemData['admissionDate'], 'YYYY/MM/DD HH:mm'),
-        endDate: myDateFormat(itemData['endDate'], 'YYYY/MM/DD'),
-        inspectionDate: myDateFormat(itemData['inspectionDate'], 'YYYY/MM/DD HH:mm'),
-      } as ApplicantFix
-    })
-    if(Array.isArray(ids)){
-      ids.forEach((id)=>{
-        applicantStore.state.applicantFixes[id] = result.filter((row)=>{
-          return row.applicant_id === id
-        })
-      })
-    } else {
-      applicantStore.state.applicantFixes[ids] = result
-    }
-    return result
-  }
-
   /** when BO quotas will be added use this function to check quotas */
   async function preventFixFromSaving(applicant_id: string, backOrder_id: string, fix_id?: string){
     const checkFix = await getDocs(query(
@@ -110,12 +81,19 @@ export const useFix = defineStore('fix', () => {
         return;
       }
     }
+
+    const fix = {
+      ...data,
+      applicant_id: applicant_id,
+    }
+
+    if(!fix.organizationId){
+      fix.organizationId = organization.currentOrganizationId
+    }
+
     await addDoc(
       collection(db, '/fix'),
-      {
-        ...data,
-        applicant_id: applicant_id
-      }
+      fix
     )
   }
 
@@ -177,6 +155,6 @@ export const useFix = defineStore('fix', () => {
       await applicantStore.getApplicantsByColumns(data.status, applicantStore.state.applicantProgressFilter)
     }
   }
-  
-  return { useFix, getFixData, getFixList, saveFix, updateFix, getFixByApplicantIDs, formatDataFix }
+
+  return { getFixData, saveFix, updateFix, formatDataFix }
 })

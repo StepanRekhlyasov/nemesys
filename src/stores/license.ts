@@ -163,5 +163,17 @@ export const useLicense = defineStore('license', () => {
     })
   }
 
-  return { search, execute, getLicensesInMonth, createLicenseRequest }
+  async function getRequestList(id: string){
+    const pendingSnap = await getDocs(query(collection(db, 'licenseRequests'), where('branchId', '==', id)))
+    const workedSnap = await getDocs(query(collection(db, 'licenseHistory'), where('branchId', '==', id)))
+    const pendingResult = pendingSnap.docs.map((row)=>{
+      return row.data()
+    })
+    const workedResult = workedSnap.docs.map((row)=>{
+      return row.data()
+    })
+    return [...pendingResult, ...workedResult]
+  }
+
+  return { search, execute, getLicensesInMonth, createLicenseRequest, getRequestList }
 })

@@ -82,7 +82,6 @@ type ApplicantsByColumn = {
 
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
-  const miliSecondsPerYear = 1000 * 60 * 60 * 24 * 365;
   const organization = useOrganization()
   const fixStore = useFix()
   const route = useRoute()
@@ -151,11 +150,12 @@ export const useApplicant = defineStore('applicant', () => {
     applicantFixes: {},
     applicants: {}
   })
-
+  
   const countApplicantsByStatus = async (status: ApplicantStatus, filterData?: ApplicantProgressFilter) => {
     const filters = [
       where('status', '==', status),
       where('deleted', '==', false),
+      where('organizationId', '==', organization.currentOrganizationId)
     ]
     let currentTime: Timestamp | undefined
     if (filterData) {
@@ -325,7 +325,7 @@ export const useApplicant = defineStore('applicant', () => {
     state.value.isLoadingProgress = true;
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      state.value.applicantList = await getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch)])
+      state.value.applicantList = await getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId)])
     }
     state.value.isLoadingProgress = false;
   }
@@ -355,63 +355,14 @@ export const useApplicant = defineStore('applicant', () => {
     return year + '-' + month + '-' + day + 'T23:59:59+09:00';
   }
 
-  const countApplicantsBySex = async (sex: 'female' | 'male', dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
-    const targetDateFrom = new Date(dateRange.from);
-    const targetDateTo = new Date(dateRange.to);
-    const filters = [
-      where('sex', '==', sex),
-      where('applicationDate', '>=', targetDateFrom),
-      where('applicationDate', '<=', targetDateTo)
-    ]
-
-    if (filterData) {
-      for (const [key, value] of Object.entries(filterData)) {
-        if (value) {
-          filters.push(where(key, '==', value))
-        }
-      }
-    }
-    const applicantRef = collection(db, 'applicants')
-    const querys = query(applicantRef, ...filters)
-    const docCount = await getCountFromServer(querys)
-    const result = docCount.data().count
-    return result
-  }
-
-  const countApplicantsdaysToWork = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter) => {
-    const targetDateFrom = new Date(dateRange.from);
-    const targetDateTo = new Date(dateRange.to);
-
-    const result: number[][] = []
-    for (let i = 1; i <= 7; i++) {
-
-      const filters = [
-        where('applicationDate', '>=', targetDateFrom),
-        where('applicationDate', '<=', targetDateTo)
-      ]
-      filters.push(where('daysToWork', '==', i))
-      if (filterData) {
-        for (const [key, value] of Object.entries(filterData)) {
-          if (value) {
-            filters.push(where(key, '==', value))
-          }
-        }
-      }
-      const applicantRef = collection(db, 'applicants')
-      const querys = query(applicantRef, ...filters)
-      const docCount = await getCountFromServer(querys)
-      result.push([docCount.data().count])
-      filters.length = 0
-    }
-    return result
-  }
   const countApplicantsByMedia = async (media: string, dateRange: { from: string; to: string }) => {
     const targetDateFrom = new Date(dateRange.from);
     const targetDateTo = new Date(dateRange.to);
     const filters = [
       where('applicationDate', '>=', targetDateFrom),
       where('applicationDate', '<=', targetDateTo),
-      where('media', '==', media)
+      where('media', '==', media),
+      where('organizationId', '==', organization.currentOrganizationId)
     ]
     const applicantRef = collection(db, 'applicants')
     const querys = query(applicantRef, ...filters)
@@ -419,36 +370,6 @@ export const useApplicant = defineStore('applicant', () => {
     const result = docCount.data().count
     return result
 
-  }
-
-  const agesListOfApplicants = async (dateRange: { from: string; to: string }, filterData?: ApplicantProgressFilter): Promise<number[] | undefined> => {
-    const targetDateFrom = new Date(dateRange.from);
-    const targetDateTo = new Date(dateRange.to);
-    const filters = [
-      where('applicationDate', '>=', targetDateFrom),
-      where('applicationDate', '<=', targetDateTo)
-    ]
-    if (filterData) {
-      for (const [key, value] of Object.entries(filterData)) {
-        if (value) {
-          filters.push(where(key, '==', value))
-        }
-      }
-    }
-    const applicantRef = collection(db, 'applicants')
-    const querys = query(applicantRef, ...filters)
-    const docSnap = await getDocs(querys)
-    const applicants = docSnap.docs.map((doc) => {
-      if (!doc.data().dob) return undefined
-      const dob = doc.data().dob
-      const now = new Date()
-      const age = Math.floor((now.getTime() - dob.seconds * 1000) / miliSecondsPerYear)
-      return age
-    })
-    if (applicants.length === 0) return undefined
-    //remove undefined in applicants
-    const filteredApplicants = applicants.filter((applicant): applicant is number => typeof applicant == 'number')
-    return filteredApplicants
   }
 
   const getApplicantsByColumns = async (status: ApplicantStatus, filterData?: ApplicantProgressFilter, perQuery = 20, showMore = false, orderQuery = [orderBy('currentStatusTimestamp', 'asc')]) => {
@@ -469,8 +390,13 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = collection(db, queryCollection)
     const filters = [
       where('status', '==', status),
-      where('deleted', '==', false)
+      where('deleted', '==', false),
     ]
+
+    if(!filterData?.organizationId){
+      filters.push(where('organizationId', '==', organization.currentOrganizationId))
+    }
+
 
     if (filterData) {
       for (const [key, value] of Object.entries(filterData)) {
@@ -505,7 +431,7 @@ export const useApplicant = defineStore('applicant', () => {
         await Promise.all(documents.map(async (row) => {
           const item = row as ApplicantFix
           if (item.applicant_id && !state.value.applicants[item.applicant_id]) {
-            state.value.applicants[item.applicant_id] = await getApplicantByID(item.applicant_id)
+            state.value.applicants[item.applicant_id] = await fetchApplicantByID(item.applicant_id)
           }
           if (state.value.applicantFixes[item.applicant_id]) {
             if (!state.value.applicantFixes[item.applicant_id].find((row) => row.id === item.id)) {
@@ -528,7 +454,7 @@ export const useApplicant = defineStore('applicant', () => {
     return []
   }
 
-  async function getApplicantByID(id: string) {
+  async function fetchApplicantByID(id: string) {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
     state.value.applicants[result.id] = { ...result.data(), id: result.id } as Applicant
@@ -554,8 +480,9 @@ export const useApplicant = defineStore('applicant', () => {
       data
     );
   }
-
+ 
   async function getApplicantsByConstraints(constraints: ConstraintsType) {
+    constraints.push(where('organizationId', '==', organization.currentOrganizationId))
     const q = query(collection(db, 'applicants'), ...constraints);
     const snapshot = await getDocs(q);
     return snapshot?.docs.map((doc) => {
@@ -570,6 +497,7 @@ export const useApplicant = defineStore('applicant', () => {
   }
 
   async function getApplicantContactData(applicantId: string, constraints: ConstraintsType) {
+    constraints.push(where('organizationId', '==', organization.currentOrganizationId))
     const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
     const snapshot = await getDocs(q);
     const result = snapshot?.docs.map((doc) => {
@@ -598,7 +526,7 @@ export const useApplicant = defineStore('applicant', () => {
         updated_at: serverTimestamp(),
         ...saveData
       })
-      Alert.success();
+      ;
     } catch (e) {
       Alert.warning(e);
     }
@@ -633,7 +561,7 @@ export const useApplicant = defineStore('applicant', () => {
       if (typeof value === 'undefined') delete saveData[key];
     }
     await updateDoc(applicantRef, saveData)
-    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+    state.value.selectedApplicant = await fetchApplicantByID(state.value.selectedApplicant?.id)
     if (route.meta.applicantsUpdateOnOrganizationChange) {
       await getApplicantsByColumns(status, state.value.applicantProgressFilter)
     }
@@ -676,7 +604,7 @@ export const useApplicant = defineStore('applicant', () => {
       }))
       await batch.commit()
     }
-    state.value.selectedApplicant = await getApplicantByID(state.value.selectedApplicant?.id)
+    state.value.selectedApplicant = await fetchApplicantByID(state.value.selectedApplicant?.id)
     const applicantIndex = state.value.applicantList.findIndex(app => app.id == state.value.selectedApplicant?.id);
     if (applicantIndex >= 0) {
       state.value.applicantList[applicantIndex] = { ...state.value.applicantList[applicantIndex], ...saveData }
@@ -780,6 +708,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, countApplicantsBySex, getApplicantContactData, saveWorkExperience, agesListOfApplicants, countApplicantsdaysToWork, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, changeApplicantStatusByOkFields, getApplicantById }
+  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, getApplicantContactData, saveWorkExperience, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, /* changeApplicantStatusByOkFields, */ getApplicantById }
 })
 

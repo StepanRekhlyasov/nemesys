@@ -1,4 +1,4 @@
-import { collection, collectionGroup, doc, documentId, endAt, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
+import { DocumentData, QuerySnapshot, collection, collectionGroup, doc, documentId, endAt, getDocs, getFirestore, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
@@ -142,6 +142,9 @@ export const useOrganization = defineStore('organization', () => {
   }
 
   async function getDataById<T extends RequestType>(ids: string[], type: T): Promise<ReturnedObjectType<T>[]> {
+    if (!ids.length) {
+      return []
+    }
     const constraints = [where('working', '==', true)]
     let collectionId = 'businesses'
     if (type == 'Branch') {
@@ -152,6 +155,22 @@ export const useOrganization = defineStore('organization', () => {
     if (type == 'Organization') {
       constraints.push(where('deleted', '==', false))
       collectionId = 'organization'
+    }
+
+    if (ids.length > 10) {
+      const queries: Promise<QuerySnapshot<DocumentData>>[] = [];
+      while (ids.length) {
+        const batch = ids.splice(0, 10);
+        const q = getDocs(query(collectionGroup(db, collectionId), ...constraints, where('id', 'in', batch)))
+        queries.push(q)
+      }
+      const docsArray = await Promise.all(queries)
+      const dataArray = docsArray.map((snapshot) => {
+        return snapshot.docs.map((doc) => {
+          return doc.data() as ReturnedObjectType<T>
+        })
+      })
+      return dataArray.flat()
     }
 
     const organizationsQuery = query(collectionGroup(db, collectionId), ...constraints, where('id', 'in', ids))

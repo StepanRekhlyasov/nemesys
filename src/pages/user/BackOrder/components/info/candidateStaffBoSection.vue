@@ -61,6 +61,7 @@ import { QTableProps } from 'quasar';
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import matchDegreeTable from './matchDegreeTable.vue';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const backOrderStore = useBackOrder()
@@ -141,6 +142,12 @@ const getApplicant = useApplicant();
 const getClient = useClient();
 
 onMounted(async () => {
+  loading.value = true;
+  await getFormatedData();
+  loading.value = false;
+})
+
+watchCurrentOrganization(async ()=>{
   loading.value = true;
   await getFormatedData();
   loading.value = false;

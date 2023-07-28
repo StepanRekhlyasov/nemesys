@@ -8,6 +8,7 @@ import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils'
 import PdfViewer from 'src/pages/user/BusinessManagement/components/PdfViewer.vue';
 import { pdfViewer } from 'src/pages/user/BusinessManagement/consts/index';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
 const $q = useQuasar();
@@ -85,6 +86,12 @@ const filterFn = (val: string, update) => {
     }
   });
 };
+
+
+watchCurrentOrganization(async()=>{
+  await applicantStore.loadApplicantData()
+})
+
 const save = async () => {
   $q.dialog({
     message: `${t('clientFactory.fax.faxPRSheet')}<br />${t('clientFactory.fax.areYouSure')}`,

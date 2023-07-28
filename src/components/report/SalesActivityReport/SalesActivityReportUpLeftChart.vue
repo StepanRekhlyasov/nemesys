@@ -27,6 +27,7 @@ import { calculateCVR, getListFromObject } from '../reportUtil';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useGetReport } from 'src/stores/getReport';
+import { round } from 'src/shared/utils/KPI.utils';
 const apexchart = VueApexCharts;
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
@@ -36,7 +37,7 @@ const dataToshowR: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  return dataToshow.value.slice(0, -1).map((rowData, index) => {
+  return dataToshow.value.map((rowData, index) => {
     return {
       name: t(dataNames[index]),
       data: rowData,
@@ -114,9 +115,24 @@ const showSalesActivityReport = async (
       graphType: props.graph_type,
       queryNames: itemList,
       organizationId: organizationId,
+      isAverage: true,
+    }),
+    itemList.map((item) => {
+      return item.queryName;
+    })
+  ) as number[];
+
+  const dataTotal = getListFromObject(
+    await getReport({
+      dateRange: dateRange,
+      graphType: props.graph_type,
+      queryNames: itemList.slice(0, -1),
+      organizationId: organizationId,
       isAverage: false,
     }),
-    itemList.map((item)=>{return item.queryName})
+    itemList.map((item) => {
+      return item.queryName;
+    })
   ) as number[];
 
   const dataAverageAll = getListFromObject(
@@ -124,15 +140,24 @@ const showSalesActivityReport = async (
       dateRange: dateRange,
       graphType: props.graph_type,
       queryNames: itemList,
-      isAverage: false,
+      isAverage: true,
     }),
-    itemList.map((item)=>{return item.queryName})
+    itemList.map((item) => {
+      return item.queryName;
+    })
   ) as number[];
 
-  const dataCvr = calculateCVR(dataAverage);
+  const dataCvr = calculateCVR(dataTotal);
   const dataCvrAll = calculateCVR(dataAverageAll);
-  dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
-  dataToshowR.value = [dataAverage, dataAverageAll];
+  dataToshow.value = [dataTotal, dataCvr, dataCvrAll.slice(0,-1)];
+  dataToshowR.value = [
+    dataAverage.map((data) => {
+      return round(data, 1);
+    }),
+    dataAverageAll.map((data) => {
+      return round(data, 1);
+    }),
+  ];
 };
 
 watch(

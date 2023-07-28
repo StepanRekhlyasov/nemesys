@@ -2,7 +2,6 @@ import { getAuth } from 'firebase/auth';
 import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { api } from 'src/boot/axios';
@@ -191,7 +190,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['id'] = docRef.id;
     data['organizationId'] = organization.currentOrganizationId
     await setDoc(docRef, data);
-    Alert.success();
+    ;
   }
   async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
     const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('client_id', '==', clientId),where('organizationId','==',organization.currentOrganizationId)];
@@ -295,42 +294,42 @@ export const useBackOrder = defineStore('backOrder', () => {
     let workingHours = 0;
     let commuteDistance = 0;
     const matchedData = {
-      'qualification':{
-        value:0,
-        label:'',
+      'qualification': {
+        value: 0,
+        label: '',
       },
-      'expReq':{
-        value:0,
-        label:'',
+      'expReq': {
+        value: 0,
+        label: '',
       },
-      'daysToWork':{
-        value:0,
-        label:'',
+      'daysToWork': {
+        value: 0,
+        label: '',
       },
-      'agePercent':{
-        value:0,
-        label:'',
+      'agePercent': {
+        value: 0,
+        label: '',
       },
-      'commuteDistance':{
-        value:0,
-        label:'',
+      'commuteDistance': {
+        value: 0,
+        label: '',
       },
-      'daysPerWeek':{
-        value:0,
-        'sunday':0,
-        'monday':0,
-        'tuesday':0,
-        'wednesday':0,
-        'thursday':0,
-        'friday':0,
-        'saturday':0,
+      'daysPerWeek': {
+        value: 0,
+        'sunday': 0,
+        'monday': 0,
+        'tuesday': 0,
+        'wednesday': 0,
+        'thursday': 0,
+        'friday': 0,
+        'saturday': 0,
       },
-      'workingHours':{
-        value:0,
-        'day':0,
-        'early':0,
-        'late':0,
-        'night':0,
+      'workingHours': {
+        value: 0,
+        'day': 0,
+        'early': 0,
+        'late': 0,
+        'night': 0,
       },
     };
     //qualification percentage
@@ -340,45 +339,45 @@ export const useBackOrder = defineStore('backOrder', () => {
         matchedData['qualification'].label = q;
       }
     });
-    matchedData['qualification'].value = qualification*100;
+    matchedData['qualification'].value = qualification * 100;
 
     //Experience required
-    if(!bo.experience_req){
+    if (!bo.experience_req) {
       expReq = 1;
     }
-    else{
-      if (staff.totalYear){
+    else {
+      if (staff.totalYear) {
         matchedData['expReq'].label = staff.totalYear;
         if (Number(staff.totalYear) >= Number(bo.experience_req)) {
           expReq = 1;
         }
       }
     }
-    matchedData['expReq'].value = expReq*100
+    matchedData['expReq'].value = expReq * 100
 
     //daysToWork
-      if(!bo.daysPerWeekList){
-        daysToWork = 1;
-      }
-      else{
-        const days = stringToNumber(bo.daysPerWeekList)
-        if(staff.daysToWork){
-          matchedData.daysToWork.label = staff.daysToWork;
-          if (!days || days <= Number(staff.daysToWork)){
-            daysToWork = 1;
-          } else{
-            daysToWork = Number(staff.daysToWork) / days;
-          }
+    if (!bo.daysPerWeekList) {
+      daysToWork = 1;
+    }
+    else {
+      const days = stringToNumber(bo.daysPerWeekList)
+      if (staff.daysToWork) {
+        matchedData.daysToWork.label = staff.daysToWork;
+        if (!days || days <= Number(staff.daysToWork)) {
+          daysToWork = 1;
+        } else {
+          daysToWork = Number(staff.daysToWork) / days;
         }
       }
-    matchedData['daysToWork'].value = daysToWork*100;
+    }
+    matchedData['daysToWork'].value = daysToWork * 100;
 
     //workingDaysWeek
-    if(bo.working_days_week.length===0){
+    if (bo.working_days_week.length === 0) {
       daysPerWeek = 1;
     }
-    else{
-      if (staff.daysPerWeek && staff.daysPerWeek.length!=0) {
+    else {
+      if (staff.daysPerWeek && staff.daysPerWeek.length != 0) {
         let matchingDays = 0;
         staff.daysPerWeek.forEach((daySatff) => {
           bo.working_days_week.forEach((dayClient) => {
@@ -393,7 +392,7 @@ export const useBackOrder = defineStore('backOrder', () => {
         }
       }
     }
-    matchedData['daysPerWeek'].value = daysPerWeek*100;
+    matchedData['daysPerWeek'].value = daysPerWeek * 100;
     //age
     if (staff.dob) {
       const currentDate = new Date();
@@ -415,47 +414,47 @@ export const useBackOrder = defineStore('backOrder', () => {
 
     //workingHoursDay
     let totalWorkingHours = 0;
-    if(bo.workingHoursDay_min || bo.workingHoursDay_max){
+    if (bo.workingHoursDay_min || bo.workingHoursDay_max) {
       totalWorkingHours++;
-      if(staff.workingHoursDay===true || staff.workingHoursDay==='△'){
+      if (staff.workingHoursDay === true || staff.workingHoursDay === '△') {
         workingHoursDay = 1;
       }
     }
-    else{
+    else {
       workingHoursDay = 1;
     }
-  //workingHoursEarly
-    if(bo.workingHoursEarly_min || bo.workingHoursEarly_max){
+    //workingHoursEarly
+    if (bo.workingHoursEarly_min || bo.workingHoursEarly_max) {
       totalWorkingHours++;
-      if(staff.workingHoursEarly===true || staff.workingHoursEarly==='△'){
+      if (staff.workingHoursEarly === true || staff.workingHoursEarly === '△') {
         workingHoursEarly = 1;
       }
     }
-    else{
+    else {
       workingHoursEarly = 1;
     }
     //workingHoursLate
-    if(bo.workingHoursLate_min || bo.workingHoursLate_max){
+    if (bo.workingHoursLate_min || bo.workingHoursLate_max) {
       totalWorkingHours++;
-      if(staff.workingHoursLate===true || staff.workingHoursLate==='△'){
+      if (staff.workingHoursLate === true || staff.workingHoursLate === '△') {
         workingHoursLate = 1;
       }
     }
-    else{
+    else {
       workingHoursLate = 1;
     }
     //workingHoursNight
-    if(bo.workingHoursNight_min || bo.workingHoursNight_max){
+    if (bo.workingHoursNight_min || bo.workingHoursNight_max) {
       totalWorkingHours++;
-      if(staff.workingHoursNight===true || staff.workingHoursNight==='△'){
+      if (staff.workingHoursNight === true || staff.workingHoursNight === '△') {
         workingHoursNight = 1;
       }
     }
-    else{
+    else {
       workingHoursNight = 1;
     }
-    workingHours = (workingHoursDay+workingHoursEarly+workingHoursLate+workingHoursNight)/totalWorkingHours;
-    matchedData['workingHours'].value = workingHours*100;
+    workingHours = (workingHoursDay + workingHoursEarly + workingHoursLate + workingHoursNight) / totalWorkingHours;
+    matchedData['workingHours'].value = workingHours * 100;
     matchedData['workingHours']['day'] = workingHoursDay;
     matchedData['workingHours']['early'] = workingHoursEarly;
     matchedData['workingHours']['late'] = workingHoursLate;
@@ -494,11 +493,11 @@ export const useBackOrder = defineStore('backOrder', () => {
     return applicantIds
   }
 
-  async function addToFix(data:DocumentData){
-      const collectionRef = collection(db, 'fix');
-      await addDoc(collectionRef, data.value);
-      Alert.success();
+  async function addToFix(data: DocumentData) {
+    const collectionRef = collection(db, 'fix');
+    await addDoc(collectionRef, data.value);
+    ;
   }
 
-  return { getBOByConstraints, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO }
+  return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints }
 })

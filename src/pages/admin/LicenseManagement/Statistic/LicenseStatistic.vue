@@ -3,7 +3,7 @@
     {{ t('menu.admin.licenseManagement.totalLicenseNumber') }}
   </PageHeader>
   <div class="q-pt-sm q-px-lg row items-center">
-    {{ t('menu.admin.licenseManagement.issueDate') }}
+    {{ t('menu.admin.licenseManagement.statisticMonth') }}
     <YearMonthPicker :model-value="selectedDate" isAdmin class="q-ml-sm" :clearable="false" @pickerHide="onDateChange"
       :max-year-month="currentDate.replace('-', '/')" :disable="loading" />
   </div>
@@ -60,19 +60,24 @@ async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
 
   const organizationIds = await organization.getAllOrganizationsIds()
-  const tableData = await Promise.all(organizationIds.map(async (id) => {
-    return licenceStore.getLicensesInMonth({
-      organizationId: id,
-      selectedMonth,
-      selectedYear,
-    })
-  }))
-  tableData.forEach((d) => {
+  try{
+    const tableData = await Promise.all(organizationIds.map(async (id) => {
+      return licenceStore.getLicensesInMonth({
+        organizationId: id,
+        selectedMonth,
+        selectedYear,
+      })
+    }))
+    tableData.forEach((d) => {
     if (d) {
-      data.value.push(d)
-    }
-  })
-
+        data.value.push(d)
+      }
+    })
+  } catch (error){
+    data.value = []
+    console.log(error)
+  }
+  
 }
 
 
@@ -85,7 +90,6 @@ onMounted(async () => {
   loading.value = true;
   try {
     await loadCurrentData()
-    Alert.success();
   } catch (error) {
     Alert.warning(error);
   }
@@ -133,7 +137,7 @@ async function onDateChange(date: string) {
       const month = parseInt(monthString)
       await loadDataInMonth(year, month)
     }
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

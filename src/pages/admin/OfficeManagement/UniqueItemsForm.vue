@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { uid, is } from 'quasar';
 import { storeToRefs } from 'pinia';
-import { watch, ref } from 'vue';
+import { watch, ref, nextTick } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
 import UniqueItemsSpecificTypes from './components/UniqueItemsSpecificTypes.vue';
 import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue';
@@ -14,7 +14,7 @@ const { t } = useI18n({ useScope: 'global' });
 
 const industryStore = useIndsutry()
 const {industries, isFirstLoading } = storeToRefs(industryStore)
-const { updateIndustry } = industryStore
+const { updateIndustry, addIndustry } = industryStore
 
 const activeIndustry = ref<Industry | null>(null)
 const industryToUpdate = ref<Industry | null>(null)
@@ -32,6 +32,7 @@ const isCanBeSaved = ref({
     facilityForms: false
 })
 const isLoading = ref(isFirstLoading)
+const isNewIndustryPopup = ref(false)
 
 const resetSaveButtons = () => {
     Object.keys(isCanBeSaved.value).forEach((key) => {
@@ -44,6 +45,8 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
     isCanBeSaved.value[key] = false
     if(activeIndustry.value && industryToUpdate.value) {
 
+        await nextTick()
+
         const updatedIndustry = {
             ...activeIndustry.value,
             uniqueItems: {
@@ -51,6 +54,7 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
                 [key]: industryToUpdate.value.uniqueItems[key]
             }
         };
+        
         await updateIndustry(activeIndustry.value.id, updatedIndustry)
 
     }
@@ -58,10 +62,24 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
     isLoading.value = false
 }
 
+const onNewIndustry = async (industryName: string) => {
+    isLoading.value = true
+
+    await addIndustry({
+        industryName: industryName,
+        uniqueItems: {
+            typeSpecificItems: {},
+            facilityForms: {}
+        }
+    })
+
+    isLoading.value = false
+}
+
 const newSpecificTypeHandle = (data: { title: string, dataType: string }) => {
     const id = uid();
     if(industryToUpdate.value) {
-        industryToUpdate.value.uniqueItems.typeSpecificItems[id] = { ...data };
+        industryToUpdate.value.uniqueItems.typeSpecificItems[id] = { ...data, order: Object.keys(industryToUpdate.value.uniqueItems.typeSpecificItems).length + 1 };
 
         if (!is.deepEqual(industryToUpdate.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>, activeIndustry.value?.uniqueItems.typeSpecificItems as Record<string, SpecificItem>)) {
             isCanBeSaved.value.typeSpecificItems = true;
@@ -69,15 +87,74 @@ const newSpecificTypeHandle = (data: { title: string, dataType: string }) => {
     }
 }
 
+const deleteSpecificTypeHandle = (id: string) => {
+   if(industryToUpdate.value) {
+        delete industryToUpdate.value.uniqueItems.typeSpecificItems[id]
+        Object.values(industryToUpdate.value.uniqueItems.typeSpecificItems).forEach((item, index) => {
+            item.order = index + 1;
+        });
+        isCanBeSaved.value.typeSpecificItems = true;
+   }
+}
+
+const updateSpecificTypeHandle = () => {
+    isCanBeSaved.value.typeSpecificItems = true
+}
+
+const sortHandler = (
+    event: {
+        newIndex: number,
+        oldIndex: number
+    },
+    path: string
+) => {
+
+    if(industryToUpdate.value && activeIndustry.value) {
+        const items: { [key: string]: SpecificItem  | FacilityForm} = industryToUpdate.value.uniqueItems[path];
+
+        const keys = Object.keys(items);
+        const movedKey = keys[event.oldIndex];
+        const targetKey = keys[event.newIndex];
+
+        [items[movedKey], items[targetKey]] = [items[targetKey], items[movedKey]];
+
+        Object.values(items).forEach((item, index) => {
+            item.order = index + 1;
+        });
+
+        if(!is.deepEqual(industryToUpdate.value.uniqueItems[path], activeIndustry.value.uniqueItems[path])) {
+            isCanBeSaved.value[path] = true;
+        }
+    }
+}
+
 const newFacilityForm = (data: string) => {
     const id = uid();
     if(industryToUpdate.value) {
-        industryToUpdate.value.uniqueItems.facilityForms[id] = { title: data };
+        industryToUpdate.value.uniqueItems.facilityForms[id] = { title: data, order: Object.keys(industryToUpdate.value.uniqueItems.facilityForms).length + 1 };
 
         if (!is.deepEqual(industryToUpdate.value?.uniqueItems.facilityForms as Record<string, FacilityForm>, activeIndustry.value?.uniqueItems.facilityForms as Record<string, FacilityForm>)) {
             isCanBeSaved.value.facilityForms = true;
         }
     }
+}
+
+const deleteFacilityForm = (id: string) => {
+    if (industryToUpdate.value) {
+        delete industryToUpdate.value.uniqueItems.facilityForms[id]
+        Object.values(industryToUpdate.value.uniqueItems.facilityForms).forEach((item, index) => {
+            item.order = index + 1;
+        });
+        isCanBeSaved.value.facilityForms = true;
+    }
+}
+
+const updateFacilityForm = () => {
+    isCanBeSaved.value.facilityForms = true
+}
+
+const isNewIndustryPopupHandler = (val: boolean) => {
+    isNewIndustryPopup.value = val
 }
 
 watch(() => industries.value, () => {
@@ -100,7 +177,10 @@ watch(() => industries.value, () => {
             <UniqueItemsIndustrySelect 
                 :industries="industries"
                 :active-industry="activeIndustry"
-                @update:active-industry="handleActiveIndustry"/>
+                :is-new-industry-popup="isNewIndustryPopup"
+                @update:active-industry="handleActiveIndustry"
+                @update:is-new-industry-popup="isNewIndustryPopupHandler"
+                @new-industry="onNewIndustry"/>
 
             <DropDownEditGroup
                 :label="t('industry.specificTypeItems') + ' (' + t('client.add.officeInfo') + ')'"
@@ -112,7 +192,10 @@ watch(() => industries.value, () => {
                 theme="accent">
                 <UniqueItemsSpecificTypes 
                     :active-industry="industryToUpdate"
-                    @new-specific-type="newSpecificTypeHandle"/>
+                    @new-specific-type="newSpecificTypeHandle"
+                    @delete-specific-type="deleteSpecificTypeHandle"
+                    @update-specific-type="updateSpecificTypeHandle"
+                    @sort-specific-type="(e) => sortHandler(e, 'typeSpecificItems')"/>
             </DropDownEditGroup>
 
             <DropDownEditGroup
@@ -125,7 +208,10 @@ watch(() => industries.value, () => {
                 theme="accent">
                 <UniqueItemsFacilityForms 
                     :active-industry="industryToUpdate"
-                    @new-facility-form="newFacilityForm"/>
+                    @new-facility-form="newFacilityForm"
+                    @delete-facility-form="deleteFacilityForm"
+                    @update-facility-form="updateFacilityForm"
+                    @sort-facility-form="(e) => sortHandler(e, 'facilityForms')"/>
             </DropDownEditGroup>
         </q-card>
     </div>

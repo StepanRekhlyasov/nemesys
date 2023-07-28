@@ -2,15 +2,15 @@
   <div v-for="(message, index) in inquiryMessages" :key="index" :class="message.type === INQUIRY_MESSAGE_TYPE.response ? 'bg-grey-3': ''">
     <q-card-section>
       <div class="row items-start q-gutter-md q-mb-xs myRow">
-        <div class="text-right col-3">
+        <div class="text-right col-3 text-primary">
           {{ message.type === INQUIRY_MESSAGE_TYPE.issue ? $t('inquiry.message.issueDate') : $t('inquiry.message.responseDate') }}
         </div>
         <div class="col-8 text-left">
-          {{ myDateFormat(message.date, 'YYYY-MM-DD HH:SS') }}
+          {{ myDateFormat(message.date, 'YYYY-MM-DD HH:mm') }}
         </div>
       </div>
       <div class="row items-start q-gutter-md q-mb-xs myRow">
-        <div class="text-right col-3">
+        <div class="text-right col-3 text-primary">
           {{ $t('inquiry.detail.replyContent') }}
         </div>
         <div class="wordBreak col-8 text-left">

@@ -11,18 +11,13 @@
             <div class="col-3 text-center">
               <q-img :src="urlImage" spinner-color="primary" style="height: 150px; max-width: 150px" />
             </div>
-            <div class="col-9">
-              <div class="row note warning text-grey-8 text-weight-regular">
-                <q-icon name="mdi-alert"  color="warning" size="xs" class="q-pa-xs"/>
-                {{$t('settings.users.infoEditUser')}}<br/>
-                {{$t('settings.users.infoContact')}}
-              </div>
+            <div class="col-9 profileCard">
               <div class="row">
                 <div class="col-3 text-right q-pa-sm q-pr-md text-primary">
                   {{$t('settings.users.email')}}
                 </div>
                 <div class="col-9 q-pt-sm q-pb-sm">
-                  {{user.email}}
+                  <q-input outlined dense v-model="profileData['email']" />
                 </div>
               </div>
               <div class="row">
@@ -67,7 +62,7 @@
                   </q-card-actions>
                 </div>
               </div>
-              <div class="row">
+              <div class="row" v-if="allowDelete">
                 <div class="col-3"></div>
                 <div class="col-9">
                   <q-card-actions>
@@ -102,12 +97,14 @@
 
 <script>
 import { getAuth } from '@firebase/auth';
-import { doc, getDoc, getFirestore, updateDoc } from '@firebase/firestore';
+import { doc, getDoc, getFirestore } from '@firebase/firestore';
 import { getDownloadURL, getStorage, ref as refStorage } from '@firebase/storage';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useRole } from 'src/stores/role';
 import { useOrganization } from 'src/stores/organization';
+import { adminRolesIds } from 'src/components/handlers/consts';
+import { useUserStore } from 'src/stores/user';
 
 export default {
   name: 'EditProfile',
@@ -122,10 +119,17 @@ export default {
     const profileData = ref({})
     const organizations = ref([]);
     const organizationStore = useOrganization()
+    const allowDelete = ref(false)
+    const userStore = useUserStore()
+
     loadUserData()
     async function loadUserData() {
+      allowDelete.value = false
       const currentUser = (await getDoc(doc(db, 'users/',auth.currentUser.uid))).data()
       const role = await roleStore.getRole(currentUser.role)
+      if(adminRolesIds.includes(role.id)){
+        allowDelete.value = true
+      }
 
       user.value = {
         ...user.value,
@@ -152,16 +156,24 @@ export default {
     async function resetData() {
       profileData.value = {
         displayName: user.value.displayName,
-        contact: user.value.contact
+        contact: user.value.contact,
+        email: user.value.email
       }
     }
 
     async function updateUser() {
-      const userRef = doc(db, 'users/'+user.value.uid);
+      for (const [key, value] of Object.entries(profileData.value)){
+        if(typeof value === 'undefined'){
+          delete profileData.value[key]
+        }
+      }
       try {
-        await updateDoc(userRef, profileData.value)
-        Alert.success()
+        await userStore.editUser(user.value.uid, profileData.value)
+        await loadUserData()
+        
       } catch(e) {
+        console.log(e)
+        resetData()
         Alert.warning(e)
       }
     }
@@ -172,14 +184,17 @@ export default {
       profileData,
       showDeleteDialog,
       organizations,
-
+      allowDelete,
       updateUser,
       resetData
     }
   }
 }
 </script>
-
-<style>
-
+<style scoped>
+.profileCard .text-right{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
 </style>

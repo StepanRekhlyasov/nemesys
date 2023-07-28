@@ -66,7 +66,7 @@
       </template>
 
       <template v-slot:body-cell-content="props">
-        <q-td :props="props">
+        <q-td :props="props" style="white-space: break-spaces;">
           <q-input v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.content" />
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.content }}
@@ -75,14 +75,13 @@
       </template>
 
       <template v-slot:body-cell-note="props">
-        <q-td :props="props">
+        <q-td :props="props" style="white-space: break-spaces;">
           <q-input v-if="isRowSelected(props.rowIndex)" outlined dense v-model="editableContect.note" />
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.note }}
           </template>
         </q-td>
       </template>
-
       <template v-slot:body-cell-created_at="props">
         <q-td :props="props">
           {{ toDate(props.value) }}
@@ -109,6 +108,7 @@
           :key="props.rowIndex"
         />
       </template>
+       style="white-space: break-spaces;"
       <template v-slot:body-cell-delete="props">
         <q-td :props="props">
           <q-btn icon="mdi-delete-outline" flat @click="showDeleteDialog(props.row.id)"/>
@@ -128,10 +128,12 @@ import { useQuasar } from 'quasar';
 import { toDate } from 'src/shared/utils/utils';
 import EditButton from 'src/components/EditButton.vue';
 import { getAuth } from '@firebase/auth';
-import { Applicant, ApplicantStatus } from 'src/shared/model';
-import { usersInCharge, contactColumns as columns } from 'src/shared/constants/Applicant.const';
+import { Applicant, ApplicantStatus, User } from 'src/shared/model';
+import { contactColumns as columns } from 'src/shared/constants/Applicant.const';
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useUserStore } from 'src/stores/user';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const props = defineProps<{
   applicant: Applicant
@@ -157,20 +159,26 @@ const contactData = ref({
 const db = getFirestore();
 const $q = useQuasar();
 const applicantStore = useApplicant()
+const userStore = useUserStore();
 const user : {
   uid: string
 } | null = $q.localStorage.getItem('user');
 
-const users = usersInCharge
+const users = ref<User[]>([]);
 function isRowSelected(row ) {
   return row == editableRow.value
 }
 const updateContactList = async () => {
   contactListData.value = await applicantStore.getApplicantContactData(props.applicant.id, [where('deleted', '==', false), orderBy('created_at', 'desc')])
 }
-onMounted( () => {
-  updateContactList()
+onMounted( async () => {
+  updateContactList();
+  users.value = await userStore.getAllUsers();
 });
+
+watchCurrentOrganization(async ()=>{
+  await updateContactList()
+})
 
 async function onSubmit() {
   loading.value = true;
@@ -200,7 +208,7 @@ async function onSubmit() {
     }
 
     await updateContactList()
-    Alert.success()
+    
   } catch (error) {
     loading.value = false;
     Alert.warning(error)
@@ -231,10 +239,11 @@ async function onUpdate(index : number) {
     loading.value = false;
   }
 }
+
 function getUserName(uid : string) {
-  const value = users.value.find(x => x['value'] === uid)
+  const value = users.value.find(x => x['id'] === uid)
   if (value) {
-    return value['label'];
+    return value['displayName'] || value['name'] ||'';
   }
   return '';
 }
@@ -254,7 +263,7 @@ function showDeleteDialog(id : string) {
       updateData
     );
     await updateContactList()
-    Alert.success()
+    
   })
 }
 </script>

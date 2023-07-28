@@ -287,7 +287,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            Alert.success()
+            
         } catch(e) {
             Alert.warning(e)
 
@@ -307,7 +307,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 created_at: Timestamp.fromDate(new Date(modifiedClientFactory.created_at))
             })
 
-            Alert.success()
+            
 
             return res.id
         } catch(e) {
@@ -329,7 +329,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp(),
             })
 
-            Alert.success()
+            
         } catch(e) {
             Alert.warning(e)
 
@@ -398,7 +398,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: true
             }, {merge: true});
 
-            Alert.success()
+            
         } catch(e) {
             Alert.warning(e)
 
@@ -416,7 +416,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            Alert.success()
+            
         } catch(e) {
             Alert.warning(e)
 
@@ -444,7 +444,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 } as ClientFactory
             })
 
-            Alert.success()
+            
 
         } catch(e) {
             Alert.warning(e)

@@ -144,8 +144,12 @@ import {
   applicationAttributeItemList,
 } from './const/kpi.const';
 import { useMedia } from 'src/stores/media';
-import { devideByAmount ,convertObjToIdNameList } from 'src/shared/utils/KPI.utils';
-const { getReport, getDailyReport } = useGetReport();
+import {
+  devideByAmount,
+  convertObjToIdNameList,
+} from 'src/shared/utils/KPI.utils';
+
+const { getReport, getDailyReport, getAgeReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
 // const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
@@ -173,8 +177,6 @@ const organizationStore = useOrganization();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const kpiTableRef = ref<InstanceType<typeof KpiTable> | null>(null);
 
-
-
 const getBranchList = async () => {
   branchs.value = convertObjToIdNameList(
     Object.values(
@@ -187,7 +189,10 @@ const getBranchList = async () => {
 
 async function getData() {
   if (mode.value == 'media') {
+    rowData.value = [];
     mediaListToShow.value = convertObjToIdNameList([...(await getAllmedia())]);
+  } else if (mode.value == 'branch') {
+    rowData.value = [];
   }
   if (
     (dateRange.value.from == '' || dateRange.value.to == '') &&
@@ -212,15 +217,24 @@ async function getData() {
       });
     }
     if (mode.value == 'branch' && item.value == 'applicationAttribute') {
+      const medias = await getAllmedia();
       rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
         branch: branch.value,
         queryNames: applicationAttributeItemList,
-        medias: [...(await getAllmedia())],
+        medias: medias,
         isAverage: false,
         occupation: occupation.value,
       });
+      //add age data
+      for (const [i, media] of Object.entries(medias)) {
+        const ageData = await getAgeReport({
+          dateRange: dateRange.value,
+          media: media,
+        });
+        rowData.value[i] = { ...rowData.value[i], ...ageData };
+      }
     } else if (mode.value == 'branch' && branch.value) {
       rowData.value = await getReport({
         dateRange: dateRange.value,
@@ -234,29 +248,30 @@ async function getData() {
       });
       if (item.value == 'unitPrice')
         rowData.value = devideByAmount(rowData.value);
-    } else if (mode.value == 'branch' && occupation.value) {
-      rowData.value = await getReport({
-        dateRange: dateRange.value,
-        graphType: 'BasedOnEachItemDate',
-        queryNames: mediaItemList,
-        rateNames: mediaItemRateList,
-        medias: [...(await getAllmedia())],
-        isAverage: false,
-        occupation: occupation.value,
-      });
-      if (item.value == 'unitPrice')
-        rowData.value = devideByAmount(rowData.value);
     }
     if (mode.value == 'media' && item.value == 'applicationAttribute') {
+      const organizationList = Object.values(
+        await UserBranch.getBranchesInOrganization(
+          organizationStore.currentOrganizationId
+        )
+      );
       rowData.value = await getReport({
         dateRange: dateRange.value,
         graphType: 'BasedOnEachItemDate',
-        branch: branch.value,
+        branches: organizationList,
         queryNames: applicationAttributeItemList,
-        medias: [...(await getAllmedia())],
+        media: media.value,
         isAverage: false,
         occupation: occupation.value,
       });
+      //add age data
+      for (const [i, organization] of Object.entries(organizationList)) {
+        const ageData = await getAgeReport({
+          dateRange: dateRange.value,
+          branch: organization,
+        });
+        rowData.value[i] = { ...rowData.value[i], ...ageData };
+      }
     } else if (mode.value == 'media' && media.value) {
       rowData.value = await getReport({
         dateRange: dateRange.value,
@@ -274,8 +289,6 @@ async function getData() {
       });
       if (item.value == 'unitPrice')
         rowData.value = devideByAmount(rowData.value);
-    } else if (mode.value == 'media') {
-      rowData.value = [];
     }
     if (modeNow != mode.value) {
       resetData();

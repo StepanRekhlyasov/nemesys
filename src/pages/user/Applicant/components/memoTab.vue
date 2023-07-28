@@ -174,7 +174,7 @@ async function onSubmit() {
     loading.value = false;
     data.value = {};
     await loadMemoData();
-    Alert.success();
+    ;
   } catch (error) {
     console.log(error);
     loading.value = false;
