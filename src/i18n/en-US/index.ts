@@ -40,6 +40,7 @@ export default {
     description: 'Description',
     delete: 'Delete',
     deleteInfo: 'Are you sure you want to delete this item?',
+    deleteBusiness: 'Are you sure you want to delete this item?',
     create: 'Create',
     title: 'Title',
     save: 'Save',
