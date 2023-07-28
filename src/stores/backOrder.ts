@@ -178,6 +178,17 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function addBackOrder(backOrderData) {
     const auth = getAuth();
     const data = JSON.parse(JSON.stringify(backOrderData));
+    try{
+      const clientDoc = doc(db, 'clients', data.client_id);
+      const officeDoc = doc(collection(clientDoc, 'client-factory'), data.office_id);
+      const officeData = await getDoc(officeDoc);
+      if (officeData.exists()) {
+        data['distance'] = officeData.data().distance;
+      }
+    }
+    catch(err){
+      data['distance'] = null;
+    }
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;

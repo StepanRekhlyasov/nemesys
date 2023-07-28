@@ -80,8 +80,8 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.distance
-                }} km
+                  props.row.distance!=null?props.row.distance+' Km':''
+                }}
               </div>
             </q-td>
           </template>
