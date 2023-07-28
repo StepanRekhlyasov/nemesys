@@ -688,7 +688,7 @@ export const useGetReport = defineStore('getReport', () => {
     organizationId?: string
   ) => {
     const db = getFirestore();
-    const data_average: number[] = Array(5).fill(0);
+    const dataAverageList: number[] = Array(5).fill(0);
     const querys = getQuery(
       {
         dateRange: dateRange,
@@ -698,13 +698,11 @@ export const useGetReport = defineStore('getReport', () => {
       { queryName: 'fix' },
       db
     );
-    const snapshot = await getDocs(
-      querys
-    );
-    let num_i_d = 0;
-    let num_o_i = 0;
-    let num_a_o = 0;
-    let num_ap = 0;
+    const snapshot = await getDocs(querys);
+    let InspectionFixCounter = 0;
+    let OfferInspectionCounter = 0;
+    let AdmissionOfferCounter = 0;
+    let ApplicantFixCounter = 0;
     await Promise.all(
       snapshot.docs.map(async (doc_) => {
         const data = doc_.data();
@@ -717,35 +715,35 @@ export const useGetReport = defineStore('getReport', () => {
         ).data();
 
         if (applicantData && applicantData.attractionDate) {
-          data_average[0] +=
+          dataAverageList[0] +=
             (applicantData.attractionDate - applicantData.applicationDate) /
             secondperday;
-          data_average[1] +=
+          dataAverageList[1] +=
             (dataDate - applicantData.attractionDate) / secondperday;
-          num_ap += 1;
+          ApplicantFixCounter += 1;
         }
 
-        if (inspectiondate !== undefined) {
-          data_average[2] += (inspectiondate - dataDate) / secondperday;
-          num_i_d += 1;
+        if (inspectiondate) {
+          dataAverageList[2] += (inspectiondate - dataDate) / secondperday;
+          InspectionFixCounter += 1;
         }
-        if (offerDate !== undefined) {
-          data_average[3] += (offerDate - inspectiondate) / secondperday;
-          num_o_i += 1;
+        if (offerDate) {
+          dataAverageList[3] += (offerDate - inspectiondate) / secondperday;
+          OfferInspectionCounter += 1;
         }
-        if (admissiondate !== undefined) {
-          data_average[4] += (admissiondate - offerDate) / secondperday;
-          num_a_o += 1;
+        if (admissiondate) {
+          dataAverageList[4] += (admissiondate - offerDate) / secondperday;
+          AdmissionOfferCounter += 1;
         }
       })
     );
-    //data_averageをsnapshot.sizeで割る
-    data_average[0] /= num_ap;
-    data_average[1] /= num_ap;
-    data_average[2] /= num_i_d;
-    data_average[3] /= num_o_i;
-    data_average[4] /= num_a_o;
-    return data_average;
+
+    dataAverageList[0] /= ApplicantFixCounter;
+    dataAverageList[1] /= ApplicantFixCounter;
+    dataAverageList[2] /= InspectionFixCounter;
+    dataAverageList[3] /= OfferInspectionCounter;
+    dataAverageList[4] /= AdmissionOfferCounter;
+    return dataAverageList;
   };
 
   return { getReport, getDailyReport, getAgeReport, calcLeadtime };
