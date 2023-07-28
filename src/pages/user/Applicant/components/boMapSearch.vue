@@ -29,7 +29,7 @@ const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 
 watch(boMapDrawerValue, async () => {
   if (boMapDrawerValue.value) {
-    const allBo = await backOrderStore.getBOByConstraints([where('deleted', '==', false), where('organizationId', '==', organization.currentOrganizationId),]);
+    const allBo = await backOrderStore.getBOByConstraints([where('deleted', '==', false), where('organizationId', '==', organization.currentOrganizationId)]);
     for (let i = 0; i < allBo.length; i++) {
         allBo[i]['dateOfRegistration'] = myDateFormat(
           allBo[i]['dateOfRegistration'] as Timestamp
@@ -40,11 +40,11 @@ watch(boMapDrawerValue, async () => {
     inputRadius.value = 0;
     await getApplicantLocation();
     allBo.forEach(bo=>{
-      bo['lat'] = Number(props.applicant?.lat)-0.2
-      bo['lon'] = Number(props.applicant?.lon)-0.2
       bo['marker'] = 'white'
+      if(bo['lat']){
+        boList.value.push(bo)
+      }
     })
-    boList.value.push(allBo[0])
   }
 })
 
