@@ -31,7 +31,7 @@
           </q-btn>
         </div>
         <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
-          :loading="loading" class="budgetTable q-mt-sm no-shadow">
+          :loading="loading" class="budgetTable q-mt-sm no-shadow" binary-state-sort>
           <template v-slot:header-cell-branch="props">
             <q-th :props="props" class="q-pa-none">
               {{ $t('settings.branch.name') }} <br />{{ $t('applicant.add.occupation') }}
