@@ -13,8 +13,8 @@
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.attendant.daysToWork')}}</td>
         <td>{{ props.bo.daysPerWeekList?getNumberFromString(props.bo.daysPerWeekList):'-' }}</td>
-        <!-- <td>{{ props.staff.daysToWork?props.staff.daysToWork:'-' }}</td> -->
-        <!-- <td>{{ props.matchedData[props.staff.id].daysToWork.value }}%</td> -->
+        <td>{{ props.staff.daysToWork?props.staff.daysToWork:'-' }}</td>
+        <td>{{ props.matchedData[props.staff.id].daysToWork.value }}%</td>
       </tr>
 
       <tr>
