@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, collectionGroup } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -366,6 +366,35 @@ export const useClientFactory = defineStore('client-factory', () => {
         return modifiedCF
     }
 
+    const getModifiedCFsByOrganizationId = async (organizationId: string) => {
+        const modifiedCFArr: ModifiedCF[] = []
+
+        try {
+            const foundModifiedCF = await getDocs(query(
+                collectionGroup(db, 'modifiedCF'),
+                where('organizationId', '==', organizationId)
+            ))
+
+            if (!foundModifiedCF.empty) {
+                foundModifiedCF.forEach((doc) => {
+                    const docData = doc.data()
+
+                    const modifiedCF = {
+                        ...docData,
+                        id: doc.id,
+                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                    } as ModifiedCF
+                    modifiedCFArr.push(modifiedCF)
+                })
+            }
+        } catch (e) {
+            Alert.warning(e)
+            console.log(e)
+        }
+        return modifiedCFArr
+    }
+
     const getModifiedCFs = async (clientId: string, clientFactoryId: string) => {
         if (unsubscribeModifiedCF.value[clientFactoryId]) {
             unsubscribeModifiedCF.value[clientFactoryId]();
@@ -458,6 +487,7 @@ export const useClientFactory = defineStore('client-factory', () => {
     return {
         clientFactories,
         modifiedCFs,
+        getModifiedCFsByOrganizationId,
         getClientFactories,
         getClientFactoryList,
         getAllImportLogs,

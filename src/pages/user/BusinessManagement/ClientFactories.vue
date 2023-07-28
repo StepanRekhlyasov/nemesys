@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
 import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
@@ -13,19 +12,16 @@ import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { clientFactoriesToTableRows } from './handlers';
-import { useClient } from 'src/stores/client';
-import {tableColumnsClientFactory} from './consts';
+import { tableColumnsClientFactory } from './consts';
+import { ModifiedCF } from 'src/shared/model/ModifiedCF';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const { t } = useI18n({ useScope: 'global' });
 const clientFactoryStore = useClientFactory()
-const { clientFactories } = storeToRefs(clientFactoryStore)
-const clientStore = useClient()
-const { clients } = storeToRefs(clientStore)
-
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
-
+const modifiedCF = ref<ModifiedCF[]>([])
 // drawers
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
@@ -36,7 +32,7 @@ const pagination = ref({
     descending: false,
     page: 1,
     rowsPerPage: 100,
-    rowsNumber: clientFactories.value.length
+    rowsNumber: modifiedCF.value.length
 });
 
 const paginatedTableRows = computed(() => {
@@ -49,7 +45,7 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
 
     setTimeout(() => {
-        activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
+        activeClientFactoryItem.value = modifiedCF.value.find((factory) => factory.id === item.id) as ClientFactory
 
         if (activeClientFactoryItem.value) {
             isClientFactoryDrawer.value = true
@@ -60,19 +56,20 @@ const selected = ref<number[]>([])
 const selectedCFHandler = (item:number[]) =>{
     selected.value = item
 }
-watch([clients], () => {
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    clientFactoryStore.getClientFactories(clients.value).then(() => {
-        tableRows.value.length ? fetchData.value = false : fetchData.value = true
+
+watchCurrentOrganization((newId) => {
+    fetchData.value = true
+    clientFactoryStore.getModifiedCFsByOrganizationId(newId).then((cf) => {
+        modifiedCF.value = cf
+        fetchData.value = false
     })
 
-}, { deep: true, immediate: true });
+}, { deep: true, immediate: true })
 
-watch([clientFactories], () => {
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    tableRows.value = clientFactoriesToTableRows(clientFactories.value)
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
-
+watch([modifiedCF], () => {
+    fetchData.value = true
+    tableRows.value = clientFactoriesToTableRows(modifiedCF.value)
+    fetchData.value = false
 }, { deep: true, immediate: true })
 
 // client-factory drawer
