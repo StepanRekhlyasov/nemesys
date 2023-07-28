@@ -260,7 +260,6 @@ const saveJob = async () => {
       await jobSearchStore.addFormData(selectedJobData.value)
       drawerRight.value=false
     }
-    Alert.success()
     jobForm.value?.resetValidation();
   } catch (error) {
     Alert.warning(error)
@@ -288,8 +287,6 @@ const selectJobOption = async(data,id) => {
          await jobSearchStore.addId(id,data,optionId.value)
       }
       dialogVisible.value = false
-      Alert.success()
-
   } catch (error) {
       Alert.warning(error)
   }

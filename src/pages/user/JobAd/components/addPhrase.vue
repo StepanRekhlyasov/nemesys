@@ -185,7 +185,6 @@ const savePhrase = async () => {
          await jobPhraseStore.addFormData(selectedJobPhrase.value)
          drawerRight.value=false
       }
-     Alert.success()
       formatForm.value?.resetValidation();
   } catch (error) {
      Alert.warning(error)

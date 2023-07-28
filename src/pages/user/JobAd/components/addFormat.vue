@@ -229,7 +229,6 @@ const saveFormat = async () => {
          await formatSettingStore.addFormData(selectedFormat.value)
          drawerRight.value=false
       }
-      Alert.success()
       formatForm.value.resetValidation();
   } catch (error) {
       Alert.warning(error)

@@ -216,7 +216,6 @@ import { regionSalaryColumns, regionSalaryAddColumns } from 'src/shared/constant
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { toDate } from 'src/shared/utils/utils';
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { useRegionalSalarySetting } from 'src/stores/regionalSalarySetting'
 import { DocumentData } from 'firebase/firestore';
 import { QTableProps } from 'quasar';
@@ -301,7 +300,6 @@ const showDeleteDialog = async (ids: string) => {
     await regionalSalarySettingStore.deleteJobAreaData(ids);
     loading.value=false
     fetchRegionalSalaryData()
-     Alert.success()
   });
 };
  const deleteJob = (id) => {

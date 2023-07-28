@@ -120,7 +120,6 @@ import { applicantClassification, occupationList } from 'src/shared/constants/Ap
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { toDate } from 'src/shared/utils/utils';
 import { useJobSearch } from 'src/stores/jobSearch'
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { DocumentData } from 'firebase/firestore';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
@@ -196,7 +195,6 @@ const showDeleteDialog = async (ids: string) => {
     await jobSearchStore.deleteJobSearch(ids);
     loading.value=false
     fetchJobSearchData()
-     Alert.success()
   });
 };
  const deleteJob = (id) => {

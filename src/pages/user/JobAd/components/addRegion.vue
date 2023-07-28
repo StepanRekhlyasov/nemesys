@@ -246,8 +246,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { ref,Ref, watch, onMounted, onBeforeUnmount,computed,ComputedRef } from 'vue';
 import { applicantClassification, occupationList } from 'src/shared/constants/Applicant.const';
 import { facilityList } from 'src/shared/constants/Organization.const';
@@ -258,12 +256,9 @@ import {AreaCityModel} from 'src/shared/model/Jobs.model'
 import { DocumentData } from 'firebase/firestore';
 import { AreaDataObject } from 'src/shared/model/Jobs.model';
 import { QForm } from 'quasar';
+import { Alert } from 'src/shared/utils/Alert.utils';
 
 const regionalSalarySettingStore = useRegionalSalarySetting()
-const { t } = useI18n({
-  useScope: 'global',
-});
-const $q = useQuasar();
 const unsubscribeWard = ref();
 const drawerRight = ref(false)
 const transactionText = ref('')
@@ -382,22 +377,9 @@ const saveArea = async () => {
          await regionalSalarySettingStore.addFormData(selectedAreaData.value)
          drawerRight.value=false
       }
-
-      $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: t('success'),
-      });
       jobForm.value?.resetValidation();
   } catch (error) {
-      console.log(error);
-      $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: t('failed'),
-      });
+      Alert.warning(error)
   }
 
 }

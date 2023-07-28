@@ -311,7 +311,6 @@ const saveJobAd = async () => {
          await jobPostingHistoryStore.addFormData(selectedJobPosting.value)
          hideDrawer()
       }
-      Alert.success()
       jobForm.value?.resetValidation();
   } catch (error) {
       Alert.warning(error)

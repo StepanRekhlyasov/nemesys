@@ -190,8 +190,6 @@ const saveJobItem = async () => {
          await jobItemSettingStore.addFormData(selectedJobItem.value)
          drawerRight.value=false
       }
-
-      Alert.success()
       formatForm.value?.resetValidation();
   } catch (error) {
       Alert.warning(error)
@@ -245,8 +243,6 @@ const addNewOption = async (data: object, updatedName) => {
       optionId.value=  await jobItemSettingStore.addNewOption(selectedJobItem.value['id'],data)
       await jobItemSettingStore.addId(selectedJobItem.value['id'],data,optionId.value)
       }
-
-      Alert.success()
       formatForm.value?.resetValidation();
   } catch (error) {
       Alert.warning(error)
