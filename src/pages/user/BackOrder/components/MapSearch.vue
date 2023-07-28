@@ -15,7 +15,7 @@ import { useOrganization } from 'src/stores/organization';
 
 const props = defineProps<{ theme: string, bo: BackOrderModel | undefined }>()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
-const center = ref<{ lat: number, lng: number }>({ lat: 0, lng: 0 });
+const center = ref<{ lat: number, lng: number }>({ lat: 35, lng: 139 });
 const searchRadius = ref<number>(0);
 const inputRadius = ref<number>(0);
 const isLoadingProgress = ref(false)
@@ -25,7 +25,16 @@ const getApplicant = useApplicant();
 const backOrderStore = useBackOrder()
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const organization = useOrganization()
-watch(()=> [mapDrawerValue, organization.currentOrganizationId], async () => {
+
+watch(()=> [organization.currentOrganizationId], async () => {
+  await getApplicantMarkers();
+})
+
+watch(mapDrawerValue,async ()=>{
+  await getApplicantMarkers();
+})
+
+const getApplicantMarkers = async ()=>{
   if (mapDrawerValue.value) {
     searchRadius.value = 0;
     getClientLocation();
@@ -34,11 +43,11 @@ watch(()=> [mapDrawerValue, organization.currentOrganizationId], async () => {
       staff['marker'] = 'white';
     });
   }
-})
+}
 
 onMounted(async () => {
   isLoadingProgress.value = true
-  await getClientLocation();
+  getClientLocation();
   isLoadingProgress.value = false;
 
 })
@@ -47,7 +56,7 @@ const getClientLocation = () => {
   if (props.bo?.lat && props.bo?.lon) {
     center.value = {
       lat: Number(props.bo?.lat),
-      lng: Number(props.bo?.lng)
+      lng: Number(props.bo?.lon)
     }
   }
   getMarkerColor()

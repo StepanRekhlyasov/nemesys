@@ -13,8 +13,8 @@
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.attendant.daysToWork')}}</td>
         <td>{{ props.bo.daysPerWeekList?getNumberFromString(props.bo.daysPerWeekList):'-' }}</td>
-        <td>{{ props.staff.daysToWork?props.staff.daysToWork:'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].daysToWork.value }}%</td>
+        <!-- <td>{{ props.staff.daysToWork?props.staff.daysToWork:'-' }}</td> -->
+        <!-- <td>{{ props.matchedData[props.staff.id].daysToWork.value }}%</td> -->
       </tr>
 
       <tr>
@@ -154,8 +154,8 @@
 
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.qualification')}}</td>
-        <td>{{ $t('applicant.qualification.'+props.bo.qualifications) }}</td>
-        <td>{{ props.staff.qualification.map(q => $t('applicant.qualification.' + q)).join(', ') }}</td>
+        <td>{{props.bo.qualifications && props.bo.qualifications.length? props.bo.qualifications.map(q => $t('applicant.qualification.' + q)).join(', '):'-' }}</td>
+        <td>{{props.staff.qualification && props.staff.qualification.length? props.staff.qualification.map(q => $t('applicant.qualification.' + q)).join(', '):'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].qualification.value }}%</td>
       </tr>
 

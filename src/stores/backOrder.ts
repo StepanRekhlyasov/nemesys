@@ -345,13 +345,23 @@ export const useBackOrder = defineStore('backOrder', () => {
         'night': 0,
       },
     };
+
     //qualification percentage
-    staff.qualification?.forEach((q) => {
-      if (bo.qualifications?.toLowerCase() === q.toLowerCase()) {
-        qualification = 1
-        matchedData['qualification'].label = q;
-      }
-    });
+    if(bo.qualifications.length){
+      let totalQualification = 0
+      staff.qualification?.forEach((q) => {
+        bo.qualifications?.forEach((qBo)=>{
+          if (qBo.toLowerCase() === q.toLowerCase()) {
+              totalQualification++;
+              matchedData['qualification'].label = q;
+          }
+        })
+      });
+      qualification = totalQualification/bo.qualifications.length
+  }
+  else{
+    qualification = 1;
+  }
     matchedData['qualification'].value = qualification * 100;
 
     //Experience required
@@ -426,9 +436,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     matchedData['agePercent'].value = agePercent*100;
 
     //workingHoursDay
-    let totalWorkingHours = 0;
     if (bo.workingHoursDay_min || bo.workingHoursDay_max) {
-      totalWorkingHours++;
       if (staff.workingHoursDay === true || staff.workingHoursDay === '△') {
         workingHoursDay = 1;
       }
@@ -438,7 +446,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     //workingHoursEarly
     if (bo.workingHoursEarly_min || bo.workingHoursEarly_max) {
-      totalWorkingHours++;
       if (staff.workingHoursEarly === true || staff.workingHoursEarly === '△') {
         workingHoursEarly = 1;
       }
@@ -448,7 +455,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     //workingHoursLate
     if (bo.workingHoursLate_min || bo.workingHoursLate_max) {
-      totalWorkingHours++;
       if (staff.workingHoursLate === true || staff.workingHoursLate === '△') {
         workingHoursLate = 1;
       }
@@ -458,7 +464,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     //workingHoursNight
     if (bo.workingHoursNight_min || bo.workingHoursNight_max) {
-      totalWorkingHours++;
       if (staff.workingHoursNight === true || staff.workingHoursNight === '△') {
         workingHoursNight = 1;
       }
@@ -466,7 +471,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     else {
       workingHoursNight = 1;
     }
-    workingHours = (workingHoursDay + workingHoursEarly + workingHoursLate + workingHoursNight) / totalWorkingHours;
+    workingHours = (workingHoursDay + workingHoursEarly + workingHoursLate + workingHoursNight) / 4;
     matchedData['workingHours'].value = workingHours * 100;
     matchedData['workingHours']['day'] = workingHoursDay;
     matchedData['workingHours']['early'] = workingHoursEarly;
