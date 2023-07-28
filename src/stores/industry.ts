@@ -1,4 +1,4 @@
-import { getFirestore, onSnapshot, collection, addDoc, setDoc, doc } from 'firebase/firestore';
+import { getFirestore, onSnapshot, collection, addDoc, setDoc, doc, query, where, getDocs } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Industry } from 'src/shared/model/Industry.model';
 import { ref, onBeforeUnmount } from 'vue';
@@ -69,6 +69,24 @@ export const useIndsutry = defineStore('industries', () => {
         }
     }
 
+    const getIndustryByName = async (industryName: string) => {
+        try {
+            const q = query(collection(db, 'industries'), where('industryName', '==', industryName));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const doc = querySnapshot.docs[0];
+                return { id: doc.id, ...doc.data() } as Industry;
+            } else {
+                return null;
+            }
+
+        } catch(e) {
+            Alert.warning(e)
+            console.log(e)
+        }
+    }
+
     getIndustries();
 
     // cleanup
@@ -79,6 +97,7 @@ export const useIndsutry = defineStore('industries', () => {
         isFirstLoading,
         getIndustries,
         addIndustry,
-        updateIndustry
+        updateIndustry,
+        getIndustryByName
     }
 })

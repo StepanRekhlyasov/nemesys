@@ -1722,7 +1722,8 @@ export default {
     uniqueItemSetting: 'Client type unique item setting',
     specificTypeItems: 'Type-specific item',
     addLine: 'ADD LINE',
-    newIndustry: 'New Industry'
+    newIndustry: 'New Industry',
+    parentIndustry: 'Client Type'
   },
   report:{
     salesActivityIndividualReport:'salesActivityIndividualReport',
