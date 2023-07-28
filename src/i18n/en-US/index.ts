@@ -1996,6 +1996,7 @@ export default {
     taskType: 'Task type',
     taskContent: 'Task Content',
     taskRegister: 'Task Register',
+    taskRegisterWindow: 'Task Register',
     types: {
       'extensionConfirm': 'Extension Confirm',
       'finishApplicant' : 'Handling mid-term finish applicant',

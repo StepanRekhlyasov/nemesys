@@ -3,7 +3,7 @@
   <q-scroll-area class="fit text-left">
       <q-card class="no-shadow bg-white">
         <q-card-section class="text-white bg-primary">
-          <q-btn dense flat icon="close" @click="emit('closeDrawer')" class="q-mr-md" />
+          <q-btn dense flat icon="close" @click="closeDrawer()" class="q-mr-md" />
           {{$t('task.taskRegister')}}
         </q-card-section>
         <q-card-section class="text-primary">
@@ -13,13 +13,14 @@
           <div class="row items-center q-px-xl q-mb-md">
             <div class="col-3 text-right q-pr-md">{{ $t('task.taskType') }}</div>
             <div class="col-9 q-pr-xl">
-              <q-select :options="taskTypeOptions" v-model="taskType" dense outlined :rules="[creationRule]" emit-value map-options/>
+              <q-select :label="$t('common.pleaseSelect')" :options="taskTypeOptions" v-model="taskType" dense outlined :rules="[creationRule]" emit-value map-options hide-bottom-space/>
             </div>
           </div>
           <div class="row items-center q-px-xl q-mb-md">
             <div class="col-3 text-right q-pr-md">{{ $t('applicant.progress.filters.userInCharge') }}</div>
             <div class="col-9 q-pr-xl">
               <MySelect 
+                hide-bottom-space
                 v-model="taskUserInCharge"
                 :optionToFetch="'usersInCharge'"
                 :rules="[creationRule]"
@@ -29,14 +30,14 @@
           <div class="row items-center q-px-xl q-mb-md">
             <div class="col-3 text-right q-pr-md">{{ $t('task.taskContent') }}</div>
             <div class="col-9 q-pr-xl">
-              <q-input type="textarea" v-model="taskContent" dense outlined :rules="[creationRule]"/>
+              <q-input type="textarea" v-model="taskContent" dense outlined :rules="[creationRule]" hide-bottom-space />
             </div>
           </div>
           <div class="row items-center q-px-xl q-mb-md">
             <div class="col-3 q-pr-md"></div>
             <div class="col-9 q-pr-xl">
               <q-btn color="primary" type="submit" class="q-mr-md" :disable="loading">{{ $t('common.register') }}</q-btn>
-              <q-btn @click="emit('closeDrawer')">{{ $t('common.cancel') }}</q-btn>
+              <q-btn @click="closeDrawer">{{ $t('common.cancel') }}</q-btn>
             </div>
           </div>
         </q-form>
@@ -68,6 +69,12 @@ const loading = ref(false)
 const taskType = ref('')
 const taskContent = ref('')
 const taskUserInCharge = ref('')
+
+function closeDrawer() {
+  myForm.value?.reset()
+  emit('closeDrawer')
+}
+
 function resetData() {
   myForm.value?.reset()
   taskType.value = ''

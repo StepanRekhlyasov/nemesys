@@ -1989,6 +1989,7 @@ export default {
     taskType: 'タスク種別',
     taskContent: 'タスク内容',
     taskRegister: 'タスク登録',
+    taskRegisterWindow: 'タスク内容',
     types: {
       'extensionConfirm': '延長の確認',
       'finishApplicant' : '途中修了者への対応',
