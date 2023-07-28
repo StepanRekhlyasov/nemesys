@@ -706,6 +706,7 @@ export default {
       leaveChildcare: 'Leave for childcare, nursing care, etc.',
       otherNotes: 'Other notes',
       regBOButton: 'BO Registration',
+      assignToBo:'Assign to this BO',
       list: {
         id: 'BOID',
         dateBO: 'Date of BO',
@@ -846,6 +847,8 @@ export default {
       commutesDisatnce: 'Commuting distance',
       shift: 'Shift',
       accuracy: 'Accuracy',
+      contactNote : 'Contact Note',
+      lastContact : 'Last date of Contact',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
