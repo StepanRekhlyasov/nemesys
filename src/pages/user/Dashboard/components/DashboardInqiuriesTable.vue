@@ -23,6 +23,11 @@
     hide-pagination
     v-model:pagination = pagination
   >
+  <template v-slot:body-cell-messageDirection="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      {{props.row.status === 'answered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}
+    </q-td>
+  </template>
   <template v-slot:body-cell-recievedDate="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
       {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}

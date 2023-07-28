@@ -203,7 +203,7 @@ const changeApplicantStatus = async () => {
   try {
     await applicantStore.updateApplicant({ status: selectedApplicant.value?.status })
     emit('statusUpdated')
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }
@@ -225,7 +225,7 @@ const onFileChange = async (image) => {
       ret['imagePath'] = snapshot.ref.fullPath;
       ret['imageURL'] = await getDownloadURL(storageRef)
       await applicantStore.updateApplicant(ret)
-      Alert.success();
+      ;
     }
     catch (error) {
       Alert.warning(error);

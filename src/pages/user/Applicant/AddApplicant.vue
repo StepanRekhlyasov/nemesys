@@ -198,6 +198,15 @@
                    hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
+            <div class="row q-pt-md q-pb-sm ">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.applicationMetod') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-select outlined dense :options="applicationMethodOption" emit-value map-options bg-color="white"
+                  v-model="applicantData['applicationMetod']" :disable="loading" />
+              </div>
+            </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span>
@@ -268,7 +277,7 @@ import { Ref, ref, watch } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-import { mediaList, statusList } from 'src/shared/constants/Applicant.const';
+import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
@@ -290,6 +299,7 @@ const applicantStore = useApplicant();
 
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList);
+const applicationMethodOption = ref(applicationMethod)
 const statusOption = ref(statusList);
 const disableSubmit = ref(false)
 const applicantForm: Ref<QForm | null> = ref(null);
@@ -355,7 +365,7 @@ async function onSubmit() {
   data['deleted'] = false;
   try {
     await applicantStore.createApplicant(data, applicantImage.value)
-    Alert.success();
+    ;
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   } catch (error) {

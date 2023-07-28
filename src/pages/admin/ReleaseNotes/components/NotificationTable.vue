@@ -62,6 +62,43 @@
           clearable
         />
       </div>
+      <div class="col-2">
+        <p class="q-ml-md inputLabel text-capitalize">{{ $t('releaseNotes.form.content') }}</p>
+        <q-input
+          v-model="filter.content"
+          dense
+          bg-color="white"
+          color="accent"
+          outlined
+          :label="$t('common.keyboard')"
+        />
+      </div>
+      <div class="col-2 flex items-center">
+        <p class="q-ml-md inputLabel text-capitalize q-mt-md">{{ $t('releaseNotes.table.deliveryDate') }}</p>
+        <div class="flex items-center no-wrap">
+          <q-input 
+            type="date" 
+            v-model="deliveryFrom" 
+            outlined 
+            dense 
+            mask="YYYY/MM/DD"
+            class="q-mr-xs q-ml-xs"
+            bg-color="white"
+            color="accent" 
+          />
+          ~
+          <q-input 
+            type="date" 
+            v-model="deliveryTo" 
+            outlined 
+            dense 
+            mask="YYYY/MM/DD"
+            class="q-mr-xs q-ml-xs"
+            bg-color="white"
+            color="accent" 
+          />
+        </div>
+        </div>
     </div>
   </q-card-section>
   <q-card-section class="q-pa-none">
@@ -138,7 +175,11 @@ const filter = ref({
   category : '',
   subject : '',
   author : '',
+  content: '',
 })
+
+const deliveryFrom = ref('')
+const deliveryTo = ref('')
 
 const loading = ref(true)
 
@@ -171,6 +212,16 @@ const tableRows = computed(()=>{
       } else {
         return row
       }
+    })
+  }
+  if(deliveryFrom.value){
+    result = result.filter((row)=>{
+      return new Date(row.deliveryDate) >= new Date(deliveryFrom.value + ' 00:00:00')
+    })
+  }
+  if(deliveryTo.value){
+    result = result.filter((row)=>{
+      return new Date(row.deliveryDate) <= new Date(deliveryTo.value + ' 23:59:59')
     })
   }
   return result
@@ -231,7 +282,7 @@ const editNotification = async (notification: NotificationDataRow) => {
           });
           await loadCurrentNotifications();
           loading.value = false
-          Alert.success();
+          ;
       } catch (error) {
           console.error(error)
           Alert.warning(error);
@@ -257,7 +308,7 @@ const deleteNotification = (notificationId: string) => {
           await releaseNoteStore.deleteNotificationData(notificationId)
           await loadCurrentNotifications();
           loading.value = false;
-          Alert.success()
+          
       } catch (e) {
           console.error(e)
           Alert.warning(e)

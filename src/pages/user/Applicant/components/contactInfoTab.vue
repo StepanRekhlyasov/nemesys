@@ -133,6 +133,7 @@ import { contactColumns as columns } from 'src/shared/constants/Applicant.const'
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useUserStore } from 'src/stores/user';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const props = defineProps<{
   applicant: Applicant
@@ -175,6 +176,10 @@ onMounted( async () => {
   users.value = await userStore.getAllUsers();
 });
 
+watchCurrentOrganization(async ()=>{
+  await updateContactList()
+})
+
 async function onSubmit() {
   loading.value = true;
   let data = contactData.value;
@@ -203,7 +208,7 @@ async function onSubmit() {
     }
 
     await updateContactList()
-    Alert.success()
+    
   } catch (error) {
     loading.value = false;
     Alert.warning(error)
@@ -258,7 +263,7 @@ function showDeleteDialog(id : string) {
       updateData
     );
     await updateContactList()
-    Alert.success()
+    
   })
 }
 </script>

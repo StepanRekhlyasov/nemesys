@@ -30,6 +30,13 @@ export const columns = computed<QTableProps['columns']>(() => [
     sortable: sortable.value
   },
   {
+    name: 'status',
+    label: t('backOrder.status'),
+    field: 'status',
+    align: 'left',
+    sortable: sortable.value
+  },
+  {
     name: 'requestType',
     label: t('menu.admin.licenseManagement.request.addition') + '\n' + t('menu.admin.licenseManagement.request.delete'),
     field: 'requestType',

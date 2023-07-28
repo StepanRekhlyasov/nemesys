@@ -1,8 +1,13 @@
 <template>
   <div>
-    <div class="text-h6 text-primary q-pl-md q-pt-md" v-if="!edit">{{ $t('budget.reg') }}</div>
-    <q-linear-progress indeterminate v-if="loading" size="xs" />
-    <q-form ref="budgetForm" @submit="onSubmit" @reset="onReset" class="q-pl-md q-pb-md">
+    <q-card class="no-shadow full-width bg-grey-1">
+      <q-card-section class="bg-grey-3" v-if="!edit">
+        <span class="text-h6 text-primary">{{ $t('budget.reg') }}</span>
+      </q-card-section>
+      <q-separator color="white" size="2px" />
+      <q-linear-progress indeterminate v-if="loading" size="xs" />
+    </q-card>
+    <q-form ref="budgetForm" class="q-pl-md q-pb-md">
       <div class="row" v-for="item in budgetItem" :key="item.key">
         <div class="col-2 q-pt-md q-pl-sm" v-if="item.type">
           {{ item.label }}
@@ -10,9 +15,10 @@
         </div>
         <div class="col-4 q-pl-sm q-pt-sm">
           <q-input outlined dense v-model="budgetData[item.key]" v-if="item.type == 'text'"
-            :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space />
+            :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space bg-color="white" />
           <q-input outlined dense v-model="budgetData[item.key]" v-if="item.type == 'number'"
-            :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space type="number" min="0">
+            :rules="[(val) => !!val || '' || !item['required']]" hide-bottom-space min="0" bg-color="white"
+            @update:model-value="v => { budgetData[item.key] = formatNumber(v) }" type="search">
             <template v-slot:prepend v-if="item.icon">
               <q-icon name="currency_yen" />
             </template>
@@ -22,7 +28,7 @@
             emit-value map-options v-else-if="item.type == 'select'" />
           <q-input v-model="budgetData[item.key]" outlined dense mask="####/##"
             v-else-if="item.type == 'date' && item.format == 'month'" :rules="[(val) => !!val || '' || !item['required']]"
-            hide-bottom-space>
+            hide-bottom-space bg-color="white">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" ref="monthPicker">
@@ -37,7 +43,8 @@
             </template>
           </q-input>
           <q-input v-model="budgetData[item.key]" outlined dense mask="date"
-            v-else-if="item.type == 'date' && item.key == 'postingEndDate'" :rules="['date']" hide-bottom-space>
+            v-else-if="item.type == 'date' && item.key == 'postingEndDate'" :rules="['date']" hide-bottom-space
+            bg-color="white">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -51,7 +58,7 @@
             </template>
           </q-input>
           <q-input v-model="budgetData[item.key]" outlined dense mask="date" v-else-if="item.type == 'date'"
-            :rules="['date']" hide-bottom-space>
+            :rules="['date']" hide-bottom-space bg-color="white">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -69,8 +76,8 @@
 
 
       <div class="q-pt-sm">
-        <q-btn :label="$t('common.save')" type="submit" color="primary" />
-        <q-btn :label="$t('common.cancel')" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn :label="$t('common.save')" color="primary" @click="onSubmit" />
+        <q-btn :label="$t('common.cancel')" color="primary" flat class="q-ml-sm" @click="onReset(true)" />
       </div>
     </q-form>
   </div>
@@ -84,6 +91,7 @@ import { OptionData, BudgetData } from '../type/budget'
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import { useOrganization } from 'src/stores/organization';
 import { myDateFormat } from 'src/shared/utils/utils';
+import { formatNumber } from 'src/shared/utils/utils';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()
@@ -97,60 +105,64 @@ const edit = ref(props.edit);
 const monthPicker = ref();
 const organization = useOrganization()
 const budgetDataSample = {
-    accountingMonth: props.budgetData['accountingMonth'] || '',
-    amount: props.budgetData['amount'] || '',
-    branch: props.budgetData['branch'] || '',
-    id: props.budgetData['id'] || '',
-    media: props.budgetData['media'] || '',
-    numberOfSlots: props.budgetData['numberOfSlots'] || '',
-    occupation: props.budgetData['occupation'] || '',
-    postingEndDate: myDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
-    postingStartDate: myDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
-    unitPrice: props.budgetData['unitPrice'] || '',
-    remark: props.budgetData['remark'] || '',
-    agency: props.budgetData['agency'] || '',
+  accountingMonth: props.budgetData['accountingMonth'] || '',
+  amount: props.budgetData['amount'] || '',
+  branch: props.budgetData['branch'] || '',
+  id: props.budgetData['id'] || '',
+  media: props.budgetData['media'] || '',
+  numberOfSlots: props.budgetData['numberOfSlots'] || '',
+  occupation: props.budgetData['occupation'] || '',
+  postingEndDate: myDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
+  postingStartDate: myDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
+  unitPrice: props.budgetData['unitPrice'] || '',
+  remark: props.budgetData['remark'] || '',
+  agency: props.budgetData['agency'] || '',
 
 }
 const budgetData = ref<BudgetData>(JSON.parse(JSON.stringify(budgetDataSample)));
 
 onMounted(async () => {
-    options.value = await budgetStore.getOptionData(organization.currentOrganizationId);
-    onReset(true);
-    loading.value = false;
+  options.value = await budgetStore.getOptionData(organization.currentOrganizationId);
+  onReset(true);
+  loading.value = false;
 });
 
 watchCurrentOrganization(async (v) => {
-    loading.value = true
-    options.value = await budgetStore.getOptionData(v);
-    onReset(true);
-    loading.value = false;
+  loading.value = true
+  options.value = await budgetStore.getOptionData(v);
+  onReset(true);
+  loading.value = false;
 })
 
 const optionsEnd = (date: string) => {
   return date >= budgetData.value['postingStartDate'];
 }
 const optionsStart = (date: string) => {
-  if (budgetData.value['postingEndDate']) {
+  if (budgetData.value['postingEndDate'] && budgetData.value['postingEndDate'] != '-') {
     return date <= budgetData.value['postingEndDate'];
   }
   return true;
 }
 
 const onSubmit = async () => {
-    if (!edit.value) {
-        budgetData.value['organizationId'] = organization.currentOrganizationId
-    }
+  const valid = await budgetForm.value?.validate()
+  if (!valid) {
+    return
+  }
+  if (!edit.value) {
+    budgetData.value['organizationId'] = organization.currentOrganizationId
+  }
 
-    const save = await budgetStore.saveBudget(budgetData.value);
-    if (save) {
-        if (!budgetData.value['id']) {
-            onReset();
-            budgetForm.value.reset();
-        } else {
-            emit('close')
-        }
+  const save = await budgetStore.saveBudget(budgetData.value);
+  if (save) {
+    if (!budgetData.value['id']) {
+      onReset();
+      budgetForm.value.reset();
+    } else {
+      emit('close')
     }
   }
+}
 
 const onReset = (mount = false) => {
   if (props.edit) {
@@ -163,8 +175,8 @@ const onReset = (mount = false) => {
 };
 
 const checkValue = (val: string, reason: string) => {
-    if (reason === 'month') {
-        monthPicker.value[0].hide();
-    }
+  if (reason === 'month') {
+    monthPicker.value[0].hide();
+  }
 }
 </script>

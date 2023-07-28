@@ -147,7 +147,7 @@ async function saveInfo() {
   try {
     await applicantStore.updateApplicant(data.value);
     infoEdit.value = false;
-    Alert.success()
+    
   } catch (error) {
     Alert.warning(error)
   }

@@ -169,7 +169,7 @@ async function addExperience() {
       const clientRef = collection(db, 'applicants/'+props.applicantId+'/experience/');
       await addDoc(clientRef, newData);
       emit('closeDialog');
-      Alert.success();
+      ;
   } catch (e) {
     console.log(e)
     Alert.warning(e);

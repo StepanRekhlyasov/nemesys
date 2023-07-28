@@ -53,8 +53,9 @@ import { ref, computed } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useInquiry } from 'src/stores/inquiry';
 import { INQUIRY_MESSAGE_TYPE, INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, arrayUnion } from 'firebase/firestore';
 import { InquiryData } from 'src/shared/model';
+import { getAuth } from 'firebase/auth';
 
 const props = defineProps<{
   inquiryData: InquiryData
@@ -64,6 +65,8 @@ const inquiryStore = useInquiry()
 const responseContent = ref('')
 const loading = ref(false);
 const inquiryId =  computed(() => props.inquiryData?.id);
+const auth = getAuth();
+const currentUserId = auth.currentUser?.uid
 
 const sendResponse = async () => {
   if (responseContent.value && inquiryId.value) {
@@ -76,10 +79,10 @@ const sendResponse = async () => {
           content: responseContent.value,
           type: INQUIRY_MESSAGE_TYPE.issue
         },
-        data: {status: INQUIRY_STATUS.unanswered, updated_at: Timestamp.fromDate(new Date())}
+        data: {status: INQUIRY_STATUS.unanswered, updated_at: Timestamp.fromDate(new Date()), readBy: arrayUnion(currentUserId)}
       })
       emit('inquiryUpdated')
-      Alert.success()
+      
       clearAllValues()
       loading.value = false;
     } catch(e) {

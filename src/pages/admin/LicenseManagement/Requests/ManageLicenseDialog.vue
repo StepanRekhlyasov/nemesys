@@ -4,8 +4,12 @@
       <q-card-section>
         <q-inner-loading :showing="loading" color="accent" class="loading" :transition-duration="0" />
         <div class="text-weight-bolder text-h6">
-          {{ props.licenseRequest.requestType === 'Addition' ? t('menu.admin.licenseManagement.additionHeader') :
-            t('menu.admin.licenseManagement.deleteHeader') }}
+          <template v-if="props.licenseRequest.status === 'approved'">
+            {{ props.licenseRequest.requestType === 'Addition' ? t('menu.admin.licenseManagement.additionHeader') : t('menu.admin.licenseManagement.deleteHeader') }}
+          </template>
+          <template v-if="props.licenseRequest.status === 'denied'">
+            {{ props.licenseRequest.requestType === 'Addition' ? t('menu.admin.licenseManagement.additionHeaderDeny') : t('menu.admin.licenseManagement.deleteHeaderDeny') }}
+          </template>
         </div>
         <div class="q-mt-md">
           {{ t('menu.admin.licenseManagement.userInfo') }}
@@ -32,7 +36,7 @@
         </div>
       </q-card-section>
       <q-card-actions align="right" class="q-pt-none">
-        <DefaultButton :label-key="'menu.admin.licenseManagement.execution'" :disable="loading" @click="async () => {
+        <DefaultButton :label-key="props.licenseRequest.status === 'approved'?'menu.admin.licenseManagement.execution':'menu.admin.licenseManagement.deny'" :disable="loading" @click="async () => {
             await execute()
           }" />
         <DefaultButton :label-key="'menu.admin.licenseManagement.cancel'" clear @click="() => {
@@ -91,7 +95,7 @@ async function execute() {
 
   try {
     await licenceStore.execute(props.licenseRequest)
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

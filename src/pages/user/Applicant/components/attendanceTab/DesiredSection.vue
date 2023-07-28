@@ -429,7 +429,7 @@ async function saveDesired() {
     data.value['commutingTime'] = Number(data.value['commutingTime']);
     await applicantStore.updateApplicant(data.value);
     desiredEdit.value = false;
-    Alert.success()
+    
   } catch (error) {
     Alert.warning(error)
   }

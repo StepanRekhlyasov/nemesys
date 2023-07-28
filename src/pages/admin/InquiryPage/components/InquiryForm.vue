@@ -77,16 +77,16 @@
             content: responseContent.value,
             type: INQUIRY_MESSAGE_TYPE.response,
           },
-         data: {status: INQUIRY_STATUS.answered, updated_at: Timestamp.fromDate(new Date()), warning: []}
+         data: {status: INQUIRY_STATUS.answered, updated_at: Timestamp.fromDate(new Date()), readBy: []}
         })
-        Alert.success()
+        
         await inquiryStore.getAllInquires()
         inquiryStore.updateCurrentRowDataMessages({message: {
             date: Timestamp.fromDate(new Date()),
             content: responseContent.value,
             type: INQUIRY_MESSAGE_TYPE.response,
           },
-         data: {status: INQUIRY_STATUS.answered, updated_at: Timestamp.fromDate(new Date()), warning: []}})
+         data: {status: INQUIRY_STATUS.answered, updated_at: Timestamp.fromDate(new Date()), readBy: []}})
 
          responseContent.value = ''
         loading.value = false;
