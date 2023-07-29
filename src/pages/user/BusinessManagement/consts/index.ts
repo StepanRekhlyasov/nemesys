@@ -12,7 +12,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'office',
-            sortable: false,
+            sortable: true,
             label: t('client.list.name')
         },
         {
@@ -20,7 +20,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'distance',
-            sortable: false,
+            sortable: true,
             label: t('client.list.distanceStartingPoint')
         },
         {
@@ -28,7 +28,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'address',
-            sortable: false,
+            sortable: true,
             label: t('client.list.officeLocation')
         },
         {
@@ -36,7 +36,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'telephone',
-            sortable: false,
+            sortable: true,
             label: t('client.list.phone')
         },
         {
@@ -44,7 +44,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'fax',
-            sortable: false,
+            sortable: true,
             label: t('client.list.fax')
         },
         {
@@ -52,7 +52,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'officeMaster',
-            sortable: false,
+            sortable: true,
             label: t('client.list.officeMaster')
         },
         {
@@ -60,7 +60,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'clientMaster',
-            sortable: false,
+            sortable: true,
             label: t('client.list.clientMaster')
         },
         {
@@ -68,7 +68,7 @@ export const tableColumnsClientFactory: ComputedRef<ClientFactoryTableColumn[]> 
             required: true,
             align: 'left',
             field: 'basicInfo',
-            sortable: false,
+            sortable: true,
             label: t('client.list.basicInfo')
         }
     ]

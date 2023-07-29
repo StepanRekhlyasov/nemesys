@@ -178,7 +178,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'name',
       required: true,
       align: 'left',
-      sortable: false,
+      sortable: true,
     },
     {
       name: 'address',
@@ -186,7 +186,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'address',
       required: true,
       align: 'left',
-      sortable: false,
+      sortable: true,
     },
     {
       name: 'staffRank',
@@ -194,6 +194,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'staffRank',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'status',
@@ -201,6 +202,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'status',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'qualification',
@@ -208,6 +210,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'qualification',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'station',
@@ -215,6 +218,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'station',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'phone',
@@ -222,6 +226,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'phone',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'endDate',
@@ -229,6 +234,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'endDate',
       required: true,
       align: 'left',
+      sortable: true,
     },
   ];
 });
