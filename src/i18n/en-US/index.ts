@@ -40,6 +40,7 @@ export default {
     description: 'Description',
     delete: 'Delete',
     deleteInfo: 'Are you sure you want to delete this item?',
+    deleteBusiness: 'Are you sure you want to delete this item?',
     create: 'Create',
     title: 'Title',
     save: 'Save',
@@ -710,6 +711,7 @@ export default {
       leaveChildcare: 'Leave for childcare, nursing care, etc.',
       otherNotes: 'Other notes',
       regBOButton: 'BO Registration',
+      assignToBo:'Assign to this BO',
       list: {
         id: 'BOID',
         dateBO: 'Date of BO',
@@ -850,6 +852,8 @@ export default {
       commutesDisatnce: 'Commuting distance',
       shift: 'Shift',
       accuracy: 'Accuracy',
+      contactNote : 'Contact Note',
+      lastContact : 'Last date of Contact',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -2254,5 +2258,29 @@ export default {
     chargeOfFix: 'FIX Qty.',
     BoQty: 'BO Qty.',
     average: 'Average'
+  },
+  task: {
+    task: 'Task',
+    taskType: 'Task type',
+    taskStatus: 'Task status',
+    taskContent: 'Task Content',
+    taskRegister: 'Task Register',
+    taskRegisterWindow: 'Task Register',
+    applicantName: 'Applicant Name',
+    types: {
+      'extensionConfirm': 'Extension Confirm',
+      'finishApplicant' : 'Handling mid-term finish applicant',
+      'dateManagement' : 'Management of entry date',
+      'visitManagement' : 'Management of the day before Visit',
+      'followUp' : 'Follow-up with working applicant',
+      'collectDocs' : 'Collection of necessary documents',
+      'staffRequests' : 'Response to staff requests',
+      'clientsRequests' : 'Response to client requests',
+    },
+    statuses: {
+      'new' : 'New',
+      'process' : 'In process',
+      'finish' : 'Finish',
+    }
   }
 }

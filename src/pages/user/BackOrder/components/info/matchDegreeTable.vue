@@ -134,7 +134,7 @@
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.commutesDisatnce')}}</td>
         <td>{{ props.staff.distanceBusiness }}Km</td>
-        <td>-</td>
+        <td>{{ props.staff.commutingTime?props.matchedData[props.staff.id].commuteDistance.label+'Km':'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].commuteDistance.value }}%</td>
       </tr>
 
@@ -148,14 +148,14 @@
       <tr>
         <td class="item-cell bg-grey">{{$t('common.age')}}</td>
         <td>{{ props.bo.upperAgeLimit?props.bo.upperAgeLimit + ` ${$t('common.year')}`:'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].agePercent.label + ` ${$t('common.year')}` }}</td>
+        <td>{{ props.staff.dob?props.matchedData[props.staff.id].agePercent.label + ` ${$t('common.year')}`:'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].agePercent.value }}%</td>
       </tr>
 
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.qualification')}}</td>
-        <td>{{ $t('applicant.qualification.'+props.bo.qualifications) }}</td>
-        <td>{{ props.staff.qualification.map(q => $t('applicant.qualification.' + q)).join(', ') }}</td>
+        <td>{{props.bo.qualifications && props.bo.qualifications.length? props.bo.qualifications.map(q => $t('applicant.qualification.' + q)).join(', '):'-' }}</td>
+        <td>{{props.staff.qualification && props.staff.qualification.length? props.staff.qualification.map(q => $t('applicant.qualification.' + q)).join(', '):'-' }}</td>
         <td>{{ props.matchedData[props.staff.id].qualification.value }}%</td>
       </tr>
 

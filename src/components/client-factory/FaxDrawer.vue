@@ -197,7 +197,7 @@ const confirmContent = () =>{
                 />
               </div>
               <div class="col-9 q-mt-sm" v-else>
-                <q-text>{{faxData['applicants']['label']}}</q-text>
+                <p>{{faxData['applicants']['label']}}</p>
               </div>
             </div>
             <div class="row">
@@ -257,7 +257,7 @@ const confirmContent = () =>{
                   :label="t('common.preview')"
                   @click="openPdfViewer"
                 />
-                <q-text class="col-6 q-ml-sm">{{ faxFile[0]['name'] }}</q-text>
+                <p class="col-6 q-ml-sm">{{ faxFile[0]['name'] }}</p>
               </div>
             </div>
             <div class="row" v-if="!confirm">
@@ -333,7 +333,7 @@ const confirmContent = () =>{
                 </q-input>
               </div>
               <div class="col-9 q-mt-sm" v-else>
-                <q-text>{{ faxData['transmissionDateTime'] }}</q-text>
+                <p>{{ faxData['transmissionDateTime'] }}</p>
               </div>
             </div>
             <div class="row q-mt-sm">
@@ -364,7 +364,7 @@ const confirmContent = () =>{
                 }}</span>
               </div>
               <div class="col-9 q-mt-sm" v-else>
-                <q-text>{{faxData['maxTransmissions']}}</q-text>
+                <p>{{faxData['maxTransmissions']}}</p>
               </div>
             </div>
 
