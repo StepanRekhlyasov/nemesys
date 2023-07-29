@@ -53,7 +53,7 @@ export const useBudget = defineStore('budget', () => {
       data['updated_by'] = auth.currentUser?.uid;
       await updateDoc(docRef, data);
     }
-    
+
     return true
   }
 
@@ -67,7 +67,8 @@ export const useBudget = defineStore('budget', () => {
 
     const branches = Object.values((await branchStore.getBranchesInOrganization(organizationId)))
     options.value['branch'] = branches.map((b) => {
-      return { value: b.id, label: b.name }
+      return { value: b.id, label: b.name, branchRomaji: b['nameRomaji'] }
+
     })
     return options.value;
 
@@ -94,6 +95,7 @@ export const useBudget = defineStore('budget', () => {
         data['branch'] = getItem(data['branch'], 'branch')
         data['occupationId'] = data['occupation']
         data['occupation'] = getItem(data['occupation'], 'occupation')
+        data['branchRomaji'] = getBranchRomaji(data['branchId'])
         data['id'] = doc.id
         data['selected'] = false
         items.push(data);
@@ -117,6 +119,12 @@ export const useBudget = defineStore('budget', () => {
       return obj.label;
     }
   };
+  const getBranchRomaji = (item: string) => {
+    const obj = options.value['branch'].find(o => o.value === item);
+    if (obj) {
+      return obj['branchRomaji'] ? obj['branchRomaji'] : obj.label;
+    }
+  }
   const deleteBudget = async (budgetIds: string[]) => {
     const updateData = {}
     updateData['deleted'] = true;

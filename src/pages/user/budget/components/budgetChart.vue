@@ -1,8 +1,8 @@
 <template>
   <div>
     <branchDropdown @getBranchId="getBranchId" />
-    <apexchart width="1000px" type="bar" height="200px" :options="chartOptions" :series="series"></apexchart>
-    <div class="row flex justify-center centers" :style="'width: 1050px'" v-if="budgetSum">
+    <apexchart width="90%" type="bar" height="200px" :options="chartOptions" :series="series"></apexchart>
+    <div class="row flex justify-center centers" :style="'width: 95%'" v-if="budgetSum">
       <div class="q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal bugetTotalRight">
         {{ t('budget.total') }}
       </div>

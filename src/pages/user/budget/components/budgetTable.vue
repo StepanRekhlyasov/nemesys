@@ -2,7 +2,7 @@
   <div class="no-shadow full-width">
     <q-table dense :columns="columns" :rows="props.previewData" row-key="name" v-model:pagination="pagination"
       hide-pagination class="budgetTable q-mt-sm no-shadow" :loading="props.importDialogLoading">
-      <template v-slot:header-cell-branch="props">
+      <template v-slot:header-cell-branchRomaji="props">
         <q-th :props="props" class="q-pa-none">
           {{ $t('settings.branch.name') }} <br />{{ $t('applicant.add.occupation') }}
         </q-th>
@@ -25,7 +25,7 @@
           <span v-else>{{ props.row.media }}</span>
         </q-td>
       </template>
-      <template v-slot:body-cell-branch="props">
+      <template v-slot:body-cell-branchRomaji="props">
         <q-td :props="props" class="no-wrap q-pa-none"
           :class="!okData && (props.row.ngFields.some((item) => ['branch', 'occupation'].includes(item))) ? 'bg-yellow' : ''">
           <span v-if="okData">

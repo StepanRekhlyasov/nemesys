@@ -32,7 +32,7 @@
         </div>
         <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
           :loading="loading" class="budgetTable q-mt-sm no-shadow" binary-state-sort>
-          <template v-slot:header-cell-branch="props">
+          <template v-slot:header-cell-branchRomaji="props">
             <q-th :props="props" class="q-pa-none">
               {{ $t('settings.branch.name') }} <br />{{ $t('applicant.add.occupation') }}
             </q-th>
@@ -54,7 +54,7 @@
               <q-btn size="sm" icon="edit" flat color="blue" @click="edit(props.row.id)" />
             </q-td>
           </template>
-          <template v-slot:body-cell-branch="props">
+          <template v-slot:body-cell-branchRomaji="props">
             <q-td :props="props" class="no-wrap q-pa-none">
               {{ props.row.branch }}
               <br />

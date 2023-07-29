@@ -114,8 +114,8 @@ export const budgetColumns = computed<QTableProps['columns']>(() => {
     },
     {
       label: '',
-      field: 'branch',
-      name: 'branch',
+      field: 'branchRomaji',
+      name: 'branchRomaji',
       align: 'left',
       sortable: true
     },
@@ -275,9 +275,13 @@ export const chartOptions = computed(() => {
               const series = opt.w.config.series
               const idx = opt.dataPointIndex
               const total = series.reduce((total, self) => total + self.data[idx], 0)
-              return '計: ¥' + total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              if (total > 0) {
+                return '計: ¥' + total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              }
+              return ''
             },
             offsetX: 25
+
           },
         },
       },
@@ -302,14 +306,26 @@ export const chartOptions = computed(() => {
     },
     dataLabels: {
       enabled: true,
-      textAnchor: 'start',
+      textAnchor: 'middle',
       style: {
         colors: ['#fff']
       },
       formatter: function (val, opt) {
-        return `¥${val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} / ${Math.round((val / opt.w.globals.stackedSeriesTotals[opt.dataPointIndex]) * 1000) / 10}%`
+        const series = opt.w.config.series
+        let total = 0;
+        for (let i = 0; i < 3; i++) {
+          const _total = series.reduce((total, self) => total + self.data[i], 0)
+          if (_total > total) {
+            total = _total
+          }
+        }
+        if (val > total / 10) {
+          return `¥${val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} / ${Math.round((val / opt.w.globals.stackedSeriesTotals[opt.dataPointIndex]) * 1000) / 10}%`
+        }
+        return ''
       },
       offsetX: 0,
+      offsetY: 0,
       dropShadow: {
         enabled: true
       }
