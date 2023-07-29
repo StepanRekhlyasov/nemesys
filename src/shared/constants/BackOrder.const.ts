@@ -46,13 +46,13 @@ export const BackOrderColumns = computed<QTableProps['columns']>(() => {
     },{
       name: 'qualification',
       required: true,
-      label: t('client.teleAppoint.date') ,
+      label: t('detal.teleAppoint.date') ,
       field: 'qualification',
       align: 'left',
     },{
       name: 'age',
       required: true,
-      label: t('client.teleAppoint.teleAppointmentResult') ,
+      label: t('detal.teleAppoint.teleAppointmentResult') ,
       field: 'age',
       align: 'left',
     },{
