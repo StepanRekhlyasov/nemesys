@@ -547,7 +547,7 @@ const selectedBo = computed(() => backOrderStore.state?.selectedBo as BackOrderM
 async function save() {
   loading.value = true;
   try {
-    await backOrderStore.updateBackOrder({ id: backOrderStore.state?.selectedBo.id, ...data.value } as BackOrderModel);
+    await backOrderStore.updateBackOrder({ ...data.value, id: backOrderStore.state?.selectedBo?.id } as BackOrderModel);
     edit.value = false;
 
   } catch (e) {

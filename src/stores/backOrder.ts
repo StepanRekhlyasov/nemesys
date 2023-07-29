@@ -334,7 +334,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     };
     //qualification percentage
     staff.qualification?.forEach((q) => {
-      if (bo.qualifications?.toLowerCase() === q.toLowerCase()) {
+      if (typeof bo.qualifications === 'string' && bo.qualifications?.toLowerCase() === q.toLowerCase()) {
         qualification = 1
         matchedData['qualification'].label = q;
       }
