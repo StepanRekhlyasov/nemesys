@@ -240,6 +240,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
 });
 
 const sortedRows = computed(() => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
     if (paginationTable.value.sortBy === 'qualification') {
       const sortedRows = [...applicantStore.state.applicantList];
       sortedRows.sort((a, b) => {
@@ -254,7 +255,7 @@ const sortedRows = computed(() => {
       sortedRows.sort((a, b) => {
         const first = a.nearestStation?a.nearestStation:'';
         const second = b.nearestStation?b.nearestStation:'';
-        return paginationTable.value.descending ? second.localeCompare(first) : first.localeCompare(second);
+        return paginationTable.value.descending ? collator.compare(second, first) : collator.compare(first, second);
       });
       return sortedRows;
     }
