@@ -17,11 +17,11 @@ import VueApexCharts from 'vue3-apexcharts';
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const apexchart = VueApexCharts;
-const dataToshow: Ref<(number | string)[][]> = ref([]);
+const dataToShow: Ref<(number | string)[][]> = ref([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const seriesList = dataToshow.value.map((rowData, index) => {
+  const seriesList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(rowNames[index]),
       data: rowData,
@@ -44,7 +44,7 @@ const rows: ComputedRef<
     admission: number | string;
   }[]
 > = computed(() => {
-  const rowsList = dataToshow.value.map((rowData, index) => {
+  const rowsList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(rowNames[index]),
       applicants: rowData[0],
@@ -73,6 +73,7 @@ const showData = async (
   dateRange: { from: string; to: string },
   organizationId: string
 ) => {
+  dataToShow.value = []
   const dataAverage = getListFromObject(
     await getReport({
       dateRange: dateRange,
@@ -101,7 +102,7 @@ const showData = async (
 
   const dataCvrAll = calculateCVR(dataAverageAll);
 
-  dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
+  dataToShow.value = [dataAverage, dataCvr, dataCvrAll];
 };
 
 watch(
@@ -109,7 +110,6 @@ watch(
     props.branch_user_list,
     props.dateRangeProps,
     props.graph_type,
-    props.branch_id,
   ],
   async () => {
     if (!props.dateRangeProps) return;

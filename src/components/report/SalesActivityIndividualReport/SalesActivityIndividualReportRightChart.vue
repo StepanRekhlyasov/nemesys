@@ -143,7 +143,7 @@ const showIndividualReport = async (
   dataToShow.value = [dataAverage, allDataAverage];
 };
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.branch_id],
+  () => [props.branch_user_list, props.dateRangeProps],
   async () => {
     if (!props.dateRangeProps) return;
     if (props.branch_user_list.length != 0) {
