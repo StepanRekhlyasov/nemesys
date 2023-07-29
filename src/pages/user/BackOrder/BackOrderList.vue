@@ -16,7 +16,7 @@
       <q-card-section class="q-pa-none">
         <q-table :columns="columns" :rows="state.BOList" row-key="id" selection="multiple" class="no-shadow"
           v-model:selected="selected" table-class="text-grey-8" table-header-class="text-grey-9"
-          :loading="state.isLoadingProgress" :pagination="pagination" hide-pagination>
+          :loading="state.isLoadingProgress" :pagination="pagination" hide-pagination :sort-method="customSortMethod">
           <template v-slot:header-cell-caseType="props">
             <q-th :props="props" class="q-pa-none">
               <div>{{ $t('backOrder.create.caseType') }}</div>
@@ -152,6 +152,7 @@ import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.ty
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 import { useUserStore } from 'src/stores/user'
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const userStore = useUserStore();
 const backOrderStore = useBackOrder();
@@ -175,6 +176,102 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 30,
 });
+
+const customSortMethod = (rows, sortBy, descending) => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+  if (sortBy === 'personnel') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = getUserDisplayName(a.registrant)
+      const second = getUserDisplayName(b.registrant)
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'BOID') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      return descending ? a.boId-b.boId : b.boId-a.boId;
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'dateOfRegistration') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = myDateFormat(a.dateOfRegistration);
+      const second = myDateFormat(b.dateOfRegistration);
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'caseType') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.typeCase?a.typeCase:'';
+      const second = b.typeCase?b.typeCase:'';
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'distance') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.distance?a.distance:0;
+      const second = b.distance?b.distance:0;
+      return descending ? first-second: second-first;
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'name') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.officeName;
+      const second = b.officeName;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'employmentType') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.employmentType;
+      const second = b.employmentType;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'wage') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.wage;
+      const second = b.wage;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'salary') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = parseInt(a.salary);
+      const second = parseInt(b.salary);
+      return descending ? first-second : second-first
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'state') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.state;
+      const second = b.state;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else{
+    return rows;
+  }
+};
+
 const userNames = ref<{ [key: string]: string }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');

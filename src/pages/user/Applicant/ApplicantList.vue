@@ -13,7 +13,7 @@
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
-        <q-table :columns="columns" :rows="applicantStore.state.applicantList" row-key="id" selection="multiple"
+        <q-table :columns="columns" :rows="sortedRows" row-key="id" selection="multiple"
           class="no-shadow" v-model:pagination="paginationTable" hide-pagination
           :loading="applicantStore.state.isLoadingProgress">
           <template v-slot:header-cell-name="props">
@@ -238,6 +238,42 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
     },
   ];
 });
+
+const sortedRows = computed(() => {
+    if (paginationTable.value.sortBy === 'qualification') {
+      const sortedRows = [...applicantStore.state.applicantList];
+      sortedRows.sort((a, b) => {
+        const first = a.totalYear?parseInt(a.totalYear):10000000;
+        const second = b.totalYear?parseInt(b.totalYear):10000000;
+        return paginationTable.value.descending ? first-second : second-first;
+      });
+      return sortedRows;
+    }
+    else if (paginationTable.value.sortBy === 'station') {
+      const sortedRows = [...applicantStore.state.applicantList];
+      sortedRows.sort((a, b) => {
+        const first = a.nearestStation?a.nearestStation:'';
+        const second = b.nearestStation?b.nearestStation:'';
+        return paginationTable.value.descending ? second.localeCompare(first) : first.localeCompare(second);
+      });
+      return sortedRows;
+    }
+    else if (paginationTable.value.sortBy === 'endDate') {
+      const sortedRows = [...applicantStore.state.applicantList];
+      sortedRows.sort((a, b) => {
+        const first = myDateFormat(a.created_at);
+        const second = myDateFormat(b.created_at);
+        if (paginationTable.value.descending) {
+          return second.localeCompare(first);
+        } else {
+          return first.localeCompare(second)
+        }});
+      return sortedRows;
+    }
+    else {
+      return applicantStore.state.applicantList;
+    }
+  });
 
 const getStatus = (status: string) => {
   const item = statusList.value.find(x => x.value === status);
