@@ -66,6 +66,8 @@ type OfficeDetails = {
 
 
             commutingByCar: string
+            availabilityOfGarage: string
+            parkingRemarks: string
         }
         uniqueItems: {
             [key: string]: string

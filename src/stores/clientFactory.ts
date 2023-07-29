@@ -318,7 +318,11 @@ export const useClientFactory = defineStore('client-factory', () => {
     }
 
     const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
-
+        for(const [key, value] of Object.entries(modifiedCF)){
+          if(!key || typeof value === undefined){
+            delete modifiedCF[key]
+          }
+        }
         try {
             await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), {
                 ...modifiedCF,

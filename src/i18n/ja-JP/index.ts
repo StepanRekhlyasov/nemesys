@@ -1302,7 +1302,7 @@ export default {
       filingRemarks: '稟議備考',
       availabilityOfGarage: '駐車場有無',
       commutingByCar: '車通勤可否',
-      parkingRemarks: '駐車場備考',
+      parkingRemarks: '駐車場有無備考',
       uniformAvailability: '制服の有無',
       availabilityOfLunch: '昼食の有無',
       smoking: '喫煙可否',
