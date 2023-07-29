@@ -270,7 +270,7 @@ const resetData = async () => {
   selectedJobData.value['prefectures'] = '';
   selectedJobData.value['municipalities'] = '';
   selectedJobData.value['street'] = '';
-  selectedJobData.value['buidingName'] = '';
+  selectedJobData.value['buildingName'] = '';
   selectedJobData.value['facility'] = '';
   selectedJobData.value['workingDays'] = ''
   selectedJobData.value['overtimeWork'] = ''

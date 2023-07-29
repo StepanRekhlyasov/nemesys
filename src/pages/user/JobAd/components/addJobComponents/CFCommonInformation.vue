@@ -260,12 +260,15 @@ const getIndustryName = async () => {
     industryName.value = industryArray;
   }
 };
+const setEmptyIfUndefined = (value) => {
+  return value !== undefined ? value : '';
+};
 const storeCfInformationData = async (newVal) => {
-  selectedJobData.value['prefectures'] = newVal['prefecture']
-  selectedJobData.value['municipalities'] = newVal['municipality']
-  selectedJobData.value['street'] = newVal['street']
-  selectedJobData.value['buidingName'] = newVal['building']
-  selectedJobData.value['facilityType'] = newVal['facilityType']
+  selectedJobData.value['prefectures'] = setEmptyIfUndefined(newVal['prefecture'])
+  selectedJobData.value['municipalities'] = setEmptyIfUndefined(newVal['municipality'])
+  selectedJobData.value['street'] = setEmptyIfUndefined(newVal['street'])
+  selectedJobData.value['buildingName'] = setEmptyIfUndefined(newVal['building'])
+  selectedJobData.value['facilityType'] = setEmptyIfUndefined(newVal['facilityType'])
 };
 defineExpose({ storeCfInformationData })
 </script>

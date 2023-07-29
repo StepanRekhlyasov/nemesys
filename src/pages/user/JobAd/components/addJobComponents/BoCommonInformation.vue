@@ -29,7 +29,7 @@
 </div>
 <div class="row">
   <div class="col-3 q-pr-sm">
-    <q-input outlined dense v-model="selectedJobData['boProjectType']" hide-bottom-space />
+    <q-input outlined dense v-model="selectedJobData['boProjectType']" hide-bottom-space  />
   </div>
   <div class="col-3 q-pr-sm">
     <q-input outlined dense v-model="selectedJobData['boSalaryType']" hide-bottom-space />
@@ -193,30 +193,34 @@ const jobSearchStore = useJobSearch()
 const selectedJobData = ref<JobData | ComputedRef>(
   computed(() => jobSearchStore.state.selectedJob)
 );
+const setEmptyIfUndefined = (value) => {
+  return value !== undefined ? value : '';
+};
 const getSpecifiedBoidData = async (data) => {
-  selectedJobData.value['workingDays'] = data['workingDays']
-  selectedJobData.value['overtimeWork'] = data['overtimeWork']
-  selectedJobData.value['overtimeRemarks'] = data['overtimeRemarks']
-  selectedJobData.value['holidayAnnual'] = data['annualHolidays']
-  selectedJobData.value['boBenefit'] = data['benefit']
-  selectedJobData.value['bonus'] = data['bonus']
-  selectedJobData.value['botransportationExpenses'] = data['travellingExpenses']
-  selectedJobData.value['boEmploymentStatus'] = data['employmentType']
-  selectedJobData.value['boPayDay'] = data['payday']
-  selectedJobData.value['payCheck'] = data['payment']
-  selectedJobData.value['shiftRemarks'] = data['shiftRemarks']
-  selectedJobData.value['businessContent'] = data['work_content']
-  selectedJobData.value['numberWorkingDays'] = data['daysPerWeekList']
-  selectedJobData.value['retirementAge'] = data['retirementAge']
-  selectedJobData.value['boRequiredQualification'] = data['requiredQualifications']
-  selectedJobData.value['experienceReq'] = data['experienceReq']
-  selectedJobData.value['experienceRemarks'] = data['experienceRemarks']
-  selectedJobData.value['pickDrop'] = data['pickDrop']
-  selectedJobData.value['availabilityOnCallSupport'] = data['onCallSupport']
-  selectedJobData.value['workingHoursEarly'] = data['workingHoursEarly_min']+'-'+data['workingHoursEarly_max']
-  selectedJobData.value['workingHoursDay'] = data['workingHoursDay_min']+'-'+data['workingHoursDay_max']
-  selectedJobData.value['workingHoursLate'] = data['workingHoursLate_min']+'-'+data['workingHoursLate_max']
-  selectedJobData.value['workingHoursNight'] = data['workingHoursNight_min']+'-'+data['workingHoursNight_max']
+  selectedJobData.value['workingDays'] = setEmptyIfUndefined(data['workingDays']);
+  selectedJobData.value['overtimeWork'] = setEmptyIfUndefined(data['overtimeWork']);
+  selectedJobData.value['overtimeRemarks'] = setEmptyIfUndefined(data['overtimeRemarks']);
+  selectedJobData.value['holidayAnnual'] = setEmptyIfUndefined(data['annualHolidays']);
+  selectedJobData.value['boBenefit'] = setEmptyIfUndefined(data['benefit']);
+  selectedJobData.value['bonus'] = setEmptyIfUndefined(data['bonus']);
+  selectedJobData.value['botransportationExpenses'] = setEmptyIfUndefined(data['travellingExpenses']);
+  selectedJobData.value['boEmploymentStatus'] = setEmptyIfUndefined(data['employmentType']);
+  selectedJobData.value['boPayDay'] = setEmptyIfUndefined(data['payday']);
+  selectedJobData.value['payCheck'] = setEmptyIfUndefined(data['payment']);
+  selectedJobData.value['shiftRemarks'] = setEmptyIfUndefined(data['shiftRemarks']);
+  selectedJobData.value['businessContent'] = setEmptyIfUndefined(data['work_content']);
+  selectedJobData.value['numberWorkingDays'] = setEmptyIfUndefined(data['daysPerWeekList']);
+  selectedJobData.value['retirementAge'] = setEmptyIfUndefined(data['retirementAge']);
+  selectedJobData.value['boId'] = setEmptyIfUndefined(data['boId']);
+  selectedJobData.value['boRequiredQualification'] = setEmptyIfUndefined(data['requiredQualifications']);
+  selectedJobData.value['experienceReq'] = setEmptyIfUndefined(data['experienceReq']);
+  selectedJobData.value['experienceRemarks'] = setEmptyIfUndefined(data['experienceRemarks']);
+  selectedJobData.value['pickDrop'] = setEmptyIfUndefined(data['pickDrop']);
+  selectedJobData.value['availabilityOnCallSupport'] = setEmptyIfUndefined(data['onCallSupport']);
+  selectedJobData.value['workingHoursEarly'] = setEmptyIfUndefined(data['workingHoursEarly_min']) + '-' + setEmptyIfUndefined(data['workingHoursEarly_max']);
+  selectedJobData.value['workingHoursDay'] = setEmptyIfUndefined(data['workingHoursDay_min']) + '-' + setEmptyIfUndefined(data['workingHoursDay_max']);
+  selectedJobData.value['workingHoursLate'] = setEmptyIfUndefined(data['workingHoursLate_min']) + '-' + setEmptyIfUndefined(data['workingHoursLate_max']);
+  selectedJobData.value['workingHoursNight'] = setEmptyIfUndefined(data['workingHoursNight_min']) + '-' + setEmptyIfUndefined(data['workingHoursNight_max']);
 };
 defineExpose({ getSpecifiedBoidData })
 </script>
