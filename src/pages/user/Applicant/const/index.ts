@@ -4,6 +4,8 @@ import { i18n } from 'boot/i18n';
 
 const { t } = i18n.global
 
+export const boMapDrawerValue = ref<boolean>(false);
+
 const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
 export const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
 

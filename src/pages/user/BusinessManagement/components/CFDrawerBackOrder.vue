@@ -25,7 +25,6 @@
       <q-th :props="props">
         {{ $t('client.backOrder.upperAgeLimit') }}<br />
         {{ $t('client.backOrder.employmentStatus') }}<br />
-        {{ $t('client.backOrder.dispatchPrice') }}<br />
       </q-th>
     </template>
 
@@ -57,42 +56,46 @@
         {{ props.row.typeCase && $t('client.backOrder.' + props.row.typeCase) }}<br />
       </q-td>
     </template>
+    <template v-slot:body-cell-dateRegistration="props">
+      <q-td :props="props">
+        {{ myDateFormat(props.row.dateOfRegistration) }}<br />
+      </q-td>
+    </template>
 
     <template v-slot:body-cell-qualification="props">
       <q-td :props="props">
-        {{ props.row.qualifications }}<br />
-        {{ props.row.experience }}
+        {{props.row.qualifications && props.row.qualifications.length?props.row.qualifications.map(q => $t('applicant.qualification.' + q)).join(', '):'' }}<br />
+        {{ props.row.experienceRemarks }}
       </q-td>
     </template>
 
     <template v-slot:body-cell-age="props">
       <q-td :props="props">
-        {{ props.row.ageLimit }}<br />
-        {{ props.row.status && $t('client.backOrder.' + props.row.status) }}<br />
-        {{ props.row.unitPrice }}
+        {{ props.row.upperAgeLimit }}<br />
+        {{ props.row.employmentType && $t('client.backOrder.' + props.row.employmentType) }}<br />
       </q-td>
     </template>
 
     <template v-slot:body-cell-work="props">
       <q-td :props="props">
-        {{ props.row.posibleDays }} 日／月<br />
-        {{ props.row.posibleObsidianDays }}
+        {{ props.row.working_days_week.map(days => $t('weekDay.' + days)).join(', ') }}<br />
+        {{ props.row.daysPerWeekList }}
       </q-td>
     </template>
 
     <template v-slot:body-cell-content="props">
       <q-td :props="props">
-        {{ props.row.buissnesDescription }}<br />
-        {{ props.row.otherNotes }}
+        {{ props.row.tasks }}<br />
+        {{ props.row.memo_house }}
       </q-td>
     </template>
 
     <template v-slot:body-cell-workingTime="props">
       <q-td :props="props">
-        {{ props.row.workingHoursEarly_min }}<br />
-        {{ props.row.workingHoursDay_min }}<br />
-        {{ props.row.workingHoursLate_min }}<br />
-        {{ props.row.workingHoursNight_min }}
+        {{ props.row.workingHoursEarly_min }} - {{ props.row.workingHoursEarly_max }}<br />
+        {{ props.row.workingHoursDay_min }} - {{ props.row.workingHoursDay_max }}<br />
+        {{ props.row.workingHoursLate_min }} - {{ props.row.workingHoursLate_max }}<br />
+        {{ props.row.workingHoursNight_min }} - {{ props.row.workingHoursNight_max }}
       </q-td>
     </template>
 
@@ -131,6 +134,7 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{ clientId: string; }>();
@@ -143,6 +147,7 @@ const selectedClient = ref<Client | undefined>(undefined);
 const cteateBoDrawer = ref(false);
 const columns = ref<QTableProps['columns']>(BackOrderColumns.value);
 const loading = ref(false);
+const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const $q = useQuasar();
 const pagination = ref({
   sortBy: 'desc',
@@ -185,16 +190,15 @@ const deleteSelected = () => {
 const fetchBOData = async () => {
   loading.value = true;
   const data = await backOrderStore.getClientBackOrder(props.clientId);
-  let boid = data.length;
   backOrderData.value = data.map((row) => {
-    return { ...row, selected: false, boid: boid-- };
+    return { ...row, selected: false, boid: row.boId };
   });
   loading.value = false;
 };
 const openDrawer = (data) => {
   if (data) {
     selectedBo.value = data;
-    cteateBoDrawer.value = true;
+    infoDrawer.value?.openDrawer(data);
   }
 }
 watch(() => selected.value, (newValue) => {

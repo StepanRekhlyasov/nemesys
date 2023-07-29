@@ -94,7 +94,7 @@
                 {{ selectedApplicant.totalMonthes ? Math.floor(selectedApplicant.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
               </span>
               <div v-if="!bo" class="col-3 text-right">
-                <q-btn outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
+                <q-btn @click="openMapDrawer" outline size="sm" :label="$t('applicant.list.candidate')" color="primary" style="width:82px" />
               </div>
             </div>
           </div>
@@ -141,17 +141,35 @@
         </q-card-section>
       </q-card>
     </q-scroll-area>
-    <TaskRegister 
+    <TaskRegister
       :entity="'applicant'"
       :entityData="applicantStore.state.selectedApplicant"
-      v-model="openTaskRegister" 
-      @closeDrawer="openTaskRegister=false" 
+      v-model="openTaskRegister"
+      @closeDrawer="openTaskRegister=false"
     />
   </q-drawer>
+
+  <q-drawer v-if="applicantStore.state.selectedApplicant" v-model="boMapDrawer" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
+  bordered>
+  <q-scroll-area class="fit text-left" v-if="selectedApplicant">
+    <q-card class="no-shadow bg-grey-3">
+      <q-card-section class="text-white bg-primary rounded-borders">
+        <div class="row">
+          <q-btn dense flat icon="close" @click="boMapDrawer = false" class="q-mr-md" />
+          <span class="text-h6 text-weight-bold q-pr-xs">
+                  {{ $t('menu.mapSearch') }}
+          </span>
+      </div>
+      </q-card-section>
+      <boMapSearch theme="primary" :applicant="selectedApplicant"/>
+    </q-card>
+  </q-scroll-area>
+</q-drawer>
+
 </template>
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import detailTabs from '../Applicant/components/detailTabs.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 import { QFile } from 'quasar';
@@ -166,6 +184,8 @@ import { BackOrderModel } from 'src/shared/model';
 import { getAuth } from 'firebase/auth';
 import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { useBackOrder } from 'src/stores/backOrder';
+import boMapSearch from './components/boMapSearch.vue';
+import { boMapDrawerValue } from './const';
 
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
@@ -184,7 +204,16 @@ const openDrawer = async (data: Applicant) => {
 
 const openTaskRegister = ref(false)
 
+const boMapDrawer = ref<boolean>(false)
 const backOrderStore = useBackOrder();
+
+const openMapDrawer = () => {
+  boMapDrawer.value = true;
+}
+
+watch(boMapDrawer,()=>{
+  boMapDrawerValue.value = boMapDrawer.value;
+})
 
 const assignToBo = async () => {
   const data = ref<DocumentData>({

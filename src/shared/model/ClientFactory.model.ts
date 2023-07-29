@@ -63,6 +63,9 @@ type OfficeDetails = {
             workingHourDay: string
             workingHourLate: string
             workingHourNight: string
+
+
+            commutingByCar: string
         }
         uniqueItems: {
             [key: string]: string

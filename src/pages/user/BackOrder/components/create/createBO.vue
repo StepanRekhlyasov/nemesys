@@ -166,6 +166,8 @@ const transactionTypeOptions = computed(()=>{
 
 async function addBackOrder() {
   loading.value = true
+  data.value['clientName'] = applicantStore.state.clientList.find(client => client.id === data.value['client_id'])?.name
+  data.value['officeName'] = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
   if (data.value.client_id && boForm.value?.validate) {
     await backOrderStore.addBackOrder({ ...data.value, type: props.type });
     loading.value = false;
