@@ -39,9 +39,9 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
             </div>
 
             <div v-if="isDropDown">
-                <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
-                  class="text-grey-9" @click="isHidden = false" v-if="isHidden" />
                 <q-btn :label="t('common.openArea')" :icon="'arrow_drop_down'" flat size="md"
+                  class="text-grey-9" @click="isHidden = false" v-if="isHidden" />
+                <q-btn :label="t('common.closeArea')" :icon="'arrow_drop_up'" flat size="md"
                   class="text-grey-9" @click="isHidden = true" v-else />
             </div>
 
