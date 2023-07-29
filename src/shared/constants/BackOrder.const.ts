@@ -1,4 +1,5 @@
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 import { computed } from 'vue';
 
 const { t } = i18n.global
@@ -19,7 +20,7 @@ export const DaysPerWeekList = computed(() => [{
   label: t('backOrder.daysPerWeek.five'),
   value: 'five'
 },])
-export const BackOrderColumns = computed(() => {
+export const BackOrderColumns = computed<QTableProps['columns']>(() => {
   return [
   {
      label: '',

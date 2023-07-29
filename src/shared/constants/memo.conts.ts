@@ -1,8 +1,9 @@
 import { computed } from 'vue'
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 
 const { t } = i18n.global
-export const columnsMemo = computed(() => {
+export const columnsMemo = computed<QTableProps['columns']>(() => {
   return [
     {
       label: '',
@@ -33,6 +34,8 @@ export const columnsMemo = computed(() => {
       field: 'updated_date',
       align: 'left',
     },{
+      label: '',
+      field: '',
       name: 'edit',
       align: 'left',
     }

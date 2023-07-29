@@ -133,7 +133,7 @@ import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; columns: QTableProps['columns']; }>();
+const props = defineProps<{ clientId: string; }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
@@ -141,7 +141,7 @@ const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral')
 const selectedBo = ref<BackOrderModel | undefined>();
 const selectedClient = ref<Client | undefined>(undefined);
 const cteateBoDrawer = ref(false);
-const columns = ref(BackOrderColumns);
+const columns = ref<QTableProps['columns']>(BackOrderColumns.value);
 const loading = ref(false);
 const $q = useQuasar();
 const pagination = ref({
