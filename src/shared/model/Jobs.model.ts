@@ -21,6 +21,7 @@ export interface JobModel {
 export interface JobData {
   id?: string;
   name?: string;
+  boid?:number;
   client?: string;
   cfClient?: string;
   indeedTag?: string[];
@@ -33,6 +34,7 @@ export interface JobData {
   boSalaryType?: string;
   status?: string;
   office?: string;
+  industry?:string;
   cfOffice?: string;
   email?: string;
   phone?: string;
@@ -42,6 +44,8 @@ export interface JobData {
   minSalary?: string;
   payday?: string;
   employmentStatus?: string;
+  facility?:object;
+  uniqueItems?:object;
   boEmploymentStatus?: string;
   bonuses?: string;
   transportationExpenses?: string;

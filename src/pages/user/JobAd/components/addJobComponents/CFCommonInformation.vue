@@ -1,4 +1,5 @@
 <template>
+  <q-form ref="boCommonForm">
  <div class="row q-pt-sm">
           <div class="col-3">
             {{ $t('client.list.client') }}
@@ -6,18 +7,28 @@
           <div class="col-3">
             {{ $t('applicant.list.fixEmployment.office') }}
           </div>
+          <div class="col-3">
+            {{ $t('clientFactory.drawer.details.industry') }}
+          </div>
         </div>
         <div class="row">
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="clientList" v-model="selectedJobData['cfClient']">
+            <q-select outlined dense :options="props.client" v-model="selectedJobData['cfClient']">
               <template v-if="!selectedJobData['cfClient']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
             </q-select>
           </div>
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="officeList" v-model="selectedJobData['cfOffice']" :disable="officeList.length == 0">
+            <q-select outlined dense :options="props.office" v-model="selectedJobData['cfOffice']" :disable="props.office.length == 0" >
               <template v-if="!selectedJobData['cfOffice']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template>
+            </q-select>
+          </div>
+          <div class="col-6 q-pr-sm">
+            <q-select outlined dense :options="industryName" v-model="selectedJobData['industry']" :disable="industryName.length == 0" >
+              <template v-if="!selectedJobData['industry']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template>
             </q-select>
@@ -38,22 +49,12 @@
             {{ $t('client.add.buildingName') }}
           </div>
         </div>
-        <div class="row">
+          <div class="row ">
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="prefectureList"  emit-value map-options
-              v-model="selectedJobData['prefectures']">
-              <template v-if="!selectedJobData['prefectures']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
+            <q-input outlined dense v-model="selectedJobData['prefectures']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
-            <q-select outlined dense  emit-value map-options
-              v-model="selectedJobData['municipalities']">
-              <template v-if="!selectedJobData['municipalities']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
+            <q-input outlined dense v-model="selectedJobData['municipalities']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-input outlined dense v-model="selectedJobData['street']" hide-bottom-space />
@@ -64,7 +65,7 @@
         </div>
 
         <div class="row q-mt-md">
-          <div class="col-6">
+          <div class="col-9">
             {{ $t('job.facilityForm') }}
           </div>
           <div class="col-3">
@@ -72,13 +73,8 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-6 q-pr-md">
-            <q-select outlined dense :options="facilityTypeOption" emit-value map-options option-label="name"
-              v-model="selectedJobData['facilityType']" lazy-rules :rules="[(val) => (val && val.length > 0) || '']">
-              <template v-if="!selectedJobData['facilityType']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
+            <div class="col-9 q-pr-sm">
+            <q-input outlined dense v-model="selectedJobData['facilityType']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-input outlined dense v-model="selectedJobData['numberEmployees']" hide-bottom-space />
@@ -208,37 +204,38 @@
             <q-input outlined dense v-model="selectedJobData['holidaysWeekly']" hide-bottom-space />
           </div>
         </div>
-
+      </q-form>
 </template>
 <script lang="ts" setup>
 import { JobData } from 'src/shared/model/Jobs.model';
-import {  onMounted,ref,Ref, watch,computed,ComputedRef } from 'vue';
+import {  onMounted,ref, watch,computed,ComputedRef } from 'vue';
 import { applicantClassification } from 'src/shared/constants/Applicant.const';
-import { facilityList } from 'src/shared/constants/Organization.const';
 import {  salaryTypeList } from 'src/shared/constants/JobAd.const';
 import {Client,ClientOffice} from 'src/shared/model/Client.model'
 import { useJobSearch } from 'src/stores/jobSearch'
 import { DocumentData } from 'firebase/firestore';
-import { prefectureList } from 'src/shared/constants/Prefecture.const';
 const selectedJobData = ref<JobData | ComputedRef>(
   computed(() => jobSearchStore.state.selectedJob)
 );
+const props = defineProps<{
+    client:Client[],
+    office:ClientOffice[]
+}>()
 const jobItems = ref({});
+const industryName = ref<Array<{ label: string; value: string }>>([]);
 const jobItemOptions = ref({});
 const transactionTypeOptions = ref(applicantClassification);
-const facilityTypeOption = ref(facilityList);
 const salaryTypeOption = ref(salaryTypeList);
 const transactionText = ref('')
-const clientList:Ref<Client[]> = ref([]);
-const officeList:Ref<ClientOffice[]> = ref([]);
 const industriesData:DocumentData = ref({})
-const unsubscribeOffice = ref();
 const jobSearchStore = useJobSearch()
+
 onMounted(async()=>{
-  clientList.value = await jobSearchStore.loadClientsData()
   await jobSearchStore.loadJobItemSettingData(jobItemOptions, jobItems)
   await jobSearchStore.loadJobItemData(jobItems)
  industriesData.value = await jobSearchStore.getIndustries()
+ await getIndustryName()
+ console.log(industryName.value)
 })
 watch(
   () => (selectedJobData.value.transactionType),
@@ -250,21 +247,25 @@ watch(
     }
   }
 )
-watch(
-  () => (selectedJobData.value.cfClient),
-    async (newVal,oldVale) => {
-    officeList.value = [];
-    if (unsubscribeOffice.value) {
-      unsubscribeOffice.value();
-    }
-    if(oldVale){
-      selectedJobData.value.cfOffice=''
-    }
-    if (newVal) {
-      officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
+const getIndustryName = async () => {
+ const industryData = await jobSearchStore.getIndustries()
 
-    }
+  if (Array.isArray(industryData)) {
+    const industryArray = industryData
+      .map((data) => ({
+        label: data['industryName'],
+        value: data['industryName'],
+      }));
+
+    industryName.value = industryArray;
   }
-)
-
+};
+const storeCfInformationData = async (newVal) => {
+  selectedJobData.value['prefectures'] = newVal['prefecture']
+  selectedJobData.value['municipalities'] = newVal['municipality']
+  selectedJobData.value['street'] = newVal['street']
+  selectedJobData.value['buidingName'] = newVal['building']
+  selectedJobData.value['facilityType'] = newVal['facilityType']
+};
+defineExpose({ storeCfInformationData })
 </script>

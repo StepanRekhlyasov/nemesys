@@ -23,12 +23,15 @@
         </div>
       </q-card-section>
       <!-- <--Basic Info-->
+
       <q-card-section v-if="drawerRight">
         <div class="row text-primary text-body1">
           ■ {{ $t('job.add.basicInfo') }}
         </div>
           <basic-info/>
+
         <!-- job Content -->
+
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('job.add.jobContent') }}
         </div>
@@ -47,6 +50,7 @@
         </div>
 
         <!-- Employment Contract -->
+
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('job.add.employmentContract') }}
         </div>
@@ -54,6 +58,7 @@
         <employment-contract/>
 
         <!-- Employment Conditions -->
+
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('job.add.employmentConditions') }}
         </div>
@@ -66,7 +71,15 @@
           ■ {{ $t('client.add.officeCommonInformation') }}
         </div>
 
-        <CFCommonInformation/>
+        <CFCommonInformation :client="clientList" :office="officeList" ref="cfCommonInfoForm"/>
+
+        <!-- BackOrder Common Information -->
+
+        <div class="row text-primary text-body1 q-pt-sm">
+          ■ {{ $t('backOrder.boCommonInformation') }}
+        </div>
+
+        <BoCommonInformation :boid="boid" ref="boCommonInfoForm"/>
 
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('client.add.officeSpecificInformation') }}
@@ -77,91 +90,19 @@
             {{ underItem['title'] }}
           </div>
           <div class="q-pr-sm">
-            <q-input outlined dense v-model="underItem['dataType']" hide-bottom-space />
+            <q-input outlined dense v-model="selectedJobData['uniqueItems']" hide-bottom-space />
           </div>
         </div>
       </div>
 
-       <!-- BackOrder Common Information -->
-        <div class="row text-primary text-body1 q-pt-sm">
-          ■ {{ $t('backOrder.boCommonInformation') }}
-        </div>
-
-        <BoCommonInformation/>
+        <!-- BackOrder Specific Information -->
 
         <div class="row text-primary text-body1 q-pt-sm">
           ■ {{ $t('backOrder.boSpecificInformation') }}
         </div>
-        <div class="row q-mt-md">
-          <div class="col-3">
-            {{ $t('backOrder.create.requiredQualifications') }}
-          </div>
-          <div class="col-3">
-            {{ $t('backOrder.create.qualificationRemarks') }}
-          </div>
-          <div class="col-3">
-            {{ $t('client.backOrder.experienceReq') }}
-          </div>
-          <div class="col-3">
-            {{ $t('backOrder.create.experienceRemarks') }}
-          </div>
-        </div>
-        <div class="row">
-           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="[]"  emit-value map-options
-              v-model="selectedJobData['boRequiredQualification']">
-              <template v-if="!selectedJobData['boRequiredQualification']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="selectedJobData['qualificationRemarks']" hide-bottom-space />
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="[]"  emit-value map-options
-              v-model="selectedJobData['experienceReq']">
-              <template v-if="!selectedJobData['experienceReq']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="selectedJobData['experienceRemarks']" hide-bottom-space />
-          </div>
-        </div>
-        <div class="row q-mt-md">
-          <div class="col-3">
-            {{ $t('backOrder.create.pickDrop') }}
-          </div>
-          <div class="col-3 q-ml-sm">
-            {{ $t('backOrder.availabilityOnCallSupport') }}
-          </div>
-          <div class="col-3">
-            {{ $t('office.onCallCorrespondence') }}
-          </div>
-        </div>
-          <div class="row">
-           <div class="col-3 q-pr-sm">
-            <q-select outlined dense :options="[]"  emit-value map-options
-              v-model="selectedJobData['pickDrop']">
-              <template v-if="!selectedJobData['pickDrop']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>>
-          <div class="col-3 q-pr-sm">
-            <q-select outlined dense  emit-value map-options
-              v-model="selectedJobData['availabilityOnCallSupport']">
-              <template v-if="!selectedJobData['availabilityOnCallSupport']" v-slot:selected>
-                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
-              </template>
-            </q-select>
-          </div>
-          <div class="col-3 q-pr-sm">
-            <q-input outlined dense v-model="selectedJobData['onCallCorrespondence']" hide-bottom-space />
-          </div>
-        </div>
+
+         <BOSpecificInformation/>
+
       </q-card-section>
     </q-form>
     <q-dialog v-model="dialogVisible" persistent transition-show="scale" transition-hide="scale" class="my-dialog">
@@ -194,11 +135,13 @@ import { useJobSearch } from 'src/stores/jobSearch'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { QForm } from 'quasar';
 import CFCommonInformation from './addJobComponents/CFCommonInformation.vue'
-import BoCommonInformation from './addJobComponents/BoCommonInformation.vue'
+import BoCommonInformation from './addJobComponents/BoCommonInformation.vue';
 import BasicInfo from './addJobComponents/BasicInfo.vue'
 import EmploymentContract from './addJobComponents/EmploymentContract.vue'
 import EmploymentCondition from './addJobComponents/EmploymentCondition.vue'
+import BOSpecificInformation from './addJobComponents/BOSpecificInformation.vue'
 import { JobData } from 'src/shared/model/Jobs.model';
+import {ClientOffice,Client} from 'src/shared/model/Client.model'
 const selectedJobData = ref<JobData | ComputedRef>(
   computed(() => jobSearchStore.state.selectedJob)
 );
@@ -207,16 +150,21 @@ const drawerRight = ref(false)
 const dialogVisible = ref(false)
 const unsubscribe = ref();
 const unsubscribeOffice = ref();
+const cfCommonInfoForm = ref<InstanceType<typeof CFCommonInformation> | null>(null);
+const boCommonInfoForm = ref<InstanceType<typeof BoCommonInformation> | null>(null);
 const transactionText:Ref<string> = ref('')
 const projectText:Ref<string> = ref('')
 const selectedIndustry:DocumentData= ref(null);
+const officeList:Ref<ClientOffice[]> = ref([]);
 const jobForm:Ref<QForm | null> = ref(null);
 const jobItems = ref({});
 const jobItemOptions = ref({});
 const itemOptions:DocumentData = ref({})
+const boid = ref<Array<{ label: string; value: string }>>([]);
 const currentJobContent = ref('')
 const editingIndex = ref(-1);
 const jobItemId = ref({})
+const clientList:Ref<Client[]> = ref([]);
 const optionId = ref('')
 const industriesData:DocumentData = ref({})
 const startEditing = (index) => {
@@ -230,6 +178,8 @@ const stopEditing = () => {
 };
 
 onMounted(async () => {
+
+  clientList.value = await jobSearchStore.loadClientsData()
   selectedJobData.value.transactionType = selectedJobData.value['transactionType'] || '';
   selectedJobData.value.projectType = selectedJobData.value['projectType'] || '';
   selectedJobData.value.client = selectedJobData.value['client'] || '';
@@ -296,6 +246,57 @@ const addNewField = () => {
   itemOptions.value.unshift({ 'name': '' })
   startEditing(0);
 };
+const getBOCommonInformationData = async (newVal) => {
+  const boData = await jobSearchStore.loadBOData();
+  if (Array.isArray(boData)) {
+    const boidArray = boData
+      .filter((data) => data['office_id'] === newVal['id'])
+      .map((data) => ({
+        label: data['boId'],
+        value: data['boId'],
+      }));
+
+    boid.value = boidArray;
+
+  }
+};
+const bOSpecifiedBoidData = async (data) => {
+  boCommonInfoForm.value?.getSpecifiedBoidData(data);
+};
+const cfInfoData = async (data) => {
+  cfCommonInfoForm.value?.storeCfInformationData(data);
+};
+const resetData = async () => {
+  selectedJobData.value['prefectures'] = '';
+  selectedJobData.value['municipalities'] = '';
+  selectedJobData.value['street'] = '';
+  selectedJobData.value['buidingName'] = '';
+  selectedJobData.value['facility'] = '';
+  selectedJobData.value['workingDays'] = ''
+  selectedJobData.value['overtimeWork'] = ''
+  selectedJobData.value['overtimeRemarks'] = ''
+  selectedJobData.value['holidayAnnual'] = ''
+  selectedJobData.value['boBenefit'] = ''
+  selectedJobData.value['bonus'] = ''
+  selectedJobData.value['botransportationExpenses'] = ''
+  selectedJobData.value['boEmploymentStatus'] = ''
+  selectedJobData.value['boPayDay'] = ''
+  selectedJobData.value['payCheck'] = ''
+  selectedJobData.value['shiftRemarks'] = ''
+  selectedJobData.value['businessContent'] = ''
+  selectedJobData.value['numberWorkingDays'] = ''
+  selectedJobData.value['retirementAge'] = ''
+  selectedJobData.value['boRequiredQualification'] = ''
+  selectedJobData.value['experienceReq'] = ''
+  selectedJobData.value['experienceRemarks'] = ''
+  selectedJobData.value['pickDrop'] = ''
+  selectedJobData.value['availabilityOnCallSupport'] = ''
+  selectedJobData.value['workingHoursEarly'] = ''
+  selectedJobData.value['workingHoursDay'] = ''
+  selectedJobData.value['workingHoursLate'] = ''
+  selectedJobData.value['workingHoursNight'] = ''
+  selectedJobData.value['boId'] = ''
+};
 onBeforeUnmount(() => {
   if (unsubscribe.value) {
     unsubscribe.value();
@@ -317,6 +318,45 @@ watch(
       }
     }
   }
+);
+watch(
+  () => (selectedJobData.value.cfClient),
+    async (newVal,oldVale) => {
+    officeList.value = [];
+    if (unsubscribeOffice.value) {
+      unsubscribeOffice.value();
+    }
+    if(oldVale){
+      selectedJobData.value.cfOffice=''
+    }
+    if (newVal) {
+      officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
+    }
+    if (newVal !== oldVale) {
+      await resetData()
+    }
+  }
+)
+watch(()=>(selectedJobData.value.cfOffice),
+  async (newVal)=>{
+    if (newVal) {
+      await cfInfoData(newVal)
+    }
+      await getBOCommonInformationData(newVal)
+})
+watch(
+  () => selectedJobData.value['boId'],
+  async (newBoid) => {
+    if (newBoid) {
+  const boData = await jobSearchStore.loadBOData();
+  if (Array.isArray(boData)) {
+    for (const data of boData) {
+    if(data['boId']===newBoid){
+      bOSpecifiedBoidData(data)
+    }
+  }
+}
+}}
 );
 defineExpose({ showDrawerWithData ,openDrawer})
 </script>

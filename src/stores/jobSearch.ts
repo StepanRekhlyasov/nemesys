@@ -73,12 +73,34 @@ export const useJobSearch = defineStore('jobSearch', () => {
     );
 
     q.forEach(async(doc) => {
+      const data = doc.data()
       clientData.push({
         label:doc.data().name,
         id: doc.id,
+        ...data
       });
     });
     return clientData;
+  };
+
+  const loadBOData = async () => {
+    const boData: object[] = [];
+    const q = await getDocs(
+      query(
+        collection(db, 'BO'),
+        where('deleted', '==', false),
+      )
+    );
+
+    q.forEach(async(doc) => {
+      const data = doc.data()
+      boData.push({
+        label:doc.data().name,
+        id: doc.id,
+        ...data
+      });
+    });
+    return boData;
   };
 
   const updateFormData = async (data:object) => {
@@ -150,7 +172,8 @@ const loadOfficeData = async (id:string) => {
     const data = doc.data();
     officeData.push({
       label: data.name,
-      id:doc.id
+      id:doc.id,
+      ...data
     });
   });
   return officeData;
@@ -206,6 +229,7 @@ const getIndustries = async () => {
     addNewOption,
     addId,
     getIndustries,
+    loadBOData,
     state
   };
 });
