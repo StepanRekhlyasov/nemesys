@@ -111,7 +111,7 @@
     </q-card-section>
   </q-card>
 
-  <q-dialog v-model="openDialog" @hide="editableUser = undefined">
+  <q-dialog v-model="openDialog" @hide="editableRow = -1; editableUser = undefined">
     <ResponsibleCreateForm @closeDialog="openDialog = false; refresh()" :roles="roles" :branches="branches"
       :is-admin="isAdmin" />
   </q-dialog>
@@ -224,7 +224,7 @@ async function searchUsers() {
 }
 
 function isRowSelected(row: number) {
-  return row == editableRow.value
+  return row === editableRow.value
 }
 
 function discardChanges() {
