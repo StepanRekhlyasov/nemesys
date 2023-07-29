@@ -1,14 +1,32 @@
 import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
-import { computed ,ComputedRef} from 'vue';
+import { computed, ComputedRef } from 'vue';
 const { t } = i18n.global;
-export const itemList = ['fix', 'inspection', 'offer', 'admission'] as const
-export const itemListRight = ['BO', 'BOIsfirst', 'BOIsnotfirst'] as const
-export const dataNames = ['report.companyAverage', 'report.allAverage'] as const;
+export const itemList = [
+  { queryName: 'fix' },
+  { queryName: 'inspection' },
+  { queryName: 'offer' },
+  { queryName: 'admission' },
+] as const;
+export const itemListRight = [
+  { queryName: 'BO' },
+  { queryName: 'BOIsfirst' },
+  { queryName: 'BOIsnotfirst' },
+] as const;
+
+export const itemRateList = [
+  ['fix', 'inspection'],
+  ['inspection', 'offer'],
+  ['offer', 'admission'],
+] as const;
+export const dataNames = [
+  'report.companyAverage',
+  'report.allAverage',
+] as const;
+
 export const chartOptions = computed(() => {
   return {
-
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.individualPerformanceStatus'),
@@ -42,7 +60,7 @@ export const chartOptions = computed(() => {
       min: 0,
       labels: {
         formatter: function (value) {
-          return value.toFixed(1)
+          return value.toFixed(1);
         },
       },
     },
@@ -52,12 +70,12 @@ export const chartOptions = computed(() => {
   };
 });
 
-export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
+export const columns: ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
       required: true,
-      label:'',
+      label: '',
       align: 'left',
       field: (row) => row.name,
       format: (val) => `${val}`,
@@ -117,7 +135,7 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
 
 export const chartOptionsR = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.BOAcquisitionStatus'),
@@ -152,7 +170,7 @@ export const chartOptionsR = computed(() => {
       min: 0,
       labels: {
         formatter: function (value) {
-          return value.toFixed(1)
+          return value.toFixed(1);
         },
       },
     },
@@ -162,12 +180,12 @@ export const chartOptionsR = computed(() => {
   };
 });
 
-export const columnsR:ComputedRef<QTableProps['columns']> = computed(() => {
+export const columnsR: ComputedRef<QTableProps['columns']> = computed(() => {
   return [
     {
       name: 'name',
       required: true,
-      label:'',
+      label: '',
       align: 'left',
       field: (row) => row.name,
       format: (val) => `${val}`,

@@ -13,8 +13,8 @@
                 {{ $t('applicant.add.name') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['name']" bg-color="white"
-                  :rules="[creationRule]" hide-bottom-space />
+                <q-input outlined dense v-model="applicantData['name']" bg-color="white" :rules="[creationRule]"
+                  hide-bottom-space />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -22,8 +22,8 @@
                 {{ $t('applicant.add.kanaName') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['kanaName']" 
-                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['kanaName']" :rules="[creationRule, isKatakanaRule]"
+                  hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -31,8 +31,8 @@
                 {{ $t('applicant.add.postCode') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['postCode']"
-                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['postCode']" :rules="[creationRule]" hide-bottom-space
+                  bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -41,8 +41,8 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
-                  :rules="[creationRule]" hide-bottom-space bg-color="white" 
-                  :label="$t('common.pleaseSelect')" emit-value map-options />
+                  :rules="[creationRule]" hide-bottom-space bg-color="white" :label="$t('common.pleaseSelect')" emit-value
+                  map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -50,8 +50,9 @@
                 {{ $t('applicant.add.municipalities') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['municipalities']"
-                  :rules="[creationRule]" hide-bottom-space bg-color="white" />
+                <q-select outlined dense :disable="!fetchMunicipalities" emit-value bg-color="white"
+                  :options="municipalities" v-model="applicantData['municipalities']" :label="$t('common.pleaseSelect')"
+                  :rules="[creationRule]" hide-bottom-space />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -59,8 +60,8 @@
                 {{ $t('applicant.add.street') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['street']"
-                :rules="[creationRule]" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['street']" :rules="[creationRule]" hide-bottom-space
+                  bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -76,8 +77,9 @@
                 {{ $t('applicant.add.phone') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['phone']" @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g,'') }" 
-                :rules="phoneRules" hide-bottom-space bg-color="white" />
+                <q-input outlined dense v-model="applicantData['phone']" :placeholder="$t('rule.onlyNumber')"
+                  @input="v => { applicantData['phone'] = v.replace(/[a-zA-Z0-9]/g, '') }"
+                  :rules="[creationRule, phoneRule]" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -86,7 +88,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['email']"
-                :rules="[(val) => !!val || '', (val) => validateEmail(val) || '' ]" hide-bottom-space bg-color="white" />
+                  :rules="[(val) => !!val || '', (val) => validateEmail(val) || '']" hide-bottom-space bg-color="white" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -95,7 +97,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['status']" :options="statusOption" bg-color="white"
-                :rules="[creationRule]" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                  :rules="[creationRule]" hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -103,14 +105,10 @@
                 {{ $t('applicant.add.branchIncharge') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm bg-white">
-                <select-branch 
-                  :organization-id="organizationStore.currentOrganizationId" 
-                  v-model="applicantData['branchIncharge']" 
-                  :rules="[creationRule]" 
-                  hide-bottom-space
+                <select-branch :organization-id="organizationStore.currentOrganizationId"
+                  v-model="applicantData['branchIncharge']" :rules="[creationRule]" hide-bottom-space
                   @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
-                  @on-end-loading="disableSubmit = false"
-                />
+                  @on-end-loading="disableSubmit = false" />
               </div>
             </div>
           </div>
@@ -119,12 +117,10 @@
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.sex') }} <span style="color: red">*</span>
               </div>
-              <div class="col-8 q-pl-sm">                
-                <q-field                
-                  ref="toggle" borderless dense
-                  v-model="applicantData['sex']"
-                  :rules="[creationRule]" hide-bottom-space> 
-                  <template v-slot:control>      
+              <div class="col-8 q-pl-sm">
+                <q-field ref="toggle" borderless dense v-model="applicantData['sex']" :rules="[creationRule]"
+                  hide-bottom-space>
+                  <template v-slot:control>
                     <q-radio v-model="applicantData['sex']" val="male" :label="$t('applicant.add.male')" />
                     <q-radio v-model="applicantData['sex']" val="female" :label="$t('applicant.add.female')" />
                   </template>
@@ -137,7 +133,7 @@
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['dob']"
-                  :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
+                  :rules="[(val) => !!val || '', validateDate]" hide-bottom-space>
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -157,11 +153,9 @@
                 {{ $t('applicant.add.occupation') }} <span style="color: red">*</span>
               </div>
               <div class="col-9 q-pl-sm">
-                <q-field                
-                  ref="toggle" borderless dense
-                  v-model="applicantData['occupation']"
-                  :rules="[creationRule]" hide-bottom-space> 
-                  <template v-slot:control>                    
+                <q-field ref="toggle" borderless dense v-model="applicantData['occupation']" :rules="[creationRule]"
+                  hide-bottom-space>
+                  <template v-slot:control>
                     <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
                     <q-radio v-model="applicantData['occupation']" val="nursingCare"
                       :label="$t('applicant.add.nursingCare')" />
@@ -179,38 +173,66 @@
                 {{ $t('applicant.add.qualification') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-field                
-                  ref="toggle" borderless dense
-                  v-model="applicantData['qualification']"
-                  :rules="[creationRule]" hide-bottom-space> 
-                  <template v-slot:control>       
+                <q-field ref="toggle" borderless dense v-model="applicantData['qualification']" hide-bottom-space>
+                  <template v-slot:control>
                     <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
-                      :label="$t('applicant.add.registeredNurse')" />
+                      :label="$t('applicant.qualification.registeredNurse')" />
                     <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
-                      :label="$t('applicant.add.assistantNurse')" />
+                      :label="$t('applicant.qualification.assistantNurse')" />
                     <q-checkbox v-model="applicantData['qualification']" val="newcomer"
-                      :label="$t('applicant.add.newcomer')" />
+                      :label="$t('applicant.qualification.newcomer')" />
                     <q-checkbox v-model="applicantData['qualification']" val="careWorker"
-                      :label="$t('applicant.add.careWorker')" />
+                      :label="$t('applicant.qualification.careWorker')" />
+                    <q-checkbox v-model="applicantData['qualification']" val="worker"
+                      :label="$t('applicant.qualification.worker')" />
                   </template>
                 </q-field>
               </div>
             </div>
+            <div class="row q-pt-md q-pb-sm ">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.applicationMedia') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
+                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+              </div>
+            </div>
+            <div class="row q-pt-md q-pb-sm ">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('applicant.add.applicationMetod') }}
+              </div>
+              <div class="col-9 q-pl-sm">
+                <q-select outlined dense :options="applicationMethodOption" emit-value map-options bg-color="white"
+                  v-model="applicantData['applicationMetod']" :disable="loading" />
+              </div>
+            </div>
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span> 
+                {{ $t('applicant.add.applicationDate') }} <span style="color: red">*</span>
               </div>
               <div class="col-6 q-pl-sm">
                 <q-input dense outlined bg-color="white" v-model="applicantData['applicationDate']"
-                :rules="[(val) => !!val || '', validateDate]" hide-bottom-space >
-                  <template v-slot:append>
+                  :rules="[(val) => !!val || '', validateDate]" hide-bottom-space>
+                  <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD">
+                        <q-date v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                           </div>
                         </q-date>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                        <q-time v-model="applicantData['applicationDate']" mask="YYYY/MM/DD HH:mm">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                          </div>
+                        </q-time>
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -223,8 +245,8 @@
                 {{ $t('applicant.add.image') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-file name="applicant_image" v-model="applicantImage" multiple use-chips outlined dense
-                  bg-color="white" @update:model-value="onFileChange" accept=".jpg, image/*">
+                <q-file name="applicant_image" v-model="applicantImage" multiple use-chips outlined dense bg-color="white"
+                  @update:model-value="onFileChange" accept=".jpg, image/*">
                   <template v-slot:append>
                     <q-icon name="attach_file" />
                   </template>
@@ -240,29 +262,31 @@
         </div>
         <q-separator color="white" size="2px" class="q-mt-md" />
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.submit')" type="submit" color="primary" :loading="loading" :disable="disableSubmit" />
+          <q-btn :label="$t('common.register')" type="submit" color="primary" :loading="loading"
+            :disable="disableSubmit" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
     </q-card-section>
   </q-card>
 </template>
- 
+
 <script lang="ts" setup>
 import { QForm } from 'quasar';
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-import { statusList } from 'src/shared/constants/Applicant.const';
+import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
 import { useApplicant } from 'src/stores/applicant';
 import { requiredFields } from 'src/shared/constants/Applicant.const';
-import { validateEmail, validateDate} from 'src/shared/constants/Form.const';
+import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
+import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 
 const applicantDataSample = {
   qualification: [],
@@ -275,19 +299,26 @@ const applicantStore = useApplicant();
 
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList);
+const applicationMethodOption = ref(applicationMethod)
 const statusOption = ref(statusList);
 const disableSubmit = ref(false)
-const applicantForm: Ref<QForm|null> = ref(null);
+const applicantForm: Ref<QForm | null> = ref(null);
 const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
-const phoneRules = [
-  (val) => val&&!!val || '',
-  (val) => {
-    const reg = /^[a-zA-Z0-9]+$/
-    return reg.test(val) || ''
+const municipalities = ref<string[]>([])
+const fetchMunicipalities = ref(false)
+
+watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
+  applicantData.value.municipalities = '';
+  if (newVal !== oldVal && newVal) {
+    fetchMunicipalities.value = false
+    municipalities.value = await getMunicipalities(newVal)
+    fetchMunicipalities.value = true
+  } else {
+    fetchMunicipalities.value = false
   }
-] 
+}, { immediate: true })
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
@@ -297,7 +328,7 @@ function resetData() {
     applicantForm.value.resetValidation();
   }
 }
-function onFileChange(files : FileList) {
+function onFileChange(files: FileList) {
   imageURL.value = '';
   if (files && files.length > 0) {
     const file = files[0];
@@ -310,33 +341,34 @@ async function onSubmit() {
   let data = JSON.parse(JSON.stringify(applicantData.value));
   data['created_at'] = serverTimestamp();
   data['updated_at'] = serverTimestamp();
-  
-  if(!data.applicationDate){
+
+  if (!data.applicationDate) {
     data.applicationDate = new Date()
   }
   data['applicationDate'] = Timestamp.fromDate(new Date(data.applicationDate));
-  data['currentStatusTimestamp'] = data['applicationDate'] ;
-  data['statusChangeTimestamp'] = { [data['status']] : data['applicationDate'] }
+  data['invitationDate'] = data['applicationDate'];
+  data['currentStatusTimestamp'] = data['applicationDate'];
+  data['statusChangeTimestamp'] = { [data['status']]: data['applicationDate'] }
   data['currentStatusMonth'] = toMonthYear(data['applicationDate']);
 
   data['address'] = [data['prefecture'], data['municipalities'], data['street'], data['apartment']].join(' ')
-  
- 
+
+
   /** required fields */
-  for(const [key, value] of Object.entries(requiredFields.value)){
-    if(typeof data[key] == 'undefined'){
+  for (const [key, value] of Object.entries(requiredFields.value)) {
+    if (typeof data[key] == 'undefined') {
       data[key] = value
     }
   }
   /** required fields */
   data['dob'] = Timestamp.fromDate(new Date(data.dob));
   data['deleted'] = false;
-  try{
+  try {
     await applicantStore.createApplicant(data, applicantImage.value)
-    Alert.success();
+    ;
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
-  } catch(error){
+  } catch (error) {
     Alert.warning(error);
   }
   loading.value = false;

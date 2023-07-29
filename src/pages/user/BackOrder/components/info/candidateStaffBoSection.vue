@@ -7,7 +7,7 @@
     </div>
   </div>
   <q-card-section class=" q-pa-none">
-    <q-table :columns="coloumns" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
+    <q-table :columns="columns" :loading="loading" :rows="staffList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
       <template v-slot:body-cell-name="props">
         <q-td :props="props" class="no-wrap q-pa-none">
@@ -27,12 +27,24 @@
       </template>
       <template v-slot:body-cell-matchDegree="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ props.row.matchDegree }}%
+          <q-btn @click="openPopup(props.row)" dense no-caps color="primary" :label='props.row.matchDegree' flat>%</q-btn>
         </q-td>
       </template>
     </q-table>
+
+    <q-dialog v-model="popupVisible">
+      <q-card>
+        <q-card-section>
+          <matchDegreeTable :bo="bo" :staff="popupStaff" :matchedData="matchedData"/>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn color="primary" label="Close" @click="closePopup" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
   </q-card-section>
-  <ApplicantDetails ref="detailsDrawer" />
+  <ApplicantDetails :bo="bo" ref="detailsDrawer" />
 </template>
 
 <script lang="ts" setup>
@@ -41,23 +53,17 @@ import { ref, onMounted, watch, ComputedRef } from 'vue';
 import { BackOrderStaff } from '../../consts/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useApplicant } from 'src/stores/applicant'
-import { useClient } from 'src/stores/client'
 import { where } from 'firebase/firestore';
 import { useI18n } from 'vue-i18n';
 import { radius } from '../../consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
-import { drawerValue } from '../../consts/BackOrder.const';
+import matchDegreeTable from './matchDegreeTable.vue';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const backOrderStore = useBackOrder()
-
-watch(drawerValue, async () => {
-  if (drawerValue.value) {
-    await getFormatedData();
-  }
-})
 
 const pagination = ref({
   sortBy: 'desc',
@@ -67,7 +73,8 @@ const pagination = ref({
   // rowsNumber: xx if getting data from a server
 });
 
-const coloumns = ref<QTableProps | ComputedRef>(BackOrderStaff)
+const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
+const matchedData = ref({});
 
 const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
@@ -79,6 +86,17 @@ const props = withDefaults(defineProps<{
   hideMapButton: false
 }
 )
+const popupVisible = ref(false);
+const popupStaff = ref({});
+
+const openPopup = (staff) => {
+  popupStaff.value = staff;
+  popupVisible.value = true;
+};
+
+const closePopup = () => {
+  popupVisible.value = false;
+};
 
 watch(() => radius.value, async () => {
   await getFormatedData();
@@ -94,10 +112,9 @@ watch(() => radius.value, async () => {
 })
 
 const calculateDistance = async () => {
-  const client = await getClient.fetchClientsById(props.bo.client_id);
   const clientLocation = {
-    lat: client['lat'],
-    lon: client['lon'],
+    lat: props.bo['lat'],
+    lon: props.bo['lon'],
   };
 
   staffList.value.forEach(staff => {
@@ -111,9 +128,8 @@ const calculateDistance = async () => {
 };
 
 const calculateMatchDegree = () => {
-
   staffList.value.forEach((staff) => {
-    backOrderStore.matchData(staff, props.bo);
+   matchedData.value[staff.id] = backOrderStore.matchData(staff, props.bo);
   })
   staffList.value.sort((a, b) => b.matchDegree - a.matchDegree);
 }
@@ -121,9 +137,14 @@ const calculateMatchDegree = () => {
 const loading = ref<boolean>(false);
 const { t } = useI18n({ useScope: 'global' });
 const getApplicant = useApplicant();
-const getClient = useClient();
 
 onMounted(async () => {
+  loading.value = true;
+  await getFormatedData();
+  loading.value = false;
+})
+
+watchCurrentOrganization(async ()=>{
   loading.value = true;
   await getFormatedData();
   loading.value = false;

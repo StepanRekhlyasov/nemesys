@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia'
 import { defineEmits, defineProps, ref, watch, watchEffect } from 'vue';
 import CFDrawerTitle from './components/CFDrawerTitle.vue';
@@ -12,7 +11,6 @@ import { finishEditing } from 'src/components/client-factory/handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { useOrganization } from 'src/stores/organization';
-const { t } = useI18n({ useScope: 'global' });
 
 const { addModifiedCF, getModifiedCF, updateModifiedCF } = useClientFactory()
 const organizationStore = useOrganization()
@@ -26,26 +24,25 @@ const props = defineProps<{
 const modifiedCF = ref<ModifiedCF | undefined>()
 const draft = ref<Partial<ClientFactory>>({})
 const isLoading = ref(false)
-const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean, ts: string }>)
-const selectedIndustry = ref<{ value: string, isSelected: boolean, ts: string }>({} as { value: string, isSelected: boolean, ts: string })
+const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean }>)
+const selectedIndustry = ref<{ value: string, isSelected: boolean }>({} as { value: string, isSelected: boolean })
 
 const initializeIndustry = () => {
     dropDownIndustryValue.value = props.selectedItem.industry?.reduce((acc, industry, index) => {
         if (industry) {
             acc.push({
                 value: industry,
-                isSelected: index === 0,
-                ts: t(`client.add.${industry}`)
+                isSelected: index === 0
             })
         }
 
         return acc
-    }, [] as Array<{ value: string, isSelected: boolean, ts: string }>)
+    }, [] as Array<{ value: string, isSelected: boolean }>)
 
     selectedIndustry.value = dropDownIndustryValue.value[0] ?? {}
 }
 
-const industryHandler = (value: { value: string, isSelected: boolean, ts: string }) => {
+const industryHandler = (value: { value: string, isSelected: boolean }) => {
     selectedIndustry.value = value
 }
 
@@ -81,12 +78,15 @@ const saveHandler = async () => {
 
 const emit = defineEmits<{
     (e: 'hideDrawer')
+    (e: 'openFaxDrawer',id:string)
 }>()
 
 const hideDrawer = () => {
     emit('hideDrawer')
 }
-
+const openFaxDrawer = () => {
+    emit('openFaxDrawer',props.selectedItem.id)
+}
 watchEffect(() => {
     initializeIndustry()
 })
@@ -128,6 +128,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                             @edit-draft="editDraftHandler"
                             @cancel-draft="cancelHandler"
                             @save-draft="saveHandler"
+                            @open-fax-drawer="openFaxDrawer"
                             :clientFactory="modifiedCF ?? selectedItem"
                             :draft="draft"
                             :is-loading="isLoading"/>

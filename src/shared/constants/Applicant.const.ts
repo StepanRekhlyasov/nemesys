@@ -76,6 +76,11 @@ export const statusList = computed(() => {
   ];
 });
 
+export const mediaList = computed(() => [{
+  label: 'indeed',
+  value: 'indeed'
+}])
+
 export const applicationMethod = computed(() => {
   return [{
     label: t('applicant.add.web'),
@@ -87,13 +92,24 @@ export const applicationMethod = computed(() => {
 })
 
 export const employmentStatus = computed(() => {
-  return [{
-    label: t('applicant.list.info.working'),
-    value: 'working'
-  },{
-    label: t('applicant.list.info.notWorking'),
-    value: 'notWorking'
-  },]
+  return [
+    {
+      label: t('applicant.list.info.generalDispatch'),
+      value: 'generalDispatch'
+    },
+    {
+      label: t('applicant.list.info.placementDispatching'),
+      value: 'placementDispatching'
+    },
+    {
+      label: t('applicant.list.info.fullTime'),
+      value: 'fullTime'
+    },
+    {
+      label: t('applicant.list.info.partTime'),
+      value: 'partTime'
+    },
+  ]
 })
 
 export const attendantStatus = computed(() =>{
@@ -219,21 +235,6 @@ export const smokingStatusList = computed(() => [{
 },{
   label: t('smoking.yes'),
   value: 'yes'
-},{
-  label: t('smoking.paper'),
-  value: 'paper'
-},{
-  label: t('smoking.electronic'),
-  value: 'electronic'
-},{
-  label: t('smoking.noWhileWworking'),
-  value: 'noWhileWorking'
-},{
-  label: t('smoking.acceptable'),
-  value: 'acceptable'
-},{
-  label: t('smoking.notPossible'),
-  value: 'notPossible'
 }])
 
 
@@ -245,13 +246,16 @@ export const marriedStatusList = computed(() => [{
   value: 'unmarried'
 },])
 
-export const tattoosStatusList = computed(() => [{
-  label: t('tattoos.nil'),
-  value: 'nil'
-},{
-  label: t('tattoos.yes'),
-  value: 'yes'
-},])
+export const tattoosStatusList = computed(() => [
+  {
+    label: t('tattoos.yes'),
+    value: 'yes'
+  },
+  {
+    label: t('tattoos.nil'),
+    value: 'nil'
+  },
+])
 
 export const applicantClassification = computed(() => {
   return [{
@@ -270,20 +274,24 @@ export const applicantClassification = computed(() => {
 export const qualificationList = computed(() => {
   return [
     {
-      label: t('applicant.add.registeredNurse'),
+      label: t('applicant.qualification.registeredNurse'),
       value: 'registeredNurse'
     },
     {
-      label: t('applicant.add.assistantNurse'),
+      label: t('applicant.qualification.assistantNurse'),
       value: 'assistantNurse'
     },
     {
-      label: t('applicant.add.newcomer'),
+      label: t('applicant.qualification.newcomer'),
       value: 'newcomer'
     },
     {
-      label: t('applicant.add.careWorker'),
+      label: t('applicant.qualification.careWorker'),
       value: 'careWorker'
+    },
+    {
+      label: t('applicant.qualification.worker'),
+      value: 'worker'
     },
   ]
 })

@@ -31,7 +31,6 @@ const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
 const isNewClientFactoryDrawer = ref(false)
 const isNewFaxDrawer = ref(false)
-
 const pagination = ref({
     sortBy: 'desc',
     descending: false,
@@ -57,7 +56,10 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
         }
     }, 200);
 }
-
+const selected = ref<number[]>([])
+const selectedCFHandler = (item:number[]) =>{
+    selected.value = item
+}
 watch([clients], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
@@ -100,16 +102,26 @@ const openNewClientFactoryDrawer = () => {
 }
 
 // new Fax drawer
-
+const selectedCF = ref<string[]>([])
 const hideNewFaxDrawer = () => {
     isNewFaxDrawer.value = false
 }
 
 const openNewFaxDrawer = () => {
+    selectedCF.value = []
+    Object.keys(selected.value).forEach((key)=>{
+        selectedCF.value.push(selected.value[key].id)
+    });
+    if(selectedCF.value.length === 0 || selectedCF.value.length === tableRows.value.length){
+        selectedCF.value = ['all']
+    }
     isNewFaxDrawer.value = true
 }
-
-
+const openFaxDrawer = (id:string) =>{
+    selectedCF.value = []
+    selectedCF.value.push(id)
+    isNewFaxDrawer.value = true
+}
 </script>
 
 <template>
@@ -123,9 +135,10 @@ const openNewFaxDrawer = () => {
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
                 @open-fax-drawer="openNewFaxDrawer"/>
-            <q-card-section class="table no-padding">
+            <q-card-section class="table no-padding"> 
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
+                    @selected-id="selectedCFHandler"
                     :isFetching="fetchData"
                     :rows="paginatedTableRows"
                     :pagination="pagination"
@@ -141,6 +154,7 @@ const openNewFaxDrawer = () => {
             v-if="activeClientFactoryItem"
             v-model:selectedItem="activeClientFactoryItem"
             :isDrawer="isClientFactoryDrawer"
+            @open-fax-drawer="openFaxDrawer"
             @hide-drawer="hideClientFactoryDrawer"/>
 
         <NewClientDrawer
@@ -156,6 +170,7 @@ const openNewFaxDrawer = () => {
         <FaxDrawer
         @hide-drawer="hideNewFaxDrawer"
         theme="primaery"
+        :selectedCF="selectedCF"
         :is-drawer="isNewFaxDrawer"
         />
     </div>

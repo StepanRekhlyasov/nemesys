@@ -20,6 +20,7 @@ const emit = defineEmits<{
     (e: 'cancelDraft'),
     (e: 'saveDraft'),
     (e: 'editDraft', changedData: ChangedData)
+    (e: 'openFaxDrawer')
 }>()
 
 const cancelHandler = () => {
@@ -34,7 +35,9 @@ const editDraft = (changedData: ChangedData) => {
 
     emit('editDraft', changedData)
 }
-
+const openFaxDrawer = () =>{
+    emit('openFaxDrawer')
+}
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
 const isEditForm = ref({
     officeInfo: false,
@@ -112,7 +115,10 @@ watchEffect(() => {
 
     <q-separator color="bg-grey-3 q-mt-md"></q-separator>
 
-    <CFDrawerBodyFooter :client-factory="clientFactory"/>
+    <CFDrawerBodyFooter 
+      @open-fax-drawer="openFaxDrawer"
+      :clientFactory="clientFactory"
+    />
 </template>
 
 <style lang="scss" scoped>

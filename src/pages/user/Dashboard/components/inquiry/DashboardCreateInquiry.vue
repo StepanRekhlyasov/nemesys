@@ -4,7 +4,7 @@
       <div class="text-primary text-bold">■{{ $t('inquiry.detail.inquiryTitle') }}</div>
     </div>
     <div class="row q-mb-sm q-gutter-sm ">
-      <div class="col-3 text-right text-accent">
+      <div class="col-3 text-right text-primary">
         {{ $t('inquiry.detail.category') }}
       </div>
       <div class="col-8">
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="row q-mb-sm q-gutter-sm">
-      <div class="col-3 text-right text-accent">
+      <div class="col-3 text-right text-primary">
         {{ $t('inquiry.detail.subject') }}
       </div>
       <div class="col-8">
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="row q-mb-sm q-gutter-sm">
-      <div class="col-3 text-right text-accent">
+      <div class="col-3 text-right text-primary">
         {{ $t('inquiry.detail.content') }}
       </div>
       <div class="col-8">
@@ -39,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import { getAuth } from 'firebase/auth';
 import { serverTimestamp } from 'firebase/firestore';
 import { InquiryData } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -52,6 +53,9 @@ const organization = useOrganization()
 const emit = defineEmits(['closeDrawer', 'inquiryAdded'])
 const inquirySaveData = ref<Partial<InquiryData>>({})
 const disable = computed(()=> loading.value || !inquirySaveData.value.category || !inquirySaveData.value.subject || !inquirySaveData.value.inquiryContent)
+const auth = getAuth();
+const currentUserId = auth.currentUser?.uid
+
 async function submitInquiry(){
   loading.value = true
   const submitData = JSON.parse(JSON.stringify(inquirySaveData.value))
@@ -59,10 +63,12 @@ async function submitInquiry(){
   submitData.messages = []
   submitData.organization = organization.currentOrganizationId
   submitData.recievedDate = serverTimestamp()
+  submitData.updated_at = serverTimestamp()
+  submitData.readBy = [currentUserId]
   try{
     await inquiryStore.addInquiry(submitData)
     inquirySaveData.value = {}
-    Alert.success();
+    ;
     emit('inquiryAdded')
   } catch (e) {
     Alert.warning(e);

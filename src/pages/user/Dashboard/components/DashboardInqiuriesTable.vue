@@ -1,68 +1,106 @@
 <template>
-    <q-card-section class="bg-grey-3 flex items-center">
-      <p style="font-size:16px; margin:0;" class="text-primary text-bold">■{{ $t('dashboard.notification') }}</p>
-      <q-btn class="no-shadow q-ml-md" color="primary" @click="()=>{
-        drawerCreate=true
-        drawerDetails=false
-      }">{{ $t('menu.admin.inquiry') }}</q-btn>
-    </q-card-section>
-    <DashboardInquiryDrawer v-model="drawerCreate" @closeDrawer="drawerCreate=false">
-      <DashboardCreateInquiry @closeDrawer="drawerCreate=false" @inquiryAdded="()=>{
-        drawerCreate=false
-        updateInqueries()
-      }" />
-    </DashboardInquiryDrawer>
-    <DashboardInquiryDrawer v-model="drawerDetails" @closeDrawer="drawerDetails=false">
-      <DashboardInquiryDetails :id="openId" />
-    </DashboardInquiryDrawer>
-    <q-table
-      :columns="columns"
-      :rows="inqueries"
-      class="dashboardTable"
-      :separator="'none'"
-      hide-pagination
-      v-model:pagination = pagination
+  <q-card-section class="bg-grey-3 flex items-center">
+    <p style="font-size:16px; margin:0;" class="text-primary text-bold">■{{ $t('dashboard.notification') }}</p>
+    <q-btn class="no-shadow q-ml-md" color="primary" @click="()=>{
+      drawerCreate=true
+      drawerDetails=false
+    }">{{ $t('menu.admin.inquiry') }}</q-btn>
+  </q-card-section>
+  <DashboardInquiryDrawer v-model="drawerCreate" @closeDrawer="drawerCreate=false">
+    <DashboardCreateInquiry @closeDrawer="drawerCreate=false" @inquiryAdded="()=>{
+      drawerCreate=false
+      updateInqueries()
+    }" />
+  </DashboardInquiryDrawer>
+  <DashboardInquiryDrawer v-model="drawerDetails" @closeDrawer="drawerDetails=false">
+    <DashboardInquiryDetails :id="openId" @readinquiry="(inquiryData)=>readinquiry(inquiryData)" />
+  </DashboardInquiryDrawer>
+  <q-table
+    :columns="columns"
+    :rows="tableRows"
+    class="dashboardTable"
+    :separator="'none'"
+    hide-pagination
+    v-model:pagination = pagination
+  >
+  <template v-slot:body-cell-messageDirection="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      {{props.row.status === 'answered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}
+    </q-td>
+  </template>
+  <template v-slot:body-cell-recievedDate="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}
+    </q-td>
+  </template>
+  <template v-slot:body-cell-type="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      {{ $t('inquiry.table.' + props.row.type) }}
+    </q-td>
+  </template>
+  <template v-slot:body-cell-readBy="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''" class="warningMark">
+      <template v-if="Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId)"></template>
+      <template v-else>!</template>
+    </q-td>
+  </template>
+  <template v-slot:body-cell-category="props">
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      <template v-if="props.row.type === 'releaseNote'">{{ $t('releaseNotes.form.options.' + props.value) }}</template>
+      <template v-else>{{props.value}}</template>
+    </q-td>
+  </template>
+  <template v-slot:body-cell="props">
+    <q-td :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      {{ props.value }}
+    </q-td>
+  </template>
+  </q-table>
+  <q-linear-progress query v-if="loading" color="primary"/>
+  <div class="bg-grey-3 flex items-center q-py-sm" v-if="inqueries?.length > 5">
+    <q-btn
+      unelevated
+      dense
+      @click="handleExpand()"
     >
-    <template v-slot:body-cell-recievedDate="props">
-      <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-        {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:SS') }}
-      </q-td>
+    <template v-if="pagination.rowsPerPage > 0">
+      <q-icon color="primary" :name="'arrow_drop_down'" :size="'25px'"  />
+      {{ $t('dashboard.openList') }}
     </template>
-    <template v-slot:body-cell="props">
-      <q-td :props="props" @click="openDetails(props.row.id)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-        {{ props.value }}
-      </q-td>
+    <template v-else>
+      <q-icon color="primary" :name="'arrow_drop_up'" :size="'25px'"  />
+      {{ $t('dashboard.closeList') }}
     </template>
-    </q-table>
-    <q-linear-progress query v-if="loading" color="primary"/>
-    <div class="bg-grey-3 flex items-center q-py-sm" v-if="inqueries?.length > 5">
-      <q-btn
-        unelevated
-        dense
-        @click="handleExpand()"
-      >
-      <template v-if="pagination.rowsPerPage > 0">
-        <q-icon color="primary" :name="'arrow_drop_down'" :size="'25px'"  />
-        {{ $t('dashboard.openList') }}
-      </template>
-      <template v-else>
-        <q-icon color="primary" :name="'arrow_drop_up'" :size="'25px'"  />
-        {{ $t('dashboard.closeList') }}
-      </template>
-      </q-btn>
-    </div>
+    </q-btn>
+  </div>
+  <q-dialog v-model="showNote">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">{{ noteSubject }}</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          {{ noteText }}
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </template>
 <script setup lang="ts">
-import { dashboardNotificationTableColumns as columns } from '../const/dashboard.const'
-import { ref, onMounted, watch } from 'vue'
+import { DashboardinquiryRows, dashboardNotificationTableColumns as columns } from '../const/dashboard.const'
+import { ref, onMounted, watch, computed } from 'vue'
 import DashboardInquiryDrawer from './inquiry/DashboardInquiryDrawer.vue'
 import { useInquiry } from 'src/stores/inquiry'
 import { useOrganization } from 'src/stores/organization'
-import { InquiryData } from 'src/shared/model'
 import { myDateFormat } from 'src/shared/utils/utils'
 import DashboardCreateInquiry from './inquiry/DashboardCreateInquiry.vue'
 import DashboardInquiryDetails from './inquiry/DashboardInquiryDetails.vue'
 import { INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
+import { InquiryData } from 'src/shared/model/Inquiry.model'
+import { useReleaseNotes } from 'src/stores/releaseNotes'
+import { getAuth } from 'firebase/auth'
+import { arrayUnion } from 'firebase/firestore'
 
 const pagination = ref({
   rowsPerPage : 5
@@ -77,21 +115,91 @@ function handleExpand(){
 const loading = ref(false)
 const drawerCreate = ref(false)
 const drawerDetails = ref(false)
-const updateInqueries = async () => {
-  loading.value = true
-  inqueries.value = await inquiryStore.getInqueriesByOrganizationId(organization.currentOrganizationId)
-  loading.value = false
-}
-const inqueries = ref<InquiryData[]>([])
+const releaseNoteStore = useReleaseNotes()
+const auth = getAuth();
+const currentUserId = auth.currentUser?.uid
+const inqueries = ref<DashboardinquiryRows[]>([])
+const releaseNotes = ref<DashboardinquiryRows[]>([])
 const inquiryStore = useInquiry()
 const organization = useOrganization()
 const openId = ref<string>('')
-function openDetails(id : string){
-  openId.value = id
-  drawerCreate.value = false
-  drawerDetails.value = true
-}
+const showNote = ref(false)
+const noteSubject = ref('')
+const noteText = ref('')
 
+const updateInqueries = async () => {
+  loading.value = true
+  const inqueriesRaw = await inquiryStore.getInqueriesByOrganizationId(organization.currentOrganizationId)
+  inqueries.value = inqueriesRaw.map((row)=>{
+    return {...row, type: 'inquiry'}
+  })
+  const docWholeSnap = await releaseNoteStore.getAllNotifications();
+  if (!docWholeSnap.empty) {
+    docWholeSnap.docs.forEach(async (item) => {
+      releaseNotes.value = [...releaseNotes.value, {
+        id: item.id,
+        readBy: item.data().readBy,
+        status: item.data().status,
+        category: item.data().category,
+        subject: item.data().subject,
+        inquiryContent: item.data().content,
+        recievedDate: item.data().dateDelivery,
+        type: 'releaseNote'
+      }]
+    })
+  }
+  loading.value = false
+}
+const tableRows = computed(()=>{
+  if(loading.value){
+    return []
+  }
+  const result = [...releaseNotes.value, ...inqueries.value]
+  result.sort((a, b)=>{
+    if(a.recievedDate && b.recievedDate){
+      if(a.recievedDate > b.recievedDate){
+        return -1
+      } else {
+        return 1
+      }
+    }
+    return 0
+  })
+  return result
+})
+
+function openDetails(id : string, type : string){
+  if(type === 'inquiry'){
+    openId.value = id
+    drawerCreate.value = false
+    drawerDetails.value = true
+  } else {
+    const row = tableRows.value.find((row)=>row.id===id)
+    if(row){
+      showNote.value = true
+      noteSubject.value = row.subject
+      noteText.value = row.inquiryContent
+     console.log(showNote.value)
+      if(currentUserId){
+        releaseNoteStore.updateNotificationData(id, {
+          readBy: arrayUnion(currentUserId)
+        })
+        if(!row.readBy){
+          row.readBy = []
+        }
+        (row.readBy as string[]).push(currentUserId)
+      }
+    }
+  }
+}
+function readinquiry(inquiryData : InquiryData){
+  inqueries.value.forEach((row)=>{
+    if(row.id === inquiryData.id){
+      row.readBy = inquiryData.readBy
+      row.status = inquiryData.status
+    }
+  })
+}
 onMounted(async ()=>{
   updateInqueries()
 })
@@ -116,5 +224,11 @@ watch(() => organization.currentOrganizationId, () => {
 .answered {
   background-color: #0853741f;
   font-weight: 700;
+}
+.warningMark {
+  font-size: 30px;
+  line-height: 30px;
+  text-align: center;
+  width: 44px;
 }
 </style>

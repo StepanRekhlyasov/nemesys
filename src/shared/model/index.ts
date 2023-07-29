@@ -1,6 +1,7 @@
 export interface selectOptions {
   value: string;
   label: string;
+  disable?: boolean;
 }
 
 export interface dataTable {
@@ -21,3 +22,4 @@ export * from './Applicant.model';
 export * from './ReleaseNotes.model';
 export * from './Business.model';
 export * from './Inquiry.model';
+export * from './ClientFactory.model';

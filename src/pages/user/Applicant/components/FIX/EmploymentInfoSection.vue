@@ -12,7 +12,7 @@
           :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3 q-pl-md" required>
           <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['admissionStatus']" :rules="[() => 'admissionStatus' in data || '']">
-            <q-checkbox v-model="data['admissionStatus']" label="OK" @click="data['admissionDate'] = ''" :disable="disableLevel < 3"
+            <q-checkbox v-model="data['admissionStatus']" label="OK" @click="emit('disableChange')" :disable="disableLevel < 3"
               checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary"/>
             <q-checkbox v-model="data['admissionStatus']" label="NG" class="q-ml-sm" :disable="disableLevel < 3"
               unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary"/>
@@ -26,11 +26,22 @@
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="data['admissionDate']" mask="YYYY/MM/DD">
+                  <q-date v-model="data['admissionDate']" mask="YYYY/MM/DD HH:mm">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                     </div>
                   </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="data['admissionDate']" mask="YYYY/MM/DD HH:mm">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                    </div>
+                  </q-time>
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -66,7 +77,7 @@
             :options="usersListOption" :label="$t('common.pleaseSelect')" />
         </labelField>
 
-        <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.attendant.endDate')" :value="fixData.endDate">
+        <labelField :edit="edit.includes('employmentInfo')" :label="$t('applicant.attendant.endDate')" :value="myDateFormat(fixData.endDate, 'YYYY/MM/DD')">
           <q-input dense outlined bg-color="white" v-model="data['endDate']" :disable="loading">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
@@ -105,6 +116,7 @@ import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
 import { validateDate } from 'src/shared/constants/Form.const';
 import { creationRule } from 'src/components/handlers/rules';
 import { QForm } from 'quasar';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   loading: boolean,

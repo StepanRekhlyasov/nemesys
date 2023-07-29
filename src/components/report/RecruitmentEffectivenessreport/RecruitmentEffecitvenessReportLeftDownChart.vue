@@ -7,22 +7,22 @@
 </template>
 
 <script setup lang="ts">
-import { useBudget } from 'stores/budget';
 import { useMedia } from 'stores/media';
 import { graphType } from '../Models';
 import { onMounted, ref, computed, watch } from 'vue';
 import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
-import {Media} from 'src/shared/model/Media.model';
+import { Media } from 'src/shared/model/Media.model';
+import { useGetReport } from 'src/stores/getReport';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
-const budget = useBudget();
 const media = useMedia();
+const { getReport } = useGetReport();
 const mediaList = ref<Media[]>([]);
 const chartOptions = computed(() => {
   return {
-    legend: { position: 'left' },
+    legend: { position: 'right' },
     chart: {},
     title: {
       text: t('report.title.mediaApplicationUnitPrice'),
@@ -85,16 +85,33 @@ const props = defineProps<{
 const showChart = async () => {
   dataToshow.value = [];
   mediaList.value = await media.getAllmedia();
-  const companyAverage = await budget.getUnitPricePerOrganizationPerMedia(
-    mediaList.value.map((media) => media.name),
-    props.dateRangeProps,
-    props.organization_id
-  );
-  const companyAverageAll = await budget.getUnitPricePerOrganizationPerMedia(
-    mediaList.value.map((media) => media.name),
-    props.dateRangeProps,
-    undefined
-  );
+
+  if (!props.dateRangeProps) return;
+  const companyAverage = (
+    await getReport({
+      dateRange: props.dateRangeProps,
+      queryNames: [{ queryName: 'amount' }],
+      medias: mediaList.value,
+      graphType: props.graph_type,
+      isAverage: false,
+      organizationId: props.organization_id,
+    })
+  ).map((item) => {
+    return item.amount;
+  });
+
+  const companyAverageAll = (
+    await getReport({
+      dateRange: props.dateRangeProps,
+      queryNames: [{ queryName: 'amount' }],
+      medias: mediaList.value,
+      graphType: props.graph_type,
+      isAverage: false,
+    })
+  ).map((item) => {
+    return item.amount;
+  });
+
   if (!companyAverage || !companyAverageAll) return;
   dataToshow.value = [[...companyAverage], [...companyAverageAll]];
 };

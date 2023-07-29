@@ -3,8 +3,8 @@
     <q-card-section class="bg-grey-3 flex items-center" style="gap:20px">
       <div class="text-h6 text-primary">{{ $t("menu.dashboard") }} </div>
       <label>{{ $t("dashboard.showBranch") }}</label>
-      <MySelect 
-        @update="onBranchChange()" 
+      <MySelect
+        @update="onBranchChange()"
         v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
         :optionToFetch="'branchIncharge'"
         :width="'175px'"
@@ -15,6 +15,9 @@
     <q-separator color="white" size="2px" />
       <DashboardProgressBlocks :updateOnMounted="updateOnMounted" />
     <q-separator color="white" size="2px" />
+      <DashboardTaskTable :entity="'applicant'"/>
+    <q-separator color="grey-3" size="2px"/>
+      <DashboardTaskTable :entity="'office'" />
   </q-page>
 </template>
 <script setup lang="ts">
@@ -25,6 +28,7 @@ import { onBeforeMount, ref } from 'vue';
 import DashboardProgressBlocks from './components/DashboardProgressBlocks.vue';
 import { COLUMN_STATUSES, limitQuery } from '../ApplicantProgress/const/applicantColumns';
 import { storeToRefs } from 'pinia';
+import DashboardTaskTable from './components/DashboardTaskTable.vue';
 
 const applicantStore = useApplicant()
 const { state } = storeToRefs(applicantStore)

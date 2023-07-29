@@ -17,9 +17,13 @@ export default {
     searchPlaceholder: 'Please enter a keyword'
   },
   common: {
-    minimum:'min',
-    maximum:'max',
+    approved: 'Approved',
+    pending: 'Pending',
+    denied: 'Denied',
+    minimum: 'min',
+    maximum: 'max',
     BO: 'BO',
+    deny: 'Deny',
     select: 'Please, choose',
     reflect: 'reflect',
     capture: 'capture',
@@ -36,6 +40,7 @@ export default {
     description: 'Description',
     delete: 'Delete',
     deleteInfo: 'Are you sure you want to delete this item?',
+    deleteBusiness: 'Are you sure you want to delete this item?',
     create: 'Create',
     title: 'Title',
     save: 'Save',
@@ -53,6 +58,7 @@ export default {
     update: 'Successfully updated!',
     clear: 'Clear',
     submit: 'Submit',
+    register: 'Register',
     remove: 'Remove',
     ok: 'OK',
     preview: 'Preview',
@@ -78,24 +84,31 @@ export default {
     ageShort: 'Age',
     week: 'Week',
     month: 'Month',
+    addMonth: 'Add monthes',
     reputation: 'Reputation',
+    desiredBo: 'BO',
+    desiredCondition: 'Desired condition',
     months: {
-      '1' : 'January',
-      '2' : 'February',
-      '3' : 'March',
-      '4' : 'April',
-      '5' : 'May',
-      '6' : 'June',
-      '7' : 'July',
-      '8' : 'August',
-      '9' : 'September',
-      '10' : 'October',
-      '11' : 'November',
-      '12' : 'December',
+      '1': 'January',
+      '2': 'February',
+      '3': 'March',
+      '4': 'April',
+      '5': 'May',
+      '6': 'June',
+      '7': 'July',
+      '8': 'August',
+      '9': 'September',
+      '10': 'October',
+      '11': 'November',
+      '12': 'December',
     },
     more: 'More',
     downloadCSV: 'Download CSV',
     branch: 'Branch',
+  },
+  rule: {
+    onlyNumber: 'only number, without "-"',
+    emailAlreadyRegistred: 'This email has already been taken'
   },
   smoking: {
     no: 'No',
@@ -104,14 +117,18 @@ export default {
     electronic: 'Electronic cigarettes',
     noWhileWworking: 'No smoking while working',
     acceptable: 'Acceptable',
-    notPossible: 'Not possible'
+    notPossible: 'Not possible',
+    can: 'I can',
+    cant: 'I can\'t',
+    type: 'Cigarettes type',
+    stop: 'Can you stop smoking during work?',
   },
   marriedStatus: {
     married: 'Married',
     unmarried: 'Unmarried'
   },
   tattoos: {
-    nil: 'Nil',
+    nil: 'No',
     yes: 'Yes'
   },
   weekDay: {
@@ -157,6 +174,7 @@ export default {
     budgetControl: 'Budget Control',
     SAA: 'Sales Activity Aggregation',
     KPI: 'KPI',
+    faxHistory: 'FAX History',
     admin: {
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
@@ -198,6 +216,9 @@ export default {
       },
       licenseManagement: {
         licenseRequest: 'Applications license request',
+        licenseRequestList: 'Applications license request',
+        licenseRequestAdd: 'Add applications license request',
+        showList: 'Show list',
         licenseManagement: 'License management',
         targetSystem: 'Target system',
         request: {
@@ -211,13 +232,16 @@ export default {
         deleteSlots: '- Delete slots',
         deleteHeader: 'Execute slots reduction',
         additionHeader: 'Execute slots adding',
+        deleteHeaderDeny: 'Deny slots reduction',
+        additionHeaderDeny: 'Deny slots adding',
         userInfo: '■ User information',
         branch: 'Branch',
         details: '■ Details',
         targetBranch: 'Target branch:',
         numberOfSlots: 'Number of slots:',
         execution: 'execution',
-        cancel:'cancel',
+        deny: 'Deny',
+        cancel: 'cancel',
         licenseFee: 'License fee:',
         licenseHistory: 'License history',
         executionTime: 'Execution time',
@@ -225,23 +249,24 @@ export default {
         licenseStatistic: 'License statistic',
         totalLicenseNumber: 'Total number of license (by month/company)',
         issueDate: 'issue date',
+        statisticMonth: 'Statistic Month',
         numberIdName: 'No./organization ID/organization name',
         businessName: 'Business Name',
         branchName: 'Branch name',
         systemInUse: 'System in use',
         usageCount: 'Usage Count',
-        requestType:'Request type',
+        requestType: 'Request type',
         addLicenseRequest: 'Add license request'
       },
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
       billingHistory: 'Billing history',
-      aggregateDataDisplay:'Aggregated Data Display',
-      dataOutputDisplay:'Data Output',
-      dataOutputDisplayTable:{
-        outputMonth:'Output month',
-        output:'output',
-        companyWide:'Company-wide',
+      aggregateDataDisplay: 'Aggregated Data Display',
+      dataOutputDisplay: 'Data Output',
+      dataOutputDisplayTable: {
+        outputMonth: 'Output month',
+        output: 'output',
+        companyWide: 'Company-wide',
       },
     }
   },
@@ -272,7 +297,7 @@ export default {
         all: 'All',
         working: 'Working'
       },
-      business:'Business',
+      business: 'Business',
       branchFlag: 'Branch flag'
     },
     template: {
@@ -503,6 +528,7 @@ export default {
         paidNursingHome: 'Pay nursing home',
         groupHome: 'Group home',
         smallMultifunFacility: 'Small-scale multi-functional facility',
+        smallMultifunFacilityNurse: 'Nursing small-scale multifunctional home care',
         homeCareNursing: 'Home-visit care nursing',
         elderlyHousingServices: 'Residence for the elderly with services',
         clinic: 'Clinic',
@@ -526,6 +552,7 @@ export default {
         outpatientRehabilitation: 'Outpatient rehabilitation',
         dentalClinic: 'Dental Clinic',
         pharmacy: 'Pharmacy',
+        disablesFacility: 'Support facility for people with disabilities'
       },
       busInfoReg: 'Business Information Registration',
       mainOffice: 'Main Office',
@@ -679,6 +706,7 @@ export default {
       leaveChildcare: 'Leave for childcare, nursing care, etc.',
       otherNotes: 'Other notes',
       regBOButton: 'BO Registration',
+      assignToBo:'Assign to this BO',
       list: {
         id: 'BOID',
         dateBO: 'Date of BO',
@@ -707,7 +735,7 @@ export default {
       joiningAnotherCompany: 'Joining another company',
       referralResults: 'Referral Results',
       partTimeJob: 'Part Time Job',
-      tempToPerm:'Temp to Perm'
+      tempToPerm: 'Temp to Perm'
     },
     contractUnit: {
       corporateBulk: 'Corporate Bulk',
@@ -736,13 +764,13 @@ export default {
     }
   },
   applicant: {
-    smsNotes:{
-      note:'※Notes for SMS transmission:',
-      note1:'・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',
-      note2:'・Please input within a maximum of 70 characters in both full-width and half-width characters. (If the limit is exceeded, the message may be sent in multiple parts.)',
-      note3:'・Line breaks count as 2 characters.',
-      note4:'・Please include URLs within 50 characters.',
-      note5:'・Each message will incur a cost of 8 yen.'
+    smsNotes: {
+      note: '※Notes for SMS transmission:',
+      note1: '・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',
+      note2: '・Please input within a maximum of 70 characters in both full-width and half-width characters. (If the limit is exceeded, the message may be sent in multiple parts.)',
+      note3: '・Line breaks count as 2 characters.',
+      note4: '・Please include URLs within 50 characters.',
+      note5: '・Each message will incur a cost of 8 yen.'
     },
     add: {
       name: 'Name',
@@ -779,15 +807,18 @@ export default {
       others: 'Others',
       qualification: 'Qualification',
       applicationDate: 'Application Date',
-      registeredNurse: 'Registered Nurse',
-      assistantNurse: 'Assistant Nurse',
-      newcomer: 'Newcomer',
-      careWorker: 'Care Worker',
       applicationMedia: 'Application Media',
       applicationMetod: 'Application Metod',
       image: 'Applicant Image',
     },
-    shift:{
+    qualification: {
+      registeredNurse: 'Registered Nurse',
+      assistantNurse: 'Assistant Nurse',
+      newcomer: 'Newcomer',
+      careWorker: 'Care Worker',
+      worker: 'Worker',
+    },
+    shift: {
       workinghoursearly: 'Early Shift',
       workinghoursday: 'Day Shift',
       workinghourslate: 'Late Shift',
@@ -812,7 +843,12 @@ export default {
       operationInfo: 'Operation Info',
       yearsExperience: 'Years of Experience',
       availableShift: 'Available Shift',
-      station:'station',
+      station: 'station',
+      commutesDisatnce: 'Commuting distance',
+      shift: 'Shift',
+      accuracy: 'Accuracy',
+      contactNote : 'Contact Note',
+      lastContact : 'Last date of Contact',
       contacts: {
         openContactForm: 'Open contact add form',
         closeContactForm: 'Close contact add form',
@@ -859,7 +895,7 @@ export default {
         jobSearchInfo: '■Job-search Information',
         jobOffersInfo: '■Information on job offers',
         employmentInfo: '■Employment Information',
-        inspectionStatus :'job inspection status',
+        inspectionStatus: 'job inspection status',
         inspectionDate: 'Date of visit',
         inspectionRecord: 'Job inspection record',
         reasonNG: 'Reason for NG',
@@ -881,7 +917,7 @@ export default {
         noDesiredProjects: 'No preferred conditions',
         noDesireWork: 'No motivation to work',
         inspection: {
-          status :'job inspection status',
+          status: 'job inspection status',
           date: 'Date of visit',
           record: 'Job inspection record',
           reasonNG: 'Reason for NG',
@@ -891,7 +927,7 @@ export default {
           comments: 'Comments (A-E)',
           notes: 'Notes for job inspection',
         },
-        offer:{
+        offer: {
           status: 'Offer Status',
           date: 'Date of job offer',
           reasonNG: 'Reason for NG',
@@ -920,7 +956,7 @@ export default {
         birth: 'Date of birth',
         lon: 'Longitude',
         lat: 'Latitude',
-
+        shortTime: 'Short Time',
         attractionsStatus: 'Attractions Status',
         employmentStatus: 'Employment Status',
         classiffication: 'Classification',
@@ -930,16 +966,20 @@ export default {
         chargeOfAttraction: 'Charge Of Attraction',
         position: 'Position',
         period: 'Employment Period',
-
         application: '■Application Information',
         attraction: '■Information on Attraction',
         working: 'Working',
         notWorking: 'Not Working',
         classification: {
-          introduction : 'Introduction',
+          introduction: 'Introduction',
           dispatch: 'Dispatch',
-          ttp: 'TTP'
-        }
+          ttp: 'TTP',
+          TTP: 'TTP'
+        },
+        generalDispatch: 'General Dispatch',
+        fullTime: 'Full Time',
+        partTime: 'Part Time',
+        placementDispatching: 'Employment placement dispatching',
       }
     },
     statusList: {
@@ -1013,6 +1053,14 @@ export default {
       shiftRemarks: 'Available Shift Remarks',
       days: 'Days',
       meansCommuting: 'Means of commuting',
+      meansCommutingOptions: {
+        walk: 'Walk',
+        bicycle: 'Bicycle',
+        car: 'Car',
+        bike: 'Bike',
+        train: 'Train',
+        bus: 'Bus',
+      },
       nearestStation: 'Nearest Station',
       commutingTime: 'Commuting Time',
       route: 'Route',
@@ -1029,6 +1077,8 @@ export default {
       assignedEvaluation: 'Assigned Evaluation',
       sameDay: 'Same Day',
       firstPayment: 'First Payment',
+      childrenNumber: 'Number of Children',
+      childrenAge: 'Child Age',
 
       specialDays: {
         gw: 'GW',
@@ -1061,6 +1111,7 @@ export default {
       temporaryCompaniesRegistered: 'Number of temporary staffing companies registered',
       startedInCaregiving: 'How did you get started in caregiving?',
       items: 'items',
+      companies: 'companies',
       daysVisitAtWork: 'Days when you can visit us at work',
       experienceDetails: 'Experience Details',
 
@@ -1076,7 +1127,6 @@ export default {
       pastInterviews: 'Past Interviews',
       deletedInfo: 'All data related to this experience will be deleted.',
       totalYearsExperience: 'Total years of experience',
-      yearsOfTotalExperience: 'Years of total experience',
 
       // Operation Info Component
       placeOperation: 'Place of operation',
@@ -1085,6 +1135,7 @@ export default {
       companyInCharge: 'Company in Charge',
       operationMemo: 'Memo',
       operatingSites: '■Operating Sites',
+      assignToBo: 'Assign this candidate to BO',
 
       // Memo Tab
       content: 'Content'
@@ -1190,14 +1241,16 @@ export default {
     statusThisTime: 'Status at this time',
     wanted: 'Wanted',
     inactive: 'Inactive',
-    sms:{
-      send:'Send',
-      sendSMS:'Send SMS',
-      sendContent:'Contents of transmission',
-      characters:'Characters',
-      content:'Content',
-      template:'Template',
-      form:'Submission form',
+    sms: {
+      send: 'Send',
+      sendSMS: 'Send SMS',
+      sendContent: 'Contents of transmission',
+      characters: 'Characters',
+      content: 'Content',
+      template: 'Template',
+      form: 'Submission form',
+      recordsPerPage: 'Records per page',
+      all: 'All',
     },
     create: {
       employmentConditions: '■ Employment Conditions',
@@ -1240,7 +1293,7 @@ export default {
       caseType: 'Case Type',
       requiredQualifications: 'Required Qualifications',
       somethingNotQuestioned: 'Something not questioned',
-      required: 'Required', 
+      required: 'Required',
       experienceRemarks: 'Experience Remarks',
       typeOfEmployment: 'Mode of Employment',
       BOGenerationRoute: 'BO generation route',
@@ -1266,16 +1319,10 @@ export default {
       memo: 'Memo',
       nameQualification: 'Qualification Name'
     },
-    qualification: {
-      registeredNurse: 'Registered Nurse',
-      assistantNurse: 'Aassistant Nurse',
-      newcomer: 'Newcomer',
-      careWorker: 'Care Worker',
-    },
-    travelingExpenses:{
+    travelingExpenses: {
       yesRegular: 'Yes / Regular',
       yesDaily: 'Yes/Daily',
-      none:'None',
+      none: 'None',
     },
     type: {
       dispatch: 'Dispatch',
@@ -1470,7 +1517,8 @@ export default {
     delivered: 'delivered',
     'not delivered': 'not delivered',
     form: {
-      name: 'Notification Creation Form',
+      open: 'Open Notification Creation Form',
+      close: 'Close Notification Creation Form',
       category: 'category',
       options: {
         op1: 'category 1',
@@ -1538,7 +1586,7 @@ export default {
         parentClient: 'Parent client',
         officeName: 'Office name',
         prefecture: 'Office Address: Prefecture',
-        city: 'Business address: City',
+        municipality: 'Business address: Municipality',
         townAndStreet: 'Office address: Town name/street number',
         others: 'Office address: Building name, others',
         longitude: 'Business Address: Longitude',
@@ -1587,7 +1635,6 @@ export default {
         contractMail: 'Contract destination: MAIL',
         contractPerson: 'Contractor: Person in charge',
 
-
         // Import Logs and Reflect Logs
         executionUser: 'Execution User',
         executionDateTime: 'Execution Date and Time',
@@ -1602,13 +1649,14 @@ export default {
       }
     },
     fax: {
+      confirmAction: 'Confirm Action',
       transmissionConfirmation: 'Transmission Confirmation',
       applicantLinkage: 'Applicant Linkage',
       clientCategoryNG: 'NG client category',
       clientFacilityNG: 'NG client/facility',
       previousEmploymentClient: 'Previous employment client',
       transmissionContentSettings: 'Transmission content settings',
-      onlyPdfFomratCanBeAttached:'Only PDF fomat can be attached',
+      onlyPdfFomratCanBeAttached: 'Only PDF fomat can be attached',
       prSheet: 'PR sheet',
       attachPRSheet: 'Attach PR sheet',
       setTransmissionDateTime: 'Set transmission date and time',
@@ -1618,7 +1666,26 @@ export default {
       clientNG: 'NG client',
       refinementConditions: 'Refinement conditions',
       maxTransmissions: 'Maximum Transmissions',
-      faxPRSheet: 'Fax the PR Sheet'
+      faxPRSheet: 'Fax the PR Sheet',
+      transMissionConfirmation: 'Redirecting to Confirmation Content page.',
+      areYouSure: 'Are you sure?',
+      list: {
+        senderId: 'Sender ID',
+        sender: 'Sender',
+        jobSeeker: 'Job Seeker',
+        attachment: 'Attachment',
+        numItemsSent: 'Number Items Sent',
+        numDestinations: 'Number Destinations',
+        numTransmissions: 'Number Transmissions',
+        sentDateTime: 'Sent date and time',
+        numPages: 'Number of PDF pages',
+        selectedCF: 'Selected CF',
+        numCFsFax: 'Number of CFs with fax numbers',
+        jobApplicantName: 'Job Applicant Name',
+        branch: 'Branch',
+        responsiblePerson: 'Responsible Person',
+        sendDate: 'Send Date',
+      }
     }
   },
   inquiry: {
@@ -1628,9 +1695,16 @@ export default {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID company name',
+      companyID: 'companyID',
+      companyName: 'Company name',
       recievedDate: 'date issued',
-      responseDate: 'response date'
+      recieve: 'date issued',
+      recieved: 'Recieved',
+      sent: 'Sent',
+      responseDate: 'response date',
+      notificationType: 'Notification Type',
+      inquiry: 'Inquiry',
+      releaseNote: 'Release note',
     },
     detail: {
       inquiryTitle: 'Inquiry details',
@@ -1645,7 +1719,8 @@ export default {
     },
     message: {
       issueDate: 'Date of issue',
-      responseDate: 'Date of response'
+      responseDate: 'Date of response',
+      sendDate: 'Date sent',
     }
   },
   industry: {
@@ -1653,88 +1728,94 @@ export default {
     nurse: 'Nurse',
     uniqueItemSetting: 'Client type unique item setting',
     specificTypeItems: 'Type-specific item',
-    addLine: 'ADD LINE'
+    addLine: 'ADD LINE',
+    newIndustry: 'New Industry',
+    parentIndustry: 'Client Type'
   },
-  report:{
-    salesActivityIndividualReport:'salesActivityIndividualReport',
-    applicantReport:'ApplicantReport',
-    salesActivityReport:'SalesActivityReport',
-    recruitmentEffectivenessReport:'recruitmentEffectivenessReport',
-    companyAverage:'companyAverage',
-    allAverage:'allAverage',
-    companyTotal:'CompanyTotal',
-    Total:'Total',
-    CVR:'CVR',
-    allCVR:'AllCVR',
-    basedOnLeftMostItemDate:'basedonLeftMostItemDate',
-    basedOnEachItemDate:'BasedOnEachItemDate',
-    day:' day',
-    genderRatio:'gender ratio',
-    ageComposition:'age composition',
-    daysToWork:'days to Work',
-    yen:'yen',
-    item:'item',
-    base:'base',
-    totalingMethod:'totaling method',
-    jobCategory:'job category',
-    categories:{
-      totalingMethod:{
-        totallingDailyData:'totalling daily data',
-        totallingAttractionDataByBranch:'totalling attraction data by branch',
-        totallingAttractionDataByMedia:'totalling attraction data by media',
+  report: {
+    salesActivityIndividualReport: 'salesActivityIndividualReport',
+    applicantReport: 'ApplicantReport',
+    salesActivityReport: 'SalesActivityReport',
+    recruitmentEffectivenessReport: 'recruitmentEffectivenessReport',
+    companyAverage: 'companyAverage',
+    allAverage: 'allAverage',
+    companyTotal: 'CompanyTotal',
+    Total: 'Total',
+    CVR: 'CVR',
+    allCVR: 'AllCVR',
+    basedOnLeftMostItemDate: 'basedonLeftMostItemDate',
+    basedOnEachItemDate: 'BasedOnEachItemDate',
+    day: ' day',
+    genderRatio: 'gender ratio',
+    ageComposition: 'age composition',
+    daysToWork: 'days to Work',
+    yen: 'yen',
+    item: 'item',
+    base: 'base',
+    totalingMethod: 'totaling method',
+    jobCategory: 'job category',
+    ourCompany: 'Our Company',
+    all: 'All',
+    categories: {
+      totalingMethod: {
+        totallingDailyData: 'totalling daily data',
+        totallingAttractionDataByBranch: 'totalling attraction data by branch',
+        totallingAttractionDataByMedia: 'totalling attraction data by media',
       },
-      item:{
-        actualValue:'actual value',
-        unitPricePerLeadtime:'unitPrice L/T',
-        applicationAttribute:'application attribute',
+      item: {
+        actualValue: 'actual value',
+        unitPricePerLeadtime: 'unitPrice L/T',
+        applicationAttribute: 'application attribute',
       },
-      validApplicant:'ValidApplicant',
-      numberOfContacts:'NumberOfContacts',
-      numberOfInvitations:'NumberOfInvitations',
-      numberOfAttendance:'NumberOfAttendance',
-      invitations:'Invitations',
-      applicant:'Applicant',
-      fix:'Fix',
-      inspection:'Inspection',
-      offer:'Offer',
-      admission:'admission',
-      inspectionRate:'Inspection Rate',
-      offerRate:'Offer Rate',
-      admissionRate:'Admission Rate',
-      numberOfCallsPerDay:'Number of calls per day',
-      numberOfFAXPerDay:'Number of FAX per day',
-      BOTotal:'BO total',
-      BONew:'BO New',
-      BOExisting:'BO Exisiting',
-      female:'female',
-      male:'male',
-      startUnitPrice:'Start Unit Price',
-      applicationUnitPrice:'Application Unit Price',
-      applicationUnitPriceAllAverage:'Application Unit Price All Average',
-      startUnitPriceAllAverage:'Start Unit Price All Average',
-      teens:'10s',
-      twenties:'20s',
-      thirties:'30s',
-      forties:'40s',
-      fifties:'50s',
-      sixties:'over 60s',
+      validApplicant: 'ValidApplicant',
+      numberOfContacts: 'NumberOfContacts',
+      numberOfInvitations: 'NumberOfInvitations',
+      numberOfAttendance: 'NumberOfAttendance',
+      invitations: 'Invitations',
+      applicant: 'Applicant',
+      fix: 'Fix',
+      inspection: 'Inspection',
+      offer: 'Offer',
+      admission: 'admission',
+      inspectionRate: 'Inspection Rate',
+      offerRate: 'Offer Rate',
+      admissionRate: 'Admission Rate',
+      numberOfCallsPerDay: 'Number of calls per day',
+      numberOfFAXPerDay: 'Number of FAX per day',
+      BOTotal: 'BO total',
+      BONew: 'BO New',
+      BOExisting: 'BO Exisiting',
+      female: 'female',
+      male: 'male',
+      startUnitPrice: 'Start Unit Price',
+      applicationUnitPrice: 'Application Unit Price',
+      applicationUnitPriceAllAverage: 'Application Unit Price All Average',
+      startUnitPriceAllAverage: 'Start Unit Price All Average',
+      teens: '10s',
+      twenties: '20s',
+      thirties: '30s',
+      forties: '40s',
+      fifties: '50s',
+      sixties: 'over 60s',
     },
-    title:{
-      leadtime:'Leadtime',
-      applicationToAdmission:'Application→Admission',
-      FIXAndInspection:'FIX and Inspection',
-      salseProductivity:'Salse Productivity',
-      individualPerformanceStatus:'Individual Performance Status',
-      BOAcquisitionStatus:'BO Acquisition Status',
-      sex:'Sex',
-      age:'Age',
-      daysToWork:'Days to work',
-      unitPriceTransition:'unit price transition',
-      mediaApplicationUnitPrice:'Media application unit price',
+    title: {
+      leadtime: 'Leadtime',
+      applicationToAdmission: 'Application→Admission',
+      FIXAndInspection: 'FIX and Inspection',
+      salseProductivity: 'Salse Productivity',
+      individualPerformanceStatus: 'Individual Performance Status',
+      BOAcquisitionStatus: 'BO Acquisition Status',
+      sex: 'Sex',
+      age: 'Age',
+      daysToWork: 'Days to work',
+      unitPriceTransition: 'unit price transition',
+      mediaApplicationUnitPrice: 'Media application unit price',
+      budget: 'Budget',
+      companyBOStatus: 'BO Status',
+      AverageBOStatus: 'Average BO Status',
 
-
-  }
-},
+    }
+  },
   billing: {
     feeAggregates: {
       byMonth: 'by month',
@@ -1771,6 +1852,7 @@ export default {
     waitList: ' waiting list'
   },
   KPI: {
+    parameters: 'Parameters',
     targetPeriod: 'Period',
     numberOfFix: 'FIX Qty.',
     numberOfVisit: 'Visit Qty.',
@@ -1886,7 +1968,9 @@ export default {
     }
   },
   errors: {
-    'BO_occupied' : 'Selected BO is occupied',
+    'BO_occupied': 'Selected BO is occupied',
+    'error': 'Error',
+    'deleteBranchesFirst': 'Please, delete all branches first'
   },
   budget: {
     search: 'Budget Search',
@@ -1902,5 +1986,44 @@ export default {
     agency: 'Agency',
     tempFile: 'Click here for the template file',
     updatedAt: 'Last edited date',
+    recordNumber: 'Record No.',
+    dataReadSuccessfully: 'Data read successfully',
+    numValidData: 'Number of valid data',
+    invalidData: 'Invalid data',
+    numInvalidData: 'Number of invalid data',
+    postingPeriod: 'Posting Period',
+    total: 'Total'
+  },
+  pentagon: {
+    chargeOfAdmission: 'Entry Qty.',
+    chargeOfOffer: 'Offer Qty.',
+    chargeOfInspection: 'Visit Qty.',
+    chargeOfFix: 'FIX Qty.',
+    BoQty: 'BO Qty.',
+    average: 'Average'
+  },
+  task: {
+    task: 'Task',
+    taskType: 'Task type',
+    taskStatus: 'Task status',
+    taskContent: 'Task Content',
+    taskRegister: 'Task Register',
+    taskRegisterWindow: 'Task Register',
+    applicantName: 'Applicant Name',
+    types: {
+      'extensionConfirm': 'Extension Confirm',
+      'finishApplicant' : 'Handling mid-term finish applicant',
+      'dateManagement' : 'Management of entry date',
+      'visitManagement' : 'Management of the day before Visit',
+      'followUp' : 'Follow-up with working applicant',
+      'collectDocs' : 'Collection of necessary documents',
+      'staffRequests' : 'Response to staff requests',
+      'clientsRequests' : 'Response to client requests',
+    },
+    statuses: {
+      'new' : 'New',
+      'process' : 'In process',
+      'finish' : 'Finish',
+    }
   }
 }

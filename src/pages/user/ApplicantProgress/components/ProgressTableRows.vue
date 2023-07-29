@@ -16,7 +16,11 @@
         <q-td>{{ props.row.occupation && $t('applicant.add.' + props.row.occupation) }}</q-td>
       </template>
       <template v-slot:body-cell-classification="props">
-        <q-td>{{ props.row.classification && $t('applicant.list.info.classification.' + props.row.classification.toLowerCase()) }}</q-td>
+        <q-td>
+          <template v-if="Array.isArray(props.row.classification)">
+            {{ props.row.classification.map(((row : string)=>row.toLowerCase())).join(', ') }}
+          </template>
+        </q-td>
       </template>
       <template v-slot:body-cell-name="props">
         <q-td 
@@ -62,22 +66,22 @@
         <q-td>{{ props.row.memo }}</q-td>
       </template>
       <template v-slot:body-cell-qualification="props">
-        <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('backOrder.qualification.'+q) }}</p></q-td>
+        <q-td><p v-for="q, index in props.row.qualification" :key="index" style="margin:0;">{{ $t('applicant.qualification.'+q) }}</p></q-td>
       </template>
       <template v-slot:body-cell-timeToWork="props">
         <q-td>{{ myDateFormat(props.row.timeToWork, 'YYYY/MM/DD') }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursEarly="props">
-        <q-td>{{ props.row.workingHoursEarly?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursEarly }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursDay="props">
-        <q-td>{{ props.row.workingHoursDay?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursDay }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursLate="props">
-        <q-td>{{ props.row.workingHoursLate?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursLate }}</q-td>
       </template>
       <template v-slot:body-cell-workingHoursNight="props">
-        <q-td>{{ props.row.workingHoursNight?'●':'-' }}</q-td>
+        <q-td>{{ props.row.workingHoursNight }}</q-td>
       </template>
       <template v-slot:body-cell-shiftRemarks="props">
         <q-td>{{ props.row.shiftRemarks }}</q-td>

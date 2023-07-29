@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { date } from 'quasar';
 import { InquiryMessage, INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData, InquiryDataRow, Organization } from 'src/shared/model';
-import { findTheLastDate, timestampToDateFormat } from 'src/shared/utils/utils';
+import { findTheLastDate, myDateFormat } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 
 type InquiryState = {
@@ -46,7 +46,7 @@ export const useInquiry = defineStore('inquiry', () => {
 
   const getAllInquires = async () => {
     state.value.wholeInquiresData = []
-    const docWholeSnap =  await getDocs(query(collection(db, 'inquires'), orderBy('recievedDate', 'desc')));
+    const docWholeSnap =  await getDocs(query(collection(db, 'inquires'), orderBy('updated_at', 'desc')));
 
     if (!docWholeSnap.empty) {
       setCurrentInquiresData(docWholeSnap.docs)
@@ -81,9 +81,11 @@ export const useInquiry = defineStore('inquiry', () => {
                 type: item.type
               }
             }),
-            companyID: `${organisation.code} ${organisation.name}`,
+            companyID: organisation.code,
+            companyName: organisation.name,
             issueDate: findTheLastDate(recievedMessageDate),
             answerDate: findTheLastDate(answeredMessageDate),
+            updated_at: myDateFormat(item.data().updated_at, 'YYYY-MM-DD HH:mm:ss'),
         }]
       }
   })
@@ -108,7 +110,7 @@ export const useInquiry = defineStore('inquiry', () => {
       // @ts-expect-error the same problem as on 98 line
       messages: [...state.value.currentRowData.messages,
         {
-          messageDate: timestampToDateFormat(message.date),
+          messageDate: myDateFormat(message.date),
           content: message.content,
           type: message.type
         }
@@ -126,11 +128,13 @@ export const useInquiry = defineStore('inquiry', () => {
     }
   }
 
-  const replyOnInquiry = async({inquiryId, message,  data} : {inquiryId: string, message: InquiryMessage,  data: Partial<InquiryData>}) => {
+  const replyOnInquiry = async({inquiryId, message,  data} : {inquiryId: string, message?: InquiryMessage,  data: Partial<InquiryData>}) => {
     const inquiryRef = doc(db, 'inquires/' + inquiryId);
-    await updateDoc(inquiryRef, {
-      messages: arrayUnion(message)
-    });
+    if(message){
+      await updateDoc(inquiryRef, {
+        messages: arrayUnion(message)
+      });
+    }
     await updateDoc(inquiryRef, data);
   }
 

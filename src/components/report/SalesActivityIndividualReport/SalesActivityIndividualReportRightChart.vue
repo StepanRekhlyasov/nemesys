@@ -7,6 +7,7 @@
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptionsR, columnsR, dataNames, itemListRight } from './const';
+import { listToFixed } from 'src/shared/utils/KPI.utils';
 import { useGetReport } from 'src/stores/getReport';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
@@ -70,6 +71,7 @@ const showIndividualReport = async (
   dateRange?: { from: string; to: string }
 ) => {
   if (!dateRange) return;
+  seriesIndividual.value = [];
 
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
@@ -98,29 +100,29 @@ const showIndividualReport = async (
       data: [
         0,
         0,
-        row[itemListRight[0]],
-        row[itemListRight[0]],
-        row[itemListRight[2]],
+        row[itemListRight[0].queryName],
+        row[itemListRight[0].queryName],
+        row[itemListRight[2].queryName],
       ],
       type: 'bar',
     });
   }
 
-  const allDataAverage = getListFromObject(await getReport({
+  const allDataAverage = listToFixed(getListFromObject(await getReport({
     dateRange: dateRange,
     graphType: props.graph_type,
     queryNames: itemListRight,
     organizationId: undefined,
     isAverage: true,
-  }),itemListRight) as number[];
+  }),itemListRight.map((item)=>{return item.queryName})) as number[]);
 
-  const dataAverage = getListFromObject(await getReport({
+  const dataAverage = listToFixed(getListFromObject(await getReport({
     dateRange: dateRange,
     graphType: props.graph_type,
     queryNames: itemListRight,
     organizationId: organizationId,
     isAverage: true,
-  }),itemListRight) as number[];
+  }),itemListRight.map((item)=>{return item.queryName})) as number[]);
 
   dataAverage.unshift(0);
   allDataAverage.unshift(0);

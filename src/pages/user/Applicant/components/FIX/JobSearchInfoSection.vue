@@ -13,7 +13,7 @@
 					:value="fixData.inspectionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md" required>
 					<q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['inspectionStatus']" :rules="[() => 'inspectionStatus' in data || '']">
-						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="data['inspectionDate'] = '';emit('disableChange')" 
+						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="emit('disableChange')" 
 							checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
 						<q-checkbox v-model="data['inspectionStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
 							unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
@@ -27,7 +27,7 @@
 						<template v-slot:prepend>
 							<q-icon name="event" class="cursor-pointer">
 								<q-popup-proxy cover transition-show="scale" transition-hide="scale">
-									<q-date v-model="data['inspectionDate']" mask="YYYY/MM/DD">
+									<q-date v-model="data['inspectionDate']" mask="YYYY/MM/DD HH:mm">
 										<div class="row items-center justify-end">
 											<q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
 										</div>
@@ -35,6 +35,17 @@
 								</q-popup-proxy>
 							</q-icon>
 						</template>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="data['inspectionDate']" mask="YYYY/MM/DD HH:mm">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
 					</q-input>
 				</labelField>
 			</div>
@@ -45,7 +56,7 @@
 					:edit="edit.includes(tabKey)" 
 					:label="$t('applicant.list.fixEmployment.'+reasonKey)"
 					:reasonValue="data[reasonKey]"
-					@update:reasonValue="(newValue : string) => data[reasonKey] = newValue"
+					@update:reasonValue="(newValue : string) => data[reasonKey as string] = newValue"
 					:detailedValue="data[detailKey]"
 					@update:detailedValue="(newValue : string) => data[detailKey] = newValue"
 					:disable="loading"

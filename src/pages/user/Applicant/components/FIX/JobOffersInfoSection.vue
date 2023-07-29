@@ -12,7 +12,7 @@
           :value="fixData[statusKey] === true ? 'OK' : fixData[statusKey] === false ?'NG' : '-'" valueClass="text-uppercase col-3  q-pl-md" required>
           <q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['offerStatus']" :rules="[() => 'offerStatus' in data || '']">
-            <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange');data['offerDate'] = '';"
+            <q-checkbox v-model="data['offerStatus']" label="OK" @click="emit('disableChange');"
               checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
             <q-checkbox v-model="data['offerStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
               unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 2"/>
@@ -26,11 +26,22 @@
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="data['offerDate']" mask="YYYY/MM/DD">
+                  <q-date v-model="data['offerDate']" mask="YYYY/MM/DD HH:mm">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
                     </div>
                   </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="data['offerDate']" mask="YYYY/MM/DD HH:mm">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                    </div>
+                  </q-time>
                 </q-popup-proxy>
               </q-icon>
             </template>

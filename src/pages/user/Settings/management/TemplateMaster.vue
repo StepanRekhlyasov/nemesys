@@ -181,7 +181,6 @@ export default {
           })
         }
       } catch (e) {
-        console.log(e)
         loading.value = false;
         Alert.warning(e)
       }
@@ -216,10 +215,10 @@ export default {
               deleted: true
             })
 
-            Alert.success()
+            
             loadTemplateList()
           } catch {
-            Alert.success()
+            
             loading.value = false;
           }
         })

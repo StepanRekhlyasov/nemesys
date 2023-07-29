@@ -9,15 +9,14 @@
         <q-input v-model="branchData['name']" name="name" :disable="loading" outlined dense :rules="[creationRule]"
           :color="color" hide-bottom-space />
       </DialogItemContainer>
-
-      <DialogItemContainer name-key="client.backOrder.reqQualification">
+      <DialogItemContainer name-key="settings.branch.prefectures">
         <q-select outlined dense :options="prefectureOption" v-model="branchData['prefecture']" bg-color="white"
           :label="$t('common.pleaseSelect')" emit-value map-options :rules="[creationRule]" :disable="loading"
           :color="color" hide-bottom-space />
       </DialogItemContainer>
 
       <DialogItemContainer name-key="settings.branch.phone">
-        <q-input v-model="branchData['phone']" :disable="loading" mask="phone" type="tel" name="tel" outlined dense
+        <q-input v-model="branchData['phone']" :disable="loading" type="tel" name="tel" outlined dense
           :color="color" hide-bottom-space />
       </DialogItemContainer>
 
@@ -67,10 +66,11 @@ const props = defineProps<{
   color: string
 }>()
 
-const branchData = ref<Partial<Branch>>(props.editBranch || {
+const branchData = ref<Partial<Branch>>(props.editBranch? JSON.parse(JSON.stringify(props.editBranch)) : {
   hidden: false,
   working: true
 })
+
 const loading = ref(false)
 const prefectureOption = ref(prefectureList);
 const organization = useOrganization()
@@ -94,7 +94,7 @@ async function addBranch() {
     data['licensesSlots'] = 0
     await branchStore.createBranch(data, currentOrganizationId, businessId.value)
     emit('closeDialog');
-    Alert.success();
+    ;
     loading.value = false;
   } catch (e) {
     console.log(e)
@@ -119,7 +119,7 @@ async function saveBranch() {
     }
     await branchStore.editBranch(branch, currentOrganizationId, props?.editBranch?.businessId, props.editBranch?.id)
     emit('closeDialog');
-    Alert.success();
+    ;
     loading.value = false;
   } catch (e) {
     emit('onCatchError')

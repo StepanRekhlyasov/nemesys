@@ -1,24 +1,47 @@
 import { QTableProps } from 'quasar'
 import { i18n } from 'boot/i18n'
 import { computed } from 'vue'
+import { InquiryMessage } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
+import { FieldValue, Timestamp } from 'firebase/firestore'
 
 const { t } = i18n.global
 
 export const dashboardNotificationTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
+      name: 'readBy',
+      field: 'readBy',
+      label: '',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'messageDirection',
+      field: '',
+      label: '',
+      align: 'center',
+      sortable: false,
+    },
+    {
       name: 'recievedDate',
       field: 'recievedDate',
-      label: t('inquiry.table.recievedDate'),
+      label: t('inquiry.table.recieve'),
       align: 'left',
-      sortable: true
+      sortable: true,
+    },
+    {
+      name: 'type',
+      field: 'type',
+      label: t('inquiry.table.notificationType'),
+      align: 'center',
+      sortable: true,
     },
     {
       name: 'category',
       field: 'category',
       label: t('inquiry.table.category'),
       align: 'left',
-      sortable: true
+      sortable: true,
     },
     {
       name: 'subject',
@@ -34,6 +57,19 @@ export const dashboardNotificationTableColumns = computed<QTableProps['columns']
     },
   ]
 })
+
+export interface DashboardinquiryRows {
+  id: string
+  status: string
+  category: string
+  subject: string
+  inquiryContent: string
+  organization?: string
+  recievedDate:  Timestamp
+  messages?: InquiryMessage[] | never[]
+  readBy?: string[] | FieldValue
+  type: string
+}
 export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() => {
   return [
     {
@@ -80,6 +116,118 @@ export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() 
     },
   ]
 })
+
+export const applicantTaskTableColumns = computed<QTableProps['columns']>(()=> [
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: t('client.backOrder.dateOfRegistration'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskType',
+    field: 'taskType',
+    label: t('task.taskType'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskStatus',
+    field: 'taskStatus',
+    label: t('task.taskStatus'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'applicantName',
+    field: 'applicantName',
+    label: t('task.applicantName'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'applicantStatus',
+    field: 'applicantStatus',
+    label: t('applicant.list.status'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'assignedUserName',
+    field: 'assignedUserName',
+    label: t('applicant.progress.filters.userInCharge'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskContent',
+    field: 'taskContent',
+    label: t('task.taskContent'),
+    align: 'left',
+    sortable: true
+  },
+])
+
+export const officeTaskTableColumns = computed<QTableProps['columns']>(()=> [
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: t('client.backOrder.dateOfRegistration'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskType',
+    field: 'taskType',
+    label: t('task.taskType'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskStatus',
+    field: 'taskStatus',
+    label: t('task.taskStatus'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'clientFactoryName',
+    field: 'clientFactoryName',
+    label: 'da',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'assignedUserName',
+    field: 'assignedUserName',
+    label: t('applicant.progress.filters.userInCharge'),
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'taskContent',
+    field: 'taskContent',
+    label: t('task.taskContent'),
+    align: 'left',
+    sortable: true
+  },
+])
+export const taskStatusOptions = computed(()=>[
+  {
+    label: t('task.statuses.new'),
+    value: 'new'
+  },
+  {
+    label: t('task.statuses.process'),
+    value: 'process'
+  },
+  {
+    label: t('task.statuses.finish'),
+    value: 'finish'
+  },
+])
+
 export const statusTitles = computed(()=>{
   return {
     'wait_contact': t('applicant.statusList.waitContact'),

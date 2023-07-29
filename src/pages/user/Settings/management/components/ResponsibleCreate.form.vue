@@ -123,10 +123,11 @@ async function addAccount() {
       timeout: 30000,
     }
   )
-    .then((response) => {
+    .then(async (response) => {
       if (response.status === 200) {
         emit('closeDialog');
-        Alert.success();
+        organization.state.currentOrganizationUsers = await organization.getCurrentUsersInChrage()
+        ;
         loading.value = false;
       } else {
         Alert.warning(response);

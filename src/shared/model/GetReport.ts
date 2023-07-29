@@ -1,33 +1,58 @@
 import { graphType } from '../types/totalization';
 import { typeOfQuery } from '../types/totalization';
 import { User, Branch } from 'src/shared/model';
+import { Media } from 'src/shared/model/Media.model';
 import { QueryFieldFilterConstraint } from 'firebase/firestore';
+
 export interface ReportState {
-  dateRange: { from: string; to: string };
+  dateRange: { from: string; to: string } | { from: Date; to: Date };
   dateType: graphType;
-  media?: string;
-  branch?: string;
+  media?: Media | string;
+  branch?: Branch | string;
   uid?: string;
   organizationId?: string;
+  occupation?: string;
+  day?: number;
 }
+
+export type queryNameType = Readonly<
+  {
+    readonly queryName: typeOfQuery;
+    readonly filtersInput?: readonly [QueryFieldFilterConstraint];
+    readonly fieldName?: string;
+  }[]
+>;
+
+export type queryNameTypeNotReadonly = {
+  queryName: typeOfQuery;
+  filtersInput?: QueryFieldFilterConstraint[];
+  fieldName?: string;
+}[];
 
 export interface reportStateAndOthers {
   reportState: ReportState;
-  isAverage:boolean;
-  queryNames: Readonly<typeOfQuery[]>;
+  isAverage: boolean;
+  queryNames: queryNameType | queryNameTypeNotReadonly;
 }
 
 export interface basedReportState {
-  dateRange: { from: string; to: string };
+  dateRange: { from: string; to: string } | { from: Date; to: Date };
   graphType: graphType;
-  queryNames: Readonly<typeOfQuery[]>;
+  queryNames: queryNameType | queryNameTypeNotReadonly;
   organizationId?: string;
   isAverage: boolean;
+  rateNames?: Readonly<Readonly<string[]>[]>;
+  occupation?: string;
 }
 
 export interface mediaBasedReportState extends basedReportState {
   media: string;
   branches: Branch[];
+}
+
+export interface branchBasedReportState extends basedReportState {
+  medias: Media[];
+  branch?: string;
 }
 
 export interface userBasedReportState extends basedReportState {
@@ -49,4 +74,13 @@ export interface FieldDict {
   readonly branchField?: string;
   readonly mediaField: string;
   readonly uidField?: string;
+  readonly occupationField?: string;
+  readonly organizationIdField?: string;
+}
+
+export interface GetAgeReportInput {
+  dateRange: { from: string; to: string };
+  media?: Media;
+  branch?: Branch;
+  organizationId?: string;
 }

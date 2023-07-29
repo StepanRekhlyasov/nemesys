@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps } from 'vue';
-
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { defineEmits, ref } from 'vue';
+import TaskRegister from '../../Applicant/components/TaskRegister.vue';
+import { ClientFactory } from 'src/shared/model';
 
 defineProps<{
-    clientFactory: ClientFactory
-}>();
-
+  clientFactory: ClientFactory,
+}>()
+const emit = defineEmits<{
+    (e: 'openFaxDrawer')
+}>()
+const openFaxDrawer = () =>{
+    emit('openFaxDrawer')
+}
 const { t } = useI18n({ useScope: 'global' });
+const openTaskRegister = ref(false)
 </script>
 
 <template>
@@ -71,16 +77,20 @@ const { t } = useI18n({ useScope: 'global' });
 
             <div class="info-footer__column text-right">
                 <div class="full-width">
-                    <q-btn size="sm" outline color="primary" style="width: 5rem;">
-                        BO登録
-                    </q-btn>
+                  <q-btn outline size="sm" :label="$t('task.taskRegister')" color="primary" @click="openTaskRegister = true" />
                 </div>
                 <div class="full-width">
-                    <q-btn size="sm" outline color="primary" class="q-mt-sm" style="width: 5rem;">
+                    <q-btn size="sm" outline color="primary" class="q-mt-sm" @click="openFaxDrawer" style="width: 5rem;">
                         FAX送信
                     </q-btn>
                 </div>
             </div>
+            <task-register 
+              :entity="'office'"
+              :entityData="clientFactory"
+              v-model="openTaskRegister" 
+              @closeDrawer="openTaskRegister=false" 
+            />
     </div>
 </template>
 
