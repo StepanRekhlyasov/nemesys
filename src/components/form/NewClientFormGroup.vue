@@ -104,7 +104,7 @@ defineExpose({
                     <AddressSection v-model="addressSection" :theme="theme"/>
                     <ClientInformation v-model="clientInfo" :theme="theme"/>
                     <ClientType v-model="clientTypes" :theme="theme"/>
-                    <FacilityType v-model="facilityTypes" :theme="theme"/>
+                    <FacilityType v-model="facilityTypes" :industries="clientTypes" :theme="theme"/>
                     <HeadOfficeInformation v-model="headInfoSection" :theme="theme"/>
                     <ContractInfo v-model="contractInfo" :theme="theme"/>
                 </q-list>
