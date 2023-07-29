@@ -112,7 +112,7 @@
   </q-table>
   <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :client_id="clientId" :office_id="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
+    <createBO :clientId="clientId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
   </q-drawer>
   <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
     selectedClient = clientValue
