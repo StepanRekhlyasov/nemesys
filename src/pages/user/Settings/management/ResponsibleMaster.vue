@@ -19,7 +19,7 @@
     <q-card-section class="q-pa-none">
       <q-form ref="formRef" @submit.prevent>
         <q-table :columns="columns" :rows="usersListData" row-key="id" :rows-per-page-options="[0]" hide-pagination
-          class="no-shadow" :loading="loading" :visible-columns="visibleColumns">
+          class="no-shadow" :loading="loading" :visible-columns="visibleColumns" binary-state-sort>
 
           <template v-slot:body-cell-edit="props">
             <EditButton :props="props" :color="color" cancelButton
@@ -103,10 +103,12 @@
           </template>
         </q-table>
       </q-form>
-      <div class="row justify-start q-mt-md q-mb-md pagination">
-        <TablePagination :isAdmin="isAdmin" ref="paginationRef" :pagination="pagination"
-          @on-data-update="(user) => onDataUpdate(user as User[])" @on-loading-state-change="(v) => loading = v"
-          :disable="!sortable" />
+      <div class="row justify-start q-mt-md pagination q-ml-sm">
+        <TablePaginationSimple :pagination="pagination" :is-admin="isAdmin"
+          :max="(usersListData.length / pagination.rowsPerPage) >= 1 ? Math.ceil(usersListData.length / pagination.rowsPerPage) : 1"
+          @on-data-update="async (page) => {
+            pagination.page = page
+          }" />
       </div>
     </q-card-section>
   </q-card>
@@ -118,8 +120,8 @@
 </template>
 
 <script setup lang="ts">
-import { orderBy, serverTimestamp, Timestamp } from '@firebase/firestore';
-import { onBeforeMount, Ref, ref, watch } from 'vue';
+import { serverTimestamp } from '@firebase/firestore';
+import { onBeforeMount, Ref, ref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Role, User } from 'src/shared/model/Account.model';
 import { toDateObject } from 'src/shared/utils/utils';
@@ -135,8 +137,7 @@ import SearchField from 'src/components/SearchField.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import { filterRoles, getConstraints, getVisibleColumns } from './handlers/ResponsibleMaster';
 import { useUserStore } from 'src/stores/user';
-import TablePagination from 'src/components/pagination/TablePagination.vue'
-import { PaginationExposedMethods } from 'src/components/pagination/types';
+import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 import { ResponsibleMasterColumns as columns, sortable } from './consts/ResponsibleMasterColumns'
 import { useBranch } from 'src/stores/branch';
 import { useRole } from 'src/stores/role';
@@ -165,16 +166,21 @@ const textColor = isAdmin ? 'accent' : 'black'
 const formRef = ref<QForm | null>(null)
 
 const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
   rowsPerPage: 100,
-  path: 'users',
-  order: orderBy('name', 'asc'),
-  constraints: getConstraints(isAdmin, organization.currentOrganizationId)
 });
 
 const userStore = useUserStore()
 const rolesData = ref<Role[]>([])
 
 const visibleColumns = ref<string[]>()
+
+onMounted(async () => {
+  await loadUsers()
+})
+
 onBeforeMount(async () => {
   visibleColumns.value = getVisibleColumns(columns.value, isAdmin)
   rolesData.value = await roleStore.getAllRoles()
@@ -183,14 +189,15 @@ onBeforeMount(async () => {
   }
 })
 
-const paginationRef = ref<PaginationExposedMethods | null>(null)
-
 watch(() => organization.currentOrganizationId, async () => {
-  const newConstraints = getConstraints(isAdmin, organization.currentOrganizationId)
-  paginationRef.value?.setConstraints(newConstraints)
-  paginationRef.value?.queryFirstPage()
+  await loadUsers();
 })
 
+const loadUsers = async () => {
+  const constraints = getConstraints(isAdmin, organization.currentOrganizationId)
+  const users = await userStore.getAllUsers('', '', constraints)
+  onDataUpdate(users as User[])
+}
 function setUsers(users: User[]) {
   let userList: User[] = [];
   users?.forEach((doc) => {
@@ -210,10 +217,12 @@ function onDataUpdate(users: User[]) {
   filterRoles(list, isAdmin)
 
   roles.value = list;
+  loading.value = false
 }
 
 async function refresh() {
-  await paginationRef.value?.refreshPage()
+  await loadUsers()
+  pagination.value.page = 1
 }
 
 async function searchUsers() {
@@ -291,7 +300,7 @@ async function deleteAccount(user: User) {
         updated_at: serverTimestamp()
       })
       await refresh();
-      
+
     } catch (e) {
       console.log(e)
       Alert.warning(e)
