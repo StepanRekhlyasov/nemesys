@@ -26,15 +26,15 @@ async function onPageUpdate(newPage: number) {
 
 <template>
   <div class="pagination">
-    <q-pagination :model-value="currentPage"
+    <q-pagination v-model="currentPage"
       @update:model-value="async (newPage) => { await onPageUpdate(newPage); currentPage = newPage }" gutter="md"
       size="18px" color="white" text-color="black" active-text-color="white" :active-color="color" :max="props.max"
-      outline direction-links :ellipses="false" :boundary-numbers="true" v-bind="$attrs" />
+      outline direction-links boundary-numbers v-bind="$attrs" :max-pages="10" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .pagination {
-  padding: 2% 2%;
+  padding: 1% 1%;
 }
 </style>

@@ -112,7 +112,7 @@ const showDeleteDialog = async (ids: string[]) => {
       memoListData.value = data.map(row => {
     return { ...row, selected: false };
   });
-     Alert.success()
+     
   });
 };
  const deleteSelected = () => {
@@ -130,7 +130,7 @@ const showDeleteDialog = async (ids: string[]) => {
     loading.value = false;
     data.value = {};
     await fetchMemoData()
-    Alert.success();
+    ;
   } catch (error) {
     console.log(error);
     loading.value = false;

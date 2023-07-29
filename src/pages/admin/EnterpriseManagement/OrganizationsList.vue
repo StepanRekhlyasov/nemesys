@@ -21,7 +21,8 @@
       await forceReRender()
     }" />
   <q-form ref="formRef" @submit.prevent>
-    <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination :rows-per-page-options="[0]">
+    <q-table flat :columns="columns" :loading="loading" :rows="rows" hide-pagination :rows-per-page-options="[0]"
+      v-model:pagination="pagination" binary-state-sort>
       <template v-slot:header-cell-organizationCodeAndName="props">
         <q-th :props="props" class="no-breaks items-center row">
           {{ props.col.label }}
@@ -47,7 +48,7 @@
 
           <q-td>
             <template v-if="!isRowSelected(props.rowIndex)">
-              {{ props.row.organizationCodeAndName.split(' ')?.[0] }} <br/>
+              {{ props.row.organizationCodeAndName.split(' ')?.[0] }} <br />
               {{ props.row.organizationCodeAndName.split(' ')?.[1] }}
             </template>
             <q-input v-else v-model:model-value="editableRow!.name" color="accent" :rules="[creationRule]"
@@ -59,7 +60,7 @@
               {{ props.row.operatorName || props.row.operatorUser || t('common.userNotFound') }}
             </template>
             <q-input v-else v-model="editableRow!.operatorUser" dense color="accent" :rules="[creationRule]"
-            :disable="loading" hide-bottom-space/>
+              :disable="loading" hide-bottom-space />
           </q-td>
 
           <InputCell :editing="isRowSelected(props.rowIndex)" :text="props.row.tel"
@@ -103,45 +104,44 @@
       </template>
     </q-table>
   </q-form>
-  <div class="row justify-start q-mt-md q-mb-md pagination">
-    <TablePagination :isAdmin="true" ref="paginationRef" :pagination="pagination" @on-data-update="async (newData) => {
-      rows = await mapOrganizationsToRow(newData as Organization[])
-      await forceReRender()
-    }" @on-loading-state-change="(v) => loading = v" :disable="!sortable" />
+  <div class="row justify-start q-mt-md pagination q-ml-sm">
+    <TablePaginationSimple :pagination="pagination" :is-admin="true"
+      :max="(rows.length / pagination.rowsPerPage) >= 1 ? Math.ceil(rows.length / pagination.rowsPerPage) : 1"
+      @on-data-update="async (page) => {
+        pagination.page = page
+      }" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { QForm, QInput } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import EditButton from 'src/components/EditButton.vue';
 import PageHader from 'src/components/PageHeader.vue'
 import SearchField from 'src/components/SearchField.vue';
-import { orderBy } from '@firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import InputCell from './InputCell.vue';
 import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
 import { invoiceRequestOptions, mapOrganizationsToRow } from './handlers/handlers';
-import { DialogType, Row, Rows } from './types'
+import { DialogType, Row } from './types'
 import { rowToOrganization } from './handlers/handlers'
 import ExpandedTable from './ExpandedTable.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import AddDialog from './AddDialog.vue';
 import { useOrganization } from 'src/stores/organization';
-import TablePagination from 'src/components/pagination/TablePagination.vue'
+import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 import { Organization } from 'src/shared/model';
 import { columns, sortable } from './consts/OrganizationsListColumns'
 import { validateEmail } from 'src/shared/constants/Form.const';
 import { creationRule } from 'src/components/handlers/rules';
 
 const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
   rowsPerPage: 100,
-  path: 'organization',
-  order: orderBy('name', 'asc')
 });
-
-const paginationRef = ref<InstanceType<typeof TablePagination> | null>(null)
 
 const closeDialog = ref(true)
 
@@ -159,11 +159,16 @@ const loading = ref(true)
 const organizationStore = useOrganization()
 
 const editableRow = ref<Row>()
-const rows = ref<Rows>([])
+const rows = ref<Organization[]>([])
+const copyRows = ref<Organization[]>([])
 
 const isEqual = ref(false)
 
 const renderComponent = ref(true);
+
+onMounted(async () => {
+  loadOrganizations()
+})
 
 const forceReRender = async () => {
   renderComponent.value = false;
@@ -187,16 +192,32 @@ async function onRowSave(props: { row: Row, rowIndex: number }) {
 
 async function searchOrganizations(name: string) {
   loading.value = true
-  const organizations = await organizationStore.getOrganizationsByName(name)
+
+  if (!name) {
+    loading.value = false
+    return
+  }
+  const organizations = [...copyRows.value].filter(function (el) {
+    return el['name'].includes(name) || el['code'].includes(name)
+  });
+
   rows.value = await mapOrganizationsToRow(organizations)
   loading.value = false
 }
 
 async function refresh() {
-  await paginationRef.value?.refreshPage()
   search.value = ''
+  loadOrganizations()
+
 }
 
+async function loadOrganizations() {
+  loading.value = true;
+  const organizations = await organizationStore.getAllOrganizations();
+  copyRows.value = organizations;
+  rows.value = await mapOrganizationsToRow(organizations)
+  loading.value = false;
+}
 
 function isRowSelected(row: number) {
   return row == editableRowNumber.value
@@ -209,14 +230,14 @@ async function editOrganization(row: Row | undefined, rowIndex: number) {
 
   loading.value = true;
   rows.value[rowIndex] = row
-  rows.value[rowIndex].organizationCodeAndName = row.code + ' ' + row.name
+  rows.value[rowIndex]['organizationCodeAndName'] = row.code + ' ' + row.name
 
   try {
     const organization = rowToOrganization(row)
     await organizationStore.editOrganization(organization, row.id)
     await refresh()
     loading.value = false;
-    Alert.success()
+
   } catch (error) {
     Alert.warning(error);
     console.log(error)

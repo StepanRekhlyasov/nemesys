@@ -493,6 +493,9 @@ export const useApplicant = defineStore('applicant', () => {
   async function getApplicantById(id: string) {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
+    if(!result.data()){
+      return undefined
+    }
     return { ...result.data(), id: result.id } as Applicant
   }
 
@@ -526,7 +529,7 @@ export const useApplicant = defineStore('applicant', () => {
         updated_at: serverTimestamp(),
         ...saveData
       })
-      Alert.success();
+      ;
     } catch (e) {
       Alert.warning(e);
     }

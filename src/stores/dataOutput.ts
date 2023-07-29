@@ -43,7 +43,7 @@ export const useDataOutput = defineStore('dataOutput', () => {
         };
         xhr.open('GET', url);
         xhr.send();
-        Alert.success()
+        
     };
     function getFileName(exportName: string): string {
         const now: Date = new Date();

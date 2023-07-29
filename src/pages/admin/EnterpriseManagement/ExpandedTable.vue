@@ -44,7 +44,7 @@
   <q-dialog v-model="deleteConfirm" persistent @hide="deleteBusinessData=''; deleteOrganizationId=''">
       <q-card>
         <q-card-section class="row items-center">
-          <span class="q-ml-sm">{{ $t('common.deleteInfo') }}</span>
+          <span class="q-ml-sm">{{ $t('common.deleteBusiness') }}</span>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat :label="$t('common.cancel')" color="primary" v-close-popup />
@@ -110,7 +110,7 @@ async function deleteBusinessHandler(){
   if(deleteItem.value === 'business'){
     try {
       await business.deleteBusiness(deleteOrganizationId.value, deleteBusinessData.value.id)
-      Alert.success();
+      ;
       await loadTableData();
     } catch (error) {
       Alert.warning(error);
@@ -118,7 +118,7 @@ async function deleteBusinessHandler(){
   } else {
     try {
       await business.deleteBranch(deleteOrganizationId.value, deleteBusinessData.value.id, deleteBranchId.value)
-      Alert.success();
+      ;
       await loadTableData();
     } catch (error) {
       Alert.warning(error);
@@ -153,7 +153,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
 
     if (working) {
       loading.value = false
-      Alert.success();
+      ;
       return
     }
 
@@ -161,7 +161,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
 
     if (!organizations) {
       loading.value = false
-      Alert.success();
+      ;
       return
     }
 
@@ -189,7 +189,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
         }
       }
     }
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

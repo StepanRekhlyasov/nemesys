@@ -28,7 +28,10 @@ const formRef = ref<QForm | null>(null);
 
 const newClientFactory = ref<Omit<ClientFactory, 'id'>>({} as Omit<ClientFactory, 'id'>)
 const clientFactoryName = ref('')
-const parentClient = ref('')
+const parentClient = ref({
+    parentClient: '',
+    selectedIndustry: ''
+})
 const addressSection = ref({
     prefecture: prefectureList.value[0].value,
     municipality: '',
@@ -64,7 +67,7 @@ const validateAndSubmit = async () => {
         newClientFactory.value = {
             name: clientFactoryName.value,
             isHead: false,
-            clientID: parentClient.value,
+            clientID: parentClient.value.parentClient,
             ...addressSection.value,
             ...clientFactoryInfo.value,
             ...inChargeInfo.value,
@@ -73,7 +76,7 @@ const validateAndSubmit = async () => {
             clientFlag: parentClient.value ? true : false,
             basicInfoChangingFlag: false,
             distance: 0,
-            industry: [],
+            industry: [parentClient.value.selectedIndustry],
             address: addressSection.value.prefecture + ' ' +  addressSection.value.municipality + ' ' + addressSection.value.street + ' ' + addressSection.value.building,
             officeDetails: {
                 registeredInfo: {
@@ -83,7 +86,7 @@ const validateAndSubmit = async () => {
                     longitude: addressSection.value.lon,
                     street: addressSection.value.street,
                     building: addressSection.value.building,
-                    parentClient: parentClient.value
+                    parentClient: parentClient.value.parentClient
                 },
                 commonItems: {}
             } as ClientFactory['officeDetails'],
@@ -109,11 +112,11 @@ defineExpose({
                 <q-card-section class="q-pa-none q-pt-sm scroll">
                     <q-list>
                         <ClientFactoryName v-model="clientFactoryName" :theme="theme"/>
-                        <ParentClient v-model="parentClient" :theme="theme"/>
+                        <ParentClient v-model="parentClient" :theme="theme" :isParentIndustry="true"/>
                         <AddressSection v-model="addressSection" :theme="theme"/>
                         <ClientFactoryInfo v-model="clientFactoryInfo" :theme="theme"/>
                         <ContractInfo v-model="contractInfo" :theme="theme"/>
-                        <FacilityType v-model="facilityTypes" :theme="theme"/>
+                        <FacilityType v-model="facilityTypes" :industryName="parentClient.selectedIndustry" :theme="theme"/>
                         <ContactInfo v-model="inChargeInfo" :theme="theme"/>
 
                     </q-list>

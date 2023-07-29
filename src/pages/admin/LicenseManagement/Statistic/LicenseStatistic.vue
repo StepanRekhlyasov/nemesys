@@ -119,7 +119,7 @@ async function loadCurrentData() {
       branches[branch.businessId].push(branch)
     }
 
-    data.value.push(toTable(businesses, branches, organizations[0], { deleteBusinessWithoutBranch: true }))
+    data.value.push(toTable(businesses, branches, organizations[0]))
   })
 }
 
@@ -137,7 +137,7 @@ async function onDateChange(date: string) {
       const month = parseInt(monthString)
       await loadDataInMonth(year, month)
     }
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }
