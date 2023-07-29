@@ -176,6 +176,7 @@ export default {
     KPI: 'KPI',
     faxHistory: 'FAX送信履歴',
     admin: {
+      usersManagement: 'ユーザー管理',
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',

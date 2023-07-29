@@ -91,6 +91,10 @@ export const adminMenuParent: MenuParentType[] = [
     title: 'menu.admin.enterpriseManagement',
     icon: 'mdi-office-building-outline'
   },{
+    type: MenuParent.AdminUsers,
+    title: 'menu.admin.usersManagement',
+    icon: 'mdi-account-multiple'
+  },{
     type: MenuParent.AdminAggregationData,
     title: 'menu.admin.aggregationData',
     icon: 'mdi-chart-box-plus-outline',

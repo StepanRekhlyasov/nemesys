@@ -176,6 +176,7 @@ export default {
     KPI: 'KPI',
     faxHistory: 'FAX History',
     admin: {
+      usersManagement: 'Users management',
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
