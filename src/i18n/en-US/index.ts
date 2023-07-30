@@ -433,6 +433,8 @@ export default {
       allTeleAppointedCompanies: 'All tele-appointed companies',
       connectedCompanies: 'Connected companies only',
       companiesOutService: 'Only companies that are all out of service',
+      addConditions : 'Add Conditions',
+      resetConditions: 'Reset Conditions',
       saveSearchConditions: 'Save Search Conditions',
       areaSearch: 'Area Search',
       listPrefectures: 'List of prefectures',

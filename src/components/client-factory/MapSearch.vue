@@ -114,30 +114,24 @@ const getColor = (clientFactoryId: string) => {
   }
   return 'white'
 }
-const searchClientsByCondition = () =>{
+const searchClientsByCondition = async() =>{
   if(props.from=='advance'){
     emit('hideDrawer')
     advanceSearch.advanceMapSelected=true;
     advanceSearch.advanceMapCFs=officeData.value;
+    return;
   }
-  else if(advanceSearch.mapSelected){
-    const office = advanceSearch.getCFsId(officeData.value,'map');
-    clientFactoryStore.condition = true
-    clientFactoryStore.selectedCFsId = []
-    office.forEach((id)=>{
-      clientFactoryStore.selectedCFsId.push(id)
-    })
-    router.push('/client-factories')
+  let office:string[] = []
+  officeData.value.forEach((data)=>{
+    const id = data.id || '';
+    office.push(id)
+  })
+  if(advanceSearch.mapCSelected){
+    office = await advanceSearch.searchClients(office,'map');
   }
-  else{
-    clientFactoryStore.condition = true
-    clientFactoryStore.selectedCFsId = []
-    officeData.value.forEach((item)=>{
-      const id:string = item.id || ''
-      clientFactoryStore.selectedCFsId.push(id)
-    })
-    router.push('/client-factories')
-  }
+  clientFactoryStore.condition = true
+  clientFactoryStore.selectedCFsId = office
+  router.push('/client-factories')
 }
 watch([clientFactories], () => {
   clientFactoriesList.value = []
@@ -173,18 +167,23 @@ const clearRadius = () => {
   inputRadiusKm.value = 0
 }
 const drrawer = ref(false)
+const advanceSearchKey = ref<number>(0)
 const openCSDrawer = () =>{
   drrawer.value = true
 }
 const hideCSDrawer = () =>{
   drrawer.value = false
 }
+const resetConditionData = () => {
+  advanceSearch.resetMap()
+  advanceSearchKey.value = advanceSearchKey.value === 0 ? 1 : 0
+}
 </script>
 
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-card-actions v-if="props.from == 'advance'">
-      <q-btn label="add conditions" unelevated color="primary" class="no-shadow text-weight-bold"
+      <q-btn :label="$t('client.list.addConditions')" unelevated color="primary" class="no-shadow text-weight-bold"
           icon="add" @click="searchClientsByCondition"/>
     </q-card-actions>
     <q-card-actions v-else>
@@ -192,8 +191,8 @@ const hideCSDrawer = () =>{
         class="no-shadow text-weight-bold" icon="add" @click="openCSDrawer"/>
       <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
         @click="searchClientsByCondition" />
-      <q-btn label="Reset Condtions" outline color="red" class="text-weight-bold"
-        @click="advanceSearch.resetMap" v-if="advanceSearch.mapSelected"/>
+      <q-btn :label="$t('client.list.resetConditions')" outline color="red" class="text-weight-bold"
+        @click="resetConditionData" v-if="advanceSearch.mapCSelected"/>
     </q-card-actions>
     <div style="height: 5px;">
       <q-separator v-if="!isLoadingProgress" />
@@ -244,7 +243,7 @@ const hideCSDrawer = () =>{
         </div>
       </div>
     </q-card-section>
-    <AdvanceSearchDrawer from="map" :isDrawer="drrawer" :width="900" @hide-c-s-drawer="hideCSDrawer"/>
+    <AdvanceSearchDrawer from="map" :isDrawer="drrawer" :width="900" @hide-c-s-drawer="hideCSDrawer" :key="advanceSearchKey"/>
   </q-card>
 </template>
 

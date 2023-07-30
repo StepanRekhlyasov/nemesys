@@ -430,6 +430,8 @@ export default {
       allTeleAppointedCompanies: 'テレアポした企業全て',
       connectedCompanies: '接電した企業のみ',
       companiesOutService: '全て不通の企業のみ',
+      addConditions: '条件を追加',
+      resetConditions: 'リセット条件',
       saveSearchConditions: '検索条件保存',
       areaSearch: 'エリア検索',
       listPrefectures: '都道府県一覧',

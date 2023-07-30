@@ -129,7 +129,7 @@ const searchClients = async () => {
         }
 
         const token = await user.getIdToken();
-        
+
         let data = { 'wards': selectedWards.value, 'prefectures': selectedPrefectures.value }
         if (searchInput.value) {
             data['prefectures'].push(searchInput.value);
@@ -150,23 +150,7 @@ const searchClients = async () => {
         )
         officeData.value = response.data
         isLoadingProgress.value = false
-        if(props.from=='advance'){
-            advanceSearch.advanceAreaSelected=true;
-            advanceSearch.advanceAreaCFs=officeData.value;
-            emit('hideDrawer')
-        }
-        else if(advanceSearch.areaSelected){
-            const office = advanceSearch.getCFsId(officeData.value,'area');
-            clientFactoryStore.condition = true
-            clientFactoryStore.selectedCFsId = []
-            office.forEach((id)=>{
-                clientFactoryStore.selectedCFsId.push(id)
-            })
-            router.push('/client-factories')
-        }
-        else{
-            searchClientsByCondition()
-        }
+        searchClientsByCondition()
     } catch (error) {
         isLoadingProgress.value = false
 
@@ -174,13 +158,23 @@ const searchClients = async () => {
     }
 };
 
-const searchClientsByCondition = () => {
-    clientFactoryStore.condition = true
-    clientFactoryStore.selectedCFsId = []
+const searchClientsByCondition = async () => {
+    if (props.from == 'advance') {
+        advanceSearch.advanceAreaSelected = true;
+        advanceSearch.advanceAreaCFs = officeData.value;
+        emit('hideDrawer')
+        return;
+    }
+    let office: string[] = [];
     officeData.value.forEach((item) => {
-        const id: string = item.id || ''
-        clientFactoryStore.selectedCFsId.push(id)
+        const id: string = item['id'] || ''
+        office.push(id)
     })
+    if (advanceSearch.areaCSelected) {
+        office = await advanceSearch.searchClients(office, 'area');
+    }
+    clientFactoryStore.condition = true
+    clientFactoryStore.selectedCFsId = office
     router.push('/client-factories')
 }
 
@@ -223,27 +217,32 @@ const removeSearchKeyword = (value: never) => {
     }
 }
 const drrawer = ref(false)
-const openCSDrawer = () =>{
-  drrawer.value = true
+const advanceSearchKey = ref<number>(0)
+const openCSDrawer = () => {
+    drrawer.value = true
 }
-const hideCSDrawer = () =>{
-  drrawer.value = false
+const hideCSDrawer = () => {
+    drrawer.value = false
+}
+const resetConditionData = () => {
+  advanceSearch.resetArea()
+  advanceSearchKey.value = advanceSearchKey.value === 0 ? 1 : 0
 }
 </script>
 
 <template>
     <q-card class="no-shadow full-height q-pb-sm">
         <q-card-actions v-if="props.from == 'advance'">
-            <q-btn label="add conditions" unelevated color="primary" class="no-shadow text-weight-bold"
-                icon="add" @click="searchClients" />
+            <q-btn :label="$t('client.list.addConditions')" unelevated color="primary" class="no-shadow text-weight-bold" icon="add"
+                @click="searchClients" />
         </q-card-actions>
         <q-card-actions v-else>
             <q-btn unelevated :label="$t('client.list.conditionalSearch')" :color="props.theme"
-                class="no-shadow text-weight-bold" icon="add" @click="openCSDrawer"/>
+                class="no-shadow text-weight-bold" icon="add" @click="openCSDrawer" />
             <q-btn :label="$t('client.list.searchByCondition')" outline :color="props.theme" class="text-weight-bold"
                 @click="searchClients" />
-            <q-btn label="Reset Condtions" outline color="red" class="text-weight-bold"
-                @click="advanceSearch.resetArea" v-if="advanceSearch.areaSelected"/>
+            <q-btn :label="$t('client.list.resetConditions')" outline color="red" class="text-weight-bold" @click="resetConditionData"
+                v-if="advanceSearch.areaCSelected" />
         </q-card-actions>
         <div style="height: 5px;">
             <q-separator v-if="!isLoadingProgress" />
@@ -278,7 +277,7 @@ const hideCSDrawer = () =>{
         </q-list>
         <q-separator />
     </q-card>
-    <AdvanceSearchDrawer from="area" :isDrawer="drrawer" :width="900" @hide-c-s-drawer="hideCSDrawer"/>
+    <AdvanceSearchDrawer from="area" :isDrawer="drrawer" :width="900" @hide-c-s-drawer="hideCSDrawer" :key="advanceSearchKey"/>
 </template>
 
 <style lang="scss" scoped></style>

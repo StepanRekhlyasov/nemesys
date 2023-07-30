@@ -1,31 +1,34 @@
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-form class="q-gutter-none" @submit="searchClients">
-      <q-card-actions v-if="props.from==''">
+      <q-card-actions v-if="props.from == ''">
         <q-btn :label="$t('client.list.settingFromMap')" unelevated color="primary" class="no-shadow text-weight-bold"
-          icon="add" @click="openMapDrawer"/>
+          icon="add" @click="openMapDrawer" />
         <q-btn :label="$t('client.list.settingFromArea')" unelevated color="primary" class="no-shadow text-weight-bold"
-          icon="add" @click="openAreaDrawer"/>
+          icon="add" @click="openAreaDrawer" />
         <q-btn :label="$t('client.list.searchByCondition')" type="submit" outline color="primary"
           class="text-weight-bold" />
       </q-card-actions>
       <q-card-actions v-else>
-        <q-btn label="add conditions" unelevated color="primary" class="no-shadow text-weight-bold"
-          icon="add" @click="addCondition"/>
+        <q-btn :label="$t('client.list.addConditions')" unelevated color="primary" class="no-shadow text-weight-bold" icon="add"
+          @click="addCondition" />
       </q-card-actions>
-      <q-separator />
 
+      <div style="height: 5px;">
+        <q-separator v-if="!isLoadingProgress" />
+        <q-linear-progress v-if="isLoadingProgress" indeterminate rounded color="primary" />
+      </div>
       <q-card-actions>
         <q-select outlined v-model="backOrderData['saved']" dense :label="$t('client.list.savedSearchList')"
           style="width: 250px" />
         <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" />
-        <q-btn outline color="red" v-if="props.from=='' && advanceSearch.advanceMapSelected">
+        <q-btn outline color="red" v-if="props.from == '' && advanceSearch.advanceMapSelected">
           MapCFs: {{ advanceSearch.advanceMapCFs.length }}
-          <q-icon name="close" @click="advanceSearch.resetAdvanceMap"/>
+          <q-icon name="close" @click="advanceSearch.resetAdvanceMap" />
         </q-btn>
-        <q-btn outline color="red" v-if="props.from=='' && advanceSearch.advanceAreaSelected">
+        <q-btn outline color="red" v-if="props.from == '' && advanceSearch.advanceAreaSelected">
           AreaCFs: {{ advanceSearch.advanceAreaCFs.length }}
-          <q-icon name="close" @click="advanceSearch.resetAdvanceArea"/>
+          <q-icon name="close" @click="advanceSearch.resetAdvanceArea" />
         </q-btn>
       </q-card-actions>
       <q-separator />
@@ -223,8 +226,8 @@
                       {{ $t('client.list.postingStartDate') }}
                     </q-item-label>
                     <div>
-                      <q-input outlined dense v-model="backOrderData[dispatch.value]['postingStartDate'][record.value]" mask="date" clearable
-                        clear-icon="close">
+                      <q-input outlined dense v-model="backOrderData[dispatch.value]['postingStartDate'][record.value]"
+                        mask="date" clearable clear-icon="close">
                         <template v-slot:append>
                           <q-icon name="event" class="cursor-pointer">
                             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -245,8 +248,8 @@
                       {{ $t('client.list.postingEndDate') }}
                     </q-item-label>
                     <div>
-                      <q-input outlined dense v-model="backOrderData[dispatch.value]['postingEndDate'][record.value]" mask="date" clearable
-                        clear-icon="close">
+                      <q-input outlined dense v-model="backOrderData[dispatch.value]['postingEndDate'][record.value]"
+                        mask="date" clearable clear-icon="close">
                         <template v-slot:append>
                           <q-icon name="event" class="cursor-pointer">
                             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -266,7 +269,8 @@
                       {{ record.label }}
                     </q-item-label>
                     <div>
-                      <q-input outlined dense v-model="backOrderData[dispatch.value]['quantity'][record.value]" type="number" />
+                      <q-input outlined dense v-model="backOrderData[dispatch.value]['quantity'][record.value]"
+                        type="number" />
                     </div>
                   </div>
                 </div>
@@ -287,7 +291,7 @@
                 </q-item-label>
                 <div class="row q-pb-sm">
                   <div class="col-2">
-                    <q-input outlined dense v-model="backOrderData['client_name']" type="number">
+                    <q-input outlined dense v-model="backOrderData[employee.value]" type="number">
                       <template v-slot:after>
                         <span class="text-caption">{{ $t('common.moreThan') }}</span>
                       </template>
@@ -315,11 +319,11 @@
               </q-item-label>
               <div class="q-gutter-sm q-mt-xs">
                 <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                  val="teleAppointment" :label="$t('client.list.allTeleAppointedCompanies')" />
+                  val="exist" :label="$t('client.list.allTeleAppointedCompanies')" />
                 <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                  val="viaFax" :label="$t('client.list.connectedCompanies')" />
+                  val="connected" :label="$t('client.list.connectedCompanies')" />
                 <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                  val="others" :label="$t('client.list.companiesOutService')" />
+                  val="notConnected" :label="$t('client.list.companiesOutService')" />
               </div>
             </q-item-section>
           </q-item>
@@ -345,88 +349,41 @@
 
 
   </q-card>
-  <MapDrawer :isDrawer="mapDrawer" from="advance" :width=900 @hide-drawer="hideMapDrawer" v-if="props.from==''"/>
-  <AreaSearchDrawer :isDrawer="areaDrawer" from="advance" :width=900 @hide-drawer="hideAreaDrawer" v-if="props.from==''"/>
+  <MapDrawer :isDrawer="mapDrawer" from="advance" :width=900 @hide-drawer="hideMapDrawer" v-if="props.from == ''" />
+  <AreaSearchDrawer :isDrawer="areaDrawer" from="advance" :width=900 @hide-drawer="hideAreaDrawer"
+    v-if="props.from == ''" />
 </template>
 
 <script lang="ts" setup>
-import { defineProps, withDefaults, defineEmits, reactive, computed, watch, ref } from 'vue';
+import { defineProps, withDefaults, defineEmits, computed, watch, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { facilityList } from 'src/shared/constants/Organization.const';
-import { getAuth } from '@firebase/auth';
-import { api } from 'src/boot/axios';
-import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
-import {
-  addDoc,
-  collection,
-  getFirestore,
-  serverTimestamp,
-  Timestamp,
-  query,
-  where,
-  onSnapshot,
-  DocumentData,
-  getDocs,
-  doc,
-} from 'firebase/firestore';
+import {  getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
 const db = getFirestore();
 const props = withDefaults(defineProps<{
-    from: string
+  from: string
 }>(), {
-    from: ''
+  from: ''
 })
 const emit = defineEmits<{
-    (e: 'hideCSDrawer')
+  (e: 'hideCSDrawer')
 }>()
+const isLoadingProgress = ref(false)
 const advanceSearch = useAdvanceSearch()
 const router = useRouter()
 const clientFactoryStore = useClientFactory()
 const { t } = useI18n({ useScope: 'global' });
-// const dateData = ref({
-//   'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-//   'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-//   'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''}
-// })
-const backOrderData = reactive({
-  client_name: '',
-  industry: [],
-  facilityType: [],
-  basic_contract_signed: false,
-  avail_job_postings: false,
-  status: [],
-  dispatchRecord :{
-    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-  },
-  referralResults :{
-    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-  },
-  dispatchedOtherCompanies:{
-    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-  },
-  otherCompanyReferralResults:{
-    'postingStartDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'postingEndDate':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-    'quantity':{'numBOs':'','numFixResults':'','jobSearchResults':'','numJobOffers':'','hiringRecord':''},
-  },
-});
-if(props.from=='map'){
-  backOrderData['client_name'] = advanceSearch.mapConditionData['keyword'] || '';
-  backOrderData['industry'] = advanceSearch.mapConditionData['industry'] || [];
+let backOrderData = advanceSearch.advanceConditionData
+if (props.from === 'map') {
+  backOrderData = advanceSearch.mapConditionData;
 }
-else if(props.from=='area'){
-  backOrderData['client_name'] = advanceSearch.areaConditionData['keyword'] || '';
-  backOrderData['industry'] = advanceSearch.areaConditionData['industry'] || [];
+else if (props.from === 'area') {
+  backOrderData = advanceSearch.areaConditionData;
 }
 const confirmSaveDialog = ref(false);
 const facilityOp = facilityList;
@@ -464,134 +421,52 @@ watch(
     }
   },
 );
-const addCondition = () =>{
-  let data = { 'searchType': 'advance', 'keyword': backOrderData['client_name'], 'facilityType': backOrderData.facilityType, 'industry': backOrderData.industry }
-  if(props.from=='map'){
-    advanceSearch.mapSelected = true
-    advanceSearch.mapConditionData = data
+
+const addCondition = () => {
+  if (props.from == 'map') {
+    advanceSearch.mapCSelected = true
   }
-  else if(props.from=='area'){
-    advanceSearch.areaSelected = true
-    advanceSearch.areaConditionData = data
+  else if (props.from == 'area') {
+    advanceSearch.areaCSelected = true
   }
   hideCSDrawer()
 }
 const mapDrawer = ref(false)
 const areaDrawer = ref(false)
-const openMapDrawer = () =>{
+const openMapDrawer = () => {
   mapDrawer.value = true;
 }
-const hideMapDrawer = () =>{
+const hideMapDrawer = () => {
   mapDrawer.value = false;
 }
-const openAreaDrawer = () =>{
-  areaDrawer.value=true;
+const openAreaDrawer = () => {
+  areaDrawer.value = true;
 }
-const hideAreaDrawer = () =>{
+const hideAreaDrawer = () => {
   areaDrawer.value = false;
 }
 const hideCSDrawer = () => {
   emit('hideCSDrawer')
 }
-const searchClientsByCondition = (officeData) => {
-  clientFactoryStore.condition = true
-  clientFactoryStore.selectedCFsId = []
-  officeData.forEach((item) => {
-    clientFactoryStore.selectedCFsId.push(item.id)
-  })
-  router.push('/client-factories')
-}
 const searchClients = async () => {
-  try {
-    let data = { 'searchType': 'advance', 'keyword': backOrderData['client_name'], 'facilityType': backOrderData.facilityType, 'industry': backOrderData.industry }
-    if (advanceSearch.advanceMapSelected|| advanceSearch.advanceAreaSelected) {
-      const officeData=advanceSearch.getAdvaceCFsId(data) || [];
-      clientFactoryStore.condition = true
-      clientFactoryStore.selectedCFsId = []
-      officeData.forEach((id) => {
-        clientFactoryStore.selectedCFsId.push(id)
-      })
-      router.push('/client-factories')
-    }
-    else{
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (user == null) {
-      throw new Error('invalid user')
-    }
-      const token = await user.getIdToken();
-      const response = await api.post(
-        searchConfig.getOfficeDataURL,
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        timeout: 30000,
-        }
-      )
-      const officeData = response.data
-      const start = Timestamp.fromDate(new Date(backOrderData.dispatchRecord['postingStartDate']['numBOs']));
-      const end = Timestamp.fromDate(new Date(backOrderData.dispatchRecord['postingEndDate']['numBOs']));
-      const filters = [
-        where('dateOfRegistration', '>=', start),
-        where('dateOfRegistration', '<', end),
-      ];
-      const offices = []
-
-      // const q = collection(db, 'BO');
-
-      // onSnapshot(collection(db, 'BO'), (querySnapshot) => {
-      //   querySnapshot.forEach((doc) => {
-      //     console.log(doc.id)
-      //   })
-      // })
-      let count=0;
-      officeData.forEach(async(item)=>{
-        const q = query(collection(db, 'BO'),where('office_id','==',item.id),...filters);
-        // const snapshot = await getDocs(q);
-        // let flag=0;
-        // snapshot.docs.map((doc) => {
-        //   flag=1
-        // });
-        // if(flag==1){
-        //   offices.push(item.id)
-        // }
-        onSnapshot(q, (querySnapshot) => {
-          const office = []
-          querySnapshot.forEach((doc) => {
-            const documentData = doc.data();
-            office.push(documentData['dateOfRegistration'].toDate())
-            // office.push(doc.id)
-          });
-          if(office.length>0){
-            count++
-            offices.push(item.id)
-          }
-        });
-        // console.log(count)
-      })
-      console.log(offices)
-      console.log(offices.length)
-      // if(offices.length>=parseInt(backOrderData.dispatchRecord['quantity']['numBOs'])){
-        clientFactoryStore.condition = true
-        clientFactoryStore.selectedCFsId = offices
-        router.push('/client-factories')
-      // }
-      // const q = query(collection(db, 'BO'), ...filters);
-      // onSnapshot(q, (querySnapshot) => {
-      //   querySnapshot.forEach((doc) => {
-      //     const data = doc.data();
-      //     data['id'] = doc.id;
-      //     items.push(data);
-      //   });
-      // });
-      // searchClientsByCondition(response.data)
-      }
-  } catch (error) {
-    throw new Error('Failed to create user')
+  isLoadingProgress.value = true;
+  let office: string[] = [];
+  if (advanceSearch.advanceMapSelected || advanceSearch.advanceAreaSelected) {
+    office = advanceSearch.getCombineId() || [];
   }
+  else {
+    const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
+    cfSnapshot.docs.forEach((doc) => {
+      office.push(doc.id)
+    })
+  }
+  office = await advanceSearch.searchClients(office,'advance');
+  clientFactoryStore.condition = true
+  clientFactoryStore.selectedCFsId = office
+  router.push('/client-factories')
+
+  isLoadingProgress.value = false
 };
 
 </script>
+

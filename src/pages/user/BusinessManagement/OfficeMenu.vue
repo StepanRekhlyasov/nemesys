@@ -23,7 +23,8 @@ const activeClientFactoryItem = ref<ClientFactory | null>(null)
 // drawers
 const isClientFactoryDrawer = ref(false)
 const mapSearchKey = ref<number>(0);
-
+const areaSearchKey = ref<number>(0);
+const advanceSearchKey = ref<number>(0);
 const menu = computed(() => {
     return [
         {
@@ -39,6 +40,7 @@ const menu = computed(() => {
             right: require('assets/admin-office-managment/area-search-image.png'),
             click() {
                 isDrawer.value.areaSearchDrawer = true
+                areaSearchKey.value = areaSearchKey.value === 0 ? 1 : 0
             },
         },
         {
@@ -46,7 +48,7 @@ const menu = computed(() => {
             right: require('assets/admin-office-managment/advanced-search-image.png'),
             click() {
                 isDrawer.value.advanceSearchDrawer = true
-                // router.push('advancedSearch');
+                advanceSearchKey.value = advanceSearchKey.value === 0 ? 1 : 0
             },
         },
         {
@@ -138,8 +140,8 @@ const hideClientFactoryDrawer = () => {
         </q-card>
 
         <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" :width="1100" @open-c-f-drawer="openCFDrawer" :key="mapSearchKey"/>
-        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" :width="1100"/>
-        <AdvanceSearchDrawer @hide-c-s-drawer="hideAdvanceDrawer" :isDrawer="isDrawer.advanceSearchDrawer" :width="1100"/>
+        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" :width="1100" :key="areaSearchKey"/>
+        <AdvanceSearchDrawer @hide-c-s-drawer="hideAdvanceDrawer" :isDrawer="isDrawer.advanceSearchDrawer" :width="1100" :key="advanceSearchKey"/>
         <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
             :isDrawer="isClientFactoryDrawer" @hide-drawer="hideClientFactoryDrawer" />
 
