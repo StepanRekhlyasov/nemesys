@@ -271,7 +271,7 @@ const resetData = async () => {
   selectedJobData.value['municipalities'] = '';
   selectedJobData.value['street'] = '';
   selectedJobData.value['buildingName'] = '';
-  selectedJobData.value['facility'] = '';
+  selectedJobData.value['cfFacilityType'] = '';
   selectedJobData.value['workingDays'] = ''
   selectedJobData.value['overtimeWork'] = ''
   selectedJobData.value['overtimeRemarks'] = ''
@@ -328,18 +328,20 @@ watch(
     }
     if(oldVale){
       selectedJobData.value.cfOffice=''
+      resetData()
     }
     if (newVal) {
       officeList.value = await jobSearchStore.loadOfficeData(newVal['id'])
     }
-    if (newVal !== oldVale) {
-      await resetData()
-    }
   }
 )
 watch(()=>(selectedJobData.value.cfOffice),
-  async (newVal)=>{
+  async (newVal,oldVale)=>{
     if (newVal) {
+      await cfInfoData(newVal)
+    }
+    if(oldVale){
+      resetData()
       await cfInfoData(newVal)
     }
       await getBOCommonInformationData(newVal)

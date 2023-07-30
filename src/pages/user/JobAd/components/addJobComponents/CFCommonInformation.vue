@@ -74,7 +74,7 @@
         </div>
         <div class="row">
             <div class="col-9 q-pr-sm">
-            <q-input outlined dense v-model="selectedJobData['facilityType']" hide-bottom-space />
+            <q-input outlined dense v-model="selectedJobData['cfFacilityType']" hide-bottom-space />
           </div>
           <div class="col-3 q-pr-sm">
             <q-input outlined dense v-model="selectedJobData['numberEmployees']" hide-bottom-space />
@@ -268,7 +268,7 @@ const storeCfInformationData = async (newVal) => {
   selectedJobData.value['municipalities'] = setEmptyIfUndefined(newVal['municipality'])
   selectedJobData.value['street'] = setEmptyIfUndefined(newVal['street'])
   selectedJobData.value['buildingName'] = setEmptyIfUndefined(newVal['building'])
-  selectedJobData.value['facilityType'] = setEmptyIfUndefined(newVal['facilityType'])
+  selectedJobData.value['cfFacilityType'] = setEmptyIfUndefined(newVal['facilityType'])
 };
 defineExpose({ storeCfInformationData })
 </script>
