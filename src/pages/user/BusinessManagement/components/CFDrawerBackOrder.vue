@@ -64,7 +64,8 @@
 
     <template v-slot:body-cell-qualification="props">
       <q-td :props="props">
-        {{props.row.qualifications && props.row.qualifications.length?props.row.qualifications.map(q => $t('applicant.qualification.' + q)).join(', '):'' }}<br />
+        {{ props.row.qualifications && props.row.qualifications.length ? props.row.qualifications.map(q =>
+          $t('applicant.qualification.' + q)).join(', ') : '' }}<br />
         {{ props.row.experienceRemarks }}
       </q-td>
     </template>
@@ -137,7 +138,7 @@ import { QTableProps } from 'quasar';
 import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; officeId?: string }>();
+const props = defineProps<{ clientId: string; columns?: QTableProps['columns']; officeId?: string }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
