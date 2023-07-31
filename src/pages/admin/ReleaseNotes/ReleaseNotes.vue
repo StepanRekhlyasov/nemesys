@@ -17,13 +17,13 @@
         <template v-slot:header="{ expanded }">
           <div class="flex items-center">{{expanded? $t('releaseNotes.form.close') : $t('releaseNotes.form.open')}}</div>
         </template>
-        <NotificationForm />
+        <NotificationForm @change-key="changeKey"/>
       </q-expansion-item>
     </div>
 
     <div class="no-shadow full-width operation-change bg-white">
     <q-card class="bg-grey-2 no-shadow no-border-radius" style="border: 1px solid #E6E6E6">
-      <NotificationTable />
+      <NotificationTable :flag="key"/>
     </q-card>
   </div>
   </div>
@@ -31,7 +31,11 @@
 
 <script lang="ts" setup>
   import PageHader from 'src/components/PageHeader.vue'
+  import { ref } from 'vue'
   import NotificationForm from './components/NotificationForm.vue'
   import NotificationTable from './components/NotificationTable.vue';
-
+  const key = ref(0);
+  const changeKey = ()=>{
+    key.value = key.value==0?1:0;
+  }
 </script>

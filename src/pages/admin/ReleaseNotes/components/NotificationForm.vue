@@ -1,7 +1,7 @@
 <template>
   <q-card flat class=" bg-grey-2">
    <q-card-section>
-     <q-form class="q-mb-xs notification-create">
+     <q-form ref="notificationForm" class="q-mb-xs notification-create">
       <div class="row items-center q-gutter-md q-mb-xs">
         <div class="col-2 text-right">
           <span>{{ $t('releaseNotes.form.category') }}</span>
@@ -58,11 +58,11 @@
             color="accent"
             class="q-py-none text-weight-bold text-caption "
             size="sm"
-            @click.once="publishNotification"
-            :disable="!category || !subject || !content"
+            @click="publishNotification"
+            :disable="!category || !subject || !content || !!date || !!time"
             style="margin-left: 2px;"
           >
-            {{ $t('releaseNotes.form.send') }}
+            {{ $t('releaseNotes.form.deliverNow') }}
           </q-btn>
 
           <q-btn
@@ -73,9 +73,9 @@
             no-caps
             :unelevated="false"
             :disable="!category || !subject || !content || !date || !time"
-            @click.once="delayedPublish"
+            @click="delayedPublish"
             >
-            {{ $t('releaseNotes.form.delay') }}
+            {{ $t('releaseNotes.form.deliverReserve') }}
           </q-btn>
 
           <q-btn
@@ -85,31 +85,35 @@
             color="accent"
             no-caps
             :unelevated="false"
-            @click.once="clearAllValues"
+            @click="clearAllValues"
             >
             {{ $t('releaseNotes.form.cancel') }}
           </q-btn>
         </div>
       </div>
 
-
-
-
     </q-form>
    </q-card-section>
  </q-card>
+ <div style="display: none;">
+ <notification-table ref="callFunction"/>
+</div>
 </template>
 
 <script lang="ts" setup>
-  import { serverTimestamp } from '@firebase/firestore';
+import { serverTimestamp } from '@firebase/firestore';
   import { useQuasar } from 'quasar';
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { DELIVERY_STATUS } from '../types/notificationTypes'
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
-import { useReleaseNotes } from 'src/stores/releaseNotes';
-
+  import { QForm } from 'quasar';
+  import { useReleaseNotes } from 'src/stores/releaseNotes';
+  const notificationForm = ref<QForm | null>(null);
+  const emit = defineEmits<{
+    (e:'changeKey');
+  }>()
   const $q = useQuasar();
 
   const { t } = useI18n({ useScope: 'global' });
@@ -124,7 +128,8 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
   const date = ref('')
   const time = ref('')
 
-  const NOTIFICATION_OPTIONS = [
+  const NOTIFICATION_OPTIONS =computed(() => {
+    return [
     {
       label: t('releaseNotes.form.options.op1') ,
       value: 'op1'
@@ -134,7 +139,7 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
       value: 'op2'
     },
   ]
-
+  })
 
     const publishNotification = async () => {
       if (user) {
@@ -146,22 +151,21 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
           dateDelivery: serverTimestamp(),
           subject: subject.value,
           content: content.value,
-          status: DELIVERY_STATUS.notDelivered,
+          status: DELIVERY_STATUS.delivered,
         })
 
           if (res.id) {
-
+          clearAllValues()
+          notificationForm.value?.resetValidation();
           }
         } catch(e) {
           Alert.warning(e)
         }
       }
-
+      emit('changeKey');
     }
 
-
-
-  const delayedPublish = async () => {
+   const delayedPublish = async () => {
     if (user) {
       try {
         const res = await store.publishNotificationData({
@@ -175,12 +179,14 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
         })
 
         if (res.id) {
-
+           clearAllValues()
+          notificationForm.value?.resetValidation();
         }
       } catch(e) {
         Alert.warning(e)
       }
     }
+    emit('changeKey');
   }
 
 

@@ -3,9 +3,9 @@
     <div class="row q-pt-md q-gutter-sm applicant__inputWrapper">
       <div class="col-2">
         <p class="q-ml-md inputLabel text-capitalize">{{ $t("inquiry.table.status") }}</p>
-        <q-select 
-          outlined 
-          dense 
+        <q-select
+          outlined
+          dense
           :options="[
             {
               label: $t('releaseNotes.' + DELIVERY_STATUS.delivered),
@@ -15,13 +15,13 @@
               label: $t('releaseNotes.' + DELIVERY_STATUS.notDelivered),
               value: DELIVERY_STATUS.notDelivered
             },
-          ]" 
+          ]"
           v-model="filter.status"
-          bg-color="white" 
-          :label = "$t('common.pleaseSelect')" 
-          emit-value 
-          map-options 
-          color="accent" 
+          bg-color="white"
+          :label = "$t('common.pleaseSelect')"
+          emit-value
+          map-options
+          color="accent"
           clearable
         />
       </div>
@@ -49,16 +49,16 @@
       </div>
       <div class="col-2">
         <p class="q-ml-md inputLabel text-capitalize">{{ $t("releaseNotes.table.author") }}</p>
-        <q-select 
-          outlined 
-          dense 
-          :options="authorOptions" 
+        <q-select
+          outlined
+          dense
+          :options="authorOptions"
           v-model="filter.author"
-          bg-color="white" 
-          :label = "$t('common.pleaseSelect')" 
-          emit-value 
-          map-options 
-          color="accent" 
+          bg-color="white"
+          :label = "$t('common.pleaseSelect')"
+          emit-value
+          map-options
+          color="accent"
           clearable
         />
       </div>
@@ -76,26 +76,26 @@
       <div class="col-2 flex items-center">
         <p class="q-ml-md inputLabel text-capitalize q-mt-md">{{ $t('releaseNotes.table.deliveryDate') }}</p>
         <div class="flex items-center no-wrap">
-          <q-input 
-            type="date" 
-            v-model="deliveryFrom" 
-            outlined 
-            dense 
+          <q-input
+            type="date"
+            v-model="deliveryFrom"
+            outlined
+            dense
             mask="YYYY/MM/DD"
             class="q-mr-xs q-ml-xs"
             bg-color="white"
-            color="accent" 
+            color="accent"
           />
           ~
-          <q-input 
-            type="date" 
-            v-model="deliveryTo" 
-            outlined 
-            dense 
+          <q-input
+            type="date"
+            v-model="deliveryTo"
+            outlined
+            dense
             mask="YYYY/MM/DD"
             class="q-mr-xs q-ml-xs"
             bg-color="white"
-            color="accent" 
+            color="accent"
           />
         </div>
         </div>
@@ -152,7 +152,7 @@
 
 <script lang="ts" setup>
 import { date, is, useQuasar } from 'quasar';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed , watch} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { serverTimestamp } from '@firebase/firestore';
 import EditButton from 'components/EditButton.vue';
@@ -162,7 +162,11 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useReleaseNotes } from 'src/stores/releaseNotes';
 import { useUserStore } from 'src/stores/user';
 import { notificationTableColumns } from '../../InquiryPage/const/inquiry.const';
-
+const props = withDefaults(defineProps<{
+  flag:number
+}>(),{
+  flag:0
+})
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -187,6 +191,7 @@ const editableRow = ref < number | null > (null)
 const editableNotification = ref < NotificationDataRow > ()
 const notificationTableRows = ref < NotificationDataRow[] > ([])
 
+const flag = computed(()=>{return props.flag})
 const authorOptions = computed(()=>{
   const users = {}
   notificationTableRows.value.forEach((row)=>{
@@ -282,7 +287,6 @@ const editNotification = async (notification: NotificationDataRow) => {
           });
           await loadCurrentNotifications();
           loading.value = false
-          ;
       } catch (error) {
           console.error(error)
           Alert.warning(error);
@@ -308,7 +312,6 @@ const deleteNotification = (notificationId: string) => {
           await releaseNoteStore.deleteNotificationData(notificationId)
           await loadCurrentNotifications();
           loading.value = false;
-          
       } catch (e) {
           console.error(e)
           Alert.warning(e)
@@ -316,4 +319,9 @@ const deleteNotification = (notificationId: string) => {
       }
   })
 }
+watch(flag,async()=>{
+  loading.value = true
+  await loadCurrentNotifications();
+  loading.value = false
+})
 </script>

@@ -1519,6 +1519,8 @@ export default {
       },
       subject: '件名',
       content: '内容',
+      deliverNow:'即時配信',
+      deliverReserve:'配信予約 ',
       date: '配信日時',
       send: '送信',
       delay: '+ 新規追加',
