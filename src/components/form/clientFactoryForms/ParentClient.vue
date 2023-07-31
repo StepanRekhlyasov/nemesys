@@ -40,9 +40,9 @@ const filterFn = (val: string, update: (cb: () => {label: string, value: string 
     });
 }
 
-watch(() => [props.modelValue.parentClient], () => {
+watch(() => [selectedClient.value], () => {
+    console.log('lox')
     selectedIndustry.value = ''
-    emit('update:modelValue', { ...props.modelValue, selectedIndustry: '' })
 })
 </script>
 
