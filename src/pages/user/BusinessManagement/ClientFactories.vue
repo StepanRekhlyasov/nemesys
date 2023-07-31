@@ -82,19 +82,27 @@ const hideClientFactoryDrawer = () => {
 
 const hideNewClientDrawer = () => {
     isNewClientDrawer.value = false
+    setTimeout(()=>{
+      isNewClientDrawerRender.value = false
+    }, 200)
 }
 
 const openNewClientDrawer = () => {
-    isNewClientDrawer.value = true
+  isNewClientDrawerRender.value = true
+  isNewClientDrawer.value = true
 }
 
 // new client-factory drawer
 
 const hideNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = false
+    setTimeout(()=>{
+      isNewClientFactoryDrawerRender.value = false
+    }, 200)
 }
 
 const openNewClientFactoryDrawer = () => {
+    isNewClientFactoryDrawerRender.value = true
     isNewClientFactoryDrawer.value = true
 }
 
@@ -103,6 +111,9 @@ const selectedCF = ref<string[]>([])
 const hideNewFaxDrawer = () => {
     isNewFaxDrawer.value = false
 }
+
+const isNewClientDrawerRender = ref(true)
+const isNewClientFactoryDrawerRender = ref(true)
 
 const openNewFaxDrawer = () => {
     selectedCF.value = []
@@ -155,11 +166,13 @@ const openFaxDrawer = (id:string) =>{
             @hide-drawer="hideClientFactoryDrawer"/>
 
         <NewClientDrawer
+            v-if="isNewClientDrawerRender"
             @hide-drawer="hideNewClientDrawer"
             theme="primary"
             :is-drawer="isNewClientDrawer" />
 
         <NewClientFactoryDrawer
+            v-if="isNewClientFactoryDrawerRender"
             @hide-drawer="hideNewClientFactoryDrawer"
             theme="primary"
             :is-drawer="isNewClientFactoryDrawer"/>

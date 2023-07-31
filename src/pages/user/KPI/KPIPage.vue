@@ -8,112 +8,61 @@
     <q-card-section class="bg-grey-3 flex items-end gap">
       <label class="text-subtitle1">
         {{ $t('KPI.aggregationMethods') }}
-        <MySelect
-          :options="[
-            {
-              label: $t('KPI.dailyTotal'),
-              value: 'day',
-            },
-            {
-              label: $t('KPI.modeBranch'),
-              value: 'branch',
-            },
-            {
-              label: $t('KPI.modeMedia'),
-              value: 'media',
-            },
-          ]"
-          :width="'175px'"
-          v-model="mode"
-          :clearable="false"
-          @update:model-value="getData()"
-        />
+        <MySelect :options="[
+          {
+            label: $t('KPI.dailyTotal'),
+            value: 'day',
+          },
+          {
+            label: $t('KPI.modeBranch'),
+            value: 'branch',
+          },
+          {
+            label: $t('KPI.modeMedia'),
+            value: 'media',
+          },
+        ]" :width="'175px'" v-model="mode" :clearable="false" @update:model-value="getData()" />
       </label>
-      <label
-        class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'media'"
-      >
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
         {{ $t('KPI.item') }}
-        <MySelect
-          :options="[
-            {
-              label: $t('KPI.actualFigures'),
-              value: 'actualFigures',
-            },
-            {
-              label: $t('KPI.unitPrice'),
-              value: 'unitPrice',
-            },
-            {
-              label: $t('KPI.applicationAttribute'),
-              value: 'applicationAttribute',
-            },
-          ]"
-          :width="'175px'"
-          v-model="item"
-          :clearable="false"
-          @update:model-value="getData()"
-        />
+        <MySelect :options="[
+          {
+            label: $t('KPI.actualFigures'),
+            value: 'actualFigures',
+          },
+          {
+            label: $t('KPI.unitPrice'),
+            value: 'unitPrice',
+          },
+          {
+            label: $t('KPI.applicationAttribute'),
+            value: 'applicationAttribute',
+          },
+        ]" :width="'175px'" v-model="item" :clearable="false" @update:model-value="getData()" />
       </label>
-      <label
-        class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'media'"
-      >
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
         {{ $t('KPI.targetPeriod') }}
-        <DateRange
-          v-model="dateRange"
-          :width="'250px'"
-          :height="'40px'"
-          @update:model-value="getData()"
-        />
+        <DateRange v-model="dateRange" :width="'250px'" :height="'40px'" @update:model-value="getData()" />
       </label>
       <label class="text-subtitle1" v-if="mode === 'day'">
         {{ $t('applicant.progress.filters.month') }}
-        <YearMonthPicker
-          v-model="month"
-          :width="'150px'"
-          :height="'40px'"
-          @update:model-value="getData()"
-        />
+        <YearMonthPicker v-model="month" :width="'150px'" :height="'40px'" @update:model-value="getData()" />
       </label>
       <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'day'">
         {{ $t('common.branch') }}
-        <MySelect
-          :width="'150px'"
-          v-model="branch"
-          :options="branchs"
-          @update:model-value="getData()"
-        />
+        <MySelect :width="'150px'" v-model="branch" :options="branchs" @update:model-value="getData()" />
       </label>
       <label class="text-subtitle1" v-if="mode === 'media'">
         {{ $t('KPI.media') }}
-        <MySelect
-          :width="'150px'"
-          :options="mediaListToShow"
-          v-model="media"
-          @update:model-value="getData()"
-        />
+        <MySelect :width="'150px'" :options="mediaListToShow" v-model="media" @update:model-value="getData()" />
       </label>
       <label class="text-subtitle1" v-if="false">
         {{ $t('KPI.username') }}
-        <MySelect
-          :options="userListToShow"
-          :width="'175px'"
-          v-model="user"
-          @update:model-value="getData()"
-        />
+        <MySelect :options="userListToShow" :width="'175px'" v-model="user" @update:model-value="getData()" />
       </label>
-      <label
-        class="text-subtitle1"
-        v-if="mode === 'branch' || mode === 'media'"
-      >
+      <label class="text-subtitle1" v-if="mode === 'branch' || mode === 'media'">
         {{ $t('applicant.add.occupation') }}
-        <MySelect
-          :options="occupationList"
-          :width="'100px'"
-          v-model="occupation"
-          @update:model-value="getData()"
-        />
+        <MySelect :options="occupationList" :width="'100px'" v-model="occupation" @update:model-value="getData()" />
       </label>
       <q-btn color="primary" style="margin-left: auto" @click="downloadCSV">
         {{ $t('common.downloadCSV') }}
@@ -148,6 +97,10 @@ import {
   devideByAmount,
   convertObjToIdNameList,
 } from 'src/shared/utils/KPI.utils';
+
+import { useUserStore } from 'src/stores/user';
+
+const userStore = useUserStore();
 
 const { getReport, getDailyReport, getAgeReport } = useGetReport();
 const UserBranch = useBranch();
@@ -297,6 +250,15 @@ async function getData() {
     loading.value = false;
   }
 }
+
+const getBranchUsers = async () => {
+  const users = await userStore.getAllUsersInBranch(branch.value)
+  userListToShow.value = users.map((user) => {
+    return { value: user.id, label: user.name }
+  })
+}
+
+
 watch(
   () => organizationStore.currentOrganizationId,
   async () => {
@@ -305,12 +267,23 @@ watch(
   }
 );
 watch(
-  () => [mode.value, item.value, branch.value],
+  () => [mode.value, item.value],
   async () => {
     resetData();
     await getData();
   }
 );
+
+watch(
+  () => branch.value,
+  async () => {
+    user.value = ''
+    await getBranchUsers();
+    getData();
+  }
+);
+
+
 
 function downloadCSV() {
   kpiTableRef.value?.exportTable();

@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
+import { ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptions, columns, itemList, chartType, rowNames } from './const';
 import {
@@ -17,11 +17,11 @@ import VueApexCharts from 'vue3-apexcharts';
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const apexchart = VueApexCharts;
-const dataToshow: Ref<(number | string)[][]> = ref([]);
+const dataToShow = ref<(number | string)[][]>([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
-  const seriesList = dataToshow.value.map((rowData, index) => {
+  const seriesList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(rowNames[index]),
       data: rowData,
@@ -44,7 +44,7 @@ const rows: ComputedRef<
     admission: number | string;
   }[]
 > = computed(() => {
-  const rowsList = dataToshow.value.map((rowData, index) => {
+  const rowsList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(rowNames[index]),
       applicants: rowData[0],
@@ -73,6 +73,7 @@ const showData = async (
   dateRange: { from: string; to: string },
   organizationId: string
 ) => {
+  dataToShow.value = [];
   const dataAverage = getListFromObject(
     await getReport({
       dateRange: dateRange,
@@ -81,7 +82,9 @@ const showData = async (
       organizationId: organizationId,
       isAverage: false,
     }),
-    itemList.map((item) => {return item.queryName})
+    itemList.map((item) => {
+      return item.queryName;
+    })
   ) as number[];
 
   const dataAverageAll = getListFromObject(
@@ -91,13 +94,15 @@ const showData = async (
       queryNames: itemList,
       isAverage: false,
     }),
-    itemList.map((item) => {return item.queryName})
+    itemList.map((item) => {
+      return item.queryName;
+    })
   ) as number[];
   const dataCvr = calculateCVR(dataAverage);
 
   const dataCvrAll = calculateCVR(dataAverageAll);
 
-  dataToshow.value = [dataAverage, dataCvr, dataCvrAll];
+  dataToShow.value = [dataAverage, dataCvr, dataCvrAll];
 };
 
 watch(

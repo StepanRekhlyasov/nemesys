@@ -13,6 +13,11 @@
           <q-input v-model="organization.name" outlined dense color="accent" :rules="[creationRule]" :disable="loading" />
         </DialogItemContainer>
 
+        <DialogItemContainer name-key="menu.admin.organizationsTable.operator">
+          <q-input v-model="organization.operatorUser" outlined dense color="accent" :rules="[creationRule]"
+            :disable="loading"/>
+        </DialogItemContainer>
+
         <DialogItemContainer name-key="menu.admin.organizationsTable.phoneNumber">
           <q-input v-model="organization.tel" outlined dense color="accent" :rules="[creationRule]" :disable="loading"
             type="tel" />
@@ -26,11 +31,6 @@
         <DialogItemContainer name-key="menu.admin.organizationsTable.email">
           <q-input v-model="organization.mailaddress" outlined dense color="accent" :rules="[creationRule]"
             :disable="loading" type="email" />
-        </DialogItemContainer>
-
-        <DialogItemContainer name-key="menu.admin.organizationsTable.operator">
-          <q-input v-model="organization.operatorUser" outlined dense color="accent" :rules="[creationRule]"
-            :disable="loading"/>
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.invoiceRequest">

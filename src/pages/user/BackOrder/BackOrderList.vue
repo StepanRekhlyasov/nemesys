@@ -16,7 +16,7 @@
       <q-card-section class="q-pa-none">
         <q-table :columns="columns" :rows="state.BOList" row-key="id" selection="multiple" class="no-shadow"
           v-model:selected="selected" table-class="text-grey-8" table-header-class="text-grey-9"
-          :loading="state.isLoadingProgress" :pagination="pagination" hide-pagination>
+          :loading="state.isLoadingProgress" :pagination="pagination" hide-pagination :sort-method="customSortMethod">
           <template v-slot:header-cell-caseType="props">
             <q-th :props="props" class="q-pa-none">
               <div>{{ $t('backOrder.create.caseType') }}</div>
@@ -35,8 +35,8 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.caseType
-                  ? $t(`applicant.add.${props.row.caseType}`)
+                  props.row.typeCase
+                  ? $t(`applicant.add.${props.row.typeCase}`)
                   : '-'
                 }}
               </div>
@@ -54,7 +54,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.status ? $t(`backOrder.${props.row.status}`) : '-'
+                  props.row.employmentType ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
                 }}
               </div>
             </q-td>
@@ -63,6 +63,26 @@
           <template v-slot:body-cell-info="props">
             <q-td :props="props" class="q-pa-none">
               <q-btn icon="mdi-information-outline" round style="color: #175680" flat @click="showDialog(props.row)" />
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-personnel="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  getUserDisplayName(props.row.registrant)
+                 }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-distance="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.distance!=null?props.row.distance+' Km':''
+                }}
+              </div>
             </q-td>
           </template>
 
@@ -82,22 +102,12 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row['client_id']
-                  ? applicantStore.state.clientList.find(
-                    (client) => client.id === props.row['client_id']
-                  )?.name
-                  : ''
+                  props.row.officeName
                 }}
               </div>
               <div>
                 {{
-                  props.row['client_id'] && props.row['office_id']
-                  ? applicantStore.state.clientList
-                    .find((client) => client.id === props.row['client_id'])
-                    ?.office?.find(
-                      (office) => office.id === props.row['office_id']
-                    )?.name
-                  : ''
+                  props.row.clientName
                 }}
               </div>
             </q-td>
@@ -141,7 +151,10 @@ import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
+import { useUserStore } from 'src/stores/user'
+import { myDateFormat } from 'src/shared/utils/utils';
 
+const userStore = useUserStore();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const $q = useQuasar();
@@ -164,7 +177,122 @@ const pagination = ref({
   rowsPerPage: 30,
 });
 
+const customSortMethod = (rows, sortBy, descending) => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+  if (sortBy === 'personnel') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = getUserDisplayName(a.registrant)
+      const second = getUserDisplayName(b.registrant)
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'BOID') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      return descending ? a.boId-b.boId : b.boId-a.boId;
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'dateOfRegistration') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = myDateFormat(a.dateOfRegistration);
+      const second = myDateFormat(b.dateOfRegistration);
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'caseType') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.typeCase?a.typeCase:'';
+      const second = b.typeCase?b.typeCase:'';
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'distance') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.distance?a.distance:0;
+      const second = b.distance?b.distance:0;
+      return descending ? first-second: second-first;
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'name') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.officeName;
+      const second = b.officeName;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'employmentType') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.employmentType;
+      const second = b.employmentType;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'wage') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.wage;
+      const second = b.wage;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'salary') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = parseInt(a.salary);
+      const second = parseInt(b.salary);
+      return descending ? first-second : second-first
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'state') {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a.state;
+      const second = b.state;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else{
+    return state.BOList;
+  }
+};
 
+const userNames = ref<{ [key: string]: string }>({});
+const getUserDisplayName = (registrant: string | undefined) => {
+  const userDisplayName = ref('');
+
+  if (registrant && !userNames.value[registrant]) {
+    userStore
+      .getUserById(registrant)
+      .then((user) => {
+        userNames.value[registrant] = user?.displayName || '';
+        userDisplayName.value = userNames.value[registrant];
+      })
+      .catch((error) => {
+        console.error(error);
+        userDisplayName.value = '';
+      });
+  } else {
+    userDisplayName.value = userNames.value[registrant];
+  }
+
+  return userDisplayName.value;
+};
 watchCurrentOrganization(async ()=>{
  await backOrderStore.loadBackOrder({});
 })

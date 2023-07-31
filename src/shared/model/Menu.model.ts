@@ -33,6 +33,7 @@ export enum MenuParent{
 
   AdminOfficeManagement = 'SYSTEMS_OFFICE_MANAGEMENT',
   AdminEnterpriseManagement = 'ENTERPRISE_MANAGEMENT',
+  AdminUsers = 'ADMIN_USERS',
   AdminAggregationData = 'ADMIN_AGGREGATION_DATA',
   AdminLicenseManagement = 'ADMIN_LICENSE_MANAGEMENT',
   AdminBillingInformation = 'ADMIN_BILLING_INFORMATION',

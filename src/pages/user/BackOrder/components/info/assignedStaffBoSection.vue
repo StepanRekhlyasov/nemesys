@@ -50,7 +50,6 @@ import { useApplicant } from 'src/stores/applicant'
 import { Applicant } from 'src/shared/model';
 import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
 import { useBackOrder } from 'src/stores/backOrder';
-import { useClient } from 'src/stores/client'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import matchDegreeTable from './matchDegreeTable.vue';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
@@ -62,7 +61,6 @@ const loading = ref<boolean>(false);
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const backOrderStore = useBackOrder()
 const applicantIds = ref<string[]>([]);
-const getClient = useClient();
 const matchedData = ref({});
 const pagination = ref({
   sortBy: 'desc',
@@ -127,10 +125,9 @@ const calculateMatchDegree = () => {
 }
 
 const calculateDistance = async () => {
-  const client = await getClient.fetchClientsById(props.bo.client_id);
   const clientLocation = {
-    lat: client['lat'],
-    lon: client['lon'],
+    lat: props.bo['lat'],
+    lon: props.bo['lon'],
   };
 
   staffList.value.forEach(staff => {

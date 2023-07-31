@@ -19,7 +19,8 @@ enum InputType {
     INDUSTRY = 'industry',
     DISPATCH_CONTRACT = 'dispatch_contract',
     REFERRAL_CONTRACT = 'referral_contract',
-    FACILITY = 'facility'
+    FACILITY = 'facility',
+    RADIO = 'radio',
 }
 
 export interface Data {
@@ -97,6 +98,15 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
                 <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
+                <template v-else-if="row.editType === InputType.RADIO && typeof row.value === 'string'">
+                  <q-radio
+                      v-for="item in row.radioVals"
+                      v-model="row.value"
+                      :val="item.value"
+                      :key="item.value"
+                      :label="item.label"
+                    />
+                </template>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
@@ -128,6 +138,15 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
                 <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
+                <template v-else-if="row.editType === InputType.RADIO && typeof row.value === 'string'">
+                  <q-radio
+                      v-for="item in row.radioVals"
+                      v-model="row.value"
+                      :val="item.value"
+                      :key="item.value"
+                      :label="item.label"
+                    />
+                </template>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>

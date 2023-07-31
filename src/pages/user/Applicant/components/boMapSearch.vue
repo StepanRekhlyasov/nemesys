@@ -2,61 +2,64 @@
 import { watch, ref, defineProps, defineEmits, onMounted, computed } from 'vue';
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
-import { radius } from '../consts/BackOrder.const'
-import { BackOrderModel, ApplicantForCandidateSearch } from 'src/shared/model';
-import { mapDrawerValue } from '../consts/BackOrder.const';
-import { where } from 'firebase/firestore';
-import { useApplicant } from 'src/stores/applicant'
+import { boMapDrawerValue } from '../const/index';
+import { Timestamp, where } from 'firebase/firestore';
 import { useBackOrder } from 'src/stores/backOrder';
-import { Applicant } from 'src/shared/model';
-import ApplicantDetails from 'src/pages/user/Applicant/ApplicantDetails.vue';
+import { Applicant, BackOrderModel, Client } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import InfoBO from 'src/pages/user/BackOrder/components/info/InfoBO.vue';
+import SearchByMapDrawer from 'src/pages/user/BackOrder/components/info/searchByMapDrawer.vue';
+import { radius } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import { useOrganization } from 'src/stores/organization';
+import { myDateFormat } from 'src/shared/utils/utils';
 
-const props = defineProps<{ theme: string, bo: BackOrderModel | undefined }>()
+const props = defineProps<{ theme: string, applicant: Applicant | undefined }>()
+const organization = useOrganization()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
-const center = ref<{ lat: number, lng: number }>({ lat: 35, lng: 139 });
+const center = ref<{ lat: number, lng: number }>({ lat: 0, lng: 0 });
 const searchRadius = ref<number>(0);
 const inputRadius = ref<number>(0);
-const isLoadingProgress = ref(false)
-const searchInput = ref('')
-const staffList = ref<ApplicantForCandidateSearch[]>([])
-const getApplicant = useApplicant();
+const isLoadingProgress = ref<boolean>(false)
+const searchInput = ref<string>('')
+const boList = ref<BackOrderModel[]>([])
 const backOrderStore = useBackOrder()
-const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
-const organization = useOrganization()
+const selectedClient = ref<Client | undefined>(undefined);
+const showSearchByMap = ref<boolean>(false);
+const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 
-watch(()=> [organization.currentOrganizationId], async () => {
-  await getApplicantMarkers();
-})
-
-watch(mapDrawerValue,async ()=>{
-  await getApplicantMarkers();
-})
-
-const getApplicantMarkers = async ()=>{
-  if (mapDrawerValue.value) {
+watch(boMapDrawerValue, async () => {
+  if (boMapDrawerValue.value) {
+    const allBo = await backOrderStore.getBOByConstraints([where('deleted', '==', false), where('organizationId', '==', organization.currentOrganizationId)]);
+    allBo.forEach((bo)=>{
+        bo['dateOfRegistration'] = myDateFormat(
+          bo['dateOfRegistration'] as Timestamp
+        );
+        bo['marker'] = 'white';
+        if(bo['lat']){
+        boList.value.push(bo)
+      }
+    })
+    backOrderStore.state.BOList = allBo;
     searchRadius.value = 0;
-    getClientLocation();
-    staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ApplicantForCandidateSearch[];
-    staffList.value.forEach((staff) => {
-      staff['marker'] = 'white';
-    });
+    inputRadius.value = 0;
+    await getApplicantLocation();
   }
-}
+})
 
 onMounted(async () => {
   isLoadingProgress.value = true
-  getClientLocation();
+  await getApplicantLocation();
   isLoadingProgress.value = false;
 
 })
 
-const getClientLocation = () => {
-  if (props.bo?.lat && props.bo?.lon) {
+const getApplicantLocation = async () => {
+  const applicantLocation = {lat:props.applicant?.lat, lng:props.applicant?.lon}
+  searchInput.value = `${props.applicant?.address}`;
+  if (applicantLocation) {
     center.value = {
-      lat: Number(props.bo?.lat),
-      lng: Number(props.bo?.lon)
+      lat: Number(applicantLocation.lat),
+      lng: Number(applicantLocation.lng)
     }
   }
   getMarkerColor()
@@ -74,14 +77,14 @@ const circleOption = computed(() => {
   };
 });
 
-const isInsideCircle = (staffLocation) => {
-  const clientLocation = { lat: center.value.lat, lon: center.value.lng }
-  const distance = backOrderStore.getDistance(clientLocation, staffLocation);
+const isInsideCircle = (boLocation) => {
+  const applicantLocation = { lat: center.value.lat, lon: center.value.lng }
+  const distance = backOrderStore.getDistance(applicantLocation, boLocation);
   return distance <= searchRadius.value;
 }
 
-const getStaffMarkerOptions = (staff) => {
-  const position = { lat: staff.lat, lng: staff.lon, anchorPoint: 'BOTTOM_CENTER' };
+const getBoMarkerOptions = (bo) => {
+  const position = { lat: bo.lat, lng: bo.lon, anchorPoint: 'BOTTOM_CENTER' };
   return {
     position,
     draggable: false,
@@ -90,12 +93,12 @@ const getStaffMarkerOptions = (staff) => {
 }
 
 const getMarkerColor = () => {
-  staffList.value.forEach((staff) => {
-    if (isInsideCircle(staff)) {
-      staff.marker = 'primary';
+  boList.value.forEach((bo) => {
+    if (isInsideCircle(bo)) {
+      bo.marker = 'primary';
     }
     else {
-      staff.marker = 'white';
+      bo.marker = 'white';
     }
   });
 }
@@ -103,7 +106,6 @@ const getMarkerColor = () => {
 watch(searchRadius, (newVal) => {
   isLoadingProgress.value = true
   getMarkerColor();
-  radius.value = searchRadius.value
   let center = circleOption.value.center;
   if (!newVal) {
     newVal = 0
@@ -130,10 +132,6 @@ const clearRadius = () => {
   inputRadius.value = 0
 }
 
-const openDrawer = (data: Applicant) => {
-  detailsDrawer.value?.openDrawer(data)
-};
-
 const setLocation = () => {
   if (!searchInput.value) {
     return
@@ -155,11 +153,22 @@ const setLocation = () => {
   isLoadingProgress.value = false
 }
 
-
-
 const clear = () => {
   searchInput.value = '';
-  getClientLocation();
+  getApplicantLocation();
+}
+
+const closeMap = () => {
+  showSearchByMap.value = false;
+  radius.value = 0;
+};
+
+const selectedBo = ref<BackOrderModel>();
+
+function showDialog(bo: BackOrderModel) {
+  selectedBo.value = bo;
+  backOrderStore.state.selectedBo = bo
+  infoDrawer.value?.openDrawer(bo);
 }
 
 </script>
@@ -184,8 +193,8 @@ const clear = () => {
       <GoogleMap :api-key="searchConfig.apiKey" style="width: 100%; height: 50vh; width: 100%;" :center="center"
         :zoom="9.6">
         <Markers :options="{ position: center, draggable: true, clickable: true }" @dragend="markerDrag" />
-        <CustomMarker v-for="staff in staffList" :key="staff.id" :options="getStaffMarkerOptions(staff)">
-          <q-icon :color="staff.marker" size="lg" name="place" @click="openDrawer(staff)" />
+        <CustomMarker v-for="bo in boList" :key="bo.boId" :options="getBoMarkerOptions(bo)">
+          <q-icon :color="bo.marker" size="lg" name="place"  @click="showDialog(bo)"/>
         </CustomMarker>
         <Circles :options="circleOption" />
       </GoogleMap>
@@ -208,8 +217,14 @@ const clear = () => {
         </div>
       </div>
     </q-card-section>
-    <ApplicantDetails :bo="bo" ref="detailsDrawer" />
   </q-card>
+
+  <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
+    selectedClient = clientValue;
+  }
+    " :isHiddenDetails="true"/>
+  <SearchByMapDrawer :modelValue="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="closeMap">
+  </SearchByMapDrawer>
 </template>
 
 <style scoped>
