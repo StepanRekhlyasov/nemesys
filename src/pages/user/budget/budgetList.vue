@@ -9,6 +9,16 @@
         <budgetChart />
       </q-card-section>
       <q-card-section>
+        <div class="row flex justify-center centers" :style="'width: 95%'">
+          <div class=" q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal bugetTotalRight">
+            {{ t('budget.total') }}
+          </div>
+          <div class="q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal">
+            ¥ {{ budgetSum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section>
         {{ $t('common.searchKeyword') }}) indeed
         <searchForm @search-budget="searchBudget" class="q-mt-sm" />
       </q-card-section>
@@ -200,6 +210,16 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 100,
 });
+
+const budgetSum = computed(() => {
+  let sum = 0
+  budgetList.value.forEach(item => {
+    if (item.amount) {
+      sum += parseInt(item.amount.replace(/,/g, ''), 10);
+    }
+  })
+  return sum
+})
 
 const budgetList = computed(() => {
   let budgetList = [...budgetStore.budgetList];

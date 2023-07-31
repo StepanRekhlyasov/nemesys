@@ -332,8 +332,8 @@ export const chartOptions = computed(() => {
     },
     tooltip: {
       y: {
-        formatter: function (val: number) {
-          return '¥' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        formatter: function (val: number, opt) {
+          return `¥${val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} / ${Math.round((val / opt.w.globals.stackedSeriesTotals[opt.dataPointIndex]) * 1000) / 10}%`
         }
       }
     },
