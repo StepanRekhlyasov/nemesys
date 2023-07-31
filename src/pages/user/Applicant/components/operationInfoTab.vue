@@ -46,7 +46,7 @@
 
       <template v-if="!bo" v-slot:body-cell-edit="props">
         <EditButton :props="props" color="primary"
-          :on-edit="() => { editableContect = props.row.memo }"
+          :on-edit="() => { editableContect.memo = props.row.memo }"
           :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
           :editable-row="editableRow" :key="props.rowIndex" />
       </template>
@@ -190,7 +190,7 @@ async function onUpdate(index) {
     if (!editableContect.value) {
       return;
     }
-    loading.value = true;
+//    loading.value = true;
 //    let updateData = {}
 //    updateData['updated_at'] = serverTimestamp();
 //    updateData['updated_by'] = auth.currentUser?.uid;
@@ -202,7 +202,7 @@ async function onUpdate(index) {
 //    );
 //    memoListData.value[index] = editableContect.value as ApplicantMemo;
 //    await loadMemoData();
-    loading.value = false;
+//    loading.value = false;
   } catch (e) {
     Alert.warning(e)
     console.log(e)
