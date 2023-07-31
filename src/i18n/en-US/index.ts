@@ -176,6 +176,7 @@ export default {
     KPI: 'KPI',
     faxHistory: 'FAX History',
     admin: {
+      usersManagement: 'Users management',
       masterSearch: 'Office master search',
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
@@ -642,6 +643,8 @@ export default {
       }
     },
     backOrder: {
+      TTP: 'TTP',
+      generalDispatch: 'General Dispatch',
       title: 'Backorder',
       noOrders: 'No past backorders',
       add: 'Add Backorder',

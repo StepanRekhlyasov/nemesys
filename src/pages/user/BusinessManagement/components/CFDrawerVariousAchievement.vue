@@ -66,17 +66,12 @@ import { today, lastMonth } from 'src/shared/utils/utils';
 import { dispatchColumns, empRecordColumns } from 'src/shared/constants/VariousAchievement.const'
 import { dispatchModel , employmentModel } from 'src/shared/model/VariousAchievement.model'
 import { QTableProps } from 'quasar';
-const columnsdispatch = ref(dispatchColumns)
-const columnsemp  = ref(empRecordColumns)
+const columnsdispatch = ref<QTableProps['columns']>(dispatchColumns.value)
+const columnsemp  = ref<QTableProps['columns']>(empRecordColumns.value)
 const filter = ref({
 startDate: lastMonth(),
 endDate: today()
 });
-defineProps<{
-  columnsemp: QTableProps['columns']
-  columnsdispatch: QTableProps['columns']
-  dispatchColumns: QTableProps['columns']
-}>()
 const dispatchRecord : Ref<dispatchModel[]> = ref([]);
 const empRecord : Ref<employmentModel[]>= ref([]);
 const loadData = () => {

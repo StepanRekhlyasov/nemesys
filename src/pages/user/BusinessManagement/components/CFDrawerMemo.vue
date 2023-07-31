@@ -72,10 +72,9 @@ import {useMemo} from 'src/stores/memo'
 import { useI18n } from 'vue-i18n';
 const props = defineProps<{
   clientId: string;
-  columns: QTableProps['columns']
 }>();
 const memoStore = useMemo()
-const columns = ref(columnsMemo)
+const columns = ref<QTableProps['columns']>(columnsMemo.value)
 const data:Ref<Partial<ClientMemo>>  = ref({});
 const $q = useQuasar();
 const { t } = useI18n({ useScope: 'global' });

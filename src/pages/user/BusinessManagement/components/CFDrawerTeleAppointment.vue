@@ -120,14 +120,12 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
-  columns: QTableProps['columns'];
-  historyData: QTableProps['rows']
   clientId: string;
 }>();
 const historyData: DocumentData = ref([]);
 
 const teleStore = useTele();
-const columns = ref(TeleColumns);
+const columns = ref<QTableProps['columns']>(TeleColumns.value);
 const pagination = ref({
   sortBy: 'desc',
   descending: false,

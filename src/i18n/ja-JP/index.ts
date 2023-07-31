@@ -176,6 +176,7 @@ export default {
     KPI: 'KPI',
     faxHistory: 'FAX送信履歴',
     admin: {
+      usersManagement: 'ユーザー管理',
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
@@ -637,6 +638,8 @@ export default {
 
     },
     backOrder: {
+      TTP: 'TTP',
+      generalDispatch: '一般派遣',
       title: 'バックオーダー',
       noOrders: '過去のバックオーダーはありません',
       add: 'バックオーダー追加',
@@ -1301,7 +1304,7 @@ export default {
       filingRemarks: '稟議備考',
       availabilityOfGarage: '駐車場有無',
       commutingByCar: '車通勤可否',
-      parkingRemarks: '駐車場備考',
+      parkingRemarks: '駐車場有無備考',
       uniformAvailability: '制服の有無',
       availabilityOfLunch: '昼食の有無',
       smoking: '喫煙可否',

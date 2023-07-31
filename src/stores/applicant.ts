@@ -2,7 +2,7 @@ import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCoun
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
-import { getClientList } from 'src/shared/utils/Applicant.utils';
+import { countApplicantRank, getClientList } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
@@ -475,6 +475,9 @@ export const useApplicant = defineStore('applicant', () => {
       data['imagePath'] = snapshot.ref.fullPath;
       data['imageURL'] = await getDownloadURL(storageRef)
     }
+    /** staff rank */
+    data.staffRank = countApplicantRank(data)
+    /** staff rank */
     await setDoc(
       docRef,
       data
@@ -576,6 +579,7 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     /** transform strings to timestamps */
     const saveData = JSON.parse(JSON.stringify(applicantData));
+    
     if (saveData.status) {
       await updateApplicantStatus(saveData.status);
       return;
@@ -590,6 +594,10 @@ export const useApplicant = defineStore('applicant', () => {
     if (applicantData.inspectionDate) saveData.inspectionDate = dateToTimestampFormat(new Date(applicantData.inspectionDate));
     if (applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
     if (applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
+
+    /** staff rank */
+    saveData.staffRank = countApplicantRank({...state.value.selectedApplicant, ...saveData})
+    /** staff rank */
 
     for (const [key, value] of Object.entries(saveData)) {
       if (typeof value === 'undefined') delete saveData[key];

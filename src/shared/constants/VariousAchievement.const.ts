@@ -1,8 +1,9 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 const { t } = i18n.global
 
-export const empRecordColumns = computed(() => {
+export const empRecordColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       name: 'fullTime',
@@ -43,7 +44,7 @@ export const empRecordColumns = computed(() => {
   ]
 });
 
-export const dispatchColumns = computed(() => {
+export const dispatchColumns = computed<QTableProps['columns']>(() => {
   return [
     {
       name: 'inHouseBO',
