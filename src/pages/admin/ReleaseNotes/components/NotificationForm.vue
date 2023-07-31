@@ -146,11 +146,11 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
           dateDelivery: serverTimestamp(),
           subject: subject.value,
           content: content.value,
-          status: DELIVERY_STATUS[0],
+          status: DELIVERY_STATUS.notDelivered,
         })
 
           if (res.id) {
-            
+
           }
         } catch(e) {
           Alert.warning(e)
@@ -171,11 +171,11 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
           category: category.value,
           subject: subject.value,
           content: content.value,
-          status: DELIVERY_STATUS[0],
+          status: DELIVERY_STATUS.notDelivered,
         })
 
         if (res.id) {
-          
+
         }
       } catch(e) {
         Alert.warning(e)
