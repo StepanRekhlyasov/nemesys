@@ -1,8 +1,9 @@
 <template>
-  <div class="q-pt-lg q-pl-lg">
+  <q-page class="bg-grey-3">
+  <div class="q-pt-lg q-pl-lg bg-grey-3">
     <div class="q-gutter-md row">
       <q-select outlined v-model="branch_input" :options="branchs" />
-      <q-select outlined v-model="model_report" :options="reportType" />
+      <q-select outlined v-model="modelReport" :options="reportType" />
       <q-input
         filled
         :model-value="
@@ -44,7 +45,7 @@
   </div>
   <keep-alive>
     <component
-      v-bind:is="report_componets[model_report.value]"
+      v-bind:is="reportComponets[modelReport.value]"
       :organization_id="currentOrganizationId"
       :dateRangeProps="dateRange"
       :branch_id="branch_input['value']"
@@ -52,6 +53,7 @@
       :graph_type="graph_type"
     ></component>
   </keep-alive>
+</q-page>
 </template>
 
 <script setup lang="ts">
@@ -85,23 +87,27 @@ const reportType = computed<{ label: string; value: number }[]>(() => {
   ];
 });
 
-const model_report = ref({
+const modelReport = ref({
   label: t('report.applicantReport'),
   value: 0,
 });
-const report_componets = {
+const reportComponets = {
   0: ApplicantReport,
   1: SalesActivityReport,
   2: SalesActivityIndividualReport,
   3: RecruitmentEffectivenessReport,
 };
 
-const get_date=()=>{
+const get_date = () => {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
-  const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+  const from = new Date(
+    today.getFullYear(),
+    today.getMonth() - 1,
+    today.getDate()
+  );
   const from_year = from.getFullYear();
   const from_month = from.getMonth() + 1;
   const from_day = from.getDate();
@@ -110,7 +116,7 @@ const get_date=()=>{
     to: `${year}/${month}/${day}`,
   };
   return dateRange;
-}
+};
 const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
 
 watch(branch_input, async () => {
