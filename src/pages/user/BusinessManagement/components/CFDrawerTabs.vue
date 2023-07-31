@@ -47,11 +47,11 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
     <q-tab :name="ClientFactoryTabs.Memo" :label="t('client.list.memo')" />
   </q-tabs>
 
-  <q-tab-panels v-model="activeTab" animated>
-    <q-tab-panel :name="ClientFactoryTabs.TeleAppointmentHistory">
-      <CFDrawerTeleAppointment :is-loading="isLoading" :client-id="clientFactory.clientID"
-        :client-factory-id="clientFactory.id" />
-    </q-tab-panel>
+    <q-tab-panels v-model="activeTab" animated>
+        <q-tab-panel :name="ClientFactoryTabs.TeleAppointmentHistory">
+          <CFDrawerTeleAppointment
+              :client-id="clientFactory.clientID" :client-factory-id="clientFactory.id"/>
+        </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.OfficeDetails">
       <CFDrawerOfficeDetails @edit-draft="editDraft" :client-factory="clientFactory" :industryType="industryType"
@@ -66,9 +66,9 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
       <CFDrawerHeadDetails :client-id="clientFactory.clientID" />
     </q-tab-panel>
 
-    <q-tab-panel :name="ClientFactoryTabs.VariousAchievements">
-      <CFDrawerVariousAchievement :client-id="clientFactory.clientID" />
-    </q-tab-panel>
+        <q-tab-panel :name="ClientFactoryTabs.VariousAchievements">
+          <CFDrawerVariousAchievement />
+        </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.Memo">
       <CFDrawerMemo :is-loading="isLoading" :client-id="clientFactory.clientID" :client-factory-id="clientFactory.id" />

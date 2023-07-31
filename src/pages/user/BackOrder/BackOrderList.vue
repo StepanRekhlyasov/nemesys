@@ -268,7 +268,7 @@ const customSortMethod = (rows, sortBy, descending) => {
     return sortedRows;
   }
   else{
-    return rows;
+    return state.BOList;
   }
 };
 
