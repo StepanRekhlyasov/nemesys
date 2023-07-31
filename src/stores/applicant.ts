@@ -150,7 +150,7 @@ export const useApplicant = defineStore('applicant', () => {
     applicantFixes: {},
     applicants: {}
   })
-  
+
   const countApplicantsByStatus = async (status: ApplicantStatus, filterData?: ApplicantProgressFilter) => {
     const filters = [
       where('status', '==', status),
@@ -196,10 +196,9 @@ export const useApplicant = defineStore('applicant', () => {
       page: 1,
       rowsPerPage: 10
     }) => {
-    state.value.applicantList = []
-    state.value.isLoadingProgress = true;
 
-    const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
+    state.value.isLoadingProgress = true;
+    const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }, { 'organizationid': organization.currentOrganizationId }] }).value;
     const queryString = searchData['keyword'] ? searchData['keyword'] : ''
     searchData = deepCopy(searchData);
 
@@ -296,6 +295,7 @@ export const useApplicant = defineStore('applicant', () => {
         'created_at': { 'from': formatDate(d, true), 'to': formatDate(new Date()) }
       });
     }
+
     await api.post(
       (process.env.elasticSearchStaffURL as string),
       {
@@ -321,12 +321,14 @@ export const useApplicant = defineStore('applicant', () => {
   };
 
   const loadFirestoreApplicantData = async () => {
-    state.value.applicantList = [];
     state.value.isLoadingProgress = true;
+    let applicantList: Applicant[] = [];
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      state.value.applicantList = await getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId)])
+      const applicants = await getApplicantsByConstraints([where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId)])
+      applicantList = [...applicantList, ...applicants];
     }
+    state.value.applicantList = applicantList;
     state.value.isLoadingProgress = false;
   }
 
@@ -393,7 +395,7 @@ export const useApplicant = defineStore('applicant', () => {
       where('deleted', '==', false),
     ]
 
-    if(!filterData?.organizationId){
+    if (!filterData?.organizationId) {
       filters.push(where('organizationId', '==', organization.currentOrganizationId))
     }
 
@@ -464,6 +466,7 @@ export const useApplicant = defineStore('applicant', () => {
   async function createApplicant(data: Applicant, applicantImage?: FileList | []) {
     const docRef = doc(collection(db, 'applicants'));
     data['id'] = docRef.id;
+    data['organizationId'] = organization.currentOrganizationId;
     for (const [key, value] of Object.entries(data)) {
       if (typeof value === 'undefined') delete data[key];
     }
@@ -480,7 +483,7 @@ export const useApplicant = defineStore('applicant', () => {
       data
     );
   }
- 
+
   async function getApplicantsByConstraints(constraints: ConstraintsType) {
     constraints.push(where('organizationId', '==', organization.currentOrganizationId))
     const q = query(collection(db, 'applicants'), ...constraints);
@@ -493,7 +496,7 @@ export const useApplicant = defineStore('applicant', () => {
   async function getApplicantById(id: string) {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
-    if(!result.data()){
+    if (!result.data()) {
       return undefined
     }
     return { ...result.data(), id: result.id } as Applicant
@@ -529,7 +532,7 @@ export const useApplicant = defineStore('applicant', () => {
         updated_at: serverTimestamp(),
         ...saveData
       })
-      ;
+        ;
     } catch (e) {
       Alert.warning(e);
     }
