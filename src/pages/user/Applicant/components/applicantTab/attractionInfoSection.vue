@@ -167,7 +167,7 @@
 
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
-import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
+import { applicantClassification, usersInCharge } from 'src/shared/constants/Applicant.const';
 import { Applicant, ApplicantInputs, selectOptions, BackOrderModel } from 'src/shared/model';
 import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -195,7 +195,6 @@ const organizationStore = useOrganization();
 const branchStore = useBranch()
 const branches = ref<selectOptions[]>([])
 
-const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
 const usersListOption = usersInCharge.value
 
