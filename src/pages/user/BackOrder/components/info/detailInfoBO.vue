@@ -243,7 +243,7 @@
         valueClass="q-pl-md col-4 flex self-center" labelClass="q-pl-md col-2 text-right self-center"
         :value="`${selectedBo['workingHoursEarly_min'] || ''} ~ ${selectedBo['workingHoursEarly_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -258,7 +258,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -296,7 +296,7 @@
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center"
         :value="`${selectedBo['workingHoursDay_min'] || ''} ~ ${selectedBo['workingHoursDay_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -311,7 +311,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -342,7 +342,7 @@
         valueClass="q-pl-md col-4 flex self-center" labelClass="q-pl-md col-2 text-right self-center"
         :value="`${selectedBo['workingHoursLate_min'] || ''} ~ ${selectedBo['workingHoursLate_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -357,7 +357,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -388,7 +388,7 @@
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center"
         :value="`${selectedBo['workingHoursNight_min'] || ''} ~ ${selectedBo['workingHoursNight_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -403,7 +403,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">

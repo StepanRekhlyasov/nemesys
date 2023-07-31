@@ -1,6 +1,6 @@
 <template>
   <q-card class="no-shadow bg-grey-3">
-    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog">
+    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog" greedy>
       <q-card-section class="text-white bg-primary no-border-radius">
         <div class="row">
           <div class="flex items-end ">
