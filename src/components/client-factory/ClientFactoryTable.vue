@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { ref, defineProps, defineEmits, withDefaults, watch } from 'vue';
 import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from './types';
+import { customSortMethod } from 'src/pages/user/BusinessManagement/consts/index'
 
 const props = withDefaults(defineProps<{
     rows: ClientFactoryTableRow[],
@@ -32,6 +33,7 @@ const selectItem = (item: ClientFactoryTableRow) => {
 watch(()=>selected.value,()=>{
     emit('selectedId',selected.value)
 })
+
 </script>
 
 <template>
@@ -47,6 +49,7 @@ watch(()=>selected.value,()=>{
     :selected-rows-label="getSelectedString"
     selection="multiple"
     v-model:selected="selected"
+    :sort-method="customSortMethod"
     hide-pagination>
 
         <template v-slot:header-cell="props">
@@ -95,7 +98,7 @@ watch(()=>selected.value,()=>{
     }
 
     .icon {
-       font-size: 1.2rem; 
+       font-size: 1.2rem;
     }
 }
 

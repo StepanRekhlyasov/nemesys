@@ -119,7 +119,7 @@ async function loadCurrentData() {
       branches[branch.businessId].push(branch)
     }
 
-    data.value.push(toTable(businesses, branches, organizations[0], { deleteBusinessWithoutBranch: true }))
+    data.value.push(toTable(businesses, branches, organizations[0]))
   })
 }
 

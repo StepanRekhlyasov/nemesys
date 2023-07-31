@@ -15,7 +15,7 @@ export const BackOrderColumns = computed(() => {
       label: 'BOID',
       align: 'left',
       field: 'boId',
-      sortable: false,
+      sortable: true,
     },
     {
       name: 'personnel',
@@ -23,6 +23,7 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.personnel'),
       field: 'personnel',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'dateOfRegistration',
@@ -30,12 +31,14 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.registrationDate'),
       field: 'dateOfRegistration',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'caseType',
       required: true,
       field: 'caseType',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'distance',
@@ -43,11 +46,13 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.distance'),
       field: 'distance',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'name',
       field: 'name',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'employmentType',
@@ -55,6 +60,7 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.employmentType'),
       field: 'employmentType',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'wage',
@@ -62,6 +68,7 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.hourlyRate'),
       field: 'wage',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'salary',
@@ -69,6 +76,7 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.monthlyWage'),
       field: 'salary',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'state',
@@ -76,6 +84,7 @@ export const BackOrderColumns = computed(() => {
       label: t('backOrder.state'),
       field: 'state',
       align: 'left',
+      sortable: true,
     },
     {
       name: 'info',
