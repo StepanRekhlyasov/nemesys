@@ -13,7 +13,7 @@
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
-        <q-table :columns="columns" :rows="applicantStore.state.applicantList" row-key="id" selection="multiple"
+        <q-table :columns="columns" :rows="sortedRows" row-key="id" selection="multiple"
           class="no-shadow" v-model:pagination="paginationTable" hide-pagination
           :loading="applicantStore.state.isLoadingProgress">
           <template v-slot:header-cell-name="props">
@@ -178,7 +178,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'name',
       required: true,
       align: 'left',
-      sortable: false,
+      sortable: true,
     },
     {
       name: 'address',
@@ -186,7 +186,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'address',
       required: true,
       align: 'left',
-      sortable: false,
+      sortable: true,
     },
     {
       name: 'staffRank',
@@ -194,6 +194,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'staffRank',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'status',
@@ -201,6 +202,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'status',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'qualification',
@@ -208,6 +210,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'qualification',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'station',
@@ -215,6 +218,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'station',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'phone',
@@ -222,6 +226,7 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'phone',
       required: true,
       align: 'left',
+      sortable: true,
     },
     {
       name: 'endDate',
@@ -229,9 +234,47 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       field: 'endDate',
       required: true,
       align: 'left',
+      sortable: true,
     },
   ];
 });
+
+const sortedRows = computed(() => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+    if (paginationTable.value.sortBy === 'qualification') {
+      const sortedRows = [...applicantStore.state.applicantList];
+      sortedRows.sort((a, b) => {
+        const first = a.totalYear?parseInt(a.totalYear):10000000;
+        const second = b.totalYear?parseInt(b.totalYear):10000000;
+        return paginationTable.value.descending ? first-second : second-first;
+      });
+      return sortedRows;
+    }
+    else if (paginationTable.value.sortBy === 'station') {
+      const sortedRows = [...applicantStore.state.applicantList];
+      sortedRows.sort((a, b) => {
+        const first = a.nearestStation?a.nearestStation:'';
+        const second = b.nearestStation?b.nearestStation:'';
+        return paginationTable.value.descending ? collator.compare(second, first) : collator.compare(first, second);
+      });
+      return sortedRows;
+    }
+    else if (paginationTable.value.sortBy === 'endDate') {
+      const sortedRows = [...applicantStore.state.applicantList];
+      sortedRows.sort((a, b) => {
+        const first = myDateFormat(a.created_at);
+        const second = myDateFormat(b.created_at);
+        if (paginationTable.value.descending) {
+          return second.localeCompare(first);
+        } else {
+          return first.localeCompare(second)
+        }});
+      return sortedRows;
+    }
+    else {
+      return applicantStore.state.applicantList;
+    }
+  });
 
 const getStatus = (status: string) => {
   const item = statusList.value.find(x => x.value === status);

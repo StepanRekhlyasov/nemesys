@@ -113,7 +113,9 @@ import { date } from 'quasar'
 
 const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
-  type: 'dispatch' | 'referral'
+  type: 'dispatch' | 'referral',
+  clientId?: string,
+  officeId?: string
 }>()
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -155,10 +157,22 @@ function resetData() {
     lat: 0,
     type: props.type
   } as Partial<BackOrderModel>
+  if(props.clientId){
+    data.value['client_id'] = props.clientId
+  }
+  if(props.officeId){
+  data.value['office_id'] = props.officeId
+  }
 }
 resetData();
 
 onMounted(async () => {
+  if(props.clientId){
+    data.value['client_id'] = props.clientId
+  }
+  if(props.officeId){
+  data.value['office_id'] = props.officeId
+  }
   await applicantStore.getClients()
 })
 watch(() => data.value.client_id, async () => {

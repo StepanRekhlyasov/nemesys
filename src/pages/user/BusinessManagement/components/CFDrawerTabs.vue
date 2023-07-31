@@ -58,9 +58,9 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
         :draft="draft" :is-loading="isLoading" />
     </q-tab-panel>
 
-    <q-tab-panel :name="ClientFactoryTabs.BOHistory">
-      <CFDrawerBackOrder :client-id="clientFactory.clientID" />
-    </q-tab-panel>
+        <q-tab-panel :name="ClientFactoryTabs.BOHistory">
+          <CFDrawerBackOrder :officeId="clientFactory.id" :clientId="clientFactory.clientID"/>
+        </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.HeadOffice">
       <CFDrawerHeadDetails :client-id="clientFactory.clientID" />
