@@ -125,7 +125,7 @@
 import { useI18n } from 'vue-i18n';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
 import { Client } from 'src/shared/model/Client.model'
-import { ref, Ref, watch, onMounted, defineProps } from 'vue';
+import { ref, Ref, watch, onMounted, defineProps, ComputedRef } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useQuasar } from 'quasar';
 import InfoBO from 'src/pages/user/BackOrder/components/info/InfoBO.vue';
@@ -137,7 +137,7 @@ import { QTableProps } from 'quasar';
 import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; columns: QTableProps['columns']; officeId?: string }>();
+const props = defineProps<{ clientId: string; officeId?: string }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
@@ -145,7 +145,7 @@ const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral')
 const selectedBo = ref<BackOrderModel | undefined>();
 const selectedClient = ref<Client | undefined>(undefined);
 const cteateBoDrawer = ref(false);
-const columns = ref(BackOrderColumns);
+const columns = ref<QTableProps | ComputedRef>(BackOrderColumns);
 const loading = ref(false);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const $q = useQuasar();

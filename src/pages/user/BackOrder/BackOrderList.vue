@@ -43,7 +43,7 @@
               <div>
                 {{
                   props.row.transactionType
-                  ? $t(`client.backOrder.${props.row.transactionType}`)
+                  ? $t(`client.backOrder.${props.row.transactionType.toLowerCase()}`)
                   : '-'
                 }}
               </div>
@@ -189,9 +189,9 @@ const customSortMethod = (rows, sortBy, descending) => {
     return sortedRows;
   }
   else if (sortBy === 'BOID') {
-    const sortedRows = [...rows];
+    const sortedRows = [...state.BOList];
     sortedRows.sort((a, b) => {
-      return descending ? a.boId-b.boId : b.boId-a.boId;
+      return descending ? parseInt(a.boId)-parseInt(b.boId) : parseInt(b.boId)-parseInt(a.boId);
     });
     return sortedRows;
   }
@@ -224,6 +224,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   }
   else if (sortBy === 'name') {
     const sortedRows = [...rows];
+
     sortedRows.sort((a, b) => {
       const first = a.officeName;
       const second = b.officeName;
@@ -324,13 +325,13 @@ function showDialog(bo: BackOrderModel) {
 
 const loadSearchStaff = async (staffList: BOElasticSearchData) => {
   pagination.value.page = 1;
-  await backOrderStore.loadBackOrder(staffList, pagination.value);
+  await backOrderStore.loadBackOrder(staffList);
 };
 
-backOrderStore.loadBackOrder({}, pagination.value);
+backOrderStore.loadBackOrder({});
 
 watch(() => pagination.value.page, async () => {
-  await backOrderStore.loadBackOrder({}, pagination.value);
+  await backOrderStore.loadBackOrder({},pagination.value);
 })
 
 onMounted(async () => {
