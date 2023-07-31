@@ -73,7 +73,7 @@ const showData = async (
   dateRange: { from: string; to: string },
   organizationId: string
 ) => {
-  dataToShow.value = []
+  dataToShow.value = [];
   const dataAverage = getListFromObject(
     await getReport({
       dateRange: dateRange,
@@ -106,11 +106,7 @@ const showData = async (
 };
 
 watch(
-  () => [
-    props.branch_user_list,
-    props.dateRangeProps,
-    props.graph_type,
-  ],
+  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showData(props.dateRangeProps, props.organization_id);
