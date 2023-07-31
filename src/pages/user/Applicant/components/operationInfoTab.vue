@@ -47,7 +47,7 @@
       <template v-if="!bo" v-slot:body-cell-edit="props">
         <EditButton :props="props" color="primary"
           :on-edit="() => { editableContect.memo = props.row.memo }"
-          :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
+          :on-save="() => { props.row.memo = editableContect.memo }" @onEditableRowChange="(row) => editableRow = row"
           :editable-row="editableRow" :key="props.rowIndex" />
       </template>
     </q-table>
@@ -185,30 +185,6 @@ async function loadUser() {
 
 }
 
-async function onUpdate(index) {
-  try {
-    if (!editableContect.value) {
-      return;
-    }
-//    loading.value = true;
-//    let updateData = {}
-//    updateData['updated_at'] = serverTimestamp();
-//    updateData['updated_by'] = auth.currentUser?.uid;
-//    updateData['content'] = editableContect.value['content'] || '';
-//
-//    await updateDoc(
-//      doc(db, 'applicants/' + props.applicant.id + '/memo/' + editableContect.value['id']),
-//      updateData
-//    );
-//    memoListData.value[index] = editableContect.value as ApplicantMemo;
-//    await loadMemoData();
-//    loading.value = false;
-  } catch (e) {
-    Alert.warning(e)
-    console.log(e)
-    loading.value = false;
-  }
-}
 function isRowSelected(row) {
   return row == editableRow.value
 }
