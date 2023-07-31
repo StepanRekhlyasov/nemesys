@@ -76,6 +76,7 @@ export const rateCalcuPattern = [
   { before: 'inspection', after: 'offer', name: 'offerRate' },
   { before: 'offer', after: 'admission', name: 'admissionRate' },
   { before: 'applicants', after: 'fix', name: 'applicantsFixRate' },
+  { before: 'applicants', after: 'admission', name: 'applicantsAdmissionRate' }
 ];
 export const dayItemList = [
   { queryName: 'applicants' },
@@ -114,6 +115,7 @@ export const mediaItemRateList = [
   ['inspection', 'offer'],
   ['offer', 'admission'],
   ['applicants', 'fix', 'applicantsFixRate'],
+  ['applicants', 'offer', 'applicantsAdmissionRate'],
 ] as const;
 
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
@@ -241,6 +243,13 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'applicantsFixRate',
       label: t('KPI.tables.actualFigures.20'),
+      align: 'center',
+      sortable: true,
+    },
+    {
+      name: '',
+      field: 'applicantsAdmissionRate',
+      label: t('KPI.tables.actualFigures.21'),
       align: 'center',
       sortable: true,
     },

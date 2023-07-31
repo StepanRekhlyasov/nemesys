@@ -187,11 +187,7 @@ const showChart = async () => {
 };
 
 watch(
-  () => [
-    props.branch_user_list,
-    props.dateRangeProps,
-    props.graph_type,
-  ],
+  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showChart();

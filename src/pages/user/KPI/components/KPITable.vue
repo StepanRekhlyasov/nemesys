@@ -55,8 +55,11 @@ const calculateTotal = (rows: QTableProps['rows'] | undefined) => {
   });
 
   for(const pattern of rateCalcuPattern) {
-    if (total[pattern.before] && total[pattern.before]) {
+    if (total[pattern.after] && total[pattern.before]) {
       total[pattern.name] = (total[pattern.after] / total[pattern.before] * 100).toFixed(1) + '%';
+    }
+    else {
+      total[pattern.name] = '0.0%';
     }
   }
 
