@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, withDefaults, watch , computed} from 'vue';
+import { ref, defineProps, defineEmits, withDefaults, watch, computed } from 'vue';
 import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from './types';
 // import { customSortMethod } from 'src/pages/user/BusinessManagement/consts/index'
 
@@ -34,7 +34,7 @@ watch(()=>selected.value,()=>{
     emit('selectedId',selected.value)
 })
 
-const customSortMethod = (rows, sortBy, descending) => {
+const sortRows = (rows, sortBy, descending) => {
   const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
 if (sortBy === 'distance') {
     const sortedRows = [...props.rows];
@@ -113,21 +113,25 @@ if (sortBy === 'distance') {
   }
 };
 
-const paginatedRows = computed(() => {
+const paginatedAndSortedTableRows = computed(() => {
+    const clonedRows = [...props.rows];
+    const sortedRows = sortRows(clonedRows, props.pagination.sortBy, props.pagination.descending);
+    console.log(sortedRows[0])
     const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
     const end = start + props.pagination.rowsPerPage;
-    return sortedRows.value.slice(start, end);
+    console.log(sortedRows[start])
+    return sortedRows.slice(start, end);
   });
 
-  const sortedRows = computed(() => {
-    return customSortMethod(props.rows, props.pagination.sortBy, props.pagination.descending);
-  });
+// watch(props.pagination,()=>{
+//   console.log(paginatedAndSortedTableRows.value[0].office.name)
+// })
 
 </script>
 
 <template>
     <q-table
-    :rows="paginatedRows"
+    :rows="paginatedAndSortedTableRows"
     :columns="tableColumns"
     :rows-per-page-options="[pagination.rowsPerPage]"
     row-key="id"
