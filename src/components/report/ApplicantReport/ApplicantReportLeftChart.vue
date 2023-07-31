@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, onMounted, computed, ComputedRef } from 'vue';
+import { ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { chartOptions, columns, itemList, chartType, rowNames } from './const';
 import {
@@ -17,7 +17,7 @@ import VueApexCharts from 'vue3-apexcharts';
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const apexchart = VueApexCharts;
-const dataToShow: Ref<(number | string)[][]> = ref([]);
+const dataToShow = ref<(number | string)[][]>([]);
 const series: ComputedRef<
   { name: string; data: (number | string)[]; type: string }[]
 > = computed(() => {
