@@ -46,13 +46,15 @@ const showChart = async () => {
   mediaList.value = await media.getAllmedia();
   if (!props.dateRangeProps) return;
   const dateRange = props.dateRangeProps;
-  dataToshow.value = (await getReport({
-    queryNames: [{queryName:'amount'}],
-    graphType: props.graph_type,
-    dateRange: dateRange,
-    isAverage: false,
-    medias: mediaList.value
-  })).map((row) => row.amount) ;
+  dataToshow.value = (
+    await getReport({
+      queryNames: [{ queryName: 'amount' }],
+      graphType: props.graph_type,
+      dateRange: dateRange,
+      isAverage: false,
+      medias: mediaList.value,
+    })
+  ).map((row) => row.amount);
 };
 
 watch(

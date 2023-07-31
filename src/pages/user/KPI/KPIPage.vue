@@ -56,7 +56,7 @@
         {{ $t('KPI.media') }}
         <MySelect :width="'150px'" :options="mediaListToShow" v-model="media" @update:model-value="getData()" />
       </label>
-      <label class="text-subtitle1" v-if="mode === 'day'">
+      <label class="text-subtitle1" v-if="false">
         {{ $t('KPI.username') }}
         <MySelect :options="userListToShow" :width="'175px'" v-model="user" @update:model-value="getData()" />
       </label>

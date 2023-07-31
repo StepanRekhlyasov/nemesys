@@ -104,17 +104,19 @@ const showIndividualReport = async (
     });
   }
 
-  const allDataAverage = listToFixed(getListFromObject(
-    await getReport({
-      dateRange: range,
-      graphType: props.graph_type,
-      queryNames: itemList,
-      isAverage: true,
-    }),
-    itemList.map((item) => {
-      return item.queryName;
-    })
-  ) as number[]);
+  const allDataAverage = listToFixed(
+    getListFromObject(
+      await getReport({
+        dateRange: range,
+        graphType: props.graph_type,
+        queryNames: itemList,
+        isAverage: true,
+      }),
+      itemList.map((item) => {
+        return item.queryName;
+      })
+    ) as number[]
+  );
 
   const dataAverage = listToFixed(
     getListFromObject(
@@ -132,7 +134,9 @@ const showIndividualReport = async (
   );
 
   const dataAverageCvr = listToFixed(calculateCVR(dataAverage as number[]));
-  const allDataAverageCvr = listToFixed(calculateCVR(allDataAverage as number[]));
+  const allDataAverageCvr = listToFixed(
+    calculateCVR(allDataAverage as number[])
+  );
   dataToShow.value = [dataAverage, allDataAverage];
   dataToShowCVR.value = [dataAverageCvr, allDataAverageCvr];
 };
