@@ -42,7 +42,7 @@
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
                   :rules="[creationRule]" hide-bottom-space bg-color="white" :label="$t('common.pleaseSelect')" emit-value
-                  map-options />
+                  map-options use-input input-debounce="0" @filter="filterPrefecturre" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -52,7 +52,7 @@
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :disable="!fetchMunicipalities" emit-value bg-color="white"
                   :options="municipalities" v-model="applicantData['municipalities']" :label="$t('common.pleaseSelect')"
-                  :rules="[creationRule]" hide-bottom-space />
+                  :rules="[creationRule]" hide-bottom-space use-input input-debounce="0" @filter="filterMunicipalities" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -195,7 +195,7 @@
               </div>
               <div class="col-9 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
-                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                  hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-md q-pb-sm ">
@@ -298,7 +298,7 @@ const organizationStore = useOrganization();
 const applicantStore = useApplicant();
 
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
-const prefectureOption = ref(prefectureList);
+const prefectureOption = ref(prefectureList.value);
 const applicationMethodOption = ref(applicationMethod)
 const statusOption = ref(statusList);
 const disableSubmit = ref(false)
@@ -335,6 +335,31 @@ function onFileChange(files: FileList) {
     imageURL.value = URL.createObjectURL(file);
   }
 }
+const filterMunicipalities = async (val: string, update) => {
+  if (val === '' && applicantData.value.prefecture) {
+    update(async () => {
+      municipalities.value = await getMunicipalities(applicantData.value.prefecture)
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    municipalities.value = municipalities.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
+  })
+};
+
+const filterPrefecturre = async (val: string, update) => {
+  if (val === '') {
+    update(async () => {
+      prefectureOption.value = prefectureList.value
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    prefectureOption.value = prefectureOption.value.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+  })
+};
 
 async function onSubmit() {
   loading.value = true;
@@ -364,8 +389,7 @@ async function onSubmit() {
   data['dob'] = Timestamp.fromDate(new Date(data.dob));
   data['deleted'] = false;
   try {
-    await applicantStore.createApplicant(data, applicantImage.value)
-    ;
+    await applicantStore.createApplicant(data, applicantImage.value);
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   } catch (error) {
