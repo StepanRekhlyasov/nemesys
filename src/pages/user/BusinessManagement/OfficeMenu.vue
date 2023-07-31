@@ -1,21 +1,23 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
-import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue'
+import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
+import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue';
 import { OfficeMenuItem } from './types'
 import ClientFactoryDrawer from 'src/pages/user/BusinessManagement/ClientFactoryDrawer.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-
+import NewClientDrawer from 'src/components/client-factory/NewClientDrawer.vue';
+import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFactoryDrawer.vue';
 const { t } = useI18n({ useScope: 'global' });
 
-const router = useRouter()
 const isDrawer = ref({
     mapSearchDrawer: false,
     areaSearchDrawer: false,
-    advanceSearchDrawer: false
+    advanceSearchDrawer: false,
+    isNewClientDrawer: false,
+    isNewClientFactoryDrawer:false
 })
 const activeItem = ref<null | OfficeMenuItem>(null)
 
@@ -25,6 +27,8 @@ const isClientFactoryDrawer = ref(false)
 const mapSearchKey = ref<number>(0);
 const areaSearchKey = ref<number>(0);
 const advanceSearchKey = ref<number>(0);
+// const isNewClientDrawer = ref<number>(0);
+// const isNewClientFactoryDrawer = ref<number>(0);
 const menu = computed(() => {
     return [
         {
@@ -55,14 +59,14 @@ const menu = computed(() => {
             name: t('menu.addOffice'),
             center: t('menu.addOfficeHint'),
             click() {
-                router.push('client-factories');
+                isDrawer.value.isNewClientFactoryDrawer = true
             },
         },
         {
             name: t('menu.addClient'),
             center: t('menu.addNewClient'),
             click() {
-                router.push('client-factories');
+                isDrawer.value.isNewClientDrawer = true
             },
         },
     ]
@@ -79,14 +83,20 @@ const hideMapDrawer = () => {
 const hideAreaDrawer = () => {
     isDrawer.value.areaSearchDrawer = false
 }
-
+const hideNewClientFactoryDrawer = () => {
+    isDrawer.value.isNewClientFactoryDrawer = false
+}
+const hideNewClientDrawer = () => {
+    isDrawer.value.isNewClientDrawer = false
+}
 const onMenuItem = (item: OfficeMenuItem) => {
     isDrawer.value = {
         mapSearchDrawer: false,
         areaSearchDrawer: false,
-        advanceSearchDrawer: false
+        advanceSearchDrawer: false,
+        isNewClientDrawer: false,
+        isNewClientFactoryDrawer:false
     }
-
     activeItem.value = item
     item.click()
 }
@@ -102,11 +112,19 @@ const openCFDrawer = (clientFactoryData: ClientFactory) => {
         }
     }, 200);
 }
-
+const isFaxDrawer = ref(false);
+const selectedCF = ref<string[]>([])
+const openFaxDrawer = (id:string) =>{
+    selectedCF.value = []
+    selectedCF.value.push(id)
+    isFaxDrawer.value = true
+}
+const hideFaxDrawer = () => {
+    isFaxDrawer.value = false
+}
 const hideClientFactoryDrawer = () => {
   isClientFactoryDrawer.value = false
 }
-
 </script>
 
 <template>
@@ -139,12 +157,41 @@ const hideClientFactoryDrawer = () => {
             </q-card-section>
         </q-card>
 
-        <MapDrawer @hide-drawer="hideMapDrawer" :isDrawer="isDrawer.mapSearchDrawer" :width="1100" @open-c-f-drawer="openCFDrawer" :key="mapSearchKey"/>
-        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" :isDrawer="isDrawer.areaSearchDrawer" :width="1100" :key="areaSearchKey"/>
-        <AdvanceSearchDrawer @hide-c-s-drawer="hideAdvanceDrawer" :isDrawer="isDrawer.advanceSearchDrawer" :width="1100" :key="advanceSearchKey"/>
-        <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
-            :isDrawer="isClientFactoryDrawer" @hide-drawer="hideClientFactoryDrawer" />
-
+        <MapDrawer 
+            @hide-drawer="hideMapDrawer" 
+            :isDrawer="isDrawer.mapSearchDrawer" 
+            :width="1100" 
+            @open-c-f-drawer="openCFDrawer" 
+            :key="mapSearchKey"/>
+        <AreaSearchDrawer @hide-drawer="hideAreaDrawer" 
+            :isDrawer="isDrawer.areaSearchDrawer" 
+            :width="1100" 
+            :key="areaSearchKey"/>
+        <AdvanceSearchDrawer 
+            @hide-c-s-drawer="hideAdvanceDrawer" 
+            :isDrawer="isDrawer.advanceSearchDrawer" 
+            @open-c-f-drawer="openCFDrawer" 
+            :width="1100" 
+            :key="advanceSearchKey"/>
+        <ClientFactoryDrawer 
+            v-if="activeClientFactoryItem" 
+            v-model:selectedItem="activeClientFactoryItem"
+            :isDrawer="isClientFactoryDrawer" 
+            @open-fax-drawer="openFaxDrawer" 
+            @hide-drawer="hideClientFactoryDrawer" />
+        <FaxDrawer 
+            @hide-drawer="hideFaxDrawer" 
+            theme="primary" 
+            :selectedCF="selectedCF" 
+            :is-drawer="isFaxDrawer" />
+        <NewClientDrawer
+            @hide-drawer="hideNewClientDrawer"
+            theme="primary"
+            :is-drawer="isDrawer.isNewClientDrawer" />
+        <NewClientFactoryDrawer
+            @hide-drawer="hideNewClientFactoryDrawer"
+            theme="primary"
+            :is-drawer="isDrawer.isNewClientFactoryDrawer"/>
     </div>
 </template>
 

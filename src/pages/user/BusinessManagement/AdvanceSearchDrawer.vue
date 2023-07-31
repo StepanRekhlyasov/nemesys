@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import AdvancedSearch from './AdvancedSearch.vue';
 const props = withDefaults(defineProps<{
     isDrawer: boolean,
@@ -11,6 +12,7 @@ const props = withDefaults(defineProps<{
     width:1100
 })
 const emit = defineEmits<{
+    (e: 'openCFDrawer', ClientFactoryData: ClientFactory),
     (e: 'hideCSDrawer'),
 }>()
 
@@ -19,7 +21,9 @@ const { t } = useI18n({ useScope: 'global' });
 const hideDrawer = () => {
     emit('hideCSDrawer')
 }
-
+const openCFDrawer = (office: ClientFactory) => {
+  emit('openCFDrawer', office)
+}
 </script>
 
 <template>
@@ -34,7 +38,7 @@ const hideDrawer = () => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AdvancedSearch :from="props.from" @hide-c-s-drawer="hideDrawer"/>
+                    <AdvancedSearch :from="props.from" @hide-c-s-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

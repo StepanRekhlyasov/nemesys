@@ -349,7 +349,8 @@
 
 
   </q-card>
-  <MapDrawer :isDrawer="mapDrawer" from="advance" :width=900 @hide-drawer="hideMapDrawer" v-if="props.from == ''" />
+  <MapDrawer :isDrawer="mapDrawer" from="advance" :width=900 @hide-drawer="hideMapDrawer" 
+    @open-c-f-drawer="openCFDrawer" v-if="props.from == ''" />
   <AreaSearchDrawer :isDrawer="areaDrawer" from="advance" :width=900 @hide-drawer="hideAreaDrawer"
     v-if="props.from == ''" />
 </template>
@@ -361,6 +362,7 @@ import { facilityList } from 'src/shared/constants/Organization.const';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
 import {  getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
@@ -371,6 +373,7 @@ const props = withDefaults(defineProps<{
   from: ''
 })
 const emit = defineEmits<{
+  (e: 'openCFDrawer', ClientFactoryData: ClientFactory),
   (e: 'hideCSDrawer')
 }>()
 const isLoadingProgress = ref(false)
@@ -447,6 +450,9 @@ const hideAreaDrawer = () => {
 }
 const hideCSDrawer = () => {
   emit('hideCSDrawer')
+}
+const openCFDrawer = (office: ClientFactory) => {
+  emit('openCFDrawer', office)
 }
 const searchClients = async () => {
   isLoadingProgress.value = true;

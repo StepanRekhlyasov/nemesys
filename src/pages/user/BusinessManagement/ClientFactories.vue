@@ -184,7 +184,7 @@ const openFaxDrawer = (id:string) =>{
 
         <FaxDrawer
         @hide-drawer="hideNewFaxDrawer"
-        theme="primaery"
+        theme="primary"
         :selectedCF="selectedCF"
         :is-drawer="isNewFaxDrawer"
         />

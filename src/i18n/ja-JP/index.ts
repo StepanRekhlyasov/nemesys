@@ -1456,6 +1456,7 @@ export default {
     clickToAddNewClient: 'クライアント新規追加はこちら',
     searchConditionChange: '検索条件変更',
     faxBatchTransmission: 'FAX一括送信',
+    changeSearchCriteria: '検索条件を変更する'
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',

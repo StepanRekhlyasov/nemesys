@@ -2,9 +2,9 @@
 import { useI18n } from 'vue-i18n';
 import { defineEmits, defineProps, withDefaults } from 'vue';
 import {ActionsType} from './types'
-
+import { useRouter } from 'vue-router';
 const { t } = useI18n({ useScope: 'global' });
-
+const router = useRouter()
 const props = withDefaults(defineProps<{
     isReset:boolean
     actionsType?: ActionsType
@@ -35,7 +35,9 @@ const openNewClientFactoryDrawer = () => {
 const openNewFaxDrawer=()=>{
   emit('openFaxDrawer')
 }
-
+const changeRoute = ()=>(
+    router.push('/officeSearch')
+)
 </script>
 
 <template>
@@ -66,7 +68,7 @@ const openNewFaxDrawer=()=>{
 
             <div v-else>
                 <div class="row q-mt-xs">
-                    <div class="q-gutter-md" style="max-width: 150px">
+                    <!-- <div class="q-gutter-md" style="max-width: 150px">
                         <q-select outlined dense class="bg-white" model-value="Test">
                             <template v-slot:prepend>
                                 <q-icon name="filter_alt" color="primary" />
@@ -78,12 +80,15 @@ const openNewFaxDrawer=()=>{
                         <q-select outlined dense class="bg-white" model-value="Test">
 
                         </q-select>
+                    </div> -->
+                    <div class="q-gutter-md">
+                        <q-btn outline color="primary" :label="t('actions.changeSearchCriteria')" @click="changeRoute"></q-btn>
                     </div>
                     <div class="q-gutter-md q-ml-sm">
                       <q-btn class="action_btn"  @click="openNewFaxDrawer" :color="theme"> {{ t('actions.faxBatchTransmission') }}</q-btn>
                     </div>
                     <div class="q-gutter-md q-ml-sm">
-                        <q-btn @click="resetSelectedCFsId" label="reset" v-if="props.isReset" :color="theme"/>
+                        <q-btn @click="resetSelectedCFsId" :label="t('client.list.resetConditions')" v-if="props.isReset" :color="theme"/>
                     </div>
                 </div>
             </div> 

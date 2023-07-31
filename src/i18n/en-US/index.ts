@@ -1460,6 +1460,7 @@ export default {
     clickToAddNewClient: 'Click here to add a new client',
     searchConditionChange: 'Search condition change',
     faxBatchTransmission: 'Fax batch transmission',
+    changeSearchCriteria: 'Change Search Critertia'
   },
   failed: 'Action failed',
   success: 'Action was successful',
