@@ -80,7 +80,7 @@ export default {
     yen: '円',
     year: '年',
     userNotFound: 'ユーザーが見つかりません。',
-    age: '年齢',
+    age: '歳',
     ageShort: '歳',
     week: '週',
     month: '月',

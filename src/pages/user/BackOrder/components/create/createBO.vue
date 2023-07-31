@@ -59,7 +59,7 @@
           <div class="row q-pt-sm">
             <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" 
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
-              <q-input v-model="data['customerRepresentative']" type="text" dense outlined/>
+              <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
             </labelField>
           </div>
           <div class="row">
@@ -187,7 +187,8 @@ function closeDialog() {
 
 function resetData() {
   data.value = {
-    working_days_week: [] as string[],
+    workingDays: [] as string[],
+    employmentType: [] as string[],
     qualifications: [] as TypeQualifications[],
     dateOfRegistration: date.formatDate(Date.now(), 'YYYY/MM/DD'),
     lon: 0,

@@ -26,37 +26,31 @@
 
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.benefit')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-input v-model="data['benefit']" outlined dense :disable="loading"/>
+        <q-input v-model="data['benefit']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
     
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.bonus')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-input v-model="data['bonus']" outlined dense :disable="loading"/>
+        <q-input v-model="data['bonus']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
     
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesRegular')" 
-        val="yesRegular" v-model="data['travelingExpenses']" />
-        <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesDaily')" 
-        val="yesDaily" v-model="data['travelingExpenses']" />
-        <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.none')" 
-        val="none" v-model="data['travelingExpenses']" />
+        <q-input v-model="data['travelingExpenses']" outlined dense type="textarea" autogrow :disable="loading"/>
       </labelField>
     </div>
     
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.payday')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md flex">
-        <q-input v-model="data['payday']" outlined dense type="number" :disable="loading"/>
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.create.day') }}</span>
+        <q-input v-model="data['payday']" outlined dense type="textarea" autogrow :disable="loading"/>
       </labelField>
     </div>
     
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.remarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
-        <q-input v-model="data['remarks']" outlined dense :disable="loading"/>
+        <q-input v-model="data['remarks']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
     
