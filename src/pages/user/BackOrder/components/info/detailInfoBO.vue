@@ -145,7 +145,7 @@
     </div>
     
     <div class="row">
-      <labelField :label="$t('client.backOrder.transactionType')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"
+      <labelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center col-4 q-pl-sm">
         <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
