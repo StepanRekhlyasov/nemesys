@@ -35,6 +35,11 @@
         }}</span>
         <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
       </LabelField>
+      <LabelField :label="$t('backOrder.create.customerRepresentative')" :edit="edit"
+        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
+        :value="`${selectedBo['customerRepresentative'] || ''}`">
+        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" />
+      </LabelField>
     </div>
 
     <div class="row q-pb-sm">
@@ -69,15 +74,11 @@
         <q-radio v-for="key in TypeOfCase" v-model="data['typeCase']" :label="$t('applicant.add.' + key)" :val="key"
           :key="key" :disable="loading" class="q-pr-md" />
       </LabelField>
-      
       <LabelField :label="$t('backOrder.create.bonus')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" :value="`${data['bonus'] || ''}`">
         <q-input v-model="data['bonus']" outlined dense :disable="loading" />
       </LabelField>
     </div>
-
-    
-    
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
@@ -141,13 +142,17 @@
         <q-radio v-for="key in TypeOfCase" v-model="data['typeCase']" :label="$t('applicant.add.' + key)" :val="key"
           :key="key" :disable="loading" class="q-pr-md" />
       </LabelField>
-      <div class="col-6"></div>
-      <LabelField :label="$t('backOrder.create.customerRepresentative')" :edit="edit"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['customerRepresentative'] || ''}`">
-        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" />
-      </LabelField>
     </div>
+    
+    <div class="row">
+      <labelField :label="$t('client.backOrder.transactionType')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"
+        valueClass="self-center col-4 q-pl-sm">
+        <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
+          checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
+          :disable="loading" class="q-pr-md" />
+      </labelField>
+    </div>
+
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks']">
@@ -247,7 +252,7 @@
         valueClass="q-pl-md col-4 flex self-center" labelClass="q-pl-md col-2 text-right self-center"
         :value="`${selectedBo['workingHoursEarly_min'] || ''} ~ ${selectedBo['workingHoursEarly_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -262,7 +267,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -300,7 +305,7 @@
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center"
         :value="`${selectedBo['workingHoursDay_min'] || ''} ~ ${selectedBo['workingHoursDay_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -315,7 +320,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -346,7 +351,7 @@
         valueClass="q-pl-md col-4 flex self-center" labelClass="q-pl-md col-2 text-right self-center"
         :value="`${selectedBo['workingHoursLate_min'] || ''} ~ ${selectedBo['workingHoursLate_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -361,7 +366,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -392,7 +397,7 @@
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center"
         :value="`${selectedBo['workingHoursNight_min'] || ''} ~ ${selectedBo['workingHoursNight_max'] || ''}`">
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_min']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -407,7 +412,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{ $t('backOrder.time') + ' ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursNight_max']"
-          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
+          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space>
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -545,13 +550,28 @@ import { useApplicant } from 'src/stores/applicant';
 import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n({ useScope: 'global' });
 const applicantStore = useApplicant()
 const props = defineProps<{
   isHiddenDetails?: boolean,
 }>()
 
 const emit = defineEmits(['openSearchByMap']);
+
+const transactionTypeOptions = computed(()=>{
+  if(selectedBo.value.type === 'dispatch') {
+    return [
+      {label: 'TTP', value: 'TTP'},
+      {label: t('client.backOrder.dispatchEm'), value: 'generalDispatch'},
+    ]
+  }
+  return [
+    {label: 'TTP', value: 'TTP'},
+    {label: t('client.backOrder.introduction'), value: 'introduction'},
+  ]
+})
 
 const edit = ref(false);
 const backOrderStore = useBackOrder();
