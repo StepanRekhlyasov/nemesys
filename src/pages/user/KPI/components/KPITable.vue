@@ -1,28 +1,16 @@
 <template>
-  <q-table
-    class="kpiTable"
-    :columns="columns"
-    :rows="rowsCalculated"
-    separator="cell"
-    dense
-    :rows-per-page-options="[0]"
-    hide-pagination
-  >
+  <q-table class="kpiTable" :columns="columns" :rows="rowsCalculated" separator="cell" dense :rows-per-page-options="[0]"
+    hide-pagination>
     <template v-slot:body-cell-name="props">
-      <q-td
-        class="clickable"
-        @click="
-          () => {
-            emit('openDrawer', props.row);
-          }
-        "
-        >{{ props.row.name }}</q-td
-      >
+      <q-td class="clickable" @click="() => {
+        emit('openDrawer', props.row);
+      }
+        ">{{ props.row.name }}</q-td>
     </template>
   </q-table>
 </template>
 <script setup lang="ts">
-import { QTableProps, exportFile } from 'quasar';
+import { QTableProps, exportFile, date } from 'quasar';
 import {
   actualFiguresColumns,
   everydayColumns,
@@ -54,8 +42,8 @@ const calculateTotal = (rows: QTableProps['rows'] | undefined) => {
     return acc;
   });
 
-  for(const pattern of rateCalcuPattern) {
-    if (total[pattern.after] && total[pattern.before]) {
+  for (const pattern of rateCalcuPattern) {
+    if (total[pattern.before] && total[pattern.before]) {
       total[pattern.name] = (total[pattern.after] / total[pattern.before] * 100).toFixed(1) + '%';
     }
     else {
@@ -99,11 +87,14 @@ const exportTable = () => {
   const csvData = props.rows.map((row) => Object.values(row));
   const csvHeaders = columns.value.map((column) => column.label);
 
-  const csvContent = [
+  const csvContent = '\uFEFF' + [
     csvHeaders.join(','),
     ...csvData.map((row) => row.join(',')),
   ].join('\n');
-  const status = exportFile('table-export.csv', csvContent, 'text/csv');
+
+  const formattedString = date.formatDate(Date.now(), 'YYYYMMDDHHmmss')
+
+  const status = exportFile(`kpi-export-${formattedString}.csv`, csvContent, 'text/csv');
   if (status !== true) {
     Alert.warning(status);
   }
@@ -113,23 +104,28 @@ defineExpose({ exportTable });
 <style lang="scss">
 .kpiTable {
   overflow: auto;
+
   th {
     background-color: $primary;
     color: #fff;
     border-color: #fff;
   }
+
   tbody {
     tr:first-child {
       background-color: #b7b7b7;
+
       td {
         border-color: #fff;
       }
     }
   }
 }
+
 .clickable {
   cursor: pointer;
   color: $primary;
+
   &:hover {
     text-decoration: underline;
   }

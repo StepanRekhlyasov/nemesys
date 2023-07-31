@@ -40,6 +40,7 @@ export default {
     description: '説明',
     delete: '削除',
     deleteInfo: 'このアイテムを削除しますか?',
+    deleteBusiness: 'この事業名を削除しますか?',
     create: '作成',
     title: '題名',
     save: '保存',
@@ -175,6 +176,7 @@ export default {
     KPI: 'KPI',
     faxHistory: 'FAX送信履歴',
     admin: {
+      usersManagement: 'ユーザー管理',
       masterSearch: '事業所マスタ検索',
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
@@ -636,6 +638,8 @@ export default {
 
     },
     backOrder: {
+      TTP: 'TTP',
+      generalDispatch: '一般派遣',
       title: 'バックオーダー',
       noOrders: '過去のバックオーダーはありません',
       add: 'バックオーダー追加',
@@ -700,6 +704,7 @@ export default {
       leaveChildcare: '育児・介護他休暇',
       otherNotes: 'その他メモ欄',
       regBOButton: 'BO 登録',
+      assignToBo:'このBOにアサインする',
       list: {
         id: 'BOID',
         dateBO: 'BO発生日',
@@ -840,6 +845,8 @@ export default {
       commutesDisatnce: '通勤距離',
       shift: 'シフト',
       accuracy: '精度',
+      contactNote : 'コンタクトメモ',
+      lastContact : '最終コンタクト日',
       contacts: {
         openContactForm: 'コンタクト追加フォームを開く',
         closeContactForm: 'コンタクト追加フォームを閉じる',
@@ -1297,7 +1304,7 @@ export default {
       filingRemarks: '稟議備考',
       availabilityOfGarage: '駐車場有無',
       commutingByCar: '車通勤可否',
-      parkingRemarks: '駐車場備考',
+      parkingRemarks: '駐車場有無備考',
       uniformAvailability: '制服の有無',
       availabilityOfLunch: '昼食の有無',
       smoking: '喫煙可否',
@@ -1593,12 +1600,12 @@ export default {
         welfareHealth: '福利厚生',
         leisureSpecial: '育児・介護他休暇',
         contentWork: '業務内容',
-        dayOffYear: '早番',
+        dayOffYear: '休日（年間)',
         canSmoke: '喫煙可否',
-        dayOffWeek: '日勤',
-        workingHourEarly: '休日（年間）',
-        workingHourDay: '遅番',
-        workingHourLate: '休日（週単位）',
+        dayOffWeek: '休日（週単位)',
+        workingHourEarly: '早番',
+        workingHourDay: '日勤',
+        workingHourLate: '遅番',
         workingHourNight: '夜勤',
 
         // Head details
@@ -1718,7 +1725,8 @@ export default {
     uniqueItemSetting: 'クライアント種別独自項目設定',
     specificTypeItems: '種別独自項目',
     addLine: '行追加',
-    newIndustry: '新しい産業'
+    newIndustry: '新しい産業',
+    parentIndustry: 'クライアント種別'
   },
   report: {
     salesActivityIndividualReport: '営業活動個人レポート',
@@ -1989,5 +1997,29 @@ export default {
     chargeOfFix: 'FIX数',
     BoQty: 'BO数',
     average: '平均'
+  },
+  task: {
+    task: 'タスク',
+    taskType: 'タスク種別',
+    taskStatus: 'タスクステータス',
+    taskContent: 'タスク内容',
+    taskRegister: 'タスク登録',
+    taskRegisterWindow: 'タスク内容',
+    applicantName: '応募者名',
+    types: {
+      'extensionConfirm': '延長の確認',
+      'finishApplicant' : '途中修了者への対応',
+      'dateManagement' : '入職日の管理',
+      'visitManagement' : '職見前日の管理',
+      'followUp' : '稼働者へのフォロー',
+      'collectDocs' : '必要書類の回収',
+      'staffRequests' : 'スタッフ依頼事項の返答',
+      'clientsRequests' : 'クライアント依頼事項の返答',
+    },
+    statuses: {
+      'new' : '新規',
+      'process' : '進行中',
+      'finish' : '完了',
+    }
   }
 };

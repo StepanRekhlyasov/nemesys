@@ -1,11 +1,7 @@
 import { Buisneses, Table } from 'src/pages/admin/EnterpriseManagement/types'
 import { Branch, Business, Organization } from 'src/shared/model'
 
-interface ToTableOptions {
-  deleteBusinessWithoutBranch?: boolean
-}
-
-export function toTable(businesses: { [id: string]: Business }, branches: { [businessId: string]: Branch[] }, organization: Organization, options?: ToTableOptions) {
+export function toTable(businesses: { [id: string]: Business }, branches: { [businessId: string]: Branch[] }, organization: Organization) {
 
   let businessesAndbranches: Buisneses[] = []
   const organizationKey = 'organization'
@@ -13,9 +9,6 @@ export function toTable(businesses: { [id: string]: Business }, branches: { [bus
   const parsedData = {}
 
   parsedData[organizationKey] = [{}]
-  let totalBranches = Object.values(branches).reduce((prev, curr) => {
-    return prev += curr.length
-  }, 0)
 
   parsedData[organizationKey][0] = organization
 
@@ -27,21 +20,19 @@ export function toTable(businesses: { [id: string]: Business }, branches: { [bus
 
     if (!objToPush.branches) {
       objToPush.branches = [{}]
-      totalBranches++
     }
 
     businessesAndbranches.push(objToPush)
   }
 
-  if (options?.deleteBusinessWithoutBranch) {
-    businessesAndbranches = businessesAndbranches.filter((bb) => {
-      const filter = Object.values(bb.branches[0]).length != 0
-      if (!filter) {
-        totalBranches--
-      }
-      return filter
-    })
-  }
+  businessesAndbranches = businessesAndbranches.filter((bb) => {
+    return Object.values(bb.branches[0]).length != 0
+  })
+
+  let totalBranches = 0
+  businessesAndbranches.forEach((bb) => {
+    totalBranches += bb.branches.length
+  })
 
   parsedData[organizationKey][0]['totalBranches'] = totalBranches
   parsedData[organizationKey][0]['buisneses'] = businessesAndbranches

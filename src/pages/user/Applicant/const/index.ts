@@ -4,6 +4,8 @@ import { i18n } from 'boot/i18n';
 
 const { t } = i18n.global
 
+export const boMapDrawerValue = ref<boolean>(false);
+
 const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
 export const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
 
@@ -170,3 +172,14 @@ export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn
     label: t('applicant.add.status')
   },
 ]);
+
+export const taskTypeOptions = computed(()=>[
+  {label: t('task.types.extensionConfirm'), value: 'extensionConfirm'},
+  {label: t('task.types.finishApplicant'), value: 'finishApplicant'},
+  {label: t('task.types.dateManagement'), value: 'dateManagement'},
+  {label: t('task.types.visitManagement'), value: 'visitManagement'},
+  {label: t('task.types.followUp'), value: 'followUp'},
+  {label: t('task.types.collectDocs'), value: 'collectDocs'},
+  {label: t('task.types.staffRequests'), value: 'staffRequests'},
+  {label: t('task.types.clientsRequests'), value: 'clientsRequests'},
+])
