@@ -106,13 +106,13 @@
         :class="selectedCount() == 0 ? 'bg-secondary' : 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'"
         :disable="selectedCount() == 0" @click="deleteSelected()" />
       <q-btn color="primary" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
-        :label="$t('common.add')" @click="showAddBO" />
+        :label="$t('common.add')" @click="addNewBo" />
     </template>
 
   </q-table>
   <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
+    <createBO :clientId="clientId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
   </q-drawer>
   <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
     selectedClient = clientValue
@@ -137,7 +137,7 @@ import { QTableProps } from 'quasar';
 import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; columns: QTableProps['columns']; }>();
+const props = defineProps<{ clientId: string; columns: QTableProps['columns']; officeId?: string }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
@@ -175,9 +175,7 @@ const showDeleteDialog = async (ids: string[]) => {
 
   });
 };
-const showAddBO = () => {
-  cteateBoDrawer.value = true
-}
+
 const deleteSelected = () => {
   const boItem = backOrderData.value.filter(row => row['selected']);
   let items: string[] = [];
@@ -213,6 +211,23 @@ onMounted(async () => {
 const selectedCount = () => {
   return backOrderData.value.filter(row => row['selected']).length;
 };
+
+function addNewBo() {
+  $q.dialog({
+    title: t('backOrder.selectBOType'),
+    cancel: t('backOrder.type.dispatch'),
+    ok: t('backOrder.type.referral'),
+  })
+    .onOk(() => {
+      typeBoCreate.value = 'referral';
+      cteateBoDrawer.value = true
+    })
+    .onCancel(() => {
+      typeBoCreate.value = 'dispatch';
+      cteateBoDrawer.value = true
+    });
+}
+
 </script>
 
 <style lang="scss">
