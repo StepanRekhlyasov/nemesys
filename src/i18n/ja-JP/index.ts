@@ -638,6 +638,7 @@ export default {
 
     },
     backOrder: {
+      generalDispatch: '一般派遣',
       title: 'バックオーダー',
       noOrders: '過去のバックオーダーはありません',
       add: 'バックオーダー追加',

@@ -643,6 +643,7 @@ export default {
       }
     },
     backOrder: {
+      generalDispatch: 'General Dispatch',
       title: 'Backorder',
       noOrders: 'No past backorders',
       add: 'Add Backorder',

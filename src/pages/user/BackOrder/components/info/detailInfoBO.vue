@@ -35,10 +35,10 @@
         }}</span>
         <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
       </LabelField>
-      <labelField :label="$t('client.backOrder.customerReprisentative')" :edit="edit"
+      <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['customerReprisentative'] || ''}`" v-if="selectedBo['type'] == 'dispatch'">
-        <q-input v-model="data['customerReprisentative']" outlined dense :disable="loading" />
+        :value="`${selectedBo['customerRepresentative'] || ''}`" v-if="selectedBo['type'] == 'dispatch'">
+        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" />
       </labelField>
     </div>
 
