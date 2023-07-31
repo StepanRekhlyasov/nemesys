@@ -1,7 +1,9 @@
 <template>
   <q-card-section class="bg-white ">
     <div class="row q-pb-md">
-      <div class="col-9"></div>
+      <div class="col-9">
+        <q-btn @click="assignToBo" v-if="props.isHiddenDetails" class="bg-primary text-white" :label="$t('client.backOrder.assignToBo')"/>
+      </div>
       <div class="col-3 text-right">
         <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline icon="edit" @click="edit = true"
           class="no-shadow q-ml-lg" size="sm" />
@@ -101,19 +103,17 @@
       </labelField>
     </div>
 
-    <div class="row "  >
+    <div class="row ">
       <labelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" v-if="selectedBo['requiredQualifications']"
-        :value="selectedBo['qualifications']? $t('applicant.qualification.'+data['qualifications']) : ''">
-        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationRule(val) : true]">
-          <q-radio
-            v-for="key in TypeQualifications"
-            v-model="data['qualifications']"
-            :label="$t('applicant.qualification.'+key)"
+        :value="selectedBo['qualifications'] && Array.isArray(selectedBo['qualifications'])? selectedBo['qualifications'].map(q => $t('applicant.qualification.'+q)).join(',') : ''">
+        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationArrayRule(val) : true]">
+          <q-checkbox v-model="data['qualifications']" v-for="key in TypeQualifications" 
             :val="key"
             :key="key"
+            :label="$t('applicant.qualification.'+key)"
             :disable="loading || !data['requiredQualifications']"
-            class="q-pr-md"/>
+            class="q-pr-md" />
         </q-field>
       </labelField>
       <labelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center"
@@ -534,9 +534,18 @@ import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import LabelField from 'src/components/form/LabelField.vue';
 import detalInfoTab from './detalInfoTab.vue';
-import { creationRule } from 'src/components/handlers/rules';
+import { creationRule, creationArrayRule } from 'src/components/handlers/rules';
 import { validateTime } from 'src/shared/constants/Form.const';
 import { daysList } from 'src/shared/constants/Applicant.const';
+import { useApplicant } from 'src/stores/applicant';
+import { serverTimestamp, DocumentData } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { Alert } from 'src/shared/utils/Alert.utils';
+
+const applicantStore = useApplicant()
+const props = defineProps<{
+  isHiddenDetails?: boolean,
+}>()
 
 const emit = defineEmits(['openSearchByMap']);
 
@@ -557,6 +566,25 @@ async function save() {
   }
   loading.value = false;
 }
+
+const assignToBo = async () => {
+  const data = ref<DocumentData>({
+    applicant_id: applicantStore.state.selectedApplicant?.id,
+    backOrder: backOrderStore.state.selectedBo?.id,
+    client: backOrderStore.state.selectedBo?.client_id,
+    office: backOrderStore.state.selectedBo?.office_id,
+    deleted: false,
+    created_by: getAuth().currentUser?.uid,
+    created_at: serverTimestamp(),
+    updated_at: serverTimestamp(),
+  })
+  try {
+    backOrderStore.addToFix(data)
+  } catch (error) {
+    Alert.warning(error);
+  }
+}
+
 watch([backOrderStore.state.selectedBo], () => {
   data.value = backOrderStore.state?.selectedBo as BackOrderModel
 }, { deep: true })

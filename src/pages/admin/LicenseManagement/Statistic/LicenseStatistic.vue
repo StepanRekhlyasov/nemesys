@@ -60,19 +60,24 @@ async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
 
   const organizationIds = await organization.getAllOrganizationsIds()
-  const tableData = await Promise.all(organizationIds.map(async (id) => {
-    return licenceStore.getLicensesInMonth({
-      organizationId: id,
-      selectedMonth,
-      selectedYear,
-    })
-  }))
-  tableData.forEach((d) => {
+  try{
+    const tableData = await Promise.all(organizationIds.map(async (id) => {
+      return licenceStore.getLicensesInMonth({
+        organizationId: id,
+        selectedMonth,
+        selectedYear,
+      })
+    }))
+    tableData.forEach((d) => {
     if (d) {
-      data.value.push(d)
-    }
-  })
-
+        data.value.push(d)
+      }
+    })
+  } catch (error){
+    data.value = []
+    console.log(error)
+  }
+  
 }
 
 
@@ -114,7 +119,7 @@ async function loadCurrentData() {
       branches[branch.businessId].push(branch)
     }
 
-    data.value.push(toTable(businesses, branches, organizations[0], { deleteBusinessWithoutBranch: true }))
+    data.value.push(toTable(businesses, branches, organizations[0]))
   })
 }
 
@@ -132,7 +137,7 @@ async function onDateChange(date: string) {
       const month = parseInt(monthString)
       await loadDataInMonth(year, month)
     }
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

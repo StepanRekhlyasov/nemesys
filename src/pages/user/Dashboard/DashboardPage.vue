@@ -15,6 +15,9 @@
     <q-separator color="white" size="2px" />
       <DashboardProgressBlocks :updateOnMounted="updateOnMounted" />
     <q-separator color="white" size="2px" />
+      <DashboardTaskTable :entity="'applicant'"/>
+    <q-separator color="grey-3" size="2px"/>
+      <DashboardTaskTable :entity="'office'" />
   </q-page>
 </template>
 <script setup lang="ts">
@@ -25,6 +28,7 @@ import { onBeforeMount, ref } from 'vue';
 import DashboardProgressBlocks from './components/DashboardProgressBlocks.vue';
 import { COLUMN_STATUSES, limitQuery } from '../ApplicantProgress/const/applicantColumns';
 import { storeToRefs } from 'pinia';
+import DashboardTaskTable from './components/DashboardTaskTable.vue';
 
 const applicantStore = useApplicant()
 const { state } = storeToRefs(applicantStore)

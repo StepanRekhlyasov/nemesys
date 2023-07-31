@@ -36,7 +36,7 @@
         <!-- Basic Info Section -->
         <basic-info-section :backOrder="data" :loading="loading"
           :client="data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id']) : undefined"
-          :officeID="data['office_id']" :offices="clientFactoryList"/>
+          :officeID="data['office_id']" :offices="clientFactoryList" />
 
         <!-- Working Type Section -->
         <q-card-section>
@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, selectOptions, UserPermissionNames } from 'src/shared/model';
+import { BackOrderModel, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
 import { onMounted, Ref, ref, watch } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
@@ -107,9 +107,9 @@ import { useApplicant } from 'src/stores/applicant';
 import { useOrganization } from 'src/stores/organization';
 import { useUserStore } from 'src/stores/user';
 import { QForm } from 'quasar';
-import { Alert } from 'src/shared/utils/Alert.utils';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { date } from 'quasar'
 
 const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
@@ -129,12 +129,14 @@ const data = ref<Partial<BackOrderModel>>({});
 
 async function addBackOrder() {
   loading.value = true
+  data.value['clientName'] = applicantStore.state.clientList.find(client => client.id === data.value['client_id'])?.name
+  data.value['officeName'] = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
   if (data.value.client_id && boForm.value?.validate) {
     await backOrderStore.addBackOrder({ ...data.value, type: props.type });
     loading.value = false;
     await backOrderStore.loadBackOrder({});
     closeDialog();
-    Alert.success()
+
   }
 }
 
@@ -147,6 +149,10 @@ function closeDialog() {
 function resetData() {
   data.value = {
     working_days_week: [] as string[],
+    qualifications: [] as TypeQualifications[],
+    dateOfRegistration: date.formatDate(Date.now(), 'YYYY/MM/DD'),
+    lon: 0,
+    lat: 0,
     type: props.type
   } as Partial<BackOrderModel>
 }

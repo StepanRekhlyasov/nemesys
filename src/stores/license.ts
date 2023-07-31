@@ -151,7 +151,7 @@ export const useLicense = defineStore('license', () => {
       branchesInBusiness[branch.businessId].push(branch)
     }
 
-    return toTable(business, branchesInBusiness, organization, { deleteBusinessWithoutBranch: true })
+    return toTable(business, branchesInBusiness, organization)
 
   }
 

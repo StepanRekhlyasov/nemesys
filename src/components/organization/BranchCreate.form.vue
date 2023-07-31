@@ -66,10 +66,11 @@ const props = defineProps<{
   color: string
 }>()
 
-const branchData = ref<Partial<Branch>>(props.editBranch || {
+const branchData = ref<Partial<Branch>>(props.editBranch? JSON.parse(JSON.stringify(props.editBranch)) : {
   hidden: false,
   working: true
 })
+
 const loading = ref(false)
 const prefectureOption = ref(prefectureList);
 const organization = useOrganization()
@@ -93,7 +94,7 @@ async function addBranch() {
     data['licensesSlots'] = 0
     await branchStore.createBranch(data, currentOrganizationId, businessId.value)
     emit('closeDialog');
-    Alert.success();
+    ;
     loading.value = false;
   } catch (e) {
     console.log(e)
@@ -118,7 +119,7 @@ async function saveBranch() {
     }
     await branchStore.editBranch(branch, currentOrganizationId, props?.editBranch?.businessId, props.editBranch?.id)
     emit('closeDialog');
-    Alert.success();
+    ;
     loading.value = false;
   } catch (e) {
     emit('onCatchError')

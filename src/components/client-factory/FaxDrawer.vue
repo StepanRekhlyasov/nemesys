@@ -8,6 +8,7 @@ import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils'
 import PdfViewer from 'src/pages/user/BusinessManagement/components/PdfViewer.vue';
 import { pdfViewer } from 'src/pages/user/BusinessManagement/consts/index';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
 const $q = useQuasar();
@@ -85,6 +86,12 @@ const filterFn = (val: string, update) => {
     }
   });
 };
+
+
+watchCurrentOrganization(async()=>{
+  await applicantStore.loadApplicantData()
+})
+
 const save = async () => {
   $q.dialog({
     message: `${t('clientFactory.fax.faxPRSheet')}<br />${t('clientFactory.fax.areYouSure')}`,
@@ -190,7 +197,7 @@ const confirmContent = () =>{
                 />
               </div>
               <div class="col-9 q-mt-sm" v-else>
-                <q-text>{{faxData['applicants']['label']}}</q-text>
+                <p>{{faxData['applicants']['label']}}</p>
               </div>
             </div>
             <div class="row">
@@ -250,7 +257,7 @@ const confirmContent = () =>{
                   :label="t('common.preview')"
                   @click="openPdfViewer"
                 />
-                <q-text class="col-6 q-ml-sm">{{ faxFile[0]['name'] }}</q-text>
+                <p class="col-6 q-ml-sm">{{ faxFile[0]['name'] }}</p>
               </div>
             </div>
             <div class="row" v-if="!confirm">
@@ -326,7 +333,7 @@ const confirmContent = () =>{
                 </q-input>
               </div>
               <div class="col-9 q-mt-sm" v-else>
-                <q-text>{{ faxData['transmissionDateTime'] }}</q-text>
+                <p>{{ faxData['transmissionDateTime'] }}</p>
               </div>
             </div>
             <div class="row q-mt-sm">
@@ -357,7 +364,7 @@ const confirmContent = () =>{
                 }}</span>
               </div>
               <div class="col-9 q-mt-sm" v-else>
-                <q-text>{{faxData['maxTransmissions']}}</q-text>
+                <p>{{faxData['maxTransmissions']}}</p>
               </div>
             </div>
 

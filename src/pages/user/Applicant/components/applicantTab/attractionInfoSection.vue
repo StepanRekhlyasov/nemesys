@@ -239,7 +239,7 @@ async function save() {
   try {
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
-    Alert.success()
+    
   } catch (error) {
     Alert.warning(error)
   }

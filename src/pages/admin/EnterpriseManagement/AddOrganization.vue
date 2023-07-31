@@ -4,13 +4,18 @@
     <q-card-section>
       <q-form @submit="addOrganization">
 
-        <DialogItemContainer name-key="menu.admin.organizationsTable.organizationCode">
+        <DialogItemContainer name-key="menu.admin.organizationsTable.organizationId">
           <q-input v-model="organization.code" outlined dense color="accent" :disable="loading"
             :rules="[organizationCodeRule, isCodeUniqueRule]" debounce="1000" />
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.organizationName">
           <q-input v-model="organization.name" outlined dense color="accent" :rules="[creationRule]" :disable="loading" />
+        </DialogItemContainer>
+
+        <DialogItemContainer name-key="menu.admin.organizationsTable.operator">
+          <q-input v-model="organization.operatorUser" outlined dense color="accent" :rules="[creationRule]"
+            :disable="loading"/>
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.phoneNumber">
@@ -26,12 +31,6 @@
         <DialogItemContainer name-key="menu.admin.organizationsTable.email">
           <q-input v-model="organization.mailaddress" outlined dense color="accent" :rules="[creationRule]"
             :disable="loading" type="email" />
-        </DialogItemContainer>
-
-        <DialogItemContainer name-key="menu.admin.organizationsTable.operator">
-          <SelectUser :model-value="user"
-            @update:model-value="(newUser: User) => { organization.operatorUser = newUser.id; user = newUser }"
-            :disable="loading" emit-value  />
         </DialogItemContainer>
 
         <DialogItemContainer name-key="menu.admin.organizationsTable.invoiceRequest">
@@ -52,11 +51,10 @@ import DialogHeader from 'src/components/dialog/DialogHeader.vue';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
 import { creationRule, organizationCodeRule, isCodeUniqueRule } from 'src/components/handlers/rules';
 import DialogItemContainer from 'src/components/organization/DialogItemContainer.vue';
-import { Organization, User } from 'src/shared/model';
+import { Organization } from 'src/shared/model';
 import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
-import SelectUser from './SelectUser.vue'
 import { useMail } from 'src/stores/email';
 import { toDate } from 'src/shared/utils/utils';
 
@@ -65,7 +63,6 @@ const organization = ref<Organization>({ working: true } as Organization)
 const loading = ref(false)
 const emit = defineEmits<{ (e: 'closeDialog'), (e: 'onOrganizationAdded') }>()
 const organizationStore = useOrganization()
-const user = ref<User>()
 const email = useMail()
 async function addOrganization() {
 
@@ -78,7 +75,7 @@ async function addOrganization() {
       html: `Organization name: ${organization.value.name} <br/> Organization code: ${organization.value.code} <br/> Created at: ${createdAt}`
     }
     await email.send(organization.value.mailaddress, subject, content)
-    Alert.success();
+    ;
   } catch (error) {
     Alert.warning(error);
   }

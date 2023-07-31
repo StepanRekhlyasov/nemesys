@@ -19,8 +19,33 @@
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.name') }} </div>
+              <div> {{ $t('applicant.add.applicationDate') }} </div>
+            </q-th>
+          </template>
+
+          <template v-slot:header-cell-endDate="props">
+            <q-th :props="props" class="q-pa-none">
+              <div> {{ $t('applicant.list.lastContact') }} </div>
+              <div> {{ $t('applicant.list.contactNote') }} </div>
+            </q-th>
+          </template>
+
+          <template v-slot:header-cell-station="props">
+            <q-th :props="props" class="q-pa-none">
+              <div> {{ $t('applicant.attendant.route') }} / {{ $t('applicant.list.station') }} </div>
+            </q-th>
+          </template>
+
+          <template v-slot:header-cell-address="props">
+            <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} </div>
               <div> {{ $t('applicant.list.address') }} </div>
+            </q-th>
+          </template>
+
+          <template v-slot:header-cell-qualification="props">
+            <q-th :props="props" class="q-pa-none">
+              <div> {{ $t('applicant.list.qualification') }} / {{ $t('applicant.list.experience') }} </div>
             </q-th>
           </template>
 
@@ -29,9 +54,31 @@
               <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.value"
                 class="q-pa-none text-body1" />
               <div>
+                <span v-if="props.row.applicationDate"> {{ myDateFormat(props.row.applicationDate) }}</span>
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-address="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
                 <span v-if="props.row.occupation"> {{ getOccupation(props.row.occupation) }}</span>
-                <span v-if="props.row.classification && props.row.occupation"> | </span>
-                <span v-if="props.row.classification"> {{ getClassification(props.row.classification) }}</span>
+                <span v-if="props.row.classification && props.row.classification.length!=0 && props.row.occupation"> | </span>
+                <span v-if="props.row.classification && props.row.classification.length!=0"> {{ props.row.classification.map(c => getClassification(c)).join(', ') }}</span>
+              </div>
+              <div>
+                {{ props.row.address }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-endDate="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{ myDateFormat(props.row.created_at) }}
+              </div>
+              <div>
+                {{ props.row.note }}
               </div>
             </q-td>
           </template>
@@ -47,6 +94,17 @@
               <span v-if="props.value && props.value.length > 0">
                 {{ props.value.map(item => $t('applicant.qualification.' + item)).join(', ') }}
               </span>
+              <span v-if="props.row.totalYear && props.value.length"> / </span>
+              <span v-if="props.row.totalYear"> {{ props.row.totalYear + ' ' + $t('common.year') }}</span>
+
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-station="props">
+            <q-td :props="props">
+              <span v-if="props.row.route"> {{ props.row.route }}</span>
+              <span v-if="props.row.nearestStation && props.row.route"> / </span>
+              <span v-if="props.row.nearestStation && props.row.nearestStation.length > 0">{{ props.row.nearestStation }}</span>
             </q-td>
           </template>
 
@@ -92,6 +150,9 @@ import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import SmsDrawer from './components/SmsDrawer.vue';
 import { sharedData } from './components/search/searchData'
+import { myDateFormat } from 'src/shared/utils/utils';
+
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const { t } = useI18n({ useScope: 'global' });
 const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
@@ -120,9 +181,17 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: false,
     },
     {
-      name: 'rank',
+      name: 'address',
+      label: '',
+      field: 'address',
+      required: true,
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'staffRank',
       label: t('applicant.list.rank'),
-      field: 'rank',
+      field: 'staffRank',
       required: true,
       align: 'left',
     },
@@ -135,8 +204,29 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
     },
     {
       name: 'qualification',
-      label: t('applicant.list.qualification'),
+      label: '',
       field: 'qualification',
+      required: true,
+      align: 'left',
+    },
+    {
+      name: 'station',
+      label: '',
+      field: 'station',
+      required: true,
+      align: 'left',
+    },
+    {
+      name: 'phone',
+      label: t('office.contactAddress'),
+      field: 'phone',
+      required: true,
+      align: 'left',
+    },
+    {
+      name: 'endDate',
+      label: '',
+      field: 'endDate',
       required: true,
       align: 'left',
     },
@@ -191,5 +281,10 @@ watch(
     }
   },
 )
+
+watchCurrentOrganization(async ()=>{
+  await applicantStore.loadApplicantData()
+})
+
 applicantStore.loadApplicantData(sharedData.value, pagination.value);
 </script>
