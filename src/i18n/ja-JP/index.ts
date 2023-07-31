@@ -1600,12 +1600,12 @@ export default {
         welfareHealth: '福利厚生',
         leisureSpecial: '育児・介護他休暇',
         contentWork: '業務内容',
-        dayOffYear: '早番',
+        dayOffYear: '休日（年間)',
         canSmoke: '喫煙可否',
-        dayOffWeek: '日勤',
-        workingHourEarly: '休日（年間）',
-        workingHourDay: '遅番',
-        workingHourLate: '休日（週単位）',
+        dayOffWeek: '休日（週単位)',
+        workingHourEarly: '早番',
+        workingHourDay: '日勤',
+        workingHourLate: '遅番',
         workingHourNight: '夜勤',
 
         // Head details
