@@ -122,6 +122,7 @@ const openFaxDrawer = (id:string) =>{
     selectedCF.value.push(id)
     isNewFaxDrawer.value = true
 }
+
 </script>
 
 <template>
@@ -135,12 +136,12 @@ const openFaxDrawer = (id:string) =>{
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
                 @open-fax-drawer="openNewFaxDrawer"/>
-            <q-card-section class="table no-padding"> 
+            <q-card-section class="table no-padding">
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
                     @selected-id="selectedCFHandler"
                     :isFetching="fetchData"
-                    :rows="paginatedTableRows"
+                    :rows="tableRows"
                     :pagination="pagination"
                     :table-columns="tableColumnsClientFactory"/>
                 <Pagination

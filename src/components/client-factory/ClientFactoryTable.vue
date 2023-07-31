@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, withDefaults, watch } from 'vue';
+import { ref, defineProps, defineEmits, withDefaults, watch , computed} from 'vue';
 import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from './types';
-import { customSortMethod } from 'src/pages/user/BusinessManagement/consts/index'
+// import { customSortMethod } from 'src/pages/user/BusinessManagement/consts/index'
 
 const props = withDefaults(defineProps<{
     rows: ClientFactoryTableRow[],
     isFetching: boolean,
     pagination: Pagination,
-    tableColumns: ClientFactoryTableColumn[]
-    theme?: string
+    tableColumns: ClientFactoryTableColumn[],
+    theme?: string,
 }>(), {
     theme: 'primary'
 })
@@ -34,11 +34,100 @@ watch(()=>selected.value,()=>{
     emit('selectedId',selected.value)
 })
 
+const customSortMethod = (rows, sortBy, descending) => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+if (sortBy === 'distance') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.distance.toString();
+      const second = b.distance.toString();
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'name') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.name?a.name:'';
+      const second = b.name?b.name:'';
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'telephone') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.telephone;
+      const second = b.telephone;
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'address') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.address?a.address:'';
+      const second = b.address?b.address:'';
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'fax') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.fax?a.fax:'';
+      const second = b.fax?b.fax:'';
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'office master') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.officeMaster;
+      const second = b.officeMaster;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'client master') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.clientMaster;
+      const second = b.clientMaster;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else if (sortBy === 'basic information') {
+    const sortedRows = [...props.rows];
+    sortedRows.sort((a, b) => {
+      const first = a.basicInfo;
+      const second = b.basicInfo;
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+  else{
+    return props.rows;
+  }
+};
+
+const paginatedRows = computed(() => {
+    const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
+    const end = start + props.pagination.rowsPerPage;
+    return sortedRows.value.slice(start, end);
+  });
+
+  const sortedRows = computed(() => {
+    return customSortMethod(props.rows, props.pagination.sortBy, props.pagination.descending);
+  });
+
 </script>
 
 <template>
     <q-table
-    :rows="props.rows"
+    :rows="paginatedRows"
     :columns="tableColumns"
     :rows-per-page-options="[pagination.rowsPerPage]"
     row-key="id"
@@ -49,7 +138,6 @@ watch(()=>selected.value,()=>{
     :selected-rows-label="getSelectedString"
     selection="multiple"
     v-model:selected="selected"
-    :sort-method="customSortMethod"
     hide-pagination>
 
         <template v-slot:header-cell="props">
