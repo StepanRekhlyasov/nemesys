@@ -34,6 +34,22 @@
             .map(user => user.label).join('')  }}
         </td>
       </template>
+
+        <template v-slot:body-cell-memo="props">
+          <q-td :props="props" style="white-space: break-spaces;">
+            <q-input v-if="isRowSelected(props.rowIndex) && !bo" type="textarea" outlined dense v-model="editableContect['memo']" />
+            <template v-if="!isRowSelected(props.rowIndex)">
+              {{ props.row.memo }}
+            </template>
+          </q-td>
+        </template>
+
+      <template v-if="!bo" v-slot:body-cell-edit="props">
+        <EditButton :props="props" color="primary"
+          :on-edit="() => { editableContect = props.row.memo }"
+          :on-save="() => onUpdate(props.rowIndex)" @onEditableRowChange="(row) => editableRow = row"
+          :editable-row="editableRow" :key="props.rowIndex" />
+      </template>
     </q-table>
   </q-card>
 </template>
@@ -47,6 +63,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
 import { useUserStore } from 'src/stores/user';
 import { useBackOrder } from 'src/stores/backOrder';
+import EditButton from 'src/components/EditButton.vue';
 const props = defineProps({
   applicant: {
     type: Object,
@@ -61,6 +78,8 @@ const fixStore = useFix();
 const userStore = useUserStore()
 const list: Ref<ApplicantFix[]> = ref([])
 const usersListOption: Ref<selectOptions[]> = ref([])
+const editableRow = ref(-1)
+const editableContect = ref({})
 
 const pagination = ref({
   sortBy: 'desc',
@@ -109,6 +128,11 @@ const columns = computed(() => {
       name: 'memo',
       label: t('applicant.attendant.operationMemo'),
       field: 'memo',
+      align: 'left',
+    },{
+      name: 'edit',
+      field: '',
+      label: '',
       align: 'left',
     },
   ];
@@ -159,6 +183,34 @@ async function loadUser() {
 
   loading.value = false;
 
+}
+
+async function onUpdate(index) {
+  try {
+    if (!editableContect.value) {
+      return;
+    }
+    loading.value = true;
+//    let updateData = {}
+//    updateData['updated_at'] = serverTimestamp();
+//    updateData['updated_by'] = auth.currentUser?.uid;
+//    updateData['content'] = editableContect.value['content'] || '';
+//
+//    await updateDoc(
+//      doc(db, 'applicants/' + props.applicant.id + '/memo/' + editableContect.value['id']),
+//      updateData
+//    );
+//    memoListData.value[index] = editableContect.value as ApplicantMemo;
+//    await loadMemoData();
+    loading.value = false;
+  } catch (e) {
+    Alert.warning(e)
+    console.log(e)
+    loading.value = false;
+  }
+}
+function isRowSelected(row) {
+  return row == editableRow.value
 }
 </script>
 
