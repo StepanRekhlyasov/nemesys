@@ -328,7 +328,8 @@ watch(
 )
 
 watchCurrentOrganization(async () => {
-  await applicantStore.loadApplicantData()
+  await applicantStore.loadApplicantData(sharedData.value, pagination.value)
+  pagination.value.page = 1;
 })
 
 applicantStore.loadApplicantData(sharedData.value, pagination.value);
