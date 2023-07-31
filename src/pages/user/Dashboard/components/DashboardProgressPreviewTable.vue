@@ -13,7 +13,7 @@
           >
           <template v-slot:header-cell-applicationDate>
             <q-th v-if="mode==='applicant'">{{ $t('applicant.progress.table.applicationDate') }}</q-th>
-            <q-th v-if="mode==='fix'">{{ $t('client.backOrder.list.id') }}</q-th>
+            <q-th v-if="mode==='fix' || mode==='update'">{{ $t('client.backOrder.list.id') }}</q-th>
           </template>
           <template v-slot:body-cell-occupation="props">
               <q-td>{{ $t('applicant.add.'+props.row.occupation) }}</q-td>
