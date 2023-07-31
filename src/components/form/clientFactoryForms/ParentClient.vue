@@ -41,7 +41,6 @@ const filterFn = (val: string, update: (cb: () => {label: string, value: string 
 }
 
 watch(() => [selectedClient.value], () => {
-    console.log('lox')
     selectedIndustry.value = ''
 })
 </script>
