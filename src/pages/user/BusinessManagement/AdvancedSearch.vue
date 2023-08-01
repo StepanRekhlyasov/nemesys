@@ -19,9 +19,10 @@
         <q-linear-progress v-if="isLoadingProgress" indeterminate rounded color="primary" />
       </div>
       <q-card-actions>
-        <q-select outlined v-model="backOrderData['saved']" dense :label="$t('client.list.savedSearchList')"
-          style="width: 250px" />
-        <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" />
+        <q-select outlined v-model="label" :options="dropData" dense :label="$t('client.list.savedSearchList')"
+          @update:model-value="onSelected" style="width: 250px" />
+        <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" 
+          @click="saveSearchConditions"/>
         <q-btn outline color="red" v-if="props.from == '' && advanceSearch.advanceMapSelected">
           MapCFs: {{ advanceSearch.advanceMapCFs.length }}
           <q-icon name="close" @click="advanceSearch.resetAdvanceMap" />
@@ -336,13 +337,16 @@
     <q-dialog v-model="confirmSaveDialog" persistent transition-show="scale" transition-hide="scale">
       <q-card style="width: 400px; max-width: 80vw">
         <q-card-section class="row items-center">
-          <q-avatar icon="save" color="primary" text-color="white" size="md" />
-          <span class="q-ml-sm">Do you really want save?</span>
+          <q-card-section>
+            <q-input v-model="conditionName" label="Enter Condition Name" style="width:200px"/>
+          </q-card-section>
+          <!-- <q-avatar icon="save" color="primary" text-color="white" size="md" />
+          <span class="q-ml-sm">Do you really want save?</span> -->
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn flat :label="$t('common.cancel')" color="red" v-close-popup />
-          <q-btn flat :label="$t('common.save')" color="primary" v-close-popup />
+          <q-btn flat :label="$t('common.save')" color="primary" @click="saveCondition" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -356,7 +360,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, withDefaults, defineEmits, computed, watch, ref } from 'vue';
+import { defineProps, withDefaults, defineEmits, computed, watch, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { useClientFactory } from 'src/stores/clientFactory';
@@ -365,7 +369,9 @@ import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
-import {  getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
+import {  getFirestore, getDocs, collectionGroup, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+const auth = getAuth();
 const db = getFirestore();
 const props = withDefaults(defineProps<{
   from: string
@@ -388,6 +394,17 @@ if (props.from === 'map') {
 else if (props.from === 'area') {
   backOrderData = advanceSearch.areaConditionData;
 }
+const conditionName = ref('')
+const label = ref('')
+const dropData = ref()
+const onSelected = (newValue)=>{
+  Object.keys(newValue.value).forEach((key)=>{
+    backOrderData[key] = newValue.value[key]
+  })
+}
+onMounted(async()=>{
+  dropData.value = await advanceSearch.getConditions();
+})
 const confirmSaveDialog = ref(false);
 const facilityOp = facilityList;
 const recordOp = computed(() => {
@@ -424,7 +441,32 @@ watch(
     }
   },
 );
-
+const saveSearchConditions = async() =>{
+  confirmSaveDialog.value=true;
+}
+const saveCondition = async() =>{
+  const additionalData = []
+  additionalData['created_by'] = auth.currentUser?.uid;
+  additionalData['created_at'] = serverTimestamp();
+  additionalData['conditionName'] = conditionName.value;
+  if(props.from===''){
+    await addDoc(collection(db, '/saveSearchConditions'), {
+      ...advanceSearch.advanceConditionData,...additionalData
+    });
+  }
+  else if(props.from==='map'){
+    await addDoc(collection(db, '/saveSearchConditions'), {
+      ...advanceSearch.mapConditionData,...additionalData
+    });
+  }
+  else{
+    await addDoc(collection(db, '/saveSearchConditions'), {
+      ...advanceSearch.advanceConditionData,...additionalData
+    });
+  }
+  confirmSaveDialog.value=false;
+  dropData.value = await advanceSearch.getConditions();
+}
 const addCondition = () => {
   if (props.from == 'map') {
     advanceSearch.mapCSelected = true

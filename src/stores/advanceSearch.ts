@@ -399,6 +399,17 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
     advanceAreaCFs.value = [];
     advanceAreaSelected.value = false;
   }
-
-  return { getCombineId, searchClients, mapCSelected, areaCSelected, mapConditionData, areaConditionData, advanceConditionData, advanceMapSelected, advanceMapCFs, advanceAreaSelected, advanceAreaCFs, resetAdvance, resetMap, resetArea, resetAdvanceMap, resetAdvanceArea }
+  const getConditions = async()=>{
+    const docs = await getDocs(collection(db,'saveSearchConditions'));
+    const dropData:object[] = []
+    dropData.push({'label':'None','value':getBackOrderData()})
+    docs.forEach((doc)=>{
+      const data = {}
+      data['label'] = doc.data()['conditionName']
+      data['value'] = doc.data()
+      dropData.push(data)
+    })
+    return dropData
+  }
+  return { getConditions, getCombineId, searchClients, mapCSelected, areaCSelected, mapConditionData, areaConditionData, advanceConditionData, advanceMapSelected, advanceMapCFs, advanceAreaSelected, advanceAreaCFs, resetAdvance, resetMap, resetArea, resetAdvanceMap, resetAdvanceArea }
 })
