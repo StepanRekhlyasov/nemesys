@@ -113,7 +113,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, onBeforeUnmount, onMounted, watch } from 'vue';
+import { ref, onBeforeUnmount, onMounted, watch, Ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
 import { useTele } from 'src/stores/TeleAppointment';
@@ -133,7 +133,7 @@ const props = defineProps<{
 const historyData: DocumentData = ref([]);
 
 const teleStore = useTele();
-const columns = ref<QTableProps['columns']>(TeleColumns.value);
+const columns = ref<QTableProps | Ref>(TeleColumns);
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
