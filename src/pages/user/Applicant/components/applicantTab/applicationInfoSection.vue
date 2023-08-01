@@ -145,15 +145,44 @@
       </div>
     </div>
 
-    <div class="row q-pb-sm">
+    <div class="row q-pb-sm" v-if="!edit">
       <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.addres') }}
       </div>
       <div class="col-9 q-pl-md">
-        <hidden-text v-if="!edit" :value="applicant.address" />
-        <q-input v-if="edit" outlined dense v-model="data['address']" />
+        <hidden-text :value="applicant.address" />
       </div>
     </div>
+    <div class="row q-pb-sm" v-if="edit">
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.prefecture') }}
+      </div>
+      <div class="col-9 q-pl-md">
+        <q-input outlined dense v-model="data['prefecture']" />
+      </div>
+
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.municipalities') }}
+      </div>
+      <div class="col-9 q-pl-md">
+        <q-input outlined dense v-model="data['municipalities']" />
+      </div>
+
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.street') }}
+      </div>
+      <div class="col-9 q-pl-md">
+        <q-input outlined dense v-model="data['street']" />
+      </div>
+
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.apartment') }}
+      </div>
+      <div class="col-9 q-pl-md">
+        <q-input outlined dense v-model="data['apartment']" />
+      </div>
+    </div>
+
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
@@ -195,6 +224,10 @@ function resetData() {
     lat: props?.applicant['lat'],
     address: props.applicant['address'] || '',
     postCode: props?.applicant['postCode'],
+    prefecture: props?.applicant['prefecture'],
+    municipalities: props?.applicant['municipalities'],
+    street: props?.applicant['street'],
+    apartment: props?.applicant['apartment'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
