@@ -66,6 +66,10 @@ export const menuParent: MenuParentType[] = [
     title: 'menu.backOrder',
     icon: 'business',
   },{
+    type: MenuParent.JobAdManagement,
+    title: 'menu.jobAdManage',
+    icon: 'mdi-office-building-outline'
+  },{
     type: MenuParent.BudgetControl,
     title: 'menu.budgetControl',
     icon: 'mdi-currency-usd',
@@ -90,6 +94,10 @@ export const adminMenuParent: MenuParentType[] = [
     type: MenuParent.AdminEnterpriseManagement,
     title: 'menu.admin.enterpriseManagement',
     icon: 'mdi-office-building-outline'
+  },{
+    type: MenuParent.AdminUsers,
+    title: 'menu.admin.usersManagement',
+    icon: 'mdi-account-multiple'
   },{
     type: MenuParent.AdminAggregationData,
     title: 'menu.admin.aggregationData',

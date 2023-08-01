@@ -46,6 +46,9 @@ const calculateTotal = (rows: QTableProps['rows'] | undefined) => {
     if (total[pattern.before] && total[pattern.before]) {
       total[pattern.name] = (total[pattern.after] / total[pattern.before] * 100).toFixed(1) + '%';
     }
+    else {
+      total[pattern.name] = '0.0%';
+    }
   }
 
   total['name'] = t('KPI.total');

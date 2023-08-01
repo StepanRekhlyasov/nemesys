@@ -13,11 +13,6 @@
     </div>
 
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="false" 
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['customerRepresentative']" valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.approvalOrNot')" :edit="false" 
         labelClass="q-pl-md col-2 text-right" :value=" 'approvalOrNot' in backOrder ?(backOrder['approvalOrNot'] ? $t('common.yes') : $t('common.no')) : ''" valueClass="col-4 q-pl-md " />
     </div>

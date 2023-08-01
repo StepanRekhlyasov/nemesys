@@ -59,6 +59,8 @@ export interface BackOrderModel {
   stipulatedAmount: number;
   retirementAge_house: number;
   memo_house: string;
+
+  transactionType: TransactionType;
 }
 
 export enum TypeOfCase {
