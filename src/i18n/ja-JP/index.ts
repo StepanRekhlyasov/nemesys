@@ -983,6 +983,8 @@ export default {
         fullTime: '正社員',
         partTime: 'アルバイト・パート',
         placementDispatching: '紹介予定派遣',
+        assigned: '勤務中',
+        unassigned: '離職中',
       }
 
     },
