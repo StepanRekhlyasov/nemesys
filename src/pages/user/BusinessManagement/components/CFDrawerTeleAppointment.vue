@@ -121,6 +121,9 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
   clientId: string;
+  clientFactoryId: string,
+  columns?: QTableProps['columns']
+  historyData?: QTableProps['rows']
 }>();
 const historyData: DocumentData = ref([]);
 
@@ -146,7 +149,7 @@ const dialogType = ref('create');
 
 const fetchTeleData = async () => {
   loading.value = true;
-  historyData.value = await teleStore.loadTeleAppointmentData(props.clientId);
+  historyData.value = await teleStore.loadTeleAppointmentData(props.clientId, props.clientFactoryId);
   loading.value = false;
 };
 
@@ -162,9 +165,9 @@ const showDeleteDialog = async (Teleid: string[]) => {
     cancel: t('common.cancel'),
   }).onOk(async () => {
     loading.value = true;
-    await teleStore.deleteTele(Teleid, props.clientId);
+    await teleStore.deleteTele(Teleid, props.clientId, props.clientFactoryId);
     loading.value = false;
-    historyData.value = fetchTeleData();
+    fetchTeleData();
     ;
   });
 };
@@ -202,14 +205,14 @@ const onSubmit = async () => {
 
   try {
     if (dialogType.value == 'update') {
-      await teleStore.updateData(props.clientId, data);
-      historyData.value = fetchTeleData();
+      await teleStore.updateData(props.clientId, props.clientFactoryId, data);
+      fetchTeleData();
     } else {
-      await teleStore.addData(props.clientId, data);
-      historyData.value = fetchTeleData();
+      await teleStore.addData(props.clientId, props.clientFactoryId, data);
+      fetchTeleData();
     }
     loading.value = false;
-    
+
     teleData.value = {
       requiredService: [],
     };
@@ -268,4 +271,5 @@ onBeforeUnmount(() => {
 .delete_btn {
   background-color: white;
   width: 1px;
-}</style>
+}
+</style>

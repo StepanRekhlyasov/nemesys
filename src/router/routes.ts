@@ -4,6 +4,7 @@ import businessManagementRouters from './business-management.router';
 import applicantRouters from './applicant.router';
 import reportRouters from './totalization.router';
 import adminRouters from './admin.router';
+import jobadRouters  from './jobAd.router';
 import backOrderRouter from './backOrder.router';
 import dashboardRouter from './dashboard.router';
 import { routeNames } from './routeNames';
@@ -24,6 +25,7 @@ const routes: MenuRouter[] = [{
     ...businessManagementRouters,
     ...applicantRouters,
     ...backOrderRouter,
+    ...jobadRouters,
     ...reportRouters,
     ...budgetControl,
   ]

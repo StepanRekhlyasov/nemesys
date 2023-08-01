@@ -66,6 +66,10 @@ export const menuParent: MenuParentType[] = [
     title: 'menu.backOrder',
     icon: 'business',
   },{
+    type: MenuParent.JobAdManagement,
+    title: 'menu.jobAdManage',
+    icon: 'mdi-office-building-outline'
+  },{
     type: MenuParent.BudgetControl,
     title: 'menu.budgetControl',
     icon: 'mdi-currency-usd',
