@@ -95,20 +95,18 @@
     </q-form>
    </q-card-section>
  </q-card>
- <div style="display: none;">
- <notification-table ref="callFunction"/>
-</div>
 </template>
 
 <script lang="ts" setup>
 import { serverTimestamp } from '@firebase/firestore';
   import { useQuasar } from 'quasar';
-  import { ref, computed } from 'vue'
+  import { ref, computed , onMounted } from 'vue'
   import { DELIVERY_STATUS } from '../types/notificationTypes'
   import { User } from 'src/shared/model';
   import { Alert } from 'src/shared/utils/Alert.utils';
   import { useI18n } from 'vue-i18n';
   import { QForm } from 'quasar';
+  import { Timestamp } from 'firebase/firestore';
   import { useReleaseNotes } from 'src/stores/releaseNotes';
   const notificationForm = ref<QForm | null>(null);
   const emit = defineEmits<{
@@ -198,7 +196,43 @@ import { serverTimestamp } from '@firebase/firestore';
       time.value = ''
     }
 
+    const updateScheduledNotifications = async () => {
+  try {
+    const querySnapshot = await store.getAllNotifications();
+    const notifications = querySnapshot.docs;
 
+    const currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + 330);
+
+    for (const notification of notifications) {
+      const dateDeliveryObject = notification.data().dateDelivery;
+
+      if (dateDeliveryObject instanceof Timestamp) {
+        const dateDelivery = dateDeliveryObject.toDate();
+
+        dateDelivery.setMinutes(dateDelivery.getMinutes() + 330);
+
+        if (dateDelivery instanceof Date && dateDelivery <= currentTime) {
+
+          await store.updateNotificationData(notification.id, {
+            status: DELIVERY_STATUS.delivered,
+          });
+        }
+      }
+    }
+  } catch (e) {
+
+    console.error('Error updating scheduled notifications:', e);
+  }
+};
+
+
+
+
+
+onMounted(async () => {
+  await updateScheduledNotifications();
+});
 </script>
 
 <style lang="scss">

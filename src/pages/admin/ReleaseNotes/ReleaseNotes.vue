@@ -34,8 +34,9 @@
   import { ref } from 'vue'
   import NotificationForm from './components/NotificationForm.vue'
   import NotificationTable from './components/NotificationTable.vue';
+
   const key = ref(0);
-  const changeKey = ()=>{
-    key.value = key.value==0?1:0;
-  }
+  const changeKey = () => {
+  key.value = key.value == 0 ? 1 : 0;
+}
 </script>
