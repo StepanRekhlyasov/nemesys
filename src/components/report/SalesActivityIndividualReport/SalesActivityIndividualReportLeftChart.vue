@@ -68,7 +68,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -154,7 +153,6 @@ const showIndividualReport = async (
 
 watch(
   () => [
-    props.branch_user_list,
     props.dateRangeProps,
     props.graph_type,
     props.branch_id,
