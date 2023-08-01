@@ -238,6 +238,7 @@ const age = computed(() => data.value['dob'] ? RankCount.ageCount(data.value['do
 async function save() {
   loading.value = true
   try {
+    data.value.address = [data.value.prefecture, data.value.municipalities, data.value.street, data.value.apartment].join(' ')
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
     
