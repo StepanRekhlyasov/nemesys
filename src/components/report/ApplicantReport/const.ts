@@ -9,7 +9,6 @@ export const nameList = [t('report.companyAverage'), t('report.allAverage')];
 export const itemList = [
 {queryName:'applicants'},
 {queryName:'validApplicants'},
-{queryName:'contactApplicants'},
 {queryName:'attractionApplicants'},
 {queryName:'attendApplicants'},
 {queryName:'fix'},
@@ -46,7 +45,6 @@ export const chartOptions = computed(() => {
       categories: [
         t('report.categories.applicant'),
         t('report.categories.validApplicant'),
-        t('report.categories.numberOfContacts'),
         t('report.categories.numberOfInvitations'),
         t('report.categories.numberOfAttendance'),
         t('report.categories.fix'),
@@ -72,7 +70,7 @@ export const chartOptions = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1) + '%';
+            return value + '%';
           },
         },
       },
@@ -106,13 +104,6 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
       align: 'center',
       label: t('report.categories.validApplicant'),
       field: 'valid_applicants',
-      sortable: true,
-    },
-    {
-      name: 'NumberOfContacts',
-      align: 'center',
-      label: t('report.categories.numberOfContacts'),
-      field: 'contact_applicants',
       sortable: true,
     },
     {

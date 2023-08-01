@@ -239,8 +239,8 @@ const nurseCareFieldDict: FieldDict = {
 
 const amountFieldDict: FieldDict = {
   name: 'amount',
-  dateBasedOnEachItemDate: 'accountingMonth',
-  dateBasedOnLeftMostItemDate: 'accountingMonth',
+  dateBasedOnEachItemDate: 'accountingMonthDate',
+  dateBasedOnLeftMostItemDate: 'accountingMonthDate',
   filters: [where('deleted', '==', false)],
   collection: 'budgets',
   mediaField: 'media',
@@ -382,11 +382,11 @@ const getData = async (
   const fromDateTrue =
     typeof reportState.dateRange.from == 'string'
       ? new Date(reportState.dateRange.from)
-      : reportState.dateRange.from;
+      : new Date(reportState.dateRange.from.getTime());
   const toDateTrue =
     typeof reportState.dateRange.to == 'string'
       ? new Date(reportState.dateRange.to)
-      : reportState.dateRange.to;
+      : new Date(reportState.dateRange.to.getTime());
   const queryNow = getQuery(reportState, queryName, db);
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
