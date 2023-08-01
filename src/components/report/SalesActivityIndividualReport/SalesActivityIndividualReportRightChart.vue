@@ -62,7 +62,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -143,21 +142,17 @@ const showIndividualReport = async (
   dataToShow.value = [dataAverage, allDataAverage];
 };
 watch(
-  () => [props.branch_user_list, props.dateRangeProps],
+  () => [props.dateRangeProps],
   async () => {
     if (!props.dateRangeProps) return;
-    if (props.branch_user_list.length != 0) {
-      userList.value = props.branch_user_list;
+      userList.value =  await userStore.getAllUsersInBranch(props.branch_id);
       await showIndividualReport(props.organization_id, props.dateRangeProps);
-    }
   }
 );
 
 onMounted(async () => {
   if (!props.dateRangeProps) return;
-  if (props.branch_user_list.length != 0) {
-    userList.value = props.branch_user_list;
+    userList.value =  await userStore.getAllUsersInBranch(props.branch_id);
     await showIndividualReport(props.organization_id, props.dateRangeProps);
-  }
 });
 </script>
