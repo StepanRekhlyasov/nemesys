@@ -47,7 +47,7 @@
       <template v-if="!bo" v-slot:body-cell-edit="props">
         <EditButton :props="props" color="primary"
           :on-edit="() => { editableContect.memo = props.row.memo }"
-          :on-save="() => { props.row.memo = editableContect.memo }" @onEditableRowChange="(row) => editableRow = row"
+          :on-save="() => { props.row.memo = editableContect.memo; saveFixMemo(props.row) }" @onEditableRowChange="(row) => editableRow = row"
           :editable-row="editableRow" :key="props.rowIndex" />
       </template>
     </q-table>
@@ -187,6 +187,17 @@ async function loadUser() {
 
 function isRowSelected(row) {
   return row == editableRow.value
+}
+
+async function saveFixMemo(row) {
+  loading.value = true;
+  try {
+    console.log(row);
+    await fixStore.updateFix(row.id,{memo:row.memo});
+  } catch (e) {
+    console.log(e);
+  }
+  loading.value = false;
 }
 </script>
 
