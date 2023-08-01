@@ -87,8 +87,7 @@ const validateAndSubmit = async () => {
                     street: addressSection.value.street,
                     building: addressSection.value.building,
                     parentClient: parentClient.value.parentClient
-                },
-                commonItems: {}
+                }
             } as ClientFactory['officeDetails'],
             draft: {}
         } as Partial<ClientFactory>

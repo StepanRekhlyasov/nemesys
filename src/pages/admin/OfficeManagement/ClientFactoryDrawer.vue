@@ -219,7 +219,7 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                         :clientFactory="localData"
                         :draft="localDraft"
                         :is-loading="isLoading.isGeneral"
-                        :industryType="selectedIndustry.value ?? ''"
+                        :industryType="localData.isHead ? selectedIndustry.value ?? '' : localData.industry[0]"
                         @edit-draft="editDraftHandler" />
                 </q-card-section>
             </q-card>
