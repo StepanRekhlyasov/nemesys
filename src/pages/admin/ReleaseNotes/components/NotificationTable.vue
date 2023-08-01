@@ -102,7 +102,7 @@
     </div>
   </q-card-section>
   <q-card-section class="q-pa-none">
-    <q-table :columns="notificationTableColumns" :rows="tableRows" row-key="id" v-model:pagination="pagination" class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
+    <q-table :columns="notificationTableColumns" :rows="tableRows" row-key="id" v-model:pagination="pagination" hide-pagination class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
       <template v-slot:body-cell-edit="props">
         <EditButton color="accent" :props="props"
           :on-edit="() => {editableNotification = JSON.parse(JSON.stringify(props.row))}"
@@ -147,6 +147,7 @@
       </template>
 
     </q-table>
+    <Pagination :rows="tableRows" @updatePage="pagination.page = $event" v-model:pagination="pagination" :theme="theme"/>
   </q-card-section>
 </template>
 
@@ -162,16 +163,23 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { useReleaseNotes } from 'src/stores/releaseNotes';
 import { useUserStore } from 'src/stores/user';
 import { notificationTableColumns } from '../../InquiryPage/const/inquiry.const';
+import Pagination from 'src/components/client-factory/PaginationView.vue';
 const props = withDefaults(defineProps<{
-  flag:number
+  flag:number,
+  theme:string
 }>(),{
-  flag:0
+  flag:0,
+  theme:'accent'
 })
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
-
-
+const pagination = ref({
+  sortBy: 'desc',
+  descending: false,
+  page: 1,
+  rowsPerPage: 5
+});
 const releaseNoteStore = useReleaseNotes()
 const userStore = useUserStore()
 const filter = ref({
@@ -234,13 +242,6 @@ const tableRows = computed(()=>{
 
 
 const user: User | null = $q.localStorage.getItem('userData');
-
-const pagination = ref({
-    sortBy: 'desc',
-    descending: false,
-    page: 1,
-    rowsPerPage: 10
-});
 
 const loadCurrentNotifications = async () => {
     notificationTableRows.value = []
@@ -319,6 +320,7 @@ const deleteNotification = (notificationId: string) => {
       }
   })
 }
+
 watch(flag,async()=>{
   loading.value = true
   await loadCurrentNotifications();
