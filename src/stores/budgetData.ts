@@ -238,7 +238,7 @@ export const useBudget = defineStore('budget', () => {
     try {
       const rowsInString = data
       const rows = rowsInString.split('\r\n')
-      const batch = writeBatch(db);
+      let batch = writeBatch(db);
       const previewData: { ok: BudgetData[], ng: BudgetData[] } = ({ ok: [], ng: [] });
       await getOptionData(organization.currentOrganizationId);
       const snapshot = await getDocs(query(collection(db, '/budgets'), where('organizationId', '==', organization.currentOrganizationId)))
@@ -305,7 +305,10 @@ export const useBudget = defineStore('budget', () => {
           }
           recordNumber += 1;
         }
-
+        if (!preview && i % 450 == 0) {
+          await batch.commit()
+          batch = writeBatch(db);
+        }
       }
       if (!preview) {
         await batch.commit()

@@ -224,14 +224,20 @@ const budgetSum = computed(() => {
 const budgetList = computed(() => {
   let budgetList = [...budgetStore.budgetList];
 
-  if (searchData.value['text']) {
-    budgetList = budgetList.filter(function (el) {
-      return el['media'] && el['media'].includes(searchData.value['text'])
-    });
-  }
+  const textList = ['text', 'agency', 'remark']
+  textList.forEach((key) => {
+    if (searchData.value[key]) {
+      budgetList = budgetList.filter(function (el) {
+        if (key == 'text') {
+          return el['media'] && el['media'].includes(searchData.value['text'])
+        }
+        return el[key] && el[key].includes(searchData.value[key])
+      });
+    }
+  })
 
   Object.keys(searchData.value).forEach((item) => {
-    const keys = ['recordNumber', 'mediaId', 'branchId', 'occupationId', 'postingStartDate', 'postingEndDate', 'accountingMonth', 'agency', 'remark']
+    const keys = ['recordNumber', 'mediaId', 'branchId', 'occupationId', 'postingStartDate', 'postingEndDate', 'accountingMonth']
     if (keys.includes(item)) {
       if (searchData.value[item]) {
         budgetList = budgetList.filter(function (el) {
