@@ -96,29 +96,22 @@ const report_componets = {
   3: RecruitmentEffectivenessReport,
 };
 
-//defalt dateRnage is { from: Today - 1manth to:Today} but now set { from: 1900/01/01 to:1900/12/31} for dummy data,
-
-// const get_date=()=>{
-//   const today = new Date();
-//   const year = today.getFullYear();
-//   const month = today.getMonth() + 1;
-//   const day = today.getDate();
-//   const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
-//   const from_year = from.getFullYear();
-//   const from_month = from.getMonth() + 1;
-//   const from_day = from.getDate();
-//   const dateRange = {
-//     from: `${from_year}/${from_month}/${from_day}`,
-//     to: `${year}/${month}/${day}`,
-//   };
-//   return dateRange;
-// }
-// const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
-
-const dateRange: Ref<{ from: string; to: string } | null> = ref({
-  from: '1900/01/01',
-  to: '1900/12/31',
-});
+const get_date=()=>{
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const from = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+  const from_year = from.getFullYear();
+  const from_month = from.getMonth() + 1;
+  const from_day = from.getDate();
+  const dateRange = {
+    from: `${from_year}/${from_month}/${from_day}`,
+    to: `${year}/${month}/${day}`,
+  };
+  return dateRange;
+}
+const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
 
 watch(branch_input, async () => {
   branch_user_list.value = await UserStore.getAllUsersInBranch(

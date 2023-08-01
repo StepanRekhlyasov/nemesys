@@ -53,7 +53,6 @@ import { ref, onMounted, watch, ComputedRef } from 'vue';
 import { BackOrderStaff } from '../../consts/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useApplicant } from 'src/stores/applicant'
-import { useClient } from 'src/stores/client'
 import { where } from 'firebase/firestore';
 import { useI18n } from 'vue-i18n';
 import { radius } from '../../consts/BackOrder.const';
@@ -113,10 +112,9 @@ watch(() => radius.value, async () => {
 })
 
 const calculateDistance = async () => {
-  const client = await getClient.fetchClientsById(props.bo.client_id);
   const clientLocation = {
-    lat: client['lat'],
-    lon: client['lon'],
+    lat: props.bo['lat'],
+    lon: props.bo['lon'],
   };
 
   staffList.value.forEach(staff => {
@@ -130,7 +128,6 @@ const calculateDistance = async () => {
 };
 
 const calculateMatchDegree = () => {
-
   staffList.value.forEach((staff) => {
    matchedData.value[staff.id] = backOrderStore.matchData(staff, props.bo);
   })
@@ -140,7 +137,6 @@ const calculateMatchDegree = () => {
 const loading = ref<boolean>(false);
 const { t } = useI18n({ useScope: 'global' });
 const getApplicant = useApplicant();
-const getClient = useClient();
 
 onMounted(async () => {
   loading.value = true;

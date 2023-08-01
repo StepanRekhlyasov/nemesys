@@ -2,7 +2,7 @@ import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCoun
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
-import { getClientList } from 'src/shared/utils/Applicant.utils';
+import { countApplicantRank, getClientList } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType, dateToTimestampFormat, toMonthYear } from 'src/shared/utils/utils';
@@ -150,7 +150,7 @@ export const useApplicant = defineStore('applicant', () => {
     applicantFixes: {},
     applicants: {}
   })
-  
+
   const countApplicantsByStatus = async (status: ApplicantStatus, filterData?: ApplicantProgressFilter) => {
     const filters = [
       where('status', '==', status),
@@ -196,10 +196,9 @@ export const useApplicant = defineStore('applicant', () => {
       page: 1,
       rowsPerPage: 10
     }) => {
-    state.value.applicantList = []
-    state.value.isLoadingProgress = true;
 
-    const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }] }).value;
+    state.value.isLoadingProgress = true;
+    const filters: ApplicantElasticFilter = ref({ 'all': [{ 'deleted': 'false' }, { 'organizationid': organization.currentOrganizationId }] }).value;
     const queryString = searchData['keyword'] ? searchData['keyword'] : ''
     searchData = deepCopy(searchData);
 
@@ -296,6 +295,7 @@ export const useApplicant = defineStore('applicant', () => {
         'created_at': { 'from': formatDate(d, true), 'to': formatDate(new Date()) }
       });
     }
+
     await api.post(
       (process.env.elasticSearchStaffURL as string),
       {
@@ -321,12 +321,14 @@ export const useApplicant = defineStore('applicant', () => {
   };
 
   const loadFirestoreApplicantData = async () => {
-    state.value.applicantList = [];
     state.value.isLoadingProgress = true;
+    let applicantList: Applicant[] = [];
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      state.value.applicantList = await getApplicantsByConstraints([where('deleted', '==', false), where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId)])
+      const applicants = await getApplicantsByConstraints([where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId)])
+      applicantList = [...applicantList, ...applicants];
     }
+    state.value.applicantList = applicantList;
     state.value.isLoadingProgress = false;
   }
 
@@ -393,7 +395,7 @@ export const useApplicant = defineStore('applicant', () => {
       where('deleted', '==', false),
     ]
 
-    if(!filterData?.organizationId){
+    if (!filterData?.organizationId) {
       filters.push(where('organizationId', '==', organization.currentOrganizationId))
     }
 
@@ -464,6 +466,7 @@ export const useApplicant = defineStore('applicant', () => {
   async function createApplicant(data: Applicant, applicantImage?: FileList | []) {
     const docRef = doc(collection(db, 'applicants'));
     data['id'] = docRef.id;
+    data['organizationId'] = organization.currentOrganizationId;
     for (const [key, value] of Object.entries(data)) {
       if (typeof value === 'undefined') delete data[key];
     }
@@ -475,12 +478,15 @@ export const useApplicant = defineStore('applicant', () => {
       data['imagePath'] = snapshot.ref.fullPath;
       data['imageURL'] = await getDownloadURL(storageRef)
     }
+    /** staff rank */
+    data.staffRank = countApplicantRank(data)
+    /** staff rank */
     await setDoc(
       docRef,
       data
     );
   }
- 
+
   async function getApplicantsByConstraints(constraints: ConstraintsType) {
     constraints.push(where('organizationId', '==', organization.currentOrganizationId))
     const q = query(collection(db, 'applicants'), ...constraints);
@@ -493,6 +499,9 @@ export const useApplicant = defineStore('applicant', () => {
   async function getApplicantById(id: string) {
     const applicantRef = doc(db, 'applicants/' + id);
     const result = await getDoc(applicantRef)
+    if (!result.data()) {
+      return undefined
+    }
     return { ...result.data(), id: result.id } as Applicant
   }
 
@@ -526,7 +535,7 @@ export const useApplicant = defineStore('applicant', () => {
         updated_at: serverTimestamp(),
         ...saveData
       })
-      ;
+        ;
     } catch (e) {
       Alert.warning(e);
     }
@@ -573,6 +582,7 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     /** transform strings to timestamps */
     const saveData = JSON.parse(JSON.stringify(applicantData));
+    
     if (saveData.status) {
       await updateApplicantStatus(saveData.status);
       return;
@@ -587,6 +597,10 @@ export const useApplicant = defineStore('applicant', () => {
     if (applicantData.inspectionDate) saveData.inspectionDate = dateToTimestampFormat(new Date(applicantData.inspectionDate));
     if (applicantData.offerDate) saveData.offerDate = dateToTimestampFormat(new Date(applicantData.offerDate));
     if (applicantData.admissionDate) saveData.admissionDate = dateToTimestampFormat(new Date(applicantData.admissionDate));
+
+    /** staff rank */
+    saveData.staffRank = countApplicantRank({...state.value.selectedApplicant, ...saveData})
+    /** staff rank */
 
     for (const [key, value] of Object.entries(saveData)) {
       if (typeof value === 'undefined') delete saveData[key];

@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="q-pt-md">
-        <q-scroll-area class="applicantColumnsWrapper">
+        <q-scroll-area class="applicantColumnsWrapper" :visible="false">
           <div class="row no-wrap justify-between" style="gap:10px">
             <template v-for="column in columns" :key="column.id">
               <ApplicantColumn

@@ -44,7 +44,7 @@
   <q-dialog v-model="deleteConfirm" persistent @hide="deleteBusinessData=''; deleteOrganizationId=''">
       <q-card>
         <q-card-section class="row items-center">
-          <span class="q-ml-sm">{{ $t('common.deleteInfo') }}</span>
+          <span class="q-ml-sm">{{ $t('common.deleteBusiness') }}</span>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat :label="$t('common.cancel')" color="primary" v-close-popup />

@@ -178,6 +178,19 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function addBackOrder(backOrderData) {
     const auth = getAuth();
     const data = JSON.parse(JSON.stringify(backOrderData));
+    try{
+      const clientDoc = doc(db, 'clients', data.client_id);
+      const officeDoc = doc(collection(clientDoc, 'client-factory'), data.office_id);
+      const officeData = await getDoc(officeDoc);
+      if (officeData.exists()) {
+        data['distance'] = officeData.data().distance;
+        data['lat'] = officeData.data().lat;
+        data['lon'] = officeData.data().lon;
+      }
+    }
+    catch(err){
+      data['distance'] = null;
+    }
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
@@ -193,7 +206,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     ;
   }
   async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
-    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('clientId', '==', clientId),];
+    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('client_id', '==', clientId),where('organizationId','==',organization.currentOrganizationId)];
     const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
 
     const list: BackOrderModel[] = [];
@@ -332,13 +345,23 @@ export const useBackOrder = defineStore('backOrder', () => {
         'night': 0,
       },
     };
+
     //qualification percentage
-    staff.qualification?.forEach((q) => {
-      if (bo.qualifications?.toLowerCase() === q.toLowerCase()) {
-        qualification = 1
-        matchedData['qualification'].label = q;
-      }
-    });
+    if(bo.qualifications.length){
+      let totalQualification = 0
+      staff.qualification?.forEach((q) => {
+        bo.qualifications?.forEach((qBo)=>{
+          if (qBo.toLowerCase() === q.toLowerCase()) {
+              totalQualification++;
+              matchedData['qualification'].label = q;
+          }
+        })
+      });
+      qualification = totalQualification/bo.qualifications.length
+  }
+  else{
+    qualification = 1;
+  }
     matchedData['qualification'].value = qualification * 100;
 
     //Experience required
@@ -394,7 +417,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     matchedData['daysPerWeek'].value = daysPerWeek * 100;
     //age
-    if (bo.upperAgeLimit && staff.dob) {
+    if (staff.dob) {
       const currentDate = new Date();
       const dob = new Date(staff.dob.seconds * 1000);
       let age = currentDate.getFullYear() - dob.getFullYear();
@@ -402,14 +425,18 @@ export const useBackOrder = defineStore('backOrder', () => {
         age--;
       }
       matchedData.agePercent.label = age.toString();
-      agePercent = age <= bo.upperAgeLimit ? 1 : 0;
+      if(bo.upperAgeLimit){
+        agePercent = age <= bo.upperAgeLimit ? 1 : 0;
+      }
+      else{
+        agePercent = 1;
+      }
     }
-    matchedData['agePercent'].value = agePercent * 100;
+
+    matchedData['agePercent'].value = agePercent*100;
 
     //workingHoursDay
-    let totalWorkingHours = 0;
     if (bo.workingHoursDay_min || bo.workingHoursDay_max) {
-      totalWorkingHours++;
       if (staff.workingHoursDay === true || staff.workingHoursDay === '△') {
         workingHoursDay = 1;
       }
@@ -419,7 +446,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     //workingHoursEarly
     if (bo.workingHoursEarly_min || bo.workingHoursEarly_max) {
-      totalWorkingHours++;
       if (staff.workingHoursEarly === true || staff.workingHoursEarly === '△') {
         workingHoursEarly = 1;
       }
@@ -429,7 +455,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     //workingHoursLate
     if (bo.workingHoursLate_min || bo.workingHoursLate_max) {
-      totalWorkingHours++;
       if (staff.workingHoursLate === true || staff.workingHoursLate === '△') {
         workingHoursLate = 1;
       }
@@ -439,7 +464,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     //workingHoursNight
     if (bo.workingHoursNight_min || bo.workingHoursNight_max) {
-      totalWorkingHours++;
       if (staff.workingHoursNight === true || staff.workingHoursNight === '△') {
         workingHoursNight = 1;
       }
@@ -447,7 +471,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     else {
       workingHoursNight = 1;
     }
-    workingHours = (workingHoursDay + workingHoursEarly + workingHoursLate + workingHoursNight) / totalWorkingHours;
+    workingHours = (workingHoursDay + workingHoursEarly + workingHoursLate + workingHoursNight) / 4;
     matchedData['workingHours'].value = workingHours * 100;
     matchedData['workingHours']['day'] = workingHoursDay;
     matchedData['workingHours']['early'] = workingHoursEarly;
@@ -455,9 +479,12 @@ export const useBackOrder = defineStore('backOrder', () => {
     matchedData['workingHours']['night'] = workingHoursNight;
 
     //commute distance
-    commuteDistance = 1;
-    matchedData.commuteDistance.label = staff.distanceBusiness.toString();
-    matchedData['commuteDistance'].value = Number((commuteDistance * 100).toFixed(2));
+    if(staff.commutingTime){
+      const distance = 30*staff.commutingTime;
+      commuteDistance = distance>=staff.distanceBusiness?1:distance/staff.distanceBusiness;
+      matchedData.commuteDistance.label = distance.toString();
+    }
+    matchedData['commuteDistance'].value = Number((commuteDistance*100).toFixed(2));
 
     const matchPercent = ((agePercent + qualification + daysPerWeek + daysToWork + expReq + workingHours + commuteDistance) / 7) * 100;
     staff.matchDegree = Number(matchPercent.toFixed(2));

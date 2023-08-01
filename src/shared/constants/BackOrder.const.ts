@@ -1,4 +1,5 @@
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 import { computed } from 'vue';
 
 const { t } = i18n.global
@@ -19,7 +20,7 @@ export const DaysPerWeekList = computed(() => [{
   label: t('backOrder.daysPerWeek.five'),
   value: 'five'
 },])
-export const BackOrderColumns = computed(() => {
+export const BackOrderColumns = computed<QTableProps['columns']>(() => {
   return [
   {
      label: '',
@@ -45,13 +46,13 @@ export const BackOrderColumns = computed(() => {
     },{
       name: 'qualification',
       required: true,
-      label: t('client.teleAppoint.date') ,
+      label: t('detal.teleAppoint.date') ,
       field: 'qualification',
       align: 'left',
     },{
       name: 'age',
       required: true,
-      label: t('client.teleAppoint.teleAppointmentResult') ,
+      label: t('detal.teleAppoint.teleAppointmentResult') ,
       field: 'age',
       align: 'left',
     },{
