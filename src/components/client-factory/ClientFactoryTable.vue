@@ -33,6 +33,15 @@ watch(()=>selected.value,()=>{
     emit('selectedId',selected.value)
 })
 
+const paginatedAndSortedRows = ref<ClientFactoryTableRow[]>([...props.rows]);
+
+watch(props.pagination, () => {
+  const sortedRows = sortRows([...props.rows], props.pagination.sortBy, props.pagination.descending);
+  const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
+  const end = start + props.pagination.rowsPerPage;
+  paginatedAndSortedRows.value = sortedRows.slice(start, end);
+});
+
 const sortRows = (rows, sortBy:string, descending:boolean) => {
   const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
   const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
@@ -103,7 +112,7 @@ else
 
 <template>
     <q-table
-    :rows="rows"
+    :rows="paginatedAndSortedRows.length?paginatedAndSortedRows:rows"
     :columns="tableColumns"
     :rows-per-page-options="[pagination.rowsPerPage]"
     row-key="id"
@@ -114,7 +123,6 @@ else
     :selected-rows-label="getSelectedString"
     selection="multiple"
     v-model:selected="selected"
-    binary-state-sort
     :sort-method="sortRows"
     hide-pagination>
 
