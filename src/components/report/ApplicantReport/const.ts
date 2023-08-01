@@ -70,7 +70,7 @@ export const chartOptions = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1) + '%';
+            return value + '%';
           },
         },
       },

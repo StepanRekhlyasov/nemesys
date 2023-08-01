@@ -79,7 +79,7 @@ const showIndividualReport = async (
   if (!range) return;
   seriesList.value = [];
   rowsIndividual.value = [];
-
+  if(!props.branch_id) return;
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
     where('deleted', '==', false),
