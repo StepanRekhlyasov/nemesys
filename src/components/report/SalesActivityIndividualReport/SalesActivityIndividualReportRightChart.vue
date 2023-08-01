@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptionsR, columnsR, dataNames, itemListRight } from './const';
+import { chartOptionsR, columnsR, dataNames, itemListRight } from './salesActivityIndividual.const';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
 import { useGetReport } from 'src/stores/getReport';
 import { graphType } from '../Models';

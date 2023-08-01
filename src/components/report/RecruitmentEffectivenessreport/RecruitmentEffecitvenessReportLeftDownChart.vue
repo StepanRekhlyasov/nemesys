@@ -10,7 +10,7 @@
 import { useMedia } from 'stores/media';
 import { graphType } from '../Models';
 import { onMounted, ref, computed, watch } from 'vue';
-import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './const';
+import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { Media } from 'src/shared/model/Media.model';

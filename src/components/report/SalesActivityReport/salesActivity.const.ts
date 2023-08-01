@@ -10,25 +10,32 @@ export const itemList = [
   { queryName: 'admission' },
   { queryName: 'BO' },
 ] as const;
+
 export const donutGraphItem = [
   { queryName: 'nurse' },
   { queryName: 'nursingCare' },
 ] as const;
+
 export const donutLabelNames = [
   t('client.add.nurse'),
   t('client.add.nursing'),
 ] as const;
+
 export const dataNames = [
   'report.companyTotal',
   'report.CVR',
   'report.allCVR',
 ] as const;
+
 export const dataNamesR = [
   'report.companyAverage',
   'report.allAverage',
 ] as const;
+
 export const chartNames = ['bar', 'line', 'line'] as const;
+
 export const chartNamesR = ['bar', 'bar'] as const;
+
 export const chartOptions = computed(() => {
   const chartOptions = JSON.parse(JSON.stringify(chartOptionsVerticalBase));
   chartOptions.title.text = t('report.title.FIXAndInspection');

@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, itemList, chartType, rowNames } from './const';
+import { chartOptions, columns, itemList, chartType, rowNames } from './applicant.const';
 import {
   calculateCVR,
   getListFromObject,

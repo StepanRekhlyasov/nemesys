@@ -47,7 +47,7 @@ import {
   chartTypeDaysToWork,
   chartTypeSex,
   daysToWorkQueryNamesList,
-} from './const';
+} from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { convertToPercentage, calculateValues } from '../reportUtil';

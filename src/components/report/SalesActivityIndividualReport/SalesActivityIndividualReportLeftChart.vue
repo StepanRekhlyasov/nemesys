@@ -12,7 +12,7 @@ import {
   dataNames,
   itemList,
   itemRateList,
-} from './const';
+} from './salesActivityIndividual.const';
 import { useGetReport } from 'src/stores/getReport';
 import { calculateCVR } from '../reportUtil';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
