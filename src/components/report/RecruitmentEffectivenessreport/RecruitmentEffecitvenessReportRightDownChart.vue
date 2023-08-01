@@ -201,6 +201,8 @@ watch(
 );
 
 onMounted(async () => {
+  //wait 0.1 sec
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await showChart();
 });
 </script>

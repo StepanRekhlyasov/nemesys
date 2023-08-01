@@ -115,6 +115,8 @@ watch(
 
 onMounted(async () => {
   if (!props.dateRangeProps) return;
+  //wait 0.1sec
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await showData(props.dateRangeProps, props.organization_id);
 });
 </script>

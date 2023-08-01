@@ -99,13 +99,15 @@ const showIndividualReport = async (
     isAverage: false,
   });
   rowsIndividual.value = rows;
+  const seriesListPre:{ name: string; data: (number | string)[]; type: string }[] = [];
   for (const row of rows) {
-    seriesList.value.push({
+    seriesListPre.push({
       name: row.name as string,
       data: [row['fix'], row['inspection'], row['offer'], row['admission']],
       type: 'bar',
     });
   }
+  seriesList.value = seriesListPre;
 
   const allDataAverage = listToFixed(
     getListFromObject(
@@ -163,6 +165,7 @@ watch(
 onMounted(async () => {
   userList.value = props.branch_user_list;
   organizationId.value = props.organization_id;
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await showIndividualReport(props.dateRangeProps);
 });
 </script>
