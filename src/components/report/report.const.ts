@@ -36,4 +36,16 @@ export const chartOptionsVerticalBase = {
   fill: {
     opacity: 1,
   },
+  noData: {
+    text: 'Loading...',
+    align: 'center',
+    verticalAlign: 'middle',
+    offsetX: 0,
+    offsetY: 0,
+    style: {
+      color: '#000000',
+      fontSize: '14px',
+      fontFamily: 'Helvetica'
+    }
+  }
 };
