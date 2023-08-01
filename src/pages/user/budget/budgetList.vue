@@ -247,20 +247,25 @@ const budgetList = computed(() => {
 
     const keysRange = ['amount', 'numberOfSlots', 'unitPrice']
     keysRange.forEach((key) => {
-      console.log(searchData.value[key + 'Max'], searchData.value[key + 'Min'])
       if (searchData.value[key + 'Max'] && searchData.value[key + 'Min']) {
         budgetList = budgetList.filter(function (el) {
-          return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10) && parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          if (el[key]) {
+            return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10) && parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          }
         })
       }
       else if (searchData.value[key + 'Max']) {
         budgetList = budgetList.filter(function (el) {
-          return parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          if (el[key]) {
+            return parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          }
         })
       }
       else if (searchData.value[key + 'Min']) {
         budgetList = budgetList.filter(function (el) {
-          return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10)
+          if (el[key]) {
+            return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10)
+          }
         })
       }
     });
