@@ -14,6 +14,8 @@ import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
 import { round } from 'src/shared/utils/KPI.utils';
+import { chartOptionsVerticalBase } from '../report.const';
+
 const { getReport } = useGetReport();
 const monthPerYear = 12;
 const beforeMonth = 7;
@@ -35,69 +37,18 @@ const series: ComputedRef<
 });
 
 const chartOptions = computed(() => {
-  return {
-    legend: { position: 'right' },
-    chart: {},
-    title: {
-      text: t('report.title.unitPriceTransition'),
-      style: {
-        color: 'gray',
-      },
+  const chartOptions = JSON.parse(JSON.stringify(chartOptionsVerticalBase));
+  chartOptions.title.text = t('report.title.unitPriceTransition');
+  (chartOptions.xaxis['categories'] = [...monthList.value].map((month) => {
+    return t(`common.months.${month}`);
+  })),
+    (chartOptions.yaxis[0]['forceNiceScale'] = true);
+  chartOptions.yaxis[0]['labels'] = {
+    formatter: function (value) {
+      return value.toFixed(0) + t('report.yen');
     },
-    noData: {
-      text: 'Loading...',
-      align: 'center',
-      verticalAlign: 'middle',
-      offsetX: 0,
-      offsetY: 0,
-      style: {
-        color: '#000000',
-        fontSize: '14px',
-        fontFamily: 'Helvetica',
-      },
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: '15%',
-        endingShape: 'rounded',
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-    },
-    xaxis: {
-      categories: [...monthList.value].map((month) => {
-        return t(`common.months.${month}`);
-      }),
-    },
-    yaxis: [
-      {
-        min: 0,
-        forceNiceScale: true,
-        title: { text: t('report.categories.applicationUnitPrice') },
-        labels: {
-          formatter: function (value) {
-            return value.toFixed(0) + t('report.yen');
-          },
-        },
-      },
-      {
-        opposite: true,
-        title: { text: t('report.categories.startUnitPrice') },
-        min: 0,
-        forceNiceScale: true,
-        labels: {
-          formatter: function (value) {
-            return value.toFixed(0) + t('report.yen');
-          },
-        },
-      },
-    ],
   };
+  return chartOptions;
 });
 
 const props = defineProps<{

@@ -142,17 +142,17 @@ const showIndividualReport = async (
   dataToShow.value = [dataAverage, allDataAverage];
 };
 watch(
-  () => [props.dateRangeProps],
+  () => [props.dateRangeProps, props.branch_id],
   async () => {
     if (!props.dateRangeProps) return;
-      userList.value =  await userStore.getAllUsersInBranch(props.branch_id);
-      await showIndividualReport(props.organization_id, props.dateRangeProps);
+    userList.value = await userStore.getAllUsersInBranch(props.branch_id);
+    await showIndividualReport(props.organization_id, props.dateRangeProps);
   }
 );
 
 onMounted(async () => {
   if (!props.dateRangeProps) return;
-    userList.value =  await userStore.getAllUsersInBranch(props.branch_id);
-    await showIndividualReport(props.organization_id, props.dateRangeProps);
+  userList.value = await userStore.getAllUsersInBranch(props.branch_id);
+  await showIndividualReport(props.organization_id, props.dateRangeProps);
 });
 </script>

@@ -1,6 +1,7 @@
 import { i18n } from 'boot/i18n';
 import { QTableProps } from 'quasar';
 import { computed, ComputedRef } from 'vue';
+import { chartOptionsVerticalBase } from '../report.const';
 const { t } = i18n.global;
 export const itemList = [
   { queryName: 'fix' },
@@ -8,6 +9,7 @@ export const itemList = [
   { queryName: 'offer' },
   { queryName: 'admission' },
 ] as const;
+
 export const itemListRight = [
   { queryName: 'BO' },
   { queryName: 'BOIsfirst' },
@@ -19,55 +21,37 @@ export const itemRateList = [
   ['inspection', 'offer'],
   ['offer', 'admission'],
 ] as const;
+
 export const dataNames = [
   'report.companyAverage',
   'report.allAverage',
 ] as const;
 
 export const chartOptions = computed(() => {
-  return {
-    legend: { position: 'right' },
-    chart: {},
-    title: {
-      text: t('report.title.individualPerformanceStatus'),
-      style: {
-        color: 'gray',
-      },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '25%',
-        endingShape: 'rounded',
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-    },
-    xaxis: {
-      categories: [
-        t('report.categories.fix'),
-        t('report.categories.inspection'),
-        t('report.categories.offer'),
-        t('report.categories.admission'),
-      ],
-    },
-    yaxis: {
-      min: 0,
-      labels: {
-        formatter: function (value) {
-          return value.toFixed(1);
-        },
-      },
-    },
-    fill: {
-      opacity: 1,
-    },
-  };
+  const chartOptions = JSON.parse(JSON.stringify(chartOptionsVerticalBase));
+  chartOptions.title.text = t('report.title.individualPerformanceStatus');
+  (chartOptions.xaxis['categories'] = [
+    t('report.categories.fix'),
+    t('report.categories.inspection'),
+    t('report.categories.offer'),
+    t('report.categories.admission'),
+  ]),
+    (chartOptions.yaxis[0]['forceNiceScale'] = true);
+  return chartOptions;
+});
+
+export const chartOptionsR = computed(() => {
+  const chartOptions = JSON.parse(JSON.stringify(chartOptionsVerticalBase));
+  chartOptions.title.text = t('report.title.BOAcquisitionStatus');
+  (chartOptions.xaxis['categories'] = [
+    t('report.categories.numberOfCallsPerDay'),
+    t('report.categories.numberOfFAXPerDay'),
+    t('report.categories.BOTotal'),
+    t('report.categories.BONew'),
+    t('report.categories.BOExisting'),
+  ]),
+    (chartOptions.yaxis[0]['forceNiceScale'] = true);
+  return chartOptions;
 });
 
 export const columns: ComputedRef<QTableProps['columns']> = computed(() => {
@@ -131,53 +115,6 @@ export const columns: ComputedRef<QTableProps['columns']> = computed(() => {
       sortable: true,
     },
   ];
-});
-
-export const chartOptionsR = computed(() => {
-  return {
-    legend: { position: 'right' },
-    chart: {},
-    title: {
-      text: t('report.title.BOAcquisitionStatus'),
-      style: {
-        color: 'gray',
-      },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '25%',
-        endingShape: 'rounded',
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-    },
-    xaxis: {
-      categories: [
-        t('report.categories.numberOfCallsPerDay'),
-        t('report.categories.numberOfFAXPerDay'),
-        t('report.categories.BOTotal'),
-        t('report.categories.BONew'),
-        t('report.categories.BOExisting'),
-      ],
-    },
-    yaxis: {
-      min: 0,
-      labels: {
-        formatter: function (value) {
-          return value.toFixed(1);
-        },
-      },
-    },
-    fill: {
-      opacity: 1,
-    },
-  };
 });
 
 export const columnsR: ComputedRef<QTableProps['columns']> = computed(() => {
