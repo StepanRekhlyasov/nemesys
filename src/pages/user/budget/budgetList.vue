@@ -81,16 +81,16 @@
           <template v-slot:body-cell-amount="props">
             <q-td :props="props" class="no-wrap q-pa-none">
               <q-icon name="currency_yen" v-if="props.row.amount != '' && props.row.amount != null"></q-icon>
-              {{ props.row.amount }}
+              {{ formatNumber(props.row.amount) }}
             </q-td>
           </template>
           <template v-slot:body-cell-numberOfSlots="props">
             <q-td :props="props" class="no-wrap q-pa-none">
-              <span v-if="props.row.numberOfSlots">{{ props.row.numberOfSlots }}</span>
+              <span v-if="props.row.numberOfSlots">{{ formatNumber(props.row.numberOfSlots) }}</span>
               <span v-else>-</span>
               <br>
               <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>
-              {{ props.row.unitPrice }}
+              {{ formatNumber(props.row.unitPrice) }}
             </q-td>
           </template>
 
@@ -160,7 +160,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { BudgetData } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { myDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat, formatNumber } from 'src/shared/utils/utils';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 import { useOrganization } from 'src/stores/organization';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
@@ -215,7 +215,7 @@ const budgetSum = computed(() => {
   let sum = 0
   budgetList.value.forEach(item => {
     if (item.amount) {
-      sum += parseInt(item.amount.replace(/,/g, ''), 10);
+      sum += parseInt(item.amount.toString().replace(/,/g, ''), 10);
     }
   })
   return sum
@@ -247,9 +247,20 @@ const budgetList = computed(() => {
 
     const keysRange = ['amount', 'numberOfSlots', 'unitPrice']
     keysRange.forEach((key) => {
+      console.log(searchData.value[key + 'Max'], searchData.value[key + 'Min'])
       if (searchData.value[key + 'Max'] && searchData.value[key + 'Min']) {
         budgetList = budgetList.filter(function (el) {
-          return parseInt(el[key].replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10) && parseInt(el[key].replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10) && parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+        })
+      }
+      else if (searchData.value[key + 'Max']) {
+        budgetList = budgetList.filter(function (el) {
+          return parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+        })
+      }
+      else if (searchData.value[key + 'Min']) {
+        budgetList = budgetList.filter(function (el) {
+          return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10)
         })
       }
     });

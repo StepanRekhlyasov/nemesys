@@ -207,6 +207,13 @@ export const getLastMonthString = (num: 3) => {
 export const formatNumber = (text: string) => {
   return text?.toString().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
+export const formatTextToNumber = (text: string) => {
+  const num = parseInt(text?.toString().replace(/,/g, ''), 10)
+  if (Number.isNaN(num)) {
+    return null
+  }
+  return num
+}
 // rules intut textfield
 
 // export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`

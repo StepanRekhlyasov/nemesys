@@ -1,21 +1,21 @@
 import { Timestamp } from 'firebase/firestore';
 
 export interface BudgetData {
-  recordNumber?: number | string;
+  recordNumber?: number | string | null;
   id?: string;
   accountingMonth: string;
-  amount: number | string,
+  amount: number | string | null,
   branch: string;
   media: string;
-  numberOfSlots: number | string;
+  numberOfSlots: number | string | null;
   occupation: string;
   postingEndDate: Timestamp | string;
   postingStartDate: Timestamp | string;
   accountingMonthDate?: Timestamp | string;
-  unitPrice: string;
+  unitPrice: string | number | null;
   remark: string;
   agency: string;
-  organizationId:string;
+  organizationId: string;
 }
 export interface DateOption {
   label: string, value: number;

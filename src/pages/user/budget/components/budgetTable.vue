@@ -58,16 +58,16 @@
         <q-td :props="props" class="no-wrap q-pa-none"
           :class="!okData && (props.row.ngFields.includes('amount')) ? 'bg-yellow' : ''">
           <q-icon name="currency_yen" v-if="props.row.amount != '' && props.row.amount != null"></q-icon>
-          {{ props.row.amount }}
+          {{ formatNumber(props.row.amount) }}
         </q-td>
       </template>
       <template v-slot:body-cell-numberOfSlots="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          <span v-if="props.row.numberOfSlots">{{ props.row.numberOfSlots }}</span>
+          <span v-if="props.row.numberOfSlots"> {{ formatNumber(props.row.numberOfSlots) }}</span>
           <span v-else>-</span>
           <br>
           <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>
-          {{ props.row.unitPrice }}
+          {{ formatNumber(props.row.unitPrice) }}
         </q-td>
       </template>
 
@@ -85,7 +85,7 @@
 </template>
 <script  lang="ts" setup>
 import { ref } from 'vue';
-import { myDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat, formatNumber } from 'src/shared/utils/utils';
 import { budgetColumns } from '../consts/Budget.const';
 import { BudgetData } from '../type/budget'
 import { useBudget } from 'src/stores/budgetData';
