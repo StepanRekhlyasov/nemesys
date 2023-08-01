@@ -85,7 +85,7 @@ const branchInput = ref<{
 }>({ value: undefined, label: undefined });
 const organizationStore = useOrganization();
 const { currentOrganizationId } = storeToRefs(organizationStore);
-const branches = ref<string[]>([]);
+const branches = ref<{ value: string; label: string }[]>([]);
 const reportType = computed<{ label: string; value: number }[]>(() => {
   return [
     { label: t('report.applicantReport'), value: 0 },
@@ -140,5 +140,6 @@ onMounted(async () => {
       await UserBranch.getBranchesInOrganization(currentOrganizationId.value)
     )
   );
+  branchInput.value = branches.value[0];
 });
 </script>
