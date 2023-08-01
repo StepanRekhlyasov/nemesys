@@ -137,7 +137,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                         <CFDrawerTabs
                             @edit-draft="editDraftHandler"
                             :clientFactory="modifiedCF ?? selectedItem"
-                            :industryType="selectedIndustry.value ?? ''"
+                            :industryType="(modifiedCF ?? selectedItem).isHead ? selectedIndustry.value ?? '' : (modifiedCF ?? selectedItem).industry[0]"
                             :draft="draft"
                             :is-loading="isLoading"/>
                     </q-card-section>
