@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
@@ -37,12 +37,6 @@ const pagination = ref({
     page: 1,
     rowsPerPage: 100,
     rowsNumber: clientFactories.value.length
-});
-
-const paginatedTableRows = computed(() => {
-    const start = (pagination.value.page - 1) * pagination.value.rowsPerPage;
-    const end = start + pagination.value.rowsPerPage;
-    return tableRows.value.slice(start, end);
 });
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
