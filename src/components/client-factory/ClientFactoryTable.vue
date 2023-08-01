@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, defineProps, defineEmits, withDefaults, watch, computed } from 'vue';
+import { ref, defineProps, defineEmits, withDefaults, watch } from 'vue';
 import { ClientFactoryTableColumn, ClientFactoryTableRow, Pagination } from './types';
-// import { customSortMethod } from 'src/pages/user/BusinessManagement/consts/index'
 
 const props = withDefaults(defineProps<{
     rows: ClientFactoryTableRow[],
@@ -34,98 +33,77 @@ watch(()=>selected.value,()=>{
     emit('selectedId',selected.value)
 })
 
-const sortRows = (rows, sortBy, descending) => {
+const sortRows = (rows, sortBy:string, descending:boolean) => {
   const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
-if (sortBy === 'distance') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
+  const end = start + props.pagination.rowsPerPage;
+  if (sortBy === 'distance') {
+    return [...props.rows].sort((a, b) => {
       const first = a.distance.toString();
       const second = b.distance.toString();
       return descending ? second.localeCompare(first) : first.localeCompare(second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'name') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'name') {
+    return [...props.rows].sort((a, b) => {
       const first = a.name?a.name:'';
       const second = b.name?b.name:'';
       return descending ? collator.compare(second, first) : collator.compare(first, second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'telephone') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'telephone') {
+    return [...props.rows].sort((a, b) => {
       const first = a.telephone;
       const second = b.telephone;
       return descending ? second.localeCompare(first) : first.localeCompare(second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'address') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'address') {
+    return [...props.rows].sort((a, b) => {
       const first = a.address?a.address:'';
       const second = b.address?b.address:'';
       return descending ? collator.compare(second, first) : collator.compare(first, second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'fax') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'fax') {
+
+    return [...props.rows].sort((a, b) => {
       const first = a.fax?a.fax:'';
       const second = b.fax?b.fax:'';
       return descending ? collator.compare(second, first) : collator.compare(first, second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'office master') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'office master') {
+    return [...props.rows].sort((a, b) => {
       const first = a.officeMaster;
       const second = b.officeMaster;
       return descending ? collator.compare(second, first) : collator.compare(first, second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'client master') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'client master') {
+    return [...props.rows].sort((a, b) => {
       const first = a.clientMaster;
       const second = b.clientMaster;
       return descending ? collator.compare(second, first) : collator.compare(first, second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else if (sortBy === 'basic information') {
-    const sortedRows = [...props.rows];
-    sortedRows.sort((a, b) => {
+  if (sortBy === 'basic information') {
+    return [...props.rows].sort((a, b) => {
       const first = a.basicInfo;
       const second = b.basicInfo;
       return descending ? collator.compare(second, first) : collator.compare(first, second);
-    });
-    return sortedRows;
+    }).slice(start,end);
   }
-  else{
-    return props.rows;
-  }
-};
+else
+  return rows;
 
-const paginatedAndSortedTableRows = computed(() => {
-    const clonedRows = [...props.rows];
-    const sortedRows = sortRows(clonedRows, props.pagination.sortBy, props.pagination.descending);
-    const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
-    const end = start + props.pagination.rowsPerPage;
-    return sortedRows.slice(start, end);
-  });
+};
 
 </script>
 
 <template>
     <q-table
-    :rows="paginatedAndSortedTableRows"
+    :rows="rows"
     :columns="tableColumns"
     :rows-per-page-options="[pagination.rowsPerPage]"
     row-key="id"
@@ -136,6 +114,8 @@ const paginatedAndSortedTableRows = computed(() => {
     :selected-rows-label="getSelectedString"
     selection="multiple"
     v-model:selected="selected"
+    binary-state-sort
+    :sort-method="sortRows"
     hide-pagination>
 
         <template v-slot:header-cell="props">
