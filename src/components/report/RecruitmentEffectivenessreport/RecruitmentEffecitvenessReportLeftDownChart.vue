@@ -49,7 +49,7 @@ const chartOptions = computed(() => {
     yaxis: [
       {
         min: 0,
-
+        forceNiceScale: true,
         labels: {
           formatter: function (value) {
             return value.toFixed(0) + t('report.yen');

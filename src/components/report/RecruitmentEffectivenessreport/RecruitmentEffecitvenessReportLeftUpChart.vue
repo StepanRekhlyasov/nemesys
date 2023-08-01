@@ -44,6 +44,18 @@ const chartOptions = computed(() => {
         color: 'gray',
       },
     },
+    noData: {
+      text: 'Loading...',
+      align: 'center',
+      verticalAlign: 'middle',
+      offsetX: 0,
+      offsetY: 0,
+      style: {
+        color: '#000000',
+        fontSize: '14px',
+        fontFamily: 'Helvetica',
+      },
+    },
     plotOptions: {
       bar: {
         columnWidth: '15%',
@@ -65,6 +77,7 @@ const chartOptions = computed(() => {
     yaxis: [
       {
         min: 0,
+        forceNiceScale: true,
         title: { text: t('report.categories.applicationUnitPrice') },
         labels: {
           formatter: function (value) {
@@ -76,6 +89,7 @@ const chartOptions = computed(() => {
         opposite: true,
         title: { text: t('report.categories.startUnitPrice') },
         min: 0,
+        forceNiceScale: true,
         labels: {
           formatter: function (value) {
             return value.toFixed(0) + t('report.yen');

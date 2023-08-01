@@ -4,8 +4,8 @@
       <div class="q-gutter-md row">
         <q-select
           outlined
-          v-model="branch_input"
-          :options="branchs"
+          v-model="branchInput"
+          :options="branches"
           v-if="modeIndex == 2"
         />
         <q-select
@@ -57,8 +57,7 @@
         v-bind:is="reportComponets[modeIndex]"
         :organization_id="currentOrganizationId"
         :dateRangeProps="dateRange"
-        :branch_id="branch_input['value']"
-        :branch_user_list="branch_user_list"
+        :branch_id="branchInput['value']"
         :graph_type="graph_type"
       ></component>
     </keep-alive>
@@ -66,11 +65,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, watch, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useOrganization } from 'src/stores/organization';
 import { storeToRefs } from 'pinia';
-import { useUserStore } from 'src/stores/user';
 import { useBranch } from 'src/stores/branch';
 import { convertObjToIdNameList } from 'src/shared/utils/KPI.utils';
 import SalesActivityIndividualReport from '../../../components/report/SalesActivityIndividualReport/SalesActivityIndividualReport.vue';
@@ -78,15 +76,16 @@ import ApplicantReport from '../../../components/report/ApplicantReport/Applican
 import RecruitmentEffectivenessReport from '../../../components/report/RecruitmentEffectivenessreport/RecruitmentEffectivenessReport.vue';
 import SalesActivityReport from '../../../components/report/SalesActivityReport/SalesActivityReport.vue';
 import { graphType } from 'src/components/report/Models';
-const UserStore = useUserStore();
 const UserBranch = useBranch();
 const t = useI18n({ useScope: 'global' }).t;
 const graph_type = ref<graphType>('BasedOnLeftMostItemDate');
-const branch_input = ref({ value: '', label: '' });
+const branchInput = ref<{
+  value: string | undefined;
+  label: string | undefined;
+}>({ value: undefined, label: undefined });
 const organizationStore = useOrganization();
 const { currentOrganizationId } = storeToRefs(organizationStore);
-const branchs = ref<[]>([]);
-const branch_user_list = ref<{ id: string; name: string }[]>([]);
+const branches = ref<string[]>([]);
 const reportType = computed<{ label: string; value: number }[]>(() => {
   return [
     { label: t('report.applicantReport'), value: 0 },
@@ -103,9 +102,10 @@ const modelReportComputed = computed({
     return reportType.value[modeIndex.value];
   },
   set(type) {
-    return modeIndex.value = type['value'];
+    modeIndex.value = type['value'];
   },
 });
+
 const reportComponets = {
   0: ApplicantReport,
   1: SalesActivityReport,
@@ -113,7 +113,7 @@ const reportComponets = {
   3: RecruitmentEffectivenessReport,
 };
 
-const get_date = () => {
+const getDate = () => {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
@@ -132,16 +132,10 @@ const get_date = () => {
   };
   return dateRange;
 };
-const dateRange: Ref<{ from: string; to: string }> = ref(get_date());
-
-watch(branch_input, async () => {
-  branch_user_list.value = await UserStore.getAllUsersInBranch(
-    branch_input.value['value']
-  );
-});
+const dateRange = ref<{ from: string; to: string }>(getDate());
 
 onMounted(async () => {
-  branchs.value = convertObjToIdNameList(
+  branches.value = convertObjToIdNameList(
     Object.values(
       await UserBranch.getBranchesInOrganization(currentOrganizationId.value)
     )
