@@ -78,6 +78,8 @@ const showIndividualReport = async (
 ) => {
   if (!range) return;
   seriesList.value = [];
+  rowsIndividual.value = [];
+  if(!props.branch_id) return;
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
     where('deleted', '==', false),
@@ -87,6 +89,7 @@ const showIndividualReport = async (
       organizationStore.currentOrganizationId
     ),
   ]);
+  if (users.length == 0) return;
   const rows = await getReport({
     users: users,
     dateRange: range,
@@ -142,7 +145,12 @@ const showIndividualReport = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [
+    props.branch_user_list,
+    props.dateRangeProps,
+    props.graph_type,
+    props.branch_id,
+  ],
   async () => {
     if (props.branch_user_list.length != 0) {
       if (props.dateRangeProps == undefined) return;
