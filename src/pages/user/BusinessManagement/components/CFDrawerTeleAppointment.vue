@@ -104,7 +104,7 @@
       </template>
       <template v-slot:body-cell-remark="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          <div class="remark">{{ props.value }}</div>
+          <div class="remark" v-html="formatMultilineText(props.value)"></div>
         </q-td>
       </template>
     </q-table>
@@ -151,6 +151,13 @@ const $q = useQuasar();
 const unsubscribe = ref();
 const unsubscribeUsers = ref();
 const dialogType = ref('create');
+
+const formatMultilineText = (text: string) => {
+  if (text) {
+    return text.replace(/\n/g, '<br>');
+  }
+  return '';
+};
 
 const fetchTeleData = async () => {
   loading.value = true;
@@ -202,7 +209,7 @@ const formatDate = (dateTime: Date | string, type: 'date' | 'time') => {
 };
 const onSubmit = async () => {
   loading.value = true;
-  let data: TeleAppointmentHistory[] = teleData.value;
+  let data: TeleAppointmentHistory[] = JSON.parse(JSON.stringify(teleData.value));
   if (!data['result']) {
     Alert.warning()
     return;
