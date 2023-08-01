@@ -41,7 +41,7 @@
           </q-btn>
         </div>
         <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
-          :loading="loading" class="budgetTable q-mt-sm no-shadow" binary-state-sort>
+          :loading="loading" class="budgetTable q-mt-sm no-shadow" binary-state-sort :sort-method="customSortMethod">
           <template v-slot:header-cell-branchRomaji="props">
             <q-th :props="props" class="q-pa-none">
               {{ $t('settings.branch.name') }} <br />{{ $t('applicant.add.occupation') }}
@@ -220,6 +220,41 @@ const budgetSum = computed(() => {
   })
   return sum
 })
+
+const customSortMethod = (rows, sortBy, descending) => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+  if (['recordNumber', 'amount', 'numberOfSlots', 'unitPrice'].includes(sortBy)) {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      return descending ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy];
+    });
+    return sortedRows;
+  }
+  else if (['postingStartDate', 'updated_at'].includes(sortBy)) {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = myDateFormat(a[sortBy], 'YYYYMMDDHHMMSS')
+      const second = myDateFormat(b[sortBy], 'YYYYMMDDHHMMSS')
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+
+  else if (['branchRomaji', 'media', 'remark', 'agency', 'accountingMonth'].includes(sortBy)) {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a[sortBy] ? a[sortBy] : '';
+      const second = b[sortBy] ? b[sortBy] : '';
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+
+  else {
+    return budgetList;
+  }
+};
+
 
 const budgetList = computed(() => {
   let budgetList = [...budgetStore.budgetList];
