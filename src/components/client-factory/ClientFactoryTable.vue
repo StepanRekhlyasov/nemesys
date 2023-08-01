@@ -116,16 +116,10 @@ if (sortBy === 'distance') {
 const paginatedAndSortedTableRows = computed(() => {
     const clonedRows = [...props.rows];
     const sortedRows = sortRows(clonedRows, props.pagination.sortBy, props.pagination.descending);
-    console.log(sortedRows[0])
     const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
     const end = start + props.pagination.rowsPerPage;
-    console.log(sortedRows[start])
     return sortedRows.slice(start, end);
   });
-
-// watch(props.pagination,()=>{
-//   console.log(paginatedAndSortedTableRows.value[0].office.name)
-// })
 
 </script>
 
