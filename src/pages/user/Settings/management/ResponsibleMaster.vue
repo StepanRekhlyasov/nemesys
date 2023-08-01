@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { serverTimestamp } from '@firebase/firestore';
+import { serverTimestamp, Timestamp } from '@firebase/firestore';
 import { onBeforeMount, Ref, ref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Role, User } from 'src/shared/model/Account.model';
