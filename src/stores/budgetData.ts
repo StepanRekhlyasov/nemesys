@@ -192,6 +192,9 @@ export const useBudget = defineStore('budget', () => {
       if (budgetData[i]['accountingMonth']) {
         budgetData[i]['accountingMonth'] = toJPDateString(budgetData[i]['accountingMonth'])
       }
+      if (budgetData[i].amount) budgetData[i].amount = formatNumber(budgetData[i].amount as string);
+      if (budgetData[i].numberOfSlots) budgetData[i].numberOfSlots = formatNumber(budgetData[i].numberOfSlots as string);
+      if (budgetData[i].unitPrice) budgetData[i].unitPrice = formatNumber(budgetData[i].unitPrice as string)
 
     }
 
