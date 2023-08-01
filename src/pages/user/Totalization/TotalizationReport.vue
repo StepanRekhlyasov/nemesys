@@ -1,59 +1,64 @@
 <template>
   <q-page class="bg-grey-3">
-  <div class="q-pt-lg q-pl-lg bg-grey-3">
-    <div class="q-gutter-md row">
-      <q-select outlined v-model="branch_input" :options="branchs" />
-      <q-select outlined v-model="modelReport" :options="reportType" />
-      <q-input
-        filled
-        :model-value="
-          dateRange !== null ? `${dateRange.from} - ${dateRange.to}` : ``
-        "
-      >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-date v-model="dateRange" range>
-                <div class="row items-center justify-end">
-                  <q-btn
-                    v-close-popup
-                    :label="$t('common.close')"
-                    color="primary"
-                    flat
-                  />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-      <q-radio
-        v-model="graph_type"
-        val="BasedOnLeftMostItemDate"
-        :label="$t('report.basedOnLeftMostItemDate')"
-      />
-      <q-radio
-        v-model="graph_type"
-        val="BasedOnEachItemDate"
-        :label="$t('report.basedOnEachItemDate')"
-      />
+    <div class="q-pt-lg q-pl-lg bg-grey-3">
+      <div class="q-gutter-md row">
+        <q-select
+          outlined
+          v-model="branch_input"
+          :options="branchs"
+          v-if="modelReport['value'] == 2"
+        />
+        <q-select outlined v-model="modelReport" :options="reportType" />
+        <q-input
+          filled
+          :model-value="
+            dateRange !== null ? `${dateRange.from} - ${dateRange.to}` : ``
+          "
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="dateRange" range>
+                  <div class="row items-center justify-end">
+                    <q-btn
+                      v-close-popup
+                      :label="$t('common.close')"
+                      color="primary"
+                      flat
+                    />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+        <q-radio
+          v-model="graph_type"
+          val="BasedOnLeftMostItemDate"
+          :label="$t('report.basedOnLeftMostItemDate')"
+        />
+        <q-radio
+          v-model="graph_type"
+          val="BasedOnEachItemDate"
+          :label="$t('report.basedOnEachItemDate')"
+        />
+      </div>
     </div>
-  </div>
-  <keep-alive>
-    <component
-      v-bind:is="reportComponets[modelReport.value]"
-      :organization_id="currentOrganizationId"
-      :dateRangeProps="dateRange"
-      :branch_id="branch_input['value']"
-      :branch_user_list="branch_user_list"
-      :graph_type="graph_type"
-    ></component>
-  </keep-alive>
-</q-page>
+    <keep-alive>
+      <component
+        v-bind:is="reportComponets[modelReport.value]"
+        :organization_id="currentOrganizationId"
+        :dateRangeProps="dateRange"
+        :branch_id="branch_input['value']"
+        :branch_user_list="branch_user_list"
+        :graph_type="graph_type"
+      ></component>
+    </keep-alive>
+  </q-page>
 </template>
 
 <script setup lang="ts">
