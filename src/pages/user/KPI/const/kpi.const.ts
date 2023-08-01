@@ -63,11 +63,6 @@ export const rateCalcuPattern = [
   },
   {
     before: 'validApplicants',
-    after: 'contactApplicants',
-    name: 'contactApplicantsRate',
-  },
-  {
-    before: 'contactApplicants',
     after: 'attractionApplicants',
     name: 'attractionApplicantsRate',
   },
@@ -81,11 +76,11 @@ export const rateCalcuPattern = [
   { before: 'inspection', after: 'offer', name: 'offerRate' },
   { before: 'offer', after: 'admission', name: 'admissionRate' },
   { before: 'applicants', after: 'fix', name: 'applicantsFixRate' },
+  { before: 'applicants', after: 'admission', name: 'applicantsAdmissionRate' }
 ];
 export const dayItemList = [
   { queryName: 'applicants' },
   { queryName: 'validApplicants' },
-  { queryName: 'contactApplicants' },
   { queryName: 'attractionApplicants' },
   { queryName: 'attendApplicants' },
   { queryName: 'nursingCare' },
@@ -103,7 +98,6 @@ export const mediaItemList = [
   { queryName: 'amount' },
   { queryName: 'applicants' },
   { queryName: 'validApplicants' },
-  { queryName: 'contactApplicants' },
   { queryName: 'attractionApplicants' },
   { queryName: 'attendApplicants' },
   { queryName: 'fix' },
@@ -114,14 +108,14 @@ export const mediaItemList = [
 
 export const mediaItemRateList = [
   ['applicants', 'validApplicants'],
-  ['validApplicants', 'contactApplicants'],
-  ['contactApplicants', 'attractionApplicants'],
+  ['validApplicants', 'attractionApplicants'],
   ['attractionApplicants', 'attendApplicants'],
   ['attendApplicants', 'fix'],
   ['fix', 'inspection'],
   ['inspection', 'offer'],
   ['offer', 'admission'],
   ['applicants', 'fix', 'applicantsFixRate'],
+  ['applicants', 'offer', 'applicantsAdmissionRate'],
 ] as const;
 
 export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
@@ -151,13 +145,6 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'validApplicants',
       label: t('KPI.tables.actualFigures.4'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
-      field: 'contactApplicants',
-      label: t('KPI.tables.actualFigures.5'),
       align: 'center',
       sortable: true,
     },
@@ -212,13 +199,6 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: 'contactApplicantsRate',
-      label: t('KPI.tables.actualFigures.13'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
       field: 'attractionApplicantsRate',
       label: t('KPI.tables.actualFigures.14'),
       align: 'center',
@@ -266,6 +246,13 @@ export const actualFiguresColumns = computed<QTableProps['columns']>(() => {
       align: 'center',
       sortable: true,
     },
+    {
+      name: '',
+      field: 'applicantsAdmissionRate',
+      label: t('KPI.tables.actualFigures.21'),
+      align: 'center',
+      sortable: true,
+    },
   ];
 });
 export const unitPriceColumns = computed<QTableProps['columns']>(() => {
@@ -288,13 +275,6 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'validApplicants',
       label: t('KPI.tables.unitPrice.2'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
-      field: 'contactApplicants',
-      label: t('KPI.tables.unitPrice.3'),
       align: 'center',
       sortable: true,
     },
@@ -342,13 +322,6 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
     },
     {
       name: '',
-      field: 'contactApplicantsRate',
-      label: t('KPI.tables.unitPrice.10'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
       field: 'attractionApplicantsRate',
       label: t('KPI.tables.unitPrice.11'),
       align: 'center',
@@ -386,13 +359,6 @@ export const unitPriceColumns = computed<QTableProps['columns']>(() => {
       name: '',
       field: 'admissionRate',
       label: t('KPI.tables.unitPrice.16'),
-      align: 'center',
-      sortable: true,
-    },
-    {
-      name: '',
-      field: 'applicantsFixRate',
-      label: t('KPI.tables.unitPrice.17'),
       align: 'center',
       sortable: true,
     },

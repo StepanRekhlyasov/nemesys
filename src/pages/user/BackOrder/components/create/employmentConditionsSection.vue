@@ -123,7 +123,7 @@
         </q-input>
         <span class="q-ma-sm flex-center">{{'  ~' }}</span>
         <q-input dense outlined bg-color="white" v-model="data['workingHoursLate_max']"
-          :rules="[(val) => val ? validateTime(val) : true, creationRule]" hide-bottom-space >
+          :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="access_time" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">

@@ -4,7 +4,6 @@ import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'v
 import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 import { radius } from '../consts/BackOrder.const'
 import { BackOrderModel, ApplicantForCandidateSearch } from 'src/shared/model';
-import { useClient } from 'src/stores/client'
 import { mapDrawerValue } from '../consts/BackOrder.const';
 import { where } from 'firebase/firestore';
 import { useApplicant } from 'src/stores/applicant'
@@ -16,42 +15,48 @@ import { useOrganization } from 'src/stores/organization';
 
 const props = defineProps<{ theme: string, bo: BackOrderModel | undefined }>()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
-const center = ref<{ lat: number, lng: number }>({ lat: 0, lng: 0 });
+const center = ref<{ lat: number, lng: number }>({ lat: 35, lng: 139 });
 const searchRadius = ref<number>(0);
 const inputRadius = ref<number>(0);
 const isLoadingProgress = ref(false)
-const getClient = useClient();
 const searchInput = ref('')
 const staffList = ref<ApplicantForCandidateSearch[]>([])
 const getApplicant = useApplicant();
 const backOrderStore = useBackOrder()
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const organization = useOrganization()
-watch(()=> [mapDrawerValue, organization.currentOrganizationId], async () => {
+
+watch(()=> [organization.currentOrganizationId], async () => {
+  await getApplicantMarkers();
+})
+
+watch(mapDrawerValue,async ()=>{
+  await getApplicantMarkers();
+})
+
+const getApplicantMarkers = async ()=>{
   if (mapDrawerValue.value) {
     searchRadius.value = 0;
-    await getClientLocation();
+    getClientLocation();
     staffList.value = await getApplicant.getApplicantsByConstraints([where('deleted', '==', false)]) as ApplicantForCandidateSearch[];
     staffList.value.forEach((staff) => {
       staff['marker'] = 'white';
     });
   }
-})
+}
 
 onMounted(async () => {
   isLoadingProgress.value = true
-  await getClientLocation();
+  getClientLocation();
   isLoadingProgress.value = false;
 
 })
 
-const getClientLocation = async () => {
-  const client = await getClient.fetchClientsById(props.bo?.client_id);
-  searchInput.value = `${client.building} ${client.street} ${client.municipality} ${client.prefecture}`;
-  if (client.lat && client.lng) {
+const getClientLocation = () => {
+  if (props.bo?.lat && props.bo?.lon) {
     center.value = {
-      lat: Number(client.lat),
-      lng: Number(client.lng)
+      lat: Number(props.bo?.lat),
+      lng: Number(props.bo?.lon)
     }
   }
   getMarkerColor()

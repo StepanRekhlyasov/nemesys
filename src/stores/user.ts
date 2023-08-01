@@ -1,4 +1,4 @@
-import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where ,getCountFromServer } from 'firebase/firestore';
+import { collection, doc, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, startAt, updateDoc, where, getCountFromServer } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { User, UserPermissionNames } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -31,20 +31,25 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function getAllUsers(active_organization_id?: string, queryText?: string) {
-    const constraints: ConstraintsType = [
-      where('deleted', '==', false),
-      orderBy('displayName'),
-    ]
+  async function getAllUsers(active_organization_id?: string, queryText?: string, customConstraints: ConstraintsType = []) {
+    let constraints: ConstraintsType = []
 
-    if (active_organization_id) {
-      constraints.push(where('organization_ids', 'array-contains', active_organization_id))
+    if (customConstraints && customConstraints.length > 0) {
+      constraints = customConstraints
     }
+    else {
+      constraints = [
+        where('deleted', '==', false),
+        orderBy('displayName'),
+      ]
+      if (active_organization_id) {
+        constraints.push(where('organization_ids', 'array-contains', active_organization_id))
+      }
 
-    if (queryText) {
-      constraints.push(startAt(queryText || ''), endAt(queryText + '\uf8ff'),)
+      if (queryText) {
+        constraints.push(startAt(queryText || ''), endAt(queryText + '\uf8ff'),)
+      }
     }
-
 
     const usersData = await getDocs(query(
       collection(db, 'users'),
@@ -68,8 +73,8 @@ export const useUserStore = defineStore('user', () => {
     const filters =
       !organizationId
         ? [where('deleted', '==', false)]
-        : [where('organization_ids', 'array-contains', organizationId),where('deleted', '==', false)];
-    const numOfUsers =  (
+        : [where('organization_ids', 'array-contains', organizationId), where('deleted', '==', false)];
+    const numOfUsers = (
       await getCountFromServer(query(collection(db, 'users'), ...filters))
     ).data().count;
     return numOfUsers
@@ -90,19 +95,19 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function editUser(id: string, user: PartialWithFieldValue<User>) {
-    if(user.email === undefined){
+    if (user.email === undefined) {
       delete user.email
     }
 
     const userRef = doc(db, 'users/' + id);
-    try{
+    try {
       if (user.email) {
         const functions = getFunctions(getApp(), 'asia-northeast1')
         const updateUserEmail = httpsCallable(functions, 'update_user_email');
         await updateUserEmail({ id, email: user.email })
       }
     } catch (e) {
-      throw(e)
+      throw (e)
     }
     await updateDoc(userRef, {
       ...user
@@ -111,7 +116,7 @@ export const useUserStore = defineStore('user', () => {
 
   async function checkUserAffiliation(organizationCode: string, userId: string) {
     const user = await getUserById(userId)
-    if(!user){
+    if (!user) {
       throw new Error(t('common.userNotFound'))
     }
     if (adminRolesIds.includes(user.role)) {

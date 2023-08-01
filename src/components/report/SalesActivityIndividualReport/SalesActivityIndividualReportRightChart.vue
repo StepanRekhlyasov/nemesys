@@ -83,15 +83,13 @@ const showIndividualReport = async (
     ),
   ]);
 
-  const rows = await getReport(
-    {
-      dateRange: dateRange,
-      graphType: props.graph_type,
-      queryNames: itemListRight,
-      isAverage: false,
-      users:users
-    }
-  );
+  const rows = await getReport({
+    dateRange: dateRange,
+    graphType: props.graph_type,
+    queryNames: itemListRight,
+    isAverage: false,
+    users: users,
+  });
   rowsIndividual.value = rows;
 
   for (const row of rows) {
@@ -108,21 +106,35 @@ const showIndividualReport = async (
     });
   }
 
-  const allDataAverage = listToFixed(getListFromObject(await getReport({
-    dateRange: dateRange,
-    graphType: props.graph_type,
-    queryNames: itemListRight,
-    organizationId: undefined,
-    isAverage: true,
-  }),itemListRight.map((item)=>{return item.queryName})) as number[]);
+  const allDataAverage = listToFixed(
+    getListFromObject(
+      await getReport({
+        dateRange: dateRange,
+        graphType: props.graph_type,
+        queryNames: itemListRight,
+        organizationId: undefined,
+        isAverage: true,
+      }),
+      itemListRight.map((item) => {
+        return item.queryName;
+      })
+    ) as number[]
+  );
 
-  const dataAverage = listToFixed(getListFromObject(await getReport({
-    dateRange: dateRange,
-    graphType: props.graph_type,
-    queryNames: itemListRight,
-    organizationId: organizationId,
-    isAverage: true,
-  }),itemListRight.map((item)=>{return item.queryName})) as number[]);
+  const dataAverage = listToFixed(
+    getListFromObject(
+      await getReport({
+        dateRange: dateRange,
+        graphType: props.graph_type,
+        queryNames: itemListRight,
+        organizationId: organizationId,
+        isAverage: true,
+      }),
+      itemListRight.map((item) => {
+        return item.queryName;
+      })
+    ) as number[]
+  );
 
   dataAverage.unshift(0);
   allDataAverage.unshift(0);
@@ -136,10 +148,7 @@ watch(
     if (!props.dateRangeProps) return;
     if (props.branch_user_list.length != 0) {
       userList.value = props.branch_user_list;
-      await showIndividualReport(
-        props.organization_id,
-        props.dateRangeProps
-      );
+      await showIndividualReport(props.organization_id, props.dateRangeProps);
     }
   }
 );
@@ -148,10 +157,7 @@ onMounted(async () => {
   if (!props.dateRangeProps) return;
   if (props.branch_user_list.length != 0) {
     userList.value = props.branch_user_list;
-    await showIndividualReport(
-      props.organization_id,
-      props.dateRangeProps
-    );
+    await showIndividualReport(props.organization_id, props.dateRangeProps);
   }
 });
 </script>

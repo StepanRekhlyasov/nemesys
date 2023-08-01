@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <DropDownEditGroup :isHiddenActions="bo?true:false" :isEdit="edit" :label="$t('applicant.list.info.attraction')" @openEdit="edit = true"
     @closeEdit="resetData(); edit = false;" @onSave="saveHandler">
     <div class="row q-pb-sm">
@@ -62,8 +62,10 @@
       <div class="col-3 q-pl-md blue self-center">
         <span v-if="!edit">{{ applicant.employmentStatus ? $t('applicant.list.info.' + applicant.employmentStatus) :
           '' }}</span>
-        <q-select v-if="edit" outlined dense :options="employmentStatusOption" v-model="data['employmentStatus']"
-          bg-color="white" :label="$t('common.pleaseSelect')" emit-value map-options />
+        <template v-if="edit">
+          <q-radio v-model="data['employmentStatus']" val="assigned" :label="$t('applicant.list.info.assigned')" />
+          <q-radio v-model="data['employmentStatus']" val="unassigned" :label="$t('applicant.list.info.unassigned')" />
+        </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.chargeOfAttraction') }}
@@ -165,7 +167,7 @@
 
 <script lang="ts" setup>
 import { Ref, ref } from 'vue';
-import { applicantClassification, employmentStatus, usersInCharge } from 'src/shared/constants/Applicant.const';
+import { applicantClassification, usersInCharge } from 'src/shared/constants/Applicant.const';
 import { Applicant, ApplicantInputs, selectOptions, BackOrderModel } from 'src/shared/model';
 import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -193,7 +195,6 @@ const organizationStore = useOrganization();
 const branchStore = useBranch()
 const branches = ref<selectOptions[]>([])
 
-const employmentStatusOption = ref(employmentStatus);
 const classificationOption = ref(applicantClassification);
 const usersListOption = usersInCharge.value
 

@@ -18,7 +18,7 @@
             </div>
           </div>
         </q-card-section>
-        <detailInfoBO @openSearchByMap="emit('openSearchByMap')" />
+        <detailInfoBO :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -30,11 +30,15 @@ import { BackOrderModel, Client, ClientFactory } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import detailInfoBO from './detailInfoBO.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
 import { useClientFactory } from 'src/stores/clientFactory';
+
+defineProps<{
+  isHiddenDetails?: boolean,
+}>()
 
 const backOrderStore = useBackOrder();
 const clientFactoryStore = useClientFactory();
@@ -68,6 +72,10 @@ const openDrawer = async (data: BackOrderModel) => {
   if (selectedBo.value?.id && selectedBo.value.id !== data.id) {
     drawerRight.value = false;
   }
+  if (selectedBo.value && selectedBo.value['client_id']) {
+    client.value = await getClient(db, selectedBo.value['client_id'])
+    emit('passClientToMapSearch', client.value)
+  }
   backOrderStore.state.selectedBo = data;
   drawerRight.value = true
 }
@@ -77,13 +85,6 @@ watch(() => selectedBo, async () => {
     clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
   }
 }, { deep: true, immediate: true })
-
-onMounted(async () => {
-  if (selectedBo.value && selectedBo.value['client_id']) {
-    client.value = await getClient(db, selectedBo.value['client_id'])
-    emit('passClientToMapSearch', client.value)
-  }
-})
 
 defineExpose({ openDrawer })
 
