@@ -150,7 +150,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         industry = ['nursing', '介護'];
       }
     }
-    const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
+    const cfSnapshot = await getDocs(collectionGroup(db, 'modifiedCF'));
     const office: string[] = [];
     cfSnapshot.docs.forEach((doc) => {
       if (officeData.includes(doc.id)) {

@@ -503,7 +503,7 @@ const searchClients = async () => {
     office = advanceSearch.getCombineId() || [];
   }
   else {
-    const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
+    const cfSnapshot = await getDocs(collectionGroup(db, 'modifiedCF'));
     cfSnapshot.docs.forEach((doc) => {
       office.push(doc.id)
     })
