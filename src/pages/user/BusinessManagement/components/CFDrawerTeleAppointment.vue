@@ -279,6 +279,6 @@ onBeforeUnmount(() => {
 }
 .remark {
   white-space: normal;
- word-break: break-all;
+ word-break: break-word;
 }
 </style>
