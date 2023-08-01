@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc } from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -195,8 +195,16 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['registrant'] = auth.currentUser?.uid;
-    const snapshot = await getDocs(query(collection(db, '/BO')));
-    data['boId'] = snapshot.docs.length;
+    const snapshot = await getCountFromServer(query(collection(db, '/BO')));
+    data['boId'] = snapshot.data().count;
+
+    const checkNew = await getDocs(query(collection(db, '/BO'), where('office_id', '==', data.office_id), limit(1)))
+    if(checkNew.docs.length > 0){
+      data.isNew = false
+    } else {
+      data.isNew = true
+    }
+
     if (data.dateOfRegistration) data.dateOfRegistration = dateToTimestampFormat(new Date(data.dateOfRegistration));
 
     const docRef = doc(collection(db, '/BO'));

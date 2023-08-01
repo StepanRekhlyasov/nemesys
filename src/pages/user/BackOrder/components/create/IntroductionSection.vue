@@ -63,7 +63,7 @@
     <div class="row ">
       <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true" 
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
-        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => creationArrayRule(val)]">
+        <q-field v-model="data['qualifications']" borderless hide-bottom-space>
           <q-checkbox 
             v-for="key in TypeQualifications" 
             v-model="data['qualifications']" 

@@ -43,16 +43,6 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
-        v-if="selectedBo['type'] == 'dispatch'" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['requiredQualifications'] ? $t('smoking.yes') : $t('smoking.no')}`"
-        labelClass="q-pl-md col-2 text-right self-center">
-        <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space
-          :rules="[() => 'requiredQualifications' in data || '']" flat>
-          <q-toggle v-model="data['requiredQualifications']" :label="$t('backOrder.create.existence')"
-            :disable="loading" />
-        </q-field>
-      </LabelField>
       <LabelField :label="$t('backOrder.create.BOGenerationRoute')" :edit="edit" valueClass="self-center q-pl-md col-4"
         :value="selectedBo['BOGenerationRoute'] ? $t(`backOrder.create.${selectedBo['BOGenerationRoute']}`) : ''"
         labelClass="q-pl-md col-2 text-right self-center">
@@ -81,14 +71,7 @@
     </div>
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
-      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['requiredQualifications'] ? $t('smoking.yes') : $t('smoking.no')}`">
-        <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space flat>
-          <q-toggle v-model="data['requiredQualifications']"
-            :label="`${data['requiredQualifications'] ? $t('smoking.yes') : $t('smoking.no')}`" :disable="loading" />
-        </q-field>
-      </LabelField>
+      
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
         :value="`${selectedBo['travelingExpenses'] ? $t('backOrder.travelingExpenses.' + selectedBo['travelingExpenses']) : ''}`">
@@ -104,16 +87,18 @@
     </div>
 
     <div class="row ">
-      <LabelField :label="$t('backOrder.create.nameQualification')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4" v-if="selectedBo['requiredQualifications']"
-        :value="selectedBo['qualifications'] && Array.isArray(selectedBo['qualifications'])? selectedBo['qualifications'].map(q => $t('applicant.qualification.'+q)).join(',') : ''">
-        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationArrayRule(val) : true]">
-          <q-checkbox v-model="data['qualifications']" v-for="key in TypeQualifications" 
+      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" 
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-9 q-ml-md" :value="Array.isArray(data['qualifications'])?data['qualifications'].map((row) => $t('applicant.qualification.' + row)):''">
+        <q-field v-model="data['qualifications']" borderless hide-bottom-space>
+          <q-checkbox 
+            v-for="key in TypeQualifications" 
+            v-model="data['qualifications']" 
+            :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
-            :label="$t('applicant.qualification.'+key)"
-            :disable="loading || !data['requiredQualifications']"
-            class="q-pr-md" />
+            :disable="loading"
+            class="q-pr-md" 
+          />
         </q-field>
       </LabelField>
       <LabelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center"
@@ -627,7 +612,7 @@ const assignToBo = async () => {
   }
 }
 
-watch([backOrderStore.state.selectedBo], () => {
+watch(()=> selectedBo.value, () => {
   data.value = backOrderStore.state?.selectedBo as BackOrderModel
 }, { deep: true })
 </script>
