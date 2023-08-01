@@ -276,7 +276,7 @@ import { QForm } from 'quasar';
 import { Ref, ref, watch } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
-import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { prefectureList, prefecturePostalCodes } from 'src/shared/constants/Prefecture.const';
 import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
@@ -286,7 +286,7 @@ import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
-import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
+import { getMunicipalities, getStation } from 'src/shared/constants/Municipalities.const';
 
 const applicantDataSample = {
   qualification: [],
@@ -308,6 +308,26 @@ const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
 const municipalities = ref<string[]>([])
 const fetchMunicipalities = ref(false)
+
+watch(() => applicantData.value.postCode, async (newVal, oldVal) =>  {
+  applicantData.value.prefecture = '';
+  fetchMunicipalities.value = false 
+
+  if(newVal !== oldVal && (newVal.length == 7)) {
+    const prefectureNumber = newVal.substring(0,2)
+    const municipalityNumber = newVal.substring(3)
+    const prefectureName = prefecturePostalCodes[prefectureNumber][1]
+    const station_name = await getStation(municipalityNumber)
+    console.log(station_name);
+    applicantData.value.prefecture = prefectureName;
+    
+    municipalities.value = await getMunicipalities(prefectureName)
+    fetchMunicipalities.value = true
+  } else {
+    if(newVal.length > 7) Alert.warning('Invalid postal number!')
+    fetchMunicipalities.value = false
+  }
+}, { immediate : true })
 
 watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
   applicantData.value.municipalities = '';

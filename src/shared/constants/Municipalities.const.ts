@@ -32,3 +32,11 @@ export const getAllMunicipalities = async () => {
   const docData = await getDoc(docRef);
   return docData.data();
 }
+
+export const getStation = async (code : string) => {
+  const db = getFirestore();
+
+  const docRef = doc(db, 'stations', code);
+  const docData = await getDoc(docRef);
+  return docData.data();
+}
