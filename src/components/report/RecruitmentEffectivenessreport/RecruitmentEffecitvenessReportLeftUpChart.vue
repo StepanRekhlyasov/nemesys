@@ -25,7 +25,6 @@ import {
 } from '../report.const';
 
 const { getReport } = useGetReport();
-
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const dataToShow = ref<(number | string)[][]>([]);

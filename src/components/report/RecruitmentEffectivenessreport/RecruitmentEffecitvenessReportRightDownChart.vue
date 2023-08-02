@@ -61,9 +61,7 @@ const dataToshowSex: Ref<(number | string)[][]> = ref([]);
 const dataToshowAges: Ref<(number | string)[][]> = ref([]);
 const dataToshowDaysToWork: Ref<(number | string)[][]> = ref([]);
 
-const seriesSex: ComputedRef<
-  SeriesType[]
-> = computed(() => {
+const seriesSex: ComputedRef<SeriesType[]> = computed(() => {
   const series = dataToshowSex.value.map((rowdata, index) => {
     return {
       name: t(rowNamesSex[index]),
@@ -73,9 +71,7 @@ const seriesSex: ComputedRef<
   });
   return series;
 });
-const seriesAges: ComputedRef<
-  SeriesType[]
-> = computed(() => {
+const seriesAges: ComputedRef<SeriesType[]> = computed(() => {
   const series = dataToshowAges.value.map((rowdata, index) => {
     return {
       name: t(rowNamesAges[index]),
@@ -85,9 +81,7 @@ const seriesAges: ComputedRef<
   });
   return series;
 });
-const seriesDaysToWork: ComputedRef<
-  SeriesType[]
-> = computed(() => {
+const seriesDaysToWork: ComputedRef<SeriesType[]> = computed(() => {
   const seriesList = dataToshowDaysToWork.value.map((rowData, index) => {
     return {
       name: rowNamesDaysToWork[index] + t('report.day'),
@@ -102,7 +96,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -195,7 +188,7 @@ const showChart = async () => {
   }
 };
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     await showChart();
   }

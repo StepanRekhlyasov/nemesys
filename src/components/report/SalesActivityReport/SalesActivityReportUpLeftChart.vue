@@ -34,9 +34,7 @@ const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowR: Ref<(number | string)[][]> = ref([]);
 
-const series: ComputedRef<
-  SeriesType[]
-> = computed(() => {
+const series: ComputedRef<SeriesType[]> = computed(() => {
   return dataToshow.value.map((rowData, index) => {
     return {
       name: t(dataNames[index]),
@@ -45,9 +43,7 @@ const series: ComputedRef<
     };
   });
 });
-const seriesR: ComputedRef<
-  SeriesType[]
-> = computed(() => {
+const seriesR: ComputedRef<SeriesType[]> = computed(() => {
   return dataToshowR.value.map((rowData, index) => {
     return {
       name: t(dataNamesR[index]),
@@ -102,7 +98,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -158,7 +153,7 @@ const showSalesActivityReport = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showSalesActivityReport(props.dateRangeProps, props.organization_id);
