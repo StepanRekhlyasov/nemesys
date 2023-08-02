@@ -313,7 +313,13 @@ export const useApplicant = defineStore('applicant', () => {
         for (let i = 0; i < responseData.length; i++) {
           state.value.currentIds.push(responseData[i]['id']['raw'])
         }
-        loadFirestoreApplicantData()
+        await loadFirestoreApplicantData()
+        if(searchData['yearsExperienceMin']){
+          state.value.applicantList = state.value.applicantList.filter(app=>(Math.floor(app['totalMonthes']/12)>=searchData['yearsExperienceMin']))
+        }
+        if(searchData['yearsExperienceMax']){
+          state.value.applicantList = state.value.applicantList.filter(app=>(Math.floor(app['totalMonthes']/12)<=searchData['yearsExperienceMax']))
+        }
       }
     }).catch((error) => {
       Alert.warning(error)
@@ -582,7 +588,7 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     /** transform strings to timestamps */
     const saveData = JSON.parse(JSON.stringify(applicantData));
-    
+
     if (saveData.status) {
       await updateApplicantStatus(saveData.status);
       return;
