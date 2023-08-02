@@ -92,7 +92,7 @@
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
           <q-checkbox
             v-for="key in TypeQualifications"
-            v-model="data['qualifications']" 
+            v-model="data['qualifications']"
             :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
@@ -185,14 +185,21 @@
     </div>
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
-      <LabelField :label="$t('backOrder.employmentType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4"
-        :value="selectedBo['employmentType'] ? $t('client.backOrder.' + selectedBo['employmentType']) : ''">
-        <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-checkbox v-for="key in EmploymentBOStatus" v-model="data['employmentType']" :label="$t('client.backOrder.' + key)"
-            :val="key" :key="key" :disable="loading" class="q-pr-md" />
-        </q-field>
-      </LabelField>
+      <LabelField :label="$t('backOrder.employmentType')" :edit="edit" required
+      labelClass="q-pl-md col-2 self-center text-right"  valueClass="self-center q-pl-md col-4"
+      :value="Array.isArray(data['employmentType'])?data['employmentType'].map((row) => $t('client.backOrder.' + row)):''">
+      <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[(val) => creationArrayRule(val)]">
+        <q-checkbox
+          v-for="key in EmploymentBOStatus"
+          v-model="data['employmentType']"
+          :label="$t('client.backOrder.'+key)"
+          :val="key"
+          :key="key"
+          :disable="loading"
+          class="q-pr-md"
+        />
+      </q-field>
+    </LabelField>
       <LabelField :label="$t('backOrder.create.pickDrop')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="q-pl-md col-4 flex" :value="selectedBo['pickDrop'] ? $t('common.yesShort') : $t('common.noShort')">
         <q-field borderless dense v-model="data['pickDrop']" :rules="[() => 'pickDrop' in data || '']" hide-bottom-space>
