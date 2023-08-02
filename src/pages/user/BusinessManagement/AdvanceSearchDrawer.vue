@@ -6,10 +6,12 @@ import AdvancedSearch from './AdvancedSearch.vue';
 const props = withDefaults(defineProps<{
     isDrawer: boolean,
     from: string,
-    width: number
+    width: number,
+    rowId: string
 }>(),{
     from:'',
-    width:1100
+    width:1100,
+    rowId:''
 })
 const emit = defineEmits<{
     (e: 'openCFDrawer', ClientFactoryData: ClientFactory),
@@ -38,7 +40,7 @@ const openCFDrawer = (office: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AdvancedSearch :from="props.from" @hide-c-s-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer"/>
+                    <AdvancedSearch :from="props.from" :rowId="props.rowId" @hide-c-s-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

@@ -79,12 +79,10 @@ watchCurrentOrganization((newId) => {
 watch([modifiedCF,condition], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
     if(condition.value){
-        console.log(selectedCFsId.value)
         tableRows.value = clientFactoriesToTableRows(modifiedCF.value).filter((item)=>selectedCFsId.value.includes(item.id))
     }
     else{
         tableRows.value = clientFactoriesToTableRows(modifiedCF.value)
-        console.log(tableRows.value)
     }
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
 }, { deep: true, immediate: true })

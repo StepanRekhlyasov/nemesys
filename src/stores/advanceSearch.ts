@@ -3,7 +3,9 @@ import { defineStore } from 'pinia';
 import { Client } from 'src/shared/model';
 import { collection, getFirestore, Timestamp, getDocs, collectionGroup } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
-const getBackOrderData = () => {
+import { useClientFactory } from 'src/stores/clientFactory';
+import { useRouter } from 'vue-router';
+export const getBackOrderData = () => {
   return {
     client_name: '',
     industry: [],
@@ -40,6 +42,8 @@ const getBackOrderData = () => {
 export const useAdvanceSearch = defineStore('advanceSearch', () => {
   const db = getFirestore();
   const organizationStore = useOrganization();
+  const clientFactoryStore = useClientFactory();
+  const router = useRouter();
   const currentOrganizationId = ref(organizationStore.currentOrganizationId)
   watch(() => organizationStore.state.userAndBranchesUpdated, () => {
     currentOrganizationId.value = organizationStore.currentOrganizationId
@@ -54,6 +58,8 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
   const advanceAreaSelected = ref(false);
   const advanceMapCFs = ref<Client[]>([]);
   const advanceAreaCFs = ref<Client[]>([]);
+
+  const saveConditionData = ref(getBackOrderData())
 
   const getCombineId = () => {
     const combineData: string[] = [];
@@ -138,7 +144,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
   const interSectionOfArray = (arr1: string[], arr2: string[]) => {
     return arr1.filter(element => arr2.includes(element));
   }
-  const getKeywordData = async (officeData: string[], keyword: string,industry:string[],facilityType:string[]) => {
+  const getKeywordData = async (officeData: string[], keyword: string, industry: string[], facilityType: string[]) => {
     if (industry.length === 0) {
       industry = [];
     } else if (industry.length === 2) {
@@ -165,12 +171,12 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
             for (const t of type) {
               if (industry.includes(t)) {
                 const id: string = doc.id
-                if(facilityType.length>0){
-                  if(interSectionOfArray(facilityType,doc.data()['facilityType'] || []).length>0){
+                if (facilityType.length > 0) {
+                  if (interSectionOfArray(facilityType, doc.data()['facilityType'] || []).length > 0) {
                     office.push(id)
                   }
                 }
-                else{
+                else {
                   office.push(id)
                 }
                 break;
@@ -182,7 +188,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
     })
     return office;
   }
-  const getEmpData = async (officeData: string[], employmentType: string, qty: number) => {
+  const getEmpData = async (officeData: string[],cfIds, employmentType: string, qty: number) => {
     const boSnapshot = await getDocs(collection(db, 'BO'));
     const fixSnapshot = await getDocs(collection(db, 'fix'));
     const offices: string[] = []
@@ -191,7 +197,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
 
       boSnapshot.docs.forEach(
         (doc) => {
-          if (doc.data()['office_id'] === item
+          if (doc.data()['office_id'] === cfIds[item]
             && doc.data()['employmentType'] === employmentType) {
             array.push(doc.id)
           }
@@ -214,20 +220,24 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
     }
     return offices
   }
-  const getOffices = async (officeData: string[], dates, type: string, currentOrganization: boolean) => {
+  const getOffices = async (officeData, cfIds, dates, type: string, currentOrganization: boolean) => {
     const boSnapshot = await getDocs(collection(db, 'BO'));
     const fixSnapshot = await getDocs(collection(db, 'fix'));
     const [[start, end, qty], otherDate] = dates;
     let offices: string[] = []
     for (const item of officeData) {
-      const count = boSnapshot.docs.filter(
-        doc => doc.data()['office_id'] === item
-          && (start === '' || doc.data()['dateOfRegistration'] >= convertDate(start))
-          && (end === '' || doc.data()['dateOfRegistration'] < convertDate(end))
-          && doc.data()['type'] === type
-          && ((currentOrganization && doc.data()['organizationId'] === currentOrganizationId.value)
-            || (!currentOrganization && doc.data()['organizationId'] !== currentOrganizationId.value))
-      ).length
+      let count = 0
+      boSnapshot.docs.forEach(
+        (doc) => {
+          if (cfIds[item].includes(doc.data()['office_id'])
+            && (start === '' || doc.data()['dateOfRegistration'] >= convertDate(start))
+            && (end === '' || doc.data()['dateOfRegistration'] < convertDate(end))
+            && doc.data()['type'] === type
+            && ((currentOrganization && doc.data()['organizationId'] === currentOrganizationId.value)
+              || (!currentOrganization && doc.data()['organizationId'] !== currentOrganizationId.value))) {
+            count++;
+          }
+        })
       if (count > qty) {
         if (!offices.includes(item)) { offices.push(item) };
       }
@@ -241,7 +251,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
           const array: string[] = []
           boSnapshot.docs.forEach(
             (doc) => {
-              if (doc.data()['office_id'] === item
+              if (doc.data()['office_id'] === cfIds[item]
                 && (start === '' || doc.data()['dateOfRegistration'] >= convertDate(start))
                 && (end === '' || doc.data()['dateOfRegistration'] < convertDate(end))
                 && doc.data()['type'] === type) {
@@ -334,7 +344,22 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
     }
     return offices;
   };
-  const searchClients = async (office: string[], from: string) => {
+  const getCFsId = async() =>{
+    const office:string[] = []
+    const cfIds = {}
+    const cfSnapshot = await getDocs(collectionGroup(db, 'modifiedCF'));
+    cfSnapshot.docs.forEach((doc) => {
+      office.push(doc.id)
+      if(cfIds[doc.id]){
+        cfIds[doc.id].push(doc.data()['id'])
+      }
+      else{
+        cfIds[doc.id] = [doc.data()['id']]
+      }
+    })
+    return [office,cfIds]
+  }
+  const searchClients = async (office, cfIds,from) => {
     let backOrderData = getBackOrderData();
     if (from === 'advance') {
       backOrderData = advanceConditionData.value
@@ -345,43 +370,45 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
     else if (from === 'map') {
       backOrderData = mapConditionData.value
     }
+    else if(from==='saveCondition'){
+      backOrderData = saveConditionData.value
+    }
     const dispatchRecordStatus = getDate(backOrderData, 'dispatchRecord')
     const referralResultsStatus = getDate(backOrderData, 'referralResults')
     const dispatchedOtherCompaniesStatus = getDate(backOrderData, 'dispatchedOtherCompanies')
     const otherCompanyReferralResultsStatus = getDate(backOrderData, 'otherCompanyReferralResults')
     const employmentStatus = getEmploymentStatus(backOrderData);
-    if (backOrderData['client_name'] !== '' 
-        || backOrderData['industry'].length > 0
-        || backOrderData['facilityType'].length > 0) {
-          office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'],backOrderData['industry'],backOrderData['facilityType']))
+    if (backOrderData['client_name'] !== ''
+      || backOrderData['industry'].length > 0
+      || backOrderData['facilityType'].length > 0) {
+      office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], backOrderData['facilityType']))
     }
     if (dispatchRecordStatus.status) {
-      office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch', true))
+      office = interSectionOfArray(office, await getOffices(office, cfIds, dispatchRecordStatus.date, 'dispatch', true))
     }
     if (referralResultsStatus.status) {
-      office = interSectionOfArray(office, await getOffices(office, referralResultsStatus.date, 'referral', true))
+      office = interSectionOfArray(office, await getOffices(office, cfIds, referralResultsStatus.date, 'referral', true))
     }
     if (dispatchedOtherCompaniesStatus.status) {
-      office = interSectionOfArray(office, await getOffices(office, dispatchedOtherCompaniesStatus.date, 'dispatch', false))
+      office = interSectionOfArray(office, await getOffices(office,cfIds, dispatchedOtherCompaniesStatus.date, 'dispatch', false))
     }
     if (otherCompanyReferralResultsStatus.status) {
-      office = interSectionOfArray(office, await getOffices(office, otherCompanyReferralResultsStatus.date, 'referral', false))
+      office = interSectionOfArray(office, await getOffices(office,cfIds, otherCompanyReferralResultsStatus.date, 'referral', false))
     }
     if (employmentStatus.status) {
       for (const key of Object.keys(employmentStatus.empTypeStatus || {})) {
         const qty = employmentStatus['empTypeStatus'][key];
         if (qty > 0) {
-          office = interSectionOfArray(office, await getEmpData(office, key, qty))
+          office = interSectionOfArray(office, await getEmpData(office,cfIds, key, qty))
         }
       }
     }
     if (backOrderData['route'] !== '') {
       office = interSectionOfArray(office, await getTeleAppointmentData(office, backOrderData['route']));
     }
-    return office;
-  }
-  const resetAdvance = () => {
-    advanceConditionData.value = getBackOrderData()
+    clientFactoryStore.condition = true
+    clientFactoryStore.selectedCFsId = office
+    router.push('/client-factories')
   }
   const resetMap = () => {
     mapCSelected.value = false;
@@ -399,17 +426,5 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
     advanceAreaCFs.value = [];
     advanceAreaSelected.value = false;
   }
-  const getConditions = async()=>{
-    const docs = await getDocs(collection(db,'saveSearchConditions'));
-    const dropData:object[] = []
-    dropData.push({'label':'None','value':getBackOrderData()})
-    docs.forEach((doc)=>{
-      const data = {}
-      data['label'] = doc.data()['conditionName']
-      data['value'] = doc.data()
-      dropData.push(data)
-    })
-    return dropData
-  }
-  return { getConditions, getCombineId, searchClients, mapCSelected, areaCSelected, mapConditionData, areaConditionData, advanceConditionData, advanceMapSelected, advanceMapCFs, advanceAreaSelected, advanceAreaCFs, resetAdvance, resetMap, resetArea, resetAdvanceMap, resetAdvanceArea }
+  return { getCFsId, getCombineId, searchClients, mapCSelected, areaCSelected, advanceConditionData, mapConditionData, areaConditionData, saveConditionData, advanceMapSelected, advanceMapCFs, advanceAreaSelected, advanceAreaCFs, resetMap, resetArea, resetAdvanceMap, resetAdvanceArea }
 })

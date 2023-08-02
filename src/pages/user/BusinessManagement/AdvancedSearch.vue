@@ -9,6 +9,10 @@
         <q-btn :label="$t('client.list.searchByCondition')" type="submit" outline color="primary"
           class="text-weight-bold" />
       </q-card-actions>
+      <q-card-actions v-else-if="props.from=='saveCondition'">
+        <q-btn label="update Condition" unelevated color="primary" class="no-shadow text-weight-bold" icon="update"
+          @click="updateCondition" />
+      </q-card-actions>
       <q-card-actions v-else>
         <q-btn :label="$t('client.list.addConditions')" unelevated color="primary" class="no-shadow text-weight-bold" icon="add"
           @click="addCondition" />
@@ -18,7 +22,7 @@
         <q-separator v-if="!isLoadingProgress" />
         <q-linear-progress v-if="isLoadingProgress" indeterminate rounded color="primary" />
       </div>
-      <q-card-actions>
+      <q-card-actions v-if="props.from!=='saveCondition'">
         <q-select outlined v-model="label" :options="dropData" dense :label="$t('client.list.savedSearchList')"
           @update:model-value="onSelected" style="width: 250px" />
         <q-btn :label="$t('client.list.saveSearchConditions')" outline color="primary" class="text-weight-bold q-ml-md" 
@@ -365,25 +369,30 @@ import { useI18n } from 'vue-i18n';
 import { facilityList } from 'src/shared/constants/Organization.const';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
-import { useAdvanceSearch } from 'src/stores/advanceSearch';
+import { useAdvanceSearch, getBackOrderData } from 'src/stores/advanceSearch';
+import { useSaveSearchCondition } from 'src/stores/saveSearchCondition'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
-import {  getFirestore, getDocs, collectionGroup, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, getDocs, collectionGroup, addDoc, collection, serverTimestamp, DocumentData } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 const auth = getAuth();
 const db = getFirestore();
+const advanceSearch = useAdvanceSearch()
 const props = withDefaults(defineProps<{
-  from: string
+  from: string,
+  rowId: string
 }>(), {
-  from: ''
+  from: '',
+  rowId:''
 })
 const emit = defineEmits<{
   (e: 'openCFDrawer', ClientFactoryData: ClientFactory),
   (e: 'hideCSDrawer')
 }>()
+const saveSearchCondition = useSaveSearchCondition()
 const isLoadingProgress = ref(false)
-const advanceSearch = useAdvanceSearch()
+// const advanceSearch = useAdvanceSearch()
 const router = useRouter()
 const clientFactoryStore = useClientFactory()
 const { t } = useI18n({ useScope: 'global' });
@@ -394,6 +403,9 @@ if (props.from === 'map') {
 else if (props.from === 'area') {
   backOrderData = advanceSearch.areaConditionData;
 }
+else if(props.from === 'saveCondition'){
+  backOrderData = advanceSearch.saveConditionData;
+}
 const conditionName = ref('')
 const label = ref('')
 const dropData = ref()
@@ -402,9 +414,9 @@ const onSelected = (newValue)=>{
     backOrderData[key] = newValue.value[key]
   })
 }
-onMounted(async()=>{
-  dropData.value = await advanceSearch.getConditions();
-})
+// onMounted(async()=>{
+  
+// })
 const confirmSaveDialog = ref(false);
 const facilityOp = facilityList;
 const recordOp = computed(() => {
@@ -445,27 +457,18 @@ const saveSearchConditions = async() =>{
   confirmSaveDialog.value=true;
 }
 const saveCondition = async() =>{
-  const additionalData = []
-  additionalData['created_by'] = auth.currentUser?.uid;
-  additionalData['created_at'] = serverTimestamp();
-  additionalData['conditionName'] = conditionName.value;
+  confirmSaveDialog.value=false;
+  backOrderData['conditionName'] = conditionName.value
   if(props.from===''){
-    await addDoc(collection(db, '/saveSearchConditions'), {
-      ...advanceSearch.advanceConditionData,...additionalData
-    });
+    saveSearchCondition.saveSearchCondition(advanceSearch.advanceConditionData)
   }
   else if(props.from==='map'){
-    await addDoc(collection(db, '/saveSearchConditions'), {
-      ...advanceSearch.mapConditionData,...additionalData
-    });
+    saveSearchCondition.saveSearchCondition(advanceSearch.mapConditionData)
   }
   else{
-    await addDoc(collection(db, '/saveSearchConditions'), {
-      ...advanceSearch.advanceConditionData,...additionalData
-    });
+    saveSearchCondition.saveSearchCondition(advanceSearch.areaConditionData)
   }
-  confirmSaveDialog.value=false;
-  dropData.value = await advanceSearch.getConditions();
+  // dropData.value = await ;
 }
 const addCondition = () => {
   if (props.from == 'map') {
@@ -474,6 +477,10 @@ const addCondition = () => {
   else if (props.from == 'area') {
     advanceSearch.areaCSelected = true
   }
+  hideCSDrawer()
+}
+const updateCondition = async() => {
+  await saveSearchCondition.updateSaveSearchCondition(props.rowId,backOrderData)
   hideCSDrawer()
 }
 const mapDrawer = ref(false)
@@ -498,7 +505,8 @@ const openCFDrawer = (office: ClientFactory) => {
 }
 const searchClients = async () => {
   isLoadingProgress.value = true;
-  let office: string[] = [];
+  let office:string[] = [];
+  let cfIds = {}
   if (advanceSearch.advanceMapSelected || advanceSearch.advanceAreaSelected) {
     office = advanceSearch.getCombineId() || [];
   }
@@ -506,13 +514,15 @@ const searchClients = async () => {
     const cfSnapshot = await getDocs(collectionGroup(db, 'modifiedCF'));
     cfSnapshot.docs.forEach((doc) => {
       office.push(doc.id)
+      if(cfIds[doc.id]){
+        cfIds[doc.id].push(doc.data()['id'])
+      }
+      else{
+        cfIds[doc.id] = [doc.data()['id']]
+      }
     })
   }
-  office = await advanceSearch.searchClients(office,'advance');
-  clientFactoryStore.condition = true
-  clientFactoryStore.selectedCFsId = office
-  router.push('/client-factories')
-
+  await advanceSearch.searchClients(office,cfIds,'advance');
   isLoadingProgress.value = false
 };
 
