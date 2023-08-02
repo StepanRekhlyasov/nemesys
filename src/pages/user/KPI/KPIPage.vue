@@ -157,7 +157,6 @@ async function getData() {
     loading.value = true;
     // we need to care switching mode while loading
     const modeNow = mode.value;
-    console.log(branch.value, 'branch')
     if (mode.value == 'day' && month.value) {
       rowData.value = await getDailyReport({
         dateRange: dateRange.value,
