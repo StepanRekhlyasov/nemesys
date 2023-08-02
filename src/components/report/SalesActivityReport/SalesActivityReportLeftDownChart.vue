@@ -17,7 +17,6 @@ import { donutGraphItem, donutLabelNames } from './salesActivity.const';
 const apexchart = VueApexCharts;
 const { getReport } = useGetReport();
 const dataToshow: Ref<(number | string)[]> = ref([]);
-
 const { t } = i18n.global;
 const props = defineProps<{
   branch_id: string;
