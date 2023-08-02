@@ -182,6 +182,7 @@ export default {
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
+      // optionMaster: 'Option Master',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
       releaseNotesInquiry: 'Release Notes and Inquiries',
@@ -263,7 +264,7 @@ export default {
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
       billingHistory: 'Billing history',
-      aggregateDataDisplay: 'Aggregated Data Display',
+      aggregateDataDisplay: 'Option Master',
       dataOutputDisplay: 'Data Output',
       dataOutputDisplayTable: {
         outputMonth: 'Output month',

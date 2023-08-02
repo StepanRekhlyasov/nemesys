@@ -182,6 +182,7 @@ export default {
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
+      // optionMaster: '選択肢マスタ',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
       releaseNotesInquiry: 'リリースノート・問い合わせ',
@@ -263,7 +264,7 @@ export default {
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
       billingHistory: '請求履歴',
-      aggregateDataDisplay: '集計データ表示',
+      aggregateDataDisplay: '選択肢マスタ',
       dataOutputDisplay: 'データ出力',
       dataOutputDisplayTable: {
         outputMonth: '出力月',
