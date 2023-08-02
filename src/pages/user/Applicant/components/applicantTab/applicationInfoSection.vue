@@ -145,15 +145,52 @@
       </div>
     </div>
 
-    <div class="row q-pb-sm">
-      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+    <div class="row q-pb-sm" v-if="!edit">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.addres') }}
       </div>
-      <div class="col-9 q-pl-md">
-        <hidden-text v-if="!edit" :value="applicant.address" />
-        <q-input v-if="edit" outlined dense v-model="data['address']" />
+      <div class="col-3 q-pl-md">
+        <hidden-text :value="applicant.address" />
       </div>
     </div>
+    <div class="row q-pb-sm" v-if="edit">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.prefecture') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['prefecture']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.municipalities') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['municipalities']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.street') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['street']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.apartment') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['apartment']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+    </div>
+
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
@@ -195,6 +232,10 @@ function resetData() {
     lat: props?.applicant['lat'],
     address: props.applicant['address'] || '',
     postCode: props?.applicant['postCode'],
+    prefecture: props?.applicant['prefecture'],
+    municipalities: props?.applicant['municipalities'],
+    street: props?.applicant['street'],
+    apartment: props?.applicant['apartment'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
@@ -205,6 +246,7 @@ const age = computed(() => data.value['dob'] ? RankCount.ageCount(data.value['do
 async function save() {
   loading.value = true
   try {
+    data.value.address = [data.value.prefecture, data.value.municipalities, data.value.street, data.value.apartment].join(' ')
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
     

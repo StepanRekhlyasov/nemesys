@@ -47,7 +47,7 @@ import {
   chartTypeDaysToWork,
   chartTypeSex,
   daysToWorkQueryNamesList,
-} from './const';
+} from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { convertToPercentage, calculateValues } from '../reportUtil';
@@ -201,6 +201,8 @@ watch(
 );
 
 onMounted(async () => {
+  //wait 0.1 sec
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await showChart();
 });
 </script>

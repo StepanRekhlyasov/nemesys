@@ -10,18 +10,21 @@ export const columns = computed<QTableProps['columns']>(() => [
     label: t('menu.admin.licenseManagement.numberIdName'),
     field: 'numberIdName',
     align: 'left',
+    sortable: true,
   },
   {
     name: 'businessName',
     label: t('menu.admin.licenseManagement.businessName'),
     field: 'businessName',
     align: 'left',
+    sortable: true,
   },
   {
     name: 'branchName',
     label: t('menu.admin.licenseManagement.branchName'),
     field: 'branchName',
     align: 'left',
+    sortable: true,
   },
   {
     name: 'systemInUse',

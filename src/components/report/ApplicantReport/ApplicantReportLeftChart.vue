@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, itemList, chartType, rowNames } from './const';
+import { chartOptions, columns, itemList, chartType, rowNames } from './applicant.const';
 import {
   calculateCVR,
   getListFromObject,
@@ -115,6 +115,8 @@ watch(
 
 onMounted(async () => {
   if (!props.dateRangeProps) return;
+  //wait 0.1sec
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await showData(props.dateRangeProps, props.organization_id);
 });
 </script>

@@ -4,6 +4,7 @@ import { date } from 'quasar';
 import { InquiryMessage, INQUIRY_MESSAGE_TYPE } from 'src/pages/admin/InquiryPage/types/inquiryTypes';
 import { InquiryData, InquiryDataRow, Organization } from 'src/shared/model';
 import { findTheLastDate, myDateFormat } from 'src/shared/utils/utils';
+import { DELIVERY_STATUS } from 'src/pages/admin/ReleaseNotes/types/notificationTypes';
 import { ref } from 'vue';
 
 type InquiryState = {
@@ -154,6 +155,9 @@ export const useInquiry = defineStore('inquiry', () => {
     })
     return documents as InquiryData[]
   }
+  const getDeliveredNotifications = async () => {
+    return await getDocs(query(collection(db, 'notifications'), where('status','==',DELIVERY_STATUS.delivered)));
+  }
 
   return {
     state,
@@ -167,7 +171,8 @@ export const useInquiry = defineStore('inquiry', () => {
     getCurrentInquiry,
     updateCurrentRowDataMessages,
     deleteInquiryData,
-    getInqueriesByOrganizationId
+    getInqueriesByOrganizationId,
+    getDeliveredNotifications
   }
 
 })

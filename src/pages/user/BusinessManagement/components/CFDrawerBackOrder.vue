@@ -138,7 +138,7 @@ import { QTableProps } from 'quasar';
 import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; columns?: QTableProps['columns']; officeId?: string }>();
+const props = defineProps<{ clientId: string; officeId?: string }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
