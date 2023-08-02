@@ -192,7 +192,6 @@ function isRowSelected(row) {
 async function saveFixMemo(row) {
   loading.value = true;
   try {
-    console.log(row);
     await fixStore.updateFix(row.id,{memo:row.memo});
   } catch (e) {
     console.log(e);
