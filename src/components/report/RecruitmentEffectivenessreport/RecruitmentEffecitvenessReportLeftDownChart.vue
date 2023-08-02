@@ -10,54 +10,30 @@
 import { useMedia } from 'stores/media';
 import { graphType } from '../Models';
 import { onMounted, ref, computed, watch } from 'vue';
-import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './const';
+import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { Media } from 'src/shared/model/Media.model';
 import { useGetReport } from 'src/stores/getReport';
+import { chartOptionsVerticalBase } from '../report.const';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const media = useMedia();
 const { getReport } = useGetReport();
 const mediaList = ref<Media[]>([]);
 const chartOptions = computed(() => {
-  return {
-    legend: { position: 'right' },
-    chart: {},
-    title: {
-      text: t('report.title.mediaApplicationUnitPrice'),
-      style: {
-        color: 'gray',
-      },
+  const chartOptions = JSON.parse(JSON.stringify(chartOptionsVerticalBase));
+  chartOptions.title.text = t('report.title.mediaApplicationUnitPrice');
+  chartOptions.xaxis['categories'] = [
+    ...mediaList.value.map((media) => media.name),
+  ];
+  chartOptions.yaxis[0]['forceNiceScale'] = true;
+  chartOptions.yaxis[0]['labels'] = {
+    formatter: function (value) {
+      return value.toFixed(0) + t('report.yen');
     },
-    plotOptions: {
-      bar: {
-        columnWidth: '5%',
-        endingShape: 'rounded',
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-    },
-    xaxis: {
-      categories: [...mediaList.value.map((media) => media.name)],
-    },
-    yaxis: [
-      {
-        min: 0,
-
-        labels: {
-          formatter: function (value) {
-            return value.toFixed(0) + t('report.yen');
-          },
-        },
-      },
-    ],
   };
+  return chartOptions;
 });
 
 const dataToshow = ref<(number | string)[][]>([]);

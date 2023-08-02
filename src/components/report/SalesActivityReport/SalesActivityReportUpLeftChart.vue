@@ -22,7 +22,7 @@ import {
   chartNames,
   chartNamesR,
   itemList,
-} from './const';
+} from './salesActivity.const';
 import { calculateCVR, getListFromObject } from '../reportUtil';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';

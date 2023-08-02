@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
-import { chartOptionsLeadtime, columnsLeadtime, nameList } from './const';
+import { chartOptionsLeadtime, columnsLeadtime, nameList } from './applicant.const';
 import { useGetReport } from 'src/stores/getReport';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';

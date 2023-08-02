@@ -12,7 +12,7 @@ import {
   dataNames,
   itemList,
   itemRateList,
-} from './const';
+} from './salesActivityIndividual.const';
 import { useGetReport } from 'src/stores/getReport';
 import { calculateCVR } from '../reportUtil';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
@@ -64,22 +64,26 @@ const series = computed<
     .concat(seriesList.value);
 });
 const userList = ref<{ id: string; name: string }[]>([]);
-const organizationId = ref('');
 const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
 const showIndividualReport = async (
   range: { from: string; to: string } | undefined
 ) => {
-  if (!range) return;
   seriesList.value = [];
   rowsIndividual.value = [];
-  if(!props.branch_id) return;
+  dataToShow.value = [];
+  dataToShowCVR.value = [];
+  const seriesListPre: {
+    name: string;
+    data: (number | string)[];
+    type: string;
+  }[] = [];
+  if (!range) return;
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
     where('deleted', '==', false),
@@ -89,22 +93,25 @@ const showIndividualReport = async (
       organizationStore.currentOrganizationId
     ),
   ]);
-  if (users.length == 0) return;
-  const rows = await getReport({
-    users: users,
-    dateRange: range,
-    rateNames: itemRateList,
-    graphType: props.graph_type,
-    queryNames: itemList,
-    isAverage: false,
-  });
-  rowsIndividual.value = rows;
-  for (const row of rows) {
-    seriesList.value.push({
-      name: row.name as string,
-      data: [row['fix'], row['inspection'], row['offer'], row['admission']],
-      type: 'bar',
+  if (users.length !== 0) {
+    const rows = await getReport({
+      users: users,
+      dateRange: range,
+      rateNames: itemRateList,
+      graphType: props.graph_type,
+      queryNames: itemList,
+      isAverage: false,
     });
+    rowsIndividual.value = rows;
+
+    for (const row of rows) {
+      seriesListPre.push({
+        name: row.name as string,
+        data: [row['fix'], row['inspection'], row['offer'], row['admission']],
+        type: 'bar',
+      });
+    }
+    seriesList.value = seriesListPre;
   }
 
   const allDataAverage = listToFixed(
@@ -128,7 +135,7 @@ const showIndividualReport = async (
         graphType: props.graph_type,
         queryNames: itemList,
         isAverage: true,
-        organizationId: organizationId.value,
+        organizationId: organizationStore.currentOrganizationId,
       }),
       itemList.map((item) => {
         return item.queryName;
@@ -146,23 +153,20 @@ const showIndividualReport = async (
 
 watch(
   () => [
-    props.branch_user_list,
     props.dateRangeProps,
     props.graph_type,
     props.branch_id,
   ],
   async () => {
-    if (props.branch_user_list.length != 0) {
-      if (props.dateRangeProps == undefined) return;
-      userList.value = props.branch_user_list;
-      await showIndividualReport(props.dateRangeProps);
-    }
+    userList.value = await userStore.getAllUsersInBranch(props.branch_id);
+    await showIndividualReport(props.dateRangeProps);
   }
 );
 
 onMounted(async () => {
-  userList.value = props.branch_user_list;
-  organizationId.value = props.organization_id;
+  //wait 0.1sec
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  userList.value = await userStore.getAllUsersInBranch(props.branch_id);
   await showIndividualReport(props.dateRangeProps);
 });
 </script>
