@@ -325,10 +325,10 @@ function showDialog(bo: BackOrderModel) {
 
 const loadSearchStaff = async (staffList: BOElasticSearchData) => {
   pagination.value.page = 1;
-  await backOrderStore.loadBackOrder(staffList);
+  await backOrderStore.loadBackOrder(staffList, pagination.value);
 };
 
-backOrderStore.loadBackOrder({});
+backOrderStore.loadBackOrder({}, pagination.value);
 
 watch(() => pagination.value.page, async () => {
   await backOrderStore.loadBackOrder({},pagination.value);
