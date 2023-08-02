@@ -25,9 +25,7 @@
           </template>
       </q-input>
     </LabelField>
-    <labelField :label="$t('backOrder.create.registrant')" :edit="edit" :value="getRegistrant(data['registrant'])">
-      <q-input v-model="data['registrant']" outlined dense :disable="loading"/>
-    </labelField>
+    <labelField :label="$t('backOrder.create.registrant')" :edit="false" :value="getRegistrant(data['registrant'])"/>
   </div>
 
   <div class="row q-pt-sm">
@@ -36,10 +34,10 @@
         <q-toggle v-model="data['approvalOrNot']"  :disable="loading"/>
         <span class="q-ma-sm flex-center q-pr-md q-mr-md">{{ data['approvalOrNot']?$t('common.yes'):$t('common.no') }}</span>
       </LabelField>
-    <labelField :label="$t('backOrder.create.uniformAvailability')" :edit="edit"
+    <LabelField :label="$t('backOrder.create.uniformAvailability')" :edit="edit"
         :value="data['uniformAvailability']" >
       <q-input v-model="data['uniformAvailability']" outlined dense :disable="loading"/>
-    </labelField>
+    </LabelField>
   </div>
 
   <div class="row q-pt-sm">
@@ -47,10 +45,10 @@
       :value="bo['filingRemarks'] ">
       <q-input v-model="data['filingRemarks']" outlined dense :disable="loading"/>
     </LabelField>
-    <labelField :label="$t('backOrder.create.availabilityOfLunch')" :edit="edit"
-      :value="data['availabilityOfLunch'] ? `${data['availabilityOfLunch']}${$t('common.ageShort')}` : ''" >
-      <q-input v-model="data['availabilityOfLunch']" outlined dense :disable="loading" type="number"/>
-    </labelField>
+    <LabelField :label="$t('backOrder.create.availabilityOfLunch')" :edit="edit"
+      :value="data['availabilityOfLunch'] ? `${data['availabilityOfLunch']}` : ''" >
+      <q-input v-model="data['availabilityOfLunch']" outlined dense :disable="loading"/>
+    </LabelField>
   </div>
 
   <div class="row q-pt-sm">
@@ -59,10 +57,10 @@
       <q-toggle v-model="data['availabilityOfGarage']"  :disable="loading"/>
       <span class="q-ma-sm flex-center q-pr-md q-mr-md">{{ data['availabilityOfGarage'] ? $t('common.yes') : $t('common.no') }}</span>
     </LabelField>
-    <labelField :label="$t('backOrder.create.smoking')" :edit="edit" :value="data['smoking'] ? $t(`smoking.${data['smoking']}`) : ''  " >
+    <LabelField :label="$t('backOrder.create.smoking')" :edit="edit" :value="data['smoking'] ? $t(`smoking.${data['smoking']}`) : ''  " >
       <q-select v-if="edit" outlined dense :options="smokingStatusOptions"
         emit-value map-options v-model="data['smoking']" :disable="loading"/>
-    </labelField>
+    </LabelField>
   </div>
 
   <div class="row q-pt-sm">
@@ -70,9 +68,9 @@
       :value="data['parkingRemarks']">
       <q-input v-model="data['parkingRemarks']" outlined dense :disable="loading"/>
     </LabelField>
-    <labelField :label="$t('backOrder.create.smokingRemarks')" :edit="edit" :value="data['smokingRemarks']" >
+    <LabelField :label="$t('backOrder.create.smokingRemarks')" :edit="edit" :value="data['smokingRemarks']" >
       <q-input v-model="data['smokingRemarks']" outlined dense :disable="loading"/>
-    </labelField>
+    </LabelField>
   </div>
 
   <div class="row q-pt-sm">
@@ -80,6 +78,10 @@
       :value="data['commutingByCar']">
       <q-input v-model="data['commutingByCar']" outlined dense :disable="loading"/>
     </LabelField>
+    <LabelField :label="$t('backOrder.ageLimit')" :edit="edit"
+    :value="data['upperAgeLimit'] ? `${data['upperAgeLimit']} ${$t('common.ageShort')}` : ''" >
+    <q-input v-model="data['upperAgeLimit']" outlined dense :disable="loading" type="number"/>
+  </LabelField>
   </div>
 
   <div class="row q-pt-sm">
@@ -87,9 +89,9 @@
       :value="data['medicalExamination']">
       <q-input v-model="data['medicalExamination']" outlined dense :disable="loading"/>
     </LabelField>
-    <labelField :label="$t('backOrder.create.vaccination')" :edit="edit" :value="data['vaccination']" >
+    <LabelField :label="$t('backOrder.create.vaccination')" :edit="edit" :value="data['vaccination']" >
       <q-input v-model="data['vaccination']" outlined dense :disable="loading"/>
-    </labelField>
+    </LabelField>
   </div>
 
   <div class="row q-pt-md">
@@ -97,10 +99,10 @@
       :value="data['numberUsers'] ? `${data['numberUsers']}${$t('common.reputation')}` : ''">
       <q-input v-model="data['numberUsers']" outlined dense :disable="loading" type="number"/>
     </LabelField>
-    <labelField :label="$t('backOrder.numberEmployees')" :edit="edit"
+    <LabelField :label="$t('backOrder.numberEmployees')" :edit="edit"
       :value="data['numberEmployees'] ? `${data['numberEmployees']}${$t('common.reputation')}` : ''" >
       <q-input v-model="data['numberEmployees']" outlined dense :disable="loading" type="number"/>
-    </labelField>
+    </LabelField>
   </div>
 
   <div class="row q-pt-sm">
@@ -108,9 +110,9 @@
       :value="data['levelOfCare']">
       <q-input v-model="data['levelOfCare']" outlined dense :disable="loading"/>
     </LabelField>
-    <labelField :label="$t('backOrder.create.memo')" :edit="edit" :value="data['memo']" >
+    <LabelField :label="$t('backOrder.create.memo')" :edit="edit" :value="data['memo']" >
       <q-input v-model="data['memo']" outlined dense :disable="loading"/>
-    </labelField>
+    </LabelField>
   </div>
 </template>
 
@@ -121,6 +123,7 @@ import { ref } from 'vue';
 import LabelField from 'src/components/form/LabelField.vue';
 import { smokingStatusList } from 'src/shared/constants/Applicant.const';
 import { useUserStore } from 'src/stores/user'
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const userStore = useUserStore();
 
@@ -138,6 +141,9 @@ const smokingStatusOptions = ref(smokingStatusList);
 async function save() {
   loading.value = true;
   try {
+    if(data.value.dateOfRegistration){
+      data.value.dateOfRegistration = myDateFormat(data.value.dateOfRegistration)
+    }
     await backOrderStore.updateBackOrder({id: props.bo.id, ...data.value} as BackOrderModel);
     edit.value = false;
   } catch (e) {
