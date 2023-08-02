@@ -1538,7 +1538,10 @@ export default {
       },
       subject: 'subject',
       content: 'content',
+      deliverNow:'Deliver Now',
+      deliverReserve:'Deliver Reserve',
       date: 'Delivery date',
+
       send: 'Send',
       delay: '+ Add New',
       cancel: 'Cancel'
