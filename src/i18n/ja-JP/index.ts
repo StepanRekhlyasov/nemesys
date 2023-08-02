@@ -1626,7 +1626,9 @@ export default {
         officeTel: '事業所：TEL',
         officeFax: '事業所：FAX',
         inChargeTitle: '担当者：役職',
+        inChargeTitle_ex: '例）一般社員',
         inChargeTel: '担当者：TEL',
+        inChargeMail: '担当者：MAIL',
         inChargeAddress: '担当者：アドレス',
 
         representative: '代表者',

@@ -1633,7 +1633,9 @@ export default {
         officeTel: 'Office: TEL',
         officeFax: 'Office: FAX',
         inChargeTitle: 'Person in charge: Title',
+        inChargeTitle_ex: 'Ex) Regular employee',
         inChargeTel: 'Person in charge: TEL',
+        inChargeMail: 'Person in charge: MAIL',
         inChargeAddress: 'Person in charge: Address',
 
         representative: 'Representative',

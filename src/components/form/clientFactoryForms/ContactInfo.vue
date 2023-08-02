@@ -29,7 +29,7 @@ watch(contractInfo, () => {
             <div class="row q-mt-sm">
                 <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.list.personIncharge') }}
+                        {{ t('client.add.manager') }}
                     </q-item-label>
 
                     <q-input
@@ -41,40 +41,40 @@ watch(contractInfo, () => {
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('office.personInChargeTel') }}
+                        {{ t('clientFactory.drawer.details.inChargeTitle') }}
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['positionContact']"
-                        :placeholder="t('clientFactory.drawer.details.inChargeTitle')"
+                        :placeholder="t('clientFactory.drawer.details.inChargeTitle_ex')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>
             <div class="row q-mt-sm">
                 <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.list.personIncharge') }} : TEL
+                        {{ t('clientFactory.drawer.details.inChargeTel') }}
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['telContact']"
-                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
+                        :placeholder="t('client.add.phoneLabel')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.list.personIncharge') }} : MAIL
+                        {{ t('clientFactory.drawer.details.inChargeMail') }}
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['mailContact']"
-                        :placeholder="t('client.add.phoneLabel')"
+                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>
