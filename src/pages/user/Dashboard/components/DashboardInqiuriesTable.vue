@@ -133,7 +133,7 @@ const updateInqueries = async () => {
   inqueries.value = inqueriesRaw.map((row)=>{
     return {...row, type: 'inquiry'}
   })
-  const docWholeSnap = await releaseNoteStore.getAllNotifications();
+  const docWholeSnap = await inquiryStore.getDeliveredNotifications();
   if (!docWholeSnap.empty) {
     docWholeSnap.docs.forEach(async (item) => {
       releaseNotes.value = [...releaseNotes.value, {

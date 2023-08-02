@@ -8,7 +8,7 @@
       :max-year-month="currentDate.replace('-', '/')" :disable="loading" />
   </div>
   <div class="container">
-    <OrganizationColspanTabel :columns="columns" :loading="loading" :table="data">
+    <OrganizationColspanTabel :columns="columns" :loading="loading" :table="data" :sort-method="sort">
       <template #organization="{ organizationItem }">
         <div>
           {{ calculateBillingId(organizationItem.code) }}
@@ -60,7 +60,7 @@ async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
 
   const organizationIds = await organization.getAllOrganizationsIds()
-  try{
+  try {
     const tableData = await Promise.all(organizationIds.map(async (id) => {
       return licenceStore.getLicensesInMonth({
         organizationId: id,
@@ -69,15 +69,15 @@ async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
       })
     }))
     tableData.forEach((d) => {
-    if (d) {
+      if (d) {
         data.value.push(d)
       }
     })
-  } catch (error){
+  } catch (error) {
     data.value = []
+    Alert.warning(error)
     console.log(error)
   }
-  
 }
 
 
@@ -95,6 +95,46 @@ onMounted(async () => {
   }
   loading.value = false
 })
+
+function sort(rows, sortBy: string, descending: boolean) {
+
+  if (sortBy === 'numberIdName') {
+    data.value.sort((a, b) => {
+      if (descending) {
+        return a.organization[0].name.localeCompare(b.organization[0].name)
+      }
+      return b.organization[0].name.localeCompare(a.organization[0].name)
+    })
+  }
+
+  if (sortBy === 'businessName') {
+    data.value.forEach((v) => {
+      return v.organization[0].buisneses.sort((a, b) => {
+        if (descending) {
+          return a.name.localeCompare(b.name)
+        }
+        return b.name.localeCompare(a.name)
+      })
+    })
+  }
+
+  if (sortBy === 'branchName') {
+    data.value.forEach((v) => {
+      return v.organization[0].buisneses.forEach((v) => {
+        v.branches.sort((a, b) => {
+          if (descending) {
+            return a.name.localeCompare(b.name)
+          }
+          return b.name.localeCompare(a.name)
+        })
+      })
+    })
+  }
+
+
+
+  return rows
+}
 
 async function loadCurrentData() {
   data.value = []
