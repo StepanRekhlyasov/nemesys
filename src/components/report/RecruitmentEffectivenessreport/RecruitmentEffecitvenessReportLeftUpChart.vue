@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { graphType, SeriesType } from '../Models';
+import { graphType, SeriesType, MonthYear } from '../Models';
 import { onMounted, ref, ComputedRef, computed, watch } from 'vue';
 import {
   unitPricenames,
@@ -62,78 +62,75 @@ const props = defineProps<{
   graph_type: graphType;
 }>();
 
+const getMonthList = (dateString: string, len: number): MonthYear[] => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const monthList = Array.from({ length: len }, (_, i) => {
+    const monthBefore = month - i;
+    if (monthBefore <= 0) {
+      return { year: year - 1, month: monthBefore + monthPerYear };
+    }
+    return { year: year, month: monthBefore };
+  }).reverse();
+  return monthList;
+};
+
+const calcUnitPrice = async (
+  month: { from: Date; to: Date },
+  organizationId?: string
+) => {
+  const numOfApplicantsAmount = await getReport({
+    dateRange: month,
+    queryNames: queryNamesList,
+    organizationId: organizationId,
+    graphType: props.graph_type,
+    isAverage: false,
+  });
+
+  const numOfApplicantsSum = numOfApplicantsAmount.reduce((sum, current) => {
+    if (typeof current.applicants === 'number') {
+      return sum + current.applicants;
+    } else return sum;
+  }, 0);
+
+  const numOfAdmissionSum = numOfApplicantsAmount.reduce((sum, current) => {
+    if (typeof current.admission === 'number') {
+      return sum + current.admission;
+    } else return sum;
+  }, 0);
+
+  const amountSum = numOfApplicantsAmount.reduce((sum, current) => {
+    if (typeof current.amount === 'number') {
+      return sum + current.amount;
+    } else return sum;
+  }, 0);
+  const unitPrice =
+    numOfApplicantsSum !== 0 ? round(amountSum / numOfApplicantsSum, 1) : 0;
+
+  const startPrice =
+    numOfAdmissionSum !== 0 ? round(amountSum / numOfAdmissionSum, 1) : 0;
+  return { unitPrice: unitPrice, startPrice: startPrice };
+};
+
+const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
+  const from = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
+  const to = new Date(
+    { ...monthYear }.year,
+    { ...monthYear }.month,
+    0,
+    23,
+    59,
+    59
+  );
+  return { from: from, to: to };
+};
+
 const showChart = async () => {
   dataToShow.value = [[], [], [], []];
   const dataToShowPre: (number | string)[][] = [[], [], [], []];
   if (!props.dateRangeProps) return;
-  interface MonthYear {
-    month: number;
-    year: number;
-  }
-  const getMonthList = (dateString: string, len: number): MonthYear[] => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const monthList = Array.from({ length: len }, (_, i) => {
-      const monthBefore = month - i;
-      if (monthBefore <= 0) {
-        return { year: year - 1, month: monthBefore + monthPerYear };
-      }
-      return { year: year, month: monthBefore };
-    }).reverse();
-    return monthList;
-  };
 
-  const calcUnitPrice = async (
-    month: { from: Date; to: Date },
-    organizationId?: string
-  ) => {
-    const numOfApplicantsAmount = await getReport({
-      dateRange: month,
-      queryNames: queryNamesList,
-      organizationId: organizationId,
-      graphType: props.graph_type,
-      isAverage: false,
-    });
-
-    const numOfApplicantsSum = numOfApplicantsAmount.reduce((sum, current) => {
-      if (typeof current.applicants === 'number') {
-        return sum + current.applicants;
-      } else return sum;
-    }, 0);
-
-    const numOfAdmissionSum = numOfApplicantsAmount.reduce((sum, current) => {
-      if (typeof current.admission === 'number') {
-        return sum + current.admission;
-      } else return sum;
-    }, 0);
-
-    const amountSum = numOfApplicantsAmount.reduce((sum, current) => {
-      if (typeof current.amount === 'number') {
-        return sum + current.amount;
-      } else return sum;
-    }, 0);
-
-    const unitPrice =
-      numOfApplicantsSum !== 0 ? round(amountSum / numOfApplicantsSum, 1) : 0;
-
-    const startPrice =
-      numOfAdmissionSum !== 0 ? round(amountSum / numOfAdmissionSum, 1) : 0;
-    return { unitPrice: unitPrice, startPrice: startPrice };
-  };
-
-  const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
-    const from = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
-    const to = new Date(
-      { ...monthYear }.year,
-      { ...monthYear }.month,
-      0,
-      23,
-      59,
-      59
-    );
-    return { from: from, to: to };
-  };
   const monthRangeList = getMonthList(props.dateRangeProps.to, beforeMonth).map(
     (monthYear) => {
       return getMonthRange(monthYear);

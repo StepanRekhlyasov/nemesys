@@ -4,3 +4,8 @@ export interface SeriesType {
   data: (number | string)[];
   type: string;
 }
+
+export interface MonthYear {
+  month: number;
+  year: number;
+}
