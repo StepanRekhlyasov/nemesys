@@ -126,7 +126,7 @@
 import { useI18n } from 'vue-i18n';
 import { BackOrderModel } from 'src/shared/model/BackOrder.model';
 import { Client } from 'src/shared/model/Client.model'
-import { ref, Ref, watch, onMounted, defineProps } from 'vue';
+import { ref, Ref, watch, onMounted } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useQuasar } from 'quasar';
 import InfoBO from 'src/pages/user/BackOrder/components/info/InfoBO.vue';
