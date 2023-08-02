@@ -5,7 +5,6 @@
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :branch_user_list="branch_user_list"
         :graph_type="graph_type"
       ></RecruitmentEffecitvenessReportLeftUpChart>
     </div>
@@ -14,7 +13,6 @@
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :branch_user_list="branch_user_list"
         :graph_type="graph_type"
       ></RecruitmentEffecitvenessReportRightUpChart>
     </div>
@@ -25,7 +23,6 @@
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :branch_user_list="branch_user_list"
         :graph_type="graph_type"
       ></RecruitmentEffecitvenessReportLeftDownChart>
     </div>
@@ -34,7 +31,6 @@
         :organization_id="organization_id"
         :dateRangeProps="dateRangeProps"
         :branch_id="branch_id"
-        :branch_user_list="branch_user_list"
         :graph_type="graph_type"
       ></RecruitmentEffecitvenessReportRightDownChart>
     </div>
@@ -52,7 +48,6 @@ defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 </script>

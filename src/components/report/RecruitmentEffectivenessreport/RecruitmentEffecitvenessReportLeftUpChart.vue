@@ -7,25 +7,29 @@
 </template>
 
 <script setup lang="ts">
-import { graphType } from '../Models';
+import { graphType, SeriesType, MonthYear } from '../Models';
 import { onMounted, ref, ComputedRef, computed, watch } from 'vue';
-import { unitPricenames, chartTypeUnitPrice, queryNamesList } from './recruitmentEffectiveness.const';
+import {
+  unitPricenames,
+  chartTypeUnitPrice,
+  queryNamesList,
+} from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
 import { round } from 'src/shared/utils/KPI.utils';
-import { chartOptionsVerticalBase } from '../report.const';
+import {
+  chartOptionsVerticalBase,
+  beforeMonth,
+  monthPerYear,
+} from '../report.const';
 
 const { getReport } = useGetReport();
-const monthPerYear = 12;
-const beforeMonth = 7;
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const dataToShow = ref<(number | string)[][]>([]);
 const monthList = ref<number[]>([]);
-const series: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const series: ComputedRef<SeriesType[]> = computed(() => {
   const seriesList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(unitPricenames[index]),
@@ -55,82 +59,78 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
+
+const getMonthList = (dateString: string, len: number): MonthYear[] => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const monthList = Array.from({ length: len }, (_, i) => {
+    const monthBefore = month - i;
+    if (monthBefore <= 0) {
+      return { year: year - 1, month: monthBefore + monthPerYear };
+    }
+    return { year: year, month: monthBefore };
+  }).reverse();
+  return monthList;
+};
+
+const calcUnitPrice = async (
+  month: { from: Date; to: Date },
+  organizationId?: string
+) => {
+  const numOfApplicantsAmount = await getReport({
+    dateRange: month,
+    queryNames: queryNamesList,
+    organizationId: organizationId,
+    graphType: props.graph_type,
+    isAverage: false,
+  });
+
+  const numOfApplicantsSum = numOfApplicantsAmount.reduce((sum, current) => {
+    if (typeof current.applicants === 'number') {
+      return sum + current.applicants;
+    } else return sum;
+  }, 0);
+
+  const numOfAdmissionSum = numOfApplicantsAmount.reduce((sum, current) => {
+    if (typeof current.admission === 'number') {
+      return sum + current.admission;
+    } else return sum;
+  }, 0);
+
+  const amountSum = numOfApplicantsAmount.reduce((sum, current) => {
+    if (typeof current.amount === 'number') {
+      return sum + current.amount;
+    } else return sum;
+  }, 0);
+  const unitPrice =
+    numOfApplicantsSum !== 0 ? round(amountSum / numOfApplicantsSum, 1) : 0;
+
+  const startPrice =
+    numOfAdmissionSum !== 0 ? round(amountSum / numOfAdmissionSum, 1) : 0;
+  return { unitPrice: unitPrice, startPrice: startPrice };
+};
+
+const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
+  const from = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
+  const to = new Date(
+    { ...monthYear }.year,
+    { ...monthYear }.month,
+    0,
+    23,
+    59,
+    59
+  );
+  return { from: from, to: to };
+};
 
 const showChart = async () => {
   dataToShow.value = [[], [], [], []];
   const dataToShowPre: (number | string)[][] = [[], [], [], []];
   if (!props.dateRangeProps) return;
-  interface MonthYear {
-    month: number;
-    year: number;
-  }
-  const getMonthList = (dateString: string, len: number): MonthYear[] => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const monthList = Array.from({ length: len }, (_, i) => {
-      const monthBefore = month - i;
-      if (monthBefore <= 0) {
-        return { year: year - 1, month: monthBefore + monthPerYear };
-      }
-      return { year: year, month: monthBefore };
-    }).reverse();
-    return monthList;
-  };
 
-  const calcUnitPrice = async (
-    month: { from: Date; to: Date },
-    organizationId?: string
-  ) => {
-    const numOfApplicantsAmount = await getReport({
-      dateRange: month,
-      queryNames: queryNamesList,
-      organizationId: organizationId,
-      graphType: props.graph_type,
-      isAverage: false,
-    });
-
-    const numOfApplicantsSum = numOfApplicantsAmount.reduce((sum, current) => {
-      if (typeof current.applicants === 'number') {
-        return sum + current.applicants;
-      } else return sum;
-    }, 0);
-
-    const numOfAdmissionSum = numOfApplicantsAmount.reduce((sum, current) => {
-      if (typeof current.admission === 'number') {
-        return sum + current.admission;
-      } else return sum;
-    }, 0);
-
-    const amountSum = numOfApplicantsAmount.reduce((sum, current) => {
-      if (typeof current.amount === 'number') {
-        return sum + current.amount;
-      } else return sum;
-    }, 0);
-
-    const unitPrice =
-      numOfApplicantsSum !== 0 ? round(amountSum / numOfApplicantsSum, 1) : 0;
-
-    const startPrice =
-      numOfAdmissionSum !== 0 ? round(amountSum / numOfAdmissionSum, 1) : 0;
-    return { unitPrice: unitPrice, startPrice: startPrice };
-  };
-
-  const getMonthRange = (monthYear: MonthYear): { from: Date; to: Date } => {
-    const from = new Date({ ...monthYear }.year, { ...monthYear }.month - 1, 1);
-    const to = new Date(
-      { ...monthYear }.year,
-      { ...monthYear }.month,
-      0,
-      23,
-      59,
-      59
-    );
-    return { from: from, to: to };
-  };
   const monthRangeList = getMonthList(props.dateRangeProps.to, beforeMonth).map(
     (monthYear) => {
       return getMonthRange(monthYear);
@@ -154,7 +154,7 @@ const showChart = async () => {
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showChart();
