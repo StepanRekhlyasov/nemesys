@@ -71,7 +71,7 @@
               <div>
                 {{
                   getUserDisplayName(props.row.registrant)
-                 }}
+                }}
               </div>
             </q-td>
           </template>
@@ -80,7 +80,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.distance!=null?props.row.distance+' Km':''
+                  props.row.distance != null ? props.row.distance + ' Km' : ''
                 }}
               </div>
             </q-td>
@@ -174,7 +174,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 30,
+  rowsPerPage: 100,
 });
 
 const customSortMethod = (rows, sortBy, descending) => {
@@ -191,7 +191,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   else if (sortBy === 'BOID') {
     const sortedRows = [...state.BOList];
     sortedRows.sort((a, b) => {
-      return descending ? parseInt(a.boId)-parseInt(b.boId) : parseInt(b.boId)-parseInt(a.boId);
+      return descending ? parseInt(a.boId) - parseInt(b.boId) : parseInt(b.boId) - parseInt(a.boId);
     });
     return sortedRows;
   }
@@ -207,8 +207,8 @@ const customSortMethod = (rows, sortBy, descending) => {
   else if (sortBy === 'caseType') {
     const sortedRows = [...rows];
     sortedRows.sort((a, b) => {
-      const first = a.typeCase?a.typeCase:'';
-      const second = b.typeCase?b.typeCase:'';
+      const first = a.typeCase ? a.typeCase : '';
+      const second = b.typeCase ? b.typeCase : '';
       return descending ? second.localeCompare(first) : first.localeCompare(second);
     });
     return sortedRows;
@@ -216,9 +216,9 @@ const customSortMethod = (rows, sortBy, descending) => {
   else if (sortBy === 'distance') {
     const sortedRows = [...rows];
     sortedRows.sort((a, b) => {
-      const first = a.distance?a.distance:0;
-      const second = b.distance?b.distance:0;
-      return descending ? first-second: second-first;
+      const first = a.distance ? a.distance : 0;
+      const second = b.distance ? b.distance : 0;
+      return descending ? first - second : second - first;
     });
     return sortedRows;
   }
@@ -255,7 +255,7 @@ const customSortMethod = (rows, sortBy, descending) => {
     sortedRows.sort((a, b) => {
       const first = parseInt(a.salary);
       const second = parseInt(b.salary);
-      return descending ? first-second : second-first
+      return descending ? first - second : second - first
     });
     return sortedRows;
   }
@@ -268,7 +268,7 @@ const customSortMethod = (rows, sortBy, descending) => {
     });
     return sortedRows;
   }
-  else{
+  else {
     return state.BOList;
   }
 };
@@ -294,8 +294,8 @@ const getUserDisplayName = (registrant: string | undefined) => {
 
   return userDisplayName.value;
 };
-watchCurrentOrganization(async ()=>{
- await backOrderStore.loadBackOrder({});
+watchCurrentOrganization(async () => {
+  await backOrderStore.loadBackOrder({}, pagination.value);
 })
 
 const closeMap = () => {
@@ -331,7 +331,7 @@ const loadSearchStaff = async (staffList: BOElasticSearchData) => {
 backOrderStore.loadBackOrder({}, pagination.value);
 
 watch(() => pagination.value.page, async () => {
-  await backOrderStore.loadBackOrder({},pagination.value);
+  await backOrderStore.loadBackOrder({}, pagination.value);
 })
 
 onMounted(async () => {
