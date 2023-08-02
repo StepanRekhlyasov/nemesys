@@ -14,7 +14,7 @@
             {{ t('budget.total') }}
           </div>
           <div class="q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal">
-            ¥ {{ budgetSum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') }}
+            ¥ {{ formatNumber(budgetSum.toString()) }}
           </div>
         </div>
       </q-card-section>
@@ -160,7 +160,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { BudgetData } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { myDateFormat, formatNumber } from 'src/shared/utils/utils';
+import { myDateFormat, formatNumber, formatTextToNumber } from 'src/shared/utils/utils';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 import { useOrganization } from 'src/stores/organization';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
@@ -215,7 +215,7 @@ const budgetSum = computed(() => {
   let sum = 0
   budgetList.value.forEach(item => {
     if (item.amount) {
-      sum += parseInt(item.amount.toString().replace(/,/g, ''), 10);
+      sum += formatTextToNumber(item.amount, true) as number;
     }
   })
   return sum
