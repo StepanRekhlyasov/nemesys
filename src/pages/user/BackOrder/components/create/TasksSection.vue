@@ -5,7 +5,7 @@
     </div>
     <div class="row ">
       <labelField :label="$t('backOrder.create.tasks')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10">
-        <q-input v-model="data['work_content']" outlined dense :disable="loading"/>
+        <q-input v-model="data['work_content']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
     
@@ -36,19 +36,19 @@
           </template>
         </q-field>
         <span class="col-2 q-ma-sm self-center">{{ $t('backOrder.create.onCallRemarks') }}</span>
-        <q-input v-model="data['onCallRemarks']" outlined dense  :disable="loading"/>
+        <q-input v-model="data['onCallRemarks']" outlined dense type="textarea" autogrow :disable="loading"/>
       </labelField>
     </div>
     
     <div class="row q-mt-sm" v-if="type === 'referral'">
       <labelField :label="$t('backOrder.create.welfare')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
-        <q-input v-model="data['welfare']" outlined dense  :disable="loading" :rules="[creationRule]" hide-bottom-space/>
+        <q-input v-model="data['welfare']" outlined dense type="textarea" autogrow :disable="loading" :rules="[creationRule]" hide-bottom-space/>
       </labelField>
     </div>
     
     <div class="row q-mt-sm"  v-if="type === 'referral'">
       <labelField :label="$t('backOrder.create.childcare')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
-        <q-input v-model="data['tasks_childcare']" outlined dense  :disable="loading" :rules="[creationRule]" hide-bottom-space/>
+        <q-input v-model="data['tasks_childcare']" outlined dense type="textarea" autogrow :disable="loading" :rules="[creationRule]" hide-bottom-space/>
       </labelField>
     </div>
     

@@ -25,7 +25,7 @@
   >
   <template v-slot:body-cell-messageDirection="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{props.row.status === 'answered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}
+      {{props.row.status === 'answered' || props.row.status === 'delivered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}
     </q-td>
   </template>
   <template v-slot:body-cell-recievedDate="props">
@@ -133,7 +133,7 @@ const updateInqueries = async () => {
   inqueries.value = inqueriesRaw.map((row)=>{
     return {...row, type: 'inquiry'}
   })
-  const docWholeSnap = await releaseNoteStore.getAllNotifications();
+  const docWholeSnap = await inquiryStore.getDeliveredNotifications();
   if (!docWholeSnap.empty) {
     docWholeSnap.docs.forEach(async (item) => {
       releaseNotes.value = [...releaseNotes.value, {

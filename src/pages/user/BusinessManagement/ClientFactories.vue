@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
 import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
@@ -33,12 +33,6 @@ const pagination = ref({
     page: 1,
     rowsPerPage: 100,
     rowsNumber: modifiedCF.value.length
-});
-
-const paginatedTableRows = computed(() => {
-    const start = (pagination.value.page - 1) * pagination.value.rowsPerPage;
-    const end = start + pagination.value.rowsPerPage;
-    return tableRows.value.slice(start, end);
 });
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
@@ -130,6 +124,7 @@ const openFaxDrawer = (id:string) =>{
     selectedCF.value.push(id)
     isNewFaxDrawer.value = true
 }
+
 </script>
 
 <template>
@@ -143,12 +138,12 @@ const openFaxDrawer = (id:string) =>{
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
                 @open-fax-drawer="openNewFaxDrawer"/>
-            <q-card-section class="table no-padding"> 
+            <q-card-section class="table no-padding">
                 <ClientFactoryTable
                     @select-item="clientFactoryDrawerHandler"
                     @selected-id="selectedCFHandler"
                     :isFetching="fetchData"
-                    :rows="paginatedTableRows"
+                    :rows="tableRows"
                     :pagination="pagination"
                     :table-columns="tableColumnsClientFactory"/>
                 <Pagination

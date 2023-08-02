@@ -1293,7 +1293,7 @@ export default {
       onCallSupport: 'On-call support',
       onCallRemarks: 'On-call Remarks',
       welfare: 'Employee benefits',
-      retirementAge: 'Rretirement Age',
+      retirementAge: 'Retirement Age',
       inHouseInformation: 'Internal Company Information',
       referralFee: 'Referral Fee',
       referralFeeAmount: 'Referral Fee Amount',
@@ -1538,7 +1538,10 @@ export default {
       },
       subject: 'subject',
       content: 'content',
+      deliverNow:'Deliver Now',
+      deliverReserve:'Deliver Reserve',
       date: 'Delivery date',
+
       send: 'Send',
       delay: '+ Add New',
       cancel: 'Cancel'
