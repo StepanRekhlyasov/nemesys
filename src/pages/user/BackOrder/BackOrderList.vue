@@ -54,7 +54,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.employmentType ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
+                  props.row.employmentType && props.row.employmentType.length ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
                 }}
               </div>
             </q-td>
