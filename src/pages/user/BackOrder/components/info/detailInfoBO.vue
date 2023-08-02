@@ -71,7 +71,7 @@
     </div>
 
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
-      
+
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
         :value="`${selectedBo['travelingExpenses'] ? $t('backOrder.travelingExpenses.' + selectedBo['travelingExpenses']) : ''}`">
@@ -87,17 +87,17 @@
     </div>
 
     <div class="row ">
-      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" 
+      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-9 q-ml-md" :value="Array.isArray(data['qualifications'])?data['qualifications'].map((row) => $t('applicant.qualification.' + row)):''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
-          <q-checkbox 
-            v-for="key in TypeQualifications" 
+          <q-checkbox
+            v-for="key in TypeQualifications"
             v-model="data['qualifications']" 
             :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
-            class="q-pr-md" 
+            class="q-pr-md"
           />
         </q-field>
       </LabelField>
@@ -128,7 +128,7 @@
           :key="key" :disable="loading" class="q-pr-md" />
       </LabelField>
     </div>
-    
+
     <div class="row">
       <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType"
         valueClass="self-center q-pl-md col-4">
@@ -221,13 +221,13 @@
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-8"
         :value="Array.isArray(selectedBo['workingDays']) ? selectedBo['workingDays'].map(day => $t('weekDay.' + day)).join(', ') + ')' : ''" required>
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationArrayRule]">
-          <q-checkbox 
-            v-model="data['workingDays']" 
-            v-for="day in daysList" 
-            :val="day.value" 
+          <q-checkbox
+            v-model="data['workingDays']"
+            v-for="day in daysList"
+            :val="day.value"
             :disable="loading"
-            :label="day.label" 
-            :key="day.value" 
+            :label="day.label"
+            :key="day.value"
             @update:model-value="(val : string[])=>{
               if(val.length >= 7){
                 everythingTrgger = true
@@ -239,7 +239,7 @@
           <q-checkbox
             :disable="loading"
             v-model="everythingTrgger"
-            :label="'Everything'" 
+            :label="'Everything'"
             @update:model-value="(val : boolean)=>{
               if(val){
                 data['workingDays'] = [ WorkingDaysWeek.Monday, WorkingDaysWeek.Tuesday, WorkingDaysWeek.Wednesday, WorkingDaysWeek.Thursday, WorkingDaysWeek.Friday, WorkingDaysWeek.Saturday, WorkingDaysWeek.Sunday ]
@@ -415,7 +415,7 @@
       </LabelField>
     </div>
 
-    
+
 
     <div class="row q-pb-sm">
       <div class="col-6" v-if="selectedBo['type'] == 'dispatch'">
@@ -556,7 +556,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['openSearchByMap']);
-const everythingTrgger = ref(false) 
+const everythingTrgger = ref(false)
 
 const transactionTypeOptions = computed(()=>{
   if(selectedBo.value.type === 'dispatch') {
