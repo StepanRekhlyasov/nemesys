@@ -64,6 +64,8 @@ import { useFix } from 'src/stores/fix';
 import { useUserStore } from 'src/stores/user';
 import { useBackOrder } from 'src/stores/backOrder';
 import EditButton from 'src/components/EditButton.vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
+
 const props = defineProps({
   applicant: {
     type: Object,
@@ -161,7 +163,7 @@ async function loadOperationInfo() {
     list.value = await fixStore.getFixData(props.applicant.id, true);
     loading.value = false;
   } catch (e) {
-    console.log(e)
+    Alert.warning(e)
     loading.value = false;
   }
 }
@@ -194,7 +196,7 @@ async function saveFixMemo(row) {
   try {
     await fixStore.updateFix(row.id,{memo:row.memo});
   } catch (e) {
-    console.log(e);
+    Alert.warning(e);
   }
   loading.value = false;
 }
