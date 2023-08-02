@@ -1293,7 +1293,7 @@ export default {
       onCallSupport: 'On-call support',
       onCallRemarks: 'On-call Remarks',
       welfare: 'Employee benefits',
-      retirementAge: 'Rretirement Age',
+      retirementAge: 'Retirement Age',
       inHouseInformation: 'Internal Company Information',
       referralFee: 'Referral Fee',
       referralFeeAmount: 'Referral Fee Amount',
