@@ -2,16 +2,17 @@
   <q-page class="bg-grey-3">
     <div class="q-pt-lg q-pl-lg bg-grey-3">
       <div class="q-gutter-md row">
+
+        <q-select
+          outlined
+          v-model="modelReportComputed"
+          :options="reportType"
+        />
         <q-select
           outlined
           v-model="branchInput"
           :options="branches"
           v-if="modeIndex == 2"
-        />
-        <q-select
-          outlined
-          v-model="modelReportComputed"
-          :options="reportType"
         />
         <q-input
           filled
