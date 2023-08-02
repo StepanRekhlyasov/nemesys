@@ -3,7 +3,8 @@
     {{ label }} <span v-if="required" style="color: red">*</span>
   </div>
   <div :class="[valueClass, 'blue']">
-    <hidden-text v-if="!edit" class="text_dots" :value="value" />
+    <hidden-text v-if="!edit && Array.isArray(value)" class="text_dots" :value="value.join(', ')" />
+    <hidden-text v-else class="text_dots" :value="value" />
     <template v-if="edit">
       <slot>
       </slot>
@@ -27,7 +28,7 @@ defineProps({
     default: false
   },
   value: {
-    type: String
+    type: [String, Array]
   },
   required: {
     type: Boolean,

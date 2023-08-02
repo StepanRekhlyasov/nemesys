@@ -45,60 +45,52 @@
 
     <div class="row" v-if="type == 'referral'" >
       <labelField :label="$t('backOrder.employmentType')" :edit="true" required 
-        labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10">
-        <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
+        <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[(val) => creationArrayRule(val)]">
+          <q-checkbox
             v-for="key in EmploymentBOStatus"
             v-model="data['employmentType']"
             :label="$t('client.backOrder.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
-            class="q-pr-md"/>
+            class="q-pr-md"
+          />
         </q-field>
       </labelField>
     </div>    
 
     <div class="row ">
       <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true" 
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10" required>
-        <q-field v-model="data['requiredQualifications']" borderless hide-bottom-space :rules="[() => 'requiredQualifications' in data || '']" flat >
-          <q-toggle v-model="data['requiredQualifications']" 
-            :label="$t('backOrder.create.existence')" :disable="loading" />
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
+        <q-field v-model="data['qualifications']" borderless hide-bottom-space>
+          <q-checkbox 
+            v-for="key in TypeQualifications" 
+            v-model="data['qualifications']" 
+            :label="$t('applicant.qualification.'+key)"
+            :val="key"
+            :key="key"
+            :disable="loading"
+            class="q-pr-md" 
+          />
         </q-field>
       </labelField>
     </div>
 
-    <div class="row ">
-      <labelField :label="$t('backOrder.create.nameQualification')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
-        <q-field v-model="data['qualifications']" borderless hide-bottom-space :rules="[(val) => data['requiredQualifications'] ? creationArrayRule(val) : true]">
-          <q-checkbox v-model="data['qualifications']" v-for="key in TypeQualifications" 
-            :val="key"
-            :key="key"
-            :label="$t('applicant.qualification.'+key)"
-            :disable="loading || !data['requiredQualifications']"
-            class="q-pr-md" />
-        </q-field>
-      </labelField>
-    </div>
     <div class="row">
-      <labelField :label="$t('client.backOrder.experienceReq')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center ">
-        <q-field v-model="data['experienceReq']" borderless hide-bottom-space :rules="[() => 'experienceReq' in data || '']" flat >
-          <q-toggle v-model="data['experienceReq']"  :disable="loading" 
-            :label="data['experienceReq']?$t('backOrder.create.required'):$t('backOrder.create.somethingNotQuestioned')"/>
-        </q-field>
+      <labelField :label="$t('client.backOrder.experienceReq')" :edit="true"
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center q-pl-md">
+        <q-input v-model="data['experienceReq']" type="textarea" autogrow outlined dense :disable="loading" />
       </labelField>
       <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md self-center ">
-        <q-input v-model="data['experienceRemarks']"  outlined dense :disable="loading" />
+        <q-input v-model="data['experienceRemarks']" type="textarea" autogrow outlined dense :disable="loading" />
       </labelField>
     </div>
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
-        <q-input v-model="data['upperAgeLimit']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <q-input v-model="data['upperAgeLimit']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </labelField>
     </div>
@@ -106,7 +98,7 @@
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['invoice']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -114,7 +106,7 @@
     <div class="row q-pt-sm"  v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['payment']"  outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
+        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>   
