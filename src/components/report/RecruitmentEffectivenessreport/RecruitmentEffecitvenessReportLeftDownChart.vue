@@ -8,9 +8,12 @@
 
 <script setup lang="ts">
 import { useMedia } from 'stores/media';
-import { graphType } from '../Models';
+import { graphType, SeriesType } from '../Models';
 import { onMounted, ref, computed, watch } from 'vue';
-import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './recruitmentEffectiveness.const';
+import {
+  chartTypeUnitPricePerMedia,
+  unitPricenamesPerMedia,
+} from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { Media } from 'src/shared/model/Media.model';
@@ -37,9 +40,7 @@ const chartOptions = computed(() => {
 });
 
 const dataToshow = ref<(number | string)[][]>([]);
-const series = computed<
-  { name: string; data: (number | string)[]; type: string }[]
->(() => {
+const series = computed<SeriesType[]>(() => {
   const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: t(unitPricenamesPerMedia[index]),

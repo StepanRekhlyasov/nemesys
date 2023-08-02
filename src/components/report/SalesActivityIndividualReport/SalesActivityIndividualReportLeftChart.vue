@@ -17,7 +17,7 @@ import { useGetReport } from 'src/stores/getReport';
 import { calculateCVR } from '../reportUtil';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
 import { useUserStore } from 'src/stores/user';
-import { graphType } from '../Models';
+import { graphType, SeriesType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore';
@@ -32,9 +32,7 @@ const dataToShow = ref<(number | string)[][]>([]);
 const dataToShowCVR = ref<(number | string)[][]>([]);
 const rowsIndividual = ref<RowsType>([]);
 
-const seriesList = ref<
-  { name: string; data: (number | string)[]; type: string }[]
->([]);
+const seriesList = ref<SeriesType[]>([]);
 const rows = computed<RowsType>(() => {
   const dataToshowCnverted = dataToShow.value.map((rowData, index) => {
     return {
@@ -50,9 +48,7 @@ const rows = computed<RowsType>(() => {
   });
   return (dataToshowCnverted as RowsType).concat(rowsIndividual.value);
 });
-const series = computed<
-  { name: string; data: (number | string)[]; type: string }[]
->(() => {
+const series = computed<SeriesType[]>(() => {
   return dataToShow.value
     .map((rowData, index) => {
       return {
@@ -152,11 +148,7 @@ const showIndividualReport = async (
 };
 
 watch(
-  () => [
-    props.dateRangeProps,
-    props.graph_type,
-    props.branch_id,
-  ],
+  () => [props.dateRangeProps, props.graph_type, props.branch_id],
   async () => {
     userList.value = await userStore.getAllUsersInBranch(props.branch_id);
     await showIndividualReport(props.dateRangeProps);

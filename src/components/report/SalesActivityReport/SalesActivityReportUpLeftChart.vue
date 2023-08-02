@@ -24,7 +24,7 @@ import {
   itemList,
 } from './salesActivity.const';
 import { calculateCVR, getListFromObject } from '../reportUtil';
-import { graphType } from '../Models';
+import { SeriesType, graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useGetReport } from 'src/stores/getReport';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
@@ -35,7 +35,7 @@ const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowR: Ref<(number | string)[][]> = ref([]);
 
 const series: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
+  SeriesType[]
 > = computed(() => {
   return dataToshow.value.map((rowData, index) => {
     return {
@@ -46,7 +46,7 @@ const series: ComputedRef<
   });
 });
 const seriesR: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
+  SeriesType[]
 > = computed(() => {
   return dataToshowR.value.map((rowData, index) => {
     return {

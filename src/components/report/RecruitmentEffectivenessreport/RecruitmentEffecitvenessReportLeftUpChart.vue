@@ -7,9 +7,13 @@
 </template>
 
 <script setup lang="ts">
-import { graphType } from '../Models';
+import { graphType, SeriesType } from '../Models';
 import { onMounted, ref, ComputedRef, computed, watch } from 'vue';
-import { unitPricenames, chartTypeUnitPrice, queryNamesList } from './recruitmentEffectiveness.const';
+import {
+  unitPricenames,
+  chartTypeUnitPrice,
+  queryNamesList,
+} from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
@@ -23,9 +27,7 @@ const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const dataToShow = ref<(number | string)[][]>([]);
 const monthList = ref<number[]>([]);
-const series: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const series: ComputedRef<SeriesType[]> = computed(() => {
   const seriesList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(unitPricenames[index]),

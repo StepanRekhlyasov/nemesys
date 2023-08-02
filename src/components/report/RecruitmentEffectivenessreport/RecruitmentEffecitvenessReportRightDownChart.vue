@@ -52,6 +52,7 @@ import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { convertToPercentage, calculateValues } from '../reportUtil';
 import { useGetReport } from 'src/stores/getReport';
+import { SeriesType } from '../Models';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const { getReport, getAgeReport } = useGetReport();
@@ -61,7 +62,7 @@ const dataToshowAges: Ref<(number | string)[][]> = ref([]);
 const dataToshowDaysToWork: Ref<(number | string)[][]> = ref([]);
 
 const seriesSex: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
+  SeriesType[]
 > = computed(() => {
   const series = dataToshowSex.value.map((rowdata, index) => {
     return {
@@ -73,7 +74,7 @@ const seriesSex: ComputedRef<
   return series;
 });
 const seriesAges: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
+  SeriesType[]
 > = computed(() => {
   const series = dataToshowAges.value.map((rowdata, index) => {
     return {
@@ -85,7 +86,7 @@ const seriesAges: ComputedRef<
   return series;
 });
 const seriesDaysToWork: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
+  SeriesType[]
 > = computed(() => {
   const seriesList = dataToshowDaysToWork.value.map((rowData, index) => {
     return {

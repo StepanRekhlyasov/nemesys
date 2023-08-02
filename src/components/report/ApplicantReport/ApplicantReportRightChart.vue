@@ -6,16 +6,18 @@
 <script setup lang="ts">
 import { ref, Ref, watch, onMounted, ComputedRef, computed } from 'vue';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
-import { chartOptionsLeadtime, columnsLeadtime, nameList } from './applicant.const';
+import {
+  chartOptionsLeadtime,
+  columnsLeadtime,
+  nameList,
+} from './applicant.const';
 import { useGetReport } from 'src/stores/getReport';
-import { graphType } from '../Models';
+import { SeriesType, graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 const { calcLeadtime } = useGetReport();
 const apexchart = VueApexCharts;
 const dataToshow: Ref<(number | string)[][]> = ref([]);
-const series: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const series: ComputedRef<SeriesType[]> = computed(() => {
   const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: nameList[index],
