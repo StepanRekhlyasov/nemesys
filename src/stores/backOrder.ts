@@ -54,7 +54,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     state.value.currentIds = [];
     state.value.isLoadingProgress = true;
 
-    const filters: BOElasticFilter = ref({ all: [{ deleted: 'false' }] }).value;
+    const filters: BOElasticFilter = ref({ all: [{ deleted: 'false' }, { 'organizationid': organization.currentOrganizationId }] }).value;
     let queryString = '';
 
     if (searchData['keyword']) {
@@ -178,7 +178,7 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function addBackOrder(backOrderData) {
     const auth = getAuth();
     const data = JSON.parse(JSON.stringify(backOrderData));
-    try{
+    try {
       const clientDoc = doc(db, 'clients', data.client_id);
       const officeDoc = doc(collection(clientDoc, 'client-factory'), data.office_id);
       const officeData = await getDoc(officeDoc);
@@ -188,7 +188,7 @@ export const useBackOrder = defineStore('backOrder', () => {
         data['lon'] = officeData.data().lon;
       }
     }
-    catch(err){
+    catch (err) {
       data['distance'] = null;
     }
     data['created_at'] = serverTimestamp();
@@ -199,7 +199,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['boId'] = snapshot.data().count;
 
     const checkNew = await getDocs(query(collection(db, '/BO'), where('office_id', '==', data.office_id), limit(1)))
-    if(checkNew.docs.length > 0){
+    if (checkNew.docs.length > 0) {
       data.isNew = false
     } else {
       data.isNew = true
@@ -214,7 +214,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     ;
   }
   async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
-    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('client_id', '==', clientId),where('organizationId','==',organization.currentOrganizationId)];
+    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('client_id', '==', clientId), where('organizationId', '==', organization.currentOrganizationId)];
     const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
 
     const list: BackOrderModel[] = [];
@@ -355,21 +355,21 @@ export const useBackOrder = defineStore('backOrder', () => {
     };
 
     //qualification percentage
-    if(bo.qualifications.length){
+    if (bo.qualifications.length) {
       let totalQualification = 0
       staff.qualification?.forEach((q) => {
-        bo.qualifications?.forEach((qBo)=>{
+        bo.qualifications?.forEach((qBo) => {
           if (qBo.toLowerCase() === q.toLowerCase()) {
-              totalQualification++;
-              matchedData['qualification'].label = q;
+            totalQualification++;
+            matchedData['qualification'].label = q;
           }
         })
       });
-      qualification = totalQualification/bo.qualifications.length
-  }
-  else{
-    qualification = 1;
-  }
+      qualification = totalQualification / bo.qualifications.length
+    }
+    else {
+      qualification = 1;
+    }
     matchedData['qualification'].value = qualification * 100;
 
     //Experience required
@@ -433,15 +433,15 @@ export const useBackOrder = defineStore('backOrder', () => {
         age--;
       }
       matchedData.agePercent.label = age.toString();
-      if(bo.upperAgeLimit){
+      if (bo.upperAgeLimit) {
         agePercent = age <= bo.upperAgeLimit ? 1 : 0;
       }
-      else{
+      else {
         agePercent = 1;
       }
     }
 
-    matchedData['agePercent'].value = agePercent*100;
+    matchedData['agePercent'].value = agePercent * 100;
 
     //workingHoursDay
     if (bo.workingHoursDay_min || bo.workingHoursDay_max) {
@@ -487,12 +487,12 @@ export const useBackOrder = defineStore('backOrder', () => {
     matchedData['workingHours']['night'] = workingHoursNight;
 
     //commute distance
-    if(staff.commutingTime){
-      const distance = 30*staff.commutingTime;
-      commuteDistance = distance>=staff.distanceBusiness?1:distance/staff.distanceBusiness;
+    if (staff.commutingTime) {
+      const distance = 30 * staff.commutingTime;
+      commuteDistance = distance >= staff.distanceBusiness ? 1 : distance / staff.distanceBusiness;
       matchedData.commuteDistance.label = distance.toString();
     }
-    matchedData['commuteDistance'].value = Number((commuteDistance*100).toFixed(2));
+    matchedData['commuteDistance'].value = Number((commuteDistance * 100).toFixed(2));
 
     const matchPercent = ((agePercent + qualification + daysPerWeek + daysToWork + expReq + workingHours + commuteDistance) / 7) * 100;
     staff.matchDegree = Number(matchPercent.toFixed(2));
