@@ -74,7 +74,7 @@ const validApplicantsFieldDict: FieldDict = {
   rateName: 'validApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [],
+  filters: applicantFieldDict.filters,
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -87,7 +87,9 @@ const contatApplicantsFieldDict: FieldDict = {
   rateName: 'contactApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('contactStatus', '==', true)],
+  filters: applicantFieldDict.filters.concat([
+    where('contactStatus', '==', true),
+  ]),
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -100,20 +102,23 @@ const attractionApplicantsFieldDict: FieldDict = {
   rateName: 'attractionApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('attractionsStatus', '==', true)],
+  filters: applicantFieldDict.filters.concat([
+    where('attractionsStatus', '==', true),
+  ]),
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
   organizationIdField: applicantFieldDict.organizationIdField,
 };
-
 const attendApplicantsFieldDict: FieldDict = {
   name: 'attendApplicants',
   rateName: 'attendApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('attendingStatus', '==', true)],
+  filters: applicantFieldDict.filters.concat([
+    where('attendingStatus', '==', true),
+  ]),
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
