@@ -33,10 +33,10 @@ export const getAllMunicipalities = async () => {
   return docData.data();
 }
 
-export const getStation = async (code : string) => {
+export const getAddresses = async (pincode : string) => {
   const db = getFirestore();
 
-  const docRef = doc(db, 'stations', code);
+  const docRef = doc(db, 'pincodes', pincode);
   const docData = await getDoc(docRef);
   return docData.data();
 }

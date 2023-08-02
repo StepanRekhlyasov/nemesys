@@ -276,7 +276,7 @@ import { QForm } from 'quasar';
 import { Ref, ref, watch } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
-import { prefectureList, prefecturePostalCodes } from 'src/shared/constants/Prefecture.const';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
@@ -286,7 +286,7 @@ import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
-import { getMunicipalities, getStation } from 'src/shared/constants/Municipalities.const';
+import { getMunicipalities, getAddresses } from 'src/shared/constants/Municipalities.const';
 
 const applicantDataSample = {
   qualification: [],
@@ -309,25 +309,27 @@ const applicantImage = ref<FileList | []>([]);
 const municipalities = ref<string[]>([])
 const fetchMunicipalities = ref(false)
 
-watch(() => applicantData.value.postCode, async (newVal, oldVal) =>  {
+watch(() => applicantData.value.postCode, async (newVal, oldVal) => {
   applicantData.value.prefecture = '';
-  fetchMunicipalities.value = false 
-
-  if(newVal !== oldVal && (newVal.length == 7)) {
-    const prefectureNumber = newVal.substring(0,2)
-    const municipalityNumber = newVal.substring(3)
-    const prefectureName = prefecturePostalCodes[prefectureNumber][1]
-    const station_name = await getStation(municipalityNumber)
-    console.log(station_name);
-    applicantData.value.prefecture = prefectureName;
+  applicantData.value.municipalities = '';
+  applicantData.value.street = '';
+  fetchMunicipalities.value = false;
+  if(newVal !== oldVal && newVal.length >= 6 && newVal.length <= 7) {
+    const address = await getAddresses(newVal);
     
-    municipalities.value = await getMunicipalities(prefectureName)
-    fetchMunicipalities.value = true
-  } else {
-    if(newVal.length > 7) Alert.warning('Invalid postal number!')
-    fetchMunicipalities.value = false
+    if(!address) {
+      Alert.warning('Invalid Postal Code!')
+    }
+    else {
+      console.log(address.address[0]);
+      fetchMunicipalities.value = true;
+      municipalities.value = await getMunicipalities(newVal);
+      applicantData.value.prefecture = address.address[0].prefecture;
+      applicantData.value.municipalities = address.address[0].municipality;
+      applicantData.value.street = address.address[0].street;
+    }
   }
-}, { immediate : true })
+}, {immediate: true})
 
 watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
   applicantData.value.municipalities = '';
