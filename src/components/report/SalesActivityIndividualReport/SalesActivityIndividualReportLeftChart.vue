@@ -78,6 +78,8 @@ const showIndividualReport = async (
 ) => {
   if (!range) return;
   seriesList.value = [];
+  rowsIndividual.value = [];
+  if(!props.branch_id) return;
   const users = await userStore.getUsersByConstrains([
     where('branch_id', '==', props.branch_id),
     where('deleted', '==', false),
@@ -87,6 +89,7 @@ const showIndividualReport = async (
       organizationStore.currentOrganizationId
     ),
   ]);
+  if (users.length == 0) return;
   const rows = await getReport({
     users: users,
     dateRange: range,
@@ -104,17 +107,19 @@ const showIndividualReport = async (
     });
   }
 
-  const allDataAverage = listToFixed(getListFromObject(
-    await getReport({
-      dateRange: range,
-      graphType: props.graph_type,
-      queryNames: itemList,
-      isAverage: true,
-    }),
-    itemList.map((item) => {
-      return item.queryName;
-    })
-  ) as number[]);
+  const allDataAverage = listToFixed(
+    getListFromObject(
+      await getReport({
+        dateRange: range,
+        graphType: props.graph_type,
+        queryNames: itemList,
+        isAverage: true,
+      }),
+      itemList.map((item) => {
+        return item.queryName;
+      })
+    ) as number[]
+  );
 
   const dataAverage = listToFixed(
     getListFromObject(
@@ -132,13 +137,20 @@ const showIndividualReport = async (
   );
 
   const dataAverageCvr = listToFixed(calculateCVR(dataAverage as number[]));
-  const allDataAverageCvr = listToFixed(calculateCVR(allDataAverage as number[]));
+  const allDataAverageCvr = listToFixed(
+    calculateCVR(allDataAverage as number[])
+  );
   dataToShow.value = [dataAverage, allDataAverage];
   dataToShowCVR.value = [dataAverageCvr, allDataAverageCvr];
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [
+    props.branch_user_list,
+    props.dateRangeProps,
+    props.graph_type,
+    props.branch_id,
+  ],
   async () => {
     if (props.branch_user_list.length != 0) {
       if (props.dateRangeProps == undefined) return;

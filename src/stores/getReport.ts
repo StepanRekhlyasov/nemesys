@@ -42,7 +42,7 @@ const applicantFieldDict: FieldDict = {
   branchField: 'branchInCharge',
   mediaField: 'media',
   occupationField: 'occupation',
-  organizationIdField: 'organization_id',
+  organizationIdField: 'organizationId',
 };
 
 const fixFieldDict: FieldDict = {
@@ -55,7 +55,7 @@ const fixFieldDict: FieldDict = {
   branchField: 'branchInCharge',
   uidField: 'chargeOfFix',
   mediaField: 'media',
-  organizationIdField: 'organization_id',
+  organizationIdField: 'organizationId',
 };
 
 const BOFieldDict: FieldDict = {
@@ -64,9 +64,9 @@ const BOFieldDict: FieldDict = {
   dateBasedOnLeftMostItemDate: 'created_at',
   filters: [],
   collection: 'BO',
-  uidField: 'id_registerUser',
+  uidField: 'registrant',
   mediaField: 'media',
-  organizationIdField: 'organization_id',
+  organizationIdField: 'organizationId',
 };
 
 const validApplicantsFieldDict: FieldDict = {
@@ -100,7 +100,7 @@ const attractionApplicantsFieldDict: FieldDict = {
   rateName: 'attractionApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('attractionStatus', '==', true)],
+  filters: [where('attractionsStatus', '==', true)],
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -113,7 +113,7 @@ const attendApplicantsFieldDict: FieldDict = {
   rateName: 'attendApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('attendStatus', '==', true)],
+  filters: [where('attendingStatus', '==', true)],
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -239,8 +239,8 @@ const nurseCareFieldDict: FieldDict = {
 
 const amountFieldDict: FieldDict = {
   name: 'amount',
-  dateBasedOnEachItemDate: 'accountingMonth',
-  dateBasedOnLeftMostItemDate: 'accountingMonth',
+  dateBasedOnEachItemDate: 'accountingMonthDate',
+  dateBasedOnLeftMostItemDate: 'accountingMonthDate',
   filters: [where('deleted', '==', false)],
   collection: 'budgets',
   mediaField: 'media',
@@ -382,11 +382,11 @@ const getData = async (
   const fromDateTrue =
     typeof reportState.dateRange.from == 'string'
       ? new Date(reportState.dateRange.from)
-      : reportState.dateRange.from;
+      : new Date(reportState.dateRange.from.getTime());
   const toDateTrue =
     typeof reportState.dateRange.to == 'string'
       ? new Date(reportState.dateRange.to)
-      : reportState.dateRange.to;
+      : new Date(reportState.dateRange.to.getTime());
   const queryNow = getQuery(reportState, queryName, db);
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
@@ -716,13 +716,13 @@ export const useGetReport = defineStore('getReport', () => {
           await getDoc(doc(db, 'applicants', data.applicant_id))
         ).data();
 
-        if (applicantData && applicantData.attractionDate) {
+        if (applicantData && applicantData.invitationDate) {
           dataAverageList[0] +=
-            ((applicantData.attractionDate - applicantData.applicationDate) /
+            ((applicantData.invitationDate - applicantData.applicationDate) /
               secondperday) *
             milsecondPersecond;
           dataAverageList[1] +=
-            ((dataDate - applicantData.attractionDate) / secondperday) *
+            ((dataDate - applicantData.invitationDate) / secondperday) *
             milsecondPersecond;
           ApplicantFixCounter += 1;
         }

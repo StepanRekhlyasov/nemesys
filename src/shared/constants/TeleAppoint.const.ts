@@ -1,8 +1,9 @@
 import { computed } from 'vue';
 import { i18n } from 'boot/i18n'
+import { QTableProps } from 'quasar';
 const { t } = i18n.global
 
-export const TeleColumns = computed(() => {
+export const TeleColumns = computed<QTableProps['columns']>(() => {
   return [
     {
         label:'',

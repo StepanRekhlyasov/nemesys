@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, collectionGroup, getCountFromServer } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -318,7 +318,11 @@ export const useClientFactory = defineStore('client-factory', () => {
     }
 
     const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
-
+        for(const [key, value] of Object.entries(modifiedCF)){
+          if(!key || typeof value === undefined){
+            delete modifiedCF[key]
+          }
+        }
         try {
             await setDoc(doc(db, 'clients', modifiedCF.clientID, 'client-factory', clientFactoryId, 'modifiedCF', modifiedCF.id), {
                 ...modifiedCF,
@@ -364,6 +368,35 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
 
         return modifiedCF
+    }
+
+    const getModifiedCFsByOrganizationId = async (organizationId: string) => {
+        const modifiedCFArr: ModifiedCF[] = []
+
+        try {
+            const foundModifiedCF = await getDocs(query(
+                collectionGroup(db, 'modifiedCF'),
+                where('organizationId', '==', organizationId)
+            ))
+
+            if (!foundModifiedCF.empty) {
+                foundModifiedCF.forEach((doc) => {
+                    const docData = doc.data()
+
+                    const modifiedCF = {
+                        ...docData,
+                        id: doc.id,
+                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                    } as ModifiedCF
+                    modifiedCFArr.push(modifiedCF)
+                })
+            }
+        } catch (e) {
+            Alert.warning(e)
+            console.log(e)
+        }
+        return modifiedCFArr
     }
 
     const getModifiedCFs = async (clientId: string, clientFactoryId: string) => {
@@ -426,16 +459,20 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
-
+        
         try {
             const headClientFactoryQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory'),
                 where('isHead', '==', true)
             ))
+            const countSnapshot = await getCountFromServer(collection(db, 'clients', clientId, 'client-factory'));
 
             headClientFactoryQuerySnapshot.forEach((doc) => {
                 const docData = doc.data()
-
+                docData.client = {
+                  ...docData.client,
+                  numberOffices: countSnapshot.data().count,
+                }
                 headClientFactory = {
                     ...docData,
                         id: doc.id,
@@ -444,14 +481,10 @@ export const useClientFactory = defineStore('client-factory', () => {
                 } as ClientFactory
             })
 
-            
-
         } catch(e) {
             Alert.warning(e)
-
             console.log(e)
         }
-
         return headClientFactory;
     }
 
@@ -467,6 +500,7 @@ export const useClientFactory = defineStore('client-factory', () => {
     return {
         clientFactories,
         modifiedCFs,
+        getModifiedCFsByOrganizationId,
         getClientFactories,
         getClientFactory,
         getClientFactoryList,

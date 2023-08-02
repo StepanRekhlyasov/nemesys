@@ -13,7 +13,7 @@ export interface ClientMemo {
 }
 export interface Client {
   id?: string;
-  clientId: string;
+  clientId?: string;
   client_name?: string;
   companyProfile?: string;
   conclusionContract?: boolean;
@@ -24,8 +24,8 @@ export interface Client {
   personInChargeFax?: string
   personInChargeMail?: string
   contractUnit?: string;
-  created_at: string;
-  deleted: boolean;
+  created_at?: string;
+  deleted?: boolean;
   earnings?: string;
   facilityType?: string[];
   fax?: string;
@@ -36,19 +36,19 @@ export interface Client {
   lon?: number;
   mail?: string;
   municipality?: string;
-  name: string;
-  headName: string
-  capital: string;
-  established: string;
+  name?: string;
+  headName?: string
+  capital?: string;
+  established?: string;
   numberEmployees?: string;
   numberOffices?: string;
   prefecture?: string;
   representativeName?: string;
   street?: string;
   tel?: string;
-  updated_at: string;
-  industry: string[];
-  headquarter: string;
+  updated_at?: string;
+  industry?: string[];
+  headquarter?: string;
 
 
 
@@ -61,9 +61,9 @@ export interface Client {
 // for deleting (not actual)
 export interface ClientOffice {
   id?: string;
-  updated_at: string;
-  created_at: string;
-  deleted: boolean;
+  updated_at?: string;
+  created_at?: string;
+  deleted?: boolean;
   companyProfile?: string;
   conclusionContract?: boolean;
   conclusionDispatchContract?: boolean;
@@ -79,8 +79,9 @@ export interface ClientOffice {
   lon?: number;
   mailaddress?: string;
   municipality?: string;
-  name: string;
+  name?: string;
   numberEmployees?: string;
   prefecture?: string;
   representativeName?: string;
+  label?:string
 }

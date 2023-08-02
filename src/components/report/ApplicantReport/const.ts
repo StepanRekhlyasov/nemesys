@@ -9,7 +9,6 @@ export const nameList = [t('report.companyAverage'), t('report.allAverage')];
 export const itemList = [
 {queryName:'applicants'},
 {queryName:'validApplicants'},
-{queryName:'contactApplicants'},
 {queryName:'attractionApplicants'},
 {queryName:'attendApplicants'},
 {queryName:'fix'},
@@ -30,6 +29,7 @@ export const chartOptions = computed(() => {
     },
     plotOptions: {
       bar: {
+        holizontal: true,
         columnWidth: '25%',
         endingShape: 'rounded',
       },
@@ -45,7 +45,6 @@ export const chartOptions = computed(() => {
       categories: [
         t('report.categories.applicant'),
         t('report.categories.validApplicant'),
-        t('report.categories.numberOfContacts'),
         t('report.categories.numberOfInvitations'),
         t('report.categories.numberOfAttendance'),
         t('report.categories.fix'),
@@ -71,7 +70,7 @@ export const chartOptions = computed(() => {
 
         labels: {
           formatter: function (value) {
-            return value.toFixed(1) + '%';
+            return value + '%';
           },
         },
       },
@@ -105,13 +104,6 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
       align: 'center',
       label: t('report.categories.validApplicant'),
       field: 'valid_applicants',
-      sortable: true,
-    },
-    {
-      name: 'NumberOfContacts',
-      align: 'center',
-      label: t('report.categories.numberOfContacts'),
-      field: 'contact_applicants',
       sortable: true,
     },
     {
@@ -161,7 +153,10 @@ export const columns:ComputedRef<QTableProps['columns']> = computed(() => {
 
 export const chartOptionsLeadtime = computed(() => {
   return {
-    chart: {},
+    legend: { position: 'right' },
+    chart: {
+      type: 'bar',
+    },
     title: {
       text: t('report.title.leadtime'),
       style: {
@@ -170,6 +165,7 @@ export const chartOptionsLeadtime = computed(() => {
     },
     plotOptions: {
       bar: {
+        horizontal: true,
         columnWidth: '25%',
         endingShape: 'rounded',
       },
@@ -183,7 +179,7 @@ export const chartOptionsLeadtime = computed(() => {
     },
     xaxis: {
       categories: [
-        t('report.categories.applicant') +
+        ' ' + t('report.categories.applicant') +
           '-' +
           t('report.categories.invitations'),
         t('report.categories.invitations') + '-' + t('report.categories.fix'),
@@ -195,10 +191,9 @@ export const chartOptionsLeadtime = computed(() => {
     yaxis: [
       {
         min: 0,
-
         labels: {
           formatter: function (value) {
-            return value.toFixed(1) + t('report.day');
+            return value + t('report.day');
           },
         },
       },

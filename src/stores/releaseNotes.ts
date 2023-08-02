@@ -30,7 +30,7 @@ export const useReleaseNotes = defineStore('releaseNotes', () => {
     publishNotificationData,
     getAllNotifications,
     updateNotificationData,
-    deleteNotificationData
+    deleteNotificationData,
   }
 
 })
