@@ -46,7 +46,7 @@ import {
   chartTypeAges,
   chartTypeDaysToWork,
   chartTypeSex,
-  daysToWorkQueryNamesList
+  daysToWorkQueryNamesList,
 } from './const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
@@ -55,7 +55,6 @@ import { useGetReport } from 'src/stores/getReport';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const { getReport, getAgeReport } = useGetReport();
-
 
 const dataToshowSex: Ref<(number | string)[][]> = ref([]);
 const dataToshowAges: Ref<(number | string)[][]> = ref([]);
@@ -136,16 +135,17 @@ const showChart = async () => {
   ] as number[][]);
 
   const ageDataAll = convertToPercentage(
-    Object.values(await getAgeReport({dateRange:props.dateRangeProps})).map((age) => [age])
+    Object.values(await getAgeReport({ dateRange: props.dateRangeProps })).map(
+      (age) => [age]
+    )
   );
 
   const ageDataCompany = convertToPercentage(
     Object.values(
       await getAgeReport({
-        dateRange:props.dateRangeProps,
-        organizationId:props.organization_id
-      }
-      )
+        dateRange: props.dateRangeProps,
+        organizationId: props.organization_id,
+      })
     ).map((age) => [age])
   );
 
@@ -155,23 +155,42 @@ const showChart = async () => {
   ])) {
     dataToshowAges.value.push([company[0], all[0]]);
   }
-  const daysDataCompany = convertToPercentage(Object.values((await getReport({
-    dateRange: props.dateRangeProps,
-    queryNames: daysToWorkQueryNamesList,
-    organizationId: props.organization_id,
-    graphType: props.graph_type,
-    isAverage: false,
-  }))[0]).filter((data) => typeof data === 'number').map((data) => [data]) as number[][]);
+  const daysDataCompany = convertToPercentage(
+    Object.values(
+      (
+        await getReport({
+          dateRange: props.dateRangeProps,
+          queryNames: daysToWorkQueryNamesList,
+          organizationId: props.organization_id,
+          graphType: props.graph_type,
+          isAverage: false,
+        })
+      )[0]
+    )
+      .filter((data) => typeof data === 'number')
+      .map((data) => [data]) as number[][]
+  );
 
-  const daysDataAll = convertToPercentage(Object.values((await getReport({
-    dateRange: props.dateRangeProps,
-    queryNames: daysToWorkQueryNamesList,
-    graphType: props.graph_type,
-    isAverage: false,
-  }))[0]).filter((data) => typeof data === 'number').map((data) => [data]) as number[][]);
+  const daysDataAll = convertToPercentage(
+    Object.values(
+      (
+        await getReport({
+          dateRange: props.dateRangeProps,
+          queryNames: daysToWorkQueryNamesList,
+          graphType: props.graph_type,
+          isAverage: false,
+        })
+      )[0]
+    )
+      .filter((data) => typeof data === 'number')
+      .map((data) => [data]) as number[][]
+  );
 
-  for(const [all,company] of daysDataAll.map((days,index)=>[days,daysDataCompany[index]])){
-    dataToshowDaysToWork.value.push([company[0],all[0]]);
+  for (const [all, company] of daysDataAll.map((days, index) => [
+    days,
+    daysDataCompany[index],
+  ])) {
+    dataToshowDaysToWork.value.push([company[0], all[0]]);
   }
 };
 watch(

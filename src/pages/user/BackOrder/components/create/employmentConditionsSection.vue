@@ -16,22 +16,34 @@
     <div class="row">
       <labelField :label="$t('backOrder.create.workingDays')" :edit="true"
         labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
-        <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio :disable="loading" :label="$t('backOrder.workingDays.shiftSystem')"
-          val="shiftSystem" v-model="data['workingDays']" />
-          <q-radio :disable="loading" :label="$t('backOrder.workingDays.fixed')"
-          val="fixed" v-model="data['workingDays']" />
-        </q-field>
-      </labelField>
-    </div>
-
-    <div class="row" v-if="data['workingDays'] == 'fixed'">
-      <labelField :label="$t('backOrder.create.workingDays')" :edit="true"
-        labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10" required>
-        <q-field v-model="data['working_days_week']" borderless hide-bottom-space :rules="[creationArrayRule]">
-          <q-checkbox v-model="data['working_days_week']" v-for="day in daysList"
-            :val="day.value" :disable="loading"
-            :label="day.label" :key="day.value" />
+        <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationArrayRule]">
+          <q-checkbox
+            v-model="data['workingDays']"
+            v-for="day in daysList"
+            :val="day.value"
+            :disable="loading"
+            :label="day.label"
+            :key="day.value"
+            @update:model-value="(val : string[])=>{
+              if(val.length >= 7){
+                everythingTrgger = true
+              } else {
+                everythingTrgger = false
+              }
+            }"
+          />
+          <q-checkbox
+            :disable="loading"
+            v-model="everythingTrgger"
+            :label="'Everything'"
+            @update:model-value="(val : boolean)=>{
+              if(val){
+                data['workingDays'] = [ WorkingDaysWeek.Monday, WorkingDaysWeek.Tuesday, WorkingDaysWeek.Wednesday, WorkingDaysWeek.Thursday, WorkingDaysWeek.Friday, WorkingDaysWeek.Saturday, WorkingDaysWeek.Sunday ]
+              } else {
+                data['workingDays'] = []
+              }
+            }"
+          />
         </q-field>
       </labelField>
     </div>
@@ -179,7 +191,7 @@
         {{ $t('backOrder.create.shiftRemarks') }}
       </div>
       <div class="col-10 q-pl-md ">
-        <q-input  dense outlined bg-color="white"
+        <q-input  dense outlined bg-color="white" type="textarea" autogrow
           v-model="data['shiftRemarks']" :disable="loading" />
       </div>
     </div>
@@ -203,7 +215,7 @@
         {{ $t('backOrder.create.overtimeRemarks') }}
       </div>
       <div class="col-4 flex q-pl-md self-center ">
-        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || data['overtimeWork'] !== 'yes'" />
+        <q-input  dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading || data['overtimeWork'] !== 'yes'" type="textarea" autogrow/>
       </div>
     </div>
 
@@ -221,7 +233,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel, WorkingDaysWeek } from 'src/shared/model';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { ref, watch} from 'vue';
 import labelField from 'src/components/form/LabelField.vue';
@@ -234,7 +246,7 @@ const props = defineProps<{
   type: 'dispatch' | 'referral'
 }>()
 const data = ref(props.backOrder)
-
+const everythingTrgger = ref(false)
 watch([props], () => {
   data.value = props.backOrder
 }, { deep: true })

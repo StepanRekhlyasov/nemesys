@@ -21,15 +21,8 @@
     </div>
       
     <div class="row q-mt-sm">
-      <labelField :label="$t('backOrder.create.retirementAge')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex">
-        <q-input v-model="data['retirementAge_house']" outlined dense type="number" :disable="loading"/>
-        <span class="col-2 q-ma-sm flex-center">{{ $t('common.age') }}</span>
-      </labelField>
-    </div>
-      
-    <div class="row q-mt-sm">
       <labelField :label="$t('client.list.memo')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10">
-        <q-input v-model="data['memo_house']" outlined dense :disable="loading"/>
+        <q-input v-model="data['memo_house']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
   </q-card-section>

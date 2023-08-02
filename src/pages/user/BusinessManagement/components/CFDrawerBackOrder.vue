@@ -64,7 +64,8 @@
 
     <template v-slot:body-cell-qualification="props">
       <q-td :props="props">
-        {{props.row.qualifications && props.row.qualifications.length?props.row.qualifications.map(q => $t('applicant.qualification.' + q)).join(', '):'' }}<br />
+        {{ props.row.qualifications && props.row.qualifications.length ? props.row.qualifications.map(q =>
+          $t('applicant.qualification.' + q)).join(', ') : '' }}<br />
         {{ props.row.experienceRemarks }}
       </q-td>
     </template>

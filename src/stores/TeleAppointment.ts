@@ -22,14 +22,15 @@ export const useTele = defineStore('TeleAppoint', () => {
   const db = getFirestore();
   const auth = getAuth()
   const organization = useOrganization()
-  const loadTeleAppointmentData = async (clientId: string) => {
+
+  const loadTeleAppointmentData = async (clientId: string, clientFactoryId: string) => {
     const teleAppointmentData: TeleAppointmentHistory[] = [];
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
     const userData = await getDoc(docDb(collection(db, 'users'), auth.currentUser?.uid))
     const q = await getDocs(
       query(
-        collection(db, 'clients', clientId, 'teleAppointments'),
+        collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments'),
         where('deleted', '==', false),
         where('created_at', '>=', ninetyDaysAgo),
         where('organizationId', '==', organization.currentOrganizationId),
@@ -50,7 +51,7 @@ export const useTele = defineStore('TeleAppoint', () => {
     return teleAppointmentData;
   };
 
-  const deleteTele = async (Teleid: string[], clientId: string) => {
+  const deleteTele = async (Teleid: string[], clientId: string, clientFactoryId: string) => {
     const updateData = {
       deleted: true,
       deleted_by: auth.currentUser?.uid,
@@ -59,13 +60,13 @@ export const useTele = defineStore('TeleAppoint', () => {
 
     const batch = writeBatch(db);
     for (const id of Teleid) {
-      const docRef = docDb(db, 'clients', clientId, 'teleAppointments', id);
+      const docRef = docDb(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments', id);
       batch.update(docRef, updateData);
     }
     await batch.commit();
   };
 
-  const updateData = async (clientId: string, data: TeleAppointmentHistory[]) => {
+  const updateData = async (clientId: string, clientFactoryId: string, data: TeleAppointmentHistory[]) => {
     const updateData = {};
     updateData['updated_at'] = serverTimestamp();
     updateData['updated_by'] = auth.currentUser?.uid;
@@ -74,16 +75,16 @@ export const useTele = defineStore('TeleAppoint', () => {
     updateData['requiredService'] = data['requiredService'];
     updateData['remark'] = data['remark'];
 
-    await updateDoc(docDb(db, 'clients', clientId, 'teleAppointments', data['id']), updateData);
+    await updateDoc(docDb(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments', data['id']), updateData);
   };
 
-  const addData = async (clientId: string, data: TeleAppointmentHistory[]) => {
+  const addData = async (clientId: string, clientFactoryId: string, data: TeleAppointmentHistory[]) => {
     data['created_at'] = serverTimestamp();
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
     data['organizationId'] = organization.currentOrganizationId
-    await addDoc(collection(db, 'clients', clientId, 'teleAppointments'), data);
+    await addDoc(collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments'), data);
   };
 
   return {

@@ -22,10 +22,11 @@ export interface BackOrderModel {
   qualifications: TypeQualifications[];
   somethingNotQuestioned: boolean;
   experienceRemarks: string;
+  employmentType: string[];
 
   // Employment Conditions Section
   daysPerWeekList?: 'one' | 'two' | 'three' | 'four' | 'five';
-  workingDays: 'shiftSystem' | 'fixed';
+  workingDays: WorkingDaysWeek[];
   workingDaysWeek: WorkingDaysWeek[];
   workingHoursEarly: string;
   workingHoursDay: string;
@@ -59,6 +60,8 @@ export interface BackOrderModel {
   stipulatedAmount: number;
   retirementAge_house: number;
   memo_house: string;
+
+  transactionType: TransactionType;
 }
 
 export enum TypeOfCase {
@@ -97,5 +100,5 @@ export enum WorkingDaysWeek {
   Thursday = 'thursday',
   Friday = 'friday',
   Saturday = 'saturday',
-  Holiday = 'holiday',
+  Sunday = 'sunday',
 }

@@ -14,7 +14,7 @@
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
         <q-table :columns="columns" :rows="sortedRows" row-key="id" selection="multiple"
-          class="no-shadow" v-model:pagination="paginationTable" hide-pagination
+          class="no-shadow" v-model:pagination="pagination" hide-pagination
           :loading="applicantStore.state.isLoadingProgress">
           <template v-slot:header-cell-name="props">
             <q-th :props="props" class="q-pa-none">
@@ -63,8 +63,10 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 <span v-if="props.row.occupation"> {{ getOccupation(props.row.occupation) }}</span>
-                <span v-if="props.row.classification && props.row.classification.length!=0 && props.row.occupation"> | </span>
-                <span v-if="props.row.classification && props.row.classification.length!=0"> {{ props.row.classification.map(c => getClassification(c)).join(', ') }}</span>
+                <span v-if="props.row.classification && props.row.classification.length != 0 && props.row.occupation"> |
+                </span>
+                <span v-if="props.row.classification && props.row.classification.length != 0"> {{
+                  props.row.classification.map(c => getClassification(c)).join(', ') }}</span>
               </div>
               <div>
                 {{ props.row.address }}
@@ -104,14 +106,17 @@
             <q-td :props="props">
               <span v-if="props.row.route"> {{ props.row.route }}</span>
               <span v-if="props.row.nearestStation && props.row.route"> / </span>
-              <span v-if="props.row.nearestStation && props.row.nearestStation.length > 0">{{ props.row.nearestStation }}</span>
+              <span v-if="props.row.nearestStation && props.row.nearestStation.length > 0">{{ props.row.nearestStation
+              }}</span>
             </q-td>
           </template>
 
         </q-table>
-        <div class="row justify-start q-mt-md pagination">
-          <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-            :max="applicantStore.state.metaData.total_pages" direction-links outline />
+        <div class="row justify-start q-mt-md pagination q-ml-sm">
+          <TablePaginationSimple :pagination="pagination" :is-admin="false"
+            :max="applicantStore.state.metaData.total_pages" @on-data-update="async (page) => {
+              pagination.page = page
+            }" />
         </div>
       </q-card-section>
     </q-card>
@@ -151,24 +156,21 @@ import { useApplicant } from 'src/stores/applicant';
 import SmsDrawer from './components/SmsDrawer.vue';
 import { sharedData } from './components/search/searchData'
 import { myDateFormat } from 'src/shared/utils/utils';
+import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 const { t } = useI18n({ useScope: 'global' });
 const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
+
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 10
+  rowsPerPage: 100
 });
 
-const paginationTable = ref({
-  sortBy: 'desc',
-  descending: false,
-  rowsPerPage: 10
-});
 
 const columns: ComputedRef<QTableProps['columns']> = computed(() => {
   return [
@@ -241,30 +243,30 @@ const columns: ComputedRef<QTableProps['columns']> = computed(() => {
 
 const sortedRows = computed(() => {
   const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
-    if (paginationTable.value.sortBy === 'qualification') {
+    if (pagination.value.sortBy === 'qualification') {
       const sortedRows = [...applicantStore.state.applicantList];
       sortedRows.sort((a, b) => {
         const first = a.totalYear?parseInt(a.totalYear):10000000;
         const second = b.totalYear?parseInt(b.totalYear):10000000;
-        return paginationTable.value.descending ? first-second : second-first;
+        return pagination.value.descending ? first-second : second-first;
       });
       return sortedRows;
     }
-    else if (paginationTable.value.sortBy === 'station') {
+    else if (pagination.value.sortBy === 'station') {
       const sortedRows = [...applicantStore.state.applicantList];
       sortedRows.sort((a, b) => {
         const first = a.nearestStation?a.nearestStation:'';
         const second = b.nearestStation?b.nearestStation:'';
-        return paginationTable.value.descending ? collator.compare(second, first) : collator.compare(first, second);
+        return pagination.value.descending ? collator.compare(second, first) : collator.compare(first, second);
       });
       return sortedRows;
     }
-    else if (paginationTable.value.sortBy === 'endDate') {
+    else if (pagination.value.sortBy === 'endDate') {
       const sortedRows = [...applicantStore.state.applicantList];
       sortedRows.sort((a, b) => {
         const first = myDateFormat(a.created_at);
         const second = myDateFormat(b.created_at);
-        if (paginationTable.value.descending) {
+        if (pagination.value.descending) {
           return second.localeCompare(first);
         } else {
           return first.localeCompare(second)
@@ -325,8 +327,9 @@ watch(
   },
 )
 
-watchCurrentOrganization(async ()=>{
-  await applicantStore.loadApplicantData()
+watchCurrentOrganization(async () => {
+  await applicantStore.loadApplicantData(sharedData.value, pagination.value)
+  pagination.value.page = 1;
 })
 
 applicantStore.loadApplicantData(sharedData.value, pagination.value);

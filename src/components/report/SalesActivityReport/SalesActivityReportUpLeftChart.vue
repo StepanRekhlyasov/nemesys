@@ -27,7 +27,7 @@ import { calculateCVR, getListFromObject } from '../reportUtil';
 import { graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useGetReport } from 'src/stores/getReport';
-import { round } from 'src/shared/utils/KPI.utils';
+import { listToFixed } from 'src/shared/utils/KPI.utils';
 const apexchart = VueApexCharts;
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
@@ -149,14 +149,10 @@ const showSalesActivityReport = async (
 
   const dataCvr = calculateCVR(dataTotal);
   const dataCvrAll = calculateCVR(dataAverageAll);
-  dataToshow.value = [dataTotal, dataCvr, dataCvrAll.slice(0,-1)];
+  dataToshow.value = [dataTotal, dataCvr, dataCvrAll.slice(0, -1)];
   dataToshowR.value = [
-    dataAverage.map((data) => {
-      return round(data, 1);
-    }),
-    dataAverageAll.map((data) => {
-      return round(data, 1);
-    }),
+    listToFixed(dataAverage, 1),
+    listToFixed(dataAverageAll, 1),
   ];
 };
 

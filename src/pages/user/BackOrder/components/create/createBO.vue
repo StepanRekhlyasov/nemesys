@@ -1,6 +1,6 @@
 <template>
   <q-card class="no-shadow bg-grey-3">
-    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog">
+    <q-form ref="boForm" @submit="addBackOrder" @reset="closeDialog" greedy>
       <q-card-section class="text-white bg-primary no-border-radius">
         <div class="row">
           <div class="flex items-end ">
@@ -45,8 +45,30 @@
           </div>
           <div class="row">
             <labelField :label="$t('backOrder.create.typeOfEmployment')" :edit="false" required
-              labelClass="q-pl-md col-2 self-center text-right" valueClass="col-4 q-pl-md "
-              :value="$t(`backOrder.type.${type}`)" />
+              labelClass="q-pl-md col-2 self-center text-right text-no-wrap	" valueClass="col-4 q-pl-md "
+              :value="$t(`backOrder.type.${type}`)"/>
+          </div>
+          <div class="row">
+            <labelField :label="$t('backOrder.status')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"
+              valueClass="self-center col-4 q-pl-sm" :value="data['status'] ? $t(`backOrder.${data['status']}`) : ''">
+              <q-radio v-for="key in BackOrderStatus" v-model="data['status']" :label="$t('backOrder.' + key)"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
+                :disable="loading" class="q-pr-md" />
+            </labelField>
+          </div>
+          <div class="row q-pt-sm">
+            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" 
+              labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
+              <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
+            </labelField>
+          </div>
+          <div class="row">
+            <labelField :label="$t('client.backOrder.transactionType')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"
+              valueClass="self-center col-4 q-pl-sm">
+              <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
+                :disable="loading" class="q-pr-md" />
+            </labelField>
           </div>
         </q-card-section>
 
@@ -92,8 +114,8 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
-import { onMounted, Ref, ref, watch } from 'vue';
+import { BackOrderModel, BackOrderStatus, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
+import { computed, onMounted, Ref, ref, watch } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
 import TasksSection from './TasksSection.vue';
@@ -110,7 +132,9 @@ import { QForm } from 'quasar';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { date } from 'quasar'
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n({ useScope: 'global' });
 const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
   type: 'dispatch' | 'referral',
@@ -128,6 +152,19 @@ const clientFactoryList = ref<ClientFactory[]>([])
 const boForm: Ref<QForm | null> = ref(null);
 const loading = ref(false);
 const data = ref<Partial<BackOrderModel>>({});
+
+const transactionTypeOptions = computed(()=>{
+  if(props.type === 'dispatch') {
+    return [
+      {label: 'TTP', value: 'TTP'},
+      {label: t('client.backOrder.dispatchEm'), value: 'generalDispatch'},
+    ]
+  }
+  return [
+    {label: 'TTP', value: 'TTP'},
+    {label: t('client.backOrder.introduction'), value: 'introduction'},
+  ]
+})
 
 async function addBackOrder() {
   loading.value = true
@@ -150,7 +187,8 @@ function closeDialog() {
 
 function resetData() {
   data.value = {
-    working_days_week: [] as string[],
+    workingDays: [] as string[],
+    employmentType: [] as string[],
     qualifications: [] as TypeQualifications[],
     dateOfRegistration: date.formatDate(Date.now(), 'YYYY/MM/DD'),
     lon: 0,
@@ -182,7 +220,7 @@ watch(() => data.value.client_id, async () => {
     loading.value = false
   }
 }, { deep: true, immediate: true })
-watch([data.value.client_id, data.value.office_id], async () => {
+watch(() => [data.value.client_id, data.value.office_id], async () => {
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
   if (!users) {
     return

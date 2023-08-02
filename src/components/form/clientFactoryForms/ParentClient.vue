@@ -40,9 +40,8 @@ const filterFn = (val: string, update: (cb: () => {label: string, value: string 
     });
 }
 
-watch(() => [props.modelValue.parentClient], () => {
+watch(() => [selectedClient.value], () => {
     selectedIndustry.value = ''
-    emit('update:modelValue', { ...props.modelValue, selectedIndustry: '' })
 })
 </script>
 

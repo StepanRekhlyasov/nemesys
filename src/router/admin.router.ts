@@ -95,7 +95,7 @@ const admin_router: MenuRouter[] = [
       requiresAuth: true,
       permissions: [UserPermissionNames.AdminPageAccess]
     },
-    menuParent: MenuParent.AdminEnterpriseManagement
+    menuParent: MenuParent.AdminUsers
 
   },
   {
