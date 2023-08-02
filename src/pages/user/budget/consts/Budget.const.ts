@@ -205,8 +205,15 @@ export const budgetSearchItem = computed(() => {
       required: true,
     },
     {
-      label: t('budget.postingPeriod'),
-      key: 'postingPeriod',
+      label: t('budget.postingStartDate'),
+      key: 'postingStartDate',
+      type: 'date',
+      required: true,
+      range: true,
+    },
+    {
+      label: t('budget.postingEndDate'),
+      key: 'postingEndDate',
       type: 'date',
       required: true,
       range: true,
