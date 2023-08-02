@@ -83,6 +83,7 @@ const rowsR: ComputedRef<
     inspection: number | string;
     offer: number | string;
     admission: number | string;
+    BO: number | string;
   }[]
 > = computed(() => {
   return dataToshowR.value.map((rowData, index) => {

@@ -18,11 +18,14 @@ import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
 import { round } from 'src/shared/utils/KPI.utils';
-import { chartOptionsVerticalBase } from '../report.const';
+import {
+  chartOptionsVerticalBase,
+  beforeMonth,
+  monthPerYear,
+} from '../report.const';
 
 const { getReport } = useGetReport();
-const monthPerYear = 12;
-const beforeMonth = 7;
+
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const dataToShow = ref<(number | string)[][]>([]);
