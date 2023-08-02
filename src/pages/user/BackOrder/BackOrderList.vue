@@ -43,7 +43,7 @@
               <div>
                 {{
                   props.row.transactionType
-                  ? $t(`client.backOrder.${props.row.transactionType.toLowerCase()}`)
+                  ? $t(`client.backOrder.${props.row.transactionType}`)
                   : '-'
                 }}
               </div>
