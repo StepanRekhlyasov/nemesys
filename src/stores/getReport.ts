@@ -39,7 +39,7 @@ const applicantFieldDict: FieldDict = {
   dateBasedOnLeftMostItemDate: 'applicationDate',
   filters: [where('deleted', '==', false)],
   collection: 'applicants',
-  branchField: 'branchInCharge',
+  branchField: 'branchIncharge',
   mediaField: 'media',
   occupationField: 'occupation',
   organizationIdField: 'organizationId',
@@ -52,7 +52,7 @@ const fixFieldDict: FieldDict = {
   dateBasedOnLeftMostItemDate: 'fixDate',
   filters: [where('fixStatus', '==', true)],
   collection: 'fix',
-  branchField: 'branchInCharge',
+  branchField: 'branchIncharge',
   uidField: 'chargeOfFix',
   mediaField: 'media',
   organizationIdField: 'organizationId',
@@ -370,6 +370,7 @@ const getQuery = (
     );
   }
   const dbRef = collection(db, fieldDict.collection);
+
   return query(dbRef, ...filters);
 };
 

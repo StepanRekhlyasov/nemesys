@@ -105,11 +105,9 @@ const userStore = useUserStore();
 const { getReport, getDailyReport, getAgeReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
-// const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
-// const dummyDate = '1900/07/01';
 const media = ref<string>('');
 const dateRange = ref<{ from: string; to: string }>({ from: '', to: '' });
-const branch = ref('');
+const branch = ref<string|undefined>(undefined);
 const occupation = ref('');
 const month = ref('');
 const user = ref('');
@@ -120,7 +118,7 @@ const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
-  branch.value = '';
+  branch.value = undefined;
   month.value = '';
 };
 
@@ -159,6 +157,7 @@ async function getData() {
     loading.value = true;
     // we need to care switching mode while loading
     const modeNow = mode.value;
+    console.log(branch.value, 'branch')
     if (mode.value == 'day' && month.value) {
       rowData.value = await getDailyReport({
         dateRange: dateRange.value,
@@ -244,7 +243,6 @@ async function getData() {
         rowData.value = devideByAmount(rowData.value);
     }
     if (modeNow != mode.value) {
-      resetData();
       rowData.value = [];
     }
     loading.value = false;
