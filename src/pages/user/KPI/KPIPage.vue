@@ -249,6 +249,7 @@ async function getData() {
 }
 
 const getBranchUsers = async () => {
+  if(!branch.value) return
   const users = await userStore.getAllUsersInBranch(branch.value)
   userListToShow.value = users.map((user) => {
     return { value: user.id, label: user.name }
