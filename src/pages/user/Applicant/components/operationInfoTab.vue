@@ -34,6 +34,22 @@
             .map(user => user.label).join('')  }}
         </td>
       </template>
+
+        <template v-slot:body-cell-memo="props">
+          <q-td :props="props" style="white-space: break-spaces;">
+            <q-input v-if="isRowSelected(props.rowIndex) && !bo" type="textarea" outlined dense v-model="editableContect['memo']" />
+            <template v-if="!isRowSelected(props.rowIndex)">
+              {{ props.row.memo }}
+            </template>
+          </q-td>
+        </template>
+
+      <template v-if="!bo" v-slot:body-cell-edit="props">
+        <EditButton :props="props" color="primary"
+          :on-edit="() => { editableContect.memo = props.row.memo }"
+          :on-save="() => { props.row.memo = editableContect.memo; saveFixMemo(props.row) }" @onEditableRowChange="(row) => editableRow = row"
+          :editable-row="editableRow" :key="props.rowIndex" />
+      </template>
     </q-table>
   </q-card>
 </template>
@@ -47,6 +63,9 @@ import { useApplicant } from 'src/stores/applicant';
 import { useFix } from 'src/stores/fix';
 import { useUserStore } from 'src/stores/user';
 import { useBackOrder } from 'src/stores/backOrder';
+import EditButton from 'src/components/EditButton.vue';
+import { Alert } from 'src/shared/utils/Alert.utils';
+
 const props = defineProps({
   applicant: {
     type: Object,
@@ -61,6 +80,8 @@ const fixStore = useFix();
 const userStore = useUserStore()
 const list: Ref<ApplicantFix[]> = ref([])
 const usersListOption: Ref<selectOptions[]> = ref([])
+const editableRow = ref(-1)
+const editableContect = ref({})
 
 const pagination = ref({
   sortBy: 'desc',
@@ -110,6 +131,11 @@ const columns = computed(() => {
       label: t('applicant.attendant.operationMemo'),
       field: 'memo',
       align: 'left',
+    },{
+      name: 'edit',
+      field: '',
+      label: '',
+      align: 'left',
     },
   ];
 });
@@ -137,7 +163,7 @@ async function loadOperationInfo() {
     list.value = await fixStore.getFixData(props.applicant.id, true);
     loading.value = false;
   } catch (e) {
-    console.log(e)
+    Alert.warning(e)
     loading.value = false;
   }
 }
@@ -159,6 +185,20 @@ async function loadUser() {
 
   loading.value = false;
 
+}
+
+function isRowSelected(row) {
+  return row == editableRow.value
+}
+
+async function saveFixMemo(row) {
+  loading.value = true;
+  try {
+    await fixStore.updateFix(row.id,{memo:row.memo});
+  } catch (e) {
+    Alert.warning(e);
+  }
+  loading.value = false;
 }
 </script>
 
