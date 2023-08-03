@@ -212,10 +212,11 @@ const pagination = ref({
 });
 
 const budgetSum = computed(() => {
-  let sum = 0
+  let sum = BigInt(0)
   budgetList.value.forEach(item => {
-    if (item.amount) {
-      sum += formatTextToNumber(item.amount, true) as number;
+    const num = formatTextToNumber(item.amount, true);
+    if (num) {
+      sum = BigInt(sum) + BigInt(num);
     }
   })
   return sum
