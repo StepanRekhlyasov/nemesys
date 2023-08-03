@@ -198,7 +198,7 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
             boSnapshot.docs.forEach(
                 (doc) => {
                     if (doc.data()['office_id'] === item
-                        && doc.data()['employmentType'] === employmentType) {
+                        && (doc.data()['employmentType'] && doc.data()['employmentType'].includes(employmentType))) {
                         array.push(doc.id)
                     }
                 }

@@ -198,7 +198,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
       boSnapshot.docs.forEach(
         (doc) => {
           if (doc.data()['office_id'] === cfIds[item]
-            && doc.data()['employmentType'] === employmentType) {
+            && (doc.data()['employmentType'] && doc.data()['employmentType'].includes(employmentType))) {
             array.push(doc.id)
           }
         }

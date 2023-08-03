@@ -511,7 +511,7 @@
       office = advanceSearch.getCombineId() || [];
     }
     else {
-      const cfSnapshot = await getDocs(collectionGroup(db, 'modifiedCF'));
+      const cfSnapshot = props.page==='user'?await getDocs(collectionGroup(db, 'modifiedCF')):await getDocs(collectionGroup(db,'client-factory'));
       cfSnapshot.docs.forEach((doc) => {
         office.push(doc.id)
         if(cfIds[doc.id]){
