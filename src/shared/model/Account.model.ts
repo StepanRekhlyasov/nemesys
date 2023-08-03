@@ -8,6 +8,7 @@ export interface User {
   role: string;
   organization_ids?: string[];
   branch_id?: string;
+  branchName?: string;
   displayName: string;
   email: string;
   enabled: boolean;

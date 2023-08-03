@@ -160,7 +160,12 @@ const getRegistrant = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+        if(user?.branchName){
+          userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
+        }
+        else{
+          userNames.value[registrant] = user?.displayName || '';
+        }
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {

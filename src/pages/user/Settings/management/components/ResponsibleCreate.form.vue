@@ -68,7 +68,8 @@ import { adminRolesIds } from 'src/components/handlers/consts';
 
 const props = defineProps<{
   roles: Record<string, { name: string, displayName?: string }>,
-  isAdmin?: boolean
+  isAdmin?: boolean,
+  branches
 }>()
 
 const emit = defineEmits(['closeDialog'])
@@ -105,7 +106,6 @@ async function addAccount() {
   loading.value = true;
   const data = accountData.value
   const isAdminRole = () => adminRolesIds.includes(data['role'])
-
   api.post(
     url,
     {
@@ -117,6 +117,7 @@ async function addAccount() {
       role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
       organization_ids: isAdminRole() ? undefined : [organization.currentOrganizationId],
       hidden: data.hidden,
+      branchName: props.branches[data['branch_id']].name,
     },
     {
       headers: headers,
