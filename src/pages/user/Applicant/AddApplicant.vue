@@ -30,11 +30,14 @@
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.postCode') }} <span style="color: red">*</span>
               </div>
-              <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['postCode']" :rules="[creationRule]" hide-bottom-space
-                  bg-color="white" />
+              <div class="row q-pl-sm">
+                <q-input class="col" outlined dense v-model="applicantData['postCode']" :rules="[creationRule]"
+                  hide-bottom-space bg-color="white" />
+                <q-btn class="col-4" @click="fetchAddress">Autofill</q-btn>
               </div>
             </div>
+            <AddressDialog @keep-details="(value) => { keepDetails = value }" :openDialog="showAddress"
+              :Prefecture="Prefecture" :Municipality="Municipality" :StreetAddress="StreetAddress" />
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.prefecture') }} <span style="color: red">*</span>
@@ -195,7 +198,7 @@
               </div>
               <div class="col-9 q-pl-sm">
                 <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
-                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+                  hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
             <div class="row q-pt-md q-pb-sm ">
@@ -287,6 +290,7 @@ import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
 import { getMunicipalities, getAddresses } from 'src/shared/constants/Municipalities.const';
+import AddressDialog from './components/AddressDialog.vue';
 
 const applicantDataSample = {
   qualification: [],
@@ -309,27 +313,42 @@ const applicantImage = ref<FileList | []>([]);
 const municipalities = ref<string[]>([])
 const fetchMunicipalities = ref(false)
 
-watch(() => applicantData.value.postCode, async (newVal, oldVal) => {
-  applicantData.value.prefecture = '';
-  applicantData.value.municipalities = '';
-  applicantData.value.street = '';
-  fetchMunicipalities.value = false;
-  if(newVal !== oldVal && newVal.length >= 6 && newVal.length <= 7) {
-    const address = await getAddresses(newVal);
-    
-    if(!address) {
-      Alert.warning('Invalid Postal Code!')
-    }
-    else {
-      console.log(address.address[0]);
-      fetchMunicipalities.value = true;
-      municipalities.value = await getMunicipalities(newVal);
-      applicantData.value.prefecture = address.address[0].prefecture;
-      applicantData.value.municipalities = address.address[0].municipality;
-      applicantData.value.street = address.address[0].street;
-    }
+const showAddress = ref(false)
+const Prefecture = ref('')
+const Municipality = ref('')
+const StreetAddress = ref('')
+const keepDetails = ref(false)
+
+
+watch(() => applicantData.value.postCode, (newVal, oldVal) => {
+  if(newVal !== oldVal) {
+    showAddress.value = false;
+    keepDetails.value = false;
+    fetchMunicipalities.value = false;
+    applicantData.value.prefecture = '';
+    applicantData.value.municipalities = '';
+    applicantData.value.street = '';
   }
-}, {immediate: true})
+})
+
+watch(() => keepDetails.value, async (newVal, oldVal) => {
+  if(newVal) {
+    fetchMunicipalities.value = true;
+    municipalities.value = await getMunicipalities(Prefecture.value);
+    applicantData.value.municipalities = '';
+    applicantData.value.prefecture = Prefecture.value;
+    applicantData.value.municipalities = Municipality.value;
+    applicantData.value.street = StreetAddress.value; 
+  }
+  else {
+    showAddress.value = false;
+    fetchMunicipalities.value = false;
+    municipalities.value = []
+    applicantData.value.prefecture = '';
+    applicantData.value.municipalities = '';
+    applicantData.value.street = ''; 
+  }
+})
 
 watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
   applicantData.value.municipalities = '';
@@ -341,6 +360,19 @@ watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
     fetchMunicipalities.value = false
   }
 }, { immediate: true })
+
+async function fetchAddress() {
+  const pincode = applicantData.value.postCode
+  const address = await getAddresses(pincode)
+  if (!address) {
+    Alert.warning('Invalid pin entered!');
+    return;
+  }
+  showAddress.value = true
+  Prefecture.value = address.address[0].prefecture;
+  Municipality.value = address.address[0].municipality;
+  StreetAddress.value = address.address[0].street;
+}
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
@@ -387,7 +419,7 @@ async function onSubmit() {
   data['deleted'] = false;
   try {
     await applicantStore.createApplicant(data, applicantImage.value)
-    ;
+      ;
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   } catch (error) {
