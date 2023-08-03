@@ -58,6 +58,9 @@
                 }}
               </div>
             </q-td>
+            <q-td v-else :props="props" class="q-pa-none">
+              <div>-</div>
+            </q-td>
           </template>
 
           <template v-slot:body-cell-info="props">
@@ -93,6 +96,16 @@
                   props.row.wage
                   ? $t(`backOrder.create.${props.row.wage}`)
                   : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-salary="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.salary ? props.row.salary : '-'
                 }}
               </div>
             </q-td>
