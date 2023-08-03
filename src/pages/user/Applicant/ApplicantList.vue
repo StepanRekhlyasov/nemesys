@@ -96,11 +96,17 @@
               <span v-if="props.value && props.value.length > 0">
                 {{ props.value.map(item => $t('applicant.qualification.' + item)).join(', ') }}
               </span>
-              <span v-if="props.row.totalYear && props.value.length"> / </span>
-              <span v-if="props.row.totalYear"> {{ props.row.totalYear + ' ' + $t('common.year') }}</span>
+              <span v-if="props.row.totalMonthes && props.value.length"> / </span>
+		          <span>{{ props.row.totalMonthes ? Math.floor(props.row.totalMonthes / 12) + ' ' + $t('common.year') : '' }}</span>
 
             </q-td>
           </template>
+
+          <template v-slot:body-cell-staffRank="props">
+		            <q-td :props="props">
+		             {{ RankCount.getRank(props.row.staffRank) }}
+		            </q-td>
+		          </template>
 
           <template v-slot:body-cell-station="props">
             <q-td :props="props">
@@ -153,6 +159,7 @@ import { QTableProps } from 'quasar';
 import { ApplicantElasticSearchData } from 'src/pages/user/Applicant/types/applicant.types';
 import { Applicant, ApplicantOccupation } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
+import { RankCount } from 'src/shared/utils/RankCount.utils';
 import SmsDrawer from './components/SmsDrawer.vue';
 import { sharedData } from './components/search/searchData'
 import { myDateFormat } from 'src/shared/utils/utils';

@@ -7,7 +7,7 @@ import { occupationList } from 'src/shared/constants/Applicant.const';
 import { budgetAddItem } from 'src/pages/user/budget/consts/Budget.const';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
-import { dateToTimestampFormat, toJPDateString, toDateFormat, formatNumber } from 'src/shared/utils/utils';
+import { dateToTimestampFormat, toJPDateString, toDateFormat, formatNumber, formatTextToNumber } from 'src/shared/utils/utils';
 import { deepCopy } from 'src/shared/utils';
 import { useBranch } from './branch';
 import { BudgetData } from 'src/pages/user/budget/type/budget'
@@ -23,6 +23,7 @@ export const useBudget = defineStore('budget', () => {
   const loadChartData = ref(true);
   const branchStore = useBranch()
   const organization = useOrganization();
+
   async function saveBudget(budgetData: BudgetData) {
     const data = JSON.parse(JSON.stringify(budgetData));
     if (data.postingEndDate) data.postingEndDate = dateToTimestampFormat(new Date(data.postingEndDate));
@@ -34,6 +35,9 @@ export const useBudget = defineStore('budget', () => {
     if (checkMonth[1].length == 1) {
       data.accountingMonth = `${checkMonth[0]}/${('0' + checkMonth[1]).slice(-2)}`;
     }
+    if (data.amount) data.amount = formatTextToNumber(data.amount);
+    if (data.numberOfSlots) data.numberOfSlots = formatTextToNumber(data.numberOfSlots);
+    if (data.unitPrice) data.unitPrice = formatTextToNumber(data.unitPrice);
 
     data.accountingMonthDate = dateToTimestampFormat(new Date(data.accountingMonth));
 
@@ -53,7 +57,7 @@ export const useBudget = defineStore('budget', () => {
       data['updated_by'] = auth.currentUser?.uid;
       await updateDoc(docRef, data);
     }
-    
+
     return true
   }
 
@@ -67,7 +71,8 @@ export const useBudget = defineStore('budget', () => {
 
     const branches = Object.values((await branchStore.getBranchesInOrganization(organizationId)))
     options.value['branch'] = branches.map((b) => {
-      return { value: b.id, label: b.name }
+      return { value: b.id, label: b.name, branchRomaji: b['nameRomaji'] }
+
     })
     return options.value;
 
@@ -94,6 +99,7 @@ export const useBudget = defineStore('budget', () => {
         data['branch'] = getItem(data['branch'], 'branch')
         data['occupationId'] = data['occupation']
         data['occupation'] = getItem(data['occupation'], 'occupation')
+        data['branchRomaji'] = getBranchRomaji(data['branchId'])
         data['id'] = doc.id
         data['selected'] = false
         items.push(data);
@@ -117,6 +123,12 @@ export const useBudget = defineStore('budget', () => {
       return obj.label;
     }
   };
+  const getBranchRomaji = (item: string) => {
+    const obj = options.value['branch'].find(o => o.value === item);
+    if (obj) {
+      return obj['branchRomaji'] ? obj['branchRomaji'] : obj.label;
+    }
+  }
   const deleteBudget = async (budgetIds: string[]) => {
     const updateData = {}
     updateData['deleted'] = true;
@@ -180,6 +192,9 @@ export const useBudget = defineStore('budget', () => {
       if (budgetData[i]['accountingMonth']) {
         budgetData[i]['accountingMonth'] = toJPDateString(budgetData[i]['accountingMonth'])
       }
+      if (budgetData[i].amount) budgetData[i].amount = formatNumber(budgetData[i].amount as string);
+      if (budgetData[i].numberOfSlots) budgetData[i].numberOfSlots = formatNumber(budgetData[i].numberOfSlots as string);
+      if (budgetData[i].unitPrice) budgetData[i].unitPrice = formatNumber(budgetData[i].unitPrice as string)
 
     }
 
@@ -226,7 +241,7 @@ export const useBudget = defineStore('budget', () => {
     try {
       const rowsInString = data
       const rows = rowsInString.split('\r\n')
-      const batch = writeBatch(db);
+      let batch = writeBatch(db);
       const previewData: { ok: BudgetData[], ng: BudgetData[] } = ({ ok: [], ng: [] });
       await getOptionData(organization.currentOrganizationId);
       const snapshot = await getDocs(query(collection(db, '/budgets'), where('organizationId', '==', organization.currentOrganizationId)))
@@ -241,6 +256,11 @@ export const useBudget = defineStore('budget', () => {
         if (checkMonth && checkMonth.length > 1 && checkMonth[1].length == 1) {
           budgetData.value.accountingMonth = `${checkMonth[0]}/${('0' + checkMonth[1]).slice(-2)}`
         }
+        if (budgetData.value.amount) budgetData.value.amount = formatTextToNumber(budgetData.value.amount.toString());
+        if (budgetData.value.numberOfSlots) budgetData.value.numberOfSlots = formatTextToNumber(budgetData.value.numberOfSlots.toString());
+        if (budgetData.value.unitPrice) budgetData.value.unitPrice = formatTextToNumber(budgetData.value.unitPrice.toString());
+
+
         const budgetDataCopy = deepCopy(budgetData.value)
 
         budgetData.value.accountingMonthDate = dateToTimestampFormat(new Date(budgetData.value.accountingMonth));
@@ -288,7 +308,10 @@ export const useBudget = defineStore('budget', () => {
           }
           recordNumber += 1;
         }
-
+        if (!preview && i % 450 == 0) {
+          await batch.commit()
+          batch = writeBatch(db);
+        }
       }
       if (!preview) {
         await batch.commit()
@@ -360,7 +383,7 @@ export const useBudget = defineStore('budget', () => {
           return
         }
         if (amount) {
-          amount = parseInt(amount.replace(/,/g, ''), 10);
+          amount = amount = formatTextToNumber(amount);
           const index = media.findIndex(x => x.value === data['media']);
           if (index > -1) {
             if (chatItem[media[index]['label']]) {
