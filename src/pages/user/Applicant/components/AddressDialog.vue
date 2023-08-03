@@ -1,43 +1,45 @@
 <template>
-    <q-dialog :model-value="openDialog">
-        <DialogWrapper>
-            <q-card-section class="row items-center q-pb-none">
-                <div class="text-h6">Close icon</div>
-                <q-space />
-                <q-btn icon="close" @click="emit('keepDetails',false)" flat round dense v-close-popup />
-            </q-card-section>
-            <q-list bordered separator>
-                <q-item>
-                    <q-item-section> Prefecture: {{ Prefecture }}</q-item-section>
-                </q-item>
-                <q-item>
-                    <q-item-section> Municipality: {{ Municipality }} </q-item-section>
-                </q-item>
-                <q-item>
-                    <q-item-section>
-                        Street Address: {{ StreetAddress }}
-                    </q-item-section>
-                </q-item>
-            </q-list>
-            <q-card-section class="row items-right q-pb-none">
-                <q-btn @click="emit('keepDetails',true)" v-close-popup>Keep These Details</q-btn>
-            </q-card-section>
-        </DialogWrapper>
-    </q-dialog>
+  <q-dialog :model-value="openDialog">
+    <DialogWrapper>
+      <q-card-section class="row items-center">
+        <div class="text-h6">{{ $t('client.list.address') }}</div>
+        <q-space />
+        <q-btn icon="close" @click="emit('keepDetails', false)" flat round dense v-close-popup />
+      </q-card-section>
+      <q-separator />
+      <q-card-section style="max-height: 50vh" class="scroll">
+        <q-list>
+          <q-item tag="label" v-ripple v-for="(address, index) in addressList" :key="address.prefecture" dense>
+            <q-item-section avatar>
+              <q-radio v-model="selectedAddress" :val="index" color="primary" dense />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>{{ address.prefecture }}{{ address.municipality }}{{ address.street }}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-card-section>
+      <q-separator />
+      <q-card-actions align="right">
+        <q-btn flat :label="$t('common.close')" color="red" v-close-popup />
+        <q-btn flat :label="$t('common.submit')" color="primary" @click="emit('getAddress', selectedAddress)"
+          v-close-popup :disable="selectedAddress < 0" />
+      </q-card-actions>
+    </DialogWrapper>
+  </q-dialog>
 </template>
 
-<script lang = "ts" setup>
+<script lang="ts" setup>
+import { ref } from 'vue';
 import { QDialogProps } from 'quasar';
 import DialogWrapper from 'src/components/dialog/DialogWrapper.vue';
-// import {AddressDialogProps} from 'src/pages/user/Applicant/const/AddressDialogInfo';
 
-const emit = defineEmits(['keepDetails'])
+const emit = defineEmits<{ (e: 'getAddress', index: number), (e: 'keepDetails', flag: boolean) }>()
 interface AddressDialogProps extends QDialogProps {
-    openDialog: boolean
-    Prefecture: string
-    Municipality: string
-    StreetAddress: string
+  openDialog: boolean,
+  addressList: { prefecture: string, municipality: string, street: string }[]
 }
+const selectedAddress = ref(<number>-1)
 
 defineProps<AddressDialogProps>()
 </script>
