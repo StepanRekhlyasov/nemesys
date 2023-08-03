@@ -197,6 +197,7 @@ export default {
         organizationId: 'Organization ID',
         organizationName: 'Organization name',
         operator: 'Person in charge',
+        manager: 'Manager ',
         phoneNumber: 'Phone number',
         fax: 'FAX number',
         email: 'Email',

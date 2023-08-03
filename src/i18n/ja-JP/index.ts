@@ -197,6 +197,7 @@ export default {
         organizationId: '企業ID',
         organizationName: '企業名',
         operator: '担当者名',
+        manager: '担当者',
         phoneNumber: '電話番号',
         fax: 'FAX番号',
         email: 'メールアドレス',

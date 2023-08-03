@@ -29,7 +29,7 @@ watch(contractInfo, () => {
             <div class="row q-mt-sm">
                 <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.add.manager') }}
+                        {{ t('client.list.personIncharge') }}
                     </q-item-label>
 
                     <q-input
@@ -41,7 +41,7 @@ watch(contractInfo, () => {
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('clientFactory.drawer.details.inChargeTitle') }}
+                        {{ t('clientFactory.personInChargeTitle') }}
                     </q-item-label>
 
                     <q-input
@@ -55,26 +55,26 @@ watch(contractInfo, () => {
             <div class="row q-mt-sm">
                 <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('clientFactory.drawer.details.inChargeTel') }}
+                        {{ t('client.list.personIncharge') }} : TEL
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['telContact']"
-                        :placeholder="t('client.add.phoneLabel')"
+                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('clientFactory.drawer.details.inChargeMail') }}
+                        {{ t('client.list.personIncharge') }} : MAIL
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['mailContact']"
-                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
+                        :placeholder="t('client.add.phoneLabel')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>
