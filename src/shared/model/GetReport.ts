@@ -61,7 +61,7 @@ export interface userBasedReportState extends basedReportState {
 
 export interface dailyBasedReportState extends basedReportState {
   dateInMonth: string;
-  branch: string;
+  branch?: string;
 }
 
 export interface FieldDict {

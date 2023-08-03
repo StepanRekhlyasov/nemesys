@@ -105,11 +105,9 @@ const userStore = useUserStore();
 const { getReport, getDailyReport, getAgeReport } = useGetReport();
 const UserBranch = useBranch();
 const { getAllmedia } = useMedia();
-// const dummyDataDateRange = {from:'1900/01/01',to:'1900/12/31'};
-// const dummyDate = '1900/07/01';
 const media = ref<string>('');
 const dateRange = ref<{ from: string; to: string }>({ from: '', to: '' });
-const branch = ref('');
+const branch = ref<string|undefined>(undefined);
 const occupation = ref('');
 const month = ref('');
 const user = ref('');
@@ -120,7 +118,7 @@ const item = ref('actualFigures');
 const branchs = ref<{ value: string; label: string }[]>([]);
 const resetData = () => {
   user.value = '';
-  branch.value = '';
+  branch.value = undefined;
   month.value = '';
 };
 
@@ -244,7 +242,6 @@ async function getData() {
         rowData.value = devideByAmount(rowData.value);
     }
     if (modeNow != mode.value) {
-      resetData();
       rowData.value = [];
     }
     loading.value = false;
@@ -252,6 +249,7 @@ async function getData() {
 }
 
 const getBranchUsers = async () => {
+  if(!branch.value) return
   const users = await userStore.getAllUsersInBranch(branch.value)
   userListToShow.value = users.map((user) => {
     return { value: user.id, label: user.name }

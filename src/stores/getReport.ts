@@ -37,9 +37,9 @@ const applicantFieldDict: FieldDict = {
   name: 'applicants',
   dateBasedOnEachItemDate: 'applicationDate',
   dateBasedOnLeftMostItemDate: 'applicationDate',
-  filters: [],
+  filters: [where('deleted', '==', false)],
   collection: 'applicants',
-  branchField: 'branchInCharge',
+  branchField: 'branchIncharge',
   mediaField: 'media',
   occupationField: 'occupation',
   organizationIdField: 'organizationId',
@@ -52,7 +52,7 @@ const fixFieldDict: FieldDict = {
   dateBasedOnLeftMostItemDate: 'fixDate',
   filters: [where('fixStatus', '==', true)],
   collection: 'fix',
-  branchField: 'branchInCharge',
+  branchField: 'branchIncharge',
   uidField: 'chargeOfFix',
   mediaField: 'media',
   organizationIdField: 'organizationId',
@@ -74,7 +74,7 @@ const validApplicantsFieldDict: FieldDict = {
   rateName: 'validApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [],
+  filters: applicantFieldDict.filters,
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -87,7 +87,9 @@ const contatApplicantsFieldDict: FieldDict = {
   rateName: 'contactApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('contactStatus', '==', true)],
+  filters: applicantFieldDict.filters.concat([
+    where('contactStatus', '==', true),
+  ]),
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -100,20 +102,23 @@ const attractionApplicantsFieldDict: FieldDict = {
   rateName: 'attractionApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('attractionsStatus', '==', true)],
+  filters: applicantFieldDict.filters.concat([
+    where('attractionsStatus', '==', true),
+  ]),
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
   occupationField: applicantFieldDict.occupationField,
   organizationIdField: applicantFieldDict.organizationIdField,
 };
-
 const attendApplicantsFieldDict: FieldDict = {
   name: 'attendApplicants',
   rateName: 'attendApplicantsRate',
   dateBasedOnEachItemDate: applicantFieldDict.dateBasedOnEachItemDate,
   dateBasedOnLeftMostItemDate: applicantFieldDict.dateBasedOnLeftMostItemDate,
-  filters: [where('attendingStatus', '==', true)],
+  filters: applicantFieldDict.filters.concat([
+    where('attendingStatus', '==', true),
+  ]),
   collection: applicantFieldDict.collection,
   branchField: applicantFieldDict.branchField,
   mediaField: applicantFieldDict.mediaField,
@@ -124,7 +129,7 @@ const attendApplicantsFieldDict: FieldDict = {
 const inspectionFieldDict: FieldDict = {
   name: 'inspection',
   rateName: 'inspectionRate',
-  dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnEachItemDate: 'inspectionDate',
   dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
   filters: [where('inspectionStatus', '==', true)],
   collection: fixFieldDict.collection,
@@ -137,7 +142,7 @@ const inspectionFieldDict: FieldDict = {
 const offerFieldDict: FieldDict = {
   name: 'offer',
   rateName: 'offerRate',
-  dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnEachItemDate: 'offerDate',
   dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
   filters: [where('offerStatus', '==', true)],
   collection: fixFieldDict.collection,
@@ -150,7 +155,7 @@ const offerFieldDict: FieldDict = {
 const admissionFieldDict: FieldDict = {
   name: 'admission',
   rateName: 'admissionRate',
-  dateBasedOnEachItemDate: fixFieldDict.dateBasedOnEachItemDate,
+  dateBasedOnEachItemDate: 'admissionDate',
   dateBasedOnLeftMostItemDate: fixFieldDict.dateBasedOnLeftMostItemDate,
   filters: [where('admissionStatus', '==', true)],
   collection: fixFieldDict.collection,
@@ -320,6 +325,7 @@ const getQuery = (
     typeof reportState.dateRange.to == 'string'
       ? new Date(reportState.dateRange.to)
       : reportState.dateRange.to;
+  toDate.setHours(23, 59, 59, 999);
   if (queryName.queryName == 'amount') {
     fromDate.setMonth(fromDate.getMonth() - 1);
   }
@@ -364,6 +370,7 @@ const getQuery = (
     );
   }
   const dbRef = collection(db, fieldDict.collection);
+
   return query(dbRef, ...filters);
 };
 
@@ -387,6 +394,7 @@ const getData = async (
     typeof reportState.dateRange.to == 'string'
       ? new Date(reportState.dateRange.to)
       : new Date(reportState.dateRange.to.getTime());
+  toDateTrue.setHours(23, 59, 59, 999);
   const queryNow = getQuery(reportState, queryName, db);
   if (queryName.queryName == 'amount') {
     const docSnap = await getDocs(queryNow);
@@ -519,7 +527,8 @@ export const useGetReport = defineStore('getReport', () => {
           new Date(date).getDate(),
           23,
           59,
-          59
+          59,
+          999
         ),
       };
       let data: number[] = [];
