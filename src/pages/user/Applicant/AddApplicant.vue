@@ -332,7 +332,7 @@ watch(() => applicantData.value.postCode, (newVal, oldVal) => {
 })
 
 watch(() => keepDetails.value, async (newVal, oldVal) => {
-  if(newVal) {
+  if(newVal && !oldVal) {
     fetchMunicipalities.value = true;
     municipalities.value = await getMunicipalities(Prefecture.value);
     applicantData.value.municipalities = '';
