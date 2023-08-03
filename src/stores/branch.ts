@@ -22,7 +22,13 @@ export const useBranch = defineStore('branch', () => {
     return branches
   }
 
-
+  async function getBrancheById(branchId: string) {
+    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('id', '==', branchId));
+    const querySnapshot = await getDocs(branchesQuery);
+    querySnapshot.forEach((doc) => {
+      return doc.data()
+    })
+  }
 
   async function getBranches(organization_id: string, search?: BranchesSearch) {
     const businesses = await business.getBusinesses(organization_id)
@@ -137,5 +143,6 @@ export const useBranch = defineStore('branch', () => {
     getBranch,
     calculateLicenceFee,
     createBranch,
+    getBrancheById,
   }
 })

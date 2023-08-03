@@ -51,10 +51,10 @@
           </template>
 
           <template v-slot:body-cell-employmentType="props">
-            <q-td :props="props" class="q-pa-none">
-              <div>
+            <q-td v-if="props.row.employmentType" :props="props" class="q-pa-none">
+              <div  v-for="emp in props.row.employmentType" :key="emp">
                 {{
-                  props.row.employmentType && props.row.employmentType.length ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
+                  $t(`client.backOrder.${emp}`)
                 }}
               </div>
             </q-td>
@@ -135,7 +135,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, Client } from 'src/shared/model';
+import { BackOrderModel, Branch, Client } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
 import { Ref, ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
@@ -153,8 +153,10 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 import { useUserStore } from 'src/stores/user'
 import { myDateFormat } from 'src/shared/utils/utils';
+import { useBranch } from 'src/stores/branch';
 
 const userStore = useUserStore();
+const useBranchStore = useBranch();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const $q = useQuasar();
@@ -273,7 +275,8 @@ const customSortMethod = (rows, sortBy, descending) => {
   }
 };
 
-const userNames = ref<{ [key: string]: string }>({});
+const userNames = ref<{ [id: string]: string }>({});
+const branchNames = ref<{ [id: string]: Branch }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -281,7 +284,7 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+          userNames.value[registrant] = user?.displayName || '';
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
@@ -336,6 +339,8 @@ watch(() => pagination.value.page, async () => {
 
 onMounted(async () => {
   await applicantStore.getClients()
+  const branch = await useBranchStore.getBrancheById('EaDI5oj0lB0nqbzOfhqm');
+  console.log(branch['EaDI5oj0lB0nqbzOfhqm'])
 })
 
 </script>
