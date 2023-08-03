@@ -2,8 +2,6 @@ import { getApp } from 'firebase/app';
 import { collection, doc, getDocs, getFirestore, query, setDoc, where } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { defineStore } from 'pinia';
-import { toTable } from 'src/components/organization/handlers/ToTable';
-import { Table } from 'src/pages/admin/EnterpriseManagement/types';
 import { YearMonthIterator } from 'src/pages/admin/LicenseManagement/handlers/YearMonthIterator';
 import { LicensePath, LicenseVariation } from 'src/pages/admin/LicenseManagement/types/LicenseHistory';
 import { LicenseRequest } from 'src/pages/admin/LicenseManagement/types/LicenseRequest';
@@ -48,7 +46,7 @@ export const useLicense = defineStore('license', () => {
    * @param selectedYear in 2023 format
    * @param selectedMonth in 1-12 format
    */
-  async function getLicensesInMonth({ organizationId, selectedYear, selectedMonth }: { organizationId: string, selectedYear: number, selectedMonth: number }): Promise<Table | undefined> {
+  async function getLicensesInMonth({ organizationId, selectedYear, selectedMonth }: { organizationId: string, selectedYear: number, selectedMonth: number }) {
     const defaultData = await Promise.all([
       organizationStore.getDataById([organizationId], 'Organization'),
       businessStore.getBusinesses(organizationId),
@@ -151,7 +149,7 @@ export const useLicense = defineStore('license', () => {
       branchesInBusiness[branch.businessId].push(branch)
     }
 
-    return toTable(business, branchesInBusiness, organization)
+    return { business, branchesInBusiness, organization }
 
   }
 
@@ -163,13 +161,13 @@ export const useLicense = defineStore('license', () => {
     })
   }
 
-  async function getRequestList(id: string){
+  async function getRequestList(id: string) {
     const pendingSnap = await getDocs(query(collection(db, 'licenseRequests'), where('branchId', '==', id)))
     const workedSnap = await getDocs(query(collection(db, 'licenseHistory'), where('branchId', '==', id)))
-    const pendingResult = pendingSnap.docs.map((row)=>{
+    const pendingResult = pendingSnap.docs.map((row) => {
       return row.data()
     })
-    const workedResult = workedSnap.docs.map((row)=>{
+    const workedResult = workedSnap.docs.map((row) => {
       return row.data()
     })
     return [...pendingResult, ...workedResult]
