@@ -187,7 +187,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 30,
 });
 
 const customSortMethod = (rows, sortBy, descending) => {
