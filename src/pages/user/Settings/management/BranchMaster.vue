@@ -6,8 +6,6 @@
           <q-icon name="mdi-cog-outline" color="primary" class="q-pr-sm" size="md" />
           {{ $t('menu.branches') }}
         </div>
-        <q-btn color="primary" text-color="white" class="no-shadow" icon="mdi-plus"
-          :label="$t('settings.branch.addBranch')" @click="openDialog = true; dialogType = 'Branch'" />
       </div>
     </q-card-section>
     <q-separator color="grey-5" size="2px" />
@@ -39,13 +37,16 @@
             </template>
             <template v-slot:body-cell-edit="props">
               <q-td :props="props" auto-width>
-                <q-btn icon="edit" flat @click="editBranch = props.row; openDialog = true; dialogType = 'Branch'"/>
+                <q-btn icon="edit" flat @click="editBranch = props.row; openDialog = true; dialogType = 'Branch'" />
               </q-td>
             </template>
             <template v-slot:body-cell-list="props">
               <q-td :props="props" auto-width>
-                <q-btn :label="$t('menu.admin.licenseManagement.showList')" unelevated size="sm" color="primary" text-color="white" @click="()=>{showList = true;
-showListRow = props.row}" />
+                <q-btn :label="$t('menu.admin.licenseManagement.showList')" unelevated size="sm" color="primary"
+                  text-color="white" @click="() => {
+                    showList = true;
+                    showListRow = props.row
+                  }" />
               </q-td>
             </template>
 
@@ -58,7 +59,10 @@ showListRow = props.row}" />
 
             <template v-slot:body-cell-prefecture="props">
               <q-td :props="props">
-                <span v-if="props.row.prefecture">{{ $t('prefectures.' + (prefectureLocaleKey[props.row.prefecture]?prefectureLocaleKey[props.row.prefecture]:props.row.prefecture)) }}</span>
+                <span v-if="props.row.prefecture">{{ $t('prefectures.' +
+                  (prefectureLocaleKey[props.row.prefecture] ? prefectureLocaleKey[props.row.prefecture] :
+                    props.row.prefecture))
+                }}</span>
               </q-td>
             </template>
 
@@ -90,10 +94,11 @@ showListRow = props.row}" />
             </template>
           </q-table>
           <div class="row justify-start q-mt-md q-mb-md pagination">
-            <!-- TODO add TablePagination -->
-            <q-pagination v-model="pagination.page" color="grey-8" padding="5px 16px" gutter="md"
-              :max="(branches.length / pagination.rowsPerPage) >= 1 ? branches.length / pagination.rowsPerPage : 1"
-              direction-links outline />
+            <TablePaginationSimple :pagination="pagination" :is-admin="false"
+              :max="(branches.length / pagination.rowsPerPage) >= 1 ? Math.ceil(branches.length / pagination.rowsPerPage) : 1"
+              @on-data-update="async (page) => {
+                pagination.page = page
+              }" />
           </div>
         </q-card-section>
       </q-card>
@@ -107,7 +112,7 @@ showListRow = props.row}" />
         @close-dialog=" openDialog = false;" />
     </DialogWrapper>
   </q-dialog>
-  <RequestList v-model="showList" :branch="showListRow" v-if="showListRow" @hide="showListRow = undefined"/>
+  <RequestList v-model="showList" :branch="showListRow" v-if="showListRow" @hide="showListRow = undefined" />
 </template>
 
 <script setup lang="ts">
@@ -127,6 +132,7 @@ import AddLicenseRequestForm from './AddLicenseRequestForm.vue';
 import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import RequestList from './components/RequestList.vue';
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
+import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 
 const { t } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
@@ -145,7 +151,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 10
+  rowsPerPage: 100
 });
 const showList = ref(false)
 const showListRow = ref<Branch>()
@@ -189,7 +195,7 @@ async function deleteBranch(branch) {
       loading.value = true;
       await branchStore.editBranch({ deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
       loadBranchesList();
-      
+
     } catch (e) {
       console.log(e)
       Alert.warning(e)
