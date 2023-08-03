@@ -227,7 +227,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   if (['recordNumber', 'amount', 'numberOfSlots', 'unitPrice'].includes(sortBy)) {
     const sortedRows = [...rows];
     sortedRows.sort((a, b) => {
-      return descending ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy];
+      return descending ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy];
     });
     return sortedRows;
   }
