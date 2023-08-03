@@ -354,6 +354,10 @@ export const useBackOrder = defineStore('backOrder', () => {
       },
     };
 
+    if(!Array.isArray(bo.working_days_week)){
+      bo.working_days_week = []
+    }
+
     //qualification percentage
     if (bo.qualifications.length) {
       let totalQualification = 0
@@ -406,8 +410,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     //workingDaysWeek
     if (bo.working_days_week.length === 0) {
       daysPerWeek = 1;
-    }
-    else {
+    } else {
       if (staff.daysPerWeek && staff.daysPerWeek.length != 0) {
         let matchingDays = 0;
         staff.daysPerWeek.forEach((daySatff) => {

@@ -29,8 +29,10 @@
           <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" val="hourlyWage"
             v-model="data['wage']" />
         </q-field>
-        <q-input v-model="data['salary']" outlined dense type="number" :disable="loading" :rules="[creationRule]"
-          hide-bottom-space />
+        <q-input v-model="data['salary']" outlined dense type="text" :disable="loading" :rules="[creationRule]"
+          hide-bottom-space @update:model-value="(value)=>{
+            data['salary'] = commaSeparatedNumber(value)
+          }" />
         <span v-if="data['wage'] == 'monthlySalary'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenMonth')
         }}</span>
         <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
@@ -465,17 +467,17 @@
         <div class="row">
           <LabelField :label="$t('backOrder.create.referralFee')" :edit="edit"
             labelClass="q-pl-md col-4 text-right self-center self-center" valueClass="q-pl-md col-8 flex"
-            :value="`${selectedBo['retirementAge']} %`">
-            <q-input v-model="data['retirementAge']" outlined dense type="number" :disable="loading"
+            :value="`${selectedBo['referralFee']} %`">
+            <q-input v-model="data.referralFee" outlined dense type="text" :disable="loading"
               :rules="[creationRule]" hide-bottom-space />
             <span class="col-2 q-ma-sm flex-center">%</span>
           </LabelField>
         </div>
-        <div class="row">
+        <div class="row items-center">
           <LabelField :label="$t('backOrder.create.referralFeeAmount')" :edit="edit"
-            labelClass="q-pl-md col-4 text-right self-center" valueClass="q-pl-md col-8 q-pt-sm flex"
+            labelClass="q-pl-md col-4 text-right self-center q-pt-sm" valueClass="q-pl-md col-8 q-pt-sm flex"
             :value="selectedBo['stipulatedAmount'] ? `${selectedBo['stipulatedAmount']} ${$t('common.yen')}` : ''">
-            <q-input v-model="data['stipulatedAmount']" outlined dense type="number" :disable="loading" />
+            <q-input v-model="data['stipulatedAmount']" outlined dense type="text" :disable="loading" @update:model-value="(value)=>{data['stipulatedAmount'] = commaSeparatedNumber(value)}" />
             <span class="col-2 q-ma-sm flex-center">{{ $t('common.yen') }}</span>
           </LabelField>
         </div>
@@ -533,6 +535,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
