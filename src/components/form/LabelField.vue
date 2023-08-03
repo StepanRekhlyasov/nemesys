@@ -4,7 +4,7 @@
   </div>
   <div :class="[valueClass, 'blue']">
     <hidden-text v-if="!edit && Array.isArray(value)" class="text_dots" :value="value.join(', ')" />
-    <hidden-text v-else class="text_dots" :value="value" />
+    <hidden-text v-else-if="!edit" class="text_dots" :value="value" />
     <template v-if="edit">
       <slot>
       </slot>

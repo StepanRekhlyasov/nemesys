@@ -114,14 +114,7 @@
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
-        <q-field v-model="data['travelingExpenses']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesRegular')" 
-          val="yesRegular" v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesDaily')" 
-          val="yesDaily" v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.none')" 
-          val="none" v-model="data['travelingExpenses']" />
-        </q-field>
+        <q-input v-model="data['travelingExpenses']" type="textarea" outlined dense :disable="loading" autogrow/>
       </labelField>
     </div>   
   </q-card-section>

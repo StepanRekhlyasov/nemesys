@@ -74,6 +74,7 @@ export enum TypeQualifications {
   Assistant = 'assistantNurse',
   NewComer = 'newcomer',
   CareWorker = 'careWorker',
+  Worker = 'worker',
 }
 
 export enum TransactionType {
