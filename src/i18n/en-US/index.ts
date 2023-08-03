@@ -104,6 +104,7 @@ export default {
     },
     more: 'More',
     downloadCSV: 'Download CSV',
+    csvOutput:'CSV Output',
     branch: 'Branch',
   },
   rule: {

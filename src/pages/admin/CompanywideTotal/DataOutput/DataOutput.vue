@@ -10,34 +10,22 @@
         </div>
         <div class="box1">
             <div class="row q-pt-sm" v-if="item.required">
-                <div class="col-2 q-pt-sm q-pl-sm">
-                    {{ t('menu.admin.dataOutputDisplayTable.outputMonth') }}
+                <div class="col-2 q-pt-sm q-pl-sm ">
+                  {{ t('KPI.targetPeriod') }}
                 </div>
                 <div class="col-3 q-pl-sm">
-                    <q-input v-model="timeperiod[idx].date" outlined dense mask="####/##" hide-bottom-space>
-                        <template v-slot:prepend>
-                            <q-icon name="event" class="cursor-pointer">
-                                <q-popup-proxy cover transition-show="scale" transition-hide="scale" ref="monthPicker">
-                                    <q-date v-model="timeperiod[idx].date" minimal mask="YYYY/MM" emit-immediately
-                                        default-view="Years" @update:model-value="checkValue">
-                                        <div class="row items-center justify-end">
-                                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                                        </div>
-                                    </q-date>
-                                </q-popup-proxy>
-                            </q-icon>
-                        </template>
-                    </q-input>
+                  <DateRange
+          v-model="dateRange"
+          :width="'250px'"
+          :height="'40px'"
+        />
                 </div>
             </div>
-            <div class="row q-pt-sm">
-                <div class="col-2 q-pt-sm q-pl-sm">
-                    CSV {{ t('menu.admin.dataOutputDisplayTable.output') }}
-                </div>
-                <div class="col-3 q-pl-sm">
+            <div class="row q-pt-sm q-pl-xl q-ml-md">
+                <div class="col-3 q-pl-xl q-ml-xl">
                     <q-btn color="purple" text-color="white"
-                        @click="downloadCSV(item.collectionName, timeperiod[idx].date)">{{
-                            t('menu.admin.dataOutputDisplayTable.output') }}</q-btn>
+                        @click="downloadCSV(item.collectionName, dateRange)">{{
+                            t('common.csvOutput') }}</q-btn>
                 </div>
             </div>
         </div>
@@ -45,37 +33,39 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref } from 'vue';
+import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
+import DateRange from 'src/components/inputs/DateRange.vue';
 import PageHader from 'src/components/PageHeader.vue';
 import Listitem from './const/DataOutput.const'
 import { useDataOutput } from 'src/stores/dataOutput'
 const { t } = useI18n({ useScope: 'global' });
 const triggerURL = process.env.downloadCSVUrl;
-const monthPicker: Ref<{ value: string }> = ref({
-    value: '',
-});
 const timeperiod = ref([{ date: '' }, { date: '' }, { date: '' }])
 const dataOutput = useDataOutput();
-const checkValue = (val: string, reason: string) => {
-    if (reason === 'month') {
-        monthPicker.value[0].hide();
-        monthPicker.value[1].hide();
-    }
-}
-const downloadCSV = async (collectionName: string, date: string) => {
+const dateRange = ref<
+  string | {
+      from: string;
+      to: string;
+  } | null>(null)
+const downloadCSV = async (collectionName: string, date:string | { from: string; to: string; } | null) => {
+  debugger
     let fetchURL = `${triggerURL}?collection=${collectionName}`
     if (collectionName != 'BO') {
-        if (date.length === 0) {
-            Alert.warning()
-            return
-        }
-        const [year, month] = date.split('/');
-        if(year.length!==4 || month.length!==2){
-            Alert.warning()
-            return
-        }
+      if (typeof date === 'string' && date.length === 0) {
+    Alert.warning();
+    return;
+   } else if (typeof date === 'object' && (!date?.from || !date.to)) {
+    Alert.warning();
+    return;
+}
+    let year='';
+    let month='';
+
+    if (typeof date === 'string') {
+    [year, month] = date.split('/');
+    }
         fetchURL = `${fetchURL}&year=${year}&month=${month}`
     }
     await dataOutput.downloadCSV(fetchURL,collectionName)
