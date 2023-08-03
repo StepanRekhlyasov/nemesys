@@ -102,4 +102,5 @@ export enum WorkingDaysWeek {
   Friday = 'friday',
   Saturday = 'saturday',
   Sunday = 'sunday',
+  Holiday = 'holiday',
 }
