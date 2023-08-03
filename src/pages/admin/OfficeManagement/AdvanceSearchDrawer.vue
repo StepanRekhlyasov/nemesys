@@ -50,7 +50,7 @@ const openCFDrawer = (office: ClientFactory) => {
         show>
         <q-scroll-area class="fit text-left">
             <q-card class="no-shadow bg-grey-3">
-                <q-card-section class="text-white bg-primary">
+                <q-card-section class="text-white bg-accent">
                     <div class="text-h6">
                         <q-btn dense flat icon="close" @click="hideDrawer" />
                         {{ t('menu.advancedSearch') }}
@@ -58,7 +58,7 @@ const openCFDrawer = (office: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AdvancedSearch page="user" :from="props.from" :rowId="props.rowId" theme="primary" @hide-c-s-drawer="hideDrawer"
+                    <AdvancedSearch page="admin" :from="props.from" :rowId="props.rowId" theme="accent" @hide-c-s-drawer="hideDrawer"
                         @open-c-f-drawer="openCFDrawer" @open-map-drawer="openMapDrawer" @open-area-drawer="openAreaDrawer"/>
                 </q-card-section>
             </q-card>

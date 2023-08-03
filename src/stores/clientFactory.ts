@@ -487,8 +487,6 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
         return headClientFactory;
     }
-    const condition = false
-    const selectedCFsId:string[] = []
 
     async function getClientFactory(client_id: string, office_id: string){
       const docRef = doc(db, 'clients/' + client_id + '/client-factory/' + office_id);
@@ -498,10 +496,15 @@ export const useClientFactory = defineStore('client-factory', () => {
       }
       return { ...result.data(), id: result.id } as ClientFactory
     }
-
+    const condition = false
+    const selectedCFsId:string[] = []
+    const adminCondition = false
+    const adminSelectedCFsId:string[] = []
     return {
         condition,
         selectedCFsId,
+        adminCondition,
+        adminSelectedCFsId,
         clientFactories,
         modifiedCFs,
         getModifiedCFsByOrganizationId,

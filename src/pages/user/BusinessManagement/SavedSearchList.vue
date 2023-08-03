@@ -33,22 +33,20 @@ const conditionList = computed(() => {
     return saveSearchCondition.searchConditions;
 });
 const currentOrganization = ref(organizationStore.currentOrganizationId)
-watch(() => organizationStore.state.userAndBranchesUpdated, async () => {
-    loading.value = true;
-    currentOrganization.value = organizationStore.currentOrganizationId
-    await saveSearchCondition.getSaveSearchConditions(currentOrganization.value);
-    loading.value = false;
-})
+// watch(() => organizationStore.state.userAndBranchesUpdated, async () => {
+//     loading.value = true;
+//     currentOrganization.value = organizationStore.currentOrganizationId
+//     await saveSearchCondition.getSaveSearchConditions(currentOrganization.value);
+//     loading.value = false;
+// })
 
 onMounted(async () => {
-    loading.value = true;
-    await saveSearchCondition.getSaveSearchConditions(currentOrganization.value);
+    await saveSearchCondition.getSaveSearchConditions();
     allUsers.value = await useStore.getAllUsers();
-    loading.value = false;
 });
 
 const getUserName = (userId: string) => {
-    return allUsers.value.find((user) => user.id === userId)?.name;
+    return allUsers.value.find((user) => user.id === userId)?.name
 };
 // const filterFn = (val: string, update) => {
 //   const pagination = {
@@ -76,9 +74,10 @@ const deleteCondition = (id) => {
 const isDrawer =ref(false);
 const rowId = ref('')
 const key = ref(0)
-const openDrawer = (id) => {
+const openDrawer = (row,id) => {
     rowId.value = id
     key.value = key.value===0?1:0;
+    advanceSearch.saveConditionData = row
     isDrawer.value = true;
 }
 const hideDrawer = () => {
@@ -126,7 +125,7 @@ const searchCF = async(row) => {
                     <tbody>
                         <tr class="table__row wrapper_animate_left_border_client" :key="item.id" v-for="item in conditionList">
                             <td class="table__btn-wrapper q-ml-xs"><q-icon size="1.5rem" color="primary"
-                                    class="table__edit-btn" name="edit" @click="openDrawer(item.id)"/></td>
+                                    class="table__edit-btn" name="edit" @click="openDrawer(item,item.id)"/></td>
                             <td class="table__row_name text-left">
                                 <span style="cursor:pointer" @click="searchCF(item)">
                                     {{ item.conditionName }}

@@ -35,9 +35,14 @@ const openNewClientFactoryDrawer = () => {
 const openNewFaxDrawer=()=>{
   emit('openFaxDrawer')
 }
-const changeRoute = ()=>(
-    router.push('/officeSearch')
-)
+const changeRoute = ()=>{
+    if(props.actionsType === ActionsType.ADMIN){
+        router.push('/admin/officeSearch')
+    }
+    else{
+        router.push('/officeSearch')
+    }
+}
 </script>
 
 <template>
@@ -62,10 +67,12 @@ const changeRoute = ()=>(
         </div>
 
         <div class="row items-center justify-between q-mt-sm">
-            <q-btn v-if="actionsType === ActionsType.ADMIN" class="action_btn" :color="theme">
-                {{ t('actions.searchConditionChange') }}
-            </q-btn>
-
+            <div v-if="actionsType === ActionsType.ADMIN">
+                <q-btn class="action_btn" :color="theme" @click="changeRoute">
+                    {{ t('actions.searchConditionChange') }}
+                </q-btn>
+                <q-btn class="q-ml-sm" @click="resetSelectedCFsId" :label="t('client.list.resetConditions')" v-if="props.isReset" :color="theme"/>
+            </div>
             <div v-else>
                 <div class="row q-mt-xs">
                     <!-- <div class="q-gutter-md" style="max-width: 150px">

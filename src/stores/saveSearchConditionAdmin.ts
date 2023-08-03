@@ -14,16 +14,15 @@ import {
   DocumentData,
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { ref,watch } from 'vue';
+import { ref } from 'vue';
 import { useOrganization } from 'src/stores/organization';
-export const useSaveSearchCondition = defineStore('saveSearchCondition', () => {
-  
+export const useSaveSearchConditionAdmin = defineStore('saveSearchConditionAdmin', () => {
   const db = getFirestore();
   const auth = getAuth();
   const unsubscribe = ref();
   const searchConditions = ref(<DocumentData[]>[]);
   const organizationStore = useOrganization();
-  const currentOrganization = ref(organizationStore.currentOrganizationId)
+  
   const saveSearchCondition = async (data) => {
     // const user = await useStore.getUserById(auth.currentUser?.uid as string);
     // if (user) {
@@ -33,18 +32,15 @@ export const useSaveSearchCondition = defineStore('saveSearchCondition', () => {
     data['created_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
-    data['page'] = 'user'
+    data['page'] = 'admin';
     await addDoc(collection(db, '/saveSearchCondition'), {
       ...data,
     });
     ;
   };
   async function getSaveSearchConditions() {
-    
-    // if(searchData.selectedOrganization) {
-    //   filters.push(where('organizationIds', '==', searchData.selectedOrganization))
-    // }
-    const q = query(collection(db, 'saveSearchCondition'),where('organizationIds','==',currentOrganization.value),where('page','==','user'));
+
+    const q = query(collection(db, 'saveSearchCondition'),where('page','==','admin'));
 
     if (unsubscribe.value) {
       unsubscribe.value();
@@ -70,9 +66,5 @@ export const useSaveSearchCondition = defineStore('saveSearchCondition', () => {
     const docRef = doc(collection(db,'saveSearchCondition'), id);
     await updateDoc(docRef,data);
   }
-  watch(() => organizationStore.state.userAndBranchesUpdated, () => {
-    currentOrganization.value = organizationStore.currentOrganizationId
-    getSaveSearchConditions();
-  })
   return { saveSearchCondition,getSaveSearchConditions, deleteSaveSearchCondition,updateSaveSearchCondition, searchConditions };
 });

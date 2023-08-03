@@ -12,12 +12,16 @@ import { useClient } from 'src/stores/client';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter} from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
-import AdvanceSearchDrawer from 'src/pages/user/BusinessManagement/AdvanceSearchDrawer.vue'
-const advanceSearch = useAdvanceSearch();
+import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 const router = useRouter()
-const props = defineProps<{ theme: string, from:string}>()
-const emit = defineEmits<{ (e: 'openCFDrawer', ClientFactoryData: ClientFactory), (e: 'hideDrawer') }>()
-
+const props = defineProps<{ page:string, theme: string, from:string}>()
+const emit = defineEmits<{ 
+  (e: 'openCFDrawer', ClientFactoryData: ClientFactory), 
+  (e: 'hideDrawer'), 
+  (e: 'openCSDrawer'),
+  (e: 'resetKey'), 
+}>()
+const advanceSearch = props.page==='user'?useAdvanceSearch():useAdvanceSearchAdmin();
 const center = ref<{ lat: number, lng: number }>({ lat: 36.0835255, lng: 140.0 });
 const officeData = ref<Client[]>([]);
 const isLoadingProgress = ref(false)
@@ -127,11 +131,18 @@ const searchClientsByCondition = async() =>{
     office.push(id)
   })
   if(advanceSearch.mapCSelected){
-    office = await advanceSearch.searchClients(office,'map');
+    await advanceSearch.searchClients(office,[],'map');
   }
-  clientFactoryStore.condition = true
-  clientFactoryStore.selectedCFsId = office
-  router.push('/client-factories')
+  else if(props.page === 'admin'){
+    clientFactoryStore.adminCondition = true
+    clientFactoryStore.adminSelectedCFsId = office
+    router.push('/admin/client-factories')
+  }
+  else{
+    clientFactoryStore.condition = true
+    clientFactoryStore.selectedCFsId = office
+    router.push('/client-factories')
+  }
 }
 watch([clientFactories], () => {
   clientFactoriesList.value = []
@@ -166,24 +177,20 @@ const clearRadius = () => {
   radiusKm.value = 0
   inputRadiusKm.value = 0
 }
-const drrawer = ref(false)
-const advanceSearchKey = ref<number>(0)
+
 const openCSDrawer = () =>{
-  drrawer.value = true
-}
-const hideCSDrawer = () =>{
-  drrawer.value = false
+  emit('openCSDrawer')
 }
 const resetConditionData = () => {
   advanceSearch.resetMap()
-  advanceSearchKey.value = advanceSearchKey.value === 0 ? 1 : 0
+  emit('resetKey')
 }
 </script>
 
 <template>
   <q-card class="no-shadow full-height q-pb-sm">
     <q-card-actions v-if="props.from == 'advance'">
-      <q-btn :label="$t('client.list.addConditions')" unelevated color="primary" class="no-shadow text-weight-bold"
+      <q-btn :label="$t('client.list.addConditions')" unelevated :color="props.theme" class="no-shadow text-weight-bold"
           icon="add" @click="searchClientsByCondition"/>
     </q-card-actions>
     <q-card-actions v-else>
@@ -237,13 +244,12 @@ const resetConditionData = () => {
               Km
             </template>
           </q-input>
-          <q-btn :disable="inputRadiusKm <= 0" @click="getRadius" class="bg-primary text-white q-ma-sm"
+          <q-btn :disable="inputRadiusKm <= 0" @click="getRadius" class="text-white q-ma-sm" :color="props.theme"
             :label="$t('common.search')" />
           <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')" />
         </div>
       </div>
     </q-card-section>
-    <AdvanceSearchDrawer from="map" :isDrawer="drrawer" :width="900" @hide-c-s-drawer="hideCSDrawer" :key="advanceSearchKey"/>
   </q-card>
 </template>
 
