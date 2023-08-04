@@ -114,8 +114,8 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         'status': true, 'date': [[start, end, qty], {
           'fixDate': [sd1, ed1, qty1],
           'inspectionDate': [sd2, ed2, qty2],
-          'offerRate': [sd2, ed2, qty2],
-          'admissionRate': [sd2, ed2, qty2]
+          'offerDate': [sd3, ed3, qty3],
+          'admissionDate': [sd4, ed4, qty4]
         }]
       }
     }

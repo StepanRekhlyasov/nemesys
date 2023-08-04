@@ -114,8 +114,8 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
                 'status': true, 'date': [[start, end, qty], {
                     'fixDate': [sd1, ed1, qty1],
                     'inspectionDate': [sd2, ed2, qty2],
-                    'offerRate': [sd2, ed2, qty2],
-                    'admissionRate': [sd2, ed2, qty2]
+                    'offerDate': [sd3, ed3, qty3],
+                    'admissionDate': [sd4, ed4, qty4]
                 }]
             }
         }
@@ -220,7 +220,7 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
         }
         return offices
     }
-    const getOffices = async (officeData, dates, type: string, currentOrganization: boolean) => {
+    const getOffices = async (officeData, dates, type: string) => {
         const boSnapshot = await getDocs(collection(db, 'BO'));
         const fixSnapshot = await getDocs(collection(db, 'fix'));
         const [[start, end, qty], otherDate] = dates;
@@ -253,16 +253,7 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
                                 && (start === '' || doc.data()['dateOfRegistration'] >= convertDate(start))
                                 && (end === '' || doc.data()['dateOfRegistration'] < convertDate(end))
                                 && doc.data()['type'] === type) {
-                                if (currentOrganization) {
-                                    if (doc.data()['organizationId'] === currentOrganizationId.value) {
-                                        array.push(doc.id)
-                                    }
-                                }
-                                else {
-                                    if (doc.data()['organizationId'] !== currentOrganizationId.value) {
-                                        array.push(doc.id)
-                                    }
-                                }
+                                    array.push(doc.id)
                             }
                         }
                     )
@@ -382,16 +373,16 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
             office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], backOrderData['facilityType']))
         }
         if (dispatchRecordStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch', true))
+            office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch'))
         }
         if (referralResultsStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, referralResultsStatus.date, 'referral', true))
+            office = interSectionOfArray(office, await getOffices(office, referralResultsStatus.date, 'referral'))
         }
         if (dispatchedOtherCompaniesStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, dispatchedOtherCompaniesStatus.date, 'dispatch', false))
+            office = interSectionOfArray(office, await getOffices(office, dispatchedOtherCompaniesStatus.date, 'dispatch'))
         }
         if (otherCompanyReferralResultsStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, otherCompanyReferralResultsStatus.date, 'referral', false))
+            office = interSectionOfArray(office, await getOffices(office, otherCompanyReferralResultsStatus.date, 'referral'))
         }
         if (employmentStatus.status) {
             for (const key of Object.keys(employmentStatus.empTypeStatus || {})) {
