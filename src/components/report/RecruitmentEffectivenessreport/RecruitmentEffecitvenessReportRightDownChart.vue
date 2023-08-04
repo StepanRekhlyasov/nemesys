@@ -52,6 +52,7 @@ import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { convertToPercentage, calculateValues } from '../reportUtil';
 import { useGetReport } from 'src/stores/getReport';
+import { SeriesType } from '../Models';
 const { t } = i18n.global;
 const apexchart = VueApexCharts;
 const { getReport, getAgeReport } = useGetReport();
@@ -60,9 +61,7 @@ const dataToshowSex: Ref<(number | string)[][]> = ref([]);
 const dataToshowAges: Ref<(number | string)[][]> = ref([]);
 const dataToshowDaysToWork: Ref<(number | string)[][]> = ref([]);
 
-const seriesSex: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const seriesSex: ComputedRef<SeriesType[]> = computed(() => {
   const series = dataToshowSex.value.map((rowdata, index) => {
     return {
       name: t(rowNamesSex[index]),
@@ -72,9 +71,7 @@ const seriesSex: ComputedRef<
   });
   return series;
 });
-const seriesAges: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const seriesAges: ComputedRef<SeriesType[]> = computed(() => {
   const series = dataToshowAges.value.map((rowdata, index) => {
     return {
       name: t(rowNamesAges[index]),
@@ -84,9 +81,7 @@ const seriesAges: ComputedRef<
   });
   return series;
 });
-const seriesDaysToWork: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const seriesDaysToWork: ComputedRef<SeriesType[]> = computed(() => {
   const seriesList = dataToshowDaysToWork.value.map((rowData, index) => {
     return {
       name: rowNamesDaysToWork[index] + t('report.day'),
@@ -101,7 +96,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -194,7 +188,7 @@ const showChart = async () => {
   }
 };
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     await showChart();
   }

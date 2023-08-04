@@ -52,11 +52,9 @@
 
           <template v-slot:body-cell-employmentType="props">
             <q-td v-if="props.row.employmentType" :props="props" class="q-pa-none">
-              <div  v-for="emp in props.row.employmentType" :key="emp">
                 {{
-                  $t(`client.backOrder.${emp}`)
+                  Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
-              </div>
             </q-td>
             <q-td v-else :props="props" class="q-pa-none">
               <div>-</div>

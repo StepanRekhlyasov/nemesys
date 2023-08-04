@@ -5,14 +5,14 @@
       :dateRangeProps="dateRangeProps"
       :branch_id="branch_id"
       :graph_type="graph_type"
-      :branch_user_list="branch_user_list"></SalesActivityIndividualReportLeftChart>
+      ></SalesActivityIndividualReportLeftChart>
     </div>
     <div class="col">
       <SalesActivityIndividualReportRightChart :organization_id="organization_id"
       :dateRangeProps="dateRangeProps"
       :branch_id="branch_id"
       :graph_type="graph_type"
-      :branch_user_list="branch_user_list"></SalesActivityIndividualReportRightChart>
+      ></SalesActivityIndividualReportRightChart>
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@ defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string }|undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 </script>

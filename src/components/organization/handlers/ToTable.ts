@@ -26,7 +26,11 @@ export function toTable(businesses: { [id: string]: Business }, branches: { [bus
   }
 
   businessesAndbranches = businessesAndbranches.filter((bb) => {
-    return Object.values(bb.branches[0]).length != 0
+ 
+    if(bb.branches && bb.branches.length){
+      return Object.values(bb.branches[0]).length != 0
+    }
+    return false
   })
 
   let totalBranches = 0

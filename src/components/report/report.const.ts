@@ -1,3 +1,5 @@
+export const monthPerYear = 12;
+export const beforeMonth = 7;
 export const chartOptionsVerticalBase = {
   legend: { position: 'right' },
   chart: { type: 'bar' },

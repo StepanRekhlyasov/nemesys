@@ -8,9 +8,12 @@
 
 <script setup lang="ts">
 import { useMedia } from 'stores/media';
-import { graphType } from '../Models';
+import { graphType, SeriesType } from '../Models';
 import { onMounted, ref, computed, watch } from 'vue';
-import { chartTypeUnitPricePerMedia, unitPricenamesPerMedia } from './recruitmentEffectiveness.const';
+import {
+  chartTypeUnitPricePerMedia,
+  unitPricenamesPerMedia,
+} from './recruitmentEffectiveness.const';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { Media } from 'src/shared/model/Media.model';
@@ -37,9 +40,7 @@ const chartOptions = computed(() => {
 });
 
 const dataToshow = ref<(number | string)[][]>([]);
-const series = computed<
-  { name: string; data: (number | string)[]; type: string }[]
->(() => {
+const series = computed<SeriesType[]>(() => {
   const seriesList = dataToshow.value.map((rowData, index) => {
     return {
       name: t(unitPricenamesPerMedia[index]),
@@ -54,7 +55,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -93,7 +93,7 @@ const showChart = async () => {
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showChart();

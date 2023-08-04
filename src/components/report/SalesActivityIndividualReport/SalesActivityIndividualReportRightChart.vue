@@ -6,10 +6,15 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptionsR, columnsR, dataNames, itemListRight } from './salesActivityIndividual.const';
+import {
+  chartOptionsR,
+  columnsR,
+  dataNames,
+  itemListRight,
+} from './salesActivityIndividual.const';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
 import { useGetReport } from 'src/stores/getReport';
-import { graphType } from '../Models';
+import { graphType, SeriesType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useUserStore } from 'src/stores/user';
 import { useOrganization } from 'src/stores/organization';
@@ -22,12 +27,8 @@ const organizationStore = useOrganization();
 const t = useI18n({ useScope: 'global' }).t;
 const dataToShow = ref<(number | string)[][]>([]);
 const userList = ref<{ id: string; name: string }[]>([]);
-
 const rowsIndividual = ref<{ [key: string]: string | number }[]>([]);
-
-const seriesIndividual = ref<
-  { name: string; data: (number | string)[]; type: string }[]
->([]);
+const seriesIndividual = ref<SeriesType[]>([]);
 const rows = computed<{ [key: string]: string | number }[]>(() => {
   const dataToshowCnverted = dataToShow.value.map((rowData, index) => {
     return {
@@ -44,9 +45,7 @@ const rows = computed<{ [key: string]: string | number }[]>(() => {
   );
 });
 
-const series = computed<
-  { name: string; data: (number | string)[]; type: string }[]
->(() => {
+const series = computed<SeriesType[]>(() => {
   return dataToShow.value
     .map((rowData, index) => {
       return {

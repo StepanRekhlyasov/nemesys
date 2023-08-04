@@ -29,7 +29,7 @@
 
     <div class="row">
       <labelField :label="$t('client.backOrder.caseType')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
         <q-field v-model="data['typeCase']" borderless hide-bottom-space :rules="[creationRule]">
           <q-radio
             v-for="key in TypeOfCase"
@@ -45,7 +45,7 @@
 
     <div class="row" v-if="type == 'referral'" >
       <labelField :label="$t('backOrder.employmentType')" :edit="true" required 
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
         <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[(val) => creationArrayRule(val)]">
           <q-checkbox
             v-for="key in EmploymentBOStatus"
@@ -62,7 +62,7 @@
 
     <div class="row ">
       <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true" 
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
           <q-checkbox 
             v-for="key in TypeQualifications" 
@@ -113,15 +113,8 @@
 
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" required
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10">
-        <q-field v-model="data['travelingExpenses']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesRegular')" 
-          val="yesRegular" v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesDaily')" 
-          val="yesDaily" v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.none')" 
-          val="none" v-model="data['travelingExpenses']" />
-        </q-field>
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
+        <q-input v-model="data['travelingExpenses']" type="textarea" outlined dense :disable="loading" autogrow/>
       </labelField>
     </div>   
   </q-card-section>

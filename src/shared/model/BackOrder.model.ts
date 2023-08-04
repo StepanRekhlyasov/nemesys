@@ -74,6 +74,7 @@ export enum TypeQualifications {
   Assistant = 'assistantNurse',
   NewComer = 'newcomer',
   CareWorker = 'careWorker',
+  Worker = 'worker',
 }
 
 export enum TransactionType {
@@ -101,4 +102,5 @@ export enum WorkingDaysWeek {
   Friday = 'friday',
   Saturday = 'saturday',
   Sunday = 'sunday',
+  Holiday = 'holiday',
 }

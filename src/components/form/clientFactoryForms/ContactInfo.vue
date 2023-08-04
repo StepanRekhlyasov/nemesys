@@ -41,14 +41,14 @@ watch(contractInfo, () => {
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('office.personInChargeTel') }}
+                        {{ t('clientFactory.personInChargeTitle') }}
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['positionContact']"
-                        :placeholder="t('clientFactory.drawer.details.inChargeTitle')"
+                        :placeholder="t('clientFactory.drawer.details.inChargeTitle_ex')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>

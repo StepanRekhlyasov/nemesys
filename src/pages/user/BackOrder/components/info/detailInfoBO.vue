@@ -8,7 +8,7 @@
         <q-btn v-if="!edit" :label="$t('common.edit')" color="primary" outline icon="edit" @click="edit = true"
           class="no-shadow q-ml-lg" size="sm" />
         <q-btn v-if="edit" :label="$t('common.save')" color="primary" @click="save()" size="sm" />
-        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="edit = false"
+        <q-btn v-if="edit" :label="$t('common.cancel')" class="q-ml-md" outline color="primary" @click="resetData()"
           size="sm" />
       </div>
     </div>
@@ -29,8 +29,10 @@
           <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" val="hourlyWage"
             v-model="data['wage']" />
         </q-field>
-        <q-input v-model="data['salary']" outlined dense type="number" :disable="loading" :rules="[creationRule]"
-          hide-bottom-space />
+        <q-input v-model="data['salary']" outlined dense type="text" :disable="loading" :rules="[creationRule]"
+          hide-bottom-space @update:model-value="(value)=>{
+            data['salary'] = commaSeparatedNumber(value)
+          }" />
         <span v-if="data['wage'] == 'monthlySalary'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenMonth')
         }}</span>
         <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
@@ -74,21 +76,14 @@
 
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['travelingExpenses'] ? $t('backOrder.travelingExpenses.' + selectedBo['travelingExpenses']) : ''}`">
-        <q-field v-model="data['travelingExpenses']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesRegular')" val="yesRegular"
-            v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesDaily')" val="yesDaily"
-            v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.none')" val="none"
-            v-model="data['travelingExpenses']" />
-        </q-field>
+        :value="selectedBo['travelingExpenses']">
+        <q-input v-model="data['travelingExpenses']" type="textarea" outlined dense :disable="loading" autogrow/>
       </LabelField>
     </div>
 
     <div class="row ">
       <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
-        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-9 q-ml-md" :value="Array.isArray(data['qualifications'])?data['qualifications'].map((row) => $t('applicant.qualification.' + row)):''">
+        labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-9 q-ml-md" :value="Array.isArray(data['qualifications']) && !edit ? data['qualifications'].map((row) => $t('applicant.qualification.' + row)):''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
           <q-checkbox
             v-for="key in TypeQualifications"
@@ -172,15 +167,8 @@
       </LabelField>
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['travelingExpenses'] ? $t('backOrder.travelingExpenses.' + selectedBo['travelingExpenses']) : ''}`">
-        <q-field v-model="data['travelingExpenses']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesRegular')" val="yesRegular"
-            v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.yesDaily')" val="yesDaily"
-            v-model="data['travelingExpenses']" />
-          <q-radio :disable="loading" :label="$t('backOrder.travelingExpenses.none')" val="none"
-            v-model="data['travelingExpenses']" />
-        </q-field>
+        :value="selectedBo['travelingExpenses']">
+        <q-input v-model="data['travelingExpenses']" type="textarea" outlined dense :disable="loading" autogrow/>
       </LabelField>
     </div>
 
@@ -226,7 +214,7 @@
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.workingDays')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-8"
-        :value="Array.isArray(selectedBo['workingDays']) ? selectedBo['workingDays'].map(day => $t('weekDay.' + day)).join(', ') + ')' : ''" required>
+        :value="!edit && Array.isArray(selectedBo['workingDays']) ? selectedBo['workingDays'].map(day => $t('weekDay.' + day)).join(', ') : ''" required>
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationArrayRule]">
           <q-checkbox
             v-model="data['workingDays']"
@@ -246,10 +234,10 @@
           <q-checkbox
             :disable="loading"
             v-model="everythingTrgger"
-            :label="'Everything'"
+            :label="$t('common.everything')"
             @update:model-value="(val : boolean)=>{
               if(val){
-                data['workingDays'] = [ WorkingDaysWeek.Monday, WorkingDaysWeek.Tuesday, WorkingDaysWeek.Wednesday, WorkingDaysWeek.Thursday, WorkingDaysWeek.Friday, WorkingDaysWeek.Saturday, WorkingDaysWeek.Sunday ]
+                data['workingDays'] = [ WorkingDaysWeek.Monday, WorkingDaysWeek.Tuesday, WorkingDaysWeek.Wednesday, WorkingDaysWeek.Thursday, WorkingDaysWeek.Friday, WorkingDaysWeek.Saturday, WorkingDaysWeek.Sunday, WorkingDaysWeek.Holiday ]
               } else {
                 data['workingDays'] = []
               }
@@ -369,7 +357,7 @@
         valueClass="q-pl-md col-4 self-center" :value="selectedBo['tasks_childcare']"
         v-if="selectedBo['type'] == 'referral'">
         <q-input v-model="data['tasks_childcare']" outlined dense :disable="loading" :rules="[creationRule]"
-          hide-bottom-space />
+          hide-bottom-space type="textarea" autogrow/>
       </LabelField>
       <LabelField :label="`${$t('office.workingHours')}  ${$t('office.nightShift')}`" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center"
@@ -412,13 +400,13 @@
       <LabelField :label="$t('backOrder.create.onCallRemarks')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 row self-center"
         :value="selectedBo['onCallRemarks']" >
-        <q-input v-model="data['onCallRemarks']" outlined dense :disable="loading" />
+        <q-input v-model="data['onCallRemarks']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
     </div>
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.welfare')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="q-pl-md col-4 self-center" :value="selectedBo['welfare']" v-if="selectedBo['type'] == 'referral'">
-        <q-input v-model="data['welfare']" outlined dense :disable="loading" :rules="[creationRule]" hide-bottom-space />
+        <q-input v-model="data['welfare']" outlined dense :disable="loading" :rules="[creationRule]" hide-bottom-space type="textarea" autogrow/>
       </LabelField>
     </div>
 
@@ -432,7 +420,7 @@
         labelClass="q-pl-md col-2 text-right self-center" v-if="selectedBo['type'] == 'referral'"
         valueClass="q-pl-md col-4 flex"
         :value="selectedBo['retirementAge_tasks'] ? `${selectedBo['retirementAge_tasks']} ${$t('common.age')}` : ''">
-        <q-input v-model="data['retirementAge_tasks']" outlined dense type="number" :disable="loading" />
+        <q-input v-model="data['retirementAge_tasks']" outlined dense type="number" :disable="loading" autogrow/>
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.age') }}</span>
       </LabelField>
     </div>
@@ -440,7 +428,7 @@
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'dispatch'">
       <LabelField :label="$t('client.backOrder.businessContent')" :edit="edit" :value="selectedBo['work_content']"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
-        <q-input dense outlined bg-color="white" v-model="data['work_content']" :disable="loading" />
+        <q-input dense outlined bg-color="white" v-model="data['work_content']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
       <LabelField :label="$t('backOrder.availabilityOnCallSupport')" :edit="edit"
         :value="data['onCallSupport'] ? $t('common.yesShort') : $t('common.noShort')"
@@ -470,14 +458,14 @@
       <LabelField :label="$t('backOrder.create.onCallRemarks')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 row"
         :value="selectedBo['onCallRemarks']">
-        <q-input v-model="data['onCallRemarks']" outlined dense :disable="loading" />
+        <q-input v-model="data['onCallRemarks']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
     </div>
 
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.shiftRemarks')" :edit="edit" :value="selectedBo['shiftRemarks']"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
-        <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" />
+        <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
     </div>
 
@@ -486,17 +474,17 @@
         <div class="row">
           <LabelField :label="$t('backOrder.create.referralFee')" :edit="edit"
             labelClass="q-pl-md col-4 text-right self-center self-center" valueClass="q-pl-md col-8 flex"
-            :value="`${selectedBo['retirementAge']} %`">
-            <q-input v-model="data['retirementAge']" outlined dense type="number" :disable="loading"
+            :value="`${selectedBo['referralFee']} %`">
+            <q-input v-model="data.referralFee" outlined dense type="text" :disable="loading"
               :rules="[creationRule]" hide-bottom-space />
             <span class="col-2 q-ma-sm flex-center">%</span>
           </LabelField>
         </div>
-        <div class="row">
+        <div class="row items-center">
           <LabelField :label="$t('backOrder.create.referralFeeAmount')" :edit="edit"
-            labelClass="q-pl-md col-4 text-right self-center" valueClass="q-pl-md col-8 q-pt-sm flex"
+            labelClass="q-pl-md col-4 text-right self-center q-pt-sm" valueClass="q-pl-md col-8 q-pt-sm flex"
             :value="selectedBo['stipulatedAmount'] ? `${selectedBo['stipulatedAmount']} ${$t('common.yen')}` : ''">
-            <q-input v-model="data['stipulatedAmount']" outlined dense type="number" :disable="loading" />
+            <q-input v-model="data['stipulatedAmount']" outlined dense type="text" :disable="loading" @update:model-value="(value)=>{data['stipulatedAmount'] = commaSeparatedNumber(value)}" />
             <span class="col-2 q-ma-sm flex-center">{{ $t('common.yen') }}</span>
           </LabelField>
         </div>
@@ -508,7 +496,7 @@
         labelClass="q-pl-md col-2 self-center text-right" valueClass="col-4 q-pl-md flex"
         :value="selectedBo['upperAgeLimit'] ? selectedBo['upperAgeLimit'] + $t('common.ageShort') : ''">
         <q-input v-model="data['upperAgeLimit']" outlined dense :disable="loading" hide-bottom-space
-          :rules="[creationRule]" />
+          :rules="[creationRule]" type="textarea" autogrow/>
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </LabelField>
     </div>
@@ -516,12 +504,12 @@
     <div class="row q-pb-sm" v-if="selectedBo['type'] == 'referral'">
       <LabelField :label="$t('backOrder.create.overtimeRemarks')" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['overtimeRemarks']">
-        <q-input dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading" />
+        <q-input dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
 
       <LabelField :label="$t('client.list.memo')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="q-pl-md col-4" :value="selectedBo['memo_house']">
-        <q-input v-model="data['memo_house']" outlined dense :disable="loading" />
+        <q-input v-model="data['memo_house']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
     </div>
 
@@ -554,6 +542,7 @@ import { useApplicant } from 'src/stores/applicant';
 import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
@@ -581,7 +570,13 @@ const transactionTypeOptions = computed(()=>{
 const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
-const data = ref({ ...backOrderStore.state?.selectedBo } as BackOrderModel)
+const data = ref()
+resetData()
+
+function resetData() {
+  data.value = JSON.parse(JSON.stringify({ ...backOrderStore.state?.selectedBo } as BackOrderModel))
+  edit.value = false
+}
 
 if(!Array.isArray(data.value.workingDays)){
   data.value.workingDays = []
@@ -598,6 +593,7 @@ async function save() {
   } catch (e) {
     console.log(e);
   }
+  resetData()
   loading.value = false;
 }
 

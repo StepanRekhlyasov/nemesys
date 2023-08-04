@@ -212,10 +212,11 @@ const pagination = ref({
 });
 
 const budgetSum = computed(() => {
-  let sum = 0
+  let sum = BigInt(0)
   budgetList.value.forEach(item => {
-    if (item.amount) {
-      sum += formatTextToNumber(item.amount, true) as number;
+    const num = formatTextToNumber(item.amount, true);
+    if (num) {
+      sum = BigInt(sum) + BigInt(num);
     }
   })
   return sum
@@ -226,7 +227,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   if (['recordNumber', 'amount', 'numberOfSlots', 'unitPrice'].includes(sortBy)) {
     const sortedRows = [...rows];
     sortedRows.sort((a, b) => {
-      return descending ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy];
+      return descending ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy];
     });
     return sortedRows;
   }

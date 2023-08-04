@@ -24,7 +24,7 @@ import {
   itemList,
 } from './salesActivity.const';
 import { calculateCVR, getListFromObject } from '../reportUtil';
-import { graphType } from '../Models';
+import { SeriesType, graphType } from '../Models';
 import VueApexCharts from 'vue3-apexcharts';
 import { useGetReport } from 'src/stores/getReport';
 import { listToFixed } from 'src/shared/utils/KPI.utils';
@@ -34,9 +34,7 @@ const { t } = useI18n({ useScope: 'global' });
 const dataToshow: Ref<(number | string)[][]> = ref([]);
 const dataToshowR: Ref<(number | string)[][]> = ref([]);
 
-const series: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const series: ComputedRef<SeriesType[]> = computed(() => {
   return dataToshow.value.map((rowData, index) => {
     return {
       name: t(dataNames[index]),
@@ -45,9 +43,7 @@ const series: ComputedRef<
     };
   });
 });
-const seriesR: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const seriesR: ComputedRef<SeriesType[]> = computed(() => {
   return dataToshowR.value.map((rowData, index) => {
     return {
       name: t(dataNamesR[index]),
@@ -83,6 +79,7 @@ const rowsR: ComputedRef<
     inspection: number | string;
     offer: number | string;
     admission: number | string;
+    BO: number | string;
   }[]
 > = computed(() => {
   return dataToshowR.value.map((rowData, index) => {
@@ -101,7 +98,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -157,7 +153,7 @@ const showSalesActivityReport = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showSalesActivityReport(props.dateRangeProps, props.organization_id);
