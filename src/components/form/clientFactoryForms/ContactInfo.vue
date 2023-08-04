@@ -41,7 +41,7 @@ watch(contractInfo, () => {
                 </div>
                 <div class="col-6  q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.operator') }} : TEL
+                        {{ t('menu.admin.organizationsTable.manager') }} : TEL
                     </q-item-label>
 
                     <q-input
@@ -56,7 +56,7 @@ watch(contractInfo, () => {
               
               <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.operator') }} : {{ t('client.list.position') }}
+                        {{ t('menu.admin.organizationsTable.manager') }} : {{ t('client.list.position') }}
                     </q-item-label>
 
                     <q-input
@@ -68,7 +68,7 @@ watch(contractInfo, () => {
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.operator') }} : MAIL
+                        {{ t('menu.admin.organizationsTable.manager') }} : MAIL
                     </q-item-label>
 
                     <q-input
