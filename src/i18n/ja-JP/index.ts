@@ -302,6 +302,8 @@ export default {
       },
       business: '事業',
       branchFlag: '支店フラグ',
+      enable: '有効にする',
+      enableFlag: '有効フラグ'
     },
     template: {
       addNew: 'メールテンプレート新規追加',
