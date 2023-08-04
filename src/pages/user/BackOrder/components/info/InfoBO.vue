@@ -4,38 +4,42 @@
     <q-scroll-area class="fit text-left" v-if="selectedBo">
       <q-card class="no-shadow bg-grey-3">
         <q-card-section class="text-white bg-primary no-border-radius">
-          <div class="row">
-            <div class="flex items-end ">
-              <q-btn dense flat icon="close" class="q-mr-md " @click="drawerRight = !drawerRight" />
+          <div class="wrapper row items-end justify-between">
+            <div class="flex">
+              <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
             </div>
-            <div>
-              <div class="row" v-if="selectedBo">
-                <div class="text-subtitle2">
-                  {{ nameBo }}
+            <div class="row q-mr-xl q-pd-xl">
+                <div class="q-mr-xl q-pd-xl column">
+                  <div v-if="selectedBo" class="text-subtitle2 q-mr-xl q-pd-xl">
+                    {{ nameBo }}
+                  </div>
+
+                    <span class="q-mr-xl q-pd-xl text-h6 text-weight-bold">
+                        <q-icon color="white" name="home"/>
+                        {{ `${$t('backOrder.backOrderDetails')} / ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
+                    </span>
                 </div>
-                <div v-if="clientFactoryList && clientFactoryList.length" class="row right q-mr-md">
-                  <div class="q-mr-xl q-pr-xl">
-                    TEL : {{ clientFactoryList[0].tel? clientFactoryList[0].tel:'' }}
+              </div>
+
+              <div class="q-mr-xl q-pd-xl">
+                  <div>
+                      {{ t('client.list.phone') }} :
+                      <span v-if="clientFactoryList && clientFactoryList.length"> {{ clientFactoryList[0].tel? clientFactoryList[0].tel:'' }}</span>
                   </div>
                   <div>
+                      {{ t('client.list.fax') }} : 
+                      <span v-if="clientFactoryList && clientFactoryList.length">{{ clientFactoryList[0].fax? clientFactoryList[0].fax:'' }}</span>
+                  </div>
+              </div>
+
+              <div>
+                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-mr-xl q-pd-xltext-bold">
                     {{ clientFactoryList[0].prefecture? clientFactoryList[0].prefecture:'' }} {{ clientFactoryList[0].municipality? clientFactoryList[0].municipality:'' }}
                   </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="text-h6 text-weight-bold q-pr-xs">
-                  {{ `${$t('backOrder.backOrderDetails')} / ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
-                </div>
-                <div v-if="clientFactoryList && clientFactoryList.length" class="row right q-mr-md">
-                  <div class="q-mr-xl q-pr-xl">
-                    FAX : {{ clientFactoryList[0].fax? clientFactoryList[0].fax:'' }}
-                  </div>
-                  <div>
+                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-mr-xl q-pd-xl text-bold">
                     {{ clientFactoryList[0].street? clientFactoryList[0].street:'' }} {{ clientFactoryList[0].building? clientFactoryList[0].building:'' }}
                   </div>
-                </div>
               </div>
-            </div>
           </div>
         </q-card-section>
         <detailInfoBO :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
