@@ -164,7 +164,7 @@
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.workingDays')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" :valueClass="edit?'q-pl-md col-10 self-center':'q-pl-md col-4 self-center'"
-        :value="!edit && Array.isArray(selectedBo['workingDays']) ? selectedBo['workingDays'].map(day => $t('weekDay.' + day)).join(', ') : ''" required>
+        :value="!edit && Array.isArray(selectedBo['workingDays']) ? selectedBo['workingDays'].map(day => $t('weekDay.' + day)).join(', ') : ''">
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationArrayRule]">
           <q-checkbox 
             v-model="data['workingDays']" 
