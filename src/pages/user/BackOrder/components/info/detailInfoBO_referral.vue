@@ -20,7 +20,7 @@
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
           :disable="loading" class="q-pr-md" />
       </LabelField>
-      <LabelField :label="$t('backOrder.create.hourlyMonthly')" v-if="selectedBo['type'] == 'referral'"
+      <LabelField :label="$t('backOrder.create.hourlyMonthly')" 
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4 flex" :edit="edit"
         :value="`${selectedBo['salary']} ${selectedBo['wage'] == 'monthlySalary' ? $t('backOrder.create.yenMonth') : $t('backOrder.create.yenHour')}`">
         <q-field v-model="data['wage']" borderless hide-bottom-space :rules="[creationRule]">
