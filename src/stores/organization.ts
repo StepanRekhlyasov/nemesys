@@ -3,10 +3,10 @@ import { defineStore } from 'pinia';
 import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
-import { i18n } from 'boot/i18n';
+// import { i18n } from 'boot/i18n';
 import { useUserStore } from './user';
 
-const { t } = i18n.global
+// const { t } = i18n.global
 interface OrganizationState {
   organizations: Organization[],
   activeOrganization: number,
@@ -120,15 +120,13 @@ export const useOrganization = defineStore('organization', () => {
     const organizationQuery = query(organizationRef, where('code', '==', code))
     const querySnapshot = await getDocs(organizationQuery)
 
-    if (querySnapshot.size > 1) {
-      throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
-    }
-
     if (querySnapshot.size == 0) {
       throw new Error('Organization not found')
     }
 
-    return querySnapshot.docs[0].data() as Organization
+    return querySnapshot.docs.map((doc) => {
+      return doc.data() as Organization
+    });
   }
 
   async function getOrganizationsByName(name: string) {
