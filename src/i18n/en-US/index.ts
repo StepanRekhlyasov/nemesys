@@ -20,6 +20,7 @@ export default {
     approved: 'Approved',
     pending: 'Pending',
     denied: 'Denied',
+    everything: 'Everything',
     minimum: 'min',
     maximum: 'max',
     BO: 'BO',
