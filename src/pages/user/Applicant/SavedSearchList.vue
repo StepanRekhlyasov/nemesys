@@ -131,113 +131,84 @@ const clearSearch = () => {
         <q-table :rows="tableData" :columns="tableColumnsSavedCriteriaList" row-key="id" flat class="table no-wrap"
           :bordered="false" :square="false" separator="none" v-model:pagination="pagination" hide-pagination
           :loading="loading">
-          <template v-slot:body="props">
-            <tr class="table__row wrapper_animate_left_border_client">
-
-              <q-td class="table__btn-wrapper q-ml-sm q-py-none q-my-none">
-                <q-icon size="sm" color="primary" class="table__edit-btn" name="edit" @click="callRow(props.row)" />
+          <template v-slot:body-cell-condition="props">
+            <q-td class="no-wrap">
+              <div class="row">
+                <q-icon size="sm" color="primary" class="flex table__edit-btn" name="edit" @click="callRow(props.row)" />
                 <q-icon size="sm" class="table__search-btn" name="search" @click="searchApplicants(props.row)" />
-              </q-td>
-
-              <q-td class="text-left  no-wrap">{{ props.row.keyword ? `${props.row.keyword}` : '' }}</q-td>
-
-              <q-td class="text-left  no-wrap">{{ props.row.ageMin && props.row.ageMax ?
-                `${props.row.ageMin}-${props.row.ageMax}`
-                : (props.row.ageMin ? `${props.row.ageMin}(${t('common.minimum')})` : (props.row.ageMax ?
-                  `${props.row.ageMax}(${t('common.maximum')})` : ''))
-              }}</q-td>
-
-              <q-td class="text-left" v-if="props.row.sex.length">
-                <div class="no-wrap" :key="sexval" v-for="sexval in props.row.sex">
-                  {{ t(`applicant.add.${sexval}`) }}<br>
-                </div>
-              </q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.staffrank">{{ props.row.staffrank }}</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left" v-if="props.row.classification.length">
-                <div class="no-wrap" :key="clsfic" v-for="clsfic in props.row.classification">
-                  {{ t(`applicant.list.info.classification.${clsfic.toLowerCase()}`) }}<br>
-                </div>
-              </q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left" v-if="props.row.occupation.length">
-                <div class="no-wrap" :key="occ" v-for="occ in props.row.occupation">
-                  {{ t(`applicant.add.${occ}`) }}<br>
-                </div>
-              </q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.prefecture">{{
-                t(`prefectures.${prefectureLocaleKey[props.row.prefecture]}`) }}</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.municipalities">{{ props.row.municipalities }}</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.route">{{ props.row.route }}</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.neareststation">{{ props.row.neareststation }}</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left" v-if="props.row.qualification.length">
-                <div class="no-wrap" :key="qua" v-for="qua in props.row.qualification">
-                  {{ t(`applicant.qualification.${qua}`) }}<br>
-                </div>
-              </q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.yearsExperienceMin && props.row.yearsExperienceMax">{{
-                props.row.yearsExperienceMin }}-{{ props.row.yearsExperienceMax }}</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.yearsExperienceMin">{{ props.row.yearsExperienceMin
-              }}({{ t('common.minimum') }})</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.yearsExperienceMax">{{ props.row.yearsExperienceMax
-              }}({{ t('common.maximum') }})</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left" v-if="props.row.availableShift.length">
-                <div class="no-wrap" :key="shift" v-for="shift in props.row.availableShift">
-                  {{ t(`applicant.shift.${shift}`) }}<br>
-                </div>
-              </q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left" v-if="props.row.daysperweek.length">
-                <div class="no-wrap" :key="days" v-for="days in props.row.daysperweek">
-                  {{ t(`weekDay.${days}`) }}<br>
-                </div>
-              </q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.workPerWeekMin && props.row.workPerWeekMax">{{
-                props.row.workPerWeekMin }}-{{ props.row.workPerWeekMax }}</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.workPerWeekMin">{{ props.row.workPerWeekMin
-              }}({{ t('common.minimum') }})</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.workPerWeekMax">{{ props.row.workPerWeekMax
-              }}({{ t('common.maximum') }})</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.applicationDateMin && props.row.applicationDateMax">{{
-                props.row.applicationDateMin }} to {{ props.row.applicationDateMax }}</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.applicationDateMin">{{ props.row.applicationDateMin
-              }}({{ t('common.minimum') }})</q-td>
-              <q-td class="text-left no-wrap" v-else-if="props.row.applicationDateMax">{{ props.row.applicationDateMax
-              }}({{ t('common.maximum') }})</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="text-left no-wrap" v-if="props.row.status">{{ t(`applicant.statusOption.${props.row.status}`)
-              }}</q-td>
-              <q-td v-else></q-td>
-
-              <q-td class="table__btn-wrapper">
                 <q-icon size="1.5rem" color="primary" class="table__delete-btn" name="delete_outline"
-                  @click="dltSearch(props.row.id)" />
-              </q-td>
-            </tr>
+                @click="dltSearch(props.row.id)" />
+              </div>
+              <div>
+                <strong v-if="props.row.keyword">{{ `${t('common.searchKeyword')} : ` }}</strong>
+                {{props.row.keyword? `${props.row.keyword}/`:'' }}
+
+                <strong v-if="props.row.ageMax || props.row.ageMin">{{ `${t('applicant.list.fixEmployment.age')}(${t('applicant.attendant.years')}) : ` }}</strong>
+              {{ props.row.ageMin && props.row.ageMax ?
+                `${props.row.ageMin}-${props.row.ageMax}/`
+                : (props.row.ageMin ? `${props.row.ageMin}(${t('common.minimum')})/` : (props.row.ageMax ?
+                  `${props.row.ageMax}(${t('common.maximum')})/` : ''))
+              }}
+
+              <strong v-if="props.row.sex && props.row.sex.length">{{ `${t('applicant.add.sex')} : ` }}</strong>
+              {{props.row.sex && props.row.sex.length? `${t(`applicant.add.${props.row.sex[0]}`)}/`:'' }}
+
+              <strong v-if="props.row.staffrank">{{ `${t('applicant.list.rank')} : ` }}</strong>
+              {{props.row.staffrank?`${props.row.staffrank}/`:'' }}
+
+              <strong v-if="props.row.classification && props.row.classification.length">{{ `${t('applicant.list.info.classiffication')} : ` }}</strong>
+              {{ props.row.classification && props.row.classification.length?`${props.row.classification.map(clsfic=>(t(`applicant.list.info.classification.${clsfic.toLowerCase()}`))).join(',')}/`:'' }}
+
+              <strong v-if="props.row.occupation && props.row.occupation.length">{{ `${t('applicant.add.occupation')} : ` }}</strong>
+              {{ props.row.occupation && props.row.occupation.length?`${props.row.occupation.map(occ=>(t(`applicant.add.${occ}`))).join(',')}/`:'' }}
+
+              <strong v-if="props.row.prefecture">{{ `${t('applicant.progress.filters.prefecture')} : ` }}</strong>
+              {{props.row.prefecture?`${t(`prefectures.${prefectureLocaleKey[props.row.prefecture]}`)}/`:'' }}
+
+              <strong v-if="props.row.municipalities">{{ `${t('applicant.add.municipalities')} : ` }}</strong>
+              {{props.row.municipalities?`${props.row.municipalities}/`:'' }}
+
+              <strong v-if="props.row.route">{{ `${t('applicant.attendant.route')} : ` }}</strong>
+              {{props.row.route?`${props.row.route}/`:'' }}
+
+              <strong v-if="props.row.neareststation">{{ `${t('applicant.attendant.nearestStation')} : ` }}</strong>
+              {{props.row.neareststation?`${props.row.neareststation}/`:'' }}
+
+              <strong v-if="props.row.qualification && props.row.qualification.length">{{ `${t('applicant.list.qualification')} : ` }}</strong>
+              {{ props.row.qualification && props.row.qualification.length?`${props.row.qualification.map(qua=>(t(`applicant.qualification.${qua}`))).join(',')}/`:'' }}
+
+              <strong v-if="props.row.yearsExperienceMin || props.row.yearsExperienceMax">{{ `${t('applicant.list.yearsExperience')} : ` }}</strong>
+              {{ props.row.yearsExperienceMin && props.row.yearsExperienceMax ?
+                `${props.row.yearsExperienceMin}-${props.row.yearsExperienceMax}/`
+                : (props.row.yearsExperienceMin ? `${props.row.yearsExperienceMin}(${t('common.minimum')})/` : (props.row.yearsExperienceMax ?
+                  `${props.row.yearsExperienceMax}(${t('common.maximum')})/` : ''))
+              }}
+
+              <strong v-if="props.row.availableShift && props.row.availableShift.length">{{ `${t('applicant.list.availableShift')} : ` }}</strong>
+              {{ props.row.availableShift && props.row.availableShift.length?`${props.row.availableShift.map(shift=>(t(`applicant.shift.${shift}`))).join(',')}/`:'' }}
+
+              <strong v-if="props.row.daysperweek && props.row.daysperweek.length">{{ `${t('applicant.attendant.daysPerWeek')} : ` }}</strong>
+              {{ props.row.daysperweek && props.row.daysperweek.length?`${props.row.daysperweek.map(days=>(t(`weekDay.${days}`))).join(',')}/`:'' }}
+
+              <strong v-if="props.row.workPerWeekMin || props.row.workPerWeekMax">{{ `${t('applicant.attendant.daysToWork')} : ` }}</strong>
+              {{ props.row.workPerWeekMin && props.row.workPerWeekMax ?
+                `${props.row.workPerWeekMin}-${props.row.workPerWeekMax}/`
+                : (props.row.workPerWeekMin ? `${props.row.workPerWeekMin}(${t('common.minimum')})/` : (props.row.workPerWeekMax ?
+                  `${props.row.workPerWeekMax}(${t('common.maximum')})/` : ''))
+              }}
+
+              <strong v-if="props.row.applicationDateMin || props.row.applicationDateMax">{{ `${t('applicant.add.applicationDate')} : ` }}</strong>
+              {{ props.row.applicationDateMin && props.row.applicationDateMax ?
+                `${props.row.applicationDateMin} to ${props.row.applicationDateMax}/`
+                : (props.row.applicationDateMin ? `${props.row.applicationDateMin}(${t('common.minimum')})/` : (props.row.applicationDateMax ?
+                  `${props.row.applicationDateMax}(${t('common.maximum')})/` : ''))
+              }}
+
+              <strong v-if="props.row.status">{{ `${t('applicant.add.status')} : ` }}</strong>
+              {{ props.row.status? `${t(`applicant.statusOption.${props.row.status}`)}`:'' }}
+
+              </div>
+            </q-td>
           </template>
         </q-table>
 
