@@ -197,7 +197,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
 
       boSnapshot.docs.forEach(
         (doc) => {
-          if (doc.data()['office_id'] === cfIds[item]
+          if (cfIds[item].includes(doc.data()['office_id'])
             && (doc.data()['employmentType'] && doc.data()['employmentType'].includes(employmentType))) {
             array.push(doc.id)
           }
@@ -251,7 +251,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
           const array: string[] = []
           boSnapshot.docs.forEach(
             (doc) => {
-              if (doc.data()['office_id'] === cfIds[item]
+              if (cfIds[item].includes(doc.data()['office_id'])
                 && (start === '' || doc.data()['dateOfRegistration'] >= convertDate(start))
                 && (end === '' || doc.data()['dateOfRegistration'] < convertDate(end))
                 && doc.data()['type'] === type) {

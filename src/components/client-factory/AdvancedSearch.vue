@@ -146,7 +146,7 @@
   
             <q-separator />
   
-  
+            <div v-if="props.page!='admin'">
             <q-item-label class="row q-ml-md q-mt-md">
               {{ $t('client.list.evaluationRank') }}
             </q-item-label>
@@ -213,7 +213,7 @@
             </q-item>
   
             <q-separator />
-  
+            </div>
             <div class="q-pt-sm" v-for="dispatch in dispatchOp" :key="dispatch.value" :class="dispatch.class">
               <q-item-label class="q-pl-md">
                 {{ dispatch.name }}
