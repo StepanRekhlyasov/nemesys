@@ -66,7 +66,7 @@ export const useOrganization = defineStore('organization', () => {
 
   async function getCurrentOrganizationBranches() {
     const organizationRef = doc(db, `/organization/${currentOrganizationId.value}/`);
-    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()), startAt(organizationRef.path), endAt(organizationRef.path + '\uf8ff'));
+    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()),endAt(organizationRef.path + '\uf8ff'));
     const querySnapshot = await getDocs(branchesQuery);
     const branches: { [id: string]: Branch; } = {}
     querySnapshot.forEach((doc) => {

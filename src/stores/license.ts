@@ -21,22 +21,47 @@ export const useLicense = defineStore('license', () => {
   const branchStore = useBranch()
 
   async function search<T extends LicensePath>(search: string, collectionPath: T) {
-    const organizations = await organizationStore.getOrganizationsByName(search)
+    let organizations = await organizationStore.getAllOrganizations(); // function to get organizations by Code
+    organizations=organizations.filter((org)=>{
+      return org.name.includes(search)
+    })
     const organizationIds = organizations.map((org) => {
-      return org.id
+      return org.id;
     })
     if (!organizationIds.length) {
-      return
+      return;
     }
-    const organizationQuery = query(collection(db, collectionPath), where('organizationId', 'in', organizationIds))
-    const docs = await getDocs(organizationQuery)
+    const organizationAnswer = query(collection(db, collectionPath), where('organizationId', 'in', organizationIds));
+    const docs = await getDocs(organizationAnswer);
     if (!docs.docs.length) {
-      return
+      return;
     }
     return docs.docs.map((doc) => {
-      return doc.data() as LicenseVariation<T>
+      return doc.data() as LicenseVariation<T>;
     })
   }
+
+  async function searchByCode<T extends LicensePath>(search: string, collectionPath: T) {
+    let organizations = await organizationStore.getAllOrganizations(); // function to get organizations by Code
+    organizations=organizations.filter((org)=>{
+      return org.code.includes(search)
+    })
+    const organizationIds = organizations.map((org) => {
+      return org.id;
+    })
+    if (!organizationIds.length) {
+      return;
+    }
+    const organizationAnswer = query(collection(db, collectionPath), where('organizationId', 'in', organizationIds));
+    const docs = await getDocs(organizationAnswer);
+    if (!docs.docs.length) {
+      return;
+    }
+    return docs.docs.map((doc) => {
+      return doc.data() as LicenseVariation<T>;
+    })
+  }
+
 
   async function execute(request: LicenseRequest) {
     const functions = getFunctions(getApp(), 'asia-northeast1')
@@ -175,5 +200,5 @@ export const useLicense = defineStore('license', () => {
     return [...pendingResult, ...workedResult]
   }
 
-  return { search, execute, getLicensesInMonth, createLicenseRequest, getRequestList }
+  return { searchByCode,search, execute, getLicensesInMonth, createLicenseRequest, getRequestList }
 })
