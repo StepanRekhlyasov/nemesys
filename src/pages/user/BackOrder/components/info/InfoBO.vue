@@ -4,12 +4,12 @@
     <q-scroll-area class="fit text-left" v-if="selectedBo">
       <q-card class="no-shadow bg-grey-3">
         <q-card-section class="text-white bg-primary no-border-radius">
-          <div class="wrapper row items-end justify-between">
+          <div class="wrapper row items-end justify-start">
             <div class="flex">
               <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
             </div>
             <div class="row q-mr-xl q-pd-xl">
-                <div class="q-mr-xl q-pd-xl column">
+                <div class="q-mr-xl q-pl-xl column">
                   <div v-if="selectedBo" class="text-subtitle2 q-mr-xl q-pd-xl">
                     {{ nameBo }}
                   </div>
@@ -27,16 +27,16 @@
                       <span v-if="clientFactoryList && clientFactoryList.length"> {{ clientFactoryList[0].tel? clientFactoryList[0].tel:'' }}</span>
                   </div>
                   <div>
-                      {{ t('client.list.fax') }} : 
+                      {{ t('client.list.fax') }} :
                       <span v-if="clientFactoryList && clientFactoryList.length">{{ clientFactoryList[0].fax? clientFactoryList[0].fax:'' }}</span>
                   </div>
               </div>
 
               <div>
-                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-mr-xl q-pd-xltext-bold">
+                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-ml-md q-pr-md text-bold">
                     {{ clientFactoryList[0].prefecture? clientFactoryList[0].prefecture:'' }} {{ clientFactoryList[0].municipality? clientFactoryList[0].municipality:'' }}
                   </div>
-                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-mr-xl q-pd-xl text-bold">
+                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-ml-md q-pr-md text-bold">
                     {{ clientFactoryList[0].street? clientFactoryList[0].street:'' }} {{ clientFactoryList[0].building? clientFactoryList[0].building:'' }}
                   </div>
               </div>
