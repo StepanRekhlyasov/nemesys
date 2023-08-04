@@ -54,7 +54,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.employmentType ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
+                  Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
               </div>
             </q-td>

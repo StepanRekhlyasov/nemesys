@@ -197,6 +197,7 @@ export default {
         organizationId: '企業ID',
         organizationName: '企業名',
         operator: '担当者名',
+        manager: '担当者',
         phoneNumber: '電話番号',
         fax: 'FAX番号',
         email: 'メールアドレス',
@@ -1626,7 +1627,9 @@ export default {
         officeTel: '事業所：TEL',
         officeFax: '事業所：FAX',
         inChargeTitle: '担当者：役職',
+        inChargeTitle_ex: '例）一般社員',
         inChargeTel: '担当者：TEL',
+        inChargeMail: '担当者：MAIL',
         inChargeAddress: '担当者：アドレス',
 
         representative: '代表者',
