@@ -20,6 +20,7 @@ export default {
     approved: '申請許可',
     pending: '申請中',
     denied: '申請却下',
+    everything: 'すべて',
     minimum: '最小',
     maximum: '最大',
     BO: 'BO',

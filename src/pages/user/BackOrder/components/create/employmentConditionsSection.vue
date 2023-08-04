@@ -35,7 +35,7 @@
           <q-checkbox
             :disable="loading"
             v-model="everythingTrgger"
-            :label="'Everything'"
+            :label="$t('common.everything')"
             @update:model-value="(val : boolean)=>{
               if(val){
                 data['workingDays'] = [ WorkingDaysWeek.Monday, WorkingDaysWeek.Tuesday, WorkingDaysWeek.Wednesday, WorkingDaysWeek.Thursday, WorkingDaysWeek.Friday, WorkingDaysWeek.Saturday, WorkingDaysWeek.Sunday, WorkingDaysWeek.Holiday ]
