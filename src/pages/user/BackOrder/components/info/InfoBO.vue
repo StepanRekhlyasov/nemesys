@@ -15,10 +15,10 @@
                 </div>
                 <div v-if="clientFactoryList && clientFactoryList.length" class="row right q-mr-md">
                   <div class="q-mr-xl q-pr-xl">
-                    TEL : {{ clientFactoryList[0].tel }}
+                    TEL : {{ clientFactoryList[0].tel? clientFactoryList[0].tel:'' }}
                   </div>
                   <div>
-                    {{ clientFactoryList[0].prefecture }} {{ clientFactoryList[0].municipality }}
+                    {{ clientFactoryList[0].prefecture? clientFactoryList[0].prefecture:'' }} {{ clientFactoryList[0].municipality? clientFactoryList[0].municipality:'' }}
                   </div>
                 </div>
               </div>
@@ -28,10 +28,10 @@
                 </div>
                 <div v-if="clientFactoryList && clientFactoryList.length" class="row right q-mr-md">
                   <div class="q-mr-xl q-pr-xl">
-                    FAX : {{ clientFactoryList[0].fax }}
+                    FAX : {{ clientFactoryList[0].fax? clientFactoryList[0].fax:'' }}
                   </div>
                   <div>
-                    {{ clientFactoryList[0].street }} {{ clientFactoryList[0].building }}
+                    {{ clientFactoryList[0].street? clientFactoryList[0].street:'' }} {{ clientFactoryList[0].building? clientFactoryList[0].building:'' }}
                   </div>
                 </div>
               </div>
