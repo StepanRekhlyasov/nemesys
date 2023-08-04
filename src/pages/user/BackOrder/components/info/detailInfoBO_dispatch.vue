@@ -52,14 +52,11 @@
     </div>
 
     <div class="row q-pb-sm">
+      <!-- $t('backOrder.create.somethingNotQuestioned') -->
       <LabelField :label="$t('client.backOrder.experienceReq')" :edit="edit"
-        :value="data['experienceReq'] ? $t('backOrder.create.required') : $t('backOrder.create.somethingNotQuestioned')"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
-        <q-field v-model="data['experienceReq']" borderless hide-bottom-space
-          :rules="[() => 'experienceReq' in data || '']" flat>
-          <q-toggle v-model="data['experienceReq']" :disable="loading"
-            :label="data['experienceReq'] ? $t('backOrder.create.required') : $t('backOrder.create.somethingNotQuestioned')" />
-        </q-field>
+        :value="data['experienceReq'] ? data['experienceReq'] : ''"
+        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">  
+        <q-input v-model="data['experienceReq']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
       <LabelField :label="$t('client.backOrder.caseType')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
@@ -72,8 +69,8 @@
     <div class="row q-pb-sm">
       
       <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks']">
-        <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" />
+        valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks']" :autogrow="true">
+        <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" type="textarea" autogrow />
       </LabelField>
       <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType"
         valueClass="self-center q-pl-md col-4">
@@ -85,8 +82,10 @@
 
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.request')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
-        valueClass="col-4 q-pl-md flex" :value="selectedBo['invoice'] ? selectedBo['invoice'] + $t('common.yen') : ''">
-        <q-input v-model="data['invoice']" outlined dense :disable="loading" hide-bottom-space />
+        valueClass="col-4 q-pl-md flex" :value="selectedBo['invoice'] ? selectedBo['invoice'] + ' ' + $t('common.yen') : ''">
+        <q-input v-model="data['invoice']" outlined dense :disable="loading" hide-bottom-space @update:model-value="(value)=>{
+          data['invoice'] = commaSeparatedNumber(value)
+        }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </LabelField>
       
@@ -101,8 +100,10 @@
 
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.payment')" :edit="edit" labelClass="q-pl-md col-2 self-center text-right"
-        valueClass="col-4 q-pl-md flex " :value="data['payment'] ? `${data['payment']}  ${$t('common.yen')}` : ''">
-        <q-input v-model="data['payment']" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        valueClass="col-4 q-pl-md flex" :value="data['payment'] ? `${data['payment']}  ${$t('common.yen')}` : ''">
+        <q-input v-model="data['payment']" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{
+          data['payment'] = commaSeparatedNumber(value)
+        }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </LabelField>
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
@@ -475,6 +476,7 @@ import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
 const applicantStore = useApplicant()
