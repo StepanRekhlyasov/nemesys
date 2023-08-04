@@ -13,7 +13,7 @@
                 <div class="text-subtitle2">
                   {{ nameBo }}
                 </div>
-                <div class="row right q-mr-md">
+                <div v-if="clientFactoryList && clientFactoryList.length" class="row right q-mr-md">
                   <div class="q-mr-xl q-pr-xl">
                     TEL : {{ clientFactoryList[0].tel }}
                   </div>
@@ -26,7 +26,7 @@
                 <div class="text-h6 text-weight-bold q-pr-xs">
                   {{ `${$t('backOrder.backOrderDetails')} / ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
                 </div>
-                <div class="row right q-mr-md">
+                <div v-if="clientFactoryList && clientFactoryList.length" class="row right q-mr-md">
                   <div class="q-mr-xl q-pr-xl">
                     FAX : {{ clientFactoryList[0].fax }}
                   </div>
@@ -84,8 +84,11 @@ const nameBo = computed(() => {
   return `${clientName} / ${officeName} / ${selectedBo.value?.boId}`
 })
 
-watch(drawerRight, () => {
+watch(drawerRight, async() => {
   drawerValue.value = drawerRight.value;
+  if(drawerRight.value){
+    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
+  }
 })
 
 const openDrawer = async (data: BackOrderModel) => {
