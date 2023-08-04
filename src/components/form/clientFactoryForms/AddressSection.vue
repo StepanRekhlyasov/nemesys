@@ -61,7 +61,7 @@ watch(prefecture, async () => {
                         {{ t('client.add.municipalities') }}
                         <span class="text-red-5">*</span>
                     </q-item-label>
-                   
+
                     <q-select
                         outlined dense
                         :disable="!fetchMunicipalities"
@@ -69,7 +69,7 @@ watch(prefecture, async () => {
                         bg-color="white"
                         :color="theme"
                         :options="municipalities"
-                        v-model="addressData['municipality']"  
+                        v-model="addressData['municipality']"
                         :placeholder="t('client.add.municipalitieLabel')"
                         :rules="[val => !!val || '']"/>
                 </div>
@@ -100,7 +100,7 @@ watch(prefecture, async () => {
                     </div>
                 </div>
 
-            <div class="row q-mt-sm">
+            <!-- <div class="row q-mt-sm">
                 <div class="col-6 q-pr-sm">
                         <q-item-label class="q-pb-xs">
                                 {{ t('client.add.longitude') }}
@@ -131,7 +131,7 @@ watch(prefecture, async () => {
                             hide-bottom-space
                             :rules="[val => (val === '' || (val !== null && !isNaN(val))) || '']" />
                 </div>
-            </div>
+            </div> -->
 
         </q-item-section>
     </q-item>

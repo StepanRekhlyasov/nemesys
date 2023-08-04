@@ -37,8 +37,8 @@ const addressSection = ref({
     municipality: '',
     street: '',
     building: '',
-    lon: 0,
-    lat: 0
+    // lon: 0,
+    // lat: 0
 })
 const clientFactoryInfo = ref({
     tel: '',
@@ -82,8 +82,8 @@ const validateAndSubmit = async () => {
                 registeredInfo: {
                     tel: clientFactoryInfo.value.tel,
                     fax: clientFactoryInfo.value.fax,
-                    latitude: addressSection.value.lat,
-                    longitude: addressSection.value.lon,
+                    // latitude: addressSection.value.lat,
+                    // longitude: addressSection.value.lon,
                     street: addressSection.value.street,
                     building: addressSection.value.building,
                     parentClient: parentClient.value.parentClient
