@@ -9,11 +9,31 @@
               <q-btn dense flat icon="close" class="q-mr-md " @click="drawerRight = !drawerRight" />
             </div>
             <div>
-              <div class="row text-subtitle2" v-if="selectedBo">
-                {{ nameBo }}
+              <div class="row" v-if="selectedBo">
+                <div class="text-subtitle2">
+                  {{ nameBo }}
+                </div>
+                <div class="row right q-mr-md">
+                  <div class="q-mr-xl q-pr-xl">
+                    TEL : {{ clientFactoryList[0].tel }}
+                  </div>
+                  <div>
+                    {{ clientFactoryList[0].prefecture }} {{ clientFactoryList[0].municipality }}
+                  </div>
+                </div>
               </div>
-              <div class="row text-h6 text-weight-bold q-pr-xs">
-                {{ `${$t('backOrder.backOrderDetails')} ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
+              <div class="row">
+                <div class="text-h6 text-weight-bold q-pr-xs">
+                  {{ `${$t('backOrder.backOrderDetails')} / ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
+                </div>
+                <div class="row right q-mr-md">
+                  <div class="q-mr-xl q-pr-xl">
+                    FAX : {{ clientFactoryList[0].fax }}
+                  </div>
+                  <div>
+                    {{ clientFactoryList[0].street }} {{ clientFactoryList[0].building }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -89,3 +109,12 @@ watch(() => selectedBo, async () => {
 defineExpose({ openDrawer })
 
 </script>
+
+<style scoped>
+
+.right{
+  position:absolute;
+  right:0px
+}
+
+</style>
