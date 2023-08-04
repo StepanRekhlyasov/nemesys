@@ -375,7 +375,7 @@
         <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
       <LabelField :label="$t('backOrder.create.referralFeeAmount')" :edit="edit"
-        labelClass="q-pl-md col-2 text-right self-center q-pt-sm" valueClass="q-pl-md col-4 q-pt-sm flex"
+        labelClass="q-pl-md col-2 text-right self-center q-pt-sm" valueClass="q-pl-md col-4 q-pt-sm flex self-center"
         :value="selectedBo['stipulatedAmount'] ? `${selectedBo['stipulatedAmount']} ${$t('common.yen')}` : ''">
         <q-input v-model="data['stipulatedAmount']" outlined dense type="text" :disable="loading" @update:model-value="(value)=>{data['stipulatedAmount'] = commaSeparatedNumber(value)}" />
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.yen') }}</span>
