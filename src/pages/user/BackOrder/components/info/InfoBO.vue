@@ -18,8 +18,8 @@
             </div>
           </div>
         </q-card-section>
-        <detailInfoBO_dispatch :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
-        <detailInfoBO_referral :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO_dispatch v-if="selectedBo.type === 'dispatch'" :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO_referral v-if="selectedBo.type === 'referral'" :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
