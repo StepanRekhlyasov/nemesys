@@ -1,32 +1,42 @@
 <template>
-  <PageHeader>
-    {{ t('menu.admin.licenseManagement.totalLicenseNumber') }}
-  </PageHeader>
-  <div class="q-pt-sm q-px-lg row items-center">
-    {{ t('menu.admin.licenseManagement.statisticMonth') }}
-    <YearMonthPicker :model-value="selectedDate" isAdmin class="q-ml-sm" :clearable="false" @pickerHide="onDateChange"
-      :max-year-month="currentDate.replace('-', '/')" :disable="loading" />
-  </div>
-  <div class="container">
-    <OrganizationColspanTabel :columns="columns" :loading="loading" :table="data" :sort-method="sort">
-      <template #organization="{ organizationItem }">
-        <div>
-          {{ calculateBillingId(organizationItem.code) }}
-        </div>
-        <div>
-          {{ organizationItem.name }}
-        </div>
-      </template>
-      <template #after="props">
-        <q-td>
-          {{ 'nemesys' }}
-        </q-td>
-        <q-td>
-          {{ props.branchItem.licensesSlots }}
-        </q-td>
-      </template>
-    </OrganizationColspanTabel>
-  </div>
+  <q-card class="bg-white no-shadow no-border-radius">
+    <PageHeader>
+      {{ t('menu.admin.licenseManagement.totalLicenseNumber') }}
+    </PageHeader>
+    <div class="q-pt-sm q-px-lg row items-center">
+      {{ t('menu.admin.licenseManagement.statisticMonth') }}
+      <YearMonthPicker :model-value="selectedDate" isAdmin class="q-ml-sm" :clearable="false" @pickerHide="onDateChange"
+        :max-year-month="currentDate.replace('-', '/')" :disable="loading" />
+    </div>
+
+    <q-card flat class="q-pt-sm q-px-lg">
+      <SearchField :on-click-search="searchLicense" :on-click-clear="() => { search = ''; data = copyData }"
+        v-model:model-value="search">
+      </SearchField>
+    </q-card>
+
+    <div class="container">
+      <OrganizationColspanTabel :columns="columns" :loading="loading" :table="data" :sort-method="sort">
+        <template #organization="{ organizationItem }">
+          <div>
+            {{ calculateBillingId(organizationItem.code) }}
+          </div>
+          <div>
+            {{ organizationItem.name }}
+          </div>
+        </template>
+        <template #after="props">
+          <q-td>
+            {{ 'nemesys' }}
+          </q-td>
+          <q-td>
+            {{ props.branchItem.licensesSlots }}
+          </q-td>
+        </template>
+      </OrganizationColspanTabel>
+    </div>
+
+  </q-card>
 </template>
 
 <script setup lang="ts">
@@ -45,34 +55,51 @@ import { useLicense } from 'src/stores/license';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useBranch } from 'src/stores/branch';
 import { useBusiness } from 'src/stores/business';
+import SearchField from 'src/components/SearchField.vue';
+import { SearchData } from '../types/LicenseStatistic'
+import { filterInPlace } from '../handlers/LicenseHandlers';
 
 const { t } = useI18n({ useScope: 'global' });
 const currentDate = date.formatDate(Date.now(), 'YYYY-MM')
 const selectedDate = ref(currentDate)
 const data = ref<Table[]>([])
+const copyData = ref<Table[]>([])
 const loading = ref(true)
 const organization = useOrganization()
 const licenceStore = useLicense()
 const branchStore = useBranch()
 const business = useBusiness()
+const search = ref('')
+const searchData = ref<SearchData>({})
 
 async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
-
+  searchData.value = {}
   const organizationIds = await organization.getAllOrganizationsIds()
   try {
     const tableData = await Promise.all(organizationIds.map(async (id) => {
-      return licenceStore.getLicensesInMonth({
+
+      const { business, branchesInBusiness, organization } = await licenceStore.getLicensesInMonth({
         organizationId: id,
         selectedMonth,
         selectedYear,
       })
+
+      searchData.value[id] = {
+        businesses: business,
+        branches: branchesInBusiness,
+        organization: organization
+      }
+
+      return toTable(business, branchesInBusiness, organization)
     }))
+
     tableData.forEach((d) => {
       if (d) {
         data.value.push(d)
       }
     })
+    copyData.value = data.value
   } catch (error) {
     data.value = []
     Alert.warning(error)
@@ -95,6 +122,79 @@ onMounted(async () => {
   }
   loading.value = false
 })
+
+function searchLicense() {
+  data.value = []
+  Object.values(searchData.value).forEach((d) => {
+
+    const copy = JSON.parse(JSON.stringify(d)) as typeof d
+
+    let foundBranch = false
+    let foundBusiness = false
+    let foundOrganization = false
+
+    Object.values(copy.branches).forEach((v) => {
+      filterInPlace(v, (v) => {
+        const includes = v.name.includes(search.value)
+        foundBranch = foundBranch || includes
+        return includes
+      })
+
+    })
+
+    for (const key in copy.businesses) {
+      const business = copy.businesses[key]
+      const includes = business.name?.includes(search.value)
+
+      foundBusiness = foundBusiness || includes
+
+      if (!includes) {
+        delete copy.businesses[key]
+      }
+    }
+
+    foundOrganization = foundOrganization || copy.organization.name.includes(search.value)
+
+    if (foundOrganization && foundBranch && foundBusiness) {
+      data.value.push(toTable(copy.businesses, copy.branches, copy.organization))
+    }
+
+    if (foundOrganization && foundBranch && !foundBusiness) {
+      data.value.push(toTable(d.businesses, copy.branches, copy.organization))
+    }
+
+    if (foundOrganization && !foundBranch && !foundBusiness) {
+      data.value.push(toTable(d.businesses, d.branches, copy.organization))
+
+    }
+
+    if (!foundOrganization && !foundBranch && !foundBusiness) {
+      data.value.push(toTable(copy.businesses, copy.branches, copy.organization))
+
+    }
+
+    if (foundOrganization && !foundBranch && foundBusiness) {
+      data.value.push(toTable(copy.businesses, d.branches, copy.organization))
+
+    }
+
+    if (!foundOrganization && foundBranch && !foundBusiness) {
+      data.value.push(toTable(d.businesses, copy.branches, d.organization))
+
+    }
+
+
+    if (!foundOrganization && !foundBranch && foundBusiness) {
+      data.value.push(toTable(copy.businesses, d.branches, d.organization))
+    }
+
+
+    if (!foundOrganization && foundBranch && foundBusiness) {
+      data.value.push(toTable(copy.businesses, d.branches, d.organization))
+    }
+
+  })
+}
 
 function sort(rows, sortBy: string, descending: boolean) {
 
@@ -131,13 +231,12 @@ function sort(rows, sortBy: string, descending: boolean) {
     })
   }
 
-
-
   return rows
 }
 
 async function loadCurrentData() {
   data.value = []
+  searchData.value = {}
   const organizationIds = await organization.getAllOrganizationsIds()
   const dataArray = await Promise.all(organizationIds.map(async (id) => {
     return Promise.all([
@@ -158,12 +257,15 @@ async function loadCurrentData() {
       }
       branches[branch.businessId].push(branch)
     }
-
+    searchData.value[organizations[0].id] = {
+      businesses,
+      branches,
+      organization: organizations[0]
+    }
     data.value.push(toTable(businesses, branches, organizations[0]))
   })
+  copyData.value = data.value
 }
-
-
 
 async function onDateChange(date: string) {
   loading.value = true
