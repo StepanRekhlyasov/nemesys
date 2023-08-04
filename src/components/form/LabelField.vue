@@ -50,7 +50,8 @@ defineProps({
 </script>
 <style lang="scss" scoped>
 .autogrow{
-  white-space: pre;
+  word-break: break-all;
+  white-space: break-spaces;
   overflow: initial;
   display: block;
 }

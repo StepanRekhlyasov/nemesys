@@ -646,6 +646,7 @@ export default {
     },
     backOrder: {
       TTP: 'TTP',
+      remarks: '給与備考',
       generalDispatch: '一般派遣',
       title: 'バックオーダー',
       noOrders: '過去のバックオーダーはありません',

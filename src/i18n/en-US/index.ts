@@ -651,6 +651,7 @@ export default {
     },
     backOrder: {
       TTP: 'TTP',
+      remarks: 'Remarks',
       generalDispatch: 'General Dispatch',
       title: 'Backorder',
       noOrders: 'No past backorders',
