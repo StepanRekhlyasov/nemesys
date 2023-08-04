@@ -110,10 +110,9 @@
         </q-field>
       </LabelField>
       <LabelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center" 
-        :value="selectedBo['payday'] ? `${selectedBo['payday']} ${$t('backOrder.create.day')}` : ''"
-        labelClass="q-pl-md col-2 text-right self-center">
-        <q-input v-model="data['payday']" outlined dense type="number" :disable="loading" />
-        <span class="q-ma-sm flex-center">{{ $t('backOrder.create.day') }}</span>
+        :value="selectedBo['payday']"
+        labelClass="q-pl-md col-2 text-right self-center" :autogrow="true">
+        <q-input v-model="data['payday']" outlined dense type="textarea" :disable="loading" autogrow />
       </LabelField>
     </div>
 

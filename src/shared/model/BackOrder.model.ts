@@ -43,7 +43,7 @@ export interface BackOrderModel {
   benefit: number;
   bonus: number;
   travelingExpenses: 'yesRegular' | 'yesDaily' | 'none';
-  payday: number;
+  payday: string;
   remarks: string;
 
   // Tasks Section (only referal type)
