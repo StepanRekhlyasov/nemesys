@@ -182,6 +182,7 @@ export default {
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
+      mediaControl: 'Media Control',
       // optionMaster: 'Option Master',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
@@ -1555,6 +1556,7 @@ export default {
   clientFactory: {
     numberEmployees: 'Number of employees',
     facilityType: 'Facility type',
+    mediaOptions: 'Media Options',
     homePage: 'Home page',
     conclusionDispatchContract: 'Conclusion of dispatch contract',
     conclusionReferralContract: 'Conclusion of referral contract',

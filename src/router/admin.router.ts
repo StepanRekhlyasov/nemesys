@@ -87,6 +87,16 @@ const admin_router: MenuRouter[] = [
     title: 'menu.admin.occupationSpecificItems'
   },
   {
+    path: 'media-control',
+    component: () => import('src/pages/admin/OfficeManagement/MediaControl.vue'),
+    meta: {
+      requiresAuth: true, 
+      isAdmin: true
+    }, 
+    menuParent: MenuParent.AdminOfficeManagement,
+    title: 'menu.admin.mediaControl'
+  },
+  {
     path: 'users-list',
     title: 'menu.admin.usersList',
     component: () => import('src/pages/user/Settings/management/ResponsibleMaster.vue'),

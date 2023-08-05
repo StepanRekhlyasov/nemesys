@@ -182,6 +182,7 @@ export default {
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
+      mediaControl: 'メディアコントロール',
       // optionMaster: '選択肢マスタ',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
@@ -1549,6 +1550,7 @@ export default {
   clientFactory: {
     numberEmployees: '従業員数',
     facilityType: '施設形態',
+    mediaOptions: 'メディアオプション',
     homePage: 'ホームページ',
     conclusionDispatchContract: '派遣契約締結',
     conclusionReferralContract: '紹介契約締結',

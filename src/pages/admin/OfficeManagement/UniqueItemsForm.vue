@@ -157,6 +157,9 @@ const isNewIndustryPopupHandler = (val: boolean) => {
     isNewIndustryPopup.value = val
 }
 
+
+
+
 watch(() => industries.value, () => {
     if(!activeIndustry.value && industries.value.length) {
         activeIndustry.value = industries.value[0]
@@ -164,6 +167,7 @@ watch(() => industries.value, () => {
         resetSaveButtons()
     }
 }, {immediate: true, deep: true})
+
 </script>
 
 <template>
@@ -213,6 +217,7 @@ watch(() => industries.value, () => {
                     @update-facility-form="updateFacilityForm"
                     @sort-facility-form="(e) => sortHandler(e, 'facilityForms')"/>
             </DropDownEditGroup>
+           
         </q-card>
     </div>
 </template>
