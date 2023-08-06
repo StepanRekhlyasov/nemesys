@@ -25,12 +25,14 @@
   >
   <template v-slot:body-cell-messageDirection="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{props.row.status === 'answered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}
+      <span v-if="props.row.updatedDate !== undefined">{{ $t('clientFactory.drawer.details.update') }}</span>
+      <span v-else>{{props.row.status === 'answered' || props.row.status === 'delivered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}</span>
     </q-td>
   </template>
   <template v-slot:body-cell-recievedDate="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}
+      <span v-if="props.row.updatedDate !== undefined">{{ myDateFormat(props.row.updatedDate, 'YYYY-MM-DD HH:mm') }}</span>
+      <span v-else>{{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}</span>
     </q-td>
   </template>
   <template v-slot:body-cell-type="props">
@@ -39,11 +41,14 @@
     </q-td>
   </template>
   <template v-slot:body-cell-readBy="props">
-    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''" class="warningMark">
-      <template v-if="Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId)"></template>
-      <template v-else>!</template>
-    </q-td>
-  </template>
+  <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''" class="warningMark">
+    <template v-if="Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId)">
+    </template>
+    <template v-else>
+        <span>!</span>
+    </template>
+  </q-td>
+</template>
   <template v-slot:body-cell-category="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
       <template v-if="props.row.type === 'releaseNote'">{{ $t('releaseNotes.form.options.' + props.value) }}</template>
@@ -89,7 +94,7 @@
 </template>
 <script setup lang="ts">
 import { DashboardinquiryRows, dashboardNotificationTableColumns as columns } from '../const/dashboard.const'
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed  } from 'vue'
 import DashboardInquiryDrawer from './inquiry/DashboardInquiryDrawer.vue'
 import { useInquiry } from 'src/stores/inquiry'
 import { useOrganization } from 'src/stores/organization'
@@ -144,6 +149,7 @@ const updateInqueries = async () => {
         subject: item.data().subject,
         inquiryContent: item.data().content,
         recievedDate: item.data().dateDelivery,
+        updatedDate:item.data().updated_at,
         type: 'releaseNote'
       }]
     })
@@ -192,6 +198,7 @@ function openDetails(id : string, type : string){
     }
   }
 }
+
 function readinquiry(inquiryData : InquiryData){
   inqueries.value.forEach((row)=>{
     if(row.id === inquiryData.id){
@@ -209,6 +216,7 @@ watch(() => organization.currentOrganizationId, () => {
   drawerDetails.value = false
   updateInqueries()
 })
+
 </script>
 <style lang="scss" scoped>
 .clickable{

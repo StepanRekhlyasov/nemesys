@@ -68,6 +68,7 @@ export interface DashboardinquiryRows {
   recievedDate:  Timestamp
   messages?: InquiryMessage[] | never[]
   readBy?: string[] | FieldValue
+  updatedDate?:Timestamp
   type: string
 }
 export const dashboardPreviewTableColumns = computed<QTableProps['columns']>(() => {
