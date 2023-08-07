@@ -302,7 +302,9 @@ export default {
         working: 'Working'
       },
       business: 'Business',
-      branchFlag: 'Branch flag'
+      branchFlag: 'Branch flag',
+      enable: 'Be enabled',
+      enableFlag: 'Enabling flag'
     },
     template: {
       addNew: 'New mail template added',
