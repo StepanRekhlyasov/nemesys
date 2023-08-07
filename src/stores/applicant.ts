@@ -511,8 +511,7 @@ export const useApplicant = defineStore('applicant', () => {
     return { ...result.data(), id: result.id } as Applicant
   }
 
-  async function getApplicantContactData(applicantId: string, constraints: ConstraintsType) {
-    constraints.push(where('organizationId', '==', organization.currentOrganizationId))
+  async function getApplicantContactData(applicantId: string, constraints: ConstraintsType = []) {
     const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
     const snapshot = await getDocs(q);
     const result = snapshot?.docs.map((doc) => {
