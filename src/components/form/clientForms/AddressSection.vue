@@ -71,7 +71,7 @@ watch(prefecture, async () => {
                 bg-color="white"
                 :color="theme"
                 :options="municipalities"
-                v-model="clientData['municipality']"  
+                v-model="clientData['municipality']"
                 :placeholder="t('client.add.municipalitieLabel')"/>
 
             </div>
@@ -105,8 +105,8 @@ watch(prefecture, async () => {
             </div>
           </div>
 
-          <div class="row q-mt-sm">
-            <div class="col-6 q-pr-sm">
+          <!-- <div class="row q-mt-sm"> -->
+            <!-- <div class="col-6 q-pr-sm">
               <q-item-label class="q-pb-xs">
                 {{ t('client.add.longitude') }}
               </q-item-label>
@@ -118,8 +118,8 @@ watch(prefecture, async () => {
                 v-model.number="clientData['lon']"
                 :rules="[val => (val === '' || (val !== null && !isNaN(val))) || '']"
                 :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
-            </div>
-            <div class="col-6 q-pl-sm ">
+            </div> -->
+            <!-- <div class="col-6 q-pl-sm ">
               <q-item-label class="q-pb-xs">
                 {{ t('client.add.latitude') }}
               </q-item-label>
@@ -131,8 +131,8 @@ watch(prefecture, async () => {
                 v-model.number="clientData['lat']"
                 :rules="[val => (val === '' || (val !== null && !isNaN(val))) || '']"
                 :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
-            </div>
-          </div>
+            </div> -->
+          <!-- </div> -->
         </q-item-section>
       </q-item>
 </template>

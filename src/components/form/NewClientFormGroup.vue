@@ -35,8 +35,8 @@ const addressSection = ref<{ [key: string]: string | number }>({
     municipality: '',
     street: '',
     building: '',
-    lon: 0,
-    lat: 0
+    // lon: 0,
+    // lat: 0
 })
 const clientInfo = ref<{ [key: string]: string | number}>({
     representativeName: '',
