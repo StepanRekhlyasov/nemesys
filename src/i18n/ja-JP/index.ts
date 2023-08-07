@@ -300,6 +300,8 @@ export default {
       flags: {
         all: 'すべて',
         working: '稼働',
+        enabled: '有効',
+        disabled: '無効',
       },
       business: '事業',
       branchFlag: '支店フラグ',

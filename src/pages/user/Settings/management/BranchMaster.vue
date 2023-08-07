@@ -119,7 +119,7 @@
 import { serverTimestamp } from '@firebase/firestore';
 import { Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Branch, BranchesSearch, branchFlags } from 'src/shared/model/Branch.model';
+import { Branch, BranchesSearch, branchEnablityFilter } from 'src/shared/model/Branch.model';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -139,7 +139,7 @@ const $q = useQuasar();
 
 const search: Ref<BranchesSearch> = ref({
   queryText: '',
-  flag: branchFlags.All,
+  flag: branchEnablityFilter.All,
 });
 const branches: Ref<Branch[]> = ref([])
 const loading = ref(false);
