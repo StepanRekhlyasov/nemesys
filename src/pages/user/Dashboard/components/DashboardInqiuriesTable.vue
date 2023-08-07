@@ -47,7 +47,7 @@
     <template v-else>
         <span>!</span>
     </template>
-    <template v-if="props.row.flagExclamation==true && Array.isArray(props.row.readBy) ">!</template>
+    <template v-if="props.row.flagExclamation==true && Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId) ">!</template>
   </q-td>
 </template>
   <template v-slot:body-cell-category="props">
