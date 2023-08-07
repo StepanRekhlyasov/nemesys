@@ -8,7 +8,7 @@
     :class='{redAlert:redAlert, highlighted: applicantStore.state.highlightedApplicant === applicant.id}'
   >
     <div class='row q-gutter-sm items-center'>
-      <span class='col-1'>{{ RankCount.getRank(applicant.staffRank) }}</span>
+      <span class='col-1 q-mr-sm'>{{ RankCount.getRank(applicant.staffRank) }}</span>
       <span class='col applicant-clickable' @click="emit('selectApplicant', applicant)">{{ applicant.name }}</span>
     </div>
     <div class='row q-gutter-md items-center'>
