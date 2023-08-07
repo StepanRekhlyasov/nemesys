@@ -21,7 +21,7 @@
           </q-input>
           <div class="row content-center q-pr-md">
             <span class="row content-center q-pr-md">{{ $t('settings.branch.flag') }}</span>
-            <q-select v-model="search.flag" :options="flagOptions" option-value="flag" option-label="label" emit-value
+            <q-select v-model="search.enablity" :options="flagOptions" option-value="flag" option-label="label" emit-value
               map-options dense />
           </div>
           <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" unelevated
@@ -139,7 +139,7 @@ const $q = useQuasar();
 
 const search: Ref<BranchesSearch> = ref({
   queryText: '',
-  flag: branchEnablityFilter.All,
+  enablity: branchEnablityFilter.All,
 });
 const branches: Ref<Branch[]> = ref([])
 const loading = ref(false);
