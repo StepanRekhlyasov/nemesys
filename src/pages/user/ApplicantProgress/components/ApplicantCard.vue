@@ -18,11 +18,11 @@
       <div class='col-1 q-mr-sm' v-if="item.status" v-html="statusDateName[item.status]"></div>
       <div class='col' v-if="item.status">{{ item[applicantStatusDates[item.status]] ? myDateFormat(item[applicantStatusDates[item.status]], 'YYYY.MM.DD') : '—' }}</div>
     </div>
-    <div class='row q-gutter-sm items-center' v-if="item.status === ApplicantStatus.WAIT_CONTACT">
+    <div class='row q-gutter-sm items-center'>
       <div class='col-1 q-mr-sm'>{{$t('applicant.progress.card.contact')}}</div>
       <div class='col'>{{ contactDate ? myDateFormat(contactDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
-    <div class='row q-gutter-sm items-center' v-if="item.status === ApplicantStatus.WAIT_CONTACT">
+    <div class='row q-gutter-sm items-center'>
       <div class='col-1 q-mr-sm'>FAX</div>
       <div class='col'>{{ faxDate ? myDateFormat(faxDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
@@ -30,7 +30,7 @@
 </template>
 <script lang="ts" setup>
 import { Timestamp, orderBy, where } from 'firebase/firestore'
-import { Applicant, ApplicantStatus } from 'src/shared/model'
+import { Applicant } from 'src/shared/model'
 import { myDateFormat } from 'src/shared/utils/utils'
 import { computed, onMounted, ref } from 'vue'
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const'
@@ -75,26 +75,24 @@ const contactDate = ref<Timestamp>()
 const faxDate = ref<Timestamp>()
 
 onMounted(async ()=>{
-  if(props.item.status === ApplicantStatus.WAIT_CONTACT){
-    const lastContact = await applicantStore.getApplicantContactData(props.item.id, [where('deleted', '==', false), orderBy('created_at', 'desc')], 1)
-    contactDate.value = lastContact?.[0]?.created_at
-    const faxes = await faxStore.getFaxByConstraints([where('deleted', '==', false), where('applicantId', '==', props.item.id)])
-    const faxesSended = faxes.filter((row)=>{
-      return row['send_at']
-    })
-    faxesSended.sort((a, b) => {
-      try {
-        if(a['send_at'].toDate() > b['send_at'].toDate()){
-          return 1
-        }
-      } catch (e) {
-        console.log(e)
-        return -1
+  const lastContact = await applicantStore.getApplicantContactData(props.item.id, [where('deleted', '==', false), orderBy('created_at', 'desc')], 1)
+  contactDate.value = lastContact?.[0]?.created_at
+  const faxes = await faxStore.getFaxByConstraints([where('deleted', '==', false), where('applicantId', '==', props.item.id)])
+  const faxesSended = faxes.filter((row)=>{
+    return row['send_at']
+  })
+  faxesSended.sort((a, b) => {
+    try {
+      if(a['send_at'].toDate() > b['send_at'].toDate()){
+        return 1
       }
-      return 0
-    })
-    faxDate.value = faxes?.[0]?.['transmissionDateTime'] || faxes?.[0]?.['send_at'] 
-  }
+    } catch (e) {
+      console.log(e)
+      return -1
+    }
+    return 0
+  })
+  faxDate.value = faxes?.[0]?.['transmissionDateTime'] || faxes?.[0]?.['send_at'] 
 })
   
 </script>
