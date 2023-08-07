@@ -24,17 +24,28 @@
     v-model:pagination = pagination
   >
   <template v-slot:body-cell-messageDirection="props">
-    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      <span v-if="props.row.updatedDate !== undefined">{{ $t('clientFactory.drawer.details.update') }}</span>
-      <span v-else>{{props.row.status === 'answered' || props.row.status === 'delivered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}</span>
-    </q-td>
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''">
+    <span>
+      {{
+        props.row.updatedDate !== undefined && props.row.updatedDate.seconds > props.row.recievedDate.seconds
+          ? $t('clientFactory.drawer.details.update')
+          : $t('inquiry.table.recieved')
+      }}
+    </span>
+  </q-td>
   </template>
   <template v-slot:body-cell-recievedDate="props">
-    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      <span v-if="props.row.updatedDate !== undefined">{{ myDateFormat(props.row.updatedDate, 'YYYY-MM-DD HH:mm') }}</span>
-      <span v-else>{{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}</span>
-    </q-td>
-  </template>
+  <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''">
+    <span v-if="props.row.recievedDate && props.row.updatedDate">
+      {{
+        props.row.recievedDate.seconds < props.row.updatedDate.seconds
+          ? myDateFormat(props.row.updatedDate, 'YYYY-MM-DD HH:mm:ss')
+          : myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm:ss')
+      }}
+    </span>
+    <span v-else>{{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm:ss') }}</span>
+  </q-td>
+</template>
   <template v-slot:body-cell-type="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
       {{ $t('inquiry.table.' + props.row.type) }}
@@ -58,7 +69,7 @@
   </template>
   <template v-slot:body-cell="props">
     <q-td :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{ props.value }}
+      <div v-html="formatMultilineText(props.value)"></div>
     </q-td>
   </template>
   </q-table>
@@ -175,7 +186,12 @@ const tableRows = computed(()=>{
   })
   return result
 })
-
+const formatMultilineText = (text: string) => {
+  if (text) {
+    return text.replace(/\n/g, '<br>');
+  }
+  return '';
+};
 function openDetails(id : string, type : string){
   if(type === 'inquiry'){
     openId.value = id

@@ -121,10 +121,10 @@
       </template>
 
       <template v-slot:body-cell-content="props">
-        <q-td :props="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
           <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="props.row.content" />
           <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.content }}
+         <div v-html="formatMultilineText(props.row.content)"></div>
           </template>
         </q-td>
       </template>
@@ -299,7 +299,12 @@ const editNotification = async (notification: NotificationDataRow) => {
   }
   return
 }
-
+const formatMultilineText = (text: string) => {
+  if (text) {
+    return text.replace(/\n/g, '<br>');
+  }
+  return '';
+};
 const deleteNotification = (notificationId: string) => {
   $q.dialog({
       title: t('common.delete'),
