@@ -47,6 +47,7 @@
     <template v-else>
         <span>!</span>
     </template>
+    <template v-if="props.row.flagExclamation==true && Array.isArray(props.row.readBy) ">!</template>
   </q-td>
 </template>
   <template v-slot:body-cell-category="props">
@@ -150,6 +151,7 @@ const updateInqueries = async () => {
         inquiryContent: item.data().content,
         recievedDate: item.data().dateDelivery,
         updatedDate:item.data().updated_at,
+        flagExclamation:item.data().flagExclamation,
         type: 'releaseNote'
       }]
     })
@@ -182,7 +184,9 @@ function openDetails(id : string, type : string){
   } else {
     const row = tableRows.value.find((row)=>row.id===id)
     if(row){
+      debugger
       showNote.value = true
+      inquiryStore.addFlagValue(row.id,row)
       noteSubject.value = row.subject
       noteText.value = row.inquiryContent
      console.log(showNote.value)

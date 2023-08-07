@@ -159,6 +159,12 @@ export const useInquiry = defineStore('inquiry', () => {
     return await getDocs(query(collection(db, 'notifications'), where('status','==',DELIVERY_STATUS.delivered)));
   }
 
+  const addFlagValue = async (id,data) => {
+    debugger
+    data['flagExclamation'] = false
+    await updateDoc(doc(db, 'notifications', id), data);
+  };
+
   return {
     state,
     setCurrentRowData,
@@ -172,7 +178,8 @@ export const useInquiry = defineStore('inquiry', () => {
     updateCurrentRowDataMessages,
     deleteInquiryData,
     getInqueriesByOrganizationId,
-    getDeliveredNotifications
+    getDeliveredNotifications,
+    addFlagValue
   }
 
 })

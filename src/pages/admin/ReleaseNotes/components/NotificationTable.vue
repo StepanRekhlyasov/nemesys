@@ -104,11 +104,11 @@
   <q-card-section class="q-pa-none">
     <q-table :columns="notificationTableColumns" :rows="tableRows" row-key="id" v-model:pagination="pagination" hide-pagination class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
       <template v-slot:body-cell-edit="props">
-        <EditButton color="accent" :props="props"
-          :on-edit="() => {editableNotification = JSON.parse(JSON.stringify(props.row))}"
-          @onEditableRowChange="(rowIndex) => editableRow = rowIndex"
+        <EditButton color="accent" :props="props" cancelButton
+          :on-edit="() => {sortable = false;editableNotification = JSON.parse(JSON.stringify(props.row))}"
           :on-save="() => editNotification(JSON.parse(JSON.stringify(props.row)))"
-          :editable-row="editableRow ?? -1" />
+          @onEditableRowChange="(rowIndex) => editableRow = rowIndex" :editable-row="editableRow"
+          @on-exit-editing-mode="{ editableRow = -1; }"/>
       </template>
 
       <template v-slot:body-cell-subject="props">
@@ -161,6 +161,7 @@ import { DELIVERY_STATUS, NotificationDataRow } from '../types/notificationTypes
 import { User } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useReleaseNotes } from 'src/stores/releaseNotes';
+import { sortable } from 'src/pages/admin/InquiryPage/const/inquiry.const'
 import { useUserStore } from 'src/stores/user';
 import { notificationTableColumns } from '../../InquiryPage/const/inquiry.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
@@ -195,7 +196,7 @@ const deliveryTo = ref('')
 
 const loading = ref(true)
 
-const editableRow = ref < number | null > (null)
+const editableRow = ref < number > (-1)
 const editableNotification = ref < NotificationDataRow > ()
 const notificationTableRows = ref < NotificationDataRow[] > ([])
 
@@ -284,9 +285,11 @@ const editNotification = async (notification: NotificationDataRow) => {
               updated_at: serverTimestamp(),
               author: user.id,
               subject: notification.subject,
-              content: notification.content
+              content: notification.content,
+              flagExclamation:true
           });
           await loadCurrentNotifications();
+          editableRow.value = -1
           loading.value = false
       } catch (error) {
           console.error(error)
