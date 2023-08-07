@@ -194,7 +194,7 @@
                 {{ $t('applicant.add.applicationMedia') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
+                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" option-label="name" option-value="id" bg-color="white"
                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
@@ -273,11 +273,11 @@
 
 <script lang="ts" setup>
 import { QForm } from 'quasar';
-import { Ref, ref, watch } from 'vue';
+import { Ref, ref, watch, onBeforeMount } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
+import { applicationMethod, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
@@ -287,6 +287,9 @@ import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
+import { Media } from 'src/shared/model/Media.model';
+import { useMedia } from 'src/stores/media';
+const { getAllmedia } = useMedia();
 
 const applicantDataSample = {
   qualification: [],
@@ -308,6 +311,8 @@ const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
 const municipalities = ref<string[]>([])
 const fetchMunicipalities = ref(false)
+const mediaList = ref<Media[]>([]);
+
 
 watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
   applicantData.value.municipalities = '';
@@ -319,6 +324,14 @@ watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
     fetchMunicipalities.value = false
   }
 }, { immediate: true })
+
+const fetchMedia = async () => {
+    mediaList.value = await getAllmedia();
+}
+
+onBeforeMount(() => {
+    fetchMedia();
+})
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
