@@ -51,28 +51,6 @@
           </q-item>
 
 
-          <!-- <q-item>
-              <q-item-section>
-                <q-item-label class="q-pb-xs">
-                  {{ $t('client.add.clientType') }}
-                </q-item-label>
-                <div>
-                  <q-checkbox v-model="backOrderData['industry']" dense :label="$t('client.add.nurse')" val="nurse" />
-                  <q-checkbox v-model="backOrderData['industry']" dense :label="$t('client.add.nursing')" class="q-ml-md"
-                    val="nursing" />
-                </div>
-                <q-item v-if="backOrderData['industry'].length > 0">
-                  <div class="q-gutter-sm">
-                    <q-item-label class="q-pb-xs">{{
-                      $t('client.add.facilityType')
-                    }}</q-item-label>
-                    <q-checkbox size="xs" v-model="backOrderData['facilityType']" :val="option.value" :label="option.name"
-                      v-for="option in facilityOp" :key="option.value" :disable="backOrderData['industry'].length == 0" />
-                  </div>
-                </q-item>
-              </q-item-section>
-            </q-item> -->
-
           <q-item>
             <q-item-section>
               <q-item-label class="q-pb-xs">
@@ -86,8 +64,8 @@
                     <q-item-label class="q-pb-xs">{{
                       $t('client.add.facilityType')
                     }}</q-item-label>
-                    <q-checkbox size="xs" v-model="backOrderData['facilityType']" :key="option.order" :val="option.title" :label="option.title"
-                      v-for="option in industry.uniqueItems.facilityForms"  :disable="backOrderData['industry'].length == 0" />
+                    <q-checkbox size="xs" v-model="backOrderData['facilityType'][industry.industryName]" :val="option.title" :label="option.title"
+                      v-for="option in industry.uniqueItems.facilityForms" :key="option.order" :disable="backOrderData['industry'].length == 0" />
                   </div>
                 </q-item>
               </div>
@@ -343,12 +321,9 @@
                 {{ $t('client.list.appointLastMonths') }}
               </q-item-label>
               <div class="q-gutter-sm q-mt-xs">
-                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                  val="exist" :label="$t('client.list.allTeleAppointedCompanies')" />
-                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                  val="connected" :label="$t('client.list.connectedCompanies')" />
-                <q-radio dense v-model="backOrderData['route']" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                  val="notConnected" :label="$t('client.list.companiesOutService')" />
+                <q-checkbox v-model="backOrderData['route']" dense val="exist" :label="$t('client.list.allTeleAppointedCompanies')" />
+                <q-checkbox v-model="backOrderData['route']" dense val="connected" :label="$t('client.list.connectedCompanies')" />
+                <q-checkbox v-model="backOrderData['route']" dense val="notConnected" :label="$t('client.list.companiesOutService')"/>
               </div>
             </q-item-section>
           </q-item>
@@ -406,9 +381,10 @@ const emit = defineEmits<{
   (e: 'openAreaDrawer')
   (e: 'hideCSDrawer')
 }>()
+
+
 const industryStore = useIndsutry();
 const { industries } = storeToRefs(industryStore)
-console.log(industries.value)
 const advanceSearch = props.actionsType === ActionsType.CLIENT ? useAdvanceSearch() : useAdvanceSearchAdmin();
 const saveSearchCondition = props.actionsType === ActionsType.CLIENT ? useSaveSearchCondition() : useSaveSearchConditionAdmin();
 const isLoadingProgress = ref(false)
@@ -423,9 +399,10 @@ else if (props.from === 'area') {
 else if (props.from === 'saveCondition') {
   backOrderData = advanceSearch.saveConditionData;
 }
+
 const conditionName = ref('')
 const label = ref('')
-//   const dropData[] = []
+
 const onSelected = (newValue) => {
   Object.keys(newValue.value).forEach((key) => {
     backOrderData[key] = newValue.value[key]

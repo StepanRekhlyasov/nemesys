@@ -1,11 +1,27 @@
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { Client } from 'src/shared/model';
 import { collection, getFirestore, Timestamp, getDocs, collectionGroup } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { useIndsutry } from 'src/stores/industry';
+const industryStore = useIndsutry();
+const { industries } = storeToRefs(industryStore)
+// const facilityTypes = computed(()=>{
+//   const facilityType:object = {}
+//   industries.value.forEach((industry)=>{
+//     facilityType[industry.industryName]=[]
+//   })
+//   console.log(facilityType)
+//   return facilityType;
+// })
 export const getBackOrderData = () => {
+  const facilityType:object = {}
+  industries.value.forEach((industry)=>{
+    facilityType[industry.industryName]=[]
+  })
   return {
     client_name: '',
     industry: [],
@@ -36,7 +52,7 @@ export const getBackOrderData = () => {
     numFullTimeEmployees: '',
     numPartTimeEmployees: '',
     numTempEmployees: '',
-    route: ''
+    route: []
   }
 };
 export const useAdvanceSearch = defineStore('advanceSearch', () => {
@@ -403,8 +419,8 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         }
       }
     }
-    if (backOrderData['route'] !== '') {
-      office = interSectionOfArray(office, await getTeleAppointmentData(office, backOrderData['route']));
+    if (backOrderData['route'].length !== 0) {
+      office = interSectionOfArray(office, await getTeleAppointmentData(office, ''));
     }
     clientFactoryStore.condition = true
     clientFactoryStore.selectedCFsId = office
