@@ -146,7 +146,7 @@
   
             <q-separator />
   
-            <div v-if="props.page!='admin'">
+            <div v-if="actionsType !== ActionsType.ADMIN">
             <q-item-label class="row q-ml-md q-mt-md">
               {{ $t('client.list.evaluationRank') }}
             </q-item-label>
@@ -360,6 +360,7 @@
   <script lang="ts" setup>
   import { defineProps, withDefaults, defineEmits, computed, watch, ref, onMounted } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import {ActionsType} from './types'
   import { facilityList } from 'src/shared/constants/Organization.const';
   import { useAdvanceSearch, getBackOrderData } from 'src/stores/advanceSearch';
   import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
@@ -368,11 +369,12 @@
   import { getFirestore, getDocs, collectionGroup } from 'firebase/firestore';
   const db = getFirestore();
   const props = withDefaults(defineProps<{
-    page:string,
+    actionsType?: ActionsType
     from: string,
     rowId: string,
     theme:string
   }>(), {
+    actionsType:ActionsType.CLIENT,
     from: '',
     rowId:'',
     theme:'primary'
@@ -382,8 +384,8 @@
     (e: 'openAreaDrawer')
     (e: 'hideCSDrawer')
   }>()
-  const advanceSearch = props.page==='user'?useAdvanceSearch():useAdvanceSearchAdmin();
-  const saveSearchCondition = props.page==='user'?useSaveSearchCondition():useSaveSearchConditionAdmin();
+  const advanceSearch = props.actionsType === ActionsType.CLIENT?useAdvanceSearch():useAdvanceSearchAdmin();
+  const saveSearchCondition = props.actionsType === ActionsType.CLIENT?useSaveSearchCondition():useSaveSearchConditionAdmin();
   const isLoadingProgress = ref(false)
   const { t } = useI18n({ useScope: 'global' });
   let backOrderData = advanceSearch.advanceConditionData
@@ -419,16 +421,6 @@
   onMounted(async()=>{
     await saveSearchCondition.getSaveSearchConditions();
   })
-  watch(conditionList,()=>{
-    // console.log(conditionList)
-    // conditionList.value.forEach((data)=>{
-    //     const temp = []
-    //     temp['label'] = data['conditionName']
-    //     temp['value'] = data;
-    //     dropData.push(temp)
-    // })
-  })
-  // dropData.push({'label':'None','value':getBackOrderData()})
   const confirmSaveDialog = ref(false);
   const facilityOp = facilityList;
   const recordOp = computed(() => {
@@ -511,7 +503,7 @@
       office = advanceSearch.getCombineId() || [];
     }
     else {
-      const cfSnapshot = props.page==='user'?await getDocs(collectionGroup(db, 'modifiedCF')):await getDocs(collectionGroup(db,'client-factory'));
+      const cfSnapshot = props.actionsType === ActionsType.CLIENT?await getDocs(collectionGroup(db, 'modifiedCF')):await getDocs(collectionGroup(db,'client-factory'));
       cfSnapshot.docs.forEach((doc) => {
         office.push(doc.id)
         if(cfIds[doc.id]){

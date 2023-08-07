@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, defineEmits, defineProps, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ActionsType } from 'src/components/client-factory/types';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue'
 import MapSearchVue from 'src/components/client-factory/MapSearch.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -52,7 +53,7 @@ const openCFDrawer = (clientFactoryData: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <MapSearchVue page="admin" :from="props.from" theme="accent" @hide-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
+                    <MapSearchVue :actions-type="ActionsType.ADMIN" :from="props.from" theme="accent" @hide-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, defineEmits, defineProps, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ActionsType } from 'src/components/client-factory/types';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
 import AreaSearch from 'src/components/client-factory/AreaSearch.vue';
 
@@ -47,7 +48,7 @@ const hideDrawer = () => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AreaSearch page="admin" theme="accent" @hide-drawer="hideDrawer" :from="props.from" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
+                    <AreaSearch :actions-type="ActionsType.ADMIN" theme="accent" @hide-drawer="hideDrawer" :from="props.from" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

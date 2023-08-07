@@ -47,7 +47,7 @@ const hideDrawer = () => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AreaSearch page="user" theme="primary" @hide-drawer="hideDrawer" :from="props.from" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
+                    <AreaSearch @hide-drawer="hideDrawer" :from="props.from" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

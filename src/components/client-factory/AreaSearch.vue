@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, defineProps, watch, onMounted, defineEmits } from 'vue';
+import { ref, defineProps,withDefaults, watch, onMounted, defineEmits } from 'vue';
+import {ActionsType} from './types'
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
@@ -11,17 +12,20 @@ import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 const router = useRouter()
 const clientFactoryStore = useClientFactory()
-const props = defineProps<{
-    page:string,
+const props = withDefaults(defineProps<{
+    actionsType?: ActionsType
     theme: string,
     from: string
-}>()
+}>(),{
+    actionsType:ActionsType.CLIENT,
+    theme:'primary'
+})
 const emit = defineEmits<{
     (e: 'hideDrawer'),
     (e: 'openCSDrawer'),
     (e: 'resetKey')
 }>()
-const advanceSearch = props.page==='user'?useAdvanceSearch():useAdvanceSearchAdmin();
+const advanceSearch = props.actionsType===ActionsType.CLIENT?useAdvanceSearch():useAdvanceSearchAdmin();
 
 const db = getFirestore();
 
@@ -176,7 +180,7 @@ const searchClientsByCondition = async () => {
     if (advanceSearch.areaCSelected) {
         await advanceSearch.searchClients(office,[], 'area');
     }
-    else if(props.page === 'admin'){
+    else if(props.actionsType === ActionsType.ADMIN){
         clientFactoryStore.adminCondition = true
         clientFactoryStore.adminSelectedCFsId = office
         router.push('/admin/client-factories')

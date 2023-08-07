@@ -143,7 +143,7 @@ const openNewFaxDrawer = () => {
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
-                :isFetching="fetchData"
+                :isFetching="fetchData && !(adminCondition && tableRows.length===0)"
                 :rows="paginatedTableRows"
                 :pagination="pagination"
                 :table-columns="consts.tableColumnsClientFactory.value"

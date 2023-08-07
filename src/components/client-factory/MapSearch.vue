@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, defineProps, withDefaults } from 'vue';
+import {ActionsType} from './types'
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
 import { getAuth } from '@firebase/auth';
@@ -14,14 +15,21 @@ import { useRouter} from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 const router = useRouter()
-const props = defineProps<{ page:string, theme: string, from:string}>()
+const props = withDefaults(defineProps<{ 
+  actionsType?: ActionsType, 
+  theme: string, 
+  from:string
+}>(), {
+  actionsType:ActionsType.CLIENT,
+  theme:'primary'
+})
 const emit = defineEmits<{ 
   (e: 'openCFDrawer', ClientFactoryData: ClientFactory), 
   (e: 'hideDrawer'), 
   (e: 'openCSDrawer'),
   (e: 'resetKey'), 
 }>()
-const advanceSearch = props.page==='user'?useAdvanceSearch():useAdvanceSearchAdmin();
+const advanceSearch = props.actionsType === ActionsType.CLIENT?useAdvanceSearch():useAdvanceSearchAdmin();
 const center = ref<{ lat: number, lng: number }>({ lat: 36.0835255, lng: 140.0 });
 const officeData = ref<Client[]>([]);
 const isLoadingProgress = ref(false)
@@ -120,9 +128,9 @@ const getColor = (clientFactoryId: string) => {
 }
 const searchClientsByCondition = async() =>{
   if(props.from=='advance'){
-    emit('hideDrawer')
     advanceSearch.advanceMapSelected=true;
     advanceSearch.advanceMapCFs=officeData.value;
+    emit('hideDrawer')
     return;
   }
   let office:string[] = []
@@ -133,7 +141,7 @@ const searchClientsByCondition = async() =>{
   if(advanceSearch.mapCSelected){
     await advanceSearch.searchClients(office,[],'map');
   }
-  else if(props.page === 'admin'){
+  else if(props.actionsType === ActionsType.ADMIN){
     clientFactoryStore.adminCondition = true
     clientFactoryStore.adminSelectedCFsId = office
     router.push('/admin/client-factories')

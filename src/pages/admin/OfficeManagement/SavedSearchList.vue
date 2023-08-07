@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch, computed } from 'vue';
+import { ActionsType } from 'src/components/client-factory/types';
 import { useUserStore } from 'src/stores/user';
 import { toDate } from 'src/shared/utils/utils';
 import { User } from 'src/shared/model';
@@ -145,6 +146,7 @@ const searchCF = async(row) => {
         </q-card>
         <AdvanceSearchDrawer 
             @hide-c-s-drawer="hideDrawer" 
+            :actions-type="ActionsType.ADMIN"
             :isDrawer="isDrawer" 
             :rowId="rowId"
             from="saveCondition"

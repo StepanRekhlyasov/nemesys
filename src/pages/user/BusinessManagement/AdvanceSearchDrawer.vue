@@ -58,7 +58,7 @@ const openCFDrawer = (office: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AdvancedSearch page="user" :from="props.from" :rowId="props.rowId" theme="primary" @hide-c-s-drawer="hideDrawer"
+                    <AdvancedSearch :from="props.from" :rowId="props.rowId" @hide-c-s-drawer="hideDrawer"
                         @open-c-f-drawer="openCFDrawer" @open-map-drawer="openMapDrawer" @open-area-drawer="openAreaDrawer"/>
                 </q-card-section>
             </q-card>

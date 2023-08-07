@@ -52,7 +52,7 @@ const openCFDrawer = (clientFactoryData: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <MapSearchVue page="user" :from="props.from" theme="primary" @hide-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
+                    <MapSearchVue :from="props.from" @hide-drawer="hideDrawer" @open-c-f-drawer="openCFDrawer" @open-c-s-drawer="openCSDrawer" @reset-key="resetKey"/>
                 </q-card-section>
             </q-card>
         </q-scroll-area>

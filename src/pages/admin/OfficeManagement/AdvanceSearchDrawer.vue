@@ -2,6 +2,7 @@
 import { ref, defineEmits, defineProps, withDefaults } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ActionsType } from 'src/components/client-factory/types';
 import MapDrawer from './MapDrawer.vue';
 import AreaSearchDrawer from './AreaSearchDrawer.vue';
 import AdvancedSearch from 'src/components/client-factory/AdvancedSearch.vue';
@@ -58,7 +59,7 @@ const openCFDrawer = (office: ClientFactory) => {
                 </q-card-section>
                 <q-separator />
                 <q-card-section class="bg-grey-1 q-pa-none">
-                    <AdvancedSearch page="admin" :from="props.from" :rowId="props.rowId" theme="accent" @hide-c-s-drawer="hideDrawer"
+                    <AdvancedSearch :actions-type="ActionsType.ADMIN" :from="props.from" :rowId="props.rowId" theme="accent" @hide-c-s-drawer="hideDrawer"
                         @open-c-f-drawer="openCFDrawer" @open-map-drawer="openMapDrawer" @open-area-drawer="openAreaDrawer"/>
                 </q-card-section>
             </q-card>
