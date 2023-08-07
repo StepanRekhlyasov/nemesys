@@ -2299,5 +2299,13 @@ export default {
       'process' : 'In process',
       'finish' : 'Finish',
     }
+  },
+  impressions: {
+    notSet: 'Not Set',
+    A: 'A (The Best)',
+    B: 'B (Good)',
+    C: 'C (Normal)',
+    D: 'D (Bad)',
+    E: 'E (The Worst)',
   }
 }

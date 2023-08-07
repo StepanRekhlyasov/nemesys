@@ -911,7 +911,7 @@ export default {
         chargeOfFacility: '施設担当者',
         jobTitle: '役職',
         contact: '連絡先',
-        comments: '感想（A-E）',
+        comments: '感想 (A-E)',
         inspectionMemo: '職見メモ',
         notApplicable: '対象外',
         decided: '他社決定',
@@ -2292,5 +2292,13 @@ export default {
       'process' : '進行中',
       'finish' : '完了',
     }
+  },
+  impressions: {
+    notSet: '未設定',
+    A: 'A (最良)',
+    B: 'B (良)',
+    C: 'C (並)',
+    D: 'D (悪)',
+    E: 'E (最悪)',
   }
 };

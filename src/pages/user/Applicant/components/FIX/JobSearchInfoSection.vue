@@ -134,9 +134,16 @@
 				<labelField
 					:edit="edit.includes('jobSearchInfo')"
 					:label="$t('applicant.list.fixEmployment.inspection.comments')"
-					:value="fixData.comments">
-					<q-input dense outlined bg-color="white"
-						v-model="data['comments']" :disable="loading || disableLevel < 1" />
+					:value="$t('impressions.'+fixData.comments)">
+          <q-select
+            v-model="data['comments']"
+            :disable="loading || disableLevel < 1"
+            dense
+            :options="impressionsOptions"
+            map-options
+            emit-value
+            outlined
+          />
 				</labelField>
 			</div>
 
@@ -160,6 +167,7 @@ import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ApplicantFix, FixJobSearchInfo, selectOptions } from 'src/shared/model';
 import { useNGWatchers, useSaveHandler } from '../../const/fixMethods';
+import { impressionsOptions } from '../../const/index';
 import { QForm } from 'quasar';
 import { creationRule } from 'src/components/handlers/rules';
 import { validateDate } from 'src/shared/constants/Form.const';
