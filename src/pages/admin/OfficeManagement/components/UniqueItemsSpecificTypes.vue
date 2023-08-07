@@ -43,6 +43,7 @@ const newSpecificTypeHandle = () => {
     if(inputVal.value && inputVal.value.validate()) {
         emit('newSpecificType', newSpecificType.value)
         newSpecificType.value.title = ''
+        inputVal.value?.resetValidation()
     }
 }
 
@@ -70,8 +71,7 @@ const updateItemsOrder = (event: {
 <template>
     <div v-if="activeIndustry">
         <div v-if="Object.keys(activeIndustry.uniqueItems.typeSpecificItems).length">
-
-            <draggable :list="Object.entries(activeIndustry.uniqueItems.typeSpecificItems)" handle=".cursor_grab" @end="updateItemsOrder">
+            <draggable :list="Object.entries(activeIndustry.uniqueItems.typeSpecificItems)" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
                 <template #item="{element, index}">
                     <div class="row items-center q-mt-md" :key="element[1].order">
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab"/>
@@ -115,9 +115,7 @@ const updateItemsOrder = (event: {
 
         <div class="row items-center q-mt-md">
             <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
-
             <div class="q-mr-md">{{ t('KPI.item') + ` ${Object.keys(activeIndustry.uniqueItems.typeSpecificItems).length + 1}` }}</div>
-
             <q-input
                 class="q-mr-md" outlined dense
                 v-model="newSpecificType.title"
@@ -129,11 +127,8 @@ const updateItemsOrder = (event: {
                      (val) => (/^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val)) || 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.',
                      (val) => titleExists(val) || 'Title already exists'
                 ]" hide-bottom-space/>
-
             <q-select class="q-mr-md" dense outlined v-model="newSpecificType.dataType" :options="['string', 'number']" color="accent">
-
             </q-select>
-
             <div>
                 <q-btn color="accent" icon="mdi-plus" :label="t('industry.addLine')" size="sm" @click="newSpecificTypeHandle"/>
             </div>
