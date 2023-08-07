@@ -1178,6 +1178,7 @@ export default {
         FIXDate: 'F',
         jobDate: '職',
         appointmentDate: '内',
+        contact: 'コ',
       },
       table: {
         'fullName': '氏名',

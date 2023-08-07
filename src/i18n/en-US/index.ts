@@ -1181,6 +1181,7 @@ export default {
         FIXDate: 'F',
         jobDate: 'V',
         appointmentDate: 'O',
+        contact: 'co',
       },
       table: {
         'fullName': 'Full Name',

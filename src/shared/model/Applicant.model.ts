@@ -335,6 +335,7 @@ export interface ApplicantMemo {
 }
 
 export interface ContactInfo {
+  id: string
   created_at: Timestamp;
   contactMethod: ContactMethod;
   content: string;
