@@ -57,7 +57,7 @@
             </labelField>
           </div>
           <div class="row q-pt-sm items-center">
-            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" 
+            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true"
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
               <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
             </labelField>
@@ -139,7 +139,8 @@ const emits = defineEmits(['closeDialog']);
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
-  officeId?: string
+  officeId?: string,
+  originalOfficeId?: string,
 }>()
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -185,7 +186,20 @@ function closeDialog() {
   resetData();
 }
 
-function resetData() {
+const getClientFactoryData = async(client_id: string | undefined) => {
+  clientFactoryList.value = await clientFactoryStore.getClientFactoryList(client_id as string)
+    if(props.officeId != props.originalOfficeId){
+      const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.originalOfficeId);
+    if (targetIndex !== -1) {
+      const updatedDocument = await clientFactoryStore.getModifiedCF( organization.currentOrganizationId, clientFactoryList.value[targetIndex])
+      if(updatedDocument){
+        clientFactoryList.value[targetIndex] = updatedDocument
+      }
+    }
+    }
+}
+
+async function resetData() {
   data.value = {
     workingDays: [] as string[],
     employmentType: [] as string[],
@@ -213,10 +227,11 @@ onMounted(async () => {
   }
   await applicantStore.getClients()
 })
+
 watch(() => data.value.client_id, async () => {
   if (data.value.client_id) {
     loading.value = true
-    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client_id)
+    await getClientFactoryData(data.value.client_id)
     loading.value = false
   }
 }, { deep: true, immediate: true })
