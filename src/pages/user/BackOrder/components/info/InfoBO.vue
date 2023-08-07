@@ -18,7 +18,8 @@
             </div>
           </div>
         </q-card-section>
-        <detailInfoBO :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO_dispatch v-if="selectedBo.type === 'dispatch'" :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO_referral v-if="selectedBo.type === 'referral'" :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -32,7 +33,8 @@ import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import detailInfoBO from './detailInfoBO.vue';
+import detailInfoBO_dispatch from './detailInfoBO_dispatch.vue';
+import detailInfoBO_referral from './detailInfoBO_referral.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
 import { useClientFactory } from 'src/stores/clientFactory';
 
