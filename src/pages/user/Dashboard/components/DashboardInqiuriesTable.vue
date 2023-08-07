@@ -68,8 +68,8 @@
     </q-td>
   </template>
   <template v-slot:body-cell="props">
-    <q-td :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      <div v-html="formatMultilineText(props.value)"></div>
+    <q-td style="white-space: break-spaces;" :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      <span>{{ props.value }}</span>
     </q-td>
   </template>
   </q-table>
@@ -186,12 +186,6 @@ const tableRows = computed(()=>{
   })
   return result
 })
-const formatMultilineText = (text: string) => {
-  if (text) {
-    return text.replace(/\n/g, '<br>');
-  }
-  return '';
-};
 function openDetails(id : string, type : string){
   if(type === 'inquiry'){
     openId.value = id
@@ -200,12 +194,10 @@ function openDetails(id : string, type : string){
   } else {
     const row = tableRows.value.find((row)=>row.id===id)
     if(row){
-      debugger
       showNote.value = true
       inquiryStore.addFlagValue(row.id,row)
       noteSubject.value = row.subject
       noteText.value = row.inquiryContent
-     console.log(showNote.value)
       if(currentUserId){
         releaseNoteStore.updateNotificationData(id, {
           readBy: arrayUnion(currentUserId)

@@ -121,8 +121,8 @@
       </template>
 
       <template v-slot:body-cell-content="props">
-        <q-td :props="props" class="no-wrap q-pa-none">
-          <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="props.row.content" />
+        <q-td :props="props" style="white-space: break-spaces;">
+          <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="props.row.content" type="textarea"/>
           <template v-if="!isRowSelected(props.rowIndex)">
          <div v-html="formatMultilineText(props.row.content)"></div>
           </template>
