@@ -79,7 +79,7 @@
 
     <template v-slot:body-cell-work="props">
       <q-td :props="props">
-        {{ backOrderStore.stringToNumber(props.row.daysPerWeekList) }}<br />
+        {{ $t('backOrder.daysPerWeek.'+props.row.daysPerWeekList) }}<br />
         {{ props.row.workingDays && Array.isArray(props.row.workingDays) ? props.row.workingDays.map(days => $t('weekDay.' + days)).join(', '):'-' }}
       </q-td>
     </template>
