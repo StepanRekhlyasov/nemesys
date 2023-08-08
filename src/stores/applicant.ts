@@ -155,7 +155,7 @@ export const useApplicant = defineStore('applicant', () => {
     const filters = [
       where('status', '==', status),
       where('deleted', '==', false),
-      // where('organizationId', '==', organization.currentOrganizationId)
+      where('organizationId', '==', organization.currentOrganizationId)
     ]
     let currentTime: Timestamp | undefined
     if (filterData) {
