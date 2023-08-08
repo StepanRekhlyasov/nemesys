@@ -75,8 +75,11 @@ const onSubmit = async (newClientData: Client | null) => {
                     registeredInfo: {
                         tel: newClientData.tel,
                         fax: newClientData.fax,
+<<<<<<< Updated upstream
                         // latitude: 0,
                         // longitude: 0,
+=======
+>>>>>>> Stashed changes
                         street: newClientData.street,
                         building: '',
                         parentClient: newClientData.name

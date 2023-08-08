@@ -104,6 +104,7 @@ watch(prefecture, async () => {
                 :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
             </div>
           </div>
+<<<<<<< Updated upstream
 
           <!-- <div class="row q-mt-sm"> -->
             <!-- <div class="col-6 q-pr-sm">
@@ -133,6 +134,8 @@ watch(prefecture, async () => {
                 :placeholder="t('client.add.latitudeLabel')" step="any" hide-bottom-space />
             </div> -->
           <!-- </div> -->
+=======
+>>>>>>> Stashed changes
         </q-item-section>
       </q-item>
 </template>
