@@ -293,8 +293,6 @@ const truncateText = (text, maxLength) => {
   return text.slice(0, maxLength) + '...';
 };
 const editNotification = async (notification,subject,content) => {
-  debugger
-
   const isNotificationChanged = !is.deepEqual(notification, editableNotification.value)
 
   if (isNotificationChanged && user) {
