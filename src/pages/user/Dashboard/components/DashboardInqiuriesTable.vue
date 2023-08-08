@@ -91,7 +91,7 @@
     </template>
     </q-btn>
   </div>
-  <q-dialog v-model="showNote">
+  <q-dialog v-model="showNote" style="white-space: break-spaces;">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">{{ noteSubject }}</div>
