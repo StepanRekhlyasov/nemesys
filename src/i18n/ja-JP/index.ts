@@ -506,7 +506,12 @@ export default {
       emailLabel2: 'example.co.jp',
       manager: '担当者名',
       managerLabel: '例）鈴木 太郎',
-
+      contactInformation: '担当者情報',
+      contactPersonName: '担当者名',
+      contactPersonTitle: '担当者：役職 ',
+      contactPersonTel: '担当者：TEL',
+      contactPersonMail: '担当者：MAIL',
+      regularEmployee: '例）一般社員',
       //
       integrationSource: '統合元',
       copInfo: '企業情報',

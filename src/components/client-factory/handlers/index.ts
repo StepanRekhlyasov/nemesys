@@ -180,15 +180,16 @@ export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:ob
 
   headDetails.headOfficeInfo = computed(() => {
     return [
+      {label: t('client.add.contactPersonName'), value: safeGet(clientFactory, 'contactPersonName') || '', editType: 'text', key: 'officeDetails.contactPersonName'},
       {label: t('clientFactory.drawer.details.prefecture'), value: (safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') ?? safeGet(clientFactory, 'clientFactory.officeDetails.registeredInfo.prefecture')) || '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture', isHighlight: safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') !== undefined && safeGet(clientFactory, 'clientFactory.officeDetails.registeredInfo.prefecture') !== safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture')},
-      {label: t('applicant.add.street'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.city')) || '', editType: 'text', key: 'officeDetails.registeredInfo.city', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.city') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city')},
+      {label: t('client.add.contactPersonTitle'), value: safeGet(clientFactory, 'contactPersonTitle') || '', editType: 'text', key: 'officeDetails.contactPersonTitle'},
       {label: t('client.add.municipalities'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.municipality')) || '', editType: 'municipality', key: 'officeDetails.registeredInfo.municipality', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.municipality') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality')},
+      {label: t('client.add.contactPersonTel'), value: safeGet(clientFactory, 'contactPersonTel') || '', editType: 'text', key: 'officeDetails.contactPersonTel'},
+      {label: t('applicant.add.street'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.city')) || '', editType: 'text', key: 'officeDetails.registeredInfo.city', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.city') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city')},
+      {label: t('client.add.contactPersonMail'), value: safeGet(clientFactory, 'contactPersonMail') || '', editType: 'text', key: 'officeDetails.contactPersonMail'},
       {label: t('client.add.addressBuildingName'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.building')) || '', editType: 'text', key: 'officeDetails.registeredInfo.building', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.building') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building')},
       {label: t('clientFactory.drawer.details.officeTel'), value: (safeGet(clientFactory, 'draft.tel') ?? safeGet(clientFactory, 'tel')) || '', editType: 'text', key: 'tel', isHighlight: safeGet(clientFactory, 'draft.tel') !== undefined && safeGet(clientFactory, 'tel') !== safeGet(clientFactory, 'draft.tel')},
       {label: t('clientFactory.drawer.details.officeFax'), value: (safeGet(clientFactory, 'draft.fax') ?? safeGet(clientFactory, 'fax')) || '', editType: 'text', key: 'fax', isHighlight: safeGet(clientFactory, 'draft.fax') !== undefined && safeGet(clientFactory, 'fax') !== safeGet(clientFactory, 'draft.fax')},
-      {label: t('clientFactory.drawer.details.inChargeTitle'), value: (safeGet(clientFactory, 'draft.nameContact') ?? safeGet(clientFactory, 'nameContact')) || '', editType: 'text', key: 'nameContact', isHighlight: safeGet(clientFactory, 'draft.nameContact') !== undefined && safeGet(clientFactory, 'nameContact') !== safeGet(clientFactory, 'draft.nameContact')},
-      {label: t('clientFactory.drawer.details.inChargeTel'), value: (safeGet(clientFactory, 'draft.telContact') ?? safeGet(clientFactory, 'telContact')) || '', editType: 'text', key: 'telContact', isHighlight: safeGet(clientFactory, 'draft.telContact') !== undefined && safeGet(clientFactory, 'telContact') !== safeGet(clientFactory, 'draft.telContact')},
-      {label: t('clientFactory.drawer.details.inChargeAddress'), value: (safeGet(clientFactory, 'draft.positionContact') ?? safeGet(clientFactory, 'positionContact')) || '', editType: 'text', key: 'positionContact', isHighlight: safeGet(clientFactory, 'draft.positionContact') !== undefined && safeGet(clientFactory, 'positionContact') !== safeGet(clientFactory, 'draft.positionContact')}
     ]
   }).value
 
@@ -217,12 +218,12 @@ export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:ob
 
   headDetails.relatedOfficeInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.noOfOffices'), value:relatedOfficeInfo['numberOffices']+' '+t('clientFactory.drawer.details.perItems'), editType: 'text', key: 'relatedOfficeInfo.noOfOffices'},
-      {label: t('clientFactory.drawer.details.backOrder'), value: relatedOfficeInfo['backOrder']+' '+t('clientFactory.drawer.details.perItems'), editType: 'text', key: 'relatedOfficeInfo.backOrder'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.fullTimeEmployment'), value:relatedOfficeInfo['fullTime'], editType: 'text', key: 'relatedOfficeInfo.fullTime'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.nonRegularEmployee'), value: relatedOfficeInfo['nonRegular'], editType: 'text', key: 'relatedOfficeInfo.nonRegular'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.temporaryEmployment'), value: relatedOfficeInfo['temporary'], editType: 'text', key: 'relatedOfficeInfo.temporary'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.currentlyInOperation'), value:relatedOfficeInfo['current'], editType: 'text', key: 'relatedOfficeInfo.current'}
+      {label: t('clientFactory.drawer.details.noOfOffices'), value:relatedOfficeInfo['numberOffices']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.noOfOffices'},
+      {label: t('clientFactory.drawer.details.backOrder'), value: relatedOfficeInfo['backOrder']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.backOrder'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.fullTimeEmployment'), value:relatedOfficeInfo['fullTime'], editType: 'number', key: 'relatedOfficeInfo.fullTime'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.nonRegularEmployee'), value: relatedOfficeInfo['nonRegular'], editType: 'number', key: 'relatedOfficeInfo.nonRegular'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.temporaryEmployment'), value: relatedOfficeInfo['temporary'], editType: 'number', key: 'relatedOfficeInfo.temporary'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.currentlyInOperation'), value:relatedOfficeInfo['current'], editType: 'number', key: 'relatedOfficeInfo.current'}
     ]
   }).value
   return headDetails

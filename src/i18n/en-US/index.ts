@@ -509,7 +509,12 @@ export default {
       emailLabel2: 'example.co.jp',
       manager: 'Manager',
       managerLabel: 'Ex) Taro Suzuki',
-
+      contactInformation: 'Contact Information',
+      contactPersonName: 'Contact Person Name',
+      contactPersonTitle: 'Contact Person Title',
+      contactPersonTel: 'Contact Person TEL',
+      contactPersonMail: 'Contact Person MAIL',
+      regularEmployee: 'Regular employee',
       //
       integrationSource: 'Integration Source',
       copInfo: 'Coperation Info',

@@ -24,7 +24,8 @@ const relatedOfficeInfo = ref({})
 const isOpenEditDropDown = ref({
     headOfficeInfo: false,
     clientInfo: false,
-    contractInfo: false
+    contractInfo: false,
+    relatedOfficeInfo:false
 })
 
 const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>)
