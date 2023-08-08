@@ -51,12 +51,13 @@
           </template>
 
           <template v-slot:body-cell-employmentType="props">
-            <q-td :props="props" class="q-pa-none">
-              <div>
+            <q-td v-if="props.row.employmentType" :props="props" class="q-pa-none">
                 {{
                   Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
-              </div>
+            </q-td>
+            <q-td v-else :props="props" class="q-pa-none">
+              <div>-</div>
             </q-td>
           </template>
 
@@ -93,6 +94,16 @@
                   props.row.wage
                   ? $t(`backOrder.create.${props.row.wage}`)
                   : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-salary="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.salary ? props.row.salary : '-'
                 }}
               </div>
             </q-td>
@@ -174,7 +185,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 30,
 });
 
 const customSortMethod = (rows, sortBy, descending) => {
@@ -273,7 +284,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   }
 };
 
-const userNames = ref<{ [key: string]: string }>({});
+const userNames = ref<{ [id: string]: string }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -281,7 +292,12 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+        if(user?.branchName){
+          userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
+        }
+        else{
+          userNames.value[registrant] = user?.displayName || '';
+        }
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
