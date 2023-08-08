@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 import draggable from 'vuedraggable'
 
-import { Industry } from 'src/shared/model/Industry.model';
+import { FacilityForm, Industry } from 'src/shared/model/Industry.model';
 import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -65,13 +65,25 @@ const updateItemsOrder = (event: {
 
     emit('sortFacilityForm', { newIndex, oldIndex })
 }
+const sortedList = ref<[string, FacilityForm][]>()
+watch(()=>props.activeIndustry, ()=>{
+  if(props.activeIndustry){
+    sortedList.value = Object.entries(props.activeIndustry.uniqueItems.facilityForms)
+    sortedList.value.sort((a, b)=>{
+      if(b?.[1].order && a?.[1].order){
+        return a?.[1].order - b?.[1].order
+      }
+      return 0
+    })
+  }
+}, {deep: true, immediate: true})
 </script>
 
 <template>
     <div v-if="activeIndustry">
         <div v-if="Object.keys(activeIndustry.uniqueItems.facilityForms).length">
 
-            <draggable :list="Object.entries(activeIndustry.uniqueItems.facilityForms)" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
+            <draggable :list="sortedList" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
                 <template #item="{ element, index }">
                     <div class="row items-center q-mt-md" :key="element[1].order">
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab"/>

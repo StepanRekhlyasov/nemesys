@@ -132,12 +132,25 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
 
     officeDetails[`${industryType}.uniqueItems`] = computed(() => {
 
-      const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
-          if(key) {
-            return {label: key, value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`)), key: `officeDetails.${industryType}.uniqueItems.${key}`, editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 'number' : 'text', isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`)}
-          }
-
-        return {label: '', value: '', editType: '', key: '', isHighlight: false}
+      // const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
+      const uniqueItems : Record<string, string | number | boolean>[] = []
+      for(const [key, item] of Object.entries(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) || {})){
+        
+        const title = (item as {title : string}).title
+        const order = (item as {order : number}).order
+        if(title){
+          uniqueItems.push({
+            label: title, 
+            value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`)),
+            key: `officeDetails.${industryType}.uniqueItems.${key}.value`, 
+            editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`) === 'number' ? 'number' : 'text', 
+            isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`),
+            order: order
+          })
+        }
+      }
+      uniqueItems.sort((a, b)=>{
+        return (a.order as number) - (b.order as number)
       })
 
       return uniqueItems
