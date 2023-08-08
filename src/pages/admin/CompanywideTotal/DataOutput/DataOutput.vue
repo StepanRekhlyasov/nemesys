@@ -7,8 +7,9 @@
           <span ></span> SMS {{
               t('menu.admin.dataOutputDisplay') }}
       </div>
+
       <div class="box1 row">
-                <div class="col-3 q-ml-xl q-pl-xs">
+                <div class="col-3 text-right q-ml-xl">
                     <q-input outlined dense v-model="postingFromSms" mask="date" clearable
                       clear-icon="close">
                       <template v-slot:prepend>
@@ -44,8 +45,8 @@
                   </div>
                 </div>
           </div>
-          <div class="row q-pt-sm q-ml-xl q-pl-xl">
-              <div class="col-3 q-ml-xl q-pl-xl">
+          <div class="row text-right q-mt-sm q-ml-md">
+              <div class="col-3 q-ml-xs">
                   <q-btn color="purple" text-color="white" @click="downloadCSVForSms('sms', {postingFromSms,postingTosms})">{{
                       t('common.csvOutput') }}</q-btn>
               </div>
@@ -55,8 +56,8 @@
           <span ></span> FAX {{
               t('menu.admin.dataOutputDisplay') }}
       </div>
-      <div class="box1 row ">
-            <div class="col-3 q-ml-xl q-pl-xs">
+      <div class="box1 row">
+                <div class="col-3 text-right q-ml-xl">
                     <q-input outlined dense v-model="postingFromFax" mask="date" clearable
                       clear-icon="close">
                       <template v-slot:prepend>
@@ -92,8 +93,8 @@
                   </div>
                 </div>
           </div>
-          <div class="row q-pt-sm q-ml-xl q-pl-xl">
-              <div class="col-3 q-ml-xl q-pl-xl">
+          <div class="row text-right q-mt-sm q-ml-md">
+              <div class="col-3 q-ml-xs">
                   <q-btn color="purple" text-color="white" @click="downloadCSVForFax('fax', {postingFromFax,postingToFax})">{{
                       t('common.csvOutput') }}</q-btn>
               </div>
@@ -103,8 +104,8 @@
           <span ></span> BO {{
               t('menu.admin.dataOutputDisplay') }}
       </div>
-      <div class="box1 row ">
-             <div class="col-3 q-ml-xl q-pl-xs">
+      <div class="box1 row">
+                <div class="col-3 text-right q-ml-xl">
                     <q-input outlined dense v-model="postingFromBo" mask="date" clearable
                       clear-icon="close">
                       <template v-slot:prepend>
@@ -140,8 +141,8 @@
                   </div>
                 </div>
           </div>
-          <div class="row q-pt-sm q-ml-xl q-pl-xl">
-              <div class="col-3 q-ml-xl q-pl-xl">
+          <div class="row text-right q-mt-sm q-ml-md">
+              <div class="col-3 q-ml-xs">
                   <q-btn color="purple" text-color="white" @click="downloadCSVForBo('BO', {postingFromBo,postingToBo})">{{
                       t('common.csvOutput') }}</q-btn>
               </div>
