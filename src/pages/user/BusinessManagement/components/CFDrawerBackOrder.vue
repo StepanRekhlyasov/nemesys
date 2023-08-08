@@ -73,7 +73,7 @@
     <template v-slot:body-cell-age="props">
       <q-td :props="props">
         {{ props.row.upperAgeLimit }}<br />
-        {{ props.row.employmentType && $t('client.backOrder.' + props.row.employmentType) }}<br />
+        {{ Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-' }}<br />
       </q-td>
     </template>
 
