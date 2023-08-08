@@ -160,7 +160,6 @@ export const useInquiry = defineStore('inquiry', () => {
   }
 
   const addFlagValue = async (id,data) => {
-    debugger
     data['flagExclamation'] = false
     await updateDoc(doc(db, 'notifications', id), data);
   };

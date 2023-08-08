@@ -215,7 +215,7 @@ const authorOptions = computed(()=>{
   return Object.values(users)
 })
 const tableRows = computed(()=>{
-  let result = notificationTableRows.value
+  let result = releaseNoteStore.tableRows
   for(const [key, value] of Object.entries(filter.value)){
     result = result.filter((row)=>{
       if(filter.value[key]){
@@ -239,6 +239,7 @@ const tableRows = computed(()=>{
       return new Date(row.deliveryDate) <= new Date(deliveryTo.value + ' 23:59:59')
     })
   }
+
   return result
 })
 
@@ -329,7 +330,6 @@ const deleteNotification = (notificationId: string) => {
       }
   })
 }
-
 watch(flag,async()=>{
   loading.value = true
   await loadCurrentNotifications();
