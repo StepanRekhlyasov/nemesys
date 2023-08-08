@@ -79,14 +79,14 @@
 
     <template v-slot:body-cell-work="props">
       <q-td :props="props">
-        {{ props.row.workingDays && Array.isArray(props.row.workingDays) ? props.row.workingDays.map(days => $t('weekDay.' + days)).join(', '):'-' }}<br />
-        {{ props.row.daysPerWeekList }}
+        {{ backOrderStore.stringToNumber(props.row.daysPerWeekList) }}<br />
+        {{ props.row.workingDays && Array.isArray(props.row.workingDays) ? props.row.workingDays.map(days => $t('weekDay.' + days)).join(', '):'-' }}
       </q-td>
     </template>
 
     <template v-slot:body-cell-content="props">
       <q-td :props="props">
-        {{ props.row.tasks }}<br />
+        {{ props.row.workContent }}<br />
         {{ props.row.memo_house }}
       </q-td>
     </template>
