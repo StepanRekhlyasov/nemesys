@@ -7,8 +7,11 @@
             <q-btn dense flat icon="close" class="q-mr-md" type="reset" @click="closeDialog" />
           </div>
           <div>
-            <div class="row text-h6 text-weight-bold q-pr-xs">
+            <div v-if="!clientFactory" class="row text-h6 text-weight-bold q-pr-xs">
               {{ `${$t('backOrder.clientName')} / ${$t('backOrder.officeName')} / ${$t(`backOrder.type.${type}`)}` }}
+            </div>
+            <div v-else class="row text-h6 text-weight-bold q-pr-xs">
+              {{ `${clientFactory.client?.name} / ${clientFactory.name} / ${$t(`backOrder.type.${type}`)}` }}
             </div>
           </div>
         </div>
@@ -133,6 +136,7 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
+import { useClient } from 'src/stores/client';
 
 const { t } = useI18n({ useScope: 'global' });
 const emits = defineEmits(['closeDialog']);
@@ -142,11 +146,13 @@ const props = defineProps<{
   officeId?: string,
   originalOfficeId?: string,
 }>()
+const clientStore = useClient();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
 const clientFactoryStore = useClientFactory();
 const userStore = useUserStore();
+const clientFactory = ref<ClientFactory>();
 
 const usersListOption = ref<selectOptions[]>([]);
 const clientFactoryList = ref<ClientFactory[]>([])
@@ -188,15 +194,32 @@ function closeDialog() {
 
 const getClientFactoryData = async(client_id: string | undefined) => {
   clientFactoryList.value = await clientFactoryStore.getClientFactoryList(client_id as string)
+  const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.originalOfficeId);
+  clientFactory.value = clientFactoryList.value[targetIndex]
     if(props.officeId != props.originalOfficeId){
-      const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.originalOfficeId);
     if (targetIndex !== -1) {
       const updatedDocument = await clientFactoryStore.getModifiedCF( organization.currentOrganizationId, clientFactoryList.value[targetIndex])
+      clientFactory.value = updatedDocument
       if(updatedDocument){
         clientFactoryList.value[targetIndex] = updatedDocument
       }
     }
     }
+}
+
+const updateOfficeName = async ()=>{
+  const targetIndex = clientFactoryList.value.findIndex((item) => item.id === data.value.office_id);
+  if(targetIndex!=-1){
+    clientFactory.value = clientFactoryList.value[targetIndex]
+    const updatedDocument = await clientFactoryStore.getModifiedCF( organization.currentOrganizationId, clientFactoryList.value[targetIndex])
+    if(updatedDocument){
+      clientFactory.value = updatedDocument
+    }
+    if(clientFactory.value.clientID){
+      clientFactory.value['client'] = await clientStore.fetchClientsById(clientFactory.value.clientID);
+    }
+  }
+
 }
 
 async function resetData() {
@@ -235,6 +258,15 @@ watch(() => data.value.client_id, async () => {
     loading.value = false
   }
 }, { deep: true, immediate: true })
+
+watch(() => data.value.office_id, async () => {
+  if (data.value.office_id) {
+    loading.value = true
+    await updateOfficeName()
+    loading.value = false
+  }
+}, { deep: true, immediate: true })
+
 watch(() => [data.value.client_id, data.value.office_id], async () => {
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
   if (!users) {
