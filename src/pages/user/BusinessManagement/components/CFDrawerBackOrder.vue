@@ -192,6 +192,7 @@ const fetchBOData = async () => {
   backOrderData.value = data.map((row) => {
     return { ...row, selected: false, boid: row.boId };
   });
+  backOrderData.value.sort((a,b)=>Number(b.boId)-Number(a.boId))
   loading.value = false;
 };
 const openDrawer = (data) => {
