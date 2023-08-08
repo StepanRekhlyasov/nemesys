@@ -451,12 +451,61 @@ export const useClientFactory = defineStore('client-factory', () => {
                         created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                 } as ClientFactory
             })
-
         } catch(e) {
             Alert.warning(e)
             console.log(e)
         }
         return headClientFactory;
+    }
+    const getEmploymentStatus = async(boSnapshot,fixSnapshot,employmentType1,employmentType2)=>{
+        const array:string[]=[]
+        boSnapshot.docs.forEach(
+            (doc) => {
+                if ((doc.data()['employmentType'] 
+                && (doc.data()['employmentType'].includes(employmentType1)
+                || (employmentType2!=='' && doc.data()['employmentType'].includes(employmentType2))))) {
+                    array.push(doc.id)
+                }
+            }
+        )
+        let count = 0;
+        
+        array.forEach((id) => {
+            fixSnapshot.docs.forEach(
+                (doc) => {
+                    if (doc.data()['backOrder'] === id
+                        && doc.data()['admissionStatus'] === true) {
+                        count++;
+                    }
+                }
+            )
+        })
+        return count;
+    }
+    const getRelatedOfficeInfo = async(clientId:string) => {
+        const officeInfo = {};
+        const cfSnapshot = await getDocs(collection(db, 'clients', clientId, 'client-factory'));
+        officeInfo['numberOffices'] = cfSnapshot.size;
+        const boSnapshot = await getDocs(query(collection(db,'BO'),where('client_id','==',clientId)))
+        officeInfo['backOrder'] = boSnapshot.size;
+        const fixSnapshot = await getDocs(collection(db,'fix'))
+        officeInfo['fullTime']  = await getEmploymentStatus(boSnapshot,fixSnapshot,'fullTime','');
+        officeInfo['nonRegular'] = await getEmploymentStatus(boSnapshot,fixSnapshot,'partTime','');
+        officeInfo['temporary'] =  await getEmploymentStatus(boSnapshot,fixSnapshot,'dispatch', 'referralDispacth');
+        officeInfo['current'] = 0;
+        let count=0;
+        boSnapshot.forEach((docs) => {
+            fixSnapshot.docs.forEach(
+                (doc) => {
+                    if (doc.data()['backOrder'] === docs.id
+                        && ['wait_termination','working'].includes(doc.data()['status'])) {
+                        count++;
+                    }
+                }
+            )
+        })
+        officeInfo['current'] = count
+        return officeInfo;
     }
 
     async function getClientFactory(client_id: string, office_id: string){
@@ -481,6 +530,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         addClientFactory,
         updateClientFactory,
         getHeadClientFactory,
+        getRelatedOfficeInfo,
         addModifiedCF,
         getModifiedCF,
         updateModifiedCF,

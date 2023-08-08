@@ -14,13 +14,13 @@ const props = defineProps<{
     clientId: string
 }>()
 
-const { getHeadClientFactory } = useClientFactory()
+const { getHeadClientFactory, getRelatedOfficeInfo } = useClientFactory()
 
 const headDetails = ref<RenderHeadDetails>({} as RenderHeadDetails)
 const headClientFactory = ref<ClientFactory>({} as ClientFactory)
 const localClientId = ref(props.clientId)
 const isLoading = ref(false)
-
+const relatedOfficeInfo = ref({})
 const isOpenEditDropDown = ref({
     headOfficeInfo: false,
     clientInfo: false,
@@ -37,12 +37,12 @@ const fetchHeadClientFactory = async () => {
     isLoading.value = true
 
     headClientFactory.value = await getHeadClientFactory(props.clientId, ) as ClientFactory
-
+    relatedOfficeInfo.value = await getRelatedOfficeInfo(props.clientId)
     isLoading.value = false
 }
 
-watchEffect(() => {
-    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory)
+watchEffect(async () => {
+    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
 })
 
 watch(localClientId, fetchHeadClientFactory, { immediate: true })
@@ -73,6 +73,8 @@ watch(localClientId, fetchHeadClientFactory, { immediate: true })
         <EditableColumnsCF v-if="isOpenEditDropDown.contractInfo" @data-changed="e => getNewDataToUpdate(e, 'contractInfo')"
             :data="headDetails.contractInfo"/>
 
+        <HighlightTwoColumn :data="headDetails.relatedOfficeInfo" :label="t('clientFactory.drawer.relatedOfficeInfo')"
+            :is-edit="false" :show-actions="false" :is-drop-down="true" />
     </div>
 </template>
 

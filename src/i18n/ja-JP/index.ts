@@ -671,6 +671,7 @@ export default {
       transactionType: '取引種別',
       introduction: '紹介',
       dispatch: '一般派遣',
+      referralDispatch: '紹介予定派遣',
       ttp: 'TTP',
       reqQualification: '必要な資格',
       regularReview: '正看',
@@ -1577,6 +1578,7 @@ export default {
       headOfficeInfo: '本社事業所情報',
       clientInfo: 'クライアント情報',
       contractInfo: '契約情報',
+      relatedOfficeInfo: '関連事業所情報',
       withMasterData: 'マスタデータあり',
       noAutoRenewal: '自動更新なし',
       situation: '状態',
@@ -1661,7 +1663,16 @@ export default {
         update: '更新',
         create: '作成',
         basicInfoChanged: '基本情報',
-        officeInfoChanged: '事業所詳細情報'
+        officeInfoChanged: '事業所詳細情報',
+
+        noOfOffices: '該当事業所数',
+        backOrder: 'バックオーダー',
+        employmentRecord: '就業実績',
+        fullTimeEmployment: '正社員入職',
+        nonRegularEmployee: '非正規社員入職',
+        temporaryEmployment: '派遣入職',
+        currentlyInOperation: '現在稼働',
+        perItems: '件'
       }
     },
     fax: {

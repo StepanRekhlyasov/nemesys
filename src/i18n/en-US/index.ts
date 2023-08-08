@@ -676,6 +676,7 @@ export default {
       transactionType: 'Transaction Type',
       introduction: 'Introduction',
       dispatch: 'Dispatch',
+      referralDispatch:'Referral Dispatch',
       ttp: 'TTP',
       reqQualification: 'Required qualification',
       regularReview: 'Regular review',
@@ -1584,6 +1585,7 @@ export default {
       headOfficeInfo: 'Head office info',
       clientInfo: 'Client info',
       contractInfo: 'Contract info',
+      relatedOfficeInfo: 'Related office info',
       withMasterData: 'With master data',
       noAutoRenewal: 'No automatic renewal',
       situation: 'Situation',
@@ -1668,7 +1670,16 @@ export default {
         update: 'Updated',
         create: 'Created',
         basicInfoChanged: 'Changed Basic Info',
-        officeInfoChanged: 'Changed Office Info'
+        officeInfoChanged: 'Changed Office Info',
+
+        noOfOffices: 'Number Of offices',
+        backOrder: 'Backorder',
+        employmentRecord: 'Employment record',
+        fullTimeEmployment: 'Full-time employment',
+        nonRegularEmployee: 'Non-regular employee',
+        temporaryEmployment: 'Temporary Employment',
+        currentlyInOperation: 'Currently in operation',
+        perItems: 'items'
       }
     },
     fax: {
