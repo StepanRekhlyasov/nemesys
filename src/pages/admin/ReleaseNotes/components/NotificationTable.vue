@@ -121,13 +121,14 @@
       </template>
 
       <template v-slot:body-cell-content="props">
-        <q-td :props="props" style="white-space: break-spaces;">
-          <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="props.row.content" type="textarea"/>
-          <template v-if="!isRowSelected(props.rowIndex)">
-         <div v-html="formatMultilineText(props.row.content)"></div>
-          </template>
-        </q-td>
-      </template>
+  <q-td :props="props" style="white-space: break-spaces;">
+    <div v-if="!isRowSelected(props.rowIndex)">
+      <div v-html="truncateText(props.row.content, 10)"></div>
+    </div>
+    <q-input color="accent" v-else v-model="props.row.content" type="textarea"/>
+  </q-td>
+</template>
+
 
       <template v-slot:body-cell-delete="props">
         <q-td :props="props" auto-width>
@@ -275,6 +276,12 @@ const isRowSelected = (index: number) => {
   return index == editableRow.value
 }
 
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength) + '...';
+};
 const editNotification = async (notification: NotificationDataRow) => {
   const isNotificationChanged = !is.deepEqual(notification, editableNotification.value)
 
@@ -299,12 +306,6 @@ const editNotification = async (notification: NotificationDataRow) => {
   }
   return
 }
-const formatMultilineText = (text: string) => {
-  if (text) {
-    return text.replace(/\n/g, '<br>');
-  }
-  return '';
-};
 const deleteNotification = (notificationId: string) => {
   $q.dialog({
       title: t('common.delete'),

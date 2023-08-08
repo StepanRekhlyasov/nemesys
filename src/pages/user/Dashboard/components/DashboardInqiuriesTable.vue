@@ -70,7 +70,7 @@
   </template>
   <template v-slot:body-cell="props">
     <q-td style="white-space: break-spaces;" :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      <span>{{ props.value }}</span>
+      <div v-html="truncateText(props.value, 10)"></div>
     </q-td>
   </template>
   </q-table>
@@ -170,6 +170,12 @@ const updateInqueries = async () => {
   }
   loading.value = false
 }
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength) + '...';
+};
 const tableRows = computed(()=>{
   if(loading.value){
     return []
