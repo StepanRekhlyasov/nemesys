@@ -74,7 +74,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
 
         <div>
             <div class="text-bold">
-                {{ props.selectedItem.address.slice(0, 12) + '...' }}
+                {{ props.selectedItem.address }}
             </div>
             <div>
                 {{ props.selectedItem.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）' }}

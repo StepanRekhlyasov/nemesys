@@ -90,8 +90,7 @@ import { useBudget } from 'src/stores/budgetData';
 import { OptionData, BudgetData } from '../type/budget'
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import { useOrganization } from 'src/stores/organization';
-import { myDateFormat } from 'src/shared/utils/utils';
-import { formatNumber } from 'src/shared/utils/utils';
+import { myDateFormat, formatNumber } from 'src/shared/utils/utils';
 
 const props = defineProps<{ budgetData: object, edit: boolean }>()
 const emit = defineEmits<{ (e: 'close') }>()
@@ -106,15 +105,15 @@ const monthPicker = ref();
 const organization = useOrganization()
 const budgetDataSample = {
   accountingMonth: props.budgetData['accountingMonth'] || '',
-  amount: props.budgetData['amount'] || '',
+  amount: formatNumber(props.budgetData['amount']) || '',
   branch: props.budgetData['branch'] || '',
   id: props.budgetData['id'] || '',
   media: props.budgetData['media'] || '',
-  numberOfSlots: props.budgetData['numberOfSlots'] || '',
+  numberOfSlots: formatNumber(props.budgetData['numberOfSlots']) || '',
   occupation: props.budgetData['occupation'] || '',
   postingEndDate: myDateFormat(props.budgetData['postingEndDate'] || '', 'YYYY/MM/DD'),
   postingStartDate: myDateFormat(props.budgetData['postingStartDate'] || '', 'YYYY/MM/DD'),
-  unitPrice: props.budgetData['unitPrice'] || '',
+  unitPrice: formatNumber(props.budgetData['unitPrice']) || '',
   remark: props.budgetData['remark'] || '',
   agency: props.budgetData['agency'] || '',
 

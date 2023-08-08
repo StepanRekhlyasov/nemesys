@@ -173,6 +173,9 @@ export const daysList = computed(() => [{
 },{
   label: t('weekDay.sunday'),
   value: 'sunday'
+},{
+  label: t('weekDay.holiday'),
+  value: 'holiday'
 }])
 
 export const specialDaysList = computed(() => [{

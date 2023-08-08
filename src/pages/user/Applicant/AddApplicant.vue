@@ -23,6 +23,7 @@
               </div>
               <div class="col-8 q-pl-sm">
                 <q-input outlined dense v-model="applicantData['kanaName']" :rules="[creationRule, isKatakanaRule]"
+                  @update:model-value="v => { applicantData['kanaName'] = toKatakana(v) }"
                   hide-bottom-space bg-color="white" />
               </div>
             </div>
@@ -287,6 +288,7 @@ import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
+import { toKatakana } from 'src/shared/utils/ToKatakana.utils.ts';
 
 const applicantDataSample = {
   qualification: [],

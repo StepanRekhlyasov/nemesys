@@ -23,7 +23,6 @@ export const useBranch = defineStore('branch', () => {
   }
 
 
-
   async function getBranches(organization_id: string, search?: BranchesSearch) {
     const businesses = await business.getBusinesses(organization_id)
     const businessesIds = Object.keys(businesses)

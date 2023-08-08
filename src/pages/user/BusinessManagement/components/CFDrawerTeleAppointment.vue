@@ -5,7 +5,7 @@
         class="text-grey-9" @click="showAddForm = true" />
     </q-card-section>
     <q-card-section class="q-ma-sm q-pa-sm bg-grey-2" v-if="showAddForm">
-      <q-form ref="applicantForm" @submit="onSubmit" @reset="onReset">
+      <q-form ref="applicantForm" @reset="onReset" @submit.prevent>
         <div class="row">
           <div class="col-2 text-right self-center q-pr-sm">
             {{ $t('client.tele.list.teleAppointmentResult') }}
@@ -48,11 +48,11 @@
             {{ $t('detal.teleAppoint.remark') }}
           </div>
           <div class="col-9 q-pl-sm">
-            <q-input outlined dense v-model="teleData['remark']" class="bg-white" />
+            <q-input type="textarea" outlined dense v-model="teleData['remark']" class="bg-white" />
           </div>
         </div>
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.addNew')" type="submit" color="primary" icon="mdi-plus-thick"
+          <q-btn :label="$t('common.addNew')" @click="onSubmit" color="primary" icon="mdi-plus-thick"
             class="no-shadow q-ml-md" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
@@ -102,13 +102,18 @@
           <q-btn size="sm" icon="delete" class="delete_btn" flat @click="showDeleteDialog([props.row.id])" />
         </q-td>
       </template>
+      <template v-slot:body-cell-remark="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          <div class="remark" v-html="formatMultilineText(props.value)"></div>
+        </q-td>
+      </template>
     </q-table>
   </q-card>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { ref, onBeforeUnmount, onMounted, watch } from 'vue';
+import { ref, onBeforeUnmount, onMounted, watch, Ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
 import { useTele } from 'src/stores/TeleAppointment';
@@ -128,7 +133,7 @@ const props = defineProps<{
 const historyData: DocumentData = ref([]);
 
 const teleStore = useTele();
-const columns = ref<QTableProps['columns']>(TeleColumns.value);
+const columns = ref<QTableProps | Ref>(TeleColumns);
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
@@ -146,6 +151,13 @@ const $q = useQuasar();
 const unsubscribe = ref();
 const unsubscribeUsers = ref();
 const dialogType = ref('create');
+
+const formatMultilineText = (text: string) => {
+  if (text) {
+    return text.replace(/\n/g, '<br>');
+  }
+  return '';
+};
 
 const fetchTeleData = async () => {
   loading.value = true;
@@ -197,7 +209,7 @@ const formatDate = (dateTime: Date | string, type: 'date' | 'time') => {
 };
 const onSubmit = async () => {
   loading.value = true;
-  let data: TeleAppointmentHistory[] = teleData.value;
+  let data: TeleAppointmentHistory[] = JSON.parse(JSON.stringify(teleData.value));
   if (!data['result']) {
     Alert.warning()
     return;
@@ -271,5 +283,9 @@ onBeforeUnmount(() => {
 .delete_btn {
   background-color: white;
   width: 1px;
+}
+.remark {
+  white-space: normal;
+ word-break: break-word;
 }
 </style>

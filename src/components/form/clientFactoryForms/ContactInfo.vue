@@ -29,7 +29,7 @@ watch(contractInfo, () => {
             <div class="row q-mt-sm">
                 <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.list.personIncharge') }}
+                        {{ t('menu.admin.organizationsTable.operator') }}
                     </q-item-label>
 
                     <q-input
@@ -39,42 +39,43 @@ watch(contractInfo, () => {
                         :placeholder="t('client.add.managerLabel')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
-                <div class="col-6 q-pl-sm">
+                <div class="col-6  q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('office.personInChargeTel') }}
-                    </q-item-label>
-
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="contractInfo['positionContact']"
-                        :placeholder="t('clientFactory.drawer.details.inChargeTitle')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
-                </div>
-            </div>
-            <div class="row q-mt-sm">
-                <div class="col-6">
-                    <q-item-label class="q-pb-xs">
-                        {{ t('client.list.personIncharge') }} : TEL
+                        {{ t('menu.admin.organizationsTable.manager') }} : TEL
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['telContact']"
-                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
+                        :placeholder="t('client.add.phoneLabel')"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                </div>
+            </div>
+            <div class="row q-mt-sm">
+              
+              <div class="col-6">
+                    <q-item-label class="q-pb-xs">
+                        {{ t('menu.admin.organizationsTable.manager') }} : {{ t('client.list.position') }}
+                    </q-item-label>
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="contractInfo['positionContact']"
+                        :placeholder="t('clientFactory.drawer.details.inChargeTitle_ex')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.list.personIncharge') }} : MAIL
+                        {{ t('menu.admin.organizationsTable.manager') }} : MAIL
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
                         v-model="contractInfo['mailContact']"
-                        :placeholder="t('client.add.phoneLabel')"
+                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                 </div>
             </div>

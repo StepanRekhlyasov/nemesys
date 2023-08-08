@@ -31,8 +31,8 @@
           :disable="loading" :color="color" />
       </DialogItemContainer>
 
-      <DialogItemContainer name-key="menu.admin.organizationsTable.working">
-        <q-checkbox v-model="branchData['working']" checked-icon="mdi-checkbox-intermediate"
+      <DialogItemContainer name-key="settings.branch.enableFlag">
+        <q-checkbox v-model="branchData['working']" :label="$t('settings.branch.enable')" checked-icon="mdi-checkbox-intermediate"
           unchecked-icon="mdi-checkbox-blank-outline" class="q-pr-md" :disable="loading" :color="color" />
       </DialogItemContainer>
     </q-card-section>

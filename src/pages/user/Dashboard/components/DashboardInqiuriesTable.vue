@@ -25,7 +25,7 @@
   >
   <template v-slot:body-cell-messageDirection="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''">
-    <span v-if="props.row.type==='inquiry'">{{props.row.status === 'answered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}</span>
+    <span v-if="props.row.type==='inquiry'">{{props.row.status === 'answered' || props.row.status === 'delivered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}</span>
     <span v-else>
       {{
         props.row.updatedDate !== undefined && props.row.updatedDate.seconds > props.row.recievedDate.seconds

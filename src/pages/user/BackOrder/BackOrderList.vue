@@ -51,12 +51,13 @@
           </template>
 
           <template v-slot:body-cell-employmentType="props">
-            <q-td :props="props" class="q-pa-none">
-              <div>
+            <q-td v-if="props.row.employmentType" :props="props" class="q-pa-none">
                 {{
-                  props.row.employmentType ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
+                  Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
-              </div>
+            </q-td>
+            <q-td v-else :props="props" class="q-pa-none">
+              <div>-</div>
             </q-td>
           </template>
 
@@ -71,7 +72,7 @@
               <div>
                 {{
                   getUserDisplayName(props.row.registrant)
-                 }}
+                }}
               </div>
             </q-td>
           </template>
@@ -80,7 +81,7 @@
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.distance!=null?props.row.distance+' Km':''
+                  props.row.distance != null ? props.row.distance + ' Km' : ''
                 }}
               </div>
             </q-td>
@@ -93,6 +94,16 @@
                   props.row.wage
                   ? $t(`backOrder.create.${props.row.wage}`)
                   : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-salary="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.salary ? props.row.salary : '-'
                 }}
               </div>
             </q-td>
@@ -189,9 +200,9 @@ const customSortMethod = (rows, sortBy, descending) => {
     return sortedRows;
   }
   else if (sortBy === 'BOID') {
-    const sortedRows = [...rows];
+    const sortedRows = [...state.BOList];
     sortedRows.sort((a, b) => {
-      return descending ? a.boId-b.boId : b.boId-a.boId;
+      return descending ? parseInt(a.boId) - parseInt(b.boId) : parseInt(b.boId) - parseInt(a.boId);
     });
     return sortedRows;
   }
@@ -207,8 +218,8 @@ const customSortMethod = (rows, sortBy, descending) => {
   else if (sortBy === 'caseType') {
     const sortedRows = [...rows];
     sortedRows.sort((a, b) => {
-      const first = a.typeCase?a.typeCase:'';
-      const second = b.typeCase?b.typeCase:'';
+      const first = a.typeCase ? a.typeCase : '';
+      const second = b.typeCase ? b.typeCase : '';
       return descending ? second.localeCompare(first) : first.localeCompare(second);
     });
     return sortedRows;
@@ -216,14 +227,15 @@ const customSortMethod = (rows, sortBy, descending) => {
   else if (sortBy === 'distance') {
     const sortedRows = [...rows];
     sortedRows.sort((a, b) => {
-      const first = a.distance?a.distance:0;
-      const second = b.distance?b.distance:0;
-      return descending ? first-second: second-first;
+      const first = a.distance ? a.distance : 0;
+      const second = b.distance ? b.distance : 0;
+      return descending ? first - second : second - first;
     });
     return sortedRows;
   }
   else if (sortBy === 'name') {
     const sortedRows = [...rows];
+
     sortedRows.sort((a, b) => {
       const first = a.officeName;
       const second = b.officeName;
@@ -254,7 +266,7 @@ const customSortMethod = (rows, sortBy, descending) => {
     sortedRows.sort((a, b) => {
       const first = parseInt(a.salary);
       const second = parseInt(b.salary);
-      return descending ? first-second : second-first
+      return descending ? first - second : second - first
     });
     return sortedRows;
   }
@@ -267,12 +279,12 @@ const customSortMethod = (rows, sortBy, descending) => {
     });
     return sortedRows;
   }
-  else{
+  else {
     return state.BOList;
   }
 };
 
-const userNames = ref<{ [key: string]: string }>({});
+const userNames = ref<{ [id: string]: string }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -280,7 +292,12 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+        if(user?.branchName){
+          userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
+        }
+        else{
+          userNames.value[registrant] = user?.displayName || '';
+        }
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
@@ -293,8 +310,8 @@ const getUserDisplayName = (registrant: string | undefined) => {
 
   return userDisplayName.value;
 };
-watchCurrentOrganization(async ()=>{
- await backOrderStore.loadBackOrder({});
+watchCurrentOrganization(async () => {
+  await backOrderStore.loadBackOrder({}, pagination.value);
 })
 
 const closeMap = () => {

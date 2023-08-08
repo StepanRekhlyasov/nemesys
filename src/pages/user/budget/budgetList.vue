@@ -9,6 +9,16 @@
         <budgetChart />
       </q-card-section>
       <q-card-section>
+        <div class="row flex justify-center centers" :style="'width: 95%'">
+          <div class=" q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal bugetTotalRight">
+            {{ t('budget.total') }}
+          </div>
+          <div class="q-pl-sm q-pr-sm q-pt-xs q-bt-xs bugetTotal">
+            ¥ {{ formatNumber(budgetSum.toString()) }}
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section>
         {{ $t('common.searchKeyword') }}) indeed
         <searchForm @search-budget="searchBudget" class="q-mt-sm" />
       </q-card-section>
@@ -31,8 +41,8 @@
           </q-btn>
         </div>
         <q-table :columns="columns" :rows="budgetList" row-key="name" v-model:pagination="pagination" hide-pagination
-          :loading="loading" class="budgetTable q-mt-sm no-shadow" binary-state-sort>
-          <template v-slot:header-cell-branch="props">
+          :loading="loading" class="budgetTable q-mt-sm no-shadow" binary-state-sort :sort-method="customSortMethod">
+          <template v-slot:header-cell-branchRomaji="props">
             <q-th :props="props" class="q-pa-none">
               {{ $t('settings.branch.name') }} <br />{{ $t('applicant.add.occupation') }}
             </q-th>
@@ -54,7 +64,7 @@
               <q-btn size="sm" icon="edit" flat color="blue" @click="edit(props.row.id)" />
             </q-td>
           </template>
-          <template v-slot:body-cell-branch="props">
+          <template v-slot:body-cell-branchRomaji="props">
             <q-td :props="props" class="no-wrap q-pa-none">
               {{ props.row.branch }}
               <br />
@@ -71,16 +81,16 @@
           <template v-slot:body-cell-amount="props">
             <q-td :props="props" class="no-wrap q-pa-none">
               <q-icon name="currency_yen" v-if="props.row.amount != '' && props.row.amount != null"></q-icon>
-              {{ props.row.amount }}
+              {{ formatNumber(props.row.amount) }}
             </q-td>
           </template>
           <template v-slot:body-cell-numberOfSlots="props">
             <q-td :props="props" class="no-wrap q-pa-none">
-              <span v-if="props.row.numberOfSlots">{{ props.row.numberOfSlots }}</span>
+              <span v-if="props.row.numberOfSlots">{{ formatNumber(props.row.numberOfSlots) }}</span>
               <span v-else>-</span>
               <br>
               <q-icon name="currency_yen" v-if="props.row.unitPrice != '' && props.row.unitPrice != null"></q-icon>
-              {{ props.row.unitPrice }}
+              {{ formatNumber(props.row.unitPrice) }}
             </q-td>
           </template>
 
@@ -150,7 +160,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { BudgetData } from './type/budget'
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { myDateFormat } from 'src/shared/utils/utils';
+import { myDateFormat, formatNumber, formatTextToNumber } from 'src/shared/utils/utils';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
 import { useOrganization } from 'src/stores/organization';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
@@ -201,17 +211,69 @@ const pagination = ref({
   rowsPerPage: 100,
 });
 
+const budgetSum = computed(() => {
+  let sum = BigInt(0)
+  budgetList.value.forEach(item => {
+    const num = formatTextToNumber(item.amount, true);
+    if (num) {
+      sum = BigInt(sum) + BigInt(num);
+    }
+  })
+  return sum
+})
+
+const customSortMethod = (rows, sortBy, descending) => {
+  const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
+  if (['recordNumber', 'amount', 'numberOfSlots', 'unitPrice'].includes(sortBy)) {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      return descending ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy];
+    });
+    return sortedRows;
+  }
+  else if (['postingStartDate', 'updated_at'].includes(sortBy)) {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = myDateFormat(a[sortBy], 'YYYYMMDDHHMMSS')
+      const second = myDateFormat(b[sortBy], 'YYYYMMDDHHMMSS')
+      return descending ? second.localeCompare(first) : first.localeCompare(second);
+    });
+    return sortedRows;
+  }
+
+  else if (['branchRomaji', 'media', 'remark', 'agency', 'accountingMonth'].includes(sortBy)) {
+    const sortedRows = [...rows];
+    sortedRows.sort((a, b) => {
+      const first = a[sortBy] ? a[sortBy] : '';
+      const second = b[sortBy] ? b[sortBy] : '';
+      return descending ? collator.compare(second, first) : collator.compare(first, second);
+    });
+    return sortedRows;
+  }
+
+  else {
+    return budgetList;
+  }
+};
+
+
 const budgetList = computed(() => {
   let budgetList = [...budgetStore.budgetList];
 
-  if (searchData.value['text']) {
-    budgetList = budgetList.filter(function (el) {
-      return el['media'] && el['media'].includes(searchData.value['text'])
-    });
-  }
+  const textList = ['text', 'agency', 'remark']
+  textList.forEach((key) => {
+    if (searchData.value[key]) {
+      budgetList = budgetList.filter(function (el) {
+        if (key == 'text') {
+          return el['media'] && el['media'].includes(searchData.value['text'])
+        }
+        return el[key] && el[key].includes(searchData.value[key])
+      });
+    }
+  })
 
   Object.keys(searchData.value).forEach((item) => {
-    const keys = ['recordNumber', 'mediaId', 'branchId', 'occupationId', 'postingStartDate', 'postingEndDate', 'accountingMonth', 'agency', 'remark']
+    const keys = ['recordNumber', 'mediaId', 'branchId', 'occupationId', 'postingStartDate', 'postingEndDate', 'accountingMonth']
     if (keys.includes(item)) {
       if (searchData.value[item]) {
         budgetList = budgetList.filter(function (el) {
@@ -229,7 +291,23 @@ const budgetList = computed(() => {
     keysRange.forEach((key) => {
       if (searchData.value[key + 'Max'] && searchData.value[key + 'Min']) {
         budgetList = budgetList.filter(function (el) {
-          return parseInt(el[key].replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10) && parseInt(el[key].replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          if (el[key]) {
+            return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10) && parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          }
+        })
+      }
+      else if (searchData.value[key + 'Max']) {
+        budgetList = budgetList.filter(function (el) {
+          if (el[key]) {
+            return parseInt(el[key].toString().replace(/,/g, ''), 10) <= parseInt(searchData.value[key + 'Max'].replace(/,/g, ''), 10)
+          }
+        })
+      }
+      else if (searchData.value[key + 'Min']) {
+        budgetList = budgetList.filter(function (el) {
+          if (el[key]) {
+            return parseInt(el[key].toString().replace(/,/g, ''), 10) >= parseInt(searchData.value[key + 'Min'].replace(/,/g, ''), 10)
+          }
         })
       }
     });

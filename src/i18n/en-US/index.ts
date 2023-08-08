@@ -20,6 +20,7 @@ export default {
     approved: 'Approved',
     pending: 'Pending',
     denied: 'Denied',
+    everything: 'Everything',
     minimum: 'min',
     maximum: 'max',
     BO: 'BO',
@@ -197,6 +198,7 @@ export default {
         organizationId: 'Organization ID',
         organizationName: 'Organization name',
         operator: 'Person in charge',
+        manager: 'Manager ',
         phoneNumber: 'Phone number',
         fax: 'FAX number',
         email: 'Email',
@@ -300,7 +302,9 @@ export default {
         working: 'Working'
       },
       business: 'Business',
-      branchFlag: 'Branch flag'
+      branchFlag: 'Branch flag',
+      enable: 'Be enabled',
+      enableFlag: 'Enabling flag'
     },
     template: {
       addNew: 'New mail template added',
@@ -649,6 +653,7 @@ export default {
     },
     backOrder: {
       TTP: 'TTP',
+      remarks: 'Remarks',
       generalDispatch: 'General Dispatch',
       title: 'Backorder',
       noOrders: 'No past backorders',
@@ -1293,7 +1298,7 @@ export default {
       onCallSupport: 'On-call support',
       onCallRemarks: 'On-call Remarks',
       welfare: 'Employee benefits',
-      retirementAge: 'Rretirement Age',
+      retirementAge: 'Retirement Age',
       inHouseInformation: 'Internal Company Information',
       referralFee: 'Referral Fee',
       referralFeeAmount: 'Referral Fee Amount',
@@ -1633,7 +1638,9 @@ export default {
         officeTel: 'Office: TEL',
         officeFax: 'Office: FAX',
         inChargeTitle: 'Person in charge: Title',
+        inChargeTitle_ex: 'Ex) Regular employee',
         inChargeTel: 'Person in charge: TEL',
+        inChargeMail: 'Person in charge: MAIL',
         inChargeAddress: 'Person in charge: Address',
 
         representative: 'Representative',

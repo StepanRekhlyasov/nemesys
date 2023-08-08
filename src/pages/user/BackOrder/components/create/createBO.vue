@@ -50,21 +50,21 @@
           </div>
           <div class="row">
             <labelField :label="$t('backOrder.status')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"
-              valueClass="self-center col-4 q-pl-sm" :value="data['status'] ? $t(`backOrder.${data['status']}`) : ''">
+              valueClass="self-center col-4 q-pl-md" :value="data['status'] ? $t(`backOrder.${data['status']}`) : ''">
               <q-radio v-for="key in BackOrderStatus" v-model="data['status']" :label="$t('backOrder.' + key)"
                 checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
                 :disable="loading" class="q-pr-md" />
             </labelField>
           </div>
-          <div class="row q-pt-sm">
+          <div class="row q-pt-sm items-center">
             <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" 
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
-              <q-input v-model="data['customerRepresentative']" type="text" dense outlined/>
+              <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
             </labelField>
           </div>
           <div class="row">
             <labelField :label="$t('client.backOrder.transactionType')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"
-              valueClass="self-center col-4 q-pl-sm">
+              valueClass="self-center col-4 q-pl-md">
               <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
                 checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
                 :disable="loading" class="q-pr-md" />
@@ -187,7 +187,8 @@ function closeDialog() {
 
 function resetData() {
   data.value = {
-    working_days_week: [] as string[],
+    workingDays: [] as string[],
+    employmentType: [] as string[],
     qualifications: [] as TypeQualifications[],
     dateOfRegistration: date.formatDate(Date.now(), 'YYYY/MM/DD'),
     lon: 0,

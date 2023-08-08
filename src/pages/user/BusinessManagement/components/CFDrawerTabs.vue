@@ -15,7 +15,7 @@ defineProps<{
   clientFactory: ClientFactory
   draft: Partial<ClientFactory>
   isLoading: boolean
-  industryType: string
+  industryType?: string
 }>()
 
 const emit = defineEmits<{
