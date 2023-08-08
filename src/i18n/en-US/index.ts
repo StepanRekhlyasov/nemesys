@@ -299,7 +299,9 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        working: 'Working'
+        working: 'Working',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
       },
       business: 'Business',
       branchFlag: 'Branch flag',
