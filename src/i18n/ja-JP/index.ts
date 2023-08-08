@@ -1116,7 +1116,7 @@ export default {
       cohabitation: '同居者',
       children: '子供',
       medicalHistory: '既往歴',
-      medicalHistoryDitals: '既往歴詳細',
+      medicalHistoryDetails: '既往歴詳細',
       vaccinationStatus: 'ワクチン接種状況',
       startCaring: '介護を始めたきっかけ',
       interviewsWaitingList: '面接待ち件数',

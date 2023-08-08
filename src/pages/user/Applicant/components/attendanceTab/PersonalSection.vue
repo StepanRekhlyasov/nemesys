@@ -138,7 +138,7 @@
           <q-select  v-if="edit" v-model="data['isMedicalHistory']" :options="medicalHistoryoptions"
           emit-value map-options dense outlined/>
           <q-input v-if="edit && data['isMedicalHistory']" dense outlined bg-color="white"
-            v-model="data['medicalHistory']" :disable="loading" :label="t('applicant.attendant.medicalHistoryDitals')"/>
+            v-model="data['medicalHistory']" :disable="loading" :label="t('applicant.attendant.medicalHistoryDetails')"/>
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.vaccinationStatus') }}
