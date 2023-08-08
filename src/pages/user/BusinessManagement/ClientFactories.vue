@@ -25,6 +25,7 @@ const { clients } = storeToRefs(clientStore)
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
+const originalOfficeId = ref('');
 
 // drawers
 const isClientFactoryDrawer = ref(false)
@@ -41,7 +42,7 @@ const pagination = ref({
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
-
+    originalOfficeId.value = item.id
     setTimeout(() => {
         activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
 
@@ -159,6 +160,7 @@ const openFaxDrawer = (id:string) =>{
         <ClientFactoryDrawer
             v-if="activeClientFactoryItem"
             v-model:selectedItem="activeClientFactoryItem"
+            :originalOfficeId="originalOfficeId"
             :isDrawer="isClientFactoryDrawer"
             @open-fax-drawer="openFaxDrawer"
             @hide-drawer="hideClientFactoryDrawer"/>

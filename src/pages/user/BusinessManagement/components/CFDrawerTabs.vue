@@ -16,6 +16,7 @@ defineProps<{
   draft: Partial<ClientFactory>
   isLoading: boolean
   industryType?: string
+  originalOfficeId: string
 }>()
 
 const emit = defineEmits<{
@@ -59,7 +60,7 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
     </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.BOHistory">
-          <CFDrawerBackOrder :officeId="clientFactory.id" :clientId="clientFactory.clientID"/>
+          <CFDrawerBackOrder :officeId="clientFactory.id" :clientId="clientFactory.clientID" :originalOfficeId="originalOfficeId"/>
         </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.HeadOffice">
