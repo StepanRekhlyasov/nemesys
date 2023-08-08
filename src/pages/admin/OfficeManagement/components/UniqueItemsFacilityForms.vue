@@ -40,6 +40,9 @@ const newFacilityFormHandle = () => {
     if(inputVal.value && inputVal.value.validate()) {
         emit('newFacilityForm', newFacilityForm.value)
         newFacilityForm.value = ''
+        setTimeout(()=>{
+          inputVal.value?.resetValidation()
+        }, 1)
     }
 }
 
@@ -68,7 +71,7 @@ const updateItemsOrder = (event: {
     <div v-if="activeIndustry">
         <div v-if="Object.keys(activeIndustry.uniqueItems.facilityForms).length">
 
-            <draggable :list="Object.entries(activeIndustry.uniqueItems.facilityForms)" handle=".cursor_grab" @end="updateItemsOrder">
+            <draggable :list="Object.entries(activeIndustry.uniqueItems.facilityForms)" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
                 <template #item="{ element, index }">
                     <div class="row items-center q-mt-md" :key="element[1].order">
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab"/>

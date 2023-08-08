@@ -48,3 +48,12 @@ export const taskTypeOptions = computed(()=>[
   {label: t('task.types.staffRequests'), value: 'staffRequests'},
   {label: t('task.types.clientsRequests'), value: 'clientsRequests'},
 ])
+
+export const impressionsOptions = computed(()=>[
+  {label: t('impressions.notSet'), value: 'notSet'},
+  {label: t('impressions.A'), value: 'A'},
+  {label: t('impressions.B'), value: 'B'},
+  {label: t('impressions.C'), value: 'C'},
+  {label: t('impressions.D'), value: 'D'},
+  {label: t('impressions.E'), value: 'E'},
+])
