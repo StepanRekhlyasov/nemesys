@@ -3,7 +3,7 @@ import { Branch, Business, Organization } from 'src/shared/model'
 
 export function toTable(businesses: { [id: string]: Business }, branches: { [businessId: string]: Branch[] }, organization: Organization) {
 
-  let businessesAndbranches: Buisneses[] = []
+  const businessesAndbranches: Buisneses[] = []
   const organizationKey = 'organization'
 
   const parsedData = {}
@@ -15,7 +15,6 @@ export function toTable(businesses: { [id: string]: Business }, branches: { [bus
   for (const key in businesses) {
 
     const objToPush = JSON.parse(JSON.stringify(businesses[key]))
-
     objToPush.branches = branches[key]
 
     if (!objToPush.branches) {
@@ -24,14 +23,6 @@ export function toTable(businesses: { [id: string]: Business }, branches: { [bus
 
     businessesAndbranches.push(objToPush)
   }
-
-  businessesAndbranches = businessesAndbranches.filter((bb) => {
- 
-    if(bb.branches && bb.branches.length){
-      return Object.values(bb.branches[0]).length != 0
-    }
-    return false
-  })
 
   let totalBranches = 0
   businessesAndbranches.forEach((bb) => {
