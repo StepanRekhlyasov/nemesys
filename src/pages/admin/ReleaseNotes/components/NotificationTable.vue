@@ -123,7 +123,7 @@
       <template v-slot:body-cell-content="props">
   <q-td :props="props" style="white-space: break-spaces;">
     <div v-if="!isRowSelected(props.rowIndex)">
-      <div v-html="truncateText(props.row.content, 10)"></div>
+      <div v-html="truncateText(props.row.content, 5)"></div>
     </div>
     <q-input color="accent" v-else v-model="props.row.content" type="textarea"/>
   </q-td>
