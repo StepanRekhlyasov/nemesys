@@ -79,7 +79,7 @@
 
     <template v-slot:body-cell-work="props">
       <q-td :props="props">
-        {{ props.row.working_days_week.map(days => $t('weekDay.' + days)).join(', ') }}<br />
+        {{ props.row.workingDays && Array.isArray(props.row.workingDays) ? props.row.workingDays.map(days => $t('weekDay.' + days)).join(', '):'-' }}<br />
         {{ props.row.daysPerWeekList }}
       </q-td>
     </template>
@@ -113,7 +113,7 @@
   </q-table>
   <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :clientId="clientId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
+    <createBO :clientId="clientId" :original-office-id="originalOfficeId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
   </q-drawer>
   <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
     selectedClient = clientValue
@@ -138,7 +138,7 @@ import { QTableProps } from 'quasar';
 import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; officeId?: string }>();
+const props = defineProps<{ clientId: string; officeId?: string; originalOfficeId?: string }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
