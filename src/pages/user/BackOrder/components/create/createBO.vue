@@ -11,7 +11,7 @@
               {{ `${$t('backOrder.clientName')} / ${$t('backOrder.officeName')} / ${$t(`backOrder.type.${type}`)}` }}
             </div>
             <div v-else class="row text-h6 text-weight-bold q-pr-xs">
-              {{ `${clientFactory.client?.name} / ${clientFactory.name} / ${$t(`backOrder.type.${type}`)}` }}
+              {{ `${data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id'])?.name : undefined} / ${clientFactory.name} / ${$t(`backOrder.type.${type}`)}` }}
             </div>
           </div>
         </div>
@@ -136,7 +136,6 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
-import { useClient } from 'src/stores/client';
 
 const { t } = useI18n({ useScope: 'global' });
 const emits = defineEmits(['closeDialog']);
@@ -146,7 +145,6 @@ const props = defineProps<{
   officeId?: string,
   originalOfficeId?: string,
 }>()
-const clientStore = useClient();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
@@ -215,8 +213,8 @@ const updateOfficeName = async ()=>{
     if(updatedDocument){
       clientFactory.value = updatedDocument
     }
-    if(clientFactory.value.clientID){
-      clientFactory.value.client = applicantStore.state.clientList.find(client => client.id === clientFactory.value?.clientID)
+    if(clientFactory.value.clientID && !clientFactory.value.client){
+      clientFactory.value.client = applicantStore.state.clientList.find(client => client.id === data.value.client_id)
     }
   }
 
