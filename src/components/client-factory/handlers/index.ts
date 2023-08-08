@@ -131,11 +131,8 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
     }).value
 
     officeDetails[`${industryType}.uniqueItems`] = computed(() => {
-
-      // const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
       const uniqueItems : Record<string, string | number | boolean>[] = []
-      for(const [key, item] of Object.entries(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) || {})){
-        
+      for(const [key, item] of Object.entries(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) || {})){  
         const title = (item as {title : string}).title
         const order = (item as {order : number}).order
         if(title){
@@ -152,7 +149,6 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
       uniqueItems.sort((a, b)=>{
         return (a.order as number) - (b.order as number)
       })
-
       return uniqueItems
     }).value
   } else {
