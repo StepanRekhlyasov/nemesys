@@ -7,11 +7,11 @@
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? myDateFormat(applicant.timeToWork, 'YYYY/MM/DD') : myDateFormat(applicant.attendingDate, 'YYYY/MM/DD') }}</span>
+        <span v-if="!desiredEdit">{{ !data['timeAvailable'] ? myDateFormat(applicant.timeToWork, 'YYYY/MM/DD') : $t('applicant.attendant.sameDay') }}</span>
         <template v-if="desiredEdit">
           <q-toggle v-model="data['timeAvailable']"
-            :label="data['timeAvailable'] ? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')" />
-          <q-input v-if="data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
+            :label="!data['timeAvailable'] ? '' : $t('applicant.attendant.sameDay')" />
+          <q-input v-if="!data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
             :disable="loading">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">

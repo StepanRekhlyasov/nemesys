@@ -58,17 +58,19 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const addReflectLog = async (user: User , clientFactory: ClientFactory, isDetailChanged: boolean) => {
         try {
-            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), {
-                userId: user.id,
-                userName: user.name,
-                clientFactoryId: clientFactory.id,
-                executionDate: serverTimestamp(),
-                isUpdated: true,
-                itemType: {
-                    isBasicChanged: true,
-                    isDetailInfoChanged: isDetailChanged
-                }
-            })
+            const saveData = {
+              userId: user.id ?? '',
+              userName: user.name ?? '',
+              clientFactoryId: clientFactory.id,
+              executionDate: serverTimestamp(),
+              isUpdated: true,
+              itemType: {
+                  isBasicChanged: true,
+                  isDetailInfoChanged: isDetailChanged ?? false
+              }
+            }
+            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), 
+            saveData)
 
             const docSnap = await getDoc(docRef);
 

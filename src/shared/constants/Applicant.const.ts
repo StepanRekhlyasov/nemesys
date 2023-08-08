@@ -582,3 +582,5 @@ export const ApplicantOrFixColumn = {
   [ApplicantStatus.WAIT_TERMINATION] : 'fix',
   [ApplicantStatus.WORKING] : 'fix',
 }
+
+export const medicalHistoryoptions = [{value:false,label:t('common.without')},{value:true,label:t('common.yes')}]

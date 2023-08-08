@@ -160,6 +160,7 @@ export interface PersonalStatus {
   childrenNumber?: string;
   childrenAge?: string;
   medicalHistory?: string;
+  isMedicalHistory?: boolean;
   vaccinationStatus?: string;
   startCaring?: string;
   interviewsWaitingList?: string;
@@ -335,6 +336,7 @@ export interface ApplicantMemo {
 }
 
 export interface ContactInfo {
+  id: string
   created_at: Timestamp;
   contactMethod: ContactMethod;
   content: string;

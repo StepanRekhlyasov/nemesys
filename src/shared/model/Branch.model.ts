@@ -17,13 +17,13 @@ export interface Branch {
   licensesSlots: number
 }
 
-export enum branchFlags {
+export enum branchEnablityFilter {
   All = 'all',
-  Working = 'working'
+  Enabled = 'enabled',
+  Disabled = 'disabled'
 }
-
 
 export interface BranchesSearch {
   queryText?: string;
-  flag?: branchFlags;
+  enablity?: branchEnablityFilter;
 }
