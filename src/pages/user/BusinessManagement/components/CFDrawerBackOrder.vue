@@ -86,7 +86,7 @@
 
     <template v-slot:body-cell-content="props">
       <q-td :props="props">
-        {{ props.row.workContent }}<br />
+        {{ props.row.work_content }}<br />
         {{ props.row.memo_house }}
       </q-td>
     </template>
