@@ -396,12 +396,6 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.existence')" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4" :edit="false" :value="$t('backOrder.create.'+'overtimeWork')" :autogrow="true">
-      </LabelField>
-    </div>
-
-    <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.overtimeRemarks')" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['overtimeRemarks']" :autogrow="true">
         <q-input dense outlined bg-color="white" v-model="data['overtimeRemarks']" :disable="loading" type="textarea" autogrow/>

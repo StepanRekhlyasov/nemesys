@@ -56,9 +56,6 @@
                   Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
             </q-td>
-            <q-td v-else :props="props" class="q-pa-none">
-              <div>-</div>
-            </q-td>
           </template>
 
           <template v-slot:body-cell-info="props">
