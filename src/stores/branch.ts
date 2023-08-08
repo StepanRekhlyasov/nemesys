@@ -1,6 +1,6 @@
 import { collection, collectionGroup, doc, documentId, endAt, getDoc, getDocs, getFirestore, orderBy, PartialWithFieldValue, query, runTransaction, startAt, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia';
-import { Branch, BranchesSearch, branchFlags } from 'src/shared/model';
+import { Branch, BranchesSearch, branchEnablityFilter } from 'src/shared/model';
 import { ConstraintsType, serializeTimestamp, toDateObject } from 'src/shared/utils/utils';
 import { LicenseStatistic } from 'src/pages/admin/LicenseManagement/types/LicenseStatistic';
 import { useBusiness } from './business';
@@ -23,15 +23,15 @@ export const useBranch = defineStore('branch', () => {
   }
 
 
-
   async function getBranches(organization_id: string, search?: BranchesSearch) {
     const businesses = await business.getBusinesses(organization_id)
     const businessesIds = Object.keys(businesses)
     const branchesObj: { [businessId: string]: Branch[] } = {}
 
     const constraints: ConstraintsType = [orderBy('name'), where('deleted', '==', false)]
-    if (search && search?.flag === branchFlags.Working) {
-      constraints.push(where('working', '==', true))
+    if (search) {
+      if (search?.enablity === branchEnablityFilter.Enabled) constraints.push(where('working', '==', true));
+      else if (search?.enablity === branchEnablityFilter.Disabled) constraints.push(where('working', '==', false));
     }
 
     if (search && search?.queryText) {

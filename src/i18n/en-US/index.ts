@@ -299,7 +299,9 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        working: 'Working'
+        working: 'Working',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
       },
       business: 'Business',
       branchFlag: 'Branch flag',
@@ -1119,6 +1121,7 @@ export default {
       cohabitation: 'Cohabitation',
       children: 'Children',
       medicalHistory: 'Medical History',
+      medicalHistoryDetails: 'Medical History Details',
       vaccinationStatus: 'Vaccination Status',
       startCaring: 'How did you start caring?',
       interviewsWaitingList: 'Number of Interviews Waiting List',
