@@ -35,18 +35,18 @@ export const useReleaseNotes = defineStore('releaseNotes', () => {
 
       tableRows.value = await Promise.all(
         notifications.map(async (item, index) => {
-          const author = await userStore.getUserById(item.author); // Assuming userStore is defined somewhere
+          const author = await userStore.getUserById(item.author);
 
           return {
             number: index + 1,
             id: item.id,
             status: item.status,
-            category: t('releaseNotes.form.options.' + item.category), // Assuming t is defined somewhere
+            category: t('releaseNotes.form.options.' + item.category),
             subject: item.subject,
             content: item.content,
             author: author?.name ?? '',
-            creationDate: date.formatDate(item.dateCreation.toDate(), 'YYYY-MM-DD HH:mm:ss'), // Assuming date is defined somewhere
-            deliveryDate: date.formatDate(item.dateDelivery.toDate(), 'YYYY-MM-DD HH:mm:ss'), // Assuming date is defined somewhere
+            creationDate: date.formatDate(item.dateCreation.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+            deliveryDate: date.formatDate(item.dateDelivery.toDate(), 'YYYY-MM-DD HH:mm:ss'),
           };
         })
       );
