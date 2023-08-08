@@ -34,7 +34,7 @@
         :value="`${selectedBo['customerRepresentative'] || ''}`" :autogrow="true">
         <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
-      <LabelField :label="$t('backOrder.create.hourlyMonthly')" 
+      <LabelField :label="$t('backOrder.create.hourlyMonthly')"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4 flex" :edit="edit"
         :value="`${selectedBo['salary']} ${selectedBo['wage'] == 'monthlySalary' ? $t('backOrder.create.yenMonth') : $t('backOrder.create.yenHour')}`">
         <q-field v-model="data['wage']" borderless hide-bottom-space :rules="[creationRule]">
@@ -95,21 +95,21 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" 
+      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
         labelClass="q-pl-md col-2 self-center text-right"  :valueClass="edit?'col-10 q-pl-md':'col-4 q-pl-md'" :value="Array.isArray(data['qualifications']) && !edit ? data['qualifications'].map((row) => $t('applicant.qualification.' + row)):''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
-          <q-checkbox 
-            v-for="key in TypeQualifications" 
-            v-model="data['qualifications']" 
+          <q-checkbox
+            v-for="key in TypeQualifications"
+            v-model="data['qualifications']"
             :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
-            class="q-pr-md" 
+            class="q-pr-md"
           />
         </q-field>
       </LabelField>
-      <LabelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center" 
+      <LabelField :label="$t('backOrder.create.payday')" :edit="edit" valueClass="col-4 q-pl-md flex self-center"
         :value="selectedBo['payday']"
         labelClass="q-pl-md col-2 text-right self-center" :autogrow="true">
         <q-input v-model="data['payday']" outlined dense type="textarea" :disable="loading" autogrow />
@@ -165,13 +165,13 @@
         labelClass="q-pl-md col-2 text-right self-center" :valueClass="edit?'q-pl-md col-10 self-center':'q-pl-md col-4 self-center'"
         :value="!edit && Array.isArray(selectedBo['workingDays']) ? selectedBo['workingDays'].map(day => $t('weekDay.' + day)).join(', ') : ''">
         <q-field v-model="data['workingDays']" borderless hide-bottom-space :rules="[creationArrayRule]">
-          <q-checkbox 
-            v-model="data['workingDays']" 
-            v-for="day in daysList" 
-            :val="day.value" 
+          <q-checkbox
+            v-model="data['workingDays']"
+            v-for="day in daysList"
+            :val="day.value"
             :disable="loading"
-            :label="day.label" 
-            :key="day.value" 
+            :label="day.label"
+            :key="day.value"
             @update:model-value="(val : string[])=>{
               if(val.length >= 7){
                 everythingTrgger = true
@@ -183,7 +183,7 @@
           <q-checkbox
             :disable="loading"
             v-model="everythingTrgger"
-            :label="$t('common.everything')" 
+            :label="$t('common.everything')"
             @update:model-value="(val : boolean)=>{
               if(val){
                 data['workingDays'] = [ WorkingDaysWeek.Monday, WorkingDaysWeek.Tuesday, WorkingDaysWeek.Wednesday, WorkingDaysWeek.Thursday, WorkingDaysWeek.Friday, WorkingDaysWeek.Saturday, WorkingDaysWeek.Sunday, WorkingDaysWeek.Holiday ]
@@ -193,7 +193,7 @@
             }"
           />
         </q-field>
-      </LabelField>   
+      </LabelField>
       <LabelField :label="$t('backOrder.create.onCallRemarks')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 row self-center"
         :value="selectedBo['onCallRemarks']" :autogrow="true">
@@ -430,7 +430,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['openSearchByMap']);
-const everythingTrgger = ref(false) 
+const everythingTrgger = ref(false)
 
 const transactionTypeOptions = computed(()=>{
   if(selectedBo.value.type === 'dispatch') {
@@ -449,7 +449,7 @@ const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
 const data = ref()
-resetData() 
+resetData()
 
 function resetData() {
   data.value = JSON.parse(JSON.stringify({ ...backOrderStore.state?.selectedBo } as BackOrderModel))
@@ -471,7 +471,7 @@ async function save() {
   } catch (e) {
     console.log(e);
   }
-  resetData() 
+  resetData()
   loading.value = false;
 }
 
