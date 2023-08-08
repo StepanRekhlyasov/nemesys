@@ -19,7 +19,7 @@
           <span>{{ $t('releaseNotes.form.subject') }}</span>
         </div>
         <q-input
-            dense  v-model="subject" borderless input-style="height: 28px;" input-class="notification-create__field" />
+            dense  v-model="subject" borderless input-style="height: 28px;" input-class="notification-create__field notification-create__field--grow" autogrow/>
       </div>
 
       <div class="row items-center q-gutter-md q-mb-xs">
