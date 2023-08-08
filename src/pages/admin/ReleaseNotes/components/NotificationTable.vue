@@ -104,11 +104,11 @@
   <q-card-section class="q-pa-none">
     <q-table :columns="notificationTableColumns" :rows="tableRows" row-key="id" v-model:pagination="pagination" hide-pagination class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
       <template v-slot:body-cell-edit="props">
-        <EditButton cancelButton color="accent"
-            :on-edit="() => { sortable = false; editableNotification = cloneToRaw(props.row); }"
-            :on-save="async () => { return await onRowSave(props,editableNotification.subject,editableNotification.content) }" :editable-row="editableRow"
-            @on-editable-row-change="async (row) => { editableRow = row }" :row-index="props.rowIndex"
-            :props="props" @on-exit-editing-mode="{ editableRow = -1; }" />
+        <EditButton color="accent" :props="props" cancelButton
+          :on-edit="() => {editableNotification = JSON.parse(JSON.stringify(props.row))}"
+          :on-save="() => editNotification(JSON.parse(JSON.stringify(props.row)))" :editable-row="editableRow"
+          @onEditableRowChange="async(rowIndex) => editableRow = rowIndex" :row-index="props.rowIndex"
+          @on-exit-editing-mode="{ editableRow = -1; }"/>
       </template>
 
       <template v-slot:body-cell-subject="props">
@@ -154,14 +154,12 @@
 
 <script lang="ts" setup>
 import { date, is, useQuasar } from 'quasar';
-import { sortable } from '../../InquiryPage/const/inquiry.const';
 import { ref, onMounted, computed , watch} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { serverTimestamp } from '@firebase/firestore';
 import EditButton from 'components/EditButton.vue';
 import { DELIVERY_STATUS, NotificationDataRow } from '../types/notificationTypes'
 import { User } from 'src/shared/model';
-import { cloneToRaw, deepEqualClone } from 'src/shared/utils/utils'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useReleaseNotes } from 'src/stores/releaseNotes';
 import { useUserStore } from 'src/stores/user';
@@ -193,7 +191,7 @@ const filter = ref({
   author : '',
   content: '',
 })
-const isEqual = ref(false)
+
 const deliveryFrom = ref('')
 const deliveryTo = ref('')
 
@@ -216,13 +214,6 @@ const authorOptions = computed(()=>{
   })
   return Object.values(users)
 })
-async function onRowSave(props: { row: NotificationDataRow, rowIndex: number },subject,content) {
-  isEqual.value = deepEqualClone(editableRow.value, props.row)
-  if (!isEqual.value) {
-    await editNotification(props.row,subject,content)
-  }
-  sortable.value = true
-}
 const tableRows = computed(()=>{
   let result = releaseNoteStore.tableRows
   for(const [key, value] of Object.entries(filter.value)){
@@ -292,7 +283,7 @@ const truncateText = (text, maxLength) => {
   }
   return text.slice(0, maxLength) + '...';
 };
-const editNotification = async (notification,subject,content) => {
+const editNotification = async (notification: NotificationDataRow) => {
   const isNotificationChanged = !is.deepEqual(notification, editableNotification.value)
 
   if (isNotificationChanged && user) {
@@ -301,8 +292,8 @@ const editNotification = async (notification,subject,content) => {
           await releaseNoteStore.updateNotificationData(notification.id, {
               updated_at: serverTimestamp(),
               author: user.id,
-              subject: subject,
-              content: content,
+              subject: editableNotification.value.subject,
+              content: editableNotification.value.content,
               flagExclamation:true
           });
           await loadCurrentNotifications();
