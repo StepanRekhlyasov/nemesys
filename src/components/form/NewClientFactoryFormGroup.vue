@@ -36,13 +36,7 @@ const addressSection = ref({
     prefecture: prefectureList.value[0].value,
     municipality: '',
     street: '',
-<<<<<<< Updated upstream
-    building: '',
-    // lon: 0,
-    // lat: 0
-=======
     building: ''
->>>>>>> Stashed changes
 })
 const clientFactoryInfo = ref({
     tel: '',
@@ -86,11 +80,6 @@ const validateAndSubmit = async () => {
                 registeredInfo: {
                     tel: clientFactoryInfo.value.tel,
                     fax: clientFactoryInfo.value.fax,
-<<<<<<< Updated upstream
-                    // latitude: addressSection.value.lat,
-                    // longitude: addressSection.value.lon,
-=======
->>>>>>> Stashed changes
                     street: addressSection.value.street,
                     building: addressSection.value.building,
                     parentClient: parentClient.value.parentClient

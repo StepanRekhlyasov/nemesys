@@ -32,11 +32,6 @@ export interface Client {
   isFaxNG?: boolean;
   geohash?: string;
   homePage?: string;
-<<<<<<< Updated upstream
-  // lat?: number;
-  // lon?: number;
-=======
->>>>>>> Stashed changes
   mail?: string;
   municipality?: string;
   name?: string;
@@ -78,11 +73,6 @@ export interface ClientOffice {
   flg_faxng?: boolean;
   geohash?: string;
   homePage?: string;
-<<<<<<< Updated upstream
-  // lat?: number;
-  // lon?: number;
-=======
->>>>>>> Stashed changes
   mailaddress?: string;
   municipality?: string;
   name?: string;

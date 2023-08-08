@@ -99,43 +99,6 @@ watch(prefecture, async () => {
                             :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
                     </div>
                 </div>
-<<<<<<< Updated upstream
-
-            <!-- <div class="row q-mt-sm">
-                <div class="col-6 q-pr-sm">
-                        <q-item-label class="q-pb-xs">
-                                {{ t('client.add.longitude') }}
-                        </q-item-label>
-
-                        <q-input
-                            :color="theme"
-                            outlined dense
-                            type="number"
-                            v-model.number="addressData['lon']"
-                            :placeholder="t('client.add.latitudeLabel')"
-                            step="any"
-                            hide-bottom-space
-                            :rules="[val => (val === '' || (val !== null && !isNaN(val))) || '']"/>
-                </div>
-                <div class="col-6 q-pl-sm ">
-                        <q-item-label class="q-pb-xs">
-                            {{ t('client.add.latitude') }}
-                        </q-item-label>
-
-                        <q-input
-                            :color="theme"
-                            outlined dense
-                            type="number"
-                            v-model.number="addressData['lat']"
-                            :placeholder="t('client.add.latitudeLabel')"
-                            step="any"
-                            hide-bottom-space
-                            :rules="[val => (val === '' || (val !== null && !isNaN(val))) || '']" />
-                </div>
-            </div> -->
-
-=======
->>>>>>> Stashed changes
         </q-item-section>
     </q-item>
 </template>
