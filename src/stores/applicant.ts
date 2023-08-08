@@ -155,7 +155,7 @@ export const useApplicant = defineStore('applicant', () => {
     const filters = [
       where('status', '==', status),
       where('deleted', '==', false),
-      where('organizationId', '==', organization.currentOrganizationId)
+      // where('organizationId', '==', organization.currentOrganizationId)
     ]
     let currentTime: Timestamp | undefined
     if (filterData) {
@@ -203,9 +203,15 @@ export const useApplicant = defineStore('applicant', () => {
     searchData = deepCopy(searchData);
 
     if (searchData['status']) {
-      filters['all'].push({
-        'status': searchData['status']
-      });
+      if (Array.isArray(searchData['status'])) {
+        // If status is an array, add each status as a separate filter
+        searchData['status'].forEach(status => {
+          filters['all'].push({ 'status': status });
+        });
+      } else {
+        // If status is a single string, add it as a filter
+        filters['all'].push({ 'status': searchData['status'] });
+      }
     }
     if (searchData.applicationDateMin && searchData.applicationDateMax) {
       filters['all'].push({
