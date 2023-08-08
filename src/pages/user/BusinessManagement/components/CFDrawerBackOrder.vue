@@ -3,7 +3,7 @@
     class="q-py-none no-shadow CFDrawerBO">
     <template v-slot:body-cell-boid="props">
       <q-td :props="props">
-        <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boid"
+        <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boId"
           class="q-pa-none text-body1" />
         <div></div>
       </q-td>
@@ -73,7 +73,7 @@
     <template v-slot:body-cell-age="props">
       <q-td :props="props">
         {{ props.row.upperAgeLimit }}<br />
-        {{ Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-' }}<br />
+        {{ props.row.employmentType && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-' }}<br />
       </q-td>
     </template>
 
