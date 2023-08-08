@@ -1119,6 +1119,7 @@ export default {
       cohabitation: 'Cohabitation',
       children: 'Children',
       medicalHistory: 'Medical History',
+      medicalHistoryDetails: 'Medical History Details',
       vaccinationStatus: 'Vaccination Status',
       startCaring: 'How did you start caring?',
       interviewsWaitingList: 'Number of Interviews Waiting List',

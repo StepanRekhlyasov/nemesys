@@ -160,6 +160,7 @@ export interface PersonalStatus {
   childrenNumber?: string;
   childrenAge?: string;
   medicalHistory?: string;
+  isMedicalHistory?: boolean;
   vaccinationStatus?: string;
   startCaring?: string;
   interviewsWaitingList?: string;
