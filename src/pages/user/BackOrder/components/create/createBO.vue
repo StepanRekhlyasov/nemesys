@@ -216,7 +216,7 @@ const updateOfficeName = async ()=>{
       clientFactory.value = updatedDocument
     }
     if(clientFactory.value.clientID){
-      clientFactory.value['client'] = await clientStore.fetchClientsById(clientFactory.value.clientID);
+      clientFactory.value.client = applicantStore.state.clientList.find(client => client.id === clientFactory.value?.clientID)
     }
   }
 
