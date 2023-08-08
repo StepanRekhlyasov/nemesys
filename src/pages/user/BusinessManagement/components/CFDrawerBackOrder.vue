@@ -79,7 +79,7 @@
 
     <template v-slot:body-cell-work="props">
       <q-td :props="props">
-        {{ props.row.working_days_week.map(days => $t('weekDay.' + days)).join(', ') }}<br />
+        {{ props.row.working_days_week && props.row.working_days_week.length ? props.row.working_days_week.map(days => $t('weekDay.' + days)).join(', '):'-' }}<br />
         {{ props.row.daysPerWeekList }}
       </q-td>
     </template>
