@@ -57,7 +57,7 @@
             </labelField>
           </div>
           <div class="row q-pt-sm items-center">
-            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" 
+            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true"
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
               <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
             </labelField>
@@ -135,7 +135,7 @@ import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
-const emits = defineEmits(['closeDialog']);
+const emits = defineEmits(['closeDialog','fetchBo']);
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
@@ -175,7 +175,7 @@ async function addBackOrder() {
     loading.value = false;
     await backOrderStore.loadBackOrder({});
     closeDialog();
-
+    emits('fetchBo');
   }
 }
 
