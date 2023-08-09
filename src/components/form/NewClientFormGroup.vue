@@ -8,7 +8,7 @@ import ClientType from './clientForms/ClientType.vue'
 import FacilityType from './clientForms/FacilityType.vue'
 import HeadOfficeInformation from './clientForms/HeadOfficeInformation.vue';
 import ContractInfo from './clientForms/ContractInfo.vue';
-import ContactInfo from './clientForms/ContactInfo.vue'
+import ContactInfo from './clientForms/contactInfo.vue'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { contractUnits } from 'src/shared/constants/ContractUnits.const';
 import { Client } from 'src/shared/model';

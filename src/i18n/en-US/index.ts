@@ -1663,7 +1663,7 @@ export default {
         contractTel: 'Contract destination: TEL',
         contractFax: 'Contract destination: FAX',
         contractMail: 'Contract destination: MAIL',
-        contractPerson: 'Contractor: Person in charge',
+        contractPerson: 'Contractor: User in charge',
 
         // Import Logs and Reflect Logs
         executionUser: 'Execution User',
