@@ -15,7 +15,7 @@ const { t } = useI18n({ useScope: 'global' });
 const searchInput = ref('')
 const regionList = ref<DocumentData>({})
 const prefectures = ref<string[]>([])
-const wards = ref(<string[]>[])
+const wards = ref<string[]>([])
 const selectedPrefectures = ref<string[]>([])
 const selectedWards = ref<string[]>([])
 const isLoadingProgress = ref(false)
@@ -41,8 +41,23 @@ onMounted(async () => {
 
 watch(
   () => (wards.value),
-  () => {
-    emit('updateArea', selectedPrefectures.value, [...selectedWards.value]);
+  (newVal, oldVal) => {
+    const oldValue = oldVal || []
+    const addedItem = newVal.filter(item => oldValue.indexOf(item) < 0)
+    const removedItem = oldValue.filter(item => newVal.indexOf(item) < 0)
+    for (let i = 0; i < addedItem.length; i++) {
+      const index = selectedWards.value.indexOf(addedItem[i]);
+      if (index == -1) {
+        selectedWards.value.push(addedItem[i])
+      }
+    }
+    for (let i = 0; i < removedItem.length; i++) {
+      const index = selectedWards.value.indexOf(removedItem[i]);
+      if (index > -1) {
+        selectedWards.value.splice(index, 1);
+      }
+    }
+    emit('updateArea', selectedPrefectures.value, selectedWards.value);
   }, { deep: true, immediate: true }
 );
 
@@ -109,7 +124,7 @@ const onInputSubmit = () => {
   }
   if (allWards.value.includes(searchInput.value)) {
     if (!wards.value.includes(searchInput.value)) {
-      wards.value.push(searchInput.value)
+      wards.value = [...wards.value, ...[searchInput.value]]
     }
     if (!searchKeyword.value.includes(searchInput.value)) {
       searchKeyword.value.push(searchInput.value)
@@ -122,12 +137,14 @@ const OnInputClear = () => {
   searchInput.value = ''
 }
 
-const removeSearchKeyword = (value: never) => {
+const removeSearchKeyword = (value: string) => {
   if (searchKeyword.value.includes(value)) {
     searchKeyword.value.splice(searchKeyword.value.indexOf(value), 1);
   }
   if (wards.value.includes(value)) {
-    wards.value.splice(wards.value.indexOf(value), 1);
+    let ward = [...wards.value]
+    ward.splice(ward.indexOf(value),1);
+    wards.value = [...ward]
   }
   if (prefectures.value.includes(value)) {
     let pref = [...prefectures.value];
