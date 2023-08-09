@@ -79,7 +79,6 @@ const saveNewIndustry = async () => {
                     color="accent" hide-bottom-space
                     :rules="[
                         (val) => (val && val.length > 0) || '',
-                        (val) => (/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(val)) || 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.',
                         (val) => titleExists(val) || 'Title already exists'
                     ]"
                 />
