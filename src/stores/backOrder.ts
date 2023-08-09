@@ -97,7 +97,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       });
     }
 
-    const items = ['qualifications', 'employmenttype'];
+    const items = ['qualifications'];
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
         const obj = {};
@@ -174,6 +174,10 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     if(searchData.transactiontype && searchData.transactiontype.length){
       state.value.BOList =  state.value.BOList.filter(bo=>bo.transactionType && searchData.transactiontype.includes(bo.transactionType))
+    }
+    if(searchData.employmenttype && searchData.employmenttype.length){
+      state.value.BOList = state.value.BOList.filter(bo =>
+        bo.employmentType && bo.employmentType.some(type => searchData.employmenttype.includes(type)));
     }
 
     state.value.isLoadingProgress = false;
