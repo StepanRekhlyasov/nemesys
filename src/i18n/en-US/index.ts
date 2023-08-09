@@ -2247,7 +2247,9 @@ export default {
   errors: {
     'BO_occupied': 'Selected BO is occupied',
     'error': 'Error',
-    'deleteBranchesFirst': 'Please, delete all branches first'
+    'deleteBranchesFirst': 'Please, delete all branches first',
+    titleExist: 'Title already exists',
+    industryRules: 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.',
   },
   budget: {
     search: 'Budget Search',
@@ -2310,5 +2312,5 @@ export default {
     C: 'C (Normal)',
     D: 'D (Bad)',
     E: 'E (The Worst)',
-  }
+  },
 }

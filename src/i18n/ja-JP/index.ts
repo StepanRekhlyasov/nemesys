@@ -2240,7 +2240,9 @@ export default {
   errors: {
     'BO_occupied': '選択されたBOは既に使用されています',
     'error': 'エラー',
-    'deleteBranchesFirst': 'まずすべての支店を削除してください'
+    'deleteBranchesFirst': 'まずすべての支店を削除してください',
+    titleExist: 'タイトルはすでに存在します',
+    industryRules: '無効入力。キーは文字 $ または _ で始まる必要があり、スペースや特殊文字を含めることはできません。',
   },
   budget: {
     search: '予算検索',
