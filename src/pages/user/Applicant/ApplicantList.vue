@@ -27,6 +27,7 @@
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.lastContact') }} </div>
               <div> {{ $t('applicant.list.contactNote') }} </div>
+                
             </q-th>
           </template>
 
@@ -69,7 +70,7 @@
                   props.row.classification.map(c => getClassification(c)).join(', ') }}</span>
               </div>
               <div>
-                {{ props.row.address }}
+                {{ props.row.address}}
               </div>
             </q-td>
           </template>
@@ -116,6 +117,11 @@
               }}</span>
             </q-td>
           </template>
+          <template v-slot:body-cell-phone="props">
+            <q-td :props="props">
+              <span class="link" cursor @click="feedContact(props.row.phone)"> {{ props.row.phone }}</span>
+            </q-td>
+          </template>
 
         </q-table>
         <div class="row justify-start q-mt-md pagination q-ml-sm">
@@ -143,7 +149,7 @@
             </span>
           </div>
         </q-card-section>
-        <SmsDrawer />
+        <SmsDrawer :phoneNumber="phoneNumber" v-bind="phoneNumber && phoneNumber.length"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -170,6 +176,8 @@ const { t } = useI18n({ useScope: 'global' });
 const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
+const sendNumber = ref(false);
+const phoneNumber = ref<string>('');
 
 const pagination = ref({
   sortBy: 'desc',
@@ -317,6 +325,12 @@ const openSMSDrawer = () => {
   sendSMSDrawer.value = true
 };
 
+const feedContact = async (phoneNumberarg: string) => {
+  sendNumber.value = true;
+  phoneNumber.value = phoneNumberarg;
+  openSMSDrawer();
+}
+
 const preventWatch = ref(false)
 const loadSearchStaff = async (data: ApplicantElasticSearchData) => {
   preventWatch.value = true
@@ -341,3 +355,11 @@ watchCurrentOrganization(async () => {
 
 applicantStore.loadApplicantData(sharedData.value, pagination.value);
 </script>
+
+<style scoped scss>
+ .link {
+   color: blue;
+   text-decoration: underline;
+   cursor: pointer;
+ }
+</style>

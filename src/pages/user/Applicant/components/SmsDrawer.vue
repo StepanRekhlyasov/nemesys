@@ -166,7 +166,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, ComputedRef, watch } from 'vue';
+import { ref, onMounted, ComputedRef, watch, onBeforeMount } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant } from 'src/pages/user/Applicant/const/sms';
@@ -191,6 +191,9 @@ const template = ref<string | null>(null)
 const getApplicant = useApplicant();
 const templates = ref<DocumentData | QSelectProps>([]);
 const smsStore = useSMS();
+const numberProp = defineProps({
+  phoneNumber: String
+})
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -224,6 +227,10 @@ const sendMsg = async () => {
   }
 }
 
+onBeforeMount(async () => {
+  row.value = await smsStore.filterData(status.value, keyword.value, date.value);
+})
+
 const updateSelected = (rowItem) => {
   selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
 };
@@ -249,7 +256,8 @@ const clear = async () => {
 }
 
 onMounted(async () => {
- await fetchData()
+  console.log('here');
+  await fetchData()
 });
 
 
@@ -263,6 +271,9 @@ async function fetchData() {
       'selected': false,
     }
   });
+  if(numberProp.phoneNumber !== '') {
+    row.value = row.value.filter((e) => { e.phone == numberProp.phoneNumber});
+  }
   loading.value = false
 }
 
