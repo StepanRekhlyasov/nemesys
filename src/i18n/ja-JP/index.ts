@@ -377,7 +377,7 @@ export default {
       corporation: '法人',
       contractStatus: '契約状態',
       contractInfo: '契約先情報',
-      personIncharge: '担当ユーザー',
+      personIncharge: '担当者',
       contactPerson: '連絡先担当者',
       basicInfoUpdated: '基本情報 最終更新',
       infoUpdated: '情報 最終更新',

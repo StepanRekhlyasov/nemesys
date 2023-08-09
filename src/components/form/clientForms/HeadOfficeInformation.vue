@@ -29,7 +29,7 @@ watch(clientData, () => {
                 {{ t('office.headOfficeInformation') }}
             </q-item-label>
 
-            <div class="row">
+            <div class="row q-pt-sm">
                 <div class="col-6 q-pr-sm">
                     <q-item-label class="q-pb-xs">
                         TEL
@@ -47,6 +47,22 @@ watch(clientData, () => {
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
+                        {{ t('client.add.email') }}
+                    </q-item-label>
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['mail']"
+                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
+                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || true]"
+                        hide-bottom-space />
+                </div>
+            </div>
+
+            <div class="row q-pt-sm">
+                <div class="col-6 q-pr-sm">
+                    <q-item-label class="q-pb-xs">
                         FAX
                         <span class="text-red-5">*</span>
                     </q-item-label>
@@ -56,25 +72,9 @@ watch(clientData, () => {
                         v-model="clientData['fax']"
                         :placeholder="t('client.add.phoneLabel')"
                         lazy-rules
-                        :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"
-                        hide-bottom-space />
+                        :rules="[val => !!val || '', val => (val && val.trim().length > 0) || '']"/>
                 </div>
-            </div>
-
-            <div class="row q-pt-sm">
-                <div class="col-6 q-pr-sm">
-                    <q-item-label class="q-pb-xs">
-                        {{ t('client.add.email') }}
-                    </q-item-label>
-
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="clientData['mail']"
-                        :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
-                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || true]"/>
-                </div>
-
+                
                 <div class="col-6 q-pl-sm q-pt-lg">
                     <q-checkbox size="xs" v-model="clientData['flg_faxng']" :label="t('client.add.faxReceptionNG')" :color="`${theme}`"/>
                 </div>
