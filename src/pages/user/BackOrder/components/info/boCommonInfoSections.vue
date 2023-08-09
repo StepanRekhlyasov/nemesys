@@ -152,7 +152,7 @@ async function save() {
   loading.value = false;
 }
 
-const userNames = ref({})
+const userNames = ref<{ [id: string]: string }>({});
 const getRegistrant = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -169,7 +169,6 @@ const getRegistrant = (registrant: string | undefined) => {
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
-        console.error(error);
         userDisplayName.value = '';
       });
   } else {

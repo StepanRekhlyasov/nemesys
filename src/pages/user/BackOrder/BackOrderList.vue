@@ -298,7 +298,6 @@ const getUserDisplayName = (registrant: string | undefined) => {
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
-        console.error(error);
         userDisplayName.value = '';
       });
   } else {
