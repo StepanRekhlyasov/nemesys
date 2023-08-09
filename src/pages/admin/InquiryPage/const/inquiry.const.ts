@@ -1,5 +1,5 @@
 import { QTableProps } from 'quasar';
-import { computed } from 'vue';
+import { computed,ref } from 'vue';
 import { i18n } from 'boot/i18n';
 import { INQUIRY_STATUS } from '../types/inquiryTypes';
 
@@ -10,13 +10,13 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
     name: 'edit',
     label: '',
     field: ''
-  }, 
+  },
   {
       name: 'number',
       label: 'No.',
       field: 'number',
       sortable: false,
-  }, 
+  },
   {
       name: 'status',
       required: true,
@@ -24,7 +24,7 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
       field: 'status',
       align: 'left',
       sortable: true,
-  }, 
+  },
   {
       name: 'category',
       required: true,
@@ -32,7 +32,7 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
       field: 'category',
       align: 'left',
       sortable: true,
-  }, 
+  },
   {
       name: 'subject',
       required: true,
@@ -40,7 +40,7 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
       field: 'subject',
       align: 'left',
       sortable: true,
-  }, 
+  },
   {
       name: 'companyID',
       required: true,
@@ -48,7 +48,7 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
       field: 'companyID',
       align: 'left',
       sortable: true,
-  }, 
+  },
   {
       name: 'companyName',
       required: true,
@@ -56,7 +56,7 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
       field: 'companyName',
       align: 'left',
       sortable: true,
-  }, 
+  },
   {
       name: 'updated_at',
       required: true,
@@ -64,7 +64,7 @@ export const inquiresTableColumns = computed < QTableProps['columns'] > (() => [
       field: 'updated_at',
       align: 'left',
       sortable: false,
-  }, 
+  },
 ])
 
 export const statusOptions = computed(()=>[
@@ -77,7 +77,7 @@ export const statusOptions = computed(()=>[
     value: INQUIRY_STATUS.unanswered
   },
 ])
-
+export const sortable = ref(true)
 export const notificationTableColumns = computed < QTableProps['columns'] > (() => [{
   name: 'edit',
   label: '',

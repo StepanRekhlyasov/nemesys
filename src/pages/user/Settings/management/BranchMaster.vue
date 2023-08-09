@@ -21,7 +21,7 @@
           </q-input>
           <div class="row content-center q-pr-md">
             <span class="row content-center q-pr-md">{{ $t('settings.branch.flag') }}</span>
-            <q-select v-model="search.flag" :options="flagOptions" option-value="flag" option-label="label" emit-value
+            <q-select v-model="search.enablity" :options="flagOptions" option-value="flag" option-label="label" emit-value
               map-options dense />
           </div>
           <q-btn :label="$t('common.search')" color="primary" text-color="white" size="md" unelevated
@@ -119,7 +119,7 @@
 import { serverTimestamp } from '@firebase/firestore';
 import { Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Branch, BranchesSearch, branchFlags } from 'src/shared/model/Branch.model';
+import { Branch, BranchesSearch, branchEnablityFilter } from 'src/shared/model/Branch.model';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
 import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -139,7 +139,7 @@ const $q = useQuasar();
 
 const search: Ref<BranchesSearch> = ref({
   queryText: '',
-  flag: branchFlags.All,
+  enablity: branchEnablityFilter.All,
 });
 const branches: Ref<Branch[]> = ref([])
 const loading = ref(false);

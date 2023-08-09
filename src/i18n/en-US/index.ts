@@ -301,7 +301,9 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        working: 'Working'
+        working: 'Working',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
       },
       business: 'Business',
       branchFlag: 'Branch flag',
@@ -1121,6 +1123,7 @@ export default {
       cohabitation: 'Cohabitation',
       children: 'Children',
       medicalHistory: 'Medical History',
+      medicalHistoryDetails: 'Medical History Details',
       vaccinationStatus: 'Vaccination Status',
       startCaring: 'How did you start caring?',
       interviewsWaitingList: 'Number of Interviews Waiting List',
@@ -1183,6 +1186,7 @@ export default {
         FIXDate: 'F',
         jobDate: 'V',
         appointmentDate: 'O',
+        contact: 'co',
       },
       table: {
         'fullName': 'Full Name',
@@ -2300,5 +2304,13 @@ export default {
       'process' : 'In process',
       'finish' : 'Finish',
     }
+  },
+  impressions: {
+    notSet: 'Not Set',
+    A: 'A (The Best)',
+    B: 'B (Good)',
+    C: 'C (Normal)',
+    D: 'D (Bad)',
+    E: 'E (The Worst)',
   }
 }

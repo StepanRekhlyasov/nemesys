@@ -104,30 +104,31 @@
   <q-card-section class="q-pa-none">
     <q-table :columns="notificationTableColumns" :rows="tableRows" row-key="id" v-model:pagination="pagination" hide-pagination class="no-shadow bg-grey-2" color="primary" table-header-style="background-color: #ffffff" :loading="loading">
       <template v-slot:body-cell-edit="props">
-        <EditButton color="accent" :props="props"
+        <EditButton color="accent" :props="props" cancelButton
           :on-edit="() => {editableNotification = JSON.parse(JSON.stringify(props.row))}"
-          @onEditableRowChange="(rowIndex) => editableRow = rowIndex"
-          :on-save="() => editNotification(JSON.parse(JSON.stringify(props.row)))"
-          :editable-row="editableRow ?? -1" />
+          :on-save="() => editNotification(JSON.parse(JSON.stringify(props.row)))" :editable-row="editableRow"
+          @onEditableRowChange="async(rowIndex) => editableRow = rowIndex" :row-index="props.rowIndex"
+          @on-exit-editing-mode="{ editableRow = -1; }"/>
       </template>
 
       <template v-slot:body-cell-subject="props">
-        <q-td :props="props">
-          <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="props.row.subject" />
+        <q-td :props="props" >
           <template v-if="!isRowSelected(props.rowIndex)">
             {{ props.row.subject }}
           </template>
+          <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="editableNotification.subject"/>
         </q-td>
       </template>
 
       <template v-slot:body-cell-content="props">
-        <q-td :props="props">
-          <q-input color="accent" v-if="isRowSelected(props.rowIndex)" v-model="props.row.content" />
-          <template v-if="!isRowSelected(props.rowIndex)">
-            {{ props.row.content }}
-          </template>
-        </q-td>
-      </template>
+  <q-td :props="props" style="white-space: break-spaces;">
+    <div v-if="!isRowSelected(props.rowIndex)">
+      <div v-html="truncateText(props.row.content, 5)"></div>
+    </div>
+    <q-input color="accent" v-else v-model="editableNotification.content" type="textarea"/>
+  </q-td>
+</template>
+
 
       <template v-slot:body-cell-delete="props">
         <q-td :props="props" auto-width>
@@ -164,6 +165,7 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
 import { useUserStore } from 'src/stores/user';
 import { notificationTableColumns } from '../../InquiryPage/const/inquiry.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
+import { DocumentData } from 'firebase/firestore';
 const props = withDefaults(defineProps<{
   flag:number,
   theme:string
@@ -195,8 +197,8 @@ const deliveryTo = ref('')
 
 const loading = ref(true)
 
-const editableRow = ref < number | null > (null)
-const editableNotification = ref < NotificationDataRow > ()
+const editableRow = ref < number > (-1)
+const editableNotification = ref<DocumentData>({})
 const notificationTableRows = ref < NotificationDataRow[] > ([])
 
 const flag = computed(()=>{return props.flag})
@@ -213,7 +215,7 @@ const authorOptions = computed(()=>{
   return Object.values(users)
 })
 const tableRows = computed(()=>{
-  let result = notificationTableRows.value
+  let result = releaseNoteStore.tableRows
   for(const [key, value] of Object.entries(filter.value)){
     result = result.filter((row)=>{
       if(filter.value[key]){
@@ -237,6 +239,7 @@ const tableRows = computed(()=>{
       return new Date(row.deliveryDate) <= new Date(deliveryTo.value + ' 23:59:59')
     })
   }
+
   return result
 })
 
@@ -274,6 +277,12 @@ const isRowSelected = (index: number) => {
   return index == editableRow.value
 }
 
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength) + '...';
+};
 const editNotification = async (notification: NotificationDataRow) => {
   const isNotificationChanged = !is.deepEqual(notification, editableNotification.value)
 
@@ -283,8 +292,9 @@ const editNotification = async (notification: NotificationDataRow) => {
           await releaseNoteStore.updateNotificationData(notification.id, {
               updated_at: serverTimestamp(),
               author: user.id,
-              subject: notification.subject,
-              content: notification.content
+              subject: editableNotification.value.subject,
+              content: editableNotification.value.content,
+              flagExclamation:true
           });
           await loadCurrentNotifications();
           loading.value = false
@@ -296,7 +306,6 @@ const editNotification = async (notification: NotificationDataRow) => {
   }
   return
 }
-
 const deleteNotification = (notificationId: string) => {
   $q.dialog({
       title: t('common.delete'),
@@ -320,10 +329,10 @@ const deleteNotification = (notificationId: string) => {
       }
   })
 }
-
 watch(flag,async()=>{
   loading.value = true
   await loadCurrentNotifications();
   loading.value = false
 })
 </script>
+

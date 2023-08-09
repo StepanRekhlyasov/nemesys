@@ -115,12 +115,8 @@ const sortHandler = (
         const keys = Object.keys(items);
         const movedKey = keys[event.oldIndex];
         const targetKey = keys[event.newIndex];
-
-        [items[movedKey], items[targetKey]] = [items[targetKey], items[movedKey]];
-
-        Object.values(items).forEach((item, index) => {
-            item.order = index + 1;
-        });
+        
+        [items[movedKey].order, items[targetKey].order] = [items[targetKey].order, items[movedKey].order];
 
         if(!is.deepEqual(industryToUpdate.value.uniqueItems[path], activeIndustry.value.uniqueItems[path])) {
             isCanBeSaved.value[path] = true;
