@@ -103,7 +103,7 @@
             </div>
             <div class="col-6">
               <q-option-group
-                v-model="searchData['casetype']"
+                v-model="searchData['typecase']"
                 :options="occupationList"
                 type="checkbox"
                 inline
@@ -152,7 +152,7 @@
           <div class="row">
             <div class="col-3">
               <q-option-group
-                v-model="searchData['category']"
+                v-model="searchData['transactiontype']"
                 :options="applicantClassification"
                 type="checkbox"
                 inline
@@ -160,7 +160,7 @@
             </div>
             <div class="col-3">
               <q-option-group
-                v-model="searchData['experience']"
+                v-model="searchData['experiencereq']"
                 :options="moreHalfYearExpOption"
                 type="checkbox"
                 inline
@@ -197,9 +197,9 @@ import {
 const searchDataSample = {
   employmenttype: [],
   qualifications: [],
-  category: [],
-  casetype: [],
-  experience: [],
+  transactiontype: [],
+  typecase: [],
+  experiencereq: [],
 };
 
 const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));

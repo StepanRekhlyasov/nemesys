@@ -9,12 +9,13 @@ export interface BOElasticSearchData {
   ageMax?: string;
   status?: string;
   boid?: string;
-  experience?: string[];
-  category?: string[];
-  casetype?: string[];
+  experiencereq?: string[];
+  transactiontype?: string[];
+  typecase?: string[];
   mapData?: {
     lat?: string;
     lng?: string;
     radiusInM?: string;
   };
+  customerRepresentative?: string;
 }
