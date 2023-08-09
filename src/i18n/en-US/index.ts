@@ -106,6 +106,8 @@ export default {
     more: 'More',
     downloadCSV: 'Download CSV',
     branch: 'Branch',
+    index: 'Index',
+    totalPoints: 'Total points',
   },
   rule: {
     onlyNumber: 'only number, without "-"',

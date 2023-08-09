@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineEmits, ref } from 'vue';
 import TaskRegister from '../../Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
+import DispatchIndexTable from  './DispatchIndexTable.vue'
 
 defineProps<{
   clientFactory: ClientFactory,
@@ -60,7 +61,7 @@ const openTaskRegister = ref(false)
                     </span>
 
                     <span class="info-footer__value">
-                        TEST
+                        <dispatch-index-table />
                     </span>
                 </p>
 
@@ -85,11 +86,11 @@ const openTaskRegister = ref(false)
                     </q-btn>
                 </div>
             </div>
-            <task-register 
+            <task-register
               :entity="'office'"
               :entityData="clientFactory"
-              v-model="openTaskRegister" 
-              @closeDrawer="openTaskRegister=false" 
+              v-model="openTaskRegister"
+              @closeDrawer="openTaskRegister=false"
             />
     </div>
 </template>

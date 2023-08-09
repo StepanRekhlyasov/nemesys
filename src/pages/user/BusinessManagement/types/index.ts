@@ -21,3 +21,19 @@ export interface FaxSearchData {
   selectedApplicant: string | null;
   selectedOrganization: string | null;
 }
+
+export interface DispatchIndexTable {
+  clientName: string;
+  telOne: number;
+  index?: number;
+  totalPoints?: number;
+  telTwo: number;
+  telThree: number;
+  telFour: number;
+  telFive: number;
+  faxOne: number;
+  faxTwo: number;
+  faxThree: number;
+  faxFour: number;
+  faxFive: number;
+}

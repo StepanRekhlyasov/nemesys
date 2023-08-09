@@ -1,12 +1,33 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
+import {
+  setDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+  writeBatch,
+  DocumentData,
+  Timestamp,
+  addDoc,
+  getCountFromServer,
+  limit,
+} from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
-import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
+import {
+  BOElasticFilter,
+  BOElasticSearchData,
+} from 'src/pages/user/BackOrder/types/backOrder.types';
 import { useOrganization } from './organization';
 
 interface BackOrderState {
@@ -36,7 +57,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       total_results: 0,
     },
   });
-  const organization = useOrganization()
+  const organization = useOrganization();
   const formatDate = (dt: Date, midNight = false) => {
     const year = dt.toLocaleString('en-US', { year: 'numeric' });
     const month = dt.toLocaleString('en-US', { month: '2-digit' });
@@ -47,14 +68,22 @@ export const useBackOrder = defineStore('backOrder', () => {
     return year + '-' + month + '-' + day + 'T23:59:59+00:00';
   };
 
-  async function loadBackOrder(searchData: BOElasticSearchData, pagination = {
-    page: 1,
-    rowsPerPage: 30,
-  }) {
+  async function loadBackOrder(
+    searchData: BOElasticSearchData,
+    pagination = {
+      page: 1,
+      rowsPerPage: 30,
+    }
+  ) {
     state.value.currentIds = [];
     state.value.isLoadingProgress = true;
 
-    const filters: BOElasticFilter = ref({ all: [{ deleted: 'false' }, { 'organizationid': organization.currentOrganizationId }] }).value;
+    const filters: BOElasticFilter = ref({
+      all: [
+        { deleted: 'false' },
+        { organizationid: organization.currentOrganizationId },
+      ],
+    }).value;
     let queryString = '';
 
     if (searchData['keyword']) {
@@ -92,7 +121,14 @@ export const useBackOrder = defineStore('backOrder', () => {
       });
     }
 
-    const items = ['boid', 'qualifications', 'employmenttype', 'experience', 'category', 'casetype',];
+    const items = [
+      'boid',
+      'qualifications',
+      'employmenttype',
+      'experience',
+      'category',
+      'casetype',
+    ];
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
         const obj = {};
@@ -119,8 +155,8 @@ export const useBackOrder = defineStore('backOrder', () => {
           page: { size: pagination.rowsPerPage, current: pagination.page },
           filters: filters,
           sort: {
-            boid: 'desc'
-          }
+            boid: 'desc',
+          },
         },
         {
           headers: {
@@ -147,10 +183,15 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   const loadBOData = async () => {
     state.value.isLoadingProgress = true;
-    let allBOList: BackOrderModel[] = []
+    let allBOList: BackOrderModel[] = [];
     while (state.value.currentIds.length) {
       const batch = state.value.currentIds.splice(0, 10);
-      const boList = await getBOByConstraints([where('deleted', '==', false), where('id', 'in', batch), where('organizationId', '==', organization.currentOrganizationId), orderBy('boId', 'desc')]);
+      const boList = await getBOByConstraints([
+        where('deleted', '==', false),
+        where('id', 'in', batch),
+        where('organizationId', '==', organization.currentOrganizationId),
+        orderBy('boId', 'desc'),
+      ]);
       for (let i = 0; i < boList.length; i++) {
         boList[i]['dateOfRegistration'] = myDateFormat(
           boList[i]['dateOfRegistration'] as Timestamp
@@ -159,7 +200,7 @@ export const useBackOrder = defineStore('backOrder', () => {
 
       allBOList = [...allBOList, ...boList];
     }
-    state.value.BOList = allBOList
+    state.value.BOList = allBOList;
     state.value.isLoadingProgress = false;
   };
 
@@ -180,15 +221,17 @@ export const useBackOrder = defineStore('backOrder', () => {
     const data = JSON.parse(JSON.stringify(backOrderData));
     try {
       const clientDoc = doc(db, 'clients', data.client_id);
-      const officeDoc = doc(collection(clientDoc, 'client-factory'), data.office_id);
+      const officeDoc = doc(
+        collection(clientDoc, 'client-factory'),
+        data.office_id
+      );
       const officeData = await getDoc(officeDoc);
       if (officeData.exists()) {
         data['distance'] = officeData.data().distance;
         data['lat'] = officeData.data().lat;
         data['lon'] = officeData.data().lon;
       }
-    }
-    catch (err) {
+    } catch (err) {
       data['distance'] = null;
     }
     data['created_at'] = serverTimestamp();
@@ -198,23 +241,38 @@ export const useBackOrder = defineStore('backOrder', () => {
     const snapshot = await getCountFromServer(query(collection(db, '/BO')));
     data['boId'] = snapshot.data().count;
 
-    const checkNew = await getDocs(query(collection(db, '/BO'), where('office_id', '==', data.office_id), limit(1)))
+    const checkNew = await getDocs(
+      query(
+        collection(db, '/BO'),
+        where('office_id', '==', data.office_id),
+        limit(1)
+      )
+    );
     if (checkNew.docs.length > 0) {
-      data.isNew = false
+      data.isNew = false;
     } else {
-      data.isNew = true
+      data.isNew = true;
     }
 
-    if (data.dateOfRegistration) data.dateOfRegistration = dateToTimestampFormat(new Date(data.dateOfRegistration));
+    if (data.dateOfRegistration)
+      data.dateOfRegistration = dateToTimestampFormat(
+        new Date(data.dateOfRegistration)
+      );
 
     const docRef = doc(collection(db, '/BO'));
     data['id'] = docRef.id;
-    data['organizationId'] = organization.currentOrganizationId
+    data['organizationId'] = organization.currentOrganizationId;
     await setDoc(docRef, data);
-    ;
   }
-  async function getClientBackOrder(clientId: string): Promise<BackOrderModel[]> {
-    const constraints: ConstraintsType = [where('deleted', '==', false), orderBy('created_at', 'desc'), where('client_id', '==', clientId), where('organizationId', '==', organization.currentOrganizationId)];
+  async function getClientBackOrder(
+    clientId: string
+  ): Promise<BackOrderModel[]> {
+    const constraints: ConstraintsType = [
+      where('deleted', '==', false),
+      orderBy('created_at', 'desc'),
+      where('client_id', '==', clientId),
+      where('organizationId', '==', organization.currentOrganizationId),
+    ];
     const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
 
     const list: BackOrderModel[] = [];
@@ -227,8 +285,13 @@ export const useBackOrder = defineStore('backOrder', () => {
     return list;
   }
 
-  async function getClientFactoryBackOrder(office_id: string): Promise<BackOrderModel[]> {
-    const constraints: ConstraintsType = [where('deleted', '==', false), where('office_id', '==', office_id),];
+  async function getClientFactoryBackOrder(
+    office_id: string
+  ): Promise<BackOrderModel[]> {
+    const constraints: ConstraintsType = [
+      where('deleted', '==', false),
+      where('office_id', '==', office_id),
+    ];
     const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
 
     const list: BackOrderModel[] = [];
@@ -245,7 +308,10 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
     const backOrderData = { ...backOrder };
-    if (backOrderData.dateOfRegistration) backOrderData.dateOfRegistration = dateToTimestampFormat(new Date(backOrderData.dateOfRegistration as string));
+    if (backOrderData.dateOfRegistration)
+      backOrderData.dateOfRegistration = dateToTimestampFormat(
+        new Date(backOrderData.dateOfRegistration as string)
+      );
     const boRef = doc(db, '/BO/' + backOrderData.id);
     await updateDoc(boRef, { ...backOrderData });
     state.value.selectedBo = { ...state.value.selectedBo, ...backOrder };
@@ -282,17 +348,20 @@ export const useBackOrder = defineStore('backOrder', () => {
     await batch.commit();
   };
 
-  function getDistance(loc1: { lat: number; lon: number }, loc2: { lat: number; lon: number }) {
+  function getDistance(
+    loc1: { lat: number; lon: number },
+    loc2: { lat: number; lon: number }
+  ) {
     const easrtRadiusInKm = 6371;
-    const accuracyVar = 0.165
+    const accuracyVar = 0.165;
     const dLat = degToRad(loc2.lat - loc1.lat);
     const dLon = degToRad(loc2.lon - loc1.lon);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(degToRad(loc1.lat)) *
-      Math.cos(degToRad(loc2.lat)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(degToRad(loc2.lat)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = easrtRadiusInKm * c + accuracyVar;
     return Number(distance.toFixed(2));
@@ -315,63 +384,62 @@ export const useBackOrder = defineStore('backOrder', () => {
     let workingHours = 0;
     let commuteDistance = 0;
     const matchedData = {
-      'qualification': {
+      qualification: {
         value: 0,
         label: '',
       },
-      'expReq': {
+      expReq: {
         value: 0,
         label: '',
       },
-      'daysToWork': {
+      daysToWork: {
         value: 0,
         label: '',
       },
-      'agePercent': {
+      agePercent: {
         value: 0,
         label: '',
       },
-      'commuteDistance': {
+      commuteDistance: {
         value: 0,
         label: '',
       },
-      'daysPerWeek': {
+      daysPerWeek: {
         value: 0,
-        'sunday': 0,
-        'monday': 0,
-        'tuesday': 0,
-        'wednesday': 0,
-        'thursday': 0,
-        'friday': 0,
-        'saturday': 0,
+        sunday: 0,
+        monday: 0,
+        tuesday: 0,
+        wednesday: 0,
+        thursday: 0,
+        friday: 0,
+        saturday: 0,
       },
-      'workingHours': {
+      workingHours: {
         value: 0,
-        'day': 0,
-        'early': 0,
-        'late': 0,
-        'night': 0,
+        day: 0,
+        early: 0,
+        late: 0,
+        night: 0,
       },
     };
 
-    if(!Array.isArray(bo.working_days_week)){
-      bo.working_days_week = []
+    if (!Array.isArray(bo.working_days_week)) {
+      bo.working_days_week = [];
     }
 
     //qualification percentage
     if (bo.qualifications.length) {
-      let totalQualification = 0
+      let totalQualification = 0;
       staff.qualification?.forEach((q) => {
         bo.qualifications?.forEach((qBo) => {
           if (qBo.toLowerCase() === q.toLowerCase()) {
             totalQualification++;
             matchedData['qualification'].label = q;
           }
-        })
+        });
       });
-      qualification = totalQualification / bo.qualifications.length
-    }
-    else {
+      qualification = totalQualification / bo.qualifications.length;
+    } else {
       qualification = 1;
     }
     matchedData['qualification'].value = qualification * 100;
@@ -379,8 +447,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     //Experience required
     if (!bo.experience_req) {
       expReq = 1;
-    }
-    else {
+    } else {
       if (staff.totalYear) {
         matchedData['expReq'].label = staff.totalYear;
         if (Number(staff.totalYear) >= Number(bo.experience_req)) {
@@ -388,14 +455,13 @@ export const useBackOrder = defineStore('backOrder', () => {
         }
       }
     }
-    matchedData['expReq'].value = expReq * 100
+    matchedData['expReq'].value = expReq * 100;
 
     //daysToWork
     if (!bo.daysPerWeekList) {
       daysToWork = 1;
-    }
-    else {
-      const days = stringToNumber(bo.daysPerWeekList)
+    } else {
+      const days = stringToNumber(bo.daysPerWeekList);
       if (staff.daysToWork) {
         matchedData.daysToWork.label = staff.daysToWork;
         if (!days || days <= Number(staff.daysToWork)) {
@@ -432,14 +498,17 @@ export const useBackOrder = defineStore('backOrder', () => {
       const currentDate = new Date();
       const dob = new Date(staff.dob.seconds * 1000);
       let age = currentDate.getFullYear() - dob.getFullYear();
-      if (currentDate.getMonth() < dob.getMonth() || (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())) {
+      if (
+        currentDate.getMonth() < dob.getMonth() ||
+        (currentDate.getMonth() === dob.getMonth() &&
+          currentDate.getDate() < dob.getDate())
+      ) {
         age--;
       }
       matchedData.agePercent.label = age.toString();
       if (bo.upperAgeLimit) {
         agePercent = age <= bo.upperAgeLimit ? 1 : 0;
-      }
-      else {
+      } else {
         agePercent = 1;
       }
     }
@@ -451,8 +520,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       if (staff.workingHoursDay === true || staff.workingHoursDay === '△') {
         workingHoursDay = 1;
       }
-    }
-    else {
+    } else {
       workingHoursDay = 1;
     }
     //workingHoursEarly
@@ -460,8 +528,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       if (staff.workingHoursEarly === true || staff.workingHoursEarly === '△') {
         workingHoursEarly = 1;
       }
-    }
-    else {
+    } else {
       workingHoursEarly = 1;
     }
     //workingHoursLate
@@ -469,8 +536,7 @@ export const useBackOrder = defineStore('backOrder', () => {
       if (staff.workingHoursLate === true || staff.workingHoursLate === '△') {
         workingHoursLate = 1;
       }
-    }
-    else {
+    } else {
       workingHoursLate = 1;
     }
     //workingHoursNight
@@ -478,11 +544,15 @@ export const useBackOrder = defineStore('backOrder', () => {
       if (staff.workingHoursNight === true || staff.workingHoursNight === '△') {
         workingHoursNight = 1;
       }
-    }
-    else {
+    } else {
       workingHoursNight = 1;
     }
-    workingHours = (workingHoursDay + workingHoursEarly + workingHoursLate + workingHoursNight) / 4;
+    workingHours =
+      (workingHoursDay +
+        workingHoursEarly +
+        workingHoursLate +
+        workingHoursNight) /
+      4;
     matchedData['workingHours'].value = workingHours * 100;
     matchedData['workingHours']['day'] = workingHoursDay;
     matchedData['workingHours']['early'] = workingHoursEarly;
@@ -492,18 +562,38 @@ export const useBackOrder = defineStore('backOrder', () => {
     //commute distance
     if (staff.commutingTime) {
       const distance = 30 * staff.commutingTime;
-      commuteDistance = distance >= staff.distanceBusiness ? 1 : distance / staff.distanceBusiness;
+      commuteDistance =
+        distance >= staff.distanceBusiness
+          ? 1
+          : distance / staff.distanceBusiness;
       matchedData.commuteDistance.label = distance.toString();
     }
-    matchedData['commuteDistance'].value = Number((commuteDistance * 100).toFixed(2));
+    matchedData['commuteDistance'].value = Number(
+      (commuteDistance * 100).toFixed(2)
+    );
 
-    const matchPercent = ((agePercent + qualification + daysPerWeek + daysToWork + expReq + workingHours + commuteDistance) / 7) * 100;
+    const matchPercent =
+      ((agePercent +
+        qualification +
+        daysPerWeek +
+        daysToWork +
+        expReq +
+        workingHours +
+        commuteDistance) /
+        7) *
+      100;
     staff.matchDegree = Number(matchPercent.toFixed(2));
     return matchedData;
   }
 
   const stringToNumber = (num: string): number | undefined => {
-    const numberMap: { [key: string]: number } = { one: 1, two: 2, three: 3, four: 4, five: 5, };
+    const numberMap: { [key: string]: number } = {
+      one: 1,
+      two: 2,
+      three: 3,
+      four: 4,
+      five: 5,
+    };
     return numberMap[num];
   };
 
@@ -511,22 +601,68 @@ export const useBackOrder = defineStore('backOrder', () => {
     const db = getFirestore();
     const collectionRef = collection(db, 'fix');
 
-    const q = query(collectionRef, where('backOrder', '==', bo.id), where('deleted', '==', false));
+    const q = query(
+      collectionRef,
+      where('backOrder', '==', bo.id),
+      where('deleted', '==', false)
+    );
     const snapshot = await getDocs(q);
 
     const assignedStaff = snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
     const applicantIds = assignedStaff.map((staff) => staff['applicant_id']);
-    return applicantIds
-  }
+    return applicantIds;
+  };
 
   async function addToFix(data: DocumentData) {
     const collectionRef = collection(db, 'fix');
     await addDoc(collectionRef, data.value);
-    ;
   }
 
-  return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints }
-})
+  const constDaysByClientId = async (
+    clientId: string,
+    day?: string,
+    route?: string
+  ) => {
+    const collectionRef = collection(db, 'BO');
+    const today = new Date();
+    const halfYearAgo = new Date();
+    halfYearAgo.setMonth(halfYearAgo.getMonth() - 6);
+    const filters = [
+      where('client_id', '==', clientId),
+      where('deleted', '==', false),
+      where('created_at', '>=', halfYearAgo),
+      where('created_at', '<=', today),
+    ];
+    if (day) {
+      filters.push(where('daysPerWeekList', '==', day));
+    }
+    if (route) {
+      filters.push(where('BOGenerationRoute', '==', route));
+    }
+    const q = query(collectionRef, ...filters);
+    const counted = await getCountFromServer(q);
+    return counted.data().count;
+  };
+
+  return {
+    addToFix,
+    stringToNumber,
+    getApplicantIds,
+    state,
+    getDistance,
+    matchData,
+    loadBackOrder,
+    addBackOrder,
+    getClientBackOrder,
+    deleteBackOrder,
+    updateBackOrder,
+    getClientFactoryBackOrder,
+    getBoById,
+    deleteBO,
+    getBOByConstraints,
+    constDaysByClientId,
+  };
+});
