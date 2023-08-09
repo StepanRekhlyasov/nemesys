@@ -13,11 +13,16 @@ const { t } = useI18n({ useScope: 'global' });
 const mediaData = ref<Media[]>([]);
 const newMediaData = ref<Media>({
     name: '',
-    id: ''
+    id: '',
+    createdAt: 0
 });
 
 const fetchMedia = async () => {
     mediaData.value = await getAllmedia();
+    mediaData.value.sort((e1, e2) => {
+       return e1.createdAt - e2.createdAt;
+    })
+    console.log(mediaData.value);
 }
 
 const updateMediaOrder = async () => {
@@ -34,6 +39,7 @@ const addMediaAux = async (data: Media) => {
         Alert.warning('invalid input')
         return;
     }
+    data.createdAt = new Date().getTime();
     const res = await addMedia(data);
     if (res !== undefined) {
         Alert.success();
@@ -42,8 +48,8 @@ const addMediaAux = async (data: Media) => {
     newMediaData.value.name = '';
 }
 
-const updateMediaAux = async (id: string, name: string) => {
-    await updateMedia(id, name);
+const updateMediaAux = async (id: string, name: string, createdAt: number) => {
+    await updateMedia(id, name, createdAt);
     await fetchMedia();
 }
 
@@ -68,7 +74,7 @@ onBeforeMount(() => {
                         <q-input class="q-mr-md" outlined readonly dense v-model="element.name" />
                         <q-popup-edit :validate="(val) => (val !== null && val !== '')" v-model="element.name"
                             :cover="false" :offset="[0, 10]" v-slot="scope"
-                            @save="updateMediaAux(element.id, element.name)">
+                            @save="updateMediaAux(element.id, element.name, element.createdAt)">
                             <q-input color="accent" v-model="scope.value" dense autofocus
                                 @update:modelValue="element.name = scope.value" @keyup.enter="scope.set" :rules="[
                                     val => scope.validate(val) || 'Validation error'

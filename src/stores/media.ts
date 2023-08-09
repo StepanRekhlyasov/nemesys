@@ -13,6 +13,7 @@ export const useMedia = defineStore('media', () => {
       const media: Media = {
         name: doc.data().name,
         id: doc.id,
+        createdAt: doc.data().createdAt
       };
       mediaList.push(media);
     }
@@ -38,10 +39,10 @@ export const deleteMedia = async (id: string) => {
   return res;
 }
 
-export const updateMedia = async (id: string, name: string) => {
+export const updateMedia = async (id: string, name: string, createdAt: number) => {
   const db = getFirestore();
   const docRef = doc(db, 'media', id);
-  const res = await setDoc(docRef, {name: name});
+  const res = await setDoc(docRef, {name: name, createdAt: createdAt});
   return res;
 }
 
