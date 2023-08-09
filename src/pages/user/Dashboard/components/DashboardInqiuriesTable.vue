@@ -115,7 +115,9 @@ import { myDateFormat } from 'src/shared/utils/utils'
 import DashboardCreateInquiry from './inquiry/DashboardCreateInquiry.vue'
 import DashboardInquiryDetails from './inquiry/DashboardInquiryDetails.vue'
 import { INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
+import { DELIVERY_STATUS } from 'src/pages/admin/ReleaseNotes/types/notificationTypes'
 import { InquiryData } from 'src/shared/model/Inquiry.model'
+import { Timestamp } from 'firebase/firestore'
 import { useReleaseNotes } from 'src/stores/releaseNotes'
 import { getAuth } from 'firebase/auth'
 import { arrayUnion } from 'firebase/firestore'
@@ -226,7 +228,37 @@ function readinquiry(inquiryData : InquiryData){
     }
   })
 }
+const updateScheduledNotifications = async () => {
+  try {
+    const querySnapshot = await releaseNoteStore.getAllNotifications();
+    const notifications = querySnapshot.docs;
+
+    const currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + 330);
+
+    for (const notification of notifications) {
+      const dateDeliveryObject = notification.data().dateDelivery;
+
+      if (dateDeliveryObject instanceof Timestamp) {
+        const dateDelivery = dateDeliveryObject.toDate();
+
+        dateDelivery.setMinutes(dateDelivery.getMinutes() + 330);
+
+        if (dateDelivery instanceof Date && dateDelivery <= currentTime) {
+
+          await releaseNoteStore.updateNotificationData(notification.id, {
+            status: DELIVERY_STATUS.delivered,
+          });
+        }
+      }
+    }
+  } catch (e) {
+
+    console.error('Error updating scheduled notifications:', e);
+  }
+};
 onMounted(async ()=>{
+  await updateScheduledNotifications();
   updateInqueries()
 })
 
