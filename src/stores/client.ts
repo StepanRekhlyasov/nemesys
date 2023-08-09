@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
-import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { ConstraintsType } from 'src/shared/utils/utils';
 
 export const useClient = defineStore('client', () => {
     // db
@@ -78,10 +79,31 @@ export const useClient = defineStore('client', () => {
 
     fetchClients();
 
+
+    async function getClientsByConstraints(constraints?: ConstraintsType) {
+        const clientsCollection = collection(db, 'clients');
+        const currentConstraints: ConstraintsType = [where('deleted', '==', false)]
+        if(constraints){
+            currentConstraints.push(...constraints)
+        }
+        const filteredClientsQuery = query(clientsCollection,...currentConstraints );
+        const clioentDocs = await getDocs(filteredClientsQuery)
+        return clioentDocs.docs.map((doc) => {
+            const clientData = doc.data();
+            return {
+                ...clientData,
+                id: doc.id,
+                created_at: date.formatDate(clientData.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                updated_at: date.formatDate(clientData.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+            }
+        }) as Client[];
+    }
+
     return {
         clients,
         addNewClient,
         updateClient,
-        fetchClientsById
+        fetchClientsById,
+        getClientsByConstraints
     }
 })
