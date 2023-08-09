@@ -9,7 +9,6 @@ export interface BOElasticSearchData {
   ageMax?: string;
   status?: string;
   boid?: string;
-  experiencereq?: string[];
   transactiontype?: string[];
   typecase?: string[];
   mapData?: {
