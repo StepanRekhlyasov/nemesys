@@ -256,7 +256,6 @@ const clear = async () => {
 }
 
 onMounted(async () => {
-  console.log('here');
   await fetchData()
 });
 
@@ -272,7 +271,7 @@ async function fetchData() {
     }
   });
   if(numberProp.phoneNumber !== '') {
-    row.value = row.value.filter((e) => { e.phone == numberProp.phoneNumber});
+    row.value = row.value.filter((e) => { return e.phone === numberProp.phoneNumber});
   }
   loading.value = false
 }

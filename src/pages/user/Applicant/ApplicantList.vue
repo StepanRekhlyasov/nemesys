@@ -149,7 +149,7 @@
             </span>
           </div>
         </q-card-section>
-        <SmsDrawer :phoneNumber="phoneNumber" v-bind="phoneNumber && phoneNumber.length"/>
+        <SmsDrawer :key="phoneNumber" :phoneNumber="phoneNumber" v-bind="phoneNumber && phoneNumber.length"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -321,14 +321,18 @@ const getClassification = (classification: string) => {
 const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
-const openSMSDrawer = () => {
+const openSMSDrawer = async () => {
+  if(sendNumber.value == false) {
+    phoneNumber.value = '';
+  }
   sendSMSDrawer.value = true
 };
 
 const feedContact = async (phoneNumberarg: string) => {
   sendNumber.value = true;
   phoneNumber.value = phoneNumberarg;
-  openSMSDrawer();
+  await openSMSDrawer();
+  sendNumber.value = false;
 }
 
 const preventWatch = ref(false)
