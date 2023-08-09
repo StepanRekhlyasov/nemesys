@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getFirestore } from 'firebase/firestore';
+import { getDocs, getFirestore, query, collectionGroup, where } from 'firebase/firestore';
 import { BackOrderModel, Client, ClientFactory } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useApplicant } from 'src/stores/applicant';
@@ -95,7 +95,10 @@ watch(drawerRight, async() => {
   drawerValue.value = drawerRight.value;
   if(drawerRight.value){
     clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
-    clientFactory.value = clientFactoryList.value.find(office=>office.id === selectedBo.value?.office_id) || {} as ClientFactory;
+    clientFactory.value = clientFactoryList.value.find(office=>office.id === selectedBo.value?.office_id) as ClientFactory;
+    if(!clientFactory.value){
+      clientFactory.value =  await clientFactoryStore.getModifiedCfWithId(selectedBo.value?.office_id)
+    }
   }
 })
 
