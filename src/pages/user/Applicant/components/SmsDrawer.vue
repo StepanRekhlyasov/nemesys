@@ -132,7 +132,7 @@
         <template v-slot:body-cell-occupationAdress="props">
           <q-td v-if="Array.isArray(props.row.classification)" :props="props" class="no-wrap q-pa-none">
             {{ t(`applicant.add.${props.row.occupation}`) }}/
-            {{ props.row.classification.map(((row : string)=>row.toLowerCase())).join(', ') }}
+            {{ props.row.classification.map(((row: string) => row.toLowerCase())).join(', ') }}
             <br />
             {{ props.row.address }}
           </q-td>
@@ -220,7 +220,7 @@ watch(template, (newTemplate) => {
 const sendMsg = async () => {
   try {
     await smsStore.send(message.value, selected.value)
-    
+
     message.value = ''
   } catch (error) {
     Alert.warning(error)
@@ -270,13 +270,15 @@ async function fetchData() {
       'selected': false,
     }
   });
-  if(numberProp.phoneNumber !== '') {
-    row.value = row.value.filter((e) => { return e.phone === numberProp.phoneNumber});
+  if (numberProp.phoneNumber !== '') {
+    row.value = row.value.filter((e) => { return e.phone === numberProp.phoneNumber });
+    row.value.forEach(data => { selected.value[data.id]['selected'] = true});
   }
+
   loading.value = false
 }
 
-watchCurrentOrganization(async()=>{
+watchCurrentOrganization(async () => {
   await fetchData()
 })
 
