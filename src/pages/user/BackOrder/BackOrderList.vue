@@ -51,13 +51,10 @@
           </template>
 
           <template v-slot:body-cell-employmentType="props">
-            <q-td v-if="props.row.employmentType" :props="props" class="q-pa-none">
+            <q-td :props="props" class="q-pa-none">
                 {{
-                  Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
+                  props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
-            </q-td>
-            <q-td v-else :props="props" class="q-pa-none">
-              <div>-</div>
             </q-td>
           </template>
 
@@ -109,16 +106,26 @@
             </q-td>
           </template>
 
+          <template v-slot:body-cell-state="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.state ? props.row.state : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-name="props">
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.officeName
+                  props.row.officeName ? props.row.officeName : '-'
                 }}
               </div>
               <div>
                 {{
-                  props.row.clientName
+                  props.row.clientName ? props.row.clientName : '-'
                 }}
               </div>
             </q-td>
@@ -301,7 +308,6 @@ const getUserDisplayName = (registrant: string | undefined) => {
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
-        console.error(error);
         userDisplayName.value = '';
       });
   } else {

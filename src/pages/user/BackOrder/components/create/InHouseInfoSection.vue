@@ -7,7 +7,7 @@
     <div class="row q-mt-sm">
       <labelField :label="$t('backOrder.create.referralFee')" :edit="true" required
         labelClass="q-pl-md col-2 text-right self-center self-center"  valueClass="q-pl-md col-10 flex">
-        <q-input v-model="data['retirementAge']" outlined dense type="number" 
+        <q-input v-model="data['referralFee']" outlined dense type="number"
           :disable="loading" :rules="[creationRule]" hide-bottom-space/>
         <span class="col-2 q-ma-sm flex-center">%</span>
       </labelField>
@@ -19,7 +19,7 @@
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
-      
+
     <div class="row q-mt-sm">
       <labelField :label="$t('client.list.memo')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10">
         <q-input v-model="data['memo_house']" outlined dense :disable="loading" type="textarea" autogrow/>
