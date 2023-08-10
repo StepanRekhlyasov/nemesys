@@ -32,9 +32,11 @@ const openTaskRegister = ref(false)
                     <span class="info-footer__label q-mr-sm">
                         {{ t('clientFactory.drawer.situation') }}
                     </span>
-
-                    <span class="info-footer__value">
-                        TEST
+                    <span v-if="clientFactory['offerRate']" class="info-footer__value">
+                       {{ $t('report.categories.offerRate') }} : {{ clientFactory['offerRate'] }}<br/>
+                    </span>
+                    <span v-if="clientFactory['avgWorkLength']" class="info-footer__value">
+                      Average Work Length : {{ clientFactory['avgWorkLength'] }}
                     </span>
                 </p>
                 <p class="row q-ma-none q-pt-sm">
@@ -85,11 +87,11 @@ const openTaskRegister = ref(false)
                     </q-btn>
                 </div>
             </div>
-            <task-register 
+            <task-register
               :entity="'office'"
               :entityData="clientFactory"
-              v-model="openTaskRegister" 
-              @closeDrawer="openTaskRegister=false" 
+              v-model="openTaskRegister"
+              @closeDrawer="openTaskRegister=false"
             />
     </div>
 </template>
