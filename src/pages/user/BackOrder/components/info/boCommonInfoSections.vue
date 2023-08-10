@@ -10,8 +10,8 @@
 
   <div class="row">
     <LabelField :label="$t('backOrder.registeredDate')" :edit="edit"
-      :value="!edit? bo['dateOfRegistration']:''">
-      <q-input v-if="edit" dense outlined bg-color="white" v-model="data['dateOfRegistration']">
+      :value="!edit? (bo['dateOfRegistration']):''">
+      <q-input v-if="edit" dense outlined bg-color="white" v-model="formattedDate">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -119,7 +119,7 @@
 <script lang="ts" setup>
 import { BackOrderModel } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import LabelField from 'src/components/form/LabelField.vue';
 import { smokingStatusList } from 'src/shared/constants/Applicant.const';
 import { useUserStore } from 'src/stores/user'
@@ -134,8 +134,7 @@ const props = defineProps<{
 const backOrderStore = useBackOrder();
 const edit = ref(false);
 const loading = ref(false);
-const data = ref(props.bo);
-
+const data = computed(() => props.bo as BackOrderModel)
 const smokingStatusOptions = ref(smokingStatusList);
 
 async function save() {
@@ -152,7 +151,11 @@ async function save() {
   loading.value = false;
 }
 
-const userNames = ref({})
+const formattedDate = computed(()=> {
+      return myDateFormat(data.value['dateOfRegistration'])
+})
+
+const userNames = ref<{ [id: string]: string }>({});
 const getRegistrant = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -169,7 +172,6 @@ const getRegistrant = (registrant: string | undefined) => {
         userDisplayName.value = userNames.value[registrant];
       })
       .catch((error) => {
-        console.error(error);
         userDisplayName.value = '';
       });
   } else {

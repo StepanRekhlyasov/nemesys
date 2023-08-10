@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, getCountFromServer } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, getCountFromServer, collectionGroup } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -69,7 +69,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                   isDetailInfoChanged: isDetailChanged ?? false
               }
             }
-            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), 
+            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'),
             saveData)
 
             const docSnap = await getDoc(docRef);
@@ -289,7 +289,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -309,7 +309,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 created_at: Timestamp.fromDate(new Date(modifiedClientFactory.created_at))
             })
 
-            
+
 
             return res.id
         } catch(e) {
@@ -335,7 +335,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp(),
             })
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -404,7 +404,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: true
             }, {merge: true});
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -422,7 +422,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -432,7 +432,7 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
-        
+
         try {
             const headClientFactoryQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory'),
@@ -470,7 +470,23 @@ export const useClientFactory = defineStore('client-factory', () => {
       return { ...result.data(), id: result.id } as ClientFactory
     }
 
+async function getModifiedCfWithId(office_id: string) {
+  const querySnapshot = await getDocs(
+    query(
+      collectionGroup(db, 'modifiedCF'),
+      where('id', '==', office_id)
+    )
+  );
+  const modifiedCF = ref<ClientFactory>()
+  querySnapshot.forEach((doc) => {
+    modifiedCF.value = doc.data() as ClientFactory;
+    return modifiedCF.value?modifiedCF.value:{};
+  });
+  return modifiedCF.value?modifiedCF.value:{};
+}
+
     return {
+        getModifiedCfWithId,
         clientFactories,
         modifiedCFs,
         getClientFactories,
