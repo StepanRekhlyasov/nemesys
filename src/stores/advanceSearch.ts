@@ -485,7 +485,7 @@ export const getBackOrderData = () => {
         numFullTimeEmployees: '',
         numPartTimeEmployees: '',
         numTempEmployees: '',
-        route: ''
+        route: []
     }
 };
 export const useAdvanceSearch = defineStore('advanceSearch', () => {
@@ -841,9 +841,9 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
                 }
             }
         }
-        if (backOrderData['route'] !== '') {
-            office = interSectionOfArray(office, await getTeleAppointmentData(office, backOrderData['route']));
-        }
+        // if (backOrderData['route'].length !== 0) {
+        //   office = interSectionOfArray(office, await getTeleAppointmentData(office, ''));
+        // }
         clientFactoryStore.condition = true
         clientFactoryStore.selectedCFsId = office
         router.push('/client-factories')
