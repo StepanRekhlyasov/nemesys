@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getDocs, getFirestore, query, collectionGroup, where } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 import { BackOrderModel, Client, ClientFactory } from 'src/shared/model';
 import { getClient } from 'src/shared/utils/Client.utils';
 import { useApplicant } from 'src/stores/applicant';

@@ -10,7 +10,7 @@
 
   <div class="row">
     <LabelField :label="$t('backOrder.registeredDate')" :edit="edit"
-      :value="!edit? bo['dateOfRegistration']:''">
+      :value="!edit? myDateFormat(bo['dateOfRegistration']):''">
       <q-input v-if="edit" dense outlined bg-color="white" v-model="data['dateOfRegistration']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
