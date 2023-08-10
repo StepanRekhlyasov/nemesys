@@ -2251,7 +2251,7 @@ export default {
     'error': 'Error',
     'deleteBranchesFirst': 'Please, delete all branches first',
     titleExist: 'Title already exists',
-    industryRules: 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.',
+    industryRules: 'Invalid input',
   },
   budget: {
     search: 'Budget Search',
