@@ -134,7 +134,6 @@ const props = defineProps<{
 const backOrderStore = useBackOrder();
 const edit = ref(false);
 const loading = ref(false);
-// const data = ref(props.bo);
 const data = computed(() => props.bo as BackOrderModel)
 const smokingStatusOptions = ref(smokingStatusList);
 
