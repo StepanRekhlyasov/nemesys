@@ -34,7 +34,9 @@ export const finishEditing = (
   if(!changedData) {
     return draft
   }
-
+  if(!draft){
+    draft = {}
+  }
   changedData.forEach(({key, value}) => {
     let target = draft;
     const path = key.split('.');

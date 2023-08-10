@@ -475,6 +475,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: 'Types from other industries:',
       newReg: 'Client new registration',
       clientBasicInfo: 'Client basic information',
       clientName: 'Client Name',

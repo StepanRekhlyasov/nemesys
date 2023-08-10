@@ -7,21 +7,9 @@ import ClientType from '../form/clientForms/ClientType.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { deepCopy } from 'src/shared/utils';
+import { InputType } from './types';
 const { t } = useI18n({ useScope: 'global' });
 
-enum InputType {
-    TEXT = 'text',
-    NUMBER = 'number',
-    PREFECTURE = 'prefecture',
-    MUNICIPALITY = 'municipality',
-    CLIENT = 'client',
-    CONTRACT_UNIT = 'contract_unit',
-    INDUSTRY = 'industry',
-    DISPATCH_CONTRACT = 'dispatch_contract',
-    REFERRAL_CONTRACT = 'referral_contract',
-    FACILITY = 'facility',
-    RADIO = 'radio',
-}
 
 export interface Data {
     label: string;

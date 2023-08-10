@@ -64,6 +64,18 @@ watch(() => [props.industryName], async () => {
                     :key="option"
                     @update:modelValue="(isChecked) => updateType(option, isChecked)"
                 />
+                <p class="q-my-sm" v-if="localType.length > facilityList.length">{{ t('client.add.otherFacilitiesTitle') }}</p>
+                <template v-for="option in localType">
+                  <q-checkbox
+                      v-if="!facilityList.includes(option)"
+                      size="xs"
+                      :model-value="localType.includes(option)"
+                      :val="option" :label="option"
+                      :color="`${theme}`"
+                      :key="option"
+                      @update:modelValue="(isChecked) => updateType(option, isChecked)"
+                  />
+                </template>
             </div>
 
             <div v-else>

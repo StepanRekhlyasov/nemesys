@@ -472,6 +472,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: '他種別での施設形態',
       newReg: 'クライアント 新規登録',
       clientBasicInfo: 'クライアント基本情報',
       clientName: 'クライアント名',
