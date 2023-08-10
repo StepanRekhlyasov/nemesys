@@ -373,6 +373,13 @@
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">
         <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
+      <LabelField :label="$t('client.backOrder.upperAgeLimit')" :edit="edit"
+        labelClass="q-pl-md col-2 self-center text-right" valueClass="col-4 q-pl-md flex"
+        :value="selectedBo['upperAgeLimit'] ? selectedBo['upperAgeLimit'] + $t('common.ageShort') : ''">
+        <q-input v-model="data['upperAgeLimit']" outlined dense :disable="loading" hide-bottom-space
+          :rules="[creationRule]" />
+        <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
+      </LabelField>
       <LabelField :label="$t('backOrder.create.referralFeeAmount')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center q-pt-sm" valueClass="q-pl-md col-4 q-pt-sm flex self-center"
         :value="selectedBo['stipulatedAmount'] ? `${selectedBo['stipulatedAmount']} ${$t('common.yen')}` : ''">
