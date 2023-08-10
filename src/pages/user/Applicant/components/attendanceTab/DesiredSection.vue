@@ -10,7 +10,8 @@
         <span v-if="!desiredEdit">{{ !data['timeAvailable'] ? myDateFormat(applicant.timeToWork, 'YYYY/MM/DD') : $t('applicant.attendant.sameDay') }}</span>
         <template v-if="desiredEdit">
           <q-toggle v-model="data['timeAvailable']"
-            :label="!data['timeAvailable'] ? '' : $t('applicant.attendant.sameDay')" />
+            :class="!data['timeAvailable']?'lowOpacity':''"
+            :label="!data['timeAvailable'] ? $t('applicant.attendant.sameDay') : $t('applicant.attendant.sameDay')" />
           <q-input v-if="!data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
             :disable="loading">
             <template v-slot:prepend>
@@ -443,5 +444,10 @@ async function saveDesired() {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.lowOpacity{
+  .q-toggle__label{
+    opacity: 0.5;
+  }
 }
 </style>
