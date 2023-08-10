@@ -6,9 +6,10 @@ import { watch, ref, nextTick } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
 import UniqueItemsSpecificTypes from './components/UniqueItemsSpecificTypes.vue';
 import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue';
+import UniqueOccupationForm from './components/UniqueOccupationForm.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useIndsutry } from 'src/stores/industry';
-import { FacilityForm, Industry, SpecificItem } from 'src/shared/model/Industry.model';
+import { FacilityForm, Industry, SpecificItem, OccupationForm } from 'src/shared/model/Industry.model';
 import { deepCopy } from 'src/shared/utils';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -24,12 +25,14 @@ const handleActiveIndustry = (selectedIndustry: Industry) => {
         activeIndustry.value = selectedIndustry
         industryToUpdate.value = deepCopy(selectedIndustry)
         resetSaveButtons()
-    } 
+    }
 }
 
 const isCanBeSaved = ref({
     typeSpecificItems: false,
-    facilityForms: false
+    facilityForms: false,
+    occupationForms: false,
+    // Certification: false
 })
 const isLoading = ref(isFirstLoading)
 const isNewIndustryPopup = ref(false)
@@ -54,7 +57,7 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
                 [key]: industryToUpdate.value.uniqueItems[key]
             }
         };
-        
+
         await updateIndustry(activeIndustry.value.id, updatedIndustry)
 
     }
@@ -69,7 +72,8 @@ const onNewIndustry = async (industryName: string) => {
         industryName: industryName,
         uniqueItems: {
             typeSpecificItems: {},
-            facilityForms: {}
+            facilityForms: {},
+            occupationForms: {},
         }
     })
 
@@ -110,7 +114,7 @@ const sortHandler = (
 ) => {
 
     if(industryToUpdate.value && activeIndustry.value) {
-        const items: { [key: string]: SpecificItem  | FacilityForm} = industryToUpdate.value.uniqueItems[path];
+        const items: { [key: string]: SpecificItem  | FacilityForm | OccupationForm} = industryToUpdate.value.uniqueItems[path];
 
         const keys = Object.keys(items);
         const movedKey = keys[event.oldIndex];
@@ -149,6 +153,30 @@ const updateFacilityForm = () => {
     isCanBeSaved.value.facilityForms = true
 }
 
+const newOccupationForm = (data: string) => {
+    const id = uid();
+    if(industryToUpdate.value) {
+        industryToUpdate.value.uniqueItems.occupationForms[id] = { title: data, order: Object.keys(industryToUpdate.value.uniqueItems.occupationForms).length + 1 };
+
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.occupationForms as Record<string, Occupation>, activeIndustry.value?.uniqueItems.occupationForms as Record<string, Occupation>)) {
+            isCanBeSaved.value.occupationForms = true;
+        }
+    }
+}
+const deleteOccupationForm = (id: string) => {
+    if (industryToUpdate.value) {
+        delete industryToUpdate.value.uniqueItems.occupationForms[id]
+        Object.values(industryToUpdate.value.uniqueItems.occupationForms).forEach((item, index) => {
+            item.order = index + 1;
+        });
+        isCanBeSaved.value.occupationForms = true;
+    }
+}
+
+const updateOccupationForm = () => {
+    isCanBeSaved.value.occupationForms = true
+}
+
 const isNewIndustryPopupHandler = (val: boolean) => {
     isNewIndustryPopup.value = val
 }
@@ -170,7 +198,7 @@ watch(() => industries.value, () => {
                 <q-spinner-gears v-if="isLoading" size="3rem" color="accent" class="q-mx-md"/>
             </div>
 
-            <UniqueItemsIndustrySelect 
+            <UniqueItemsIndustrySelect
                 :industries="industries"
                 :active-industry="activeIndustry"
                 :is-new-industry-popup="isNewIndustryPopup"
@@ -186,7 +214,7 @@ watch(() => industries.value, () => {
                 :is-without-cancel="true"
                 @on-save="updateIndustryHandler('typeSpecificItems')"
                 theme="accent">
-                <UniqueItemsSpecificTypes 
+                <UniqueItemsSpecificTypes
                     :active-industry="industryToUpdate"
                     @new-specific-type="newSpecificTypeHandle"
                     @delete-specific-type="deleteSpecificTypeHandle"
@@ -202,13 +230,44 @@ watch(() => industries.value, () => {
                 :is-without-cancel="true"
                 @on-save="updateIndustryHandler('facilityForms')"
                 theme="accent">
-                <UniqueItemsFacilityForms 
+                <UniqueItemsFacilityForms
                     :active-industry="industryToUpdate"
                     @new-facility-form="newFacilityForm"
                     @delete-facility-form="deleteFacilityForm"
                     @update-facility-form="updateFacilityForm"
                     @sort-facility-form="(e) => sortHandler(e, 'facilityForms')"/>
             </DropDownEditGroup>
+            <DropDownEditGroup
+                :label="t('client.add.Occupation') + ' (' + t('applicant.add.applicantInfo') + ')'"
+                :is-edit="true"
+                :isLabelSquare="true"
+                :is-disabled-button="!isCanBeSaved.occupationForms"
+                :is-without-cancel="true"
+                @on-save="updateIndustryHandler('occupationForms')"
+                theme="accent">
+                <UniqueOccupationForm
+                    :active-industry="industryToUpdate"
+                    @newOccupationForm="newOccupationForm"
+                    @deleteOccupationForm="deleteOccupationForm"
+                    @updateOccupationForm="updateOccupationForm"
+                    @sortOccupationForm="(e) => sortHandler(e, 'occupationForms')"
+                    />
+            </DropDownEditGroup>
+            <!-- <DropDownEditGroup
+                :label="t('client.add.Certification') + ' (' + t('applicant.add.applicantInfo') + ')'"
+                :is-edit="true"
+                :isLabelSquare="true"
+                :is-disabled-button="!isCanBeSaved.Certification"
+                :is-without-cancel="true"
+                @on-save="updateIndustryHandler('Certification')"
+                theme="accent">
+                <UniqueItemsFacilityForms
+                    :active-industry="industryToUpdate"
+                    @new-facility-form="newFacilityForm"
+                    @delete-facility-form="deleteFacilityForm"
+                    @update-facility-form="updateFacilityForm"
+                    @sort-facility-form="(e) => sortHandler(e, 'facilityForms')"/>
+            </DropDownEditGroup> -->
         </q-card>
     </div>
 </template>
