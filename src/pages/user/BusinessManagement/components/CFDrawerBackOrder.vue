@@ -58,7 +58,7 @@
     </template>
     <template v-slot:body-cell-dateRegistration="props">
       <q-td :props="props">
-        {{ myDateFormat(props.row.dateOfRegistration) }}<br />
+        {{ (props.row.dateOfRegistration) }}<br />
       </q-td>
     </template>
 
@@ -135,7 +135,6 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
-import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{ clientId: string; officeId?: string; originalOfficeId?: string }>();

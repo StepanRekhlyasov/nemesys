@@ -244,6 +244,11 @@ export const useBackOrder = defineStore('backOrder', () => {
         ...data,
       } as BackOrderModel);
     });
+    list.forEach(bo=>{
+      bo.dateOfRegistration =  myDateFormat(
+        bo.dateOfRegistration as Timestamp
+      );
+    })
     return list;
   }
 

@@ -28,17 +28,17 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit" 
+      <LabelField :label="$t('backOrder.create.requiredQualifications')" :edit="edit"
         labelClass="q-pl-md col-2 self-center text-right" :valueClass="edit?'col-10 q-pl-md self-center':'col-4 q-pl-md self-center'" :value="Array.isArray(data['qualifications']) && !edit ? data['qualifications'].map((row) => $t('applicant.qualification.' + row)):''">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
-          <q-checkbox 
-            v-for="key in TypeQualifications" 
-            v-model="data['qualifications']" 
+          <q-checkbox
+            v-for="key in TypeQualifications"
+            v-model="data['qualifications']"
             :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
-            class="q-pr-md" 
+            class="q-pr-md"
           />
         </q-field>
       </LabelField>
@@ -55,7 +55,7 @@
       <!-- $t('backOrder.create.somethingNotQuestioned') -->
       <LabelField :label="$t('client.backOrder.experienceReq')" :edit="edit"
         :value="data['experienceReq'] ? data['experienceReq'] : ''"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">  
+        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">
         <q-input v-model="data['experienceReq']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
       <LabelField :label="$t('client.backOrder.caseType')" :edit="edit"
@@ -65,9 +65,9 @@
           :key="key" :disable="loading" class="q-pr-md" />
       </LabelField>
     </div>
-    
+
     <div class="row q-pb-sm">
-      
+
       <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks']" :autogrow="true">
         <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" type="textarea" autogrow />
@@ -88,7 +88,7 @@
         }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </LabelField>
-      
+
       <LabelField :label="$t('client.backOrder.upperAgeLimit')" :edit="edit"
         labelClass="q-pl-md col-2 self-center text-right" valueClass="col-4 q-pl-md flex"
         :value="selectedBo['upperAgeLimit'] ? selectedBo['upperAgeLimit'] + $t('common.ageShort') : ''">
@@ -485,7 +485,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['openSearchByMap']);
-const everythingTrgger = ref(false) 
+const everythingTrgger = ref(false)
 
 const transactionTypeOptions = computed(()=>{
   if(selectedBo.value.type === 'dispatch') {
@@ -504,7 +504,7 @@ const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
 const data = ref()
-resetData() 
+resetData()
 
 function resetData() {
   data.value = JSON.parse(JSON.stringify({ ...backOrderStore.state?.selectedBo } as BackOrderModel))
@@ -526,7 +526,7 @@ async function save() {
   } catch (e) {
     console.log(e);
   }
-  resetData() 
+  resetData()
   loading.value = false;
 }
 
