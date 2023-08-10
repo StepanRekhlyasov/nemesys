@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineProps, withDefaults, computed, ref, watch } from 'vue';
-import { ClientFactory } from 'src/shared/model';
 import { useIndsutry } from 'src/stores/industry';
 import { InputType } from './types';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
     data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string, editType?: string }[]
-    clientFactory: ClientFactory
     selectedIndustry?: { value: string, isSelected: boolean }
     isEdit: boolean
     label: string

@@ -27,7 +27,6 @@ const updateType = (value: string, isChecked: boolean) => {
     } else {
         localType.value = localType.value.filter(item => item !== value);
     }
-    localType.value = localType.value.filter((item)=> facilityList.value.includes(item))
     emit('update:modelValue', localType.value);
 };
 
@@ -70,7 +69,8 @@ watch(() => [props.industryName], async () => {
                       v-if="!facilityList.includes(option)"
                       size="xs"
                       :model-value="localType.includes(option)"
-                      :val="option" :label="option"
+                      :val="option" 
+                      :label="option"
                       :color="`${theme}`"
                       :key="option"
                       @update:modelValue="(isChecked) => updateType(option, isChecked)"
