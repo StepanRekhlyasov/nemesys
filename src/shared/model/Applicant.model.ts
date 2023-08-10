@@ -61,6 +61,7 @@ export interface ApplicantBase {
   prefecture?: string;
   municipalities?: string;
   street?: string;
+  industry?:string,
   apartment?: string;
   status?: ApplicantStatus;
   statusChangeTimestamp?: { [key: string]: Timestamp | FieldValue }
@@ -293,9 +294,9 @@ export interface FixJobSearchInfo {
   inspectionReasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   inspectionReasonNGDetail?: string;
   chargeOfInspection?: string;
-  personalStatus: boolean,
-  corporationStatus: boolean,
-  businessStatus: boolean,
+  personalStatus: StatusCheckBox,
+  corporationStatus: StatusCheckBox,
+  businessStatus: StatusCheckBox,
   reasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   reasonJobDetal?: string;
   chargeOfFacility: string;
@@ -350,4 +351,8 @@ export enum ContactMethod {
 
 export interface ApplicantWithFix extends Applicant {
   fix?: ApplicantFix
+}
+export enum StatusCheckBox{
+  OK = 'OK',
+  NG = 'NG',
 }
