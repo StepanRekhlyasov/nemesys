@@ -222,11 +222,14 @@ function addNewBo() {
   })
     .onOk(() => {
       typeBoCreate.value = 'referral';
+      backOrderStore.state.selectedBo = selectedBo.value as BackOrderModel
       cteateBoDrawer.value = true
     })
     .onCancel(() => {
       typeBoCreate.value = 'dispatch';
+      backOrderStore.state.selectedBo = selectedBo.value as BackOrderModel
       cteateBoDrawer.value = true
+
     });
 }
 
