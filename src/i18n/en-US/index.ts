@@ -1713,10 +1713,6 @@ export default {
         responsiblePerson: 'Responsible Person',
         sendDate: 'Send Date',
       }
-    },
-    dispatchIndexTable:{
-      tel:'Teleapo',
-      fax:'Fax',
     }
   },
   inquiry: {

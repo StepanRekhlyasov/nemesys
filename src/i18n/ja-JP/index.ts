@@ -1706,10 +1706,6 @@ export default {
         responsiblePerson: '担当',
         sendDate: '送信日',
       }
-    },
-    dispatchIndexTable:{
-      tel:'テレアポ経由',
-      fax:'FAX経由'
     }
   },
   inquiry: {
