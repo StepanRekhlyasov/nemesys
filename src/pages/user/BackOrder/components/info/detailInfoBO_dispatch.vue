@@ -69,10 +69,10 @@
     <div class="row q-pb-sm">
 
       <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks']" :autogrow="true">
+        valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks'] || ''" :autogrow="true">
         <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" type="textarea" autogrow />
       </LabelField>
-      <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType"
+      <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType? $t(`client.backOrder.${data.transactionType}`):''"
         valueClass="self-center q-pl-md col-4">
         <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
@@ -108,7 +108,7 @@
       </LabelField>
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="selectedBo['travelingExpenses']" :autogrow="true">
+        :value="selectedBo['travelingExpenses'] || ''" :autogrow="true">
         <q-input v-model="data['travelingExpenses']" type="textarea" outlined dense :disable="loading" autogrow/>
       </LabelField>
     </div>
@@ -343,7 +343,7 @@
     </template>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.shiftRemarks')" :edit="edit" :value="selectedBo['shiftRemarks']"
+      <LabelField :label="$t('backOrder.create.shiftRemarks')" :edit="edit" :value="selectedBo['shiftRemarks'] || ''"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">
         <q-input dense outlined bg-color="white" v-model="data['shiftRemarks']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
@@ -383,7 +383,7 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('client.backOrder.businessContent')" :edit="edit" :value="selectedBo['work_content']"
+      <LabelField :label="$t('client.backOrder.businessContent')" :edit="edit" :value="selectedBo['work_content'] || ''"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">
         <q-input dense outlined bg-color="white" v-model="data['work_content']" :disable="loading" type="textarea" autogrow/>
       </LabelField>
@@ -451,7 +451,7 @@
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.onCallRemarks')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 row self-center"
-        :value="selectedBo['onCallRemarks']" :autogrow="true">
+        :value="selectedBo['onCallRemarks'] || ''" :autogrow="true">
         <q-input v-model="data['onCallRemarks']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
     </div>

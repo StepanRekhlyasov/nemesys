@@ -197,6 +197,14 @@ export const useBackOrder = defineStore('backOrder', () => {
   }
   async function addBackOrder(backOrderData) {
     const auth = getAuth();
+    if (backOrderData.workingDays) {
+      const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday','saturday','sunday','holiday'];
+      backOrderData.workingDays.sort((a, b) => {
+        const indexA = weekdays.indexOf(a);
+        const indexB = weekdays.indexOf(b);
+        return indexA - indexB;
+      });
+    }
     const data = JSON.parse(JSON.stringify(backOrderData));
     try {
       const clientDoc = doc(db, 'clients', data.client_id);
@@ -270,6 +278,14 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
     const backOrderData = { ...backOrder };
+    if (backOrderData.workingDays) {
+      const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday','saturday','sunday','holiday'];
+      backOrderData.workingDays.sort((a, b) => {
+        const indexA = weekdays.indexOf(a);
+        const indexB = weekdays.indexOf(b);
+        return indexA - indexB;
+      });
+    }
     if (backOrderData.dateOfRegistration) backOrderData.dateOfRegistration = dateToTimestampFormat(new Date(backOrderData.dateOfRegistration as string));
     const boRef = doc(db, '/BO/' + backOrderData.id);
     await updateDoc(boRef, { ...backOrderData });
