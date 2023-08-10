@@ -113,7 +113,9 @@
   </q-table>
   <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :clientId="clientId" :original-office-id="originalOfficeId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" @fetch-bo="fetchBOData()" />
+    <createBO :clientId="clientId" :original-office-id="originalOfficeId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" @fetch-bo="fetchBOData()"
+    v-if="cteateBoDrawer"
+    />
   </q-drawer>
   <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
     selectedClient = clientValue
@@ -197,6 +199,7 @@ const fetchBOData = async () => {
 const openDrawer = (data) => {
   if (data) {
     selectedBo.value = data;
+    backOrderStore.state.selectedBo = selectedBo.value as BackOrderModel
     infoDrawer.value?.openDrawer(data);
   }
 }
@@ -221,12 +224,10 @@ function addNewBo() {
   })
     .onOk(() => {
       typeBoCreate.value = 'referral';
-      backOrderStore.state.selectedBo = selectedBo.value as BackOrderModel
       cteateBoDrawer.value = true
     })
     .onCancel(() => {
       typeBoCreate.value = 'dispatch';
-      backOrderStore.state.selectedBo = selectedBo.value as BackOrderModel
       cteateBoDrawer.value = true
 
     });
