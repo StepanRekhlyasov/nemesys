@@ -175,21 +175,21 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
   return officeDetails
 }
 
-export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:object): RenderHeadDetails => {
+export const useHeadDetails = (clientFactory: ClientFactory,client:ClientFactory,relatedOfficeInfo:object): RenderHeadDetails => {
   const headDetails = {} as RenderHeadDetails
 
   headDetails.headOfficeInfo = computed(() => {
     return [
-      {label: t('client.add.contactPersonName'), value: safeGet(clientFactory, 'contactPersonName') || '', editType: 'text', key: 'officeDetails.contactPersonName'},
-      {label: t('clientFactory.drawer.details.prefecture'), value: (safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') ?? safeGet(clientFactory, 'prefecture')) || '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture', isHighlight: safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') !== undefined && safeGet(clientFactory, 'clientFactory.officeDetails.registeredInfo.prefecture') !== safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture')},
-      {label: t('client.add.contactPersonTitle'), value: safeGet(clientFactory, 'contactPersonTitle') || '', editType: 'text', key: 'officeDetails.contactPersonTitle'},
-      {label: t('client.add.municipalities'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality') ?? safeGet(clientFactory, 'municipality')) || '', editType: 'municipality', key: 'officeDetails.registeredInfo.municipality', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.municipality') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality')},
-      {label: t('client.add.contactPersonTel'), value: safeGet(clientFactory, 'contactPersonTel') || '', editType: 'text', key: 'officeDetails.contactPersonTel'},
-      {label: t('applicant.add.street'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') ?? safeGet(clientFactory, 'street')) || '', editType: 'text', key: 'street', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.city') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city')},
-      {label: t('client.add.contactPersonMail'), value: safeGet(clientFactory, 'contactPersonMail') || '', editType: 'text', key: 'officeDetails.contactPersonMail'},
-      {label: t('client.add.addressBuildingName'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building') ?? safeGet(clientFactory, 'building')) || '', editType: 'text', key: 'officeDetails.registeredInfo.building', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.building') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building')},
-      {label: t('clientFactory.drawer.details.officeTel'), value: (safeGet(clientFactory, 'draft.tel') ?? safeGet(clientFactory, 'tel')) || '', editType: 'text', key: 'tel', isHighlight: safeGet(clientFactory, 'draft.tel') !== undefined && safeGet(clientFactory, 'tel') !== safeGet(clientFactory, 'draft.tel')},
-      {label: t('clientFactory.drawer.details.officeFax'), value: (safeGet(clientFactory, 'draft.fax') ?? safeGet(clientFactory, 'fax')) || '', editType: 'text', key: 'fax', isHighlight: safeGet(clientFactory, 'draft.fax') !== undefined && safeGet(clientFactory, 'fax') !== safeGet(clientFactory, 'draft.fax')},
+      {label: t('client.add.contactPersonName'), value: safeGet(client, 'contactPersonName') || '', editType: 'text', key: 'officeDetails.contactPersonName'},
+      {label: t('clientFactory.drawer.details.prefecture'), value: (safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') ?? safeGet(client, 'prefecture')) || '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture', isHighlight: safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') !== undefined && safeGet(clientFactory, 'clientFactory.officeDetails.registeredInfo.prefecture') !== safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture')},
+      {label: t('client.add.contactPersonTitle'), value: safeGet(client, 'contactPersonTitle') || '', editType: 'text', key: 'officeDetails.contactPersonTitle'},
+      {label: t('client.add.municipalities'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality') ?? safeGet(client, 'municipality')) || '', editType: 'municipality', key: 'officeDetails.registeredInfo.municipality', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.municipality') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.municipality')},
+      {label: t('client.add.contactPersonTel'), value: safeGet(client, 'contactPersonTel') || '', editType: 'text', key: 'officeDetails.contactPersonTel'},
+      {label: t('applicant.add.street'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') ?? safeGet(client, 'street')) || '', editType: 'text', key: 'street', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.city') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.city')},
+      {label: t('client.add.contactPersonMail'), value: safeGet(client, 'contactPersonMail') || '', editType: 'text', key: 'officeDetails.contactPersonMail'},
+      {label: t('client.add.addressBuildingName'), value: (safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building') ?? safeGet(client, 'building')) || '', editType: 'text', key: 'officeDetails.registeredInfo.building', isHighlight: safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.building') !== safeGet(clientFactory, 'draft.officeDetails.registeredInfo.building')},
+      {label: t('clientFactory.drawer.details.officeTel'), value: (safeGet(clientFactory, 'draft.tel') ?? safeGet(client, 'tel')) || '', editType: 'text', key: 'tel', isHighlight: safeGet(clientFactory, 'draft.tel') !== undefined && safeGet(clientFactory, 'tel') !== safeGet(clientFactory, 'draft.tel')},
+      {label: t('clientFactory.drawer.details.officeFax'), value: (safeGet(clientFactory, 'draft.fax') ?? safeGet(client, 'fax')) || '', editType: 'text', key: 'fax', isHighlight: safeGet(clientFactory, 'draft.fax') !== undefined && safeGet(clientFactory, 'fax') !== safeGet(clientFactory, 'draft.fax')},
     ]
   }).value
 
@@ -199,20 +199,20 @@ export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:ob
       {label: t('clientFactory.drawer.details.established'), value: safeGet(clientFactory, 'established') ?? '', editType: 'text', key: 'established'},
       {label: t('clientFactory.drawer.details.capital'), value: safeGet(clientFactory, 'capital') ?? '', editType: 'text', key: 'capital'},
       {label: t('clientFactory.drawer.details.earnings'), value: safeGet(clientFactory, 'earnings') ?? '', editType: 'text', key: 'earnings'},
-      {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(clientFactory, 'client.numberOffices') ?? 0, editType: 'number', key: 'numberOffices'},
-      {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(clientFactory, 'numberEmployees') ?? 0, editType: 'number', key: 'numberEmployees'},
+      {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(clientFactory, 'client.numberOffices') ?? 0, editType: 'text', key: ''},
+      {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(clientFactory, 'numberEmployees') ?? 0, editType: 'text', key: 'numberEmployees'},
       {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(clientFactory, 'companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
     ]
   }).value
 
   headDetails.contractInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.contractUnit'), value: safeGet(clientFactory, 'contractInfo.contractUnit') ?? '', editType: 'contract_unit', key: 'contractInfo.contractUnit'},
-      {label: t('clientFactory.drawer.details.industry'), value: safeGet(clientFactory, 'contractInfo.industry') ?? [], editType: 'industry', key: 'contractInfo.industry'},
-      {label: t('clientFactory.drawer.details.contractPerson'), value: safeGet(clientFactory, 'contractInfo.contractPerson') ?? '', editType: 'text', key: 'contractInfo.contractPerson'},
-      {label: t('clientFactory.drawer.details.contractTel'), value: safeGet(clientFactory, 'contractInfo.contractTel') ?? '', editType: 'text', key: 'contractInfo.contractTel'},
-      {label: t('clientFactory.drawer.details.contractMail'), value: safeGet(clientFactory, 'contractInfo.contractMail') ?? '', editType: 'text', key: 'contractInfo.contractMail'},
-      {label: t('clientFactory.drawer.details.contractFax'), value: safeGet(clientFactory, 'contractInfo.contractFax') ?? '', editType: 'text', key: 'contractInfo.contractFax'},
+      {label: t('clientFactory.drawer.details.contractUnit'), value: safeGet(clientFactory, 'contractUnit') ?? '', editType: 'contract_unit', key: 'contractUnit'},
+      {label: t('clientFactory.drawer.details.industry'), value: safeGet(clientFactory, 'industry') ?? [], editType: 'industry', key: 'industry'},
+      {label: t('clientFactory.drawer.details.contractPerson'), value: safeGet(clientFactory, 'contractPerson') ?? '', editType: 'text', key: 'contractPerson'},
+      {label: t('clientFactory.drawer.details.contractTel'), value: safeGet(clientFactory, 'contractTel') ?? '', editType: 'text', key: 'contractTel'},
+      {label: t('clientFactory.drawer.details.contractMail'), value: safeGet(clientFactory, 'contractMail') ?? '', editType: 'text', key: 'contractMail'},
+      {label: t('clientFactory.drawer.details.contractFax'), value: safeGet(clientFactory, 'contractFax') ?? '', editType: 'text', key: 'contractFax'},
     ]
   }).value
 

@@ -11,7 +11,8 @@ import { RenderHeadDetails } from 'src/components/client-factory/types'
 const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
-    clientId: string
+    clientId: string,
+    clientFactory:ClientFactory
 }>()
 
 const { getHeadClientFactory, getRelatedOfficeInfo } = useClientFactory()
@@ -43,7 +44,7 @@ const fetchHeadClientFactory = async () => {
 }
 
 watchEffect(() => {
-    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
+    headDetails.value = useHeadDetails(props.clientFactory,headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
 })
 
 watch(localClientId, fetchHeadClientFactory, {immediate: true})
