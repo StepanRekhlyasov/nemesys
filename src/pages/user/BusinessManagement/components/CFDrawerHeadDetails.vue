@@ -1,19 +1,22 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, ref, watchEffect, watch } from 'vue';
+import { defineProps, ref, watchEffect, watch, defineEmits } from 'vue';
 import HighlightTwoColumn from 'src/components/client-factory/HighlightTwoColumn.vue';
 import EditableColumnsCF, { Data } from 'src/components/client-factory/EditableColumnsCF.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useHeadDetails } from 'src/components/client-factory//handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderHeadDetails } from 'src/components/client-factory/types'
-
+import { ChangedData } from 'src/components/client-factory/types';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = defineProps<{
+    clientFactory: ClientFactory
     clientId: string
 }>()
-
+const emit = defineEmits<{
+    (e: 'editDraft', changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>)
+}>()
 const { getHeadClientFactory, getRelatedOfficeInfo } = useClientFactory()
 
 const headDetails = ref<RenderHeadDetails>({} as RenderHeadDetails)
@@ -43,11 +46,14 @@ const fetchHeadClientFactory = async () => {
 }
 
 watchEffect(async () => {
-    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
+    headDetails.value = useHeadDetails(props.clientFactory, headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
 })
 
 watch(localClientId, fetchHeadClientFactory, { immediate: true })
 
+const editDraft = (changedData: ChangedData) => {
+    emit('editDraft', changedData)
+}
 </script>
 
 <template>
@@ -57,13 +63,23 @@ watch(localClientId, fetchHeadClientFactory, { immediate: true })
 
     <div v-if="!isLoading">
         <HighlightTwoColumn :data="headDetails.headOfficeInfo" :label="t('clientFactory.drawer.headOfficeInfo')"
-            :is-edit="false" :show-actions="false" :is-drop-down="true" />
+            :is-drop-down="true" 
+            :is-disable-edit="isLoading"
+            :is-edit="isOpenEditDropDown.headOfficeInfo"
+            @open-edit="isOpenEditDropDown.headOfficeInfo = true"
+            @close-edit="isOpenEditDropDown.headOfficeInfo = false"
+            @on-save="isOpenEditDropDown.headOfficeInfo = false; editDraft(dataForUpdating.headOfficeInfo as Data[])"/>
 
         <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo"
             @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" />
 
-        <HighlightTwoColumn :data="headDetails.clientInfo" :label="t('clientFactory.drawer.clientInfo')" :is-edit="false"
-            :show-actions="false" :is-drop-down="true"/>
+        <HighlightTwoColumn :data="headDetails.clientInfo" :label="t('clientFactory.drawer.clientInfo')" 
+        :is-drop-down="true" 
+        :is-disable-edit="isLoading"
+        :is-edit="isOpenEditDropDown.clientInfo"
+        @open-edit="isOpenEditDropDown.clientInfo = true"
+        @close-edit="isOpenEditDropDown.clientInfo = false"
+        @on-save="isOpenEditDropDown.clientInfo = false; editDraft(dataForUpdating.clientInfo as Data[])"/>
 
         <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')"
             :data="headDetails.clientInfo"/>
