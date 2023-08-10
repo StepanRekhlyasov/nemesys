@@ -76,4 +76,5 @@ export enum InputType {
   REFERRAL_CONTRACT = 'referral_contract',
   FACILITY = 'facility',
   RADIO = 'radio',
+  COMMA_SEPARATED = 'comma_separated',
 }
