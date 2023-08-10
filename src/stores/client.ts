@@ -23,29 +23,29 @@ export const useClient = defineStore('client', () => {
         }
 
         try {
-            const docRef =  await addDoc(collection(db, 'clients'), newClient);
+            const docRef = await addDoc(collection(db, 'clients'), newClient);
             Alert.createAlert({
-              color: 'green-4',
-              textColor: 'white',
-              icon: 'cloud_done',
-              message: 'Client wass added',
-          })
+                color: 'green-4',
+                textColor: 'white',
+                icon: 'cloud_done',
+                message: 'Client wass added',
+            })
 
             return docRef
-        } catch(e) {
-           Alert.warning(e)
+        } catch (e) {
+            Alert.warning(e)
         }
     }
 
-    const updateClient = async( id: string, client: Omit<Client, 'created_at'>) => {
+    const updateClient = async (id: string, client: Omit<Client, 'created_at'>) => {
         try {
 
             await setDoc(doc(db, 'clients', id), {
                 ...client,
                 updated_at: serverTimestamp()
-            }, {merge: true});
+            }, { merge: true });
 
-        } catch(e) {
+        } catch (e) {
             Alert.warning(e)
         }
     }
@@ -67,12 +67,12 @@ export const useClient = defineStore('client', () => {
         });
     };
 
-  async function fetchClientsById (clientId){
-        const clientRef = doc(collection(db, 'clients'),clientId);
+    async function fetchClientsById(clientId) {
+        const clientRef = doc(collection(db, 'clients'), clientId);
         const clientDoc = await getDoc(clientRef)
         const clientData = clientDoc.data();
-        if(clientData){
-          clientData['lng'] = clientData.lon
+        if (clientData) {
+            clientData['lng'] = clientData.lon
         }
         return clientData as Client;
     };
@@ -83,10 +83,10 @@ export const useClient = defineStore('client', () => {
     async function getClientsByConstraints(constraints?: ConstraintsType) {
         const clientsCollection = collection(db, 'clients');
         const currentConstraints: ConstraintsType = [where('deleted', '==', false)]
-        if(constraints){
+        if (constraints) {
             currentConstraints.push(...constraints)
         }
-        const filteredClientsQuery = query(clientsCollection,...currentConstraints );
+        const filteredClientsQuery = query(clientsCollection, ...currentConstraints);
         const clioentDocs = await getDocs(filteredClientsQuery)
         return clioentDocs.docs.map((doc) => {
             const clientData = doc.data();

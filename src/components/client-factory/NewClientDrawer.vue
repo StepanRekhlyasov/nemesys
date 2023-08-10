@@ -60,6 +60,7 @@ const onSubmit = async (newClientData: Client | null) => {
 
         await addClientFactory({
             ...newClientData,
+            organizationId: isAdmin ? null : organization.currentOrganizationId,
             name: newClientData.headName,
             isHead: true,
             clientID: clientRef.id,

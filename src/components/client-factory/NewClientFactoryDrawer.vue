@@ -4,8 +4,14 @@ import { withDefaults, defineEmits, defineProps, ref } from 'vue';
 import { useClientFactory } from 'src/stores/clientFactory'
 import NewClientFactoryFormGroup from 'src/components/form/NewClientFactoryFormGroup.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-const { t } = useI18n({ useScope: 'global' });
+import { useRoute } from 'vue-router';
+import { useOrganization } from 'src/stores/organization';
 
+const { t } = useI18n({ useScope: 'global' });
+const route = useRoute()
+const organization = useOrganization()
+
+const isAdmin = route.meta.isAdmin
 withDefaults(
     defineProps<{
         isDrawer: boolean
@@ -38,6 +44,12 @@ const submitForm = () => {
 
 const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) => {
     if(newClientFactoryData) {
+        if (!isAdmin) {
+            newClientFactoryData.organizationId = organization.currentOrganizationId
+        } else {
+            newClientFactoryData.organizationId = null
+        }
+
         await addClientFactory(newClientFactoryData as ClientFactory)
         emit('hideDrawer')
     }

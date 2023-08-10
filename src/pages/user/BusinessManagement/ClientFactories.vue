@@ -12,7 +12,6 @@ import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { clientFactoriesToTableRows } from './handlers';
-import { useClient } from 'src/stores/client';
 import { tableColumnsClientFactory } from './consts';
 import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore';
@@ -20,7 +19,6 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 
 const { t } = useI18n({ useScope: 'global' });
 const clientFactoryStore = useClientFactory()
-const clientStore = useClient()
 const clientFactories = ref<ClientFactory[]>([])
 const organization = useOrganization()
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
@@ -66,17 +64,10 @@ watchCurrentOrganization(async () => {
 
 async function getData() {
     fetchData.value = true
-    const [clientsByOrganization, clientsByAdmin] = await Promise.all([clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)]), clientStore.getClientsByConstraints([where('organizationId', '==', null)])])
-    let clientIds = [...clientsByOrganization.map((c) => c.id), ...clientsByAdmin.map((c) => c.id)]
-
-    let cf = await Promise.all(clientIds.map((id) => {
-        if (id) {
-            return clientFactoryStore.getClientFactoryList(id)
-        }
-    }))
-    let filteredCF = cf.flat().filter((v) => v !== undefined) as ClientFactory[]
-    clientFactories.value = filteredCF
-    tableRows.value = clientFactoriesToTableRows(filteredCF)
+    const [CFByOrganization, CFByAdmin] = await Promise.all([clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', organization.currentOrganizationId)]), clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', null)])])
+    const cf = [...CFByOrganization, ...CFByAdmin]
+    clientFactories.value = cf
+    tableRows.value = clientFactoriesToTableRows(cf)
     fetchData.value = false
 }
 
@@ -160,18 +151,11 @@ const openFaxDrawer = (id: string) => {
             </q-card-section>
         </q-card>
 
-        <ClientFactoryDrawer
-            v-if="activeClientFactoryItem"
-            v-model:selectedItem="activeClientFactoryItem"
-            :originalOfficeId="originalOfficeId"
-            :isDrawer="isClientFactoryDrawer"
-            @open-fax-drawer="openFaxDrawer"
-            @hide-drawer="hideClientFactoryDrawer"/>
+        <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
+            :originalOfficeId="originalOfficeId" :isDrawer="isClientFactoryDrawer" @open-fax-drawer="openFaxDrawer"
+            @hide-drawer="hideClientFactoryDrawer" />
 
-        <NewClientDrawer
-            v-if="isNewClientDrawerRender"
-            @hide-drawer="hideNewClientDrawer"
-            theme="primary"
+        <NewClientDrawer v-if="isNewClientDrawerRender" @hide-drawer="hideNewClientDrawer" theme="primary"
             :is-drawer="isNewClientDrawer" />
 
         <NewClientFactoryDrawer v-if="isNewClientFactoryDrawerRender" @hide-drawer="hideNewClientFactoryDrawer"
