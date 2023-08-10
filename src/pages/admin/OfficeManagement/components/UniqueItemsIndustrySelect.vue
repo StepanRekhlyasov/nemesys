@@ -38,6 +38,7 @@ const deleteIndustry = async (industryId) => {
     message: t('common.deleteInfo'),
     persistent: true,
     cancel: t('common.cancel'),
+    color:'accent'
   }).onOk(async () => {
     emit('deleteIndustry', industryId);
   })
