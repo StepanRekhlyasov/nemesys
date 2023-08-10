@@ -245,10 +245,3 @@ export const prefectureList = computed(() => {
     },
   ];
 });
-
-
-
-
-
-
-

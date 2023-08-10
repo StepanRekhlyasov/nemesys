@@ -150,7 +150,7 @@ import { useReleaseNotes } from 'src/stores/releaseNotes';
         })
 
           if (res.id) {
-            console.log(res.id);
+            
           }
         } catch(e) {
           Alert.warning(e)
