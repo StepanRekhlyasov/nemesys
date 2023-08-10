@@ -81,7 +81,7 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType"
+      <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType? $t(`client.backOrder.${data.transactionType}`):''"
         valueClass="self-center q-pl-md col-4">
         <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
@@ -89,7 +89,7 @@
       </LabelField>
       <LabelField :label="$t('backOrder.create.travelingExpenses')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="selectedBo['travelingExpenses']" :autogrow="true">
+        :value="selectedBo['travelingExpenses']?selectedBo['travelingExpenses']:''" :autogrow="true">
         <q-input v-model="data['travelingExpenses']" type="textarea" autogrow outlined dense :disable="loading"/>
       </LabelField>
     </div>
