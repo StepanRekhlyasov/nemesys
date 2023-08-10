@@ -1,19 +1,16 @@
-const days = ['one', 'two', 'three', 'four', 'five'];
-const route = ['coldCall', 'fax'];
-
 import { ClientFactory } from 'src/shared/model';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useBackOrder } from 'src/stores/backOrder';
 const { getClientFactoryList } = useClientFactory();
 const { countDaysByOfficeId } = useBackOrder();
-
-const getDataListFromOfficeId = async (officeId: string,type:string) => {
-  /// days, routeのすべての組み合わせのlistを作成
+const days = ['one', 'two', 'three', 'four', 'five'];
+const route = ['coldCall', 'fax'];
+const getDataListFromOfficeId = async (officeId: string, type: string) => {
   const dataList = await Promise.all(
     days.map(async (day) => {
       return await Promise.all(
         route.map(async (route) => {
-          return await countDaysByOfficeId(officeId, day, route,type);
+          return await countDaysByOfficeId(officeId, day, route, type);
         })
       );
     })
@@ -36,20 +33,25 @@ const evaluator = (rows: number[][]) => {
   return totalPoints;
 };
 
-export const evaluateAll = async (clientFactory: ClientFactory,type:string) => {
+export const evaluateAll = async (
+  clientFactory: ClientFactory,
+  type: string
+) => {
   let targetPoint = 0;
   const totalPoints: number[] = [];
   const clientfactoryList = await getClientFactoryList(clientFactory.clientID);
   for (const cf of clientfactoryList) {
-    const totalPoint = evaluator(await getDataListFromOfficeId(cf.id,type));
+    const totalPoint = evaluator(await getDataListFromOfficeId(cf.id, type));
     totalPoints.push(totalPoint);
     if (cf.id === clientFactory.id) {
       targetPoint = totalPoint;
     }
   }
+  if (totalPoints.length === 0) return 'no data';
   const totalPointsAverage =
     totalPoints.reduce((acc, point) => {
       return acc + point;
     }, 0) / totalPoints.length;
+  if (totalPointsAverage === 0) return 'no data';
   return Math.round((targetPoint / totalPointsAverage) * 100);
 };
