@@ -91,7 +91,7 @@ watch(()=>props.activeIndustry, ()=>{
                         <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${index + 1}` }}</div>
 
                         <div>
-                            <q-input class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
+                            <q-input style="width:300px" class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
 
                             <q-popup-edit
                                 :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val) && titleExists(val, element[1].title))"
@@ -129,6 +129,7 @@ watch(()=>props.activeIndustry, ()=>{
             <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${Object.keys(activeIndustry.uniqueItems.facilityForms).length + 1}` }}</div>
 
             <q-input
+                style="width:300px"
                 class="q-mr-md" outlined dense
                 v-model="newFacilityForm"
                 ref="inputVal"

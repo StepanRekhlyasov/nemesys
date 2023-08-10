@@ -90,7 +90,7 @@ watch(()=>props.activeIndustry, ()=>{
                         <div class="q-mr-md">{{ t('KPI.item') + ` ${index + 1}` }}</div>
 
                         <div>
-                            <q-input class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
+                            <q-input class="q-mr-md" style="width:300px" outlined readonly dense v-model="element[1].title"/>
 
                             <q-popup-edit
                                 :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val) && titleExists(val, element[1].title))"
@@ -128,6 +128,7 @@ watch(()=>props.activeIndustry, ()=>{
             <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
             <div class="q-mr-md">{{ t('KPI.item') + ` ${Object.keys(activeIndustry.uniqueItems.typeSpecificItems).length + 1}` }}</div>
             <q-input
+                style="width:300px"
                 class="q-mr-md" outlined dense
                 v-model="newSpecificType.title"
                 ref="inputVal"
