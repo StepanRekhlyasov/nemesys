@@ -106,8 +106,6 @@ export default {
     more: 'もっと',
     downloadCSV: 'CSVダウンロード',
     branch: '支店',
-    index:'指標',
-    totalPoints:'合計点',
   },
   rule: {
     onlyNumber: '数字のみ、ハイフンなし',
