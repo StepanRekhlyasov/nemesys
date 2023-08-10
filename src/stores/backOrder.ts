@@ -528,32 +528,6 @@ export const useBackOrder = defineStore('backOrder', () => {
     ;
   }
 
-  const constDaysByClientId = async (
-    clientId: string,
-    day?: string,
-    route?: string
-  ) => {
-    const collectionRef = collection(db, 'BO');
-    const today = new Date();
-    const halfYearAgo = new Date();
-    halfYearAgo.setMonth(halfYearAgo.getMonth() - 6);
-    const filters = [
-      where('client_id', '==', clientId),
-      where('deleted', '==', false),
-      where('created_at', '>=', halfYearAgo),
-      where('created_at', '<=', today),
-    ];
-    if (day) {
-      filters.push(where('daysPerWeekList', '==', day));
-    }
-    if (route) {
-      filters.push(where('BOGenerationRoute', '==', route));
-    }
-    const q = query(collectionRef, ...filters);
-    const counted = await getCountFromServer(q);
-    return counted.data().count;
-  };
-
   const countDaysByOfficeId = async (
     officeId: string,
     day?: string,
