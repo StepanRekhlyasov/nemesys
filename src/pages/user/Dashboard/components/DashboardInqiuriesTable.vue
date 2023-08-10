@@ -24,26 +24,44 @@
     v-model:pagination = pagination
   >
   <template v-slot:body-cell-messageDirection="props">
-    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{props.row.status === 'answered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}
-    </q-td>
+    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''">
+    <span v-if="props.row.type==='inquiry'">{{props.row.status === 'answered' || props.row.status === 'delivered' ? $t('inquiry.table.recieved') : $t('inquiry.table.sent') }}</span>
+    <span v-else>
+      {{
+        props.row.updatedDate !== undefined && props.row.updatedDate.seconds > props.row.recievedDate.seconds
+          ? $t('clientFactory.drawer.details.update')
+          : $t('inquiry.table.recieved')
+      }}
+    </span>
+  </q-td>
   </template>
   <template v-slot:body-cell-recievedDate="props">
-    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm') }}
-    </q-td>
-  </template>
+  <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''">
+    <span v-if="props.row.recievedDate && props.row.updatedDate">
+      {{
+        props.row.recievedDate.seconds < props.row.updatedDate.seconds
+          ? myDateFormat(props.row.updatedDate, 'YYYY-MM-DD HH:mm:ss')
+          : myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm:ss')
+      }}
+    </span>
+    <span v-else>{{ myDateFormat(props.row.recievedDate, 'YYYY-MM-DD HH:mm:ss') }}</span>
+  </q-td>
+</template>
   <template v-slot:body-cell-type="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
       {{ $t('inquiry.table.' + props.row.type) }}
     </q-td>
   </template>
   <template v-slot:body-cell-readBy="props">
-    <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''" class="warningMark">
-      <template v-if="Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId)"></template>
-      <template v-else>!</template>
-    </q-td>
-  </template>
+  <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status ? 'answered' : ''" class="warningMark">
+    <template v-if="Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId)">
+    </template>
+    <template v-else>
+        <span>!</span>
+    </template>
+    <template v-if="props.row.flagExclamation==true && Array.isArray(props.row.readBy) && props.row.readBy.includes(currentUserId) ">!</template>
+  </q-td>
+</template>
   <template v-slot:body-cell-category="props">
     <q-td :props="props" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
       <template v-if="props.row.type === 'releaseNote'">{{ $t('releaseNotes.form.options.' + props.value) }}</template>
@@ -51,8 +69,8 @@
     </q-td>
   </template>
   <template v-slot:body-cell="props">
-    <q-td :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
-      {{ props.value }}
+    <q-td style="white-space: break-spaces;" :props="props" @click="openDetails(props.row.id, props.row.type)" class="clickable" :class="INQUIRY_STATUS.answered === props.row.status?'answered':''">
+      <div v-html="truncateText(props.value, 10)"></div>
     </q-td>
   </template>
   </q-table>
@@ -73,7 +91,7 @@
     </template>
     </q-btn>
   </div>
-  <q-dialog v-model="showNote">
+  <q-dialog v-model="showNote" style="white-space: break-spaces;">
       <q-card>
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">{{ noteSubject }}</div>
@@ -89,7 +107,7 @@
 </template>
 <script setup lang="ts">
 import { DashboardinquiryRows, dashboardNotificationTableColumns as columns } from '../const/dashboard.const'
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed  } from 'vue'
 import DashboardInquiryDrawer from './inquiry/DashboardInquiryDrawer.vue'
 import { useInquiry } from 'src/stores/inquiry'
 import { useOrganization } from 'src/stores/organization'
@@ -97,7 +115,9 @@ import { myDateFormat } from 'src/shared/utils/utils'
 import DashboardCreateInquiry from './inquiry/DashboardCreateInquiry.vue'
 import DashboardInquiryDetails from './inquiry/DashboardInquiryDetails.vue'
 import { INQUIRY_STATUS } from 'src/pages/admin/InquiryPage/types/inquiryTypes'
+import { DELIVERY_STATUS } from 'src/pages/admin/ReleaseNotes/types/notificationTypes'
 import { InquiryData } from 'src/shared/model/Inquiry.model'
+import { Timestamp } from 'firebase/firestore'
 import { useReleaseNotes } from 'src/stores/releaseNotes'
 import { getAuth } from 'firebase/auth'
 import { arrayUnion } from 'firebase/firestore'
@@ -133,7 +153,7 @@ const updateInqueries = async () => {
   inqueries.value = inqueriesRaw.map((row)=>{
     return {...row, type: 'inquiry'}
   })
-  const docWholeSnap = await releaseNoteStore.getAllNotifications();
+  const docWholeSnap = await inquiryStore.getDeliveredNotifications();
   if (!docWholeSnap.empty) {
     docWholeSnap.docs.forEach(async (item) => {
       releaseNotes.value = [...releaseNotes.value, {
@@ -144,12 +164,20 @@ const updateInqueries = async () => {
         subject: item.data().subject,
         inquiryContent: item.data().content,
         recievedDate: item.data().dateDelivery,
+        updatedDate:item.data().updated_at,
+        flagExclamation:item.data().flagExclamation,
         type: 'releaseNote'
       }]
     })
   }
   loading.value = false
 }
+const truncateText = (text, maxLength) => {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength) + '...';
+};
 const tableRows = computed(()=>{
   if(loading.value){
     return []
@@ -167,7 +195,6 @@ const tableRows = computed(()=>{
   })
   return result
 })
-
 function openDetails(id : string, type : string){
   if(type === 'inquiry'){
     openId.value = id
@@ -177,9 +204,9 @@ function openDetails(id : string, type : string){
     const row = tableRows.value.find((row)=>row.id===id)
     if(row){
       showNote.value = true
+      inquiryStore.addFlagValue(row.id,row)
       noteSubject.value = row.subject
       noteText.value = row.inquiryContent
-     console.log(showNote.value)
       if(currentUserId){
         releaseNoteStore.updateNotificationData(id, {
           readBy: arrayUnion(currentUserId)
@@ -192,6 +219,7 @@ function openDetails(id : string, type : string){
     }
   }
 }
+
 function readinquiry(inquiryData : InquiryData){
   inqueries.value.forEach((row)=>{
     if(row.id === inquiryData.id){
@@ -200,7 +228,37 @@ function readinquiry(inquiryData : InquiryData){
     }
   })
 }
+const updateScheduledNotifications = async () => {
+  try {
+    const querySnapshot = await releaseNoteStore.getAllNotifications();
+    const notifications = querySnapshot.docs;
+
+    const currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + 330);
+
+    for (const notification of notifications) {
+      const dateDeliveryObject = notification.data().dateDelivery;
+
+      if (dateDeliveryObject instanceof Timestamp) {
+        const dateDelivery = dateDeliveryObject.toDate();
+
+        dateDelivery.setMinutes(dateDelivery.getMinutes() + 330);
+
+        if (dateDelivery instanceof Date && dateDelivery <= currentTime) {
+
+          await releaseNoteStore.updateNotificationData(notification.id, {
+            status: DELIVERY_STATUS.delivered,
+          });
+        }
+      }
+    }
+  } catch (e) {
+
+    console.error('Error updating scheduled notifications:', e);
+  }
+};
 onMounted(async ()=>{
+  await updateScheduledNotifications();
   updateInqueries()
 })
 
@@ -209,6 +267,7 @@ watch(() => organization.currentOrganizationId, () => {
   drawerDetails.value = false
   updateInqueries()
 })
+
 </script>
 <style lang="scss" scoped>
 .clickable{

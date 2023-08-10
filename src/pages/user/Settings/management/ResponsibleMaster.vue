@@ -5,7 +5,6 @@
       {{ isAdmin ? $t('menu.admin.userSearch') : $t('menu.users') }}
     </div>
   </PageHeader>
-
   <q-card flat class="q-pt-sm q-px-lg">
     <SearchField :clear-button-text-color="textColor" :search-button-color="color" :on-click-search="() => searchUsers()"
       :on-click-clear="() => { search = ''; refresh(); }" v-model:model-value="search">
@@ -120,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { serverTimestamp } from '@firebase/firestore';
+import { serverTimestamp, Timestamp } from '@firebase/firestore';
 import { onBeforeMount, Ref, ref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Role, User } from 'src/shared/model/Account.model';
@@ -229,7 +228,9 @@ async function searchUsers() {
   loading.value = true
   usersListData.value = [...copyUsersListData.value]
   usersListData.value = usersListData.value.filter(function (el) {
-    return el['displayName'].includes(search.value)
+    const name=el['displayName']
+    const email=el['email']
+    return name.includes(search.value) || email.includes(search.value);
   });
   loading.value = false
 }

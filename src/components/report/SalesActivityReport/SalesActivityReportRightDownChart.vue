@@ -13,7 +13,7 @@ import { onMounted, Ref, ref, computed, watch } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 import { i18n } from 'boot/i18n';
 import { useGetReport } from 'src/stores/getReport';
-import { donutGraphItem, donutLabelNames } from './const';
+import { donutGraphItem, donutLabelNames } from './salesActivity.const';
 const apexchart = VueApexCharts;
 const { getReport } = useGetReport();
 const dataToshow: Ref<(number | string)[]> = ref([]);
@@ -22,7 +22,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 const chartOptions = computed(() => {
@@ -52,7 +51,7 @@ const showChart = async () => {
   );
 };
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     await showChart();
   }

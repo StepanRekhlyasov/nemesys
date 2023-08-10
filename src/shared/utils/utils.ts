@@ -204,9 +204,28 @@ export const getLastMonthString = (num: 3) => {
   return { monthsJp: monthsJp.reverse(), monthsEn: monthsEn.reverse() }
 }
 
-export const formatNumber = (text: string) => {
+export const formatNumber = (text: string | number) => {
   return text?.toString().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
-// rules intut textfield
+export const formatTextToNumber = (text: string | number, sum = false) => {
+  const num = parseInt(text?.toString().replace(/,/g, ''), 10)
+  if (Number.isNaN(num)) {
+    if (sum) {
+      return 0
+    }
+    return null
+  }
+  return num
+}
 
-// export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`
+export const commaSeparatedNumber = (value : string | number | null) => {
+  if(!value){
+    return ''
+  }
+  if(typeof value === 'number'){
+    value = value.toString()
+  }
+  const tempNumber = (value as string).replace(/,/gi, '');
+  const commaSeparatedNumber = tempNumber.split(/(?=(?:\d{3})+$)/).join(',');
+  return commaSeparatedNumber;
+}

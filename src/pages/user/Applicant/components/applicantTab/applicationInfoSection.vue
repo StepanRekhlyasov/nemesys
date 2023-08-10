@@ -1,12 +1,12 @@
 <template>
-  <DropDownEditGroup :isHiddenActions="bo ? true : false" :isEdit="edit" :label="$t('applicant.list.info.application')" @openEdit="edit = true"
-    @closeEdit="resetData(); edit = false;" @onSave="save">
+  <DropDownEditGroup :isHiddenActions="bo ? true : false" :isEdit="edit" :label="$t('applicant.list.info.application')"
+    @openEdit="edit = true" @closeEdit="resetData(); edit = false;" @onSave="save">
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.date') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ myDateFormat(applicant['applicationDate'], "YYYY/MM/DD HH:mm") || ''}}</span>
+        <span v-if="!edit">{{ myDateFormat(applicant['applicationDate'], "YYYY/MM/DD HH:mm") || '' }}</span>
         <q-input v-if="edit" dense outlined bg-color="white" v-model="data['applicationDate']">
           <template v-slot:prepend>
             <q-icon name="event" class="cursor-pointer">
@@ -46,10 +46,10 @@
         {{ $t('applicant.list.info.media') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.media ? applicant.media == 'hr' && $t('applicant.add.hr') || 'indeed' : '' }}</span>
+        <span v-if="!edit">{{ getMediaName(applicant.media) }}</span>
         <template v-if="edit">
-          <q-select outlined dense v-model="data['media']" :options="mediaList" bg-color="white"
-              hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
+          <q-select outlined dense v-model="data['media']" :options="mediaList" bg-color="white" hide-bottom-space
+            :label="$t('common.pleaseSelect')" emit-value map-options option-value="id" option-label="name" />
         </template>
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -66,7 +66,8 @@
         {{ $t('applicant.list.info.apply') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!edit">{{ applicant.applicationMetod ? $t('applicant.add.' + applicant.applicationMetod) : '' }}</span>
+        <span v-if="!edit">{{ applicant.applicationMetod ? $t('applicant.add.' + applicant.applicationMetod) : ''
+        }}</span>
         <q-select v-if="edit" outlined dense :options="applicationMethodOption" emit-value map-options
           v-model="data['applicationMetod']" :disable="loading" />
       </div>
@@ -94,8 +95,8 @@
         {{ $t('applicant.list.info.birth') }}
       </div>
       <div class="col-3 q-pl-md blue self-center">
-        <span v-if="!edit">{{ myDateFormat(applicant['dob'], 'YYYY/MM/DD')}} {{age?`(${age})`:''}}</span>
-        <q-input v-if="edit"  dense outlined bg-color="white" v-model="data['dob']">
+        <span v-if="!edit">{{ myDateFormat(applicant['dob'], 'YYYY/MM/DD') }} {{ age ? `(${age})` : '' }}</span>
+        <q-input v-if="edit" dense outlined bg-color="white" v-model="data['dob']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -145,20 +146,57 @@
       </div>
     </div>
 
-    <div class="row q-pb-sm">
-      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+    <div class="row q-pb-sm" v-if="!edit">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.list.info.addres') }}
       </div>
-      <div class="col-9 q-pl-md">
-        <hidden-text v-if="!edit" :value="applicant.address" />
-        <q-input v-if="edit" outlined dense v-model="data['address']" />
+      <div class="col-3 q-pl-md">
+        <hidden-text :value="applicant.address" />
       </div>
     </div>
+    <div class="row q-pb-sm" v-if="edit">
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.prefecture') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['prefecture']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.municipalities') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['municipalities']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.street') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['street']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+
+      <div class="col-3 q-pl-md q-pb-sm text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.add.apartment') }}
+      </div>
+      <div class="col-3 q-pl-md blue relative-position">
+        <q-input outlined dense v-model="data['apartment']" />
+      </div>
+      <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
+      <div class="col-3 q-pl-md blue relative-position" />
+    </div>
+
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import { applicationMethod, mediaList } from 'src/shared/constants/Applicant.const';
+import { computed, ref, onMounted } from 'vue';
+import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
@@ -166,6 +204,8 @@ import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { useMedia } from 'src/stores/media';
+import { Media } from 'src/shared/model/Media.model';
 
 const props = defineProps<{
   applicant: Applicant,
@@ -177,6 +217,8 @@ const data = ref<Partial<ApplicantInputs>>({})
 const edit = ref(false);
 const loading = ref(false);
 const applicantStore = useApplicant();
+const media = useMedia();
+const mediaList = ref<Media[]>([]);
 
 const applicationMethodOption = ref(applicationMethod)
 
@@ -195,6 +237,10 @@ function resetData() {
     lat: props?.applicant['lat'],
     address: props.applicant['address'] || '',
     postCode: props?.applicant['postCode'],
+    prefecture: props?.applicant['prefecture'],
+    municipalities: props?.applicant['municipalities'],
+    street: props?.applicant['street'],
+    apartment: props?.applicant['apartment'],
   }
   data.value = JSON.parse(JSON.stringify(defaultData.value));
 }
@@ -205,12 +251,27 @@ const age = computed(() => data.value['dob'] ? RankCount.ageCount(data.value['do
 async function save() {
   loading.value = true
   try {
+    data.value.address = [data.value.prefecture, data.value.municipalities, data.value.street, data.value.apartment].join(' ')
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
-    
+
   } catch (error) {
     Alert.warning(error)
   }
   loading.value = false
 }
+
+onMounted(async () => {
+  mediaList.value = await media.getAllmedia();
+});
+
+const getMediaName = (mediaId) => {
+  const media = mediaList.value.find(x => x.id === mediaId)
+  if (media) {
+    return media.name
+  }
+  return ''
+};
+
+
 </script>

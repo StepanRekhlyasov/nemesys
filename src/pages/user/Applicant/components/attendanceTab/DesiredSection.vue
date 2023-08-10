@@ -7,11 +7,11 @@
         {{ $t('applicant.attendant.timeToWork') }}
       </div>
       <div class="col-3 q-pl-md blue">
-        <span v-if="!desiredEdit">{{ data['timeAvailable'] ? myDateFormat(applicant.timeToWork) : myDateFormat(applicant.attendingDate) }}</span>
+        <span v-if="!desiredEdit">{{ !data['timeAvailable'] ? myDateFormat(applicant.timeToWork, 'YYYY/MM/DD') : $t('applicant.attendant.sameDay') }}</span>
         <template v-if="desiredEdit">
-          <q-checkbox v-model="data['timeAvailable']"
-            :label="data['timeAvailable'] ? $t('applicant.attendant.firstPayment') : $t('applicant.attendant.sameDay')" />
-          <q-input v-if="data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
+          <q-toggle v-model="data['timeAvailable']"
+            :label="!data['timeAvailable'] ? '' : $t('applicant.attendant.sameDay')" />
+          <q-input v-if="!data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
             :disable="loading">
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
@@ -158,7 +158,7 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.meansCommuting') }}
       </div>
-      <div class="col-3 q-pl-md blue ">
+      <div class="col-3 q-pl-md blue "> 
         <span v-if="!desiredEdit && Array.isArray(applicant.meansCommuting)">
           {{ applicant.meansCommuting.map((row)=> $t('applicant.attendant.meansCommutingOptions.' + row)).join('・') }}
         </span>
@@ -181,7 +181,7 @@
         {{ $t('applicant.attendant.commutingTime') }}
       </div>
       <div class="col-3 q-pl-md blue flex items-center">
-        <hidden-text v-if="!desiredEdit" :value="applicant.commutingTime" />
+        <hidden-text v-if="!desiredEdit" :value="applicant.commutingTime?.toString()" />
         <q-input
           v-if="desiredEdit"
           dense
@@ -189,7 +189,7 @@
           bg-color="white"
           v-model="data['commutingTime']"
           :disable="loading"
-          type="number"
+          type="text"
         />
         <span class="q-ml-sm" v-if="data['commutingTime'] || desiredEdit">分</span>
       </div>

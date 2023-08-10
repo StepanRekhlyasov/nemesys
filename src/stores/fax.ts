@@ -9,6 +9,7 @@ import {
   where,
   onSnapshot,
   DocumentData,
+  getDocs,
 } from 'firebase/firestore';
 import {
   getStorage,
@@ -18,7 +19,7 @@ import {
 } from 'firebase/storage';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { getAuth } from 'firebase/auth';
-import { dateToTimestampFormat } from 'src/shared/utils/utils';
+import { ConstraintsType, dateToTimestampFormat } from 'src/shared/utils/utils';
 import { ref } from 'vue';
 import { FaxSearchData } from 'src/pages/user/BusinessManagement/types';
 import { useUserStore } from 'src/stores/user';
@@ -77,6 +78,14 @@ export const useFax = defineStore('fax', () => {
     });
     ;
   };
+  async function getFaxByConstraints(constraints: ConstraintsType = []){
+    const q = query(collection(db, 'fax'), ...constraints);
+    const snapshot = await getDocs(q);
+    const result = snapshot?.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() }
+    })
+    return result
+  }
   async function getFaxList(searchData: FaxSearchData) {
     const start = Timestamp.fromDate(new Date(searchData.selectedDate));
     const endDate = new Date(new Date(searchData.selectedDate));
@@ -118,5 +127,5 @@ export const useFax = defineStore('fax', () => {
     });
   }
 
-  return { saveFax, getFaxList, faxList };
+  return { saveFax, getFaxList, faxList, getFaxByConstraints };
 });

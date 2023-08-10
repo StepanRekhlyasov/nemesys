@@ -76,11 +76,11 @@ export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draf
     return [
       {label: t('clientFactory.namePersonInCharge'), value: (safeGet(draft, 'nameContact') ?? safeGet(clientFactory, 'nameContact')) || '', editType: 'text', key: 'nameContact', isHighlight: safeGet(draft, 'nameContact') !== undefined && safeGet(clientFactory, 'nameContact') !== safeGet(draft, 'nameContact')},
       {label: t('clientFactory.personInChargeTitle'), value: (safeGet(draft, 'positionContact') ?? safeGet(clientFactory, 'positionContact')) || '', editType: 'text', key: 'positionContact', isHighlight: safeGet(draft, 'positionContact') !== undefined && safeGet(clientFactory, 'positionContact') !== safeGet(draft, 'positionContact')},
-      {label: '担当者TEL', value: (safeGet(draft, 'telContact') ?? safeGet(clientFactory, 'telContact')) || '', editType: 'text', key: 'telContact', isHighlight: safeGet(draft, 'telContact') !== undefined && safeGet(clientFactory, 'telContact') !== safeGet(draft, 'telContact')},
-      {label: '担当者MAIL', value: (safeGet(draft, 'mailContact') ?? safeGet(clientFactory, 'mailContact')) ||'', editType: 'text', key: 'mailContact', isHighlight: safeGet(draft, 'mailContact') !== undefined && safeGet(clientFactory, 'mailContact') !== safeGet(draft, 'mailContact')}
+      {label: t('menu.admin.organizationsTable.manager')+'TEL', value: (safeGet(draft, 'telContact') ?? safeGet(clientFactory, 'telContact')) || '', editType: 'text', key: 'telContact', isHighlight: safeGet(draft, 'telContact') !== undefined && safeGet(clientFactory, 'telContact') !== safeGet(draft, 'telContact')},
+      {label: t('menu.admin.organizationsTable.manager')+'MAIL', value: (safeGet(draft, 'mailContact') ?? safeGet(clientFactory, 'mailContact')) ||'', editType: 'text', key: 'mailContact', isHighlight: safeGet(draft, 'mailContact') !== undefined && safeGet(clientFactory, 'mailContact') !== safeGet(draft, 'mailContact')}
     ]
   }).value
-
+  
   return mainInfo
 }
 
@@ -131,15 +131,24 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
     }).value
 
     officeDetails[`${industryType}.uniqueItems`] = computed(() => {
-
-      const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
-          if(key) {
-            return {label: key, value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`)) || typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 0 : '', key: `officeDetails.${industryType}.uniqueItems.${key}`, editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 'number' : 'text', isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`)}
-          }
-
-        return {label: '', value: '', editType: '', key: '', isHighlight: false}
+      const uniqueItems : Record<string, string | number | boolean>[] = []
+      for(const [key, item] of Object.entries(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) || {})){  
+        const title = (item as {title : string}).title
+        const order = (item as {order : number}).order
+        if(title){
+          uniqueItems.push({
+            label: title, 
+            value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`)),
+            key: `officeDetails.${industryType}.uniqueItems.${key}.value`, 
+            editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`) === 'number' ? 'number' : 'text', 
+            isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`),
+            order: order
+          })
+        }
+      }
+      uniqueItems.sort((a, b)=>{
+        return (a.order as number) - (b.order as number)
       })
-
       return uniqueItems
     }).value
   } else {

@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ContactInfo } from 'src/shared/model';
 import { countApplicantRank, getClientList } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -313,7 +313,13 @@ export const useApplicant = defineStore('applicant', () => {
         for (let i = 0; i < responseData.length; i++) {
           state.value.currentIds.push(responseData[i]['id']['raw'])
         }
-        loadFirestoreApplicantData()
+        await loadFirestoreApplicantData()
+        if(searchData['yearsExperienceMin']){
+          state.value.applicantList = state.value.applicantList.filter(app=>(Math.floor(app['totalMonthes']/12)>=searchData['yearsExperienceMin']))
+        }
+        if(searchData['yearsExperienceMax']){
+          state.value.applicantList = state.value.applicantList.filter(app=>(Math.floor(app['totalMonthes']/12)<=searchData['yearsExperienceMax']))
+        }
       }
     }).catch((error) => {
       Alert.warning(error)
@@ -505,12 +511,12 @@ export const useApplicant = defineStore('applicant', () => {
     return { ...result.data(), id: result.id } as Applicant
   }
 
-  async function getApplicantContactData(applicantId: string, constraints: ConstraintsType) {
-    constraints.push(where('organizationId', '==', organization.currentOrganizationId))
-    const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
+  async function getApplicantContactData(applicantId: string, constraints: ConstraintsType = [], limitValue?: number) {
+    const collectionRef = collection(db, 'applicants/' + applicantId + '/contacts')
+    const q = limitValue ? query(collectionRef, ...constraints, limit(limitValue)) : query(collectionRef, ...constraints);
     const snapshot = await getDocs(q);
     const result = snapshot?.docs.map((doc) => {
-      return { id: doc.id, ...doc.data() }
+      return { id: doc.id, ...doc.data() } as ContactInfo
     })
     return result
   }
@@ -582,7 +588,7 @@ export const useApplicant = defineStore('applicant', () => {
     const applicantRef = doc(db, 'applicants/' + state.value.selectedApplicant.id);
     /** transform strings to timestamps */
     const saveData = JSON.parse(JSON.stringify(applicantData));
-    
+
     if (saveData.status) {
       await updateApplicantStatus(saveData.status);
       return;

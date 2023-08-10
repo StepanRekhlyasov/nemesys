@@ -54,25 +54,25 @@
                   </q-icon>
                 </template>
               </q-input>
-              <div v-else-if="item.type == 'date' && item.key == 'postingPeriod'" style="display: flex;"
+              <q-input v-model="searchData['postingStartDate']" outlined dense mask="date" hide-bottom-space
+                bg-color="white" clearable lazy-rules v-else-if="item.type == 'date' && item.key == 'postingStartDate'">
+                <template v-slot:prepend>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-date v-model="searchData['postingStartDate']" minimal :options="optionsStart">
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+              <div v-else-if="item.type == 'date' && item.key == 'postingEndDate'" style="display: flex;"
                 class="items-center">
-                <q-input v-model="searchData['postingStartDate']" outlined dense mask="date" hide-bottom-space
-                  bg-color="white" clearable style="min-width: 180px" lazy-rules>
-                  <template v-slot:prepend>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                        <q-date v-model="searchData['postingStartDate']" minimal :options="optionsStart">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
                 ~
                 <q-input v-model="searchData['postingEndDate']" outlined dense mask="date" hide-bottom-space
-                  bg-color="white" clearable style="min-width: 180px">
+                  bg-color="white" clearable class="q-ml-sm">
                   <template v-slot:prepend>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy cover transition-show="scale" transition-hide="scale">

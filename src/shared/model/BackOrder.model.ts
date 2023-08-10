@@ -22,10 +22,11 @@ export interface BackOrderModel {
   qualifications: TypeQualifications[];
   somethingNotQuestioned: boolean;
   experienceRemarks: string;
+  employmentType: string[];
 
   // Employment Conditions Section
   daysPerWeekList?: 'one' | 'two' | 'three' | 'four' | 'five';
-  workingDays: 'shiftSystem' | 'fixed';
+  workingDays: WorkingDaysWeek[];
   workingDaysWeek: WorkingDaysWeek[];
   workingHoursEarly: string;
   workingHoursDay: string;
@@ -42,7 +43,7 @@ export interface BackOrderModel {
   benefit: number;
   bonus: number;
   travelingExpenses: 'yesRegular' | 'yesDaily' | 'none';
-  payday: number;
+  payday: string;
   remarks: string;
 
   // Tasks Section (only referal type)
@@ -73,6 +74,7 @@ export enum TypeQualifications {
   Assistant = 'assistantNurse',
   NewComer = 'newcomer',
   CareWorker = 'careWorker',
+  Worker = 'worker',
 }
 
 export enum TransactionType {
@@ -99,5 +101,6 @@ export enum WorkingDaysWeek {
   Thursday = 'thursday',
   Friday = 'friday',
   Saturday = 'saturday',
+  Sunday = 'sunday',
   Holiday = 'holiday',
 }

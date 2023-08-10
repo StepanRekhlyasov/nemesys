@@ -1,8 +1,9 @@
 <template>
   <q-td auto-width colspan="100%" class="container">
-    <q-table flat :columns="columns" square :rows="table?.length?[{}]:[]" hide-pagination :loading="loading">
+    <q-table flat :columns="columns" square :rows="table?.length ? [{}] : []" hide-pagination :loading="loading"
+      :sort-method="sortMethod" binary-state-sort>
       <template v-slot:header="props">
-        <q-tr :props="props">
+        <q-tr :props="props" >
           <q-th v-for="col in props.cols" :key="col.name" :props="props" class="header">
             {{ col.label }}
           </q-th>
@@ -19,7 +20,7 @@
             <template v-for="(buisnesesItem, buisnesesIndex) in organizationItem.buisneses">
               <q-tr v-for="(branchItem, branchInex) in buisnesesItem.branches" :key="branchInex">
 
-                <q-td v-if="buisnesesIndex == 0 && branchInex == 0 " v-bind:rowspan="organizationItem.totalBranches">
+                <q-td v-if="buisnesesIndex == 0 && branchInex == 0" v-bind:rowspan="organizationItem.totalBranches">
                   <div class="column items-start">
                     <slot name="organization" :organizationItem="organizationItem">
 
@@ -36,7 +37,7 @@
                   </div>
                 </q-td>
 
-                <q-td v-if="Object.keys(branchItem).length ">
+                <q-td v-if="Object.keys(branchItem).length">
                   <div class="column items-start">
                     {{ branchItem.name }}
 
@@ -70,7 +71,8 @@ import { Table } from 'src/pages/admin/EnterpriseManagement/types';
 defineProps<{
   columns: QTableProps['columns']
   loading: boolean
-  table?: Table[]
+  table?: Table[],
+  sortMethod?: QTableProps['sortMethod']
 }>()
 
 </script>

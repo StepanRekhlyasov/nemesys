@@ -14,7 +14,7 @@ const props = defineProps<{
     clientFactory: ClientFactory
     draft: Partial<ClientFactory>
     isLoading: boolean
-    industryType: string
+    industryType?: string
 }>()
 const emit = defineEmits<{
     (e: 'editDraft', changedData: ChangedData)

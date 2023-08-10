@@ -6,21 +6,25 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { chartOptions, columns, itemList, chartType, rowNames } from './const';
+import {
+  chartOptions,
+  columns,
+  itemList,
+  chartType,
+  rowNames,
+} from './applicant.const';
 import {
   calculateCVR,
   getListFromObject,
 } from 'src/components/report/reportUtil';
-import { graphType } from '../Models';
+import { graphType, SeriesType } from '../Models';
 import { useGetReport } from 'src/stores/getReport';
 import VueApexCharts from 'vue3-apexcharts';
 const { getReport } = useGetReport();
 const { t } = useI18n({ useScope: 'global' });
 const apexchart = VueApexCharts;
 const dataToShow = ref<(number | string)[][]>([]);
-const series: ComputedRef<
-  { name: string; data: (number | string)[]; type: string }[]
-> = computed(() => {
+const series: ComputedRef<SeriesType[]> = computed(() => {
   const seriesList = dataToShow.value.map((rowData, index) => {
     return {
       name: t(rowNames[index]),
@@ -65,7 +69,6 @@ const props = defineProps<{
   branch_id: string;
   dateRangeProps: { from: string; to: string } | undefined;
   organization_id: string;
-  branch_user_list: { id: string; name: string }[];
   graph_type: graphType;
 }>();
 
@@ -106,7 +109,7 @@ const showData = async (
 };
 
 watch(
-  () => [props.branch_user_list, props.dateRangeProps, props.graph_type],
+  () => [props.dateRangeProps, props.graph_type],
   async () => {
     if (!props.dateRangeProps) return;
     await showData(props.dateRangeProps, props.organization_id);
@@ -115,6 +118,8 @@ watch(
 
 onMounted(async () => {
   if (!props.dateRangeProps) return;
+  //wait 0.1sec
+  await new Promise((resolve) => setTimeout(resolve, 100));
   await showData(props.dateRangeProps, props.organization_id);
 });
 </script>

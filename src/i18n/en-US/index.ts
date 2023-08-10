@@ -20,6 +20,7 @@ export default {
     approved: 'Approved',
     pending: 'Pending',
     denied: 'Denied',
+    everything: 'Everything',
     minimum: 'min',
     maximum: 'max',
     BO: 'BO',
@@ -104,6 +105,7 @@ export default {
     },
     more: 'More',
     downloadCSV: 'Download CSV',
+    csvOutput:'CSV Output',
     branch: 'Branch',
   },
   rule: {
@@ -197,6 +199,7 @@ export default {
         organizationId: 'Organization ID',
         organizationName: 'Organization name',
         operator: 'Person in charge',
+        manager: 'Manager ',
         phoneNumber: 'Phone number',
         fax: 'FAX number',
         email: 'Email',
@@ -297,10 +300,14 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        working: 'Working'
+        working: 'Working',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
       },
       business: 'Business',
-      branchFlag: 'Branch flag'
+      branchFlag: 'Branch flag',
+      enable: 'Be enabled',
+      enableFlag: 'Enabling flag'
     },
     template: {
       addNew: 'New mail template added',
@@ -651,6 +658,7 @@ export default {
     },
     backOrder: {
       TTP: 'TTP',
+      remarks: 'Remarks',
       generalDispatch: 'General Dispatch',
       title: 'Backorder',
       noOrders: 'No past backorders',
@@ -1116,6 +1124,7 @@ export default {
       cohabitation: 'Cohabitation',
       children: 'Children',
       medicalHistory: 'Medical History',
+      medicalHistoryDetails: 'Medical History Details',
       vaccinationStatus: 'Vaccination Status',
       startCaring: 'How did you start caring?',
       interviewsWaitingList: 'Number of Interviews Waiting List',
@@ -1178,6 +1187,7 @@ export default {
         FIXDate: 'F',
         jobDate: 'V',
         appointmentDate: 'O',
+        contact: 'co',
       },
       table: {
         'fullName': 'Full Name',
@@ -1295,7 +1305,7 @@ export default {
       onCallSupport: 'On-call support',
       onCallRemarks: 'On-call Remarks',
       welfare: 'Employee benefits',
-      retirementAge: 'Rretirement Age',
+      retirementAge: 'Retirement Age',
       inHouseInformation: 'Internal Company Information',
       referralFee: 'Referral Fee',
       referralFeeAmount: 'Referral Fee Amount',
@@ -1541,7 +1551,10 @@ export default {
       },
       subject: 'subject',
       content: 'content',
+      deliverNow:'Deliver Now',
+      deliverReserve:'Deliver Reserve',
       date: 'Delivery date',
+
       send: 'Send',
       delay: '+ Add New',
       cancel: 'Cancel'
@@ -1633,7 +1646,9 @@ export default {
         officeTel: 'Office: TEL',
         officeFax: 'Office: FAX',
         inChargeTitle: 'Person in charge: Title',
+        inChargeTitle_ex: 'Ex) Regular employee',
         inChargeTel: 'Person in charge: TEL',
+        inChargeMail: 'Person in charge: MAIL',
         inChargeAddress: 'Person in charge: Address',
 
         representative: 'Representative',
@@ -2291,5 +2306,13 @@ export default {
       'process' : 'In process',
       'finish' : 'Finish',
     }
+  },
+  impressions: {
+    notSet: 'Not Set',
+    A: 'A (The Best)',
+    B: 'B (Good)',
+    C: 'C (Normal)',
+    D: 'D (Bad)',
+    E: 'E (The Worst)',
   }
 }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, collectionGroup, getCountFromServer } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, getCountFromServer } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -58,17 +58,19 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const addReflectLog = async (user: User , clientFactory: ClientFactory, isDetailChanged: boolean) => {
         try {
-            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), {
-                userId: user.id,
-                userName: user.name,
-                clientFactoryId: clientFactory.id,
-                executionDate: serverTimestamp(),
-                isUpdated: true,
-                itemType: {
-                    isBasicChanged: true,
-                    isDetailInfoChanged: isDetailChanged
-                }
-            })
+            const saveData = {
+              userId: user.id ?? '',
+              userName: user.name ?? '',
+              clientFactoryId: clientFactory.id,
+              executionDate: serverTimestamp(),
+              isUpdated: true,
+              itemType: {
+                  isBasicChanged: true,
+                  isDetailInfoChanged: isDetailChanged ?? false
+              }
+            }
+            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), 
+            saveData)
 
             const docSnap = await getDoc(docRef);
 
@@ -370,35 +372,6 @@ export const useClientFactory = defineStore('client-factory', () => {
         return modifiedCF
     }
 
-    const getModifiedCFsByOrganizationId = async (organizationId: string) => {
-        const modifiedCFArr: ModifiedCF[] = []
-
-        try {
-            const foundModifiedCF = await getDocs(query(
-                collectionGroup(db, 'modifiedCF'),
-                where('organizationId', '==', organizationId)
-            ))
-
-            if (!foundModifiedCF.empty) {
-                foundModifiedCF.forEach((doc) => {
-                    const docData = doc.data()
-
-                    const modifiedCF = {
-                        ...docData,
-                        id: doc.id,
-                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                    } as ModifiedCF
-                    modifiedCFArr.push(modifiedCF)
-                })
-            }
-        } catch (e) {
-            Alert.warning(e)
-            console.log(e)
-        }
-        return modifiedCFArr
-    }
-
     const getModifiedCFs = async (clientId: string, clientFactoryId: string) => {
         if (unsubscribeModifiedCF.value[clientFactoryId]) {
             unsubscribeModifiedCF.value[clientFactoryId]();
@@ -507,7 +480,6 @@ export const useClientFactory = defineStore('client-factory', () => {
         adminSelectedCFsId,
         clientFactories,
         modifiedCFs,
-        getModifiedCFsByOrganizationId,
         getClientFactories,
         getClientFactory,
         getClientFactoryList,

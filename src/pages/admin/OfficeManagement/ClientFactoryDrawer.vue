@@ -211,6 +211,7 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                         :is-loading="isLoading.isGeneral"
                         :is-reflecting="isLoading.isReflecting"
                         :is-importing="isLoading.isImporting"
+                        :selectedIndustry="selectedIndustry"
                         @handle-import="openModifiedCFsDrawer"
                         @handle-reflect="onReflect"/>
                 </q-card-section>
