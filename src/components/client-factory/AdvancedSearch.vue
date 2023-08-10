@@ -56,10 +56,11 @@
               <q-item-label class="q-pb-xs">
                 {{ $t('client.add.clientType') }}
               </q-item-label>
-              <div v-for="industry in industries" :key="industry.id">
+              <div style="flex">
+                <span v-for="industry in industries" :key="industry.id">
                 <q-checkbox v-model="backOrderData['industry']" dense :label="industry.industryName"
                   :val="industry.industryName" />
-                <q-item v-if="backOrderData['industry'].includes(industry.industryName)">
+                <!-- <q-item v-if="backOrderData['industry'].includes(industry.industryName)">
                   <div class="q-gutter-sm">
                     <q-item-label class="q-pb-xs">{{
                       $t('client.add.facilityType')
@@ -67,7 +68,8 @@
                     <q-checkbox size="xs" v-model="backOrderData['facilityType'][industry.industryName]" :val="option.title" :label="option.title"
                       v-for="option in industry.uniqueItems.facilityForms" :key="option.order" :disable="backOrderData['industry'].length == 0" />
                   </div>
-                </q-item>
+                </q-item> -->
+                </span>
               </div>
             </q-item-section>
           </q-item>
