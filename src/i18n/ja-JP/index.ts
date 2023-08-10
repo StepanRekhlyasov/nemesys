@@ -105,6 +105,7 @@ export default {
     },
     more: 'もっと',
     downloadCSV: 'CSVダウンロード',
+    csvOutput:'CSV 出力',
     branch: '支店',
   },
   rule: {
