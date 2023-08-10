@@ -65,7 +65,7 @@ const deleteIndustry = async (industryId) => {
             <template v-slot:option="{ opt }">
 
                 <div class="q-item q-item-type row no-wrap items-center justify-between" v-close-popup>
-                    <div class="q-item-label cursor-pointer text-weight-medium" @click="selectIndustry(opt)">{{ opt.industryName }}</div>
+                    <q-btn class="q-item-label cursor-pointer text-weight-medium " flat @click="selectIndustry(opt)">{{ opt.industryName }}</q-btn>
                     <q-btn
                         icon="mdi-delete"
                         dense
