@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { QInput } from 'quasar';
 import { defineEmits, defineProps, ref} from 'vue';
+import { useQuasar } from 'quasar';
 import { Industry } from 'src/shared/model/Industry.model';
 
 const { t } = useI18n({ useScope: 'global' });
@@ -11,7 +12,7 @@ const props = defineProps<{
     activeIndustry: Industry | null
     isNewIndustryPopup: boolean
 }>()
-
+const $q = useQuasar();
 const emit = defineEmits<{
     (event: 'update:activeIndustry', value: Industry): void,
     (e: 'update:isNewIndustryPopup', payload: boolean): void,
@@ -31,16 +32,22 @@ const titleExists = (value: string) => {
 const selectIndustry = (industry) => {
     emit('update:activeIndustry', industry);
 };
-
+const deleteIndustry = async (industryId) => {
+  $q.dialog({
+    title: t('common.delete'),
+    message: t('common.deleteInfo'),
+    persistent: true,
+    cancel: t('common.cancel'),
+  }).onOk(async () => {
+    emit('deleteIndustry', industryId);
+  })
+}
 const saveNewIndustry = async () => {
     if (inputVal.value && inputVal.value.validate()) {
         emit('newIndustry', newIndustry.value)
         newIndustry.value = ''
         emit('update:isNewIndustryPopup', false)
     }
-}
-const deleteIndustry = async (industryId) => {
-    emit('deleteIndustry', industryId);
 }
 </script>
 
