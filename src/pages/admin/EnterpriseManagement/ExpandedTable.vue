@@ -180,7 +180,7 @@ async function onWorkingChange(working: boolean, ids: { organizationId?: string,
         businessItem.working = working
         for (let k = 0; k < businessItem.branches.length; k++) {
           const branchItem = businessItem.branches[k]
-          if (branchId && branchItem.businessId !== branchId) {
+          if (branchId && branchItem.businessId !== branchId || !branchItem.id) {
             continue
           }
           branchItem.working = working
