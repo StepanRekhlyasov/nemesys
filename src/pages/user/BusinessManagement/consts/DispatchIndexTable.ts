@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed ,ref } from 'vue';
 import { i18n } from 'boot/i18n';
 const { t } = i18n.global;
 export const columnsDispatchIndexTable = computed(() => {
@@ -9,8 +9,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.clientName'),
       field: 'clientName',
       align: 'left',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'index',
@@ -18,8 +18,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('common.index'),
       field: 'index',
       align: 'left',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'totalPoints',
@@ -27,8 +27,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('common.totalPoints'),
       field: 'totalPoints',
       align: 'left',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'telOne',
@@ -36,8 +36,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.one'),
       align: 'left',
       field: 'telOne',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'telTwo',
@@ -45,8 +45,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.two'),
       align: 'left',
       field: 'telTwo',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'telThree',
@@ -54,8 +54,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.three'),
       align: 'left',
       field: 'telThree',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'telFour',
@@ -63,8 +63,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.four'),
       align: 'left',
       field: 'telFour',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'telFive',
@@ -72,8 +72,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.five'),
       align: 'left',
       field: 'telFive',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'faxOne',
@@ -81,8 +81,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.one'),
       align: 'left',
       field: 'faxOne',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'faxTwo',
@@ -90,8 +90,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.two'),
       align: 'left',
       field: 'faxTwo',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'faxThree',
@@ -99,8 +99,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.three'),
       align: 'left',
       field: 'faxThree',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'faxFour',
@@ -108,8 +108,8 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.four'),
       align: 'left',
       field: 'faxFour',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
     {
       name: 'faxFive',
@@ -117,12 +117,11 @@ export const columnsDispatchIndexTable = computed(() => {
       label: t('backOrder.daysPerWeek.five'),
       align: 'left',
       field: 'faxFive',
-      format: val => `${val}`,
-      sortable: true
+      format: (val) => `${val}`,
+      sortable: true,
     },
-
-  ]
-})
+  ];
+});
 
 export const argsList = [
   ['one', 'coldCall'],
@@ -136,3 +135,10 @@ export const argsList = [
   ['four', 'fax'],
   ['five', 'fax'],
 ];
+
+export const pagination = ref({
+  sortBy: 'index',
+  descending: true,
+  page: 1,
+  rowsPerPage: 5,
+});

@@ -57,13 +57,11 @@ watch(localClientId, fetchHeadClientFactory, { immediate: true })
     <div v-if="!isLoading">
         <HighlightTwoColumn :data="headDetails.headOfficeInfo" :label="t('clientFactory.drawer.headOfficeInfo')"
             :is-edit="false" :show-actions="false" :is-drop-down="true" />
-
         <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo"
             @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" />
 
         <HighlightTwoColumn :data="headDetails.clientInfo" :label="t('clientFactory.drawer.clientInfo')" :is-edit="false"
             :show-actions="false" :is-drop-down="true"/>
-
         <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')"
             :data="headDetails.clientInfo"/>
 
