@@ -93,7 +93,7 @@ watch(()=>props.activeIndustry, ()=>{
                             <q-input class="q-mr-md" style="width:300px" outlined readonly dense v-model="element[1].title"/>
 
                             <q-popup-edit
-                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$()][\p{L}\p{N}_$()]*$/u.test(val) && titleExists(val, element[1].title))"
+                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val) && titleExists(val, element[1].title))"
                                 v-model="element[1].title"
                                 :cover="false"
                                 :offset="[0, 10]"
@@ -136,7 +136,7 @@ watch(()=>props.activeIndustry, ()=>{
                 lazy-rules
                 :rules="[
                      (val) => (val && val.length > 0) || '',
-                     (val) => (/^[\p{L}_$()][\p{L}\p{N}_$()]*$/u.test(val)) || $t('errors.industryRules'),
+                     (val) => (/^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val)) || $t('errors.industryRules'),
                      (val) => titleExists(val) || $t('errors.titleExist')
                 ]" hide-bottom-space/>
             <q-select class="q-mr-md" dense outlined v-model="newSpecificType.dataType" :options="['string', 'number']" color="accent">
