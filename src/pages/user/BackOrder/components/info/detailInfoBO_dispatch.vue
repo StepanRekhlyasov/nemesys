@@ -126,7 +126,7 @@
         <LabelField :label="`${$t('office.workingHours')}  ${$t('office.earlyShift')}`" :edit="edit"
         :valueClass="'col-4 q-pl-md self-center flex no-wrap'" labelClass="q-pl-md col-2 text-right self-center"
           :value="`${selectedBo['workingHoursEarly_min'] || ''} ~ ${selectedBo['workingHoursEarly_max'] || ''}`">
-          <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
+          <!-- <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_min']"
             :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -139,9 +139,9 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
-          </q-input>
-          <span class="q-ma-sm flex-center text-no-wrap">{{ '~' }}</span>
-          <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
+          </q-input> -->
+          <!-- <span class="q-ma-sm flex-center text-no-wrap">{{ '~' }}</span> -->
+          <!-- <q-input dense outlined bg-color="white" v-model="data['workingHoursEarly_max']"
             :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -154,7 +154,7 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
-          </q-input>
+          </q-input> -->
         </LabelField>
       </div>
       <div class="row q-pb-sm">
@@ -194,7 +194,7 @@
         <LabelField :label="`${$t('office.workingHours')}  ${$t('office.dayShift')}`" :edit="edit"
           labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center flex no-wrap items-center"
           :value="`${selectedBo['workingHoursDay_min'] || ''} ~ ${selectedBo['workingHoursDay_max'] || ''}`">
-          <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
+          <!-- <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_min']"
             :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -207,9 +207,9 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
-          </q-input>
-          <span class="q-ma-sm flex-center text-no-wrap">{{ '~' }}</span>
-          <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
+          </q-input> -->
+          <!-- <span class="q-ma-sm flex-center text-no-wrap">{{ '~' }}</span> -->
+          <!-- <q-input dense outlined bg-color="white" v-model="data['workingHoursDay_max']"
             :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space>
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -222,7 +222,7 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
-          </q-input>
+          </q-input> -->
         </LabelField>
       </div>
     </template>
@@ -463,7 +463,7 @@
 </template>
 <script lang="ts" setup>
 import { BackOrderModel, BackOrderStatus, TypeOfCase, TypeQualifications, WorkingDaysWeek } from 'src/shared/model';
-import { computed, ref, watch } from 'vue';
+import { ComputedRef, computed, ref, watch } from 'vue';
 import { DaysPerWeekList } from 'src/shared/constants/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import LabelField from 'src/components/form/LabelField.vue';
@@ -503,7 +503,7 @@ const transactionTypeOptions = computed(()=>{
 const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
-const data = ref()
+const data = ref<BackOrderModel | ComputedRef>(computed(() => backOrderStore.state.selectedBo))
 resetData()
 
 function resetData() {
@@ -551,6 +551,7 @@ const assignToBo = async () => {
 watch(()=> selectedBo.value, () => {
   data.value = backOrderStore.state?.selectedBo as BackOrderModel
 }, { deep: true })
+
 </script>
 
 <style lang="scss">

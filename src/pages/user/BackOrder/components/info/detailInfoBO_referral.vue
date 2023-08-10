@@ -416,7 +416,7 @@
 </template>
 <script lang="ts" setup>
 import { BackOrderModel, EmploymentBOStatus, BackOrderStatus, TypeOfCase, TypeQualifications, WorkingDaysWeek } from 'src/shared/model';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, ComputedRef } from 'vue';
 import { useBackOrder } from 'src/stores/backOrder';
 import LabelField from 'src/components/form/LabelField.vue';
 import detalInfoTab from './detalInfoTab.vue';
@@ -455,7 +455,7 @@ const transactionTypeOptions = computed(()=>{
 const edit = ref(false);
 const backOrderStore = useBackOrder();
 const loading = ref(false)
-const data = ref()
+const data = ref<BackOrderModel | ComputedRef>(computed(() => backOrderStore.state.selectedBo))
 resetData()
 
 function resetData() {
