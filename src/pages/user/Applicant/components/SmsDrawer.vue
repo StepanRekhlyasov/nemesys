@@ -110,7 +110,7 @@
 
         <template v-slot:body-cell-selected="props">
           <q-td :props="props" class="no-wrap q-pa-none">
-            <q-checkbox v-model="props.row.selected" :true-value="props.row" :false-value="null"
+            <q-checkbox v-model="props.row.selected"  :true-value="props.row" :false-value="null"
               @click="updateSelected(props.row)" />
           </q-td>
         </template>
@@ -231,7 +231,7 @@ onBeforeMount(async () => {
   row.value = await smsStore.filterData(status.value, keyword.value, date.value);
 })
 
-const updateSelected = (rowItem) => {
+const updateSelected = (rowItem: Applicant) => {
   selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
 };
 
@@ -270,11 +270,16 @@ async function fetchData() {
       'selected': false,
     }
   });
-  if (numberProp.phoneNumber !== '') {
-    row.value = row.value.filter((e) => { return e.phone === numberProp.phoneNumber });
-    row.value.forEach(data => { selected.value[data.id]['selected'] = true});
+  if (numberProp.phoneNumber) {
+    row.value = row.value.filter((e) => { 
+      if(e.phone === numberProp.phoneNumber) {
+        e.selected = e;
+        selected.value[e.id]['selected'] = true;
+        return true;
+      }
+      return false;
+    });
   }
-
   loading.value = false
 }
 

@@ -322,7 +322,7 @@ const openDrawer = (data: Applicant) => {
   detailsDrawer.value?.openDrawer(data)
 };
 const openSMSDrawer = async () => {
-  if(sendNumber.value == false) {
+  if(sendNumber.value === false) {
     phoneNumber.value = '';
   }
   sendSMSDrawer.value = true

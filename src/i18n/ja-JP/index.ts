@@ -1714,7 +1714,7 @@ export default {
       companyID: '企業ID',
       companyName: '企業名',
       recievedDate: '送受信日',
-      recieve: '受信',
+      recieve: '送受信日時',
       recieved: '受信',
       sent: '送信',
       responseDate: '返信日',
