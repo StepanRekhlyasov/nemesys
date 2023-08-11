@@ -3,6 +3,12 @@ import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { computed, defineProps, defineEmits, ref, watchEffect, withDefaults, watch } from 'vue';
 import { useClient } from 'src/stores/client';
+import { useRoute } from 'vue-router';
+import { useOrganization } from 'src/stores/organization';
+
+const route = useRoute()
+const isAdmin = route.meta.isAdmin
+const organization = useOrganization()
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
@@ -20,9 +26,20 @@ const emit = defineEmits(['update:modelValue'])
 
 const clientStore = useClient()
 const { clients } = storeToRefs(clientStore)
-const clientList = computed(() => clients.value.map(client => ({ label: client.name, value: client.id })))
+const clientList = computed(() =>{ 
+let clientsCopy = JSON.parse(JSON.stringify(clients.value))  as typeof clients.value
+    if(!isAdmin){
+        clientsCopy = clientsCopy.filter((c)=>{
+            return c.organizationId === organization.currentOrganizationId
+        })
+    }
+    return clientsCopy.map(client => ({ label: client.name, value: client.id }))
+}
+
+
+)
 const industryOptions = computed(() => {
-    const client = clients.value.find((client) => client.id === selectedClient.value);
+    let client = clients.value.find((client) => client.id === selectedClient.value);
     return client ? client.industry : [];
 })
 const selectedClient = ref(props.modelValue.parentClient)

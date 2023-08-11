@@ -4,84 +4,85 @@ import { reactive, watch, defineEmits, defineProps, withDefaults } from 'vue';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    modelValue: Record<string, string>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    modelValue: Record<string, any>
     theme?: string
 }>(), {
-    theme: 'primary'
+    theme: 'primary',
 })
 
 const emit = defineEmits(['update:modelValue']);
 
-const contractInfo = reactive({ ...props.modelValue });
+const clientData = reactive({ ...props.modelValue });
 
-watch(contractInfo, () => {
-    emit('update:modelValue', contractInfo);
+watch(clientData, () => {
+    emit('update:modelValue', clientData);
 }, { deep: true });
+
 </script>
 
 <template>
     <q-item>
         <q-item-section>
             <q-item-label class="q-pb-xs">
-                {{t('client.add.contactInfo')}}
+                {{t('client.add.contactInformation')}}
             </q-item-label>
+
+            
+            <div class="row q-mt-sm">
+                <div class="col-6">
+                    <q-item-label class="q-pb-xs">
+                        {{ t('client.add.contactPersonName') }}
+                    </q-item-label>
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['contactPersonName']"
+                        :placeholder="t('client.add.managerLabel')"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
+                </div>
+                <div class="col-6 q-pl-sm">
+                    <q-item-label class="q-pb-xs">
+                        {{ t('client.add.contactPersonTel') }}
+                    </q-item-label>
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['contactPersonTel']"
+                        :placeholder="t('client.add.phoneLabel')"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
+                </div>
+            </div>
 
             <div class="row q-mt-sm">
                 <div class="col-6">
                     <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.operator') }}
+                        {{ t('client.add.contactPersonTitle') }}
                     </q-item-label>
 
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="contractInfo['nameContact']"
-                        :placeholder="t('client.add.managerLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                <q-input
+                    :color="theme"
+                    outlined dense
+                    v-model="clientData['contactPersonTitle']"
+                    :placeholder="t('client.add.regularEmployee')"
+                    :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
                 </div>
-                <div class="col-6  q-pl-sm">
-                    <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.manager') }} : TEL
-                    </q-item-label>
-
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="contractInfo['telContact']"
-                        :placeholder="t('client.add.phoneLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
-                </div>
-            </div>
-            <div class="row q-mt-sm">
-              
-              <div class="col-6">
-                    <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.manager') }} : {{ t('client.list.position') }}
-                    </q-item-label>
-
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="contractInfo['positionContact']"
-                        :placeholder="t('clientFactory.drawer.details.inChargeTitle_ex')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
-                </div>
+                
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('menu.admin.organizationsTable.manager') }} : MAIL
+                        {{ t('client.add.contactPersonMail') }}
                     </q-item-label>
 
                     <q-input
                         :color="theme"
                         outlined dense
-                        v-model="contractInfo['mailContact']"
+                        v-model="clientData['contactPersonMail']"
                         :placeholder="t('client.add.emailLabel1') + '@' + t('client.add.emailLabel2')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || '']"/>
+                        :rules="[val => (val === '' || /.+@.+\..+/.test(val)) || true]"/>
                 </div>
             </div>
         </q-item-section>
     </q-item>
 </template>
-
-<style lang="scss" scoped>
-</style>

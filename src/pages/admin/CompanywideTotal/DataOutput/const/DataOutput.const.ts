@@ -1,18 +1,18 @@
 const Listitem = [
-    { 
-        label: 'SMS ', 
+    {
+        label: 'SMS ',
         required: true,
-        collectionName: 'sms' 
+        collectionName: 'sms'
     },
-    { 
-        label: 'FAX ', 
+    {
+        label: 'FAX ',
         required: true,
-        collectionName: 'fax' 
+        collectionName: 'fax'
     },
-    { 
-        label: 'BO', 
-        required: false, 
-        collectionName: 'BO' 
+    {
+        label: 'BO',
+        required: true,
+        collectionName: 'BO'
     }
 ]
 export default Listitem

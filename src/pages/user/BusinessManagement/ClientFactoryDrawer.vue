@@ -19,6 +19,7 @@ const { currentOrganizationId } = storeToRefs(organizationStore)
 const props = defineProps<{
     isDrawer: boolean,
     selectedItem: ClientFactory
+    originalOfficeId: string
 }>()
 
 const modifiedCF = ref<ModifiedCF | undefined>()
@@ -116,7 +117,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                 <q-card class="no-shadow bg-grey-2">
                     <q-card-section class="text-white bg-primary row items-end" >
                         <q-btn dense flat icon="close" @click="hideDrawer" />
-                        <CFDrawerTitle 
+                        <CFDrawerTitle
                             v-if="selectedItem"
                             :selectedItem="selectedItem"
                             :industry-value="dropDownIndustryValue"
@@ -136,6 +137,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                     <q-card-section class="bg-grey-3">
                         <CFDrawerTabs
                             @edit-draft="editDraftHandler"
+                            :originalOfficeId="originalOfficeId"
                             :clientFactory="modifiedCF ?? selectedItem"
                             :industryType="(modifiedCF ?? selectedItem).isHead ? selectedIndustry.value ?? '' : (modifiedCF ?? selectedItem).industry[0]"
                             :draft="draft"

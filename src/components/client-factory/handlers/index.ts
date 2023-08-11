@@ -2,11 +2,11 @@ import { i18n } from 'boot/i18n';
 import { computed } from 'vue';
 import {arraysAreEqual, deepMerge } from 'src/shared/utils';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderMainInfo, RenderOfficeDetailsWithoutIndustryType, RenderOfficeDetailsWithIndustryType, RenderHeadDetails } from '../types';
+import { RenderMainInfo, RenderOfficeDetailsWithoutIndustryType, RenderOfficeDetailsWithIndustryType, RenderHeadDetails, InputType } from '../types';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { deepCopy, safeGet } from 'src/shared/utils';
 const { t } = i18n.global
-
+ 
 export const finishEditing = (
   changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>,
   draft: Partial<ClientFactory>,
@@ -30,11 +30,13 @@ export const finishEditing = (
       }
     }
   };
-
+ 
   if(!changedData) {
     return draft
   }
-
+  if(!draft){
+    draft = {}
+  }
   changedData.forEach(({key, value}) => {
     let target = draft;
     const path = key.split('.');
@@ -47,20 +49,20 @@ export const finishEditing = (
       target = target[key];
     });
   });
-
+ 
   removeEqualKeys(draft, clientFactory);
-
+ 
   return draft;
 };
-
+ 
 export const mergeWithDraft = (dataToMerge: ClientFactory | ModifiedCF, draft: Partial<ClientFactory>) => {
   return deepMerge(dataToMerge, draft)
 }
-
+ 
 export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draft: Partial<ClientFactory>): RenderMainInfo => {
   const clientFactory = deepCopy(traceableClientFactory) as ClientFactory;
   const mainInfo = {} as RenderMainInfo
-
+ 
   mainInfo.officeInfo = computed(() => {
     return [
       {label: '担当者MAIL', value: (safeGet(draft, 'mail') ?? safeGet(clientFactory, 'mail')) || '', editType: 'text', key: 'mail', isHighlight: safeGet(draft, 'mail') !== undefined && safeGet(clientFactory, 'mail') !== safeGet(draft, 'mail')},
@@ -71,7 +73,7 @@ export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draf
       {label: t('clientFactory.conclusionReferralContract'), value: (safeGet(draft, 'isSignedReferralContract') ?? safeGet(clientFactory, 'isSignedReferralContract')) || false, editType: 'referral_contract', key: 'isSignedReferralContract', isHighlight: safeGet(draft, 'isSignedReferralContract') !== undefined && safeGet(clientFactory, 'isSignedReferralContract') !== safeGet(draft, 'isSignedReferralContract')}
     ]
   }).value
-
+ 
   mainInfo.contactInfo = computed(() => {
     return [
       {label: t('clientFactory.namePersonInCharge'), value: (safeGet(draft, 'nameContact') ?? safeGet(clientFactory, 'nameContact')) || '', editType: 'text', key: 'nameContact', isHighlight: safeGet(draft, 'nameContact') !== undefined && safeGet(clientFactory, 'nameContact') !== safeGet(draft, 'nameContact')},
@@ -83,10 +85,10 @@ export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draf
   
   return mainInfo
 }
-
+ 
 export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<ClientFactory>, industryType?: string): RenderOfficeDetailsWithoutIndustryType | RenderOfficeDetailsWithIndustryType => {
   const officeDetails = {} as RenderOfficeDetailsWithIndustryType | RenderOfficeDetailsWithoutIndustryType;
-
+ 
   officeDetails.registeredInfo = computed(() => {
     return [
         {label: t('clientFactory.drawer.details.parentClient'), value:(safeGet(draft, 'client.name') ?? safeGet(clientFactory, 'client.name')) || '', editType: 'client', key: 'client.name', isHighlight: safeGet(draft, 'client.name') !== undefined && safeGet(clientFactory, 'client.name') !== safeGet(draft, 'client.name')},
@@ -101,14 +103,14 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
         {label: t('clientFactory.drawer.details.longitude'), value: (safeGet(draft, 'officeDetails.registeredInfo.longitude') ?? safeGet(clientFactory, 'officeDetails.registeredInfo.longitude')) || '', editType: 'number', key: 'officeDetails.registeredInfo.longitude', isHighlight: safeGet(draft, 'officeDetails.registeredInfo.longitude') !== undefined && safeGet(clientFactory, 'officeDetails.registeredInfo.longitude') !== safeGet(draft, 'officeDetails.registeredInfo.longitude')}
     ]
   }).value;
-
+ 
   if(industryType) {
     officeDetails[`${industryType}.commonItems`] = computed(() => {
       return [
-        {label: t('clientFactory.drawer.details.referralFeePer'), value: (safeGet(draft, 'officeDetails.'+industryType+'.referralFeePer') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeePer')) || '', editType: 'number', key: 'officeDetails.'+industryType+'.referralFeePer', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.referralFeePer') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeePer') !== safeGet(draft, 'officeDetails.'+industryType+'.referralFeePer')},
-        {label: t('clientFactory.drawer.details.salaryHour'), value: (safeGet(draft, 'officeDetails.'+industryType+'.salaryHour') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryHour')) || '', editType: 'number', key: 'officeDetails.'+industryType+'.salaryHour', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.salaryHour') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryHour') !== safeGet(draft, 'officeDetails.'+industryType+'.salaryHour')},
-        {label: t('clientFactory.drawer.details.referralFeeFix'), value: (safeGet(draft, 'officeDetails.'+industryType+'.referralFeeFix') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeeFix')) || '', editType: 'number', key: 'officeDetails.'+industryType+'.referralFeeFix', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.referralFeeFix') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeeFix') !== safeGet(draft, 'officeDetails.'+industryType+'.referralFeeFix')},
-        {label: t('clientFactory.drawer.details.salaryMonth'), value: (safeGet(draft, 'officeDetails.'+industryType+'.salaryMonth') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryMonth')) || '', editType: 'number', key: 'officeDetails.'+industryType+'.salaryMonth', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.salaryMonth') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryMonth') !== safeGet(draft, 'officeDetails.'+industryType+'.salaryMonth')},
+        {label: t('clientFactory.drawer.details.referralFeePer'), value: (safeGet(draft, 'officeDetails.'+industryType+'.referralFeePer') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeePer')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.'+industryType+'.referralFeePer', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.referralFeePer') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeePer') !== safeGet(draft, 'officeDetails.'+industryType+'.referralFeePer')},
+        {label: t('clientFactory.drawer.details.salaryHour'), value: (safeGet(draft, 'officeDetails.'+industryType+'.salaryHour') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryHour')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.'+industryType+'.salaryHour', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.salaryHour') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryHour') !== safeGet(draft, 'officeDetails.'+industryType+'.salaryHour')},
+        {label: t('clientFactory.drawer.details.referralFeeFix'), value: (safeGet(draft, 'officeDetails.'+industryType+'.referralFeeFix') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeeFix')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.'+industryType+'.referralFeeFix', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.referralFeeFix') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.referralFeeFix') !== safeGet(draft, 'officeDetails.'+industryType+'.referralFeeFix')},
+        {label: t('clientFactory.drawer.details.salaryMonth'), value: (safeGet(draft, 'officeDetails.'+industryType+'.salaryMonth') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryMonth')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.'+industryType+'.salaryMonth', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.salaryMonth') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.salaryMonth') !== safeGet(draft, 'officeDetails.'+industryType+'.salaryMonth')},
         {label: t('clientFactory.drawer.details.contentWork'), value: (safeGet(draft, 'officeDetails.'+industryType+'.contentWork') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.contentWork')) || '', editType: 'text', key: 'officeDetails.'+industryType+'.contentWork', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.contentWork') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.contentWork') !== safeGet(draft, 'officeDetails.'+industryType+'.contentWork')},
         {label: t('clientFactory.drawer.details.payday'), value: (safeGet(draft, 'officeDetails.'+industryType+'.payday') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.payday')) || '', editType: 'text', key: 'officeDetails.'+industryType+'.payday', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.payday') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.payday') !== safeGet(draft, 'officeDetails.'+industryType+'.payday')},
         {label: t('clientFactory.drawer.details.welfareHealth'), value: (safeGet(draft, 'officeDetails.'+industryType+'.welfareHealth') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.welfareHealth')) || '', editType: 'text', key: 'officeDetails.'+industryType+'.welfareHealth', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.welfareHealth') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.welfareHealth') !== safeGet(draft, 'officeDetails.'+industryType+'.welfareHealth')},
@@ -129,27 +131,36 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
         {label: t('clientFactory.drawer.details.disabilityTime'), value: (safeGet(draft, 'officeDetails.'+industryType+'.disabilityTime') ?? safeGet(clientFactory, 'officeDetails.'+industryType+'.disabilityTime')) || '', editType: 'text', key: 'officeDetails.'+industryType+'.disabilityTime', isHighlight: safeGet(draft, 'officeDetails.'+industryType+'.disabilityTime') !== undefined && safeGet(clientFactory, 'officeDetails.'+industryType+'.disabilityTime') !== safeGet(draft, 'officeDetails.'+industryType+'.disabilityTime')},
       ]
     }).value
-
+ 
     officeDetails[`${industryType}.uniqueItems`] = computed(() => {
-
-      const uniqueItems = Object.keys(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) ?? {}).map((key) => {
-          if(key) {
-            return {label: key, value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`)) || typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 0 : '', key: `officeDetails.${industryType}.uniqueItems.${key}`, editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) === 'number' ? 'number' : 'text', isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}`)}
-          }
-
-        return {label: '', value: '', editType: '', key: '', isHighlight: false}
+      const uniqueItems : Record<string, string | number | boolean>[] = []
+      for(const [key, item] of Object.entries(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems`) || {})){  
+        const title = (item as {title : string}).title
+        const order = (item as {order : number}).order
+        if(title){
+          uniqueItems.push({
+            label: title, 
+            value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`)),
+            key: `officeDetails.${industryType}.uniqueItems.${key}.value`, 
+            editType: typeof safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`) === 'number' ? 'number' : 'text', 
+            isHighlight: safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) !== undefined && safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`) !== safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`),
+            order: order
+          })
+        }
+      }
+      uniqueItems.sort((a, b)=>{
+        return (a.order as number) - (b.order as number)
       })
-
       return uniqueItems
     }).value
   } else {
-
+ 
     officeDetails.commonItems = computed(() => {
       return [
-        {label: t('clientFactory.drawer.details.referralFeePer'), value: (safeGet(draft, 'officeDetails.commonItems.referralFeePer') ?? safeGet(clientFactory, 'officeDetails.commonItems.referralFeePer')) || '', editType: 'number', key: 'officeDetails.commonItems.referralFeePer', isHighlight: safeGet(draft, 'officeDetails.commonItems.referralFeePer') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.referralFeePer') !== safeGet(draft, 'officeDetails.commonItems.referralFeePer')},
-        {label: t('clientFactory.drawer.details.salaryHour'), value: (safeGet(draft, 'officeDetails.commonItems.salaryHour') ?? safeGet(clientFactory, 'officeDetails.commonItems.salaryHour')) || '', editType: 'number', key: 'officeDetails.commonItems.salaryHour', isHighlight: safeGet(draft, 'officeDetails.commonItems.salaryHour') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.salaryHour') !== safeGet(draft, 'officeDetails.commonItems.salaryHour')},
-        {label: t('clientFactory.drawer.details.referralFeeFix'), value: (safeGet(draft, 'officeDetails.commonItems.referralFeeFix') ?? safeGet(clientFactory, 'officeDetails.commonItems.referralFeeFix')) || '', editType: 'number', key: 'officeDetails.commonItems.referralFeeFix', isHighlight: safeGet(draft, 'officeDetails.commonItems.referralFeeFix') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.referralFeeFix') !== safeGet(draft, 'officeDetails.commonItems.referralFeeFix')},
-        {label: t('clientFactory.drawer.details.salaryMonth'), value: (safeGet(draft, 'officeDetails.commonItems.salaryMonth') ?? safeGet(clientFactory, 'officeDetails.commonItems.salaryMonth')) || '', editType: 'number', key: 'officeDetails.commonItems.salaryMonth', isHighlight: safeGet(draft, 'officeDetails.commonItems.salaryMonth') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.salaryMonth') !== safeGet(draft, 'officeDetails.commonItems.salaryMonth')},
+        {label: t('clientFactory.drawer.details.referralFeePer'), value: (safeGet(draft, 'officeDetails.commonItems.referralFeePer') ?? safeGet(clientFactory, 'officeDetails.commonItems.referralFeePer')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.commonItems.referralFeePer', isHighlight: safeGet(draft, 'officeDetails.commonItems.referralFeePer') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.referralFeePer') !== safeGet(draft, 'officeDetails.commonItems.referralFeePer')},
+        {label: t('clientFactory.drawer.details.salaryHour'), value: (safeGet(draft, 'officeDetails.commonItems.salaryHour') ?? safeGet(clientFactory, 'officeDetails.commonItems.salaryHour')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.commonItems.salaryHour', isHighlight: safeGet(draft, 'officeDetails.commonItems.salaryHour') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.salaryHour') !== safeGet(draft, 'officeDetails.commonItems.salaryHour')},
+        {label: t('clientFactory.drawer.details.referralFeeFix'), value: (safeGet(draft, 'officeDetails.commonItems.referralFeeFix') ?? safeGet(clientFactory, 'officeDetails.commonItems.referralFeeFix')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.commonItems.referralFeeFix', isHighlight: safeGet(draft, 'officeDetails.commonItems.referralFeeFix') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.referralFeeFix') !== safeGet(draft, 'officeDetails.commonItems.referralFeeFix')},
+        {label: t('clientFactory.drawer.details.salaryMonth'), value: (safeGet(draft, 'officeDetails.commonItems.salaryMonth') ?? safeGet(clientFactory, 'officeDetails.commonItems.salaryMonth')) || '', editType: InputType.COMMA_SEPARATED, key: 'officeDetails.commonItems.salaryMonth', isHighlight: safeGet(draft, 'officeDetails.commonItems.salaryMonth') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.salaryMonth') !== safeGet(draft, 'officeDetails.commonItems.salaryMonth')},
         {label: t('clientFactory.drawer.details.contentWork'), value: (safeGet(draft, 'officeDetails.commonItems.contentWork') ?? safeGet(clientFactory, 'officeDetails.commonItems.contentWork')) || '', editType: 'text', key: 'officeDetails.commonItems.contentWork', isHighlight: safeGet(draft, 'officeDetails.commonItems.contentWork') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.contentWork') !== safeGet(draft, 'officeDetails.commonItems.contentWork')},
         {label: t('clientFactory.drawer.details.payday'), value: (safeGet(draft, 'officeDetails.commonItems.payday') ?? safeGet(clientFactory, 'officeDetails.commonItems.payday')) || '', editType: 'text', key: 'officeDetails.commonItems.payday', isHighlight: safeGet(draft, 'officeDetails.commonItems.payday') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.payday') !== safeGet(draft, 'officeDetails.commonItems.payday')},
         {label: t('clientFactory.drawer.details.welfareHealth'), value: (safeGet(draft, 'officeDetails.commonItems.welfareHealth') ?? safeGet(clientFactory, 'officeDetails.commonItems.welfareHealth')) || '', editType: 'text', key: 'officeDetails.commonItems.welfareHealth', isHighlight: safeGet(draft, 'officeDetails.commonItems.welfareHealth') !== undefined && safeGet(clientFactory, 'officeDetails.commonItems.welfareHealth') !== safeGet(draft, 'officeDetails.commonItems.welfareHealth')},
@@ -171,13 +182,13 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
       ]
     }).value 
   }
-
+ 
   return officeDetails
 }
-
-export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails => {
+ 
+export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:object): RenderHeadDetails => {
   const headDetails = {} as RenderHeadDetails
-
+ 
   headDetails.headOfficeInfo = computed(() => {
     return [
       {label: t('clientFactory.drawer.details.prefecture'), value: (safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') ?? safeGet(clientFactory, 'clientFactory.officeDetails.registeredInfo.prefecture')) || '', editType: 'prefecture', key: 'officeDetails.registeredInfo.prefecture', isHighlight: safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture') !== undefined && safeGet(clientFactory, 'clientFactory.officeDetails.registeredInfo.prefecture') !== safeGet(clientFactory, 'draft.clientFactory.officeDetails.registeredInfo.prefecture')},
@@ -191,7 +202,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.inChargeAddress'), value: (safeGet(clientFactory, 'draft.positionContact') ?? safeGet(clientFactory, 'positionContact')) || '', editType: 'text', key: 'positionContact', isHighlight: safeGet(clientFactory, 'draft.positionContact') !== undefined && safeGet(clientFactory, 'positionContact') !== safeGet(clientFactory, 'draft.positionContact')}
     ]
   }).value
-
+ 
   headDetails.clientInfo = computed(() => {
     return [
       {label: t('clientFactory.drawer.details.representative'), value: safeGet(clientFactory, 'client.representativeName') ?? '', editType: 'text', key: 'representativeName'},
@@ -203,7 +214,7 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(clientFactory, 'client.companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
     ]
   }).value
-
+ 
   headDetails.contractInfo = computed(() => {
     return [
       {label: t('clientFactory.drawer.details.contractUnit'), value: safeGet(clientFactory, 'contractInfo.contractUnit') ?? '', editType: 'contract_unit', key: 'contractInfo.contractUnit'},
@@ -214,10 +225,19 @@ export const useHeadDetails = (clientFactory: ClientFactory): RenderHeadDetails 
       {label: t('clientFactory.drawer.details.contractPerson'), value: safeGet(clientFactory, 'contractInfo.contractPerson') ?? '', editType: 'text', key: 'contractInfo.contractPerson'}
     ]
   }).value
-
+  headDetails.relatedOfficeInfo = computed(() => {
+    return [
+      {label: t('clientFactory.drawer.details.noOfOffices'), value:relatedOfficeInfo['numberOffices']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.noOfOffices'},
+      {label: t('clientFactory.drawer.details.backOrder'), value: relatedOfficeInfo['backOrder']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.backOrder'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.fullTimeEmployment'), value:relatedOfficeInfo['fullTime'], editType: 'number', key: 'relatedOfficeInfo.fullTime'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.nonRegularEmployee'), value: relatedOfficeInfo['nonRegular'], editType: 'number', key: 'relatedOfficeInfo.nonRegular'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.temporaryEmployment'), value: relatedOfficeInfo['temporary'], editType: 'number', key: 'relatedOfficeInfo.temporary'},
+      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.currentlyInOperation'), value:relatedOfficeInfo['current'], editType: 'number', key: 'relatedOfficeInfo.current'}
+    ]
+  }).value
   return headDetails
 }
-
+ 
 export const useClientDetails = (clientFactory: ClientFactory): RenderHeadDetails['clientInfo'] => {
   return computed(() => [
       {label: t('clientFactory.drawer.details.representative'), value: safeGet(clientFactory, 'client.representativeName') ?? '', editType: 'text', key: 'representativeName'},

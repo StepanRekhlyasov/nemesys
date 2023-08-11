@@ -1,9 +1,9 @@
 <template>
-  <div class='column ' style='width: 170px'>
+  <div class='column progressColumn'>
     <div class='flex q-mx-xs items-center text-bold text-primary q-mx-auto'>
-      <span class='text-h5'>●</span><router-link :to="'/applicant-progress/'+link" :class="{'disable-link':loading}" class="applicant-link">{{ $t(column.label) }} </router-link>
+      <span class='text-h5 text-bolder'>●</span><router-link :to="'/applicant-progress/'+link" :class="{'disable-link':loading}" class="applicant-link">{{ $t(column.label) }} </router-link>
     </div>
-    <div class='row column bg-white q-py-md q-px-xs  items-start'>
+    <div class='row column bg-white q-py-sm items-start progressColumn__whiteBg'>
       <template v-if="ApplicantOrFixColumn[column.status]==='applicants'">
         <ApplicantCard v-for='item in column.items' :key='item.id' :item="(item as Applicant)" @select-applicant="(applicant)=>{emit('selectApplicant', applicant)}"/>
       </template>
@@ -54,7 +54,16 @@ const continueFromDoc = computed(() => applicantStore.state.continueFromDoc[prop
     text-decoration: underline;
   }
 }
+.progressColumn__whiteBg{
+  border-radius: 10px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
 .disable-link{
   pointer-events: none;
+}
+.progressColumn{
+  min-width: 140px;
+  width: 100%;
 }
 </style>

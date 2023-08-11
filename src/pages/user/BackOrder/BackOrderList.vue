@@ -52,11 +52,9 @@
 
           <template v-slot:body-cell-employmentType="props">
             <q-td :props="props" class="q-pa-none">
-              <div>
                 {{
-                  Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
+                  props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
-              </div>
             </q-td>
           </template>
 
@@ -98,16 +96,36 @@
             </q-td>
           </template>
 
+          <template v-slot:body-cell-salary="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.salary ? props.row.salary : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-state="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.state ? props.row.state : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-name="props">
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.officeName
+                  props.row.officeName ? props.row.officeName : '-'
                 }}
               </div>
               <div>
                 {{
-                  props.row.clientName
+                  props.row.clientName ? props.row.clientName : '-'
                 }}
               </div>
             </q-td>
@@ -174,7 +192,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 30,
 });
 
 const customSortMethod = (rows, sortBy, descending) => {
@@ -273,7 +291,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   }
 };
 
-const userNames = ref<{ [key: string]: string }>({});
+const userNames = ref<{ [id: string]: string }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -281,11 +299,15 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+        if(user?.branchName){
+          userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
+        }
+        else{
+          userNames.value[registrant] = user?.displayName || '';
+        }
         userDisplayName.value = userNames.value[registrant];
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         userDisplayName.value = '';
       });
   } else {

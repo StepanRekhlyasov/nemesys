@@ -8,6 +8,7 @@ import ClientType from './clientForms/ClientType.vue'
 import FacilityType from './clientForms/FacilityType.vue'
 import HeadOfficeInformation from './clientForms/HeadOfficeInformation.vue';
 import ContractInfo from './clientForms/ContractInfo.vue';
+import ContactInfo from './clientForms/contactInfo.vue'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { contractUnits } from 'src/shared/constants/ContractUnits.const';
 import { Client } from 'src/shared/model';
@@ -61,6 +62,13 @@ const contractInfo = ref<{ [key: string]: string | number | boolean }>({
     personInChargeMail: '',
     personInCharge: ''
 })
+
+const contactInfo = ref<{ [key: string]: string | number | boolean }>({
+    contactPersonMail:'',
+    contactPersonName:'',
+    contactPersonTel:'',
+    contactPersonTitle:''
+})
 const clientTypes = ref<string[]>([])
 const facilityTypes = ref<string[]>([])
 
@@ -75,6 +83,7 @@ const validateAndSubmit = async () => {
             ...clientInfo.value,
             ...headInfoSection.value,
             ...contractInfo.value,
+            ...contactInfo.value,
             industry: clientTypes.value,
             facilityType: facilityTypes.value,
         } as Client
@@ -105,6 +114,7 @@ defineExpose({
                     <FacilityType v-model="facilityTypes" :industries="clientTypes" :theme="theme"/>
                     <HeadOfficeInformation v-model="headInfoSection" :theme="theme"/>
                     <ContractInfo v-model="contractInfo" :theme="theme"/>
+                    <ContactInfo v-model="contactInfo" :theme="theme"/>
                 </q-list>
             </q-card-section>
         </q-form>

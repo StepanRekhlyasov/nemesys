@@ -4,57 +4,62 @@
       <div class="text-h6 text-primary">{{ $t("applicant.progress.title") }}</div>
     </q-card-section>
     <q-separator color="white" size="2px" />
-    <q-card-section class="bg-grey-3">
-      <div class="row q-pt-md q-gutter-sm applicant__inputWrapper">
-        <div class="col-2">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
-          <MySelect 
-            @update="fetchResults()" 
-            v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
-            :optionToFetch="'branchIncharge'"
-          />
+    <q-card-section class="bg-grey-3" style="padding: 16px 30px">
+      <q-scroll-area style="height: 60px;">
+        <div class="row progressInputsWrapper">
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.branch") }}</p>
+            <MySelect
+              @update="fetchResults()"
+              v-model="applicantStore.state.applicantProgressFilter['branchIncharge']"
+              :optionToFetch="'branchIncharge'"
+              width="100%"
+            />
+          </div>
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
+            <MySelect
+              @update="fetchResults()"
+              v-model="applicantStore.state.applicantProgressFilter.userInCharge"
+              :optionToFetch="'usersInCharge'"
+              width="100%"
+            />
+          </div>
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.prefecture") }}</p>
+            <MySelect
+              @update="fetchResults()"
+              v-model="applicantStore.state.applicantProgressFilter['prefecture']"
+              :options="prefectureList"
+              width="100%"
+            />
+          </div>
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.month") }}</p>
+            <YearMonthPicker
+              v-model="applicantStore.state.applicantProgressFilter['currentStatusMonth']"
+              height="40px"
+              :disable="loading"
+              width="100%"
+            />
+          </div>
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.entry") }}</p>
+            <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.wait_entry" inputClass="text-center text-bold text-primary" inputStyle="font-size:16px;"/>
+          </div>
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.retire") }}</p>
+            <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.retired" inputClass="text-center text-bold text-primary" inputStyle="font-size:16px;" />
+          </div>
+          <div class="progressInputWrapper">
+            <p class="q-ml-md inputLabel">{{ $t("applicant.progress.working") }}</p>
+            <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.working" inputClass="text-center text-bold text-primary" inputStyle="font-size:16px;" />
+          </div>
         </div>
-        <div class="col-2">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.userInCharge") }}</p>
-          <MySelect 
-            @update="fetchResults()" 
-            v-model="applicantStore.state.applicantProgressFilter.userInCharge"
-            :optionToFetch="'usersInCharge'"
-          />
-        </div>
-        <div class="col-1">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.prefecture") }}</p>
-          <MySelect 
-            @update="fetchResults()" 
-            v-model="applicantStore.state.applicantProgressFilter['prefecture']"
-            :options="prefectureList"
-          />
-        </div>
-        <div class="col-2">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.filters.month") }}</p>
-          <YearMonthPicker 
-            v-model="applicantStore.state.applicantProgressFilter['currentStatusMonth']" 
-            height="40px" 
-            width="100%" 
-            :disable="loading"
-          />
-        </div>
-        <div class="col-1">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.entry") }}</p>
-          <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.wait_entry" />
-        </div>
-        <div class="col-1">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.retire") }}</p>
-          <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.retired" />
-        </div>
-        <div class="col-1">
-          <p class="q-ml-md inputLabel">{{ $t("applicant.progress.working") }}</p>
-          <q-input readonly outlined dense bg-color="white" v-model="applicantStore.state.applicantRowsCount.working" />
-        </div>
-      </div>
+      </q-scroll-area>
       <div class="q-pt-md">
-        <q-scroll-area class="applicantColumnsWrapper" :visible="false">
-          <div class="row no-wrap justify-between" style="gap:10px">
+        <q-scroll-area class="applicantColumnsWrapper">
+          <div class="row no-wrap justify-start" style="gap:15px;">
             <template v-for="column in columns" :key="column.id">
               <ApplicantColumn
                 :column="column"
@@ -143,17 +148,29 @@ watchCurrentOrganization(async()=>{
 })
 </script>
 <style lang="scss">
-.applicant__inputWrapper{
+
+.progressInputsWrapper{
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 15px;
+  .progressInputWrapper{
+    min-width: 140px;
+    width: 100%;
+  }
   .q-field__inner{
     background: #fff;
   }
   .inputLabel,
   .q-field__native {
     white-space: nowrap;
+    margin: 0;
+    font-size: 12px;
+  }
+  .q-field__label{
+    font-size: 12px;
   }
 }
 .applicantColumnsWrapper{
-  max-width: 1300px;
   width: 100%;
   height: 80vh;
 }

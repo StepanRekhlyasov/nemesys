@@ -7,8 +7,11 @@
             <q-btn dense flat icon="close" class="q-mr-md" type="reset" @click="closeDialog" />
           </div>
           <div>
-            <div class="row text-h6 text-weight-bold q-pr-xs">
+            <div v-if="!clientFactory" class="row text-h6 text-weight-bold q-pr-xs">
               {{ `${$t('backOrder.clientName')} / ${$t('backOrder.officeName')} / ${$t(`backOrder.type.${type}`)}` }}
+            </div>
+            <div v-else class="row text-h6 text-weight-bold q-pr-xs">
+              {{ `${data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id'])?.name : undefined} / ${clientFactory.name} / ${$t(`backOrder.type.${type}`)}` }}
             </div>
           </div>
         </div>
@@ -31,6 +34,9 @@
           <q-select v-model="data['office_id']" :loading="loading" emit-value map-options option-value="id"
             option-label="name" :rules="[creationRule]" hide-bottom-space :options="clientFactoryList"
             :disable="!data['client_id']" :label="$t('applicant.list.fixEmployment.office')" />
+          <q-select v-model="data.industry" :loading="loading" option-value="id"
+            option-label="name" :rules="[creationRule]" hide-bottom-space :options="industryList"
+            :disable="!data['office_id']" :label="$t('clientFactory.drawer.details.industry')" />
         </q-card-section>
 
         <!-- Basic Info Section -->
@@ -57,7 +63,7 @@
             </labelField>
           </div>
           <div class="row q-pt-sm items-center">
-            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true" 
+            <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true"
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
               <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
             </labelField>
@@ -135,17 +141,20 @@ import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
-const emits = defineEmits(['closeDialog']);
+const emits = defineEmits(['closeDialog','fetchBo']);
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
-  officeId?: string
+  officeId?: string,
+  originalOfficeId?: string,
 }>()
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
 const clientFactoryStore = useClientFactory();
 const userStore = useUserStore();
+const clientFactory = ref<ClientFactory>();
+const industryList = ref()
 
 const usersListOption = ref<selectOptions[]>([]);
 const clientFactoryList = ref<ClientFactory[]>([])
@@ -175,7 +184,7 @@ async function addBackOrder() {
     loading.value = false;
     await backOrderStore.loadBackOrder({});
     closeDialog();
-
+    emits('fetchBo');
   }
 }
 
@@ -185,7 +194,37 @@ function closeDialog() {
   resetData();
 }
 
-function resetData() {
+const getClientFactoryData = async(client_id: string | undefined) => {
+  clientFactoryList.value = await clientFactoryStore.getClientFactoryList(client_id as string)
+  const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.originalOfficeId);
+  clientFactory.value = clientFactoryList.value[targetIndex]
+    if(props.officeId != props.originalOfficeId){
+    if (targetIndex !== -1) {
+      const updatedDocument = await clientFactoryStore.getModifiedCF( organization.currentOrganizationId, clientFactoryList.value[targetIndex])
+      clientFactory.value = updatedDocument
+      if(updatedDocument){
+        clientFactoryList.value[targetIndex] = updatedDocument
+      }
+    }
+    }
+}
+
+const updateOfficeName = async ()=>{
+  const targetIndex = clientFactoryList.value.findIndex((item) => item.id === data.value.office_id);
+  if(targetIndex!=-1){
+    clientFactory.value = clientFactoryList.value[targetIndex]
+    const updatedDocument = await clientFactoryStore.getModifiedCF( organization.currentOrganizationId, clientFactoryList.value[targetIndex])
+    if(updatedDocument){
+      clientFactory.value = updatedDocument
+    }
+    if(clientFactory.value.clientID && !clientFactory.value.client){
+      clientFactory.value.client = applicantStore.state.clientList.find(client => client.id === data.value.client_id)
+    }
+  }
+
+}
+
+async function resetData() {
   data.value = {
     workingDays: [] as string[],
     employmentType: [] as string[],
@@ -213,13 +252,29 @@ onMounted(async () => {
   }
   await applicantStore.getClients()
 })
+
 watch(() => data.value.client_id, async () => {
   if (data.value.client_id) {
     loading.value = true
-    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client_id)
+    await getClientFactoryData(data.value.client_id)
     loading.value = false
   }
 }, { deep: true, immediate: true })
+
+watch(() => data.value.office_id, async () => {
+  data.value.industry = undefined
+  if (data.value.office_id) {
+    loading.value = true
+    await updateOfficeName()
+    loading.value = false
+  }
+  const office = clientFactoryList.value.find(office => office.id === data.value['office_id'])
+  industryList.value = office?.industry
+  if(!office?.isHead){
+    data.value.industry = office?.industry?.[0]
+  }
+}, { deep: true, immediate: true })
+
 watch(() => [data.value.client_id, data.value.office_id], async () => {
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);
   if (!users) {

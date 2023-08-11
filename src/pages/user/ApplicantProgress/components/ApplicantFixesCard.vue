@@ -2,23 +2,30 @@
   <q-card
     v-if="applicant"
     bordered
-    class='cursor-move q-mb-md text-caption full-width applicant-card'
-    square
+    class='cursor-move q-mb-sm text-caption full-width applicant-card'
     flat
     :class='{redAlert:redAlert, highlighted: applicantStore.state.highlightedApplicant === applicant.id}'
   >
-    <div class='row q-gutter-sm items-center'>
-      <span class='col-1'>{{ RankCount.getRank(applicant.staffRank) }}</span>
+    <div class='row q-gutter-xs items-center'>
+      <span class='col-3' style="word-break: break-all;">{{ RankCount.getRank(applicant.staffRank) }}</span>
       <span class='col applicant-clickable' @click="emit('selectApplicant', applicant)">{{ applicant.name }}</span>
     </div>
-    <div class='row q-gutter-md items-center'>
-      <div class='col'><q-icon :name="'business'" style="font-size: 14px;"/></div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;"><q-icon :name="'business'" style="font-size: 14px;"/></div>
       <div class='col'>{{ applicantStore.state.clientList.find(client => client.id === fix.client)?.name }}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1' v-html="statusDateName[status]"></div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;" v-html="statusDateName[status]"></div>
       <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ myDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
       <div class='col' v-else>{{ fix[applicantStatusDates[status]]?fix[applicantStatusDates[status]]:'-' }}</div>
+    </div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">{{$t('applicant.progress.card.contact')}}</div>
+      <div class='col'>{{ contactDate ? myDateFormat(contactDate, 'YYYY.MM.DD') : '-'}}</div>
+    </div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">FAX</div>
+      <div class='col'>{{ faxDate ? myDateFormat(faxDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
     <q-btn
       v-if="countFixes>1"
@@ -36,14 +43,15 @@
   </q-card>
 </template>
 <script lang="ts" setup>
-import { Timestamp } from 'firebase/firestore'
+import { Timestamp, orderBy, where } from 'firebase/firestore'
 import { Applicant, ApplicantFix, ApplicantStatus } from 'src/shared/model'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RankCount } from 'src/shared/utils/RankCount.utils'
 import { i18n } from 'boot/i18n'
 import { useApplicant } from 'src/stores/applicant'
 import { applicantStatusDates } from 'src/shared/constants/Applicant.const'
 import { myDateFormat } from 'src/shared/utils/utils'
+import { useFax } from 'src/stores/fax'
 
 const props = defineProps<{
   fix: ApplicantFix,
@@ -62,7 +70,11 @@ const statusDateName = computed(()=>{
   }
 })
 
+const contactDate = ref<Timestamp>()
+const faxDate = ref<Timestamp>()
 const applicantStore = useApplicant()
+const faxStore = useFax()
+
 const applicant = computed(()=>{
   return applicantStore.state.applicants[props.fix.applicant_id]?applicantStore.state.applicants[props.fix.applicant_id]:undefined
 })
@@ -93,12 +105,34 @@ const redAlert = computed(()=>{
   const compareWithMe = new Date().setTime(new Date().getTime() - daysUntilAlert);
   return props.fix.currentStatusTimestamp.toDate() < new Date(compareWithMe)
 })
+
+onMounted(async ()=>{
+  const lastContact = await applicantStore.getApplicantContactData(props.fix.applicant_id, [where('deleted', '==', false), orderBy('created_at', 'desc')], 1)
+  contactDate.value = lastContact?.[0]?.created_at
+  const faxes = await faxStore.getFaxByConstraints([where('deleted', '==', false), where('applicantId', '==', props.fix.applicant_id)])
+  const faxesSended = faxes.filter((row)=>{
+    return row['send_at']
+  })
+  faxesSended.sort((a, b) => {
+    try {
+      if(a['send_at'].toDate() > b['send_at'].toDate()){
+        return 1
+      }
+    } catch (e) {
+      console.log(e)
+      return -1
+    }
+    return 0
+  })
+  faxDate.value = faxes?.[0]?.['transmissionDateTime'] || faxes?.[0]?.['send_at'] 
+})
   
 </script>
 <style scoped lang="scss">
 .applicant-card{
   border: 1px solid #333; 
-  padding: 8px
+  padding: 8px;
+  border-radius: 9px;
 }
 .applicant-card.redAlert{
   border: 1px solid #FF5252; 
@@ -122,7 +156,7 @@ const redAlert = computed(()=>{
   border-radius: 50%;
   position: absolute;
   right: -18px;
-  top: 18px;
+  top: calc(50% - 18px);
   font-size: 14px;
 }
 </style>
