@@ -158,7 +158,7 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.attendant.meansCommuting') }}
       </div>
-      <div class="col-3 q-pl-md blue "> 
+      <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit && Array.isArray(applicant.meansCommuting)">
           {{ applicant.meansCommuting.map((row)=> $t('applicant.attendant.meansCommutingOptions.' + row)).join('・') }}
         </span>
@@ -238,8 +238,12 @@
           option-label="name" v-model="data['ngFacilityType']" :disable="loading" />
       </div>
     </div>
-
-    <div class="row q-pa-md"></div>
+    <div class="row q-pb-sm">
+       <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
+         {{ $t('clientFactory.fax.clientNG') }}
+       </div>
+       <div class="col-9 q-pl-md blue "></div>
+     </div>
 
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -248,13 +252,13 @@
       <div class="col-3 q-pl-md blue ">
         <span v-if="!desiredEdit">{{ applicant.hourlyRate?parseInt(applicant.hourlyRate).toLocaleString('en-US')+' '+$t('common.yen'):''}}</span>
         <div v-if="desiredEdit" class="flex items-center no-wrap">
-          <q-input 
-            dense 
-            outlined 
-            bg-color="white" 
+          <q-input
+            dense
+            outlined
+            bg-color="white"
             min="0"
-            v-model="data['hourlyRate']" 
-            :disable="loading" 
+            v-model="data['hourlyRate']"
+            :disable="loading"
           />
           <span class="q-ml-sm">{{ $t('common.yen') }}</span>
         </div>
@@ -429,7 +433,7 @@ async function saveDesired() {
     data.value['commutingTime'] = Number(data.value['commutingTime']);
     await applicantStore.updateApplicant(data.value);
     desiredEdit.value = false;
-    
+
   } catch (error) {
     Alert.warning(error)
   }
