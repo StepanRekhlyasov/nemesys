@@ -28,7 +28,7 @@ defineProps({
     default: false
   },
   value: {
-    type: [String, Array]
+    type: [String, Array, Number]
   },
   required: {
     type: Boolean,

@@ -1,80 +1,25 @@
 <template>
   <q-card-section>
+  
     <div class="row text-primary text-h6" >
       {{'■ '+ $t('backOrder.basicInfo') }}
     </div>
     <div class="row ">
       <labelField :label="$t('client.list.client')" :edit="false"
-        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " :value="backOrder['client_id'] && client ? client['name']  : ''">
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="col-4 q-pl-md " :value="backOrder['client_id'] && client ? client['name']  : ''">
       </labelField>
       <labelField :label="$t('backOrder.officeName')" :edit="false" :value="offices.find(office => office.id == backOrder['office_id'])?.name"
-        labelClass="q-pl-md col-2 text-right"  valueClass="col-4 q-pl-md " >
+        labelClass="q-pl-md col-2 text-right self-center"  valueClass="col-4 q-pl-md self-center" >
       </labelField>
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.approvalOrNot')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value=" 'approvalOrNot' in backOrder ?(backOrder['approvalOrNot'] ? $t('common.yes') : $t('common.no')) : ''" valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.filingRemarks')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['filingRemarks']"  valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.availabilityOfGarage')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['availabilityOfGarage']"  valueClass="col-4 q-pl-md " />
-      <labelField :label="$t('backOrder.create.commutingByCar')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['commutingByCar']"  valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.parkingRemarks')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['parkingRemarks']"  valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.uniformAvailability')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['uniformAvailability']"  valueClass="col-4 q-pl-md " />
-      <labelField :label="$t('backOrder.create.availabilityOfLunch')" :edit="false"
-      labelClass="q-pl-md col-2 text-right" :value="backOrder['availabilityOfLunch']" valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.smoking')" :edit="false"
-      labelClass="q-pl-md col-2 text-right" :value="backOrder['smoking'] ? $t(`smoking.${backOrder['smoking']}`) : ''" valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.smokingRemarks')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['smokingRemarks']"  valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.vaccination')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['vaccination']"  valueClass="col-4 q-pl-md " />
-      <labelField :label="`${$t('backOrder.create.priorEmployment')}\r   ${$t('backOrder.create.medicalCheckup')}`"
-        :edit="true" labelClass="q-pl-md col-2 text-right" :value="backOrder['medicalExamination']" valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.numberUsers')" :edit="false" labelClass="q-pl-md col-2 text-right"
-        :value="backOrder['numberUsers'] ? `${backOrder['numberUsers']}${$t('common.reputation')}` : '' "  valueClass="col-4 q-pl-md " />
-      <labelField :label="$t('backOrder.create.employees')" :edit="false" labelClass="q-pl-md col-2 text-right"
-        :value="backOrder['numberEmployees'] ? `${backOrder['numberEmployees']}${$t('common.reputation')}` : ''"  valueClass="col-4 q-pl-md " />
-    </div>
-
-    <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.levelOfCare')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['levelOfCare']"  valueClass="col-4 q-pl-md " />
-      <labelField :label="$t('backOrder.create.memo')" :edit="false"
-        labelClass="q-pl-md col-2 text-right" :value="backOrder['memo']" valueClass="col-4 q-pl-md " />
-    </div>
-
-    <!-- office unique items -->
-    <div>
-      {{ backOrder.industry }}
+      <template v-for="item in ui" :key="item.title"> 
+        <labelField 
+          :label="item.title" 
+          :edit="false"
+          labelClass="q-pl-md col-2 text-right self-center" 
+          valueClass="col-4 q-pl-md self-center" 
+          :value="item.value"
+        />
+      </template>
     </div>
 
   </q-card-section>
@@ -84,7 +29,8 @@
 import labelField from 'src/components/form/LabelField.vue';
 import { BackOrderModel, Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { watch } from 'vue'
+import { safeGet } from 'src/shared/utils';
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
@@ -94,8 +40,27 @@ const props = defineProps<{
   offices: ClientFactory[]
 }>()
 
-watch(()=>props.backOrder.industry, (newVal)=>{
-  console.log(newVal)
-})
+const cF = ref<ClientFactory>()
+const ui = ref()
+
+watch(()=>[props.backOrder.industry, props.officeID], ()=>{
+  if(props.backOrder.industry){
+    cF.value = props.offices.find(office => office.id == props.backOrder['office_id'])
+    if(cF.value?.officeDetails?.[props.backOrder.industry]?.uniqueItems){
+      ui.value = (Object.entries(cF.value.officeDetails[props.backOrder.industry]?.uniqueItems) as [string, Record<string, string | number | boolean>][]).map((row)=>{
+        const key = row[0]
+        const item = row[1]
+        return {
+          title: item.title, 
+          value: safeGet(cF.value, `officeDetails.${props.backOrder.industry}.uniqueItems.${key}.value`),
+          order: item.order
+        }
+      })
+      ui.value.sort((a, b)=>{
+        return a['order'] - b['order']
+      })
+    }
+  }
+}, {immediate: true})
 
 </script>
