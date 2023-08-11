@@ -32,10 +32,19 @@
                 {{ $t('applicant.add.postCode') }} <span style="color: red">*</span>
               </div>
               <div class="col-8 q-pl-sm">
-                <q-input outlined dense v-model="applicantData['postCode']" :rules="[creationRule]" hide-bottom-space
-                  bg-color="white" />
+                <div class="row  flex justify-center centers items-center">
+                  <div class="col-8">
+                    <q-input class="col" outlined dense v-model="applicantData['postCode']" :rules="[creationRule]"
+                      hide-bottom-space bg-color="white" />
+                  </div>
+                  <div class="col-4 text-center justify-center">
+                    <q-btn @click="fetchAddress" dense>Autofill</q-btn>
+                  </div>
+                </div>
               </div>
             </div>
+            <AddressDialog @keep-details="(value) => { keepDetails = value }" :openDialog="showAddress"
+              :addressList="addressList" @getAddress="getAddress" :key="applicantData['postCode']" />
             <div class="row q-pt-sm">
               <div class="col-3 text-right self-center q-pr-sm">
                 {{ $t('applicant.add.prefecture') }} <span style="color: red">*</span>
@@ -43,7 +52,11 @@
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
                   :rules="[creationRule]" hide-bottom-space bg-color="white" :label="$t('common.pleaseSelect')" emit-value
+<<<<<<< HEAD
                   map-options use-input input-debounce="0" @filter="filterPrefecturre" />
+=======
+                  map-options @update:model-value="applicantData['municipalities'] = ''; applicantData['street'] = ''" />
+>>>>>>> auto-input-prefecture
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -53,7 +66,11 @@
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :disable="!fetchMunicipalities" emit-value bg-color="white"
                   :options="municipalities" v-model="applicantData['municipalities']" :label="$t('common.pleaseSelect')"
+<<<<<<< HEAD
                   :rules="[creationRule]" hide-bottom-space use-input input-debounce="0" @filter="filterMunicipalities" />
+=======
+                  :rules="[creationRule]" hide-bottom-space @update:model-value="applicantData['street'] = ''" />
+>>>>>>> auto-input-prefecture
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -287,6 +304,8 @@ import { requiredFields } from 'src/shared/constants/Applicant.const';
 import { validateEmail, validateDate } from 'src/shared/constants/Form.const';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { creationRule, isKatakanaRule, phoneRule } from 'src/components/handlers/rules';
+import { getAddresses } from 'src/shared/constants/Municipalities.const';
+import AddressDialog from './components/AddressDialog.vue';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { toKatakana } from 'src/shared/utils/ToKatakana.utils.ts';
 
@@ -309,10 +328,22 @@ const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
 const municipalities = ref<string[]>([])
+
+const showAddress = ref(false)
+const addressList = ref(<{ prefecture: string, municipality: string, street: string }[]>[]);
+const keepDetails = ref(false)
 const fetchMunicipalities = ref(false)
 
+watch(() => applicantData.value.postCode, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    showAddress.value = false;
+    keepDetails.value = false;
+    applicantData.value.prefecture = '';
+    applicantData.value.municipalities = '';
+    applicantData.value.street = '';
+  }
+})
 watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
-  applicantData.value.municipalities = '';
   if (newVal !== oldVal && newVal) {
     fetchMunicipalities.value = false
     municipalities.value = await getMunicipalities(newVal)
@@ -321,6 +352,18 @@ watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
     fetchMunicipalities.value = false
   }
 }, { immediate: true })
+
+
+async function fetchAddress() {
+  const pincode = applicantData.value.postCode
+  const address = await getAddresses(pincode)
+  if (!address) {
+    Alert.warning('Invalid pin entered!');
+    return;
+  }
+  showAddress.value = true
+  addressList.value = address.address;
+}
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
@@ -398,5 +441,14 @@ async function onSubmit() {
     Alert.warning(error);
   }
   loading.value = false;
+}
+const getAddress = (index: number) => {
+  if (index >= 0) {
+    const add = addressList.value[index];
+    applicantData.value.prefecture = add.prefecture;
+    applicantData.value.municipalities = add.municipality;
+    applicantData.value.street = add.street;
+  }
+  showAddress.value = false
 }
 </script>
