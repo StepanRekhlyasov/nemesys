@@ -746,19 +746,17 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
                     query(
                       collection(db, 'clients', cIds[item], 'client-factory', item, 'teleAppointments'),
                       where('deleted', '==', false),
-                      where('created_at', '>=', prevDate),
-                      where('organizationId', '==', currentOrganizationId),
                     )
                   );
-                  console.log(teleAppointmentSnapshot)
-                // teleAppointmentSnapshot.docs.forEach(
-                //     (doc) => {
-                //         if (doc.data()['office_id'] === item
-                //             && doc.data()['created_at'] >= prevDate) {
-                //             if (!offices.includes(item)) { offices.push(item) }
-                //         }
-                //     }
-                // )
+                teleAppointmentSnapshot.docs.forEach(
+                    (doc) => {
+                        if (doc.data()['organizationId']===currentOrganizationId.value
+                            &&doc.data()['created_at'] >= prevDate
+                            ) {
+                            if (!offices.includes(item)) { offices.push(item) }
+                        }
+                    }
+                )
             }
         }
         // else if (constraint === 'connected') {
@@ -855,9 +853,9 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
             }
         }
         // if (backOrderData['route'].length !== 0) {
-        //     backOrderData['route'].forEach(async(constraint)=>{
-        //         office = interSectionOfArray(office, await getTeleAppointmentData(office,constraint, cIds));
-        //     })
+        //     for(const route of backOrderData['route']){
+        //         office = interSectionOfArray(office, await getTeleAppointmentData(office,route, cIds));
+        //     }
         // }
         clientFactoryStore.condition = true
         clientFactoryStore.selectedCFsId = office
