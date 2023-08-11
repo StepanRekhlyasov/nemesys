@@ -201,7 +201,7 @@ async function onSubmit() {
     contactData.value = {};
 
     //** if this is first contact added change status */
-    if(contactListData.value.length === 0){
+    if(contactListData.value.length === 0 || props.applicant.status === ApplicantStatus.WAIT_CONTACT){
       applicantStore.updateApplicant({
         status: ApplicantStatus.WAIT_CONTACT
       })

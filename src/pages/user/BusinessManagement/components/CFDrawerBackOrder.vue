@@ -3,7 +3,7 @@
     class="q-py-none no-shadow CFDrawerBO">
     <template v-slot:body-cell-boid="props">
       <q-td :props="props">
-        <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boid"
+        <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boId"
           class="q-pa-none text-body1" />
         <div></div>
       </q-td>
@@ -58,7 +58,7 @@
     </template>
     <template v-slot:body-cell-dateRegistration="props">
       <q-td :props="props">
-        {{ myDateFormat(props.row.dateOfRegistration) }}<br />
+        {{ (props.row.dateOfRegistration) }}<br />
       </q-td>
     </template>
 
@@ -66,7 +66,7 @@
       <q-td :props="props">
         {{ props.row.qualifications && props.row.qualifications.length ? props.row.qualifications.map(q =>
           $t('applicant.qualification.' + q)).join(', ') : '' }}<br />
-        {{ props.row.experienceRemarks }}
+        {{ props.row.experienceReq }}
       </q-td>
     </template>
 
@@ -86,7 +86,7 @@
 
     <template v-slot:body-cell-content="props">
       <q-td :props="props">
-        {{ props.row.tasks }}<br />
+        {{ props.row.work_content }}<br />
         {{ props.row.memo_house }}
       </q-td>
     </template>
@@ -113,7 +113,9 @@
   </q-table>
   <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :clientId="clientId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false;" />
+    <createBO :clientId="clientId" :original-office-id="originalOfficeId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" @fetch-bo="fetchBOData()"
+    v-if="cteateBoDrawer"
+    />
   </q-drawer>
   <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
     selectedClient = clientValue
@@ -135,10 +137,9 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
-import { myDateFormat } from 'src/shared/utils/utils';
 
 const { t } = useI18n({ useScope: 'global' });
-const props = defineProps<{ clientId: string; officeId?: string }>();
+const props = defineProps<{ clientId: string; officeId?: string; originalOfficeId?: string }>();
 const selected = ref(false);
 const backOrderData: Ref<BackOrderModel[]> = ref([]);
 const showSearchByMap = ref(false)
@@ -192,11 +193,13 @@ const fetchBOData = async () => {
   backOrderData.value = data.map((row) => {
     return { ...row, selected: false, boid: row.boId };
   });
+  backOrderData.value.sort((a,b)=>Number(b.boId)-Number(a.boId))
   loading.value = false;
 };
 const openDrawer = (data) => {
   if (data) {
     selectedBo.value = data;
+    backOrderStore.state.selectedBo = selectedBo.value as BackOrderModel
     infoDrawer.value?.openDrawer(data);
   }
 }
@@ -226,6 +229,7 @@ function addNewBo() {
     .onCancel(() => {
       typeBoCreate.value = 'dispatch';
       cteateBoDrawer.value = true
+
     });
 }
 

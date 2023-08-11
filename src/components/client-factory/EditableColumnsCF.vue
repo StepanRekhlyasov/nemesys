@@ -37,7 +37,8 @@ export type DataWithIndustry = Data[] | {
 
 const props = withDefaults(defineProps<{
     data: Data[],
-    theme?: string
+    theme?: string,
+    selectedIndustry?: { value: string, isSelected: boolean }
 }>(), {
     theme: 'primary'
 })
@@ -97,7 +98,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <div v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'">{{ row.value }}</div>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
-                <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
+                <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false" :industryName="selectedIndustry?.value"/>
                 <template v-else-if="row.editType === InputType.RADIO && typeof row.value === 'string'">
                   <q-radio
                       v-for="item in row.radioVals"
@@ -107,7 +108,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                       :label="item.label"
                     />
                 </template>
-                    <!-- Add more conditions for other data types as needed -->
+                <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
 

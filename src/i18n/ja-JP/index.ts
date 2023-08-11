@@ -105,6 +105,7 @@ export default {
     },
     more: 'もっと',
     downloadCSV: 'CSVダウンロード',
+    csvOutput:'CSV 出力',
     branch: '支店',
   },
   rule: {
@@ -300,6 +301,8 @@ export default {
       flags: {
         all: 'すべて',
         working: '稼働',
+        enabled: '有効',
+        disabled: '無効',
       },
       business: '事業',
       branchFlag: '支店フラグ',
@@ -917,7 +920,7 @@ export default {
         chargeOfFacility: '施設担当者',
         jobTitle: '役職',
         contact: '連絡先',
-        comments: '感想（A-E）',
+        comments: '感想 (A-E)',
         inspectionMemo: '職見メモ',
         notApplicable: '対象外',
         decided: '他社決定',
@@ -1122,6 +1125,7 @@ export default {
       cohabitation: '同居者',
       children: '子供',
       medicalHistory: '既往歴',
+      medicalHistoryDetails: '既往歴詳細',
       vaccinationStatus: 'ワクチン接種状況',
       startCaring: '介護を始めたきっかけ',
       interviewsWaitingList: '面接待ち件数',
@@ -1184,6 +1188,7 @@ export default {
         FIXDate: 'F',
         jobDate: '職',
         appointmentDate: '内',
+        contact: 'コ',
       },
       table: {
         'fullName': '氏名',
@@ -2307,5 +2312,13 @@ export default {
       'process' : '進行中',
       'finish' : '完了',
     }
+  },
+  impressions: {
+    notSet: '未設定',
+    A: 'A (最良)',
+    B: 'B (良)',
+    C: 'C (並)',
+    D: 'D (悪)',
+    E: 'E (最悪)',
   }
 };

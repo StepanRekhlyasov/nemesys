@@ -103,7 +103,7 @@
             </div>
             <div class="col-6">
               <q-option-group
-                v-model="searchData['casetype']"
+                v-model="searchData['typecase']"
                 :options="occupationList"
                 type="checkbox"
                 inline
@@ -145,23 +145,12 @@
           </div>
           <div class="row">
             <div class="col-3">{{ $t('backOrder.transactionType') }}</div>
-            <div class="col-6 q-pl-sm">
-              {{ $t('client.backOrder.moreHalfYearExp') }}
-            </div>
           </div>
           <div class="row">
             <div class="col-3">
               <q-option-group
-                v-model="searchData['category']"
+                v-model="searchData['transactiontype']"
                 :options="applicantClassification"
-                type="checkbox"
-                inline
-              />
-            </div>
-            <div class="col-3">
-              <q-option-group
-                v-model="searchData['experience']"
-                :options="moreHalfYearExpOption"
                 type="checkbox"
                 inline
               />
@@ -185,7 +174,6 @@ import DoubleNumberInput from '../../../Applicant/components/search/components/D
 import { Alert } from 'src/shared/utils/Alert.utils';
 
 import {
-  moreHalfYearExpOption,
   employmentTypeOption,
   qualificationOption,
 } from '../../consts/BackOrder.const';
@@ -197,9 +185,8 @@ import {
 const searchDataSample = {
   employmenttype: [],
   qualifications: [],
-  category: [],
-  casetype: [],
-  experience: [],
+  transactiontype: [],
+  typecase: [],
 };
 
 const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
@@ -235,6 +222,7 @@ const searchStaff = async () => {
 const cancel = () => {
   expanded.value = false;
   searchData.value = JSON.parse(JSON.stringify(searchDataSample));
+  emit('loadSearchStaff', searchData.value);
 };
 </script>
 
