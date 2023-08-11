@@ -35,13 +35,6 @@ watch(()=>selected.value,()=>{
 
 const paginatedAndSortedRows = ref<ClientFactoryTableRow[]>([...props.rows]);
 
-watch(props.pagination, () => {
-  const sortedRows = sortRows([...props.rows], props.pagination.sortBy, props.pagination.descending);
-  const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
-  const end = start + props.pagination.rowsPerPage;
-  paginatedAndSortedRows.value = sortedRows.slice(start, end);
-});
-
 const sortRows = (rows, sortBy:string, descending:boolean) => {
   const collator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true });
   const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
@@ -55,8 +48,8 @@ const sortRows = (rows, sortBy:string, descending:boolean) => {
   }
   if (sortBy === 'name') {
     return [...props.rows].sort((a, b) => {
-      const first = a.name?a.name:'';
-      const second = b.name?b.name:'';
+      const first = a.office.name?a.office.name:'';
+      const second = b.office.name?b.office.name:'';
       return descending ? collator.compare(second, first) : collator.compare(first, second);
     }).slice(start,end);
   }
@@ -107,7 +100,12 @@ else
   return rows;
 
 };
-
+watch(()=>[props.rows, props.pagination], () => {
+  const sortedRows = sortRows([...props.rows], props.pagination.sortBy, props.pagination.descending);
+  const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
+  const end = start + props.pagination.rowsPerPage;
+  paginatedAndSortedRows.value = sortedRows.slice(start, end);
+}, {immediate: true});
 </script>
 
 <template>

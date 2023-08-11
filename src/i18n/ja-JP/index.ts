@@ -184,6 +184,7 @@ export default {
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
+      mediaControl: 'メディアコントロール',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
       releaseNotesInquiry: 'リリースノート・問い合わせ',
@@ -266,7 +267,7 @@ export default {
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
       billingHistory: '請求履歴',
-      aggregateDataDisplay: '集計データ表示',
+      aggregateDataDisplay: '選択肢マスタ',
       dataOutputDisplay: 'データ出力',
       dataOutputDisplayTable: {
         outputMonth: '出力月',
@@ -472,6 +473,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: '他種別での施設形態',
       newReg: 'クライアント 新規登録',
       clientBasicInfo: 'クライアント基本情報',
       clientName: 'クライアント名',
@@ -1566,6 +1568,7 @@ export default {
   clientFactory: {
     numberEmployees: '従業員数',
     facilityType: '施設形態',
+    mediaOptions: 'メディアオプション',
     homePage: 'ホームページ',
     conclusionDispatchContract: '派遣契約締結',
     conclusionReferralContract: '紹介契約締結',
@@ -2257,7 +2260,9 @@ export default {
   errors: {
     'BO_occupied': '選択されたBOは既に使用されています',
     'error': 'エラー',
-    'deleteBranchesFirst': 'まずすべての支店を削除してください'
+    'deleteBranchesFirst': 'まずすべての支店を削除してください',
+    titleExist: 'タイトルはすでに存在します',
+    industryRules: '無効入力',
   },
   budget: {
     search: '予算検索',

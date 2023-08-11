@@ -184,6 +184,7 @@ export default {
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
+      mediaControl: 'Media Control',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
       releaseNotesInquiry: 'Release Notes and Inquiries',
@@ -266,7 +267,7 @@ export default {
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
       billingHistory: 'Billing history',
-      aggregateDataDisplay: 'Aggregated Data Display',
+      aggregateDataDisplay: 'Option Master',
       dataOutputDisplay: 'Data Output',
       dataOutputDisplayTable: {
         outputMonth: 'Output month',
@@ -475,6 +476,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: 'Types from other industries:',
       newReg: 'Client new registration',
       clientBasicInfo: 'Client basic information',
       clientName: 'Client Name',
@@ -1573,6 +1575,7 @@ export default {
   clientFactory: {
     numberEmployees: 'Number of employees',
     facilityType: 'Facility type',
+    mediaOptions: 'Media Options',
     homePage: 'Home page',
     conclusionDispatchContract: 'Conclusion of dispatch contract',
     conclusionReferralContract: 'Conclusion of referral contract',
@@ -2264,7 +2267,9 @@ export default {
   errors: {
     'BO_occupied': 'Selected BO is occupied',
     'error': 'Error',
-    'deleteBranchesFirst': 'Please, delete all branches first'
+    'deleteBranchesFirst': 'Please, delete all branches first',
+    titleExist: 'Title already exists',
+    industryRules: 'Invalid input',
   },
   budget: {
     search: 'Budget Search',
@@ -2327,5 +2332,5 @@ export default {
     C: 'C (Normal)',
     D: 'D (Bad)',
     E: 'E (The Worst)',
-  }
+  },
 }

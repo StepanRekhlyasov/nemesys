@@ -98,7 +98,7 @@
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['invoice'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -106,7 +106,7 @@
     <div class="row q-pt-sm"  v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
+        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['payment'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -125,6 +125,7 @@ import labelField from 'src/components/form/LabelField.vue';
 import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
 import { validateDate } from 'src/shared/constants/Form.const';
 import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { useUserStore } from 'src/stores/user';
 import { ref, watch } from 'vue';
 
