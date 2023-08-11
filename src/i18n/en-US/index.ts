@@ -1721,7 +1721,7 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      recieve: 'date issued',
+      recieve: 'Sent / Recieve Date',
       recieved: 'Recieved',
       sent: 'Sent',
       responseDate: 'response date',
