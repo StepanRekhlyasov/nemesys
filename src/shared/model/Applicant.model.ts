@@ -1,6 +1,5 @@
 import { User } from 'firebase/auth';
 import { FieldValue, Timestamp } from 'firebase/firestore';
-
 export interface ApplicantExperience extends ApplicantExperienceBase, ApplicantExperienceDates { }
 export interface ApplicantExperienceInputs extends ApplicantExperienceBase, ApplicantExperienceInputDates { }
 export interface ApplicantExperienceBase {
@@ -127,6 +126,7 @@ export interface DesiredConditions {
   workingHoursLate?: string;
   workingHoursNight?: string;
   shortTime?: boolean;
+  ngClient:string[],
   shiftRemarks?: string;
   meansCommuting?: string[];
   nearestStation?: string;

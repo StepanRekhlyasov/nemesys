@@ -197,15 +197,19 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityType }}</span>
-        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options v-if="desiredEdit"
-          option-label="name" v-model="data['ngFacilityType']" :disable="loading" />
+        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options
+          option-label="name" v-model="data['ngFacilityType']" :disable="loading" v-if="desiredEdit"/>
       </div>
     </div>
     <div class="row q-pb-sm">
        <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
          {{ $t('clientFactory.fax.clientNG') }}
        </div>
-       <div class="col-9 q-pl-md blue "></div>
+       <div class="col-9 q-pl-md blue ">
+        <span v-if="!desiredEdit" class="text_dots q-mt-sm">{{ formattedNgClients }}</span>
+        <q-select outlined dense multiple :options="clients" use-chips emit-value map-options
+          option-label="name" v-model="data['ngClient']" :disable="loading" v-if="desiredEdit"/>
+       </div>
      </div>
 
     <div class="row q-pb-sm">
@@ -277,7 +281,7 @@
 
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch , Ref} from 'vue';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
@@ -286,13 +290,19 @@ import { myDateFormat } from 'src/shared/utils/utils';
 import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
+import { where } from 'firebase/firestore'
 import { Alert } from 'src/shared/utils/Alert.utils';
+import {useClient} from 'src/stores/client'
+import { useOrganization } from 'src/stores/organization';
+import { Client } from 'src/shared/model';
 
 const props = defineProps<{
   applicant: Applicant,
   bo?: BackOrderModel
 }>()
-
+const clients:Ref<Client[]> = ref([]);
+const organization = useOrganization()
+const clientStore =useClient()
 const applicantStore = useApplicant();
 const { t } = i18n.global;
 const shiftOptions = [
@@ -335,6 +345,7 @@ const specialDayComputed = computed(() => {
 const metadataStore = useMetadata()
 onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
+  clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
 });
 
 watch(() => data.value['route'], async (newVal) => {
@@ -351,8 +362,6 @@ watch(() => desiredEdit.value, (newVal) => {
   }
 }
 )
-
-
 function resetData() {
   defaultData.value = {
     timeToWork: myDateFormat(props.applicant['timeToWork']),
@@ -367,6 +376,7 @@ function resetData() {
     commutingTimeRemarks: props.applicant['commutingTimeRemarks'],
     facilityDesired: props.applicant['facilityDesired'] || [],
     ngFacilityType: props.applicant['ngFacilityType'] || [],
+    ngClient: props.applicant['ngClient'] || [],
     hourlyRate: props.applicant['hourlyRate'],
     transportationServices: props.applicant['transportationServices'],
     jobSearchPriorities1: props.applicant['jobSearchPriorities1'],
@@ -385,7 +395,7 @@ resetData();
 
 const joinFacilityType = computed(() => props.applicant.ngFacilityType?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
 const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
-
+const formattedNgClients = computed(() => props.applicant.ngClient?.map(val => (`${val.name}`)).join(', '))
 async function saveDesired() {
   loading.value = true;
   try {
@@ -424,6 +434,7 @@ const filterRoute = async (val: string, update) => {
     routeData.value = routeData.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
   })
 };
+
 </script>
 
 <style lang="scss">
