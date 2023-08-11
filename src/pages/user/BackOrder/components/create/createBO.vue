@@ -34,6 +34,9 @@
           <q-select v-model="data['office_id']" :loading="loading" emit-value map-options option-value="id"
             option-label="name" :rules="[creationRule]" hide-bottom-space :options="clientFactoryList"
             :disable="!data['client_id']" :label="$t('applicant.list.fixEmployment.office')" />
+          <q-select v-model="data.industry" :loading="loading" option-value="id"
+            option-label="name" :rules="[creationRule]" hide-bottom-space :options="industryList"
+            :disable="!data['office_id']" :label="$t('clientFactory.drawer.details.industry')" />
         </q-card-section>
 
         <!-- Basic Info Section -->
@@ -151,6 +154,7 @@ const organization = useOrganization();
 const clientFactoryStore = useClientFactory();
 const userStore = useUserStore();
 const clientFactory = ref<ClientFactory>();
+const industryList = ref()
 
 const usersListOption = ref<selectOptions[]>([]);
 const clientFactoryList = ref<ClientFactory[]>([])
@@ -180,7 +184,6 @@ async function addBackOrder() {
     loading.value = false;
     await backOrderStore.loadBackOrder({});
     closeDialog();
-
   }
 }
 
@@ -258,10 +261,16 @@ watch(() => data.value.client_id, async () => {
 }, { deep: true, immediate: true })
 
 watch(() => data.value.office_id, async () => {
+  data.value.industry = undefined
   if (data.value.office_id) {
     loading.value = true
     await updateOfficeName()
     loading.value = false
+  }
+  const office = clientFactoryList.value.find(office => office.id === data.value['office_id'])
+  industryList.value = office?.industry
+  if(!office?.isHead){
+    data.value.industry = office?.industry?.[0]
   }
 }, { deep: true, immediate: true })
 
