@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, ref } from 'vue';
 import draggable from 'vuedraggable'
 
-import { Industry } from 'src/shared/model/Industry.model';
+import { OccupationForm,Industry } from 'src/shared/model/Industry.model';
 import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -62,7 +62,18 @@ const updateItemsOrder = (event: {
 
     emit('sortOccupationForm', { newIndex, oldIndex })
 }
-
+const sortedList = ref<[string, OccupationForm][]>()
+watch(()=>props.activeIndustry, ()=>{
+  if(props.activeIndustry){
+    sortedList.value = Object.entries(props.activeIndustry.uniqueItems.occupationForms)
+    sortedList.value.sort((a, b)=>{
+      if(b?.[1].order && a?.[1].order){
+        return a?.[1].order - b?.[1].order
+      }
+      return 0
+    })
+  }
+}, {deep: true, immediate: true})
 </script>
 
 <template>

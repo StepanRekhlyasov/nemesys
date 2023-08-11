@@ -119,7 +119,7 @@ const sortHandler = (
         const keys = Object.keys(items);
         const movedKey = keys[event.oldIndex];
         const targetKey = keys[event.newIndex];
-        
+
         [items[movedKey].order, items[targetKey].order] = [items[targetKey].order, items[movedKey].order];
 
         if(!is.deepEqual(industryToUpdate.value.uniqueItems[path], activeIndustry.value.uniqueItems[path])) {
@@ -247,10 +247,10 @@ watch(() => industries.value, () => {
                 theme="accent">
                 <UniqueOccupationForm
                     :active-industry="industryToUpdate"
-                    @newOccupationForm="newOccupationForm"
-                    @deleteOccupationForm="deleteOccupationForm"
-                    @updateOccupationForm="updateOccupationForm"
-                    @sortOccupationForm="(e) => sortHandler(e, 'occupationForms')"
+                    @new-occupation-form="newOccupationForm"
+                    @delete-occupation-form="deleteOccupationForm"
+                    @update-occupation-form="updateOccupationForm"
+                    @sort-occupation-form="(e) => sortHandler(e, 'occupationForms')"
                     />
             </DropDownEditGroup>
             <!-- <DropDownEditGroup

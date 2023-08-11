@@ -31,6 +31,10 @@ export const useIndsutry = defineStore('industries', () => {
                     .sort(([, a], [, b]) => a.order - b.order)
                     .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
 
+                // industry.uniqueItems.occupationForms = Object.entries(industry.uniqueItems.occupationForms)
+                //     .sort(([, a], [, b]) => a.order - b.order)
+                //     .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+
                 return industry;
             });
 
@@ -48,9 +52,9 @@ export const useIndsutry = defineStore('industries', () => {
     const addIndustry = async (industry: Omit<Industry, 'id'>) => {
         try {
             const docRef = await addDoc(collection(db, 'industries'), industry);
-            
+
             if(docRef.id) {
-                
+                console.log('Document written with ID: ', docRef.id);
             }
         } catch (e) {
             Alert.warning(e)
@@ -62,7 +66,7 @@ export const useIndsutry = defineStore('industries', () => {
         try {
             await setDoc(doc(db, 'industries', industryId), updatedIndustry)
 
-            
+
         } catch(e) {
             Alert.warning(e)
             console.log(e)
