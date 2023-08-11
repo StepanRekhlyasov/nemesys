@@ -450,7 +450,7 @@
 import { ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { Client } from 'src/shared/model';
-import { collection, getFirestore, Timestamp, getDocs, collectionGroup } from 'firebase/firestore';
+import { collection, getFirestore, Timestamp, getDocs, collectionGroup, where, query } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
@@ -734,56 +734,65 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         })
         return officeData;
     };
-    const getTeleAppointmentData = async (officeData: string[], constraint: string) => {
-        const teleAppointmentSnapshot = await getDocs(collection(db, 'teleAppointment'));
+    const getTeleAppointmentData = async (officeData: string[], constraint: string, cIds) => {
         const currentDate = new Date();
         currentDate.setMonth(currentDate.getMonth() - 2);
         const prevDate = convertDate(currentDate.toString())
+
         const offices: string[] = []
         if (constraint === 'exist') {
             for (const item of officeData) {
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['office_id'] === item
-                            && doc.data()['created_at'] >= prevDate) {
-                            if (!offices.includes(item)) { offices.push(item) }
-                        }
-                    }
-                )
+                const teleAppointmentSnapshot = await getDocs(
+                    query(
+                      collection(db, 'clients', cIds[item], 'client-factory', item, 'teleAppointments'),
+                      where('deleted', '==', false),
+                      where('created_at', '>=', prevDate),
+                      where('organizationId', '==', currentOrganizationId),
+                    )
+                  );
+                  console.log(teleAppointmentSnapshot)
+                // teleAppointmentSnapshot.docs.forEach(
+                //     (doc) => {
+                //         if (doc.data()['office_id'] === item
+                //             && doc.data()['created_at'] >= prevDate) {
+                //             if (!offices.includes(item)) { offices.push(item) }
+                //         }
+                //     }
+                // )
             }
         }
-        else if (constraint === 'connected') {
-            for (const item of officeData) {
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['office_id'] === item
-                            && doc.data()['created_at'] >= prevDate
-                            && doc.data()['result'] === 'connected') {
-                            if (!offices.includes(item)) { offices.push(item) }
-                        }
-                    }
-                )
-            }
-        }
-        else if (constraint === 'notConnected') {
-            for (const item of officeData) {
-                let count = 0;
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['office_id'] === item
-                            && doc.data()['created_at'] >= prevDate) {
-                            if (doc.data()['result'] === 'notConnected') {
-                                count++;
-                            }
-                        }
-                    }
-                )
-                if (teleAppointmentSnapshot.docs.length > 0
-                    && teleAppointmentSnapshot.docs.length === count) {
-                    if (!offices.includes(item)) { offices.push(item) }
-                }
-            }
-        }
+        // else if (constraint === 'connected') {
+        //     for (const item of officeData) {
+        //         teleAppointmentSnapshot.docs.forEach(
+        //             (doc) => {
+        //                 if (doc.data()['office_id'] === item
+        //                     && doc.data()['created_at'] >= prevDate
+        //                     && doc.data()['result'] === 'connected') {
+        //                     if (!offices.includes(item)) { offices.push(item) }
+        //                 }
+        //             }
+        //         )
+        //     }
+        // }
+        // else if (constraint === 'notConnected') {
+        //     for (const item of officeData) {
+        //         let count = 0;
+        //         teleAppointmentSnapshot.docs.forEach(
+        //             (doc) => {
+        //                 if (doc.data()['office_id'] === item
+        //                     && doc.data()['created_at'] >= prevDate) {
+        //                     if (doc.data()['result'] === 'notConnected') {
+        //                         count++;
+        //                     }
+        //                 }
+        //             }
+        //         )
+        //         if (teleAppointmentSnapshot.docs.length > 0
+        //             && teleAppointmentSnapshot.docs.length === count) {
+        //             if (!offices.includes(item)) { offices.push(item) }
+        //         }
+        //     }
+        // }
         return offices;
     };
     const getCFsId = async () => {
@@ -801,7 +810,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         })
         return [office, cfIds]
     }
-    const searchClients = async (office, cfIds, from) => {
+    const searchClients = async (office, cIds, from) => {
         let backOrderData = getBackOrderData();
         if (from === 'advance') {
             backOrderData = advanceConditionData.value
@@ -846,7 +855,9 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
             }
         }
         // if (backOrderData['route'].length !== 0) {
-        //   office = interSectionOfArray(office, await getTeleAppointmentData(office, ''));
+        //     backOrderData['route'].forEach(async(constraint)=>{
+        //         office = interSectionOfArray(office, await getTeleAppointmentData(office,constraint, cIds));
+        //     })
         // }
         clientFactoryStore.condition = true
         clientFactoryStore.selectedCFsId = office

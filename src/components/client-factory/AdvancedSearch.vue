@@ -502,7 +502,7 @@ const hideCSDrawer = () => {
 const searchClients = async () => {
   isLoadingProgress.value = true;
   let office: string[] = [];
-  let cfIds = {}
+  let cIds = {}
   if (advanceSearch.advanceMapSelected || advanceSearch.advanceAreaSelected) {
     office = advanceSearch.getCombineId() || [];
   }
@@ -511,15 +511,10 @@ const searchClients = async () => {
     const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
     cfSnapshot.docs.forEach((doc) => {
       office.push(doc.id)
-      if (cfIds[doc.id]) {
-        cfIds[doc.id].push(doc.data()['id'])
-      }
-      else {
-        cfIds[doc.id] = [doc.data()['id']]
-      }
+        cIds[doc.id] = doc.data()['clientID']
     })
   }
-  await advanceSearch.searchClients(office, cfIds, 'advance');
+  await advanceSearch.searchClients(office, cIds, 'advance');
   isLoadingProgress.value = false
 };
 
