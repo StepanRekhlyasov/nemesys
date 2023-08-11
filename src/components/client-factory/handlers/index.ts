@@ -195,13 +195,13 @@ export const useHeadDetails = (clientFactory: ClientFactory,client:ClientFactory
 
   headDetails.clientInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.representative'), value: safeGet(clientFactory, 'representativeName') ?? '', editType: 'text', key: 'representativeName'},
-      {label: t('clientFactory.drawer.details.established'), value: safeGet(clientFactory, 'established') ?? '', editType: 'text', key: 'established'},
-      {label: t('clientFactory.drawer.details.capital'), value: safeGet(clientFactory, 'capital') ?? '', editType: 'text', key: 'capital'},
-      {label: t('clientFactory.drawer.details.earnings'), value: safeGet(clientFactory, 'earnings') ?? '', editType: 'text', key: 'earnings'},
+      {label: t('clientFactory.drawer.details.representative'), value: safeGet(clientFactory, 'client.representativeName') ?? safeGet(clientFactory, 'representativeName') ?? '', editType: 'text', key: 'client.representativeName'},
+      {label: t('clientFactory.drawer.details.established'), value: safeGet(clientFactory, 'client.established') ?? safeGet(clientFactory, 'established') ?? '', editType: 'text', key: 'client.established'},
+      {label: t('clientFactory.drawer.details.capital'), value: safeGet(clientFactory, 'client.capital') ?? safeGet(clientFactory, 'capital') ?? '', editType: 'text', key: 'client.capital'},
+      {label: t('clientFactory.drawer.details.earnings'), value: safeGet(clientFactory, 'client.earnings') ?? safeGet(clientFactory, 'earnings') ?? '', editType: 'text', key: 'client.earnings'},
       {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(clientFactory, 'client.numberOffices') ?? 0, editType: 'text', key: ''},
-      {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(clientFactory, 'numberEmployees') ?? 0, editType: 'text', key: 'numberEmployees'},
-      {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(clientFactory, 'companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
+      {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(clientFactory, 'client.numberEmployees') ?? safeGet(clientFactory, 'numberEmployees') ?? 0, editType: 'text', key: 'client.numberEmployees'},
+      {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(clientFactory, 'client.companyProfile') ?? safeGet(clientFactory, 'companyProfile') ?? '', editType: 'text', key: 'client.companyProfile'}
     ]
   }).value
 

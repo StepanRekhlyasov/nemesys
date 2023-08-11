@@ -38,6 +38,7 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 }
 
 const fetchHeadClientFactory = async () => {
+    console.log(props.clientFactory)
     isLoading.value = true
 
     headClientFactory.value = await getHeadClientFactory(props.clientId, ) as ClientFactory
@@ -48,7 +49,6 @@ const fetchHeadClientFactory = async () => {
 watchEffect(async () => {
     headDetails.value = useHeadDetails(props.clientFactory, headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
 })
-
 watch(localClientId, fetchHeadClientFactory, { immediate: true })
 
 const editDraft = (changedData: ChangedData) => {
@@ -69,7 +69,8 @@ const editDraft = (changedData: ChangedData) => {
             :is-edit="isOpenEditDropDown.headOfficeInfo"
             @open-edit="isOpenEditDropDown.headOfficeInfo = true"
             @close-edit="isOpenEditDropDown.headOfficeInfo = false"
-            @on-save="isOpenEditDropDown.headOfficeInfo = false; editDraft(dataForUpdating.headOfficeInfo as Data[])"/>
+            @on-save="isOpenEditDropDown.headOfficeInfo = false; editDraft(dataForUpdating.headOfficeInfo as Data[])"
+            v-if="!clientFactory.isHead"/>
 
         <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo"
             @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" />
