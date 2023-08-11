@@ -32,8 +32,6 @@ export interface Client {
   isFaxNG?: boolean;
   geohash?: string;
   homePage?: string;
-  lat?: number;
-  lon?: number;
   mail?: string;
   municipality?: string;
   name?: string;
@@ -75,8 +73,6 @@ export interface ClientOffice {
   flg_faxng?: boolean;
   geohash?: string;
   homePage?: string;
-  lat?: number;
-  lon?: number;
   mailaddress?: string;
   municipality?: string;
   name?: string;
