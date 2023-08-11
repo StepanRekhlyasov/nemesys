@@ -38,7 +38,6 @@ const getNewDataToUpdate = (data: Data[], key: string) => {
 }
 
 const fetchHeadClientFactory = async () => {
-    console.log(props.clientFactory)
     isLoading.value = true
 
     headClientFactory.value = await getHeadClientFactory(props.clientId, ) as ClientFactory
@@ -47,7 +46,7 @@ const fetchHeadClientFactory = async () => {
 }
 
 watchEffect(async () => {
-    headDetails.value = useHeadDetails(props.clientFactory, headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
+    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
 })
 watch(localClientId, fetchHeadClientFactory, { immediate: true })
 

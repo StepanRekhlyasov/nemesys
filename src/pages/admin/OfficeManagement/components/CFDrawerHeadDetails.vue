@@ -44,7 +44,7 @@ const fetchHeadClientFactory = async () => {
 }
 
 watchEffect(() => {
-    headDetails.value = useHeadDetails(props.clientFactory,headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
+    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
 })
 
 watch(localClientId, fetchHeadClientFactory, {immediate: true})
