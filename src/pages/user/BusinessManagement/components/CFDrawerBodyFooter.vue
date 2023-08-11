@@ -16,12 +16,13 @@ const openFaxDrawer = () =>{
 const situation = ref<number | undefined>()
 
 onMounted(()=>{
-  situation.value = props.clientFactory.offerRate;
-  if(situation.value){
-    situation.value += props.clientFactory.avgWorkLength;
+  const situationUpdated = ref<number | undefined>()
+  situationUpdated.value = props.clientFactory.offerRate;
+  if(situationUpdated.value){
+    situationUpdated.value += props.clientFactory.avgWorkLength;
   }
-  situation.value = Number((situation.value)?.toFixed(2));
-  console.log(situation.value)
+  situationUpdated.value = Number((situationUpdated.value)?.toFixed(2));
+  situation.value = situationUpdated.value
 })
 
 const { t } = useI18n({ useScope: 'global' });
