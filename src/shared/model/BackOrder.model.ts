@@ -63,6 +63,7 @@ export interface BackOrderModel {
   memo_house: string;
 
   transactionType: TransactionType;
+  customerRepresentative: string;
 }
 
 export enum TypeOfCase {

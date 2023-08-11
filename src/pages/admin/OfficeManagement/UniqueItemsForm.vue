@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { uid, is } from 'quasar';
 import { storeToRefs } from 'pinia';
-import { watch, ref, nextTick } from 'vue';
+import { watch, ref, nextTick  } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
 import UniqueItemsSpecificTypes from './components/UniqueItemsSpecificTypes.vue';
 import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue';
@@ -14,17 +14,16 @@ const { t } = useI18n({ useScope: 'global' });
 
 const industryStore = useIndsutry()
 const {industries, isFirstLoading } = storeToRefs(industryStore)
-const { updateIndustry, addIndustry } = industryStore
-
+const { updateIndustry, addIndustry ,deleteIndustry ,addId} = industryStore
 const activeIndustry = ref<Industry | null>(null)
 const industryToUpdate = ref<Industry | null>(null)
-
+const currentId = ref<string>('');
 const handleActiveIndustry = (selectedIndustry: Industry) => {
     if(selectedIndustry.id !== activeIndustry.value?.id) {
         activeIndustry.value = selectedIndustry
         industryToUpdate.value = deepCopy(selectedIndustry)
         resetSaveButtons()
-    } 
+    }
 }
 
 const isCanBeSaved = ref({
@@ -54,7 +53,7 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
                 [key]: industryToUpdate.value.uniqueItems[key]
             }
         };
-        
+
         await updateIndustry(activeIndustry.value.id, updatedIndustry)
 
     }
@@ -65,14 +64,33 @@ const updateIndustryHandler = async (key: keyof Industry['uniqueItems']) => {
 const onNewIndustry = async (industryName: string) => {
     isLoading.value = true
 
-    await addIndustry({
+    const newId = await addIndustry({
         industryName: industryName,
         uniqueItems: {
             typeSpecificItems: {},
             facilityForms: {}
         }
     })
+    if (newId) {
+        currentId.value = newId;
+    }
+    const updatedIndustry = {
+        id:currentId.value,
+        deleted:false,
+        industryName: industryName,
+        uniqueItems: {
+            typeSpecificItems: {},
+            facilityForms: {}
+        }
+      };
+      await addId(currentId.value, updatedIndustry)
 
+    isLoading.value = false
+}
+const onDeleteIndustry = async (id: string | undefined) => {
+    isLoading.value = true
+    await deleteIndustry(id)
+    activeIndustry.value = null
     isLoading.value = false
 }
 
@@ -115,7 +133,7 @@ const sortHandler = (
         const keys = Object.keys(items);
         const movedKey = keys[event.oldIndex];
         const targetKey = keys[event.newIndex];
-        
+
         [items[movedKey].order, items[targetKey].order] = [items[targetKey].order, items[movedKey].order];
 
         if(!is.deepEqual(industryToUpdate.value.uniqueItems[path], activeIndustry.value.uniqueItems[path])) {
@@ -160,6 +178,14 @@ watch(() => industries.value, () => {
         resetSaveButtons()
     }
 }, {immediate: true, deep: true})
+watch(async() => activeIndustry.value, () => {
+    if(!activeIndustry.value && industries.value.length) {
+        activeIndustry.value = industries.value[0]
+        industryToUpdate.value = deepCopy(industries.value[0])
+        resetSaveButtons()
+    }
+}, {immediate: true, deep: true})
+
 </script>
 
 <template>
@@ -170,13 +196,14 @@ watch(() => industries.value, () => {
                 <q-spinner-gears v-if="isLoading" size="3rem" color="accent" class="q-mx-md"/>
             </div>
 
-            <UniqueItemsIndustrySelect 
+            <UniqueItemsIndustrySelect
                 :industries="industries"
                 :active-industry="activeIndustry"
                 :is-new-industry-popup="isNewIndustryPopup"
                 @update:active-industry="handleActiveIndustry"
                 @update:is-new-industry-popup="isNewIndustryPopupHandler"
-                @new-industry="onNewIndustry"/>
+                @new-industry="onNewIndustry"
+                @delete-industry="onDeleteIndustry"/>
 
             <DropDownEditGroup
                 :label="t('industry.specificTypeItems') + ' (' + t('client.add.officeInfo') + ')'"
@@ -186,7 +213,7 @@ watch(() => industries.value, () => {
                 :is-without-cancel="true"
                 @on-save="updateIndustryHandler('typeSpecificItems')"
                 theme="accent">
-                <UniqueItemsSpecificTypes 
+                <UniqueItemsSpecificTypes
                     :active-industry="industryToUpdate"
                     @new-specific-type="newSpecificTypeHandle"
                     @delete-specific-type="deleteSpecificTypeHandle"
@@ -202,7 +229,7 @@ watch(() => industries.value, () => {
                 :is-without-cancel="true"
                 @on-save="updateIndustryHandler('facilityForms')"
                 theme="accent">
-                <UniqueItemsFacilityForms 
+                <UniqueItemsFacilityForms
                     :active-industry="industryToUpdate"
                     @new-facility-form="newFacilityForm"
                     @delete-facility-form="deleteFacilityForm"
