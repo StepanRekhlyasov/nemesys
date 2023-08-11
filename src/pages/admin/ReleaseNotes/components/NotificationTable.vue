@@ -1,6 +1,6 @@
 <template>
     <q-card-section class="bg-grey-3">
-    <div class="row q-pt-md q-gutter-sm applicant__inputWrapper">
+    <div class="row q-pt-md q-gutter-sm progressInputsWrapper">
       <div class="col-2">
         <p class="q-ml-md inputLabel text-capitalize">{{ $t("inquiry.table.status") }}</p>
         <q-select

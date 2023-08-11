@@ -18,7 +18,7 @@
     <div class="row ">
       <labelField :label="$t('backOrder.create.salary')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md flex">
-        <q-input v-model="data['salary']" outlined dense type="number" :disable="loading" :rules="[creationRule]" hide-bottom-space/>
+        <q-input v-model="data['salary']" outlined dense :disable="loading" :rules="[creationRule]" hide-bottom-space @update:model-value="(value)=>{ data['salary'] = commaSeparatedNumber(value) }"/>
         <span v-if="data['wage'] == 'monthlySalary'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenMonth') }}</span>
         <span v-if="data['wage'] == 'hourlyWage'" class="q-ma-sm flex-center">{{ $t('backOrder.create.yenHour') }}</span>
       </labelField>
@@ -62,6 +62,7 @@ import { BackOrderModel } from 'src/shared/model';
 import { ref, watch } from 'vue';
 import labelField from 'src/components/form/LabelField.vue';
 import { creationRule } from 'src/components/handlers/rules';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
