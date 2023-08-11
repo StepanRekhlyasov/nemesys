@@ -381,7 +381,7 @@ export default {
       corporation: '法人',
       contractStatus: '契約状態',
       contractInfo: '契約先情報',
-      personIncharge: '担当ユーザー',
+      personIncharge: '担当者',
       contactPerson: '連絡先担当者',
       basicInfoUpdated: '基本情報 最終更新',
       infoUpdated: '情報 最終更新',
@@ -511,7 +511,12 @@ export default {
       emailLabel2: 'example.co.jp',
       manager: '担当者名',
       managerLabel: '例）鈴木 太郎',
-
+      contactInformation: '担当者情報',
+      contactPersonName: '担当者名',
+      contactPersonTitle: '担当者：役職 ',
+      contactPersonTel: '担当者：TEL',
+      contactPersonMail: '担当者：MAIL',
+      regularEmployee: '例）一般社員',
       //
       integrationSource: '統合元',
       copInfo: '企業情報',
@@ -676,6 +681,7 @@ export default {
       transactionType: '取引種別',
       introduction: '紹介',
       dispatch: '一般派遣',
+      referralDispatch: '紹介予定派遣',
       ttp: 'TTP',
       reqQualification: '必要な資格',
       regularReview: '正看',
@@ -1585,6 +1591,7 @@ export default {
       headOfficeInfo: '本社事業所情報',
       clientInfo: 'クライアント情報',
       contractInfo: '契約情報',
+      relatedOfficeInfo: '関連事業所情報',
       withMasterData: 'マスタデータあり',
       noAutoRenewal: '自動更新なし',
       situation: '状態',
@@ -1669,7 +1676,16 @@ export default {
         update: '更新',
         create: '作成',
         basicInfoChanged: '基本情報',
-        officeInfoChanged: '事業所詳細情報'
+        officeInfoChanged: '事業所詳細情報',
+
+        noOfOffices: '該当事業所数',
+        backOrder: 'バックオーダー',
+        employmentRecord: '就業実績',
+        fullTimeEmployment: '正社員入職',
+        nonRegularEmployee: '非正規社員入職',
+        temporaryEmployment: '派遣入職',
+        currentlyInOperation: '現在稼働',
+        perItems: '件'
       }
     },
     fax: {
