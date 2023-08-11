@@ -184,6 +184,7 @@ export default {
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
+      mediaControl: 'メディアコントロール',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
       releaseNotesInquiry: 'リリースノート・問い合わせ',
@@ -266,7 +267,7 @@ export default {
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
       billingHistory: '請求履歴',
-      aggregateDataDisplay: '集計データ表示',
+      aggregateDataDisplay: '選択肢マスタ',
       dataOutputDisplay: 'データ出力',
       dataOutputDisplayTable: {
         outputMonth: '出力月',
@@ -1561,6 +1562,7 @@ export default {
   clientFactory: {
     numberEmployees: '従業員数',
     facilityType: '施設形態',
+    mediaOptions: 'メディアオプション',
     homePage: 'ホームページ',
     conclusionDispatchContract: '派遣契約締結',
     conclusionReferralContract: '紹介契約締結',
