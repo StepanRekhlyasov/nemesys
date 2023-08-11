@@ -158,7 +158,7 @@ const newOccupationForm = (data: string) => {
     if(industryToUpdate.value) {
         industryToUpdate.value.uniqueItems.occupationForms[id] = { title: data, order: Object.keys(industryToUpdate.value.uniqueItems.occupationForms).length + 1 };
 
-        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.occupationForms as Record<string, Occupation>, activeIndustry.value?.uniqueItems.occupationForms as Record<string, Occupation>)) {
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.occupationForms as Record<string, OccupationForm>, activeIndustry.value?.uniqueItems.occupationForms as Record<string, OccupationForm>)) {
             isCanBeSaved.value.occupationForms = true;
         }
     }

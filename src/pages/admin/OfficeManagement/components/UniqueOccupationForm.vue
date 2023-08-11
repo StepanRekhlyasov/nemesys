@@ -41,6 +41,9 @@ const newOccupationFormHandle = () => {
     if(inputVal.value && inputVal.value.validate()) {
         emit('newOccupationForm', newOccupationForm.value)
         newOccupationForm.value = ''
+        setTimeout(()=>{
+          inputVal.value?.resetValidation()
+        }, 1)
     }
 }
 
