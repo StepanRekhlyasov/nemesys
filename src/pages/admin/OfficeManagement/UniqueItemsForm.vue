@@ -157,9 +157,6 @@ const isNewIndustryPopupHandler = (val: boolean) => {
     isNewIndustryPopup.value = val
 }
 
-
-
-
 watch(() => industries.value, () => {
     if(!activeIndustry.value && industries.value.length) {
         activeIndustry.value = industries.value[0]
