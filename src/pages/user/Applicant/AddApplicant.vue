@@ -52,11 +52,7 @@
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :options="prefectureOption" v-model="applicantData['prefecture']"
                   :rules="[creationRule]" hide-bottom-space bg-color="white" :label="$t('common.pleaseSelect')" emit-value
-<<<<<<< HEAD
-                  map-options use-input input-debounce="0" @filter="filterPrefecturre" />
-=======
-                  map-options @update:model-value="applicantData['municipalities'] = ''; applicantData['street'] = ''" />
->>>>>>> auto-input-prefecture
+                  map-options use-input input-debounce="0" @filter="filterPrefecturre" @update:model-value="applicantData['municipalities'] = ''; applicantData['street'] = ''" />
               </div>
             </div>
             <div class="row q-pt-sm">
@@ -66,11 +62,8 @@
               <div class="col-8 q-pl-sm">
                 <q-select outlined dense :disable="!fetchMunicipalities" emit-value bg-color="white"
                   :options="municipalities" v-model="applicantData['municipalities']" :label="$t('common.pleaseSelect')"
-<<<<<<< HEAD
-                  :rules="[creationRule]" hide-bottom-space use-input input-debounce="0" @filter="filterMunicipalities" />
-=======
-                  :rules="[creationRule]" hide-bottom-space @update:model-value="applicantData['street'] = ''" />
->>>>>>> auto-input-prefecture
+                  :rules="[creationRule]" hide-bottom-space use-input input-debounce="0" @filter="filterMunicipalities"
+                  @update:model-value="applicantData['street'] = ''" />
               </div>
             </div>
             <div class="row q-pt-sm">
