@@ -472,6 +472,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: '他種別での施設形態',
       newReg: 'クライアント 新規登録',
       clientBasicInfo: 'クライアント基本情報',
       clientName: 'クライアント名',
@@ -2241,7 +2242,9 @@ export default {
   errors: {
     'BO_occupied': '選択されたBOは既に使用されています',
     'error': 'エラー',
-    'deleteBranchesFirst': 'まずすべての支店を削除してください'
+    'deleteBranchesFirst': 'まずすべての支店を削除してください',
+    titleExist: 'タイトルはすでに存在します',
+    industryRules: '無効入力',
   },
   budget: {
     search: '予算検索',

@@ -475,6 +475,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: 'Types from other industries:',
       newReg: 'Client new registration',
       clientBasicInfo: 'Client basic information',
       clientName: 'Client Name',
@@ -2248,7 +2249,9 @@ export default {
   errors: {
     'BO_occupied': 'Selected BO is occupied',
     'error': 'Error',
-    'deleteBranchesFirst': 'Please, delete all branches first'
+    'deleteBranchesFirst': 'Please, delete all branches first',
+    titleExist: 'Title already exists',
+    industryRules: 'Invalid input',
   },
   budget: {
     search: 'Budget Search',
@@ -2311,5 +2314,5 @@ export default {
     C: 'C (Normal)',
     D: 'D (Bad)',
     E: 'E (The Worst)',
-  }
+  },
 }

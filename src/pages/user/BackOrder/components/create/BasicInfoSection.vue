@@ -72,6 +72,11 @@
         labelClass="q-pl-md col-2 text-right" :value="backOrder['memo']" valueClass="col-4 q-pl-md " />
     </div>
 
+    <!-- office unique items -->
+    <div>
+      {{ backOrder.industry }}
+    </div>
+
   </q-card-section>
 </template>
 
@@ -79,13 +84,18 @@
 import labelField from 'src/components/form/LabelField.vue';
 import { BackOrderModel, Client } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { watch } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
   loading: boolean,
   client?: Client,
   officeID?: string,
   offices: ClientFactory[]
 }>()
+
+watch(()=>props.backOrder.industry, (newVal)=>{
+  console.log(newVal)
+})
 
 </script>
