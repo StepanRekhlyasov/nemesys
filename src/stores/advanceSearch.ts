@@ -454,8 +454,12 @@ import { collection, getFirestore, Timestamp, getDocs, collectionGroup, where, q
 import { useOrganization } from 'src/stores/organization';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { useIndsutry } from 'src/stores/industry';
+const industryStore = useIndsutry();
+const { industries } = storeToRefs(industryStore);
 export const getBackOrderData = () => {
-    return {
+    return{
         client_name: '',
         industry: [],
         facilityType: [],
@@ -647,6 +651,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
             boSnapshot.docs.forEach(
                 (doc) => {
                     if (doc.data()['office_id'] === item
+                        && doc.data()['organizationId'] === currentOrganizationId.value
                         && (doc.data()['employmentType'] && doc.data()['employmentType'].includes(employmentType))) {
                         array.push(doc.id)
                     }
@@ -669,7 +674,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         }
         return offices
     }
-    const getOffices = async (officeData, dates, type: string,currentOrganization:boolean) => {
+    const getOffices = async (officeData, dates, type: string, currentOrganization: boolean) => {
         const boSnapshot = await getDocs(collection(db, 'BO'));
         const fixSnapshot = await getDocs(collection(db, 'fix'));
         const [[start, end, qty], otherDate] = dates;
@@ -706,7 +711,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
                                 && doc.data()['type'] === type
                                 && ((currentOrganization && doc.data()['organizationId'] === currentOrganizationId.value)
                                     || (!currentOrganization && doc.data()['organizationId'] !== currentOrganizationId.value))) {
-                                    array.push(doc.id)
+                                array.push(doc.id)
                             }
                         }
                     )
@@ -734,63 +739,39 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         })
         return officeData;
     };
-    const getTeleAppointmentData = async (officeData: string[], constraint: string, cIds) => {
+    const getTeleAppointmentData = async (officeData: string[], constraint: string[], cIds) => {
         const currentDate = new Date();
         currentDate.setMonth(currentDate.getMonth() - 2);
         const prevDate = convertDate(currentDate.toString())
-
         const offices: string[] = []
-        if (constraint === 'exist') {
-            for (const item of officeData) {
-                const teleAppointmentSnapshot = await getDocs(
-                    query(
-                      collection(db, 'clients', cIds[item], 'client-factory', item, 'teleAppointments'),
-                      where('deleted', '==', false),
-                    )
-                  );
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['organizationId']===currentOrganizationId.value
-                            &&doc.data()['created_at'] >= prevDate
-                            ) {
+        for (const item of officeData) {
+            const teleAppointmentSnapshot = await getDocs(
+                query(
+                    collection(db, 'clients', cIds[item], 'client-factory', item, 'teleAppointments'),
+                    where('deleted', '==', false),
+                )
+            );
+            teleAppointmentSnapshot.docs.forEach(
+                (doc) => {
+                    if (doc.data()['organizationId'] === currentOrganizationId.value
+                        && doc.data()['created_at'] >= prevDate) {
+                        if (constraint.length === 3 || constraint.includes('exist')) {
                             if (!offices.includes(item)) { offices.push(item) }
                         }
+                        else if (constraint.length === 2) {
+                            if (['connected', 'notConnected'].includes(doc.data()['result'])) {
+                                if (!offices.includes(item)) { offices.push(item) }
+                            }
+                        }
+                        else {
+                            if (constraint.includes(doc.data()['result'])) {
+                                if (!offices.includes(item)) { offices.push(item) }
+                            }
+                        }
                     }
-                )
-            }
+                }
+            )
         }
-        // else if (constraint === 'connected') {
-        //     for (const item of officeData) {
-        //         teleAppointmentSnapshot.docs.forEach(
-        //             (doc) => {
-        //                 if (doc.data()['office_id'] === item
-        //                     && doc.data()['created_at'] >= prevDate
-        //                     && doc.data()['result'] === 'connected') {
-        //                     if (!offices.includes(item)) { offices.push(item) }
-        //                 }
-        //             }
-        //         )
-        //     }
-        // }
-        // else if (constraint === 'notConnected') {
-        //     for (const item of officeData) {
-        //         let count = 0;
-        //         teleAppointmentSnapshot.docs.forEach(
-        //             (doc) => {
-        //                 if (doc.data()['office_id'] === item
-        //                     && doc.data()['created_at'] >= prevDate) {
-        //                     if (doc.data()['result'] === 'notConnected') {
-        //                         count++;
-        //                     }
-        //                 }
-        //             }
-        //         )
-        //         if (teleAppointmentSnapshot.docs.length > 0
-        //             && teleAppointmentSnapshot.docs.length === count) {
-        //             if (!offices.includes(item)) { offices.push(item) }
-        //         }
-        //     }
-        // }
         return offices;
     };
     const getCFsId = async () => {
@@ -833,16 +814,16 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
             office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], backOrderData['facilityType']))
         }
         if (dispatchRecordStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch',true))
+            office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch', true))
         }
         if (referralResultsStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, referralResultsStatus.date, 'referral',true))
+            office = interSectionOfArray(office, await getOffices(office, referralResultsStatus.date, 'referral', true))
         }
         if (dispatchedOtherCompaniesStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, dispatchedOtherCompaniesStatus.date, 'dispatch',false))
+            office = interSectionOfArray(office, await getOffices(office, dispatchedOtherCompaniesStatus.date, 'dispatch', false))
         }
         if (otherCompanyReferralResultsStatus.status) {
-            office = interSectionOfArray(office, await getOffices(office, otherCompanyReferralResultsStatus.date, 'referral',false))
+            office = interSectionOfArray(office, await getOffices(office, otherCompanyReferralResultsStatus.date, 'referral', false))
         }
         if (employmentStatus.status) {
             for (const key of Object.keys(employmentStatus.empTypeStatus || {})) {
@@ -852,14 +833,17 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
                 }
             }
         }
-        // if (backOrderData['route'].length !== 0) {
-        //     for(const route of backOrderData['route']){
-        //         office = interSectionOfArray(office, await getTeleAppointmentData(office,route, cIds));
-        //     }
-        // }
+        if (backOrderData['route'].length !== 0) {
+
+            office = interSectionOfArray(office, await getTeleAppointmentData(office, backOrderData['route'], cIds));
+
+        }
         clientFactoryStore.condition = true
         clientFactoryStore.selectedCFsId = office
         router.push('/client-factories')
+    }
+    const resetAdvance = () => {
+        advanceConditionData.value = getBackOrderData();
     }
     const resetMap = () => {
         mapCSelected.value = false;
@@ -877,5 +861,5 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         advanceAreaCFs.value = [];
         advanceAreaSelected.value = false;
     }
-    return { getCFsId, getCombineId, searchClients, mapCSelected, areaCSelected, advanceConditionData, mapConditionData, areaConditionData, saveConditionData, advanceMapSelected, advanceMapCFs, advanceAreaSelected, advanceAreaCFs, resetMap, resetArea, resetAdvanceMap, resetAdvanceArea }
+    return { getCFsId, getCombineId, searchClients, mapCSelected, areaCSelected, advanceConditionData, mapConditionData, areaConditionData, saveConditionData, advanceMapSelected, advanceMapCFs, advanceAreaSelected, advanceAreaCFs,resetAdvance, resetMap, resetArea, resetAdvanceMap, resetAdvanceArea }
 })

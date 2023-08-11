@@ -10,7 +10,7 @@
           class="text-weight-bold" />
       </q-card-actions>
       <q-card-actions v-else-if="props.from == 'saveCondition'">
-        <q-btn label="update Condition" unelevated :color="props.theme" class="no-shadow text-weight-bold" icon="update"
+        <q-btn :label="$t('client.list.updateCondition')" unelevated :color="props.theme" class="no-shadow text-weight-bold" icon="update"
           @click="updateCondition" />
       </q-card-actions>
       <q-card-actions v-else>
@@ -27,6 +27,8 @@
           @update:model-value="onSelected" style="width: 250px" />
         <q-btn :label="$t('client.list.saveSearchConditions')" outline :color="props.theme"
           class="text-weight-bold q-ml-md" @click="saveSearchConditions" />
+        <q-btn :label="$t('client.list.resetConditions')" outline :color="props.theme"
+          class="text-weight-bold q-ml-md" @click="resetCondition" />
         <q-btn outline color="red" v-if="props.from == '' && advanceSearch.advanceMapSelected">
           MapCFs: {{ advanceSearch.advanceMapCFs.length }}
           <q-icon name="close" @click="advanceSearch.resetAdvanceMap" />
@@ -490,6 +492,12 @@ const updateCondition = async () => {
   await saveSearchCondition.updateSaveSearchCondition(props.rowId, backOrderData)
   hideCSDrawer()
 }
+const resetCondition = () => {
+  const data = getBackOrderData();
+  Object.keys(data).forEach((key) => {
+    backOrderData[key] = data[key]
+  })
+}
 const openMapDrawer = () => {
   emit('openMapDrawer')
 }
@@ -500,6 +508,8 @@ const hideCSDrawer = () => {
   emit('hideCSDrawer')
 }
 const searchClients = async () => {
+  console.log(backOrderData)
+  return
   isLoadingProgress.value = true;
   let office: string[] = [];
   let cIds = {}
