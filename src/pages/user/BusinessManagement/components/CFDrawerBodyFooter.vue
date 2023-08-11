@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineEmits, ref } from 'vue';
+import { computed, defineEmits, onMounted, ref } from 'vue';
 import TaskRegister from '../../Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
 
-defineProps<{
+const props = defineProps<{
   clientFactory: ClientFactory,
 }>()
 const emit = defineEmits<{
@@ -13,6 +13,17 @@ const emit = defineEmits<{
 const openFaxDrawer = () =>{
     emit('openFaxDrawer')
 }
+const situation = ref<number | undefined>()
+
+onMounted(()=>{
+  situation.value = props.clientFactory.offerRate;
+  if(situation.value){
+    situation.value += props.clientFactory.avgWorkLength;
+  }
+  situation.value = Number((situation.value)?.toFixed(2));
+  console.log(situation.value)
+})
+
 const { t } = useI18n({ useScope: 'global' });
 const openTaskRegister = ref(false)
 </script>
@@ -32,11 +43,18 @@ const openTaskRegister = ref(false)
                     <span class="info-footer__label q-mr-sm">
                         {{ t('clientFactory.drawer.situation') }}
                     </span>
-                    <span v-if="clientFactory['offerRate']" class="info-footer__value">
-                       {{ $t('report.categories.offerRate') }} : {{ clientFactory['offerRate'] }}<br/>
-                    </span>
-                    <span v-if="clientFactory['avgWorkLength']" class="info-footer__value">
-                      Average Work Length : {{ clientFactory['avgWorkLength'] }}
+                    <span v-if="situation" class="info-footer__value q-mr-sm">
+                      <q-icon v-if="situation>=90" size="1.5em" name="mdi-emoticon-excited" color="green"></q-icon>
+                      <q-icon v-if="situation<90 && situation>=80"
+                       size="1.5em" name="mdi-emoticon-happy" color="light-green"></q-icon>
+                      <q-icon v-if="situation<80 && situation>=70"
+                      size="1.5em" name="mdi-emoticon-neutral" color="yellow-8"></q-icon>
+                      <q-icon v-if="situation<70 && situation>=60"
+                      size="1.5em" name="mdi-emoticon-wink" color="yellow-10"></q-icon>
+                      <q-icon v-if="situation<60 && situation>=50"
+                      size="1.5em" name="mdi-emoticon-sad" color="amber-10"></q-icon>
+                      <q-icon v-if="situation<50"
+                      size="1.5em" name="mdi-emoticon-angry" color="red"></q-icon>
                     </span>
                 </p>
                 <p class="row q-ma-none q-pt-sm">
