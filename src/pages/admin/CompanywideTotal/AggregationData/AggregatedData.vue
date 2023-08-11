@@ -22,12 +22,8 @@ const fetchMedia = async () => {
     mediaData.value.sort((e1, e2) => {
        return e1.createdAt - e2.createdAt;
     })
-    console.log(mediaData.value);
 }
 
-const updateMediaOrder = async () => {
-    console.log('order updated');
-}
 
 const deleteMediaAux = async (id: string) => {
     await deleteMedia(id);
@@ -65,7 +61,7 @@ onBeforeMount(() => {
         </q-card-section>
     </q-card>
     <div class="q-ml-md" v-if="mediaData.length">
-        <draggable :list="mediaData" handle=".cursor_grab" @end="updateMediaOrder">
+        <draggable :list="mediaData" handle=".cursor_grab">
             <template #item="{ element, index }">
                 <div class="row items-center">
                     <div class="row items-center q-mt-md" :key="element.id">

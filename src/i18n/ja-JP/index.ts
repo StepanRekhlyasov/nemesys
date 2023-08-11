@@ -183,7 +183,6 @@ export default {
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
       mediaControl: 'メディアコントロール',
-      // optionMaster: '選択肢マスタ',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
       releaseNotesInquiry: 'リリースノート・問い合わせ',

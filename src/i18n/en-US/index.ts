@@ -183,7 +183,6 @@ export default {
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
       mediaControl: 'Media Control',
-      // optionMaster: 'Option Master',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
       releaseNotesInquiry: 'Release Notes and Inquiries',
