@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 import draggable from 'vuedraggable'
 
-import { OccupationForm,Industry } from 'src/shared/model/Industry.model';
+import { OccupationForm, Industry } from 'src/shared/model/Industry.model';
 import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
-const props = defineProps<{
+const props =  defineProps<{
     activeIndustry: Industry | null
 }>()
 
@@ -25,7 +25,7 @@ const newOccupationForm = ref('')
 const inputVal = ref<QInput>()
 
 const titleExists = (val: string, exception = '') => {
-    if(props.activeIndustry) {
+    if (props.activeIndustry) {
         const titles = [
             ...Object.values(props.activeIndustry.uniqueItems.typeSpecificItems || {}).map(item => item.title),
             ...Object.values(props.activeIndustry.uniqueItems.facilityForms || {}).map(item => item.title),
@@ -56,10 +56,11 @@ const updateOccupationForm = (val: string, initVal: string) => {
         emit('updateOccupationForm')
     }
 }
+
 const updateItemsOrder = (event: {
-        newIndex: number,
-        oldIndex: number
-    }) => {
+    newIndex: number,
+    oldIndex: number
+}) => {
 
     const { newIndex, oldIndex } = event;
 
@@ -83,8 +84,8 @@ watch(()=>props.activeIndustry, ()=>{
     <div v-if="activeIndustry">
         <div v-if="Object.keys(activeIndustry.uniqueItems.occupationForms).length">
 
-            <draggable :list="Object.entries(activeIndustry.uniqueItems.occupationForms)" handle=".cursor_grab" @end="updateItemsOrder">
-                <template #item="{element, index}">
+            <draggable :list="sortedList" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
+                <template #item="{ element, index }">
                     <div class="row items-center q-mt-md" :key="element[1].order">
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab"/>
 
@@ -99,8 +100,8 @@ watch(()=>props.activeIndustry, ()=>{
                                 :cover="false"
                                 :offset="[0, 10]"
                                 v-slot="scope"
-                                @save="updateOccupationForm"
-                                >
+                                @save="updateOccupationForm">
+
                                 <q-input
                                     color="accent"
                                     v-model="scope.value"

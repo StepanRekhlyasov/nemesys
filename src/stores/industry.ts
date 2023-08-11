@@ -31,9 +31,6 @@ export const useIndsutry = defineStore('industries', () => {
                     .sort(([, a], [, b]) => a.order - b.order)
                     .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
 
-                // industry.uniqueItems.occupationForms = Object.entries(industry.uniqueItems.occupationForms)
-                //     .sort(([, a], [, b]) => a.order - b.order)
-                //     .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
 
                 return industry;
             });
