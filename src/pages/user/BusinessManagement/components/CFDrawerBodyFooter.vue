@@ -57,6 +57,7 @@ const openTaskRegister = ref(false)
                       <q-icon v-if="situation<50"
                       size="1.5em" name="mdi-emoticon-angry" color="red"></q-icon>
                     </span>
+                    <span v-else class="info-footer__value q-mr-sm">-</span>
                 </p>
                 <p class="row q-ma-none q-pt-sm">
                     <span class="info-footer__label q-mr-sm">
