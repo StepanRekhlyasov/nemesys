@@ -36,7 +36,7 @@ export interface ClientFactory {
     reflectLog?: ReflectLog;
     importLog?: ImportLog;
     geohash?: string;
-
+    organizationId: string | null
     client?: Client
 
     draft: Partial<ClientFactory> | Record<string, never>
