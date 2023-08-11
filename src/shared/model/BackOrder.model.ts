@@ -13,6 +13,7 @@ export interface BackOrderModel {
   deleted: false;
   registrant?: string;
   organizationId: string;
+  industry?: string
 
   // Introduction Section
   dateOfRegistration: Timestamp | undefined | string;
@@ -39,7 +40,7 @@ export interface BackOrderModel {
 
   // Paycheck Section
   wage: 'monthlySalary' | 'hourlyWage';
-  salary: number;
+  salary: string;
   benefit: number;
   bonus: number;
   travelingExpenses: 'yesRegular' | 'yesDaily' | 'none';

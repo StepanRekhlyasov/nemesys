@@ -171,7 +171,7 @@ const getRegistrant = (registrant: string | undefined) => {
         }
         userDisplayName.value = userNames.value[registrant];
       })
-      .catch((error) => {
+      .catch(() => {
         userDisplayName.value = '';
       });
   } else {
