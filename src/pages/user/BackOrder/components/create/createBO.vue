@@ -138,7 +138,7 @@ import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
-const emits = defineEmits(['closeDialog']);
+const emits = defineEmits(['closeDialog','fetchBo']);
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
@@ -180,7 +180,7 @@ async function addBackOrder() {
     loading.value = false;
     await backOrderStore.loadBackOrder({});
     closeDialog();
-
+    emits('fetchBo');
   }
 }
 

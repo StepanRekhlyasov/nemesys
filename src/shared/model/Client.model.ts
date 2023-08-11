@@ -49,7 +49,7 @@ export interface Client {
   updated_at?: string;
   industry?: string[];
   headquarter?: string;
-
+  organizationId: string | null
 
 
 

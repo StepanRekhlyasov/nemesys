@@ -62,20 +62,20 @@ export const useBackOrder = defineStore('backOrder', () => {
     }
     if (searchData.registrationDateMin && searchData.registrationDateMax) {
       filters['all'].push({
-        created_at: {
+        dateofregistration: {
           from: formatDate(new Date(searchData.registrationDateMin), true),
           to: formatDate(new Date(searchData.registrationDateMax)),
         },
       });
     } else if (searchData.registrationDateMin) {
       filters['all'].push({
-        created_at: {
+        dateofregistration: {
           from: formatDate(new Date(searchData.registrationDateMin), true),
         },
       });
     } else if (searchData.registrationDateMax) {
       filters['all'].push({
-        created_at: {
+        dateofregistration: {
           to: formatDate(new Date(searchData.registrationDateMax)),
         },
       });
@@ -91,8 +91,13 @@ export const useBackOrder = defineStore('backOrder', () => {
         upperagelimit: { to: parseInt(searchData.ageMax) },
       });
     }
+    if (searchData.boid) {
+      filters['all'].push({
+        boid: Number(searchData['boid']),
+      });
+    }
 
-    const items = ['boid', 'qualifications', 'employmenttype', 'experience', 'category', 'casetype',];
+    const items = ['qualifications'];
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
         const obj = {};
@@ -142,10 +147,10 @@ export const useBackOrder = defineStore('backOrder', () => {
         console.log(error);
       });
 
-    loadBOData();
+    loadBOData(searchData);
   }
 
-  const loadBOData = async () => {
+  const loadBOData = async (searchData) => {
     state.value.isLoadingProgress = true;
     let allBOList: BackOrderModel[] = []
     while (state.value.currentIds.length) {
@@ -160,6 +165,21 @@ export const useBackOrder = defineStore('backOrder', () => {
       allBOList = [...allBOList, ...boList];
     }
     state.value.BOList = allBOList
+
+    if(searchData.customerRepresentative){
+      state.value.BOList =  state.value.BOList.filter(bo=>bo.customerRepresentative && bo.customerRepresentative === searchData.customerRepresentative)
+    }
+    if(searchData.typecase && searchData.typecase.length){
+      state.value.BOList =  state.value.BOList.filter(bo=>bo.typeCase && searchData.typecase.includes(bo.typeCase))
+    }
+    if(searchData.transactiontype && searchData.transactiontype.length){
+      state.value.BOList =  state.value.BOList.filter(bo=>bo.transactionType && searchData.transactiontype.includes(bo.transactionType))
+    }
+    if(searchData.employmenttype && searchData.employmenttype.length){
+      state.value.BOList = state.value.BOList.filter(bo =>
+        bo.employmentType && bo.employmentType.some(type => searchData.employmenttype.includes(type)));
+    }
+
     state.value.isLoadingProgress = false;
   };
 
@@ -177,6 +197,14 @@ export const useBackOrder = defineStore('backOrder', () => {
   }
   async function addBackOrder(backOrderData) {
     const auth = getAuth();
+    if (backOrderData.workingDays) {
+      const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday','saturday','sunday','holiday'];
+      backOrderData.workingDays.sort((a, b) => {
+        const indexA = weekdays.indexOf(a);
+        const indexB = weekdays.indexOf(b);
+        return indexA - indexB;
+      });
+    }
     const data = JSON.parse(JSON.stringify(backOrderData));
     try {
       const clientDoc = doc(db, 'clients', data.client_id);
@@ -224,6 +252,11 @@ export const useBackOrder = defineStore('backOrder', () => {
         ...data,
       } as BackOrderModel);
     });
+    list.forEach(bo=>{
+      bo.dateOfRegistration =  myDateFormat(
+        bo.dateOfRegistration as Timestamp
+      );
+    })
     return list;
   }
 
@@ -245,6 +278,14 @@ export const useBackOrder = defineStore('backOrder', () => {
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
     const backOrderData = { ...backOrder };
+    if (backOrderData.workingDays) {
+      const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday','saturday','sunday','holiday'];
+      backOrderData.workingDays.sort((a, b) => {
+        const indexA = weekdays.indexOf(a);
+        const indexB = weekdays.indexOf(b);
+        return indexA - indexB;
+      });
+    }
     if (backOrderData.dateOfRegistration) backOrderData.dateOfRegistration = dateToTimestampFormat(new Date(backOrderData.dateOfRegistration as string));
     const boRef = doc(db, '/BO/' + backOrderData.id);
     await updateDoc(boRef, { ...backOrderData });
