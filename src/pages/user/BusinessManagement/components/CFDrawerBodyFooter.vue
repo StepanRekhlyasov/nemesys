@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineEmits, ref } from 'vue';
+import { defineEmits, onMounted, ref } from 'vue';
 import TaskRegister from '../../Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
-
-defineProps<{
+import { evaluateAll } from '../utils/evaluateIndex'
+const props =defineProps<{
   clientFactory: ClientFactory,
 }>()
 const emit = defineEmits<{
+
     (e: 'openFaxDrawer')
 }>()
 const openFaxDrawer = () =>{
@@ -15,6 +16,12 @@ const openFaxDrawer = () =>{
 }
 const { t } = useI18n({ useScope: 'global' });
 const openTaskRegister = ref(false)
+const dispatchIndex = ref<number|string>('loading')
+const refarralIndex = ref<number|string>('loading')
+onMounted(async()=>{
+    dispatchIndex.value = await evaluateAll(props.clientFactory,'dispatch')
+    refarralIndex.value = await evaluateAll(props.clientFactory,'referral')
+})
 </script>
 
 <template>
@@ -60,7 +67,7 @@ const openTaskRegister = ref(false)
                     </span>
 
                     <span class="info-footer__value">
-                        TEST
+                        {{ dispatchIndex }}
                     </span>
                 </p>
 
@@ -70,7 +77,7 @@ const openTaskRegister = ref(false)
                     </span>
 
                     <span class="info-footer__value">
-                        TEST
+                        {{ refarralIndex }}
                     </span>
                 </p>
             </div>
@@ -85,11 +92,11 @@ const openTaskRegister = ref(false)
                     </q-btn>
                 </div>
             </div>
-            <task-register 
+            <task-register
               :entity="'office'"
               :entityData="clientFactory"
-              v-model="openTaskRegister" 
-              @closeDrawer="openTaskRegister=false" 
+              v-model="openTaskRegister"
+              @closeDrawer="openTaskRegister=false"
             />
     </div>
 </template>

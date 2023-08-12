@@ -21,3 +21,4 @@ export interface FaxSearchData {
   selectedApplicant: string | null;
   selectedOrganization: string | null;
 }
+
