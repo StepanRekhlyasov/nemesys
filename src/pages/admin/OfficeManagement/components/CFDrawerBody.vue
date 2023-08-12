@@ -69,6 +69,7 @@ watchEffect(() => {
             :is-disable-edit="isLoading"
             :is-edit="isEditForm.officeInfo"
             :label="t('client.add.officeInfo')"
+            :selectedIndustry="selectedIndustry"
             theme="accent"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
@@ -88,12 +89,12 @@ watchEffect(() => {
             theme="accent"
             :selectedIndustry="selectedIndustry"
           />
-
         <HighlightTwoColumn
             :data="mainInfo.contactInfo"
             :is-edit="isEditForm.contactInfo"
             :is-disable-edit="isLoading"
             :label="t('client.add.contactInfo')"
+            :selectedIndustry="selectedIndustry"
             theme="accent"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"

@@ -24,20 +24,20 @@
               <div class="q-mr-xl q-pd-xl">
                   <div>
                       {{ t('client.list.phone') }} :
-                      <span v-if="clientFactoryList && clientFactoryList.length"> {{ clientFactoryList[0].tel? clientFactoryList[0].tel:'' }}</span>
+                      <span v-if="clientFactory"> {{ clientFactory.tel? clientFactory.tel:'' }}</span>
                   </div>
                   <div>
                       {{ t('client.list.fax') }} :
-                      <span v-if="clientFactoryList && clientFactoryList.length">{{ clientFactoryList[0].fax? clientFactoryList[0].fax:'' }}</span>
+                      <span v-if="clientFactory">{{ clientFactory.fax? clientFactory.fax:'' }}</span>
                   </div>
               </div>
 
               <div>
-                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-ml-md q-pr-md text-bold">
-                    {{ clientFactoryList[0].prefecture? clientFactoryList[0].prefecture:'' }} {{ clientFactoryList[0].municipality? clientFactoryList[0].municipality:'' }}
+                  <div v-if="clientFactory" class="q-ml-md q-pr-md text-bold">
+                    {{ clientFactory.prefecture? clientFactory.prefecture:'' }} {{ clientFactory.municipality? clientFactory.municipality:'' }}
                   </div>
-                  <div v-if="clientFactoryList && clientFactoryList.length" class="q-ml-md q-pr-md text-bold">
-                    {{ clientFactoryList[0].street? clientFactoryList[0].street:'' }} {{ clientFactoryList[0].building? clientFactoryList[0].building:'' }}
+                  <div v-if="clientFactory" class="q-ml-md q-pr-md text-bold">
+                    {{ clientFactory.street? clientFactory.street:'' }} {{ clientFactory.building? clientFactory.building:'' }}
                   </div>
               </div>
           </div>
@@ -75,6 +75,7 @@ const emit = defineEmits(['closeDialog', 'openSearchByMap', 'passClientToMapSear
 
 const client = ref<Client | undefined>(undefined);
 const clientFactoryList = ref<ClientFactory[]>([])
+const clientFactory = ref<ClientFactory>()
 const selectedBo = computed(() => backOrderStore.state.selectedBo);
 const drawerRight = ref(false);
 
@@ -94,6 +95,10 @@ watch(drawerRight, async() => {
   drawerValue.value = drawerRight.value;
   if(drawerRight.value){
     clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
+    clientFactory.value = clientFactoryList.value.find(office=>office.id === selectedBo.value?.office_id) as ClientFactory;
+    if(!clientFactory.value){
+      clientFactory.value =  await clientFactoryStore.getModifiedCfWithId(selectedBo.value?.office_id)
+    }
   }
 })
 

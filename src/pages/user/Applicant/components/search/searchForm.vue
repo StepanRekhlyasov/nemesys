@@ -13,7 +13,7 @@
         </div>
         <div class="col-2">
           <q-select outlined dense :options="statusOption" emit-value map-options v-model="searchData['status']"
-            clearable>
+            clearable multiple>
             <template v-if="!searchData['status']" v-slot:selected>
               <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
             </template>

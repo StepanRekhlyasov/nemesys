@@ -39,7 +39,7 @@ export const useJobSearch = defineStore('jobSearch', () => {
       )
     );
     q.forEach(async(doc) => {
-      const data = doc.data();
+      const data = doc.data() as Client;
       jobSearchData.push({
         ...data,
         id: doc.id,

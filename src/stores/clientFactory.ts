@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, getCountFromServer } from 'firebase/firestore';
+import { getFirestore, query, collection, getDocs, orderBy, limit, onSnapshot, addDoc, serverTimestamp, Timestamp, setDoc, getDoc, doc, where, getCountFromServer, collectionGroup } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client, Organization, User } from 'src/shared/model';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -8,6 +8,7 @@ import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { ConstraintsType } from 'src/shared/utils/utils';
 
 export const useClientFactory = defineStore('client-factory', () => {
 
@@ -69,7 +70,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                   isDetailInfoChanged: isDetailChanged ?? false
               }
             }
-            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'), 
+            const docRef = await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory', clientFactory.id, 'reflectLog'),
             saveData)
 
             const docSnap = await getDoc(docRef);
@@ -289,7 +290,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -299,6 +300,14 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const addModifiedCF = async (organizationId: string, modifiedClientFactory: ClientFactory) => {
         try {
+          let createdAt = modifiedClientFactory.created_at as string | object
+
+          if(typeof createdAt === 'object'){
+            if('seconds' in createdAt  && 'nanoseconds' in createdAt){
+                createdAt = new Timestamp(createdAt.seconds as number, createdAt.nanoseconds as number).toDate()
+            }
+          }
+            
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
                 organizationId: organizationId,
@@ -306,10 +315,10 @@ export const useClientFactory = defineStore('client-factory', () => {
                 numberUpdates: 1,
                 numberImports: 0,
                 updated_at: serverTimestamp(),
-                created_at: Timestamp.fromDate(new Date(modifiedClientFactory.created_at))
+                created_at: createdAt
             })
 
-            
+
 
             return res.id
         } catch(e) {
@@ -335,7 +344,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp(),
             })
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -404,7 +413,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: true
             }, {merge: true});
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -422,7 +431,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 updated_at: serverTimestamp()
             });
 
-            
+
         } catch(e) {
             Alert.warning(e)
 
@@ -432,7 +441,7 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
-        
+
         try {
             const headClientFactoryQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory'),
@@ -453,12 +462,61 @@ export const useClientFactory = defineStore('client-factory', () => {
                         created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                 } as ClientFactory
             })
-
         } catch(e) {
             Alert.warning(e)
             console.log(e)
         }
         return headClientFactory;
+    }
+    const getEmploymentStatus = async(boSnapshot,fixSnapshot,employmentType1,employmentType2)=>{
+        const array:string[]=[]
+        boSnapshot.docs.forEach(
+            (doc) => {
+                if ((doc.data()['employmentType'] 
+                && (doc.data()['employmentType'].includes(employmentType1)
+                || (employmentType2!=='' && doc.data()['employmentType'].includes(employmentType2))))) {
+                    array.push(doc.id)
+                }
+            }
+        )
+        let count = 0;
+        
+        array.forEach((id) => {
+            fixSnapshot.docs.forEach(
+                (doc) => {
+                    if (doc.data()['backOrder'] === id
+                        && doc.data()['admissionStatus'] === true) {
+                        count++;
+                    }
+                }
+            )
+        })
+        return count;
+    }
+    const getRelatedOfficeInfo = async(clientId:string) => {
+        const officeInfo = {};
+        const cfSnapshot = await getDocs(collection(db, 'clients', clientId, 'client-factory'));
+        officeInfo['numberOffices'] = cfSnapshot.size;
+        const boSnapshot = await getDocs(query(collection(db,'BO'),where('client_id','==',clientId)))
+        officeInfo['backOrder'] = boSnapshot.size;
+        const fixSnapshot = await getDocs(collection(db,'fix'))
+        officeInfo['fullTime']  = await getEmploymentStatus(boSnapshot,fixSnapshot,'fullTime','');
+        officeInfo['nonRegular'] = await getEmploymentStatus(boSnapshot,fixSnapshot,'partTime','');
+        officeInfo['temporary'] =  await getEmploymentStatus(boSnapshot,fixSnapshot,'dispatch', 'referralDispacth');
+        officeInfo['current'] = 0;
+        let count=0;
+        boSnapshot.forEach((docs) => {
+            fixSnapshot.docs.forEach(
+                (doc) => {
+                    if (doc.data()['backOrder'] === docs.id
+                        && ['wait_termination','working'].includes(doc.data()['status'])) {
+                        count++;
+                    }
+                }
+            )
+        })
+        officeInfo['current'] = count
+        return officeInfo;
     }
 
     async function getClientFactory(client_id: string, office_id: string){
@@ -470,9 +528,38 @@ export const useClientFactory = defineStore('client-factory', () => {
       return { ...result.data(), id: result.id } as ClientFactory
     }
 
+
+    async function getClientFactoryByConstraints(constraints: ConstraintsType) {
+        const ref = query(collectionGroup(db, 'client-factory'), ...constraints)
+        const data = await getDocs(ref)
+        return data.docs.map((doc)=>{
+           return{
+            ...doc.data(),
+            id: doc.id
+        } as ClientFactory
+        })
+    }
+    
+    async function getModifiedCfWithId(office_id: string) {
+        const querySnapshot = await getDocs(
+            query(
+                collectionGroup(db, 'modifiedCF'),
+                where('id', '==', office_id)
+            )
+        );
+        const modifiedCF = ref<ClientFactory>()
+        querySnapshot.forEach((doc) => {
+            modifiedCF.value = doc.data() as ClientFactory;
+            return modifiedCF.value ? modifiedCF.value : {};
+        });
+        return modifiedCF.value ? modifiedCF.value : {};
+    }
+
     return {
         clientFactories,
         modifiedCFs,
+        getModifiedCfWithId,
+        getClientFactoryByConstraints,
         getClientFactories,
         getClientFactory,
         getClientFactoryList,
@@ -483,6 +570,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         addClientFactory,
         updateClientFactory,
         getHeadClientFactory,
+        getRelatedOfficeInfo,
         addModifiedCF,
         getModifiedCF,
         updateModifiedCF,
