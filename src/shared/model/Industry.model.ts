@@ -5,6 +5,7 @@ export interface Industry {
         typeSpecificItems: {[key: string]: SpecificItem}
         facilityForms: {[key: string]: FacilityForm}
         occupationForms: {[key: string]: OccupationForm}
+        certificateForms: {[key: string]: CertificateForm}
     }
 }
 
@@ -20,6 +21,11 @@ export interface FacilityForm {
 }
 
 export interface OccupationForm {
+    title: string
+    order: number
+}
+
+export interface CertificateForm {
     title: string
     order: number
 }

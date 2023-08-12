@@ -6,10 +6,11 @@ import { watch, ref, nextTick } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
 import UniqueItemsSpecificTypes from './components/UniqueItemsSpecificTypes.vue';
 import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue';
+import UniqueCertificateForms from './components/UniqueCertificateForms.vue';
 import UniqueOccupationForm from './components/UniqueOccupationForm.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useIndsutry } from 'src/stores/industry';
-import { FacilityForm, Industry, SpecificItem, OccupationForm } from 'src/shared/model/Industry.model';
+import { FacilityForm, Industry, SpecificItem, OccupationForm,CertificateForm } from 'src/shared/model/Industry.model';
 import { deepCopy } from 'src/shared/utils';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -32,7 +33,7 @@ const isCanBeSaved = ref({
     typeSpecificItems: false,
     facilityForms: false,
     occupationForms: false,
-    // Certification: false
+    certificateForms: false
 })
 const isLoading = ref(isFirstLoading)
 const isNewIndustryPopup = ref(false)
@@ -74,6 +75,7 @@ const onNewIndustry = async (industryName: string) => {
             typeSpecificItems: {},
             facilityForms: {},
             occupationForms: {},
+            certificateForms: {},
         }
     })
 
@@ -114,7 +116,7 @@ const sortHandler = (
 ) => {
 
     if(industryToUpdate.value && activeIndustry.value) {
-        const items: { [key: string]: SpecificItem  | FacilityForm | OccupationForm} = industryToUpdate.value.uniqueItems[path];
+        const items: { [key: string]: SpecificItem  | FacilityForm | OccupationForm | CertificateForm} = industryToUpdate.value.uniqueItems[path];
 
         const keys = Object.keys(items);
         const movedKey = keys[event.oldIndex];
@@ -175,6 +177,28 @@ const deleteOccupationForm = (id: string) => {
 
 const updateOccupationForm = () => {
     isCanBeSaved.value.occupationForms = true
+}
+
+const newCertificateForm = (data: string) => {
+    const id = uid();
+    if(industryToUpdate.value) {
+        industryToUpdate.value.uniqueItems.certificateForms[id] = { title: data, order: Object.keys(industryToUpdate.value.uniqueItems.certificateForms).length + 1 };
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.certificateForms as Record<string, CertificateForm>, activeIndustry.value?.uniqueItems.certificateForms as Record<string, CertificateForm>)) {
+            isCanBeSaved.value.certificateForms = true;
+        }
+    }
+}
+const deleteCertificateForm = (id: string) => {
+    if (industryToUpdate.value) {
+        delete industryToUpdate.value.uniqueItems.certificateForms[id]
+        Object.values(industryToUpdate.value.uniqueItems.certificateForms).forEach((item, index) => {
+            item.order = index + 1;
+        });
+        isCanBeSaved.value.certificateForms = true;
+    }
+}
+const updateCertificateForm = () => {
+    isCanBeSaved.value.certificateForms = true
 }
 
 const isNewIndustryPopupHandler = (val: boolean) => {
@@ -253,21 +277,21 @@ watch(() => industries.value, () => {
                     @sort-occupation-form="(e) => sortHandler(e, 'occupationForms')"
                     />
             </DropDownEditGroup>
-            <!-- <DropDownEditGroup
+            <DropDownEditGroup
                 :label="t('client.add.Certification') + ' (' + t('applicant.add.applicantInfo') + ')'"
                 :is-edit="true"
                 :isLabelSquare="true"
-                :is-disabled-button="!isCanBeSaved.Certification"
+                :is-disabled-button="!isCanBeSaved.certificateForms"
                 :is-without-cancel="true"
-                @on-save="updateIndustryHandler('Certification')"
+                @on-save="updateIndustryHandler('certificateForms')"
                 theme="accent">
-                <UniqueItemsFacilityForms
+                <UniqueCertificateForms
                     :active-industry="industryToUpdate"
-                    @new-facility-form="newFacilityForm"
-                    @delete-facility-form="deleteFacilityForm"
-                    @update-facility-form="updateFacilityForm"
-                    @sort-facility-form="(e) => sortHandler(e, 'facilityForms')"/>
-            </DropDownEditGroup> -->
+                    @new-certificate-form="newCertificateForm"
+                    @delete-certificate-form="deleteCertificateForm"
+                    @update-certificate-form="updateCertificateForm"
+                    @sort-certificate-form="(e) => sortHandler(e, 'certificateForms')"/>
+            </DropDownEditGroup>
         </q-card>
     </div>
 </template>

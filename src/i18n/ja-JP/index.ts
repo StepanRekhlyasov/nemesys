@@ -2146,6 +2146,7 @@ export default {
     dailyTotal: '日次集計',
     item: '項目',
     occupation: '職種',
+    certificate:'資格',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',
     applicationAttribute: '応募属性',

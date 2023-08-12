@@ -2153,6 +2153,7 @@ export default {
     dailyTotal: 'daily total',
     item: 'Item',
     occupation: 'Occupation',
+    certificate: 'Certificate',
     actualFigures: 'Actual figures',
     unitPrice: 'Unit price/LT',
     applicationAttribute: 'Application attribute',
