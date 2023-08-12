@@ -134,7 +134,7 @@
           {{ $t('applicant.attendant.medicalHistory') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.medicalHistory}}</span>
+          <span v-if="!edit">{{ applicant.isMedicalHistory ? applicant.medicalHistory :t('applicant.attendant.notExist')}}</span>
           <q-select  v-if="edit" v-model="data['isMedicalHistory']" :options="medicalHistoryoptions"
           emit-value map-options dense outlined/>
           <q-input v-if="edit && data['isMedicalHistory']" dense outlined bg-color="white"
