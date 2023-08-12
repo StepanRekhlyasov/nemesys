@@ -186,7 +186,7 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityDesired }}</span>
-        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options v-if="desiredEdit"
+        <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options v-if="desiredEdit"
           option-label="name" v-model="data['facilityDesired']" :disable="loading" />
       </div>
     </div>
@@ -197,7 +197,7 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityType }}</span>
-        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options
+        <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options
           option-label="name" v-model="data['ngFacilityType']" :disable="loading" v-if="desiredEdit"/>
       </div>
     </div>
@@ -207,8 +207,9 @@
        </div>
        <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots q-mt-sm">{{ formattedNgClients }}</span>
-        <q-select outlined dense multiple :options="clients" use-chips emit-value map-options
-          option-label="name" v-model="data['ngClient']" :disable="loading" v-if="desiredEdit"/>
+        <q-select outlined dense multiple use-chips :options="clients"
+          option-label="name" v-model="data['ngClient']" :disable="loading" v-if="desiredEdit"
+          use-input input-debounce="0"  class="custom-q-select" emit-value map-options @filter="filterClients"/>
        </div>
      </div>
 
@@ -287,7 +288,6 @@ import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { myDateFormat } from 'src/shared/utils/utils';
-import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
 import { where } from 'firebase/firestore'
@@ -295,14 +295,19 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import {useClient} from 'src/stores/client'
 import { useOrganization } from 'src/stores/organization';
 import { Client } from 'src/shared/model';
+import { useIndsutry } from 'src/stores/industry';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps<{
   applicant: Applicant,
   bo?: BackOrderModel
 }>()
+const industryStore = useIndsutry()
+const {industries } = storeToRefs(industryStore)
 const clients:Ref<Client[]> = ref([]);
 const organization = useOrganization()
 const clientStore =useClient()
+const facilityTypeOptions: { name: string }[] = [];
 const applicantStore = useApplicant();
 const { t } = i18n.global;
 const shiftOptions = [
@@ -316,7 +321,7 @@ const specialDays = ref(specialDaysList);
 const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({});
-const data = ref<Partial<ApplicantInputs>>({});
+  const data = ref<Partial<ApplicantInputs>>({});
 const routeData = ref([]);
 const stationData = ref([]);
 const meansCommutingOptions = computed(() => [
@@ -346,6 +351,7 @@ const metadataStore = useMetadata()
 onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
   clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
+  getFacilityTypeOptions()
 });
 
 watch(() => data.value['route'], async (newVal) => {
@@ -393,8 +399,12 @@ function resetData() {
 }
 resetData();
 
-const joinFacilityType = computed(() => props.applicant.ngFacilityType?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
-const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
+const joinFacilityType = computed(() =>
+  props.applicant.ngFacilityType?.map(option => `${option.name}`).join(', ')
+);
+const joinFacilityDesired = computed(() =>
+  props.applicant.facilityDesired?.map(option => `${option.name}`).join(', ')
+);
 const formattedNgClients = computed(() => props.applicant.ngClient?.map(val => (`${val.name}`)).join(', '))
 async function saveDesired() {
   loading.value = true;
@@ -408,6 +418,19 @@ async function saveDesired() {
   }
   loading.value = false
 }
+
+const getFacilityTypeOptions = () => {
+  if (Array.isArray(industries.value)) {
+    const industryArray = industries.value.flatMap(industry =>
+    Object.values(industry.uniqueItems.facilityForms || {}).map(formData => ({
+      name: formData.title,
+    }))
+    );
+
+    facilityTypeOptions.push(...industryArray);
+  }
+};
+
 
 const filterStation = async (val: string, update) => {
   if (val === '' && data.value.route) {
@@ -434,9 +457,19 @@ const filterRoute = async (val: string, update) => {
     routeData.value = routeData.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
   })
 };
-
+const filterClients = (val:string, update) => {
+  if (val === '') {
+    update(async() => {
+    clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
+    });
+    return;
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clients.value = clients.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  });
+};
 </script>
-
 <style lang="scss">
 .text_dots {
   display: -webkit-box;
