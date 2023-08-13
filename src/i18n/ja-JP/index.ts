@@ -1074,6 +1074,7 @@ export default {
       specialDay: '特日出勤',
       shiftRemarks: '勤務可能シフト備考',
       days: '日',
+      notExist:'なし',
       meansCommuting: '通勤手段',
       meansCommutingOptions: {
         walk: '徒歩',

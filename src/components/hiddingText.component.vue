@@ -12,7 +12,7 @@ export default {
   name: 'HiddingTextComponent',
   props: {
     value: {
-      type: String
+      type: [String, Number]
     }
   },
   setup () {

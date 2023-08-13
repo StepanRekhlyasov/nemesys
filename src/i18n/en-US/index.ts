@@ -1078,6 +1078,7 @@ export default {
       specialDay: 'Working on a special day',
       shiftRemarks: 'Available Shift Remarks',
       days: 'Days',
+      notExist: 'No',
       meansCommuting: 'Means of commuting',
       meansCommutingOptions: {
         walk: 'Walk',

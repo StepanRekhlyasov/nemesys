@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
     data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string, editType?: string }[]
     selectedIndustry?: { value: string, isSelected: boolean }
     isEdit: boolean
-    label: string
+    label?: string
     isDropDown?: boolean
     isDisableEdit?: boolean
     showActions?: boolean
@@ -48,7 +48,7 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
 <template>
     <div class="row justify-between">
         <div class="row items-center">
-            <div class="row items-center">
+            <div class="row items-center" v-if="label">
                 <div :class="`bg-${theme} square`"></div>
                 <span :class="`text-${theme} subtitle`">{{ label }}</span>
             </div>

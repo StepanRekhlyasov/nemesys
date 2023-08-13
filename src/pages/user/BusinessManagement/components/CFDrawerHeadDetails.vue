@@ -62,7 +62,7 @@ const editDraft = (changedData: ChangedData) => {
 
     <div v-if="!isLoading">
         <HighlightTwoColumn :data="headDetails.headOfficeInfo" :label="t('clientFactory.drawer.headOfficeInfo')"
-            :is-drop-down="true" 
+            :is-drop-down="true"
             :show-actions="clientFactory.isHead"
             :is-disable-edit="isLoading"
             :is-edit="isOpenEditDropDown.headOfficeInfo"
@@ -74,21 +74,20 @@ const editDraft = (changedData: ChangedData) => {
         <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo"
             @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" />
 
-        <HighlightTwoColumn :data="headDetails.clientInfo" :label="t('clientFactory.drawer.clientInfo')" 
+        <HighlightTwoColumn :data="headDetails.clientInfo" :label="t('clientFactory.drawer.clientInfo')"
         :show-actions="clientFactory.isHead"
-        :is-drop-down="true" 
+        :is-drop-down="true"
         :is-disable-edit="isLoading"
         :is-edit="isOpenEditDropDown.clientInfo"
         @open-edit="isOpenEditDropDown.clientInfo = true"
         @close-edit="isOpenEditDropDown.clientInfo = false"
         @on-save="isOpenEditDropDown.clientInfo = false; editDraft(dataForUpdating.clientInfo as Data[])"/>
-
         <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')"
             :data="headDetails.clientInfo"/>
 
         <HighlightTwoColumn :data="headDetails.contractInfo" :label="t('clientFactory.drawer.contractInfo')"
             :show-actions="clientFactory.isHead"
-            :is-drop-down="true" 
+            :is-drop-down="true"
             :is-disable-edit="isLoading"
             :is-edit="isOpenEditDropDown.contractInfo"
             @open-edit="isOpenEditDropDown.contractInfo = true"
