@@ -84,13 +84,12 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
         <div class="column">
             <div v-for="row in leftColumn" :key="row.label" class="line">
                 <span :class="`text-${theme} line__label`">
-                    {{ row.label }}
+                    {{ row.label }} 
                 </span>
 
                 <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" :class="`link q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </a>
-
                 <span v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" :class="`facilityRow q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     <template v-for="item in selectedIndustryFacilityTypes">
                       <template v-if="row.value.includes(item.title)">{{ item.title }}<span :key="item.title" class="lastCommaHide">, </span></template>

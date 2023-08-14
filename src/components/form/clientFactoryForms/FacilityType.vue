@@ -52,7 +52,6 @@ watch(() => [props.industryName], async () => {
             <q-item-label v-if="isLabel" class="q-pb-xs">
                     {{t('client.add.facilityType')}}
             </q-item-label>
-
             <div v-if="!isLoading">
                 <q-checkbox
                     size="xs"
