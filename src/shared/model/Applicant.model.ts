@@ -1,5 +1,6 @@
 import { User } from 'firebase/auth';
 import { FieldValue, Timestamp } from 'firebase/firestore';
+import { Industry } from './Industry.model';
 export interface ApplicantExperience extends ApplicantExperienceBase, ApplicantExperienceDates { }
 export interface ApplicantExperienceInputs extends ApplicantExperienceBase, ApplicantExperienceInputDates { }
 export interface ApplicantExperienceBase {
@@ -60,7 +61,7 @@ export interface ApplicantBase {
   prefecture?: string;
   municipalities?: string;
   street?: string;
-  industry?:string,
+  industry?:Industry,
   apartment?: string;
   status?: ApplicantStatus;
   statusChangeTimestamp?: { [key: string]: Timestamp | FieldValue }

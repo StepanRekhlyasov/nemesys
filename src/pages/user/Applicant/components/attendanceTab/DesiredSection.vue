@@ -296,15 +296,11 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import {useClient} from 'src/stores/client'
 import { useOrganization } from 'src/stores/organization';
 import { Client } from 'src/shared/model';
-import { useIndsutry } from 'src/stores/industry';
-import { storeToRefs } from 'pinia';
 
 const props = defineProps<{
   applicant: Applicant,
   bo?: BackOrderModel
 }>()
-const industryStore = useIndsutry()
-const {industries } = storeToRefs(industryStore)
 const clients:Ref<Client[]> = ref([]);
 const organization = useOrganization()
 const clientStore =useClient()
@@ -421,17 +417,14 @@ async function saveDesired() {
 }
 
 const getFacilityTypeOptions = () => {
-  if (Array.isArray(industries.value)) {
-    const industryArray = industries.value.flatMap(industry =>
-    Object.values(industry.uniqueItems.facilityForms || {}).map(formData => ({
+  if (props.applicant.industry && props.applicant.industry.uniqueItems && props.applicant.industry.uniqueItems.facilityForms) {
+    const industryArray = Object.values(props.applicant.industry.uniqueItems.facilityForms).map(formData => ({
       name: formData.title,
-    }))
-    );
+    }));
 
     facilityTypeOptions.push(...industryArray);
   }
 };
-
 
 const filterStation = async (val: string, update) => {
   if (val === '' && data.value.route) {
