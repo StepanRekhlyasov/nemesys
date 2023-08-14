@@ -8,20 +8,20 @@
             <div class="flex">
               <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
             </div>
-            <div class="row q-mr-xl q-pd-xl">
-                <div class="q-mr-xl q-pl-xl column">
-                  <div v-if="selectedBo" class="text-subtitle2 q-mr-xl q-pd-xl">
+            <div class="row q-mr-md">
+                <div class="column">
+                  <div v-if="selectedBo" class="text-subtitle2 q-mr-md">
                     {{ nameBo }}
                   </div>
 
-                    <span class="q-mr-xl q-pd-xl text-h6 text-weight-bold">
+                    <span class="text-h6 text-weight-bold">
                         <q-icon color="white" name="home"/>
                         {{ `${$t('backOrder.backOrderDetails')} / ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
                     </span>
                 </div>
               </div>
 
-              <div class="q-mr-xl q-pd-xl">
+              <div class="q-mr-md">
                   <div>
                       {{ t('client.list.phone') }} :
                       <span v-if="clientFactory"> {{ clientFactory.tel? clientFactory.tel:'' }}</span>
@@ -33,10 +33,10 @@
               </div>
 
               <div>
-                  <div v-if="clientFactory" class="q-ml-md q-pr-md text-bold">
+                  <div v-if="clientFactory" class="q-ml-md text-bold">
                     {{ clientFactory.prefecture? clientFactory.prefecture:'' }} {{ clientFactory.municipality? clientFactory.municipality:'' }}
                   </div>
-                  <div v-if="clientFactory" class="q-ml-md q-pr-md text-bold">
+                  <div v-if="clientFactory" class="q-ml-md text-bold">
                     {{ clientFactory.street? clientFactory.street:'' }} {{ clientFactory.building? clientFactory.building:'' }}
                   </div>
               </div>
