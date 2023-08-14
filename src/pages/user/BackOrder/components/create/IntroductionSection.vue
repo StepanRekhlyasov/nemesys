@@ -44,7 +44,7 @@
     </div>
 
     <div class="row" v-if="type == 'referral'" >
-      <labelField :label="$t('backOrder.employmentType')" :edit="true" required 
+      <labelField :label="$t('backOrder.employmentType')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
         <q-field v-model="data['employmentType']" borderless hide-bottom-space :rules="[(val) => creationArrayRule(val)]">
           <q-checkbox
@@ -58,20 +58,20 @@
           />
         </q-field>
       </labelField>
-    </div>    
+    </div>
 
     <div class="row ">
-      <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true" 
+      <labelField :label="$t('backOrder.create.requiredQualifications')" :edit="true"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
         <q-field v-model="data['qualifications']" borderless hide-bottom-space>
-          <q-checkbox 
-            v-for="key in TypeQualifications" 
-            v-model="data['qualifications']" 
+          <q-checkbox
+            v-for="key in TypeQualifications"
+            v-model="data['qualifications']"
             :label="$t('applicant.qualification.'+key)"
             :val="key"
             :key="key"
             :disable="loading"
-            class="q-pr-md" 
+            class="q-pr-md"
           />
         </q-field>
       </labelField>
@@ -87,18 +87,18 @@
         <q-input v-model="data['experienceRemarks']" type="textarea" autogrow outlined dense :disable="loading" />
       </labelField>
     </div>
-    <div class="row q-pt-sm" v-if="type == 'dispatch'">
+    <div class="row q-pt-sm">
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
         <q-input v-model="data['upperAgeLimit']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </labelField>
     </div>
-    
+
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['invoice'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -106,17 +106,17 @@
     <div class="row q-pt-sm"  v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]"/>
+        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['payment'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
-    </div>   
+    </div>
 
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-10 q-pl-md">
         <q-input v-model="data['travelingExpenses']" type="textarea" outlined dense :disable="loading" autogrow/>
       </labelField>
-    </div>   
+    </div>
   </q-card-section>
 </template>
 
@@ -125,6 +125,7 @@ import labelField from 'src/components/form/LabelField.vue';
 import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
 import { validateDate } from 'src/shared/constants/Form.const';
 import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { useUserStore } from 'src/stores/user';
 import { ref, watch } from 'vue';
 

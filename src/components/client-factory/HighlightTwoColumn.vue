@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, withDefaults, computed, ref } from 'vue';
+import { defineProps, withDefaults, computed, ref, watch } from 'vue';
+import { useIndsutry } from 'src/stores/industry';
+import { InputType } from './types';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string }[]
+    data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string, editType?: string }[]
+    selectedIndustry?: { value: string, isSelected: boolean }
     isEdit: boolean
-    label: string
+    label?: string
     isDropDown?: boolean
     isDisableEdit?: boolean
     showActions?: boolean
@@ -28,12 +31,24 @@ const emit = defineEmits<{
 
 const leftColumn = computed(() => props.data.filter((_, index) => index % 2 === 0))
 const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !== 0))
+const industryStore = useIndsutry()
+const selectedIndustryFacilityTypes = ref()
+watch(()=> props.selectedIndustry?.value, async (newVal)=>{
+  if(newVal){
+     const industries = await industryStore.getIndustryByName(newVal)
+     if(industries){
+       selectedIndustryFacilityTypes.value = Object.values(industries.uniqueItems.facilityForms).sort((a : {order: number}, b: {order: number})=>{
+        return a.order - b.order
+       })
+     }
+  }
+}, {immediate: true})
 </script>
 
 <template>
     <div class="row justify-between">
         <div class="row items-center">
-            <div class="row items-center">
+            <div class="row items-center" v-if="label">
                 <div :class="`bg-${theme} square`"></div>
                 <span :class="`text-${theme} subtitle`">{{ label }}</span>
             </div>
@@ -76,6 +91,12 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
                     {{ row.value }}
                 </a>
 
+                <span v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" :class="`facilityRow q-pl-sm ${row.isHighlight && 'line__highlight'}`">
+                    <template v-for="item in selectedIndustryFacilityTypes">
+                      <template v-if="row.value.includes(item.title)">{{ item.title }}<span :key="item.title" class="lastCommaHide">, </span></template>
+                    </template>
+                </span>
+
                 <span v-else-if="Array.isArray(row.value)" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value.join(', ') }}
                 </span>
@@ -114,7 +135,11 @@ const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !==
 
 <style lang="scss" scoped>
 @import 'src/css/imports/colors';
-
+.facilityRow{
+  .lastCommaHide:last-child{
+    display: none;
+  }
+}
 .column {
     width: 50%;
 }

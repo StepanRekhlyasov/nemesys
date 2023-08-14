@@ -34,7 +34,7 @@ const isNewClientFactoryDrawer = ref(false)
 const isNewFaxDrawer = ref(false)
 
 const pagination = ref({
-    sortBy: 'desc',
+    sortBy: 'name',
     descending: false,
     page: 1,
     rowsPerPage: 100,

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { storeToRefs } from 'pinia'
+import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useClientFactory } from 'src/stores/clientFactory';
 import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
@@ -13,15 +12,15 @@ import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { clientFactoriesToTableRows } from './handlers';
-import { useClient } from 'src/stores/client';
-import {tableColumnsClientFactory} from './consts';
+import { tableColumnsClientFactory } from './consts';
+import { useOrganization } from 'src/stores/organization';
+import { where } from 'firebase/firestore';
+import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const { t } = useI18n({ useScope: 'global' });
 const clientFactoryStore = useClientFactory()
-const { clientFactories } = storeToRefs(clientFactoryStore)
-const clientStore = useClient()
-const { clients } = storeToRefs(clientStore)
-
+const clientFactories = ref<ClientFactory[]>([])
+const organization = useOrganization()
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
@@ -50,6 +49,7 @@ const resetSelectedCFsId = () =>{
     clientFactoryStore.condition = false
     selectedCFsId.value = []
     clientFactoryStore.selectedCFsId = []
+    getData()
 }
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
@@ -64,32 +64,32 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     }, 200);
 }
 const selected = ref<number[]>([])
-const selectedCFHandler = (item:number[]) =>{
+const selectedCFHandler = (item: number[]) => {
     selected.value = item
 }
-const key = ref(0);
-const changeKey = () =>{
-    key.value=key.value==0?1:0
-}
-watch([clients], () => {
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    clientFactoryStore.getClientFactories(clients.value).then(() => {
-        tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    })
 
-}, { deep: true, immediate: true });
+onMounted(async () => {
+    await getData()
+})
 
-watch([clientFactories,condition], () => {
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
+watchCurrentOrganization(async () => {
+    await getData()
+})
+
+async function getData() {
+    console.log(selectedCFsId.value)
+    fetchData.value = true
+    const [CFByOrganization, CFByAdmin] = await Promise.all([clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', organization.currentOrganizationId)]), clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', null)])])
+    const cf = [...CFByOrganization, ...CFByAdmin]
+    clientFactories.value = cf
     if(condition.value){
-        tableRows.value = clientFactoriesToTableRows(clientFactories.value).filter((item)=>selectedCFsId.value.includes(item.id))
+        tableRows.value = clientFactoriesToTableRows(cf).filter((item)=>selectedCFsId.value.includes(item.id))
     }
     else{
-        tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+        tableRows.value = clientFactoriesToTableRows(cf)
     }
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    changeKey()
-}, { deep: true, immediate: true })
+    fetchData.value = false
+}
 
 // client-factory drawer
 
@@ -101,23 +101,25 @@ const hideClientFactoryDrawer = () => {
 
 const hideNewClientDrawer = () => {
     isNewClientDrawer.value = false
-    setTimeout(()=>{
-      isNewClientDrawerRender.value = false
+    setTimeout(() => {
+        isNewClientDrawerRender.value = false
     }, 200)
+    getData()
 }
 
 const openNewClientDrawer = () => {
-  isNewClientDrawerRender.value = true
-  isNewClientDrawer.value = true
+    isNewClientDrawerRender.value = true
+    isNewClientDrawer.value = true
 }
 
 // new client-factory drawer
 
 const hideNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = false
-    setTimeout(()=>{
-      isNewClientFactoryDrawerRender.value = false
+    setTimeout(() => {
+        isNewClientFactoryDrawerRender.value = false
     }, 200)
+    getData()
 }
 
 const openNewClientFactoryDrawer = () => {
@@ -136,15 +138,15 @@ const isNewClientFactoryDrawerRender = ref(true)
 
 const openNewFaxDrawer = () => {
     selectedCF.value = []
-    Object.keys(selected.value).forEach((key)=>{
+    Object.keys(selected.value).forEach((key) => {
         selectedCF.value.push(selected.value[key].id)
     });
-    if(selectedCF.value.length === 0 || selectedCF.value.length === tableRows.value.length){
+    if (selectedCF.value.length === 0 || selectedCF.value.length === tableRows.value.length) {
         selectedCF.value = ['all']
     }
     isNewFaxDrawer.value = true
 }
-const openFaxDrawer = (id:string) =>{
+const openFaxDrawer = (id: string) => {
     selectedCF.value = []
     selectedCF.value.push(id)
     isNewFaxDrawer.value = true
@@ -173,7 +175,7 @@ const openFaxDrawer = (id:string) =>{
                     :rows="tableRows"
                     :pagination="pagination"
                     :table-columns="tableColumnsClientFactory"
-                    :key="key"/>
+                    key="0"/>
                 <Pagination
                     :rows="tableRows"
                     @updatePage="pagination.page = $event"
@@ -181,25 +183,15 @@ const openFaxDrawer = (id:string) =>{
             </q-card-section>
         </q-card>
 
-        <ClientFactoryDrawer
-            v-if="activeClientFactoryItem"
-            v-model:selectedItem="activeClientFactoryItem"
-            :originalOfficeId="originalOfficeId"
-            :isDrawer="isClientFactoryDrawer"
-            @open-fax-drawer="openFaxDrawer"
-            @hide-drawer="hideClientFactoryDrawer"/>
+        <ClientFactoryDrawer v-if="activeClientFactoryItem" v-model:selectedItem="activeClientFactoryItem"
+            :originalOfficeId="originalOfficeId" :isDrawer="isClientFactoryDrawer" @open-fax-drawer="openFaxDrawer"
+            @hide-drawer="hideClientFactoryDrawer" />
 
-        <NewClientDrawer
-            v-if="isNewClientDrawerRender"
-            @hide-drawer="hideNewClientDrawer"
-            theme="primary"
+        <NewClientDrawer v-if="isNewClientDrawerRender" @hide-drawer="hideNewClientDrawer" theme="primary"
             :is-drawer="isNewClientDrawer" />
 
-        <NewClientFactoryDrawer
-            v-if="isNewClientFactoryDrawerRender"
-            @hide-drawer="hideNewClientFactoryDrawer"
-            theme="primary"
-            :is-drawer="isNewClientFactoryDrawer"/>
+        <NewClientFactoryDrawer v-if="isNewClientFactoryDrawerRender" @hide-drawer="hideNewClientFactoryDrawer"
+            theme="primary" :is-drawer="isNewClientFactoryDrawer" />
 
         <FaxDrawer
         @hide-drawer="hideNewFaxDrawer"
@@ -217,6 +209,7 @@ const openFaxDrawer = (id:string) =>{
 .title {
     color: $main-black;
 }
+
 .pagination {
     padding: 2% 2%;
 }

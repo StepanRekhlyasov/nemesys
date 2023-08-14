@@ -3,7 +3,7 @@ import { Applicant, ApplicantFix } from 'src/shared/model'
 export type ApplicantCol = {
   id: number,
   label: string,
-  status: string,
+  status: string | string[],
   items: Applicant[] | never[] | ApplicantFix[]
 }
 
