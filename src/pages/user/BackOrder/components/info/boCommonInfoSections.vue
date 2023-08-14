@@ -10,8 +10,8 @@
 
   <div class="row">
     <LabelField :label="$t('backOrder.registeredDate')" :edit="edit"
-      :value="bo['dateOfRegistration'] ">
-      <q-input v-if="edit" dense outlined bg-color="white" v-model="data['dateOfRegistration']">
+      :value="!edit? (bo['dateOfRegistration']):''" labelClass="q-pl-md col-2 text-right self-center" valueClass="col-4 q-pl-md self-center" >
+      <q-input v-if="edit" dense outlined bg-color="white" v-model="formattedDate">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -25,105 +25,32 @@
           </template>
       </q-input>
     </LabelField>
-    <labelField :label="$t('backOrder.create.registrant')" :edit="false" :value="getRegistrant(data['registrant'])"/>
+    <LabelField :label="$t('backOrder.create.registrant')" :edit="false" :value="getRegistrant(data['registrant'])" 
+          labelClass="q-pl-md col-2 text-right self-center" 
+          valueClass="col-4 q-pl-md self-center" />
+    <template v-for="item in ui" :key="item.title"> 
+      <LabelField 
+        :label="item.title" 
+        :edit="false"
+        labelClass="q-pl-md col-2 text-right self-center" 
+        valueClass="col-4 q-pl-md self-center" 
+        :value="item.value"
+      />
+    </template>
+    <q-linear-progress query v-if="loading" color="primary"/>
   </div>
 
-  <div class="row q-pt-sm">
-      <LabelField :label="$t('backOrder.create.approvalOrNot')" :edit="edit"
-        :value="bo['approvalOrNot'] ? $t('common.yes') : $t('common.no')">
-        <q-toggle v-model="data['approvalOrNot']"  :disable="loading"/>
-        <span class="q-ma-sm flex-center q-pr-md q-mr-md">{{ data['approvalOrNot']?$t('common.yes'):$t('common.no') }}</span>
-      </LabelField>
-    <LabelField :label="$t('backOrder.create.uniformAvailability')" :edit="edit"
-        :value="data['uniformAvailability']" >
-      <q-input v-model="data['uniformAvailability']" outlined dense :disable="loading"/>
-    </LabelField>
-  </div>
-
-  <div class="row q-pt-sm">
-    <LabelField :label="$t('backOrder.create.filingRemarks')" :edit="edit"
-      :value="bo['filingRemarks'] ">
-      <q-input v-model="data['filingRemarks']" outlined dense :disable="loading"/>
-    </LabelField>
-    <LabelField :label="$t('backOrder.create.availabilityOfLunch')" :edit="edit"
-      :value="data['availabilityOfLunch'] ? `${data['availabilityOfLunch']}` : ''" >
-      <q-input v-model="data['availabilityOfLunch']" outlined dense :disable="loading"/>
-    </LabelField>
-  </div>
-
-  <div class="row q-pt-sm">
-    <LabelField :label="$t('backOrder.create.availabilityOfGarage')" :edit="edit"
-      :value="data['availabilityOfGarage'] ? $t('common.yes') : $t('common.no')">
-      <q-toggle v-model="data['availabilityOfGarage']"  :disable="loading"/>
-      <span class="q-ma-sm flex-center q-pr-md q-mr-md">{{ data['availabilityOfGarage'] ? $t('common.yes') : $t('common.no') }}</span>
-    </LabelField>
-    <LabelField :label="$t('backOrder.create.smoking')" :edit="edit" :value="data['smoking'] ? $t(`smoking.${data['smoking']}`) : ''  " >
-      <q-select v-if="edit" outlined dense :options="smokingStatusOptions"
-        emit-value map-options v-model="data['smoking']" :disable="loading"/>
-    </LabelField>
-  </div>
-
-  <div class="row q-pt-sm">
-    <LabelField :label="$t('backOrder.create.parkingRemarks')" :edit="edit"
-      :value="data['parkingRemarks']">
-      <q-input v-model="data['parkingRemarks']" outlined dense :disable="loading"/>
-    </LabelField>
-    <LabelField :label="$t('backOrder.create.smokingRemarks')" :edit="edit" :value="data['smokingRemarks']" >
-      <q-input v-model="data['smokingRemarks']" outlined dense :disable="loading"/>
-    </LabelField>
-  </div>
-
-  <div class="row q-pt-sm">
-    <LabelField :label="$t('backOrder.create.commutingByCar')" :edit="edit"
-      :value="data['commutingByCar']">
-      <q-input v-model="data['commutingByCar']" outlined dense :disable="loading"/>
-    </LabelField>
-    <LabelField :label="$t('backOrder.ageLimit')" :edit="edit"
-    :value="data['upperAgeLimit'] ? `${data['upperAgeLimit']} ${$t('common.ageShort')}` : ''" >
-    <q-input v-model="data['upperAgeLimit']" outlined dense :disable="loading" type="number"/>
-  </LabelField>
-  </div>
-
-  <div class="row q-pt-sm">
-    <LabelField :label="$t('backOrder.medicalExamination')" :edit="edit"
-      :value="data['medicalExamination']">
-      <q-input v-model="data['medicalExamination']" outlined dense :disable="loading"/>
-    </LabelField>
-    <LabelField :label="$t('backOrder.create.vaccination')" :edit="edit" :value="data['vaccination']" >
-      <q-input v-model="data['vaccination']" outlined dense :disable="loading"/>
-    </LabelField>
-  </div>
-
-  <div class="row q-pt-md">
-    <LabelField :label="$t('backOrder.create.numberUsers')" :edit="edit"
-      :value="data['numberUsers'] ? `${data['numberUsers']}${$t('common.reputation')}` : ''">
-      <q-input v-model="data['numberUsers']" outlined dense :disable="loading" type="number"/>
-    </LabelField>
-    <LabelField :label="$t('backOrder.numberEmployees')" :edit="edit"
-      :value="data['numberEmployees'] ? `${data['numberEmployees']}${$t('common.reputation')}` : ''" >
-      <q-input v-model="data['numberEmployees']" outlined dense :disable="loading" type="number"/>
-    </LabelField>
-  </div>
-
-  <div class="row q-pt-sm">
-    <LabelField :label="$t('backOrder.create.levelOfCare')" :edit="edit"
-      :value="data['levelOfCare']">
-      <q-input v-model="data['levelOfCare']" outlined dense :disable="loading"/>
-    </LabelField>
-    <LabelField :label="$t('backOrder.create.memo')" :edit="edit" :value="data['memo']" >
-      <q-input v-model="data['memo']" outlined dense :disable="loading"/>
-    </LabelField>
-  </div>
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel } from 'src/shared/model';
+import { BackOrderModel, ClientFactory } from 'src/shared/model';
 import { useBackOrder } from 'src/stores/backOrder';
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import LabelField from 'src/components/form/LabelField.vue';
-import { smokingStatusList } from 'src/shared/constants/Applicant.const';
 import { useUserStore } from 'src/stores/user'
 import { myDateFormat } from 'src/shared/utils/utils';
+import { useClientFactory } from 'src/stores/clientFactory';
+import { safeGet } from 'src/shared/utils';
 
 const userStore = useUserStore();
 
@@ -134,9 +61,7 @@ const props = defineProps<{
 const backOrderStore = useBackOrder();
 const edit = ref(false);
 const loading = ref(false);
-const data = ref(props.bo);
-
-const smokingStatusOptions = ref(smokingStatusList);
+const data = computed(() => props.bo as BackOrderModel)
 
 async function save() {
   loading.value = true;
@@ -152,7 +77,11 @@ async function save() {
   loading.value = false;
 }
 
-const userNames = ref({})
+const formattedDate = computed(()=> {
+      return myDateFormat(data.value['dateOfRegistration'])
+})
+
+const userNames = ref<{ [id: string]: string }>({});
 const getRegistrant = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -160,11 +89,15 @@ const getRegistrant = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+        if(user?.branchName){
+          userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
+        }
+        else{
+          userNames.value[registrant] = user?.displayName || '';
+        }
         userDisplayName.value = userNames.value[registrant];
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         userDisplayName.value = '';
       });
   } else {
@@ -174,8 +107,30 @@ const getRegistrant = (registrant: string | undefined) => {
   return userDisplayName.value;
 };
 
+const cF = ref<ClientFactory>()
+const ui = ref()
+const clientFactoryStore = useClientFactory()
+
+watch(()=>props.bo.id, async ()=>{
+  ui.value = []
+  loading.value = true
+  cF.value = await clientFactoryStore.getClientFactory(props.bo.client_id, props.bo.office_id)
+  if(props.bo.industry){
+    if(cF.value?.officeDetails?.[props.bo.industry]?.uniqueItems){
+      ui.value = (Object.entries(cF.value.officeDetails[props.bo.industry]?.uniqueItems) as [string, Record<string, string | number | boolean>][]).map((row)=>{
+        const key = row[0]
+        const item = row[1]
+        return {
+          title: item.title, 
+          value: safeGet(cF.value, `officeDetails.${props.bo.industry}.uniqueItems.${key}.value`),
+          order: item.order
+        }
+      })
+      ui.value.sort((a, b)=>{
+        return a['order'] - b['order']
+      })
+    }
+  }
+  loading.value = false
+}, {immediate: true})
 </script>
-
-<style>
-
-</style>

@@ -7,21 +7,10 @@ import ClientType from '../form/clientForms/ClientType.vue';
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { deepCopy } from 'src/shared/utils';
+import { InputType } from './types';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 const { t } = useI18n({ useScope: 'global' });
 
-enum InputType {
-    TEXT = 'text',
-    NUMBER = 'number',
-    PREFECTURE = 'prefecture',
-    MUNICIPALITY = 'municipality',
-    CLIENT = 'client',
-    CONTRACT_UNIT = 'contract_unit',
-    INDUSTRY = 'industry',
-    DISPATCH_CONTRACT = 'dispatch_contract',
-    REFERRAL_CONTRACT = 'referral_contract',
-    FACILITY = 'facility',
-    RADIO = 'radio',
-}
 
 export interface Data {
     label: string;
@@ -37,7 +26,8 @@ export type DataWithIndustry = Data[] | {
 
 const props = withDefaults(defineProps<{
     data: Data[],
-    theme?: string
+    theme?: string,
+    selectedIndustry?: { value: string, isSelected: boolean }
 }>(), {
     theme: 'primary'
 })
@@ -78,6 +68,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 </label>
                 <q-input v-if="row.editType === InputType.NUMBER && (typeof row.value === 'number' || row.value === '')" v-model.number="row.value" class="line__value q-pl-sm" type="number" dense hide-bottom-space :color="theme" @input="val => (row.value = val || 0)"/>
                 <q-input v-else-if="row.editType === InputType.TEXT && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme"/>
+                <q-input v-else-if="row.editType === InputType.COMMA_SEPARATED && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme" @update:model-value="(value)=>{ row.value = commaSeparatedNumber(value) }"/>
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
                 <q-select v-else-if="row.editType === InputType.MUNICIPALITY" outlined dense :disable="!fetchMunicipalities" emit-value
@@ -97,7 +88,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 <div v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'">{{ row.value }}</div>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
-                <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
+                <FacilityType v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false" :industryName="selectedIndustry?.value"/>
                 <template v-else-if="row.editType === InputType.RADIO && typeof row.value === 'string'">
                   <q-radio
                       v-for="item in row.radioVals"
@@ -107,7 +98,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                       :label="item.label"
                     />
                 </template>
-                    <!-- Add more conditions for other data types as needed -->
+                <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
 
@@ -118,6 +109,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                 </label>
                 <q-input v-if="row.editType === InputType.NUMBER && (typeof row.value === 'number' || row.value === '')" v-model.number="row.value" class="line__value q-pl-sm" step="any" type="number" dense hide-bottom-space :color="theme"/>
                 <q-input v-else-if="row.editType === InputType.TEXT && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme"/>
+                <q-input v-else-if="row.editType === InputType.COMMA_SEPARATED && typeof row.value === 'string'" v-model="row.value" class="line__value q-pl-sm" type="text" dense hide-bottom-space :color="theme" @update:model-value="(value)=>{ row.value = commaSeparatedNumber(value) }"/>
                 <q-select v-else-if="row.editType === InputType.PREFECTURE" outlined dense :options="prefectureList" v-model="row.value"
                     bg-color="white" :label = "t('common.pleaseSelect')" emit-value map-options :color="theme" />
                 <q-select v-else-if="row.editType === InputType.MUNICIPALITY" outlined dense :disable="!fetchMunicipalities" emit-value

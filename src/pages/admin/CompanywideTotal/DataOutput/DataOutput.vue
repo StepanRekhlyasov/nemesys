@@ -1,101 +1,218 @@
 <template>
-    <PageHader>
-        {{ t('menu.admin.dataOutputDisplay') }}
-    </PageHader>
-    <div class="q-pt-lg q-pl-sm custom-color" v-for="(item, idx) in Listitem" :key="idx">
-        <div class="bold-text">
-            <q-avatar square size="10px" color="purple" class="q-mr-sm"/>
-            <span v-if="!item.required">{{ t('menu.admin.dataOutputDisplayTable.companyWide') }}</span> {{ item.label }} {{
-                t('menu.admin.dataOutputDisplay') }}
-        </div>
-        <div class="box1">
-            <div class="row q-pt-sm" v-if="item.required">
-                <div class="col-2 q-pt-sm q-pl-sm">
-                    {{ t('menu.admin.dataOutputDisplayTable.outputMonth') }}
-                </div>
-                <div class="col-3 q-pl-sm">
-                    <q-input v-model="timeperiod[idx].date" outlined dense mask="####/##" hide-bottom-space>
-                        <template v-slot:prepend>
-                            <q-icon name="event" class="cursor-pointer">
-                                <q-popup-proxy cover transition-show="scale" transition-hide="scale" ref="monthPicker">
-                                    <q-date v-model="timeperiod[idx].date" minimal mask="YYYY/MM" emit-immediately
-                                        default-view="Years" @update:model-value="checkValue">
-                                        <div class="row items-center justify-end">
-                                            <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                                        </div>
-                                    </q-date>
-                                </q-popup-proxy>
-                            </q-icon>
-                        </template>
+  <PageHader>
+      {{ t('menu.admin.dataOutputDisplay') }}
+  </PageHader>
+      <div class="bold-text q-mt-lg q-ml-sm">
+          <q-avatar square size="10px" color="purple" class="q-mr-sm" />
+          <span ></span> SMS {{
+              t('menu.admin.dataOutputDisplay') }}
+      </div>
+      <div class="row q-pl-xl q-ml-xl">
+                <div class="col-3 q-ml-xl q-pl-xl">
+                    <q-input outlined dense v-model="postingFromSms" mask="date" clearable
+                      clear-icon="close">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="postingFromSms">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
                     </q-input>
                 </div>
-            </div>
-            <div class="row q-pt-sm">
-                <div class="col-2 q-pt-sm q-pl-sm">
-                    CSV {{ t('menu.admin.dataOutputDisplayTable.output') }}
+                <div class="col-1 text-center self-center q-pt-sm ">～</div>
+                <div class="col-3">
+                  <div>
+                    <q-input outlined dense v-model="postingTosms" mask="date" clearable
+                      clear-icon="close">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="postingTosms">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
                 </div>
-                <div class="col-3 q-pl-sm">
-                    <q-btn color="purple" text-color="white"
-                        @click="downloadCSV(item.collectionName, timeperiod[idx].date)">{{
-                            t('menu.admin.dataOutputDisplayTable.output') }}</q-btn>
+          </div>
+          <div class="row q-pt-sm q-ml-xl q-pl-xl">
+              <div class="col-3 q-ml-xl q-pl-xl">
+                  <q-btn color="purple" text-color="white" @click="downloadCSVForSms('sms', {postingFromSms,postingTosms})">{{
+                      t('common.csvOutput') }}</q-btn>
+              </div>
+          </div>
+          <div class="bold-text q-mt-lg q-ml-sm">
+          <q-avatar square size="10px" color="purple" class="q-mr-sm" />
+          <span ></span> FAX {{
+              t('menu.admin.dataOutputDisplay') }}
+      </div>
+      <div class="row q-pl-xl q-ml-xl">
+                <div class="col-3 q-ml-xl q-pl-xl">
+                    <q-input outlined dense v-model="postingFromFax" mask="date" clearable
+                      clear-icon="close">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="postingFromFax">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div class="col-1 text-center self-center q-pt-sm ">～</div>
+                <div class="col-3">
+                  <div>
+                    <q-input outlined dense v-model="postingToFax" mask="date" clearable
+                      clear-icon="close">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="postingToFax">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+          </div>
+          <div class="row q-pt-sm q-ml-xl q-pl-xl">
+              <div class="col-3 q-ml-xl q-pl-xl">
+                  <q-btn color="purple" text-color="white" @click="downloadCSVForFax('fax', {postingFromFax,postingToFax})">{{
+                      t('common.csvOutput') }}</q-btn>
+              </div>
+          </div>
+          <div class="bold-text q-mt-lg q-ml-sm">
+          <q-avatar square size="10px" color="purple" class="q-mr-sm" />
+          <span ></span> BO {{
+              t('menu.admin.dataOutputDisplay') }}
+      </div>
+      <div class="row q-pl-xl q-ml-xl">
+                <div class="col-3 q-ml-xl q-pl-xl">
+                    <q-input outlined dense v-model="postingFromBo" mask="date" clearable
+                      clear-icon="close">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="postingFromBo">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                </div>
+                <div class="col-1 text-center self-center q-pt-sm ">～</div>
+                <div class="col-3">
+                  <div>
+                    <q-input outlined dense v-model="postingToBo" mask="date" clearable
+                      clear-icon="close">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="postingToBo">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+          </div>
+          <div class="row q-pt-sm q-ml-xl q-pl-xl">
+              <div class="col-3 q-ml-xl q-pl-xl">
+                  <q-btn color="purple" text-color="white" @click="downloadCSVForBo('BO', {postingFromBo,postingToBo})">{{
+                      t('common.csvOutput') }}</q-btn>
+              </div>
+          </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, Ref } from 'vue';
+import { ref } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import PageHader from 'src/components/PageHeader.vue';
-import Listitem from './const/DataOutput.const'
 import { useDataOutput } from 'src/stores/dataOutput'
 const { t } = useI18n({ useScope: 'global' });
 const triggerURL = process.env.downloadCSVUrl;
-const monthPicker: Ref<{ value: string }> = ref({
-    value: '',
-});
-const timeperiod = ref([{ date: '' }, { date: '' }, { date: '' }])
 const dataOutput = useDataOutput();
-const checkValue = (val: string, reason: string) => {
-    if (reason === 'month') {
-        monthPicker.value[0].hide();
-        monthPicker.value[1].hide();
-    }
+const postingFromSms = ref('')
+const postingTosms = ref('')
+const postingFromFax = ref('')
+const postingToFax = ref('')
+const postingFromBo = ref('')
+const postingToBo = ref('')
+const downloadCSVForSms = async (collectionName: string, date: { postingFromSms: string; postingTosms: string; } | null) => {
+  let fetchURL = `${triggerURL}?collection=${collectionName}`
+  if (typeof date === 'object' && (!date?.postingFromSms || !date.postingFromSms)) {
+      Alert.warning();
+      return;
+  }
+  fetchURL = `${fetchURL}&from=${date.postingFromSms}&to=${date.postingTosms}`
+  await dataOutput.downloadCSV(fetchURL, collectionName)
+  onResetSms();
 }
-const downloadCSV = async (collectionName: string, date: string) => {
-    let fetchURL = `${triggerURL}?collection=${collectionName}`
-    if (collectionName != 'BO') {
-        if (date.length === 0) {
-            Alert.warning()
-            return
-        }
-        const [year, month] = date.split('/');
-        if(year.length!==4 || month.length!==2){
-            Alert.warning()
-            return
-        }
-        fetchURL = `${fetchURL}&year=${year}&month=${month}`
-    }
-    await dataOutput.downloadCSV(fetchURL,collectionName)
-    onReset();
+const downloadCSVForFax = async (collectionName: string, date: { postingFromFax: string; postingToFax: string; } | null) => {
+  let fetchURL = `${triggerURL}?collection=${collectionName}`
+  if (typeof date === 'object' && (!date?.postingFromFax || !date.postingToFax)) {
+      Alert.warning();
+      return;
+  }
+  fetchURL = `${fetchURL}&from=${date.postingFromFax}&to=${date.postingToFax}`
+  await dataOutput.downloadCSV(fetchURL, collectionName)
+  onResetFax();
 }
-const onReset = () => {
-    timeperiod.value.filter(item => {
-        item.date = ''
-    });
+const downloadCSVForBo = async (collectionName: string, date: { postingFromBo: string; postingToBo: string; } | null) => {
+  let fetchURL = `${triggerURL}?collection=${collectionName}`
+  if (typeof date === 'object' && (!date?.postingFromBo || !date.postingToBo)) {
+      Alert.warning();
+      return;
+  }
+  fetchURL = `${fetchURL}&from=${date.postingFromBo}&to=${date.postingToBo}`
+  await dataOutput.downloadCSV(fetchURL, collectionName)
+  onResetBo();
 }
+const onResetSms = () => {
+   postingFromSms.value = ''
+ postingTosms.value = ''
+  };
+  const onResetFax = () => {
+ postingFromFax.value = ''
+ postingToFax.value = ''
+  };
+  const onResetBo = () => {
+ postingFromBo.value = ''
+ postingToBo.value = ''
+  };
+
+
 </script>
 <style lang="scss">
 .bold-text {
-    font-weight: bold;
+  font-weight: bold;
 }
-
-.box1 {
-    margin-left: 10vw;
-}
-
 .custom-color {
-    color: purple
-}</style>
+  color: purple
+}
+</style>

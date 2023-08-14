@@ -217,6 +217,15 @@ export const formatTextToNumber = (text: string | number, sum = false) => {
   }
   return num
 }
-// rules intut textfield
 
-// export const fieldIsMore = (val, limit: number) => val <= limit || `Please use maximum ${limit} characters`
+export const commaSeparatedNumber = (value : string | number | null) => {
+  if(!value){
+    return ''
+  }
+  if(typeof value === 'number'){
+    value = value.toString()
+  }
+  const tempNumber = (value as string).replace(/,/gi, '');
+  const commaSeparatedNumber = tempNumber.split(/(?=(?:\d{3})+$)/).join(',');
+  return commaSeparatedNumber;
+}

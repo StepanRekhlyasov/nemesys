@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, watch } from 'vue';
 import draggable from 'vuedraggable'
 
-import { Industry } from 'src/shared/model/Industry.model';
+import { FacilityForm, Industry } from 'src/shared/model/Industry.model';
 import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -40,6 +40,9 @@ const newFacilityFormHandle = () => {
     if(inputVal.value && inputVal.value.validate()) {
         emit('newFacilityForm', newFacilityForm.value)
         newFacilityForm.value = ''
+        setTimeout(()=>{
+          inputVal.value?.resetValidation()
+        }, 1)
     }
 }
 
@@ -62,13 +65,25 @@ const updateItemsOrder = (event: {
 
     emit('sortFacilityForm', { newIndex, oldIndex })
 }
+const sortedList = ref<[string, FacilityForm][]>()
+watch(()=>props.activeIndustry, ()=>{
+  if(props.activeIndustry){
+    sortedList.value = Object.entries(props.activeIndustry.uniqueItems.facilityForms)
+    sortedList.value.sort((a, b)=>{
+      if(b?.[1].order && a?.[1].order){
+        return a?.[1].order - b?.[1].order
+      }
+      return 0
+    })
+  }
+}, {deep: true, immediate: true})
 </script>
 
 <template>
     <div v-if="activeIndustry">
         <div v-if="Object.keys(activeIndustry.uniqueItems.facilityForms).length">
 
-            <draggable :list="Object.entries(activeIndustry.uniqueItems.facilityForms)" handle=".cursor_grab" @end="updateItemsOrder">
+            <draggable :list="sortedList" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
                 <template #item="{ element, index }">
                     <div class="row items-center q-mt-md" :key="element[1].order">
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab"/>
@@ -76,10 +91,10 @@ const updateItemsOrder = (event: {
                         <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${index + 1}` }}</div>
 
                         <div>
-                            <q-input class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
+                            <q-input style="width:300px" class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
 
                             <q-popup-edit
-                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val) && titleExists(val, element[1].title))"
+                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val) && titleExists(val, element[1].title))"
                                 v-model="element[1].title"
                                 :cover="false"
                                 :offset="[0, 10]"
@@ -114,13 +129,14 @@ const updateItemsOrder = (event: {
             <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${Object.keys(activeIndustry.uniqueItems.facilityForms).length + 1}` }}</div>
 
             <q-input
+                style="width:300px"
                 class="q-mr-md" outlined dense
                 v-model="newFacilityForm"
                 ref="inputVal"
                 :rules="[
                      (val) => (val && val.length > 0) || '',
-                     (val) => (/^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val)) || 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.',
-                     (val) => titleExists(val) || 'Title already exists'
+                     (val) => (/^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val)) || $t('errors.industryRules'),
+                     (val) => titleExists(val) || $t('errors.titleExist')
                 ]"
                 color="accent" hide-bottom-space/>
 

@@ -100,7 +100,7 @@ export const countApplicantRank = (applicant : Applicant) => {
   if(applicant.tattoos === 'yes'){
     rank -= 10
   }
-  if(applicant.medicalHistory && applicant.medicalHistory?.length > 0){
+  if(applicant.isMedicalHistory){
     rank -= 10
   }
   return rank

@@ -52,17 +52,16 @@
 
           <template v-slot:body-cell-employmentType="props">
             <q-td :props="props" class="q-pa-none">
-              <div>
                 {{
-                  props.row.employmentType ? $t(`client.backOrder.${props.row.employmentType}`) : '-'
+                  props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
                 }}
-              </div>
             </q-td>
           </template>
 
           <template v-slot:body-cell-info="props">
             <q-td :props="props" class="q-pa-none">
               <q-btn icon="mdi-information-outline" round style="color: #175680" flat @click="showDialog(props.row)" />
+              <q-btn icon="content_copy" round style="color: #175680" flat @click="addDuplicateBo(props.row)" />
             </q-td>
           </template>
 
@@ -98,16 +97,36 @@
             </q-td>
           </template>
 
+          <template v-slot:body-cell-salary="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.salary ? props.row.salary : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-state="props">
+            <q-td :props="props" class="q-pa-none">
+              <div>
+                {{
+                  props.row.state ? props.row.state : '-'
+                }}
+              </div>
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-name="props">
             <q-td :props="props" class="q-pa-none">
               <div>
                 {{
-                  props.row.officeName
+                  props.row.officeName ? props.row.officeName : '-'
                 }}
               </div>
               <div>
                 {{
-                  props.row.clientName
+                  props.row.clientName ? props.row.clientName : '-'
                 }}
               </div>
             </q-td>
@@ -128,7 +147,7 @@
   }
     " />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" v-if="cteateBoDrawer" />
+    <createBO :duplicateBo="duplicateBo" :client-id="duplicateBo?.client_id" :office-id="duplicateBo?.office_id" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" v-if="cteateBoDrawer" />
   </q-drawer>
   <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="closeMap">
   </SearchByMapDrawer>
@@ -163,6 +182,7 @@ const state = backOrderStore.state;
 const columns = ref<QTableProps | Ref>(BackOrderColumns);
 const showSearchByMap = ref(false);
 const selected = ref<BackOrderModel[]>([]);
+const duplicateBo = ref<BackOrderModel>();
 const cteateBoDrawer = ref(false);
 const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
 const selectedBo = ref<BackOrderModel | ComputedRef>(
@@ -174,7 +194,7 @@ const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 30,
 });
 
 const customSortMethod = (rows, sortBy, descending) => {
@@ -273,7 +293,7 @@ const customSortMethod = (rows, sortBy, descending) => {
   }
 };
 
-const userNames = ref<{ [key: string]: string }>({});
+const userNames = ref<{ [id: string]: string }>({});
 const getUserDisplayName = (registrant: string | undefined) => {
   const userDisplayName = ref('');
 
@@ -281,11 +301,15 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        userNames.value[registrant] = user?.displayName || '';
+        if(user?.branchName){
+          userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
+        }
+        else{
+          userNames.value[registrant] = user?.displayName || '';
+        }
         userDisplayName.value = userNames.value[registrant];
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
         userDisplayName.value = '';
       });
   } else {
@@ -317,6 +341,12 @@ function addNewBo() {
       typeBoCreate.value = 'dispatch';
       cteateBoDrawer.value = true;
     });
+}
+
+function addDuplicateBo(bo: BackOrderModel) {
+  typeBoCreate.value = bo.type;
+  duplicateBo.value = bo
+  cteateBoDrawer.value = true;
 }
 
 function showDialog(bo: BackOrderModel) {

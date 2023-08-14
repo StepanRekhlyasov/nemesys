@@ -3,8 +3,8 @@
     {{ label }} <span v-if="required" style="color: red">*</span>
   </div>
   <div :class="[valueClass, 'blue']">
-    <hidden-text v-if="!edit && Array.isArray(value)" class="text_dots" :value="value.join(', ')" />
-    <hidden-text v-else class="text_dots" :value="value" />
+    <hidden-text v-if="!edit && Array.isArray(value)" class="text_dots" :value="value.join(', ')" :class="autogrow?'autogrow':''" />
+    <hidden-text v-else-if="!edit" class="text_dots" :value="value" :class="autogrow?'autogrow':''" />
     <template v-if="edit">
       <slot>
       </slot>
@@ -28,7 +28,7 @@ defineProps({
     default: false
   },
   value: {
-    type: [String, Array]
+    type: [String, Array, Number]
   },
   required: {
     type: Boolean,
@@ -41,6 +41,18 @@ defineProps({
   labelClass: {
     type: String,
     default: 'col-3 q-pl-md text-right self-center'
+  },
+  autogrow: {
+    type: Boolean,
+    default: false
   }
 })
 </script>
+<style lang="scss" scoped>
+.autogrow{
+  word-break: break-all;
+  white-space: break-spaces;
+  overflow: initial;
+  display: block;
+}
+</style>

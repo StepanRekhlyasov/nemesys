@@ -134,9 +134,11 @@
           {{ $t('applicant.attendant.medicalHistory') }}
         </div>
         <div class="col-3 q-pl-md blue ">
-          <span v-if="!edit">{{ applicant.medicalHistory}}</span>
-          <q-input v-if="edit" dense outlined bg-color="white"
-            v-model="data['medicalHistory']" :disable="loading" />
+          <span v-if="!edit">{{ applicant.isMedicalHistory ? applicant.medicalHistory :t('applicant.attendant.notExist')}}</span>
+          <q-select  v-if="edit" v-model="data['isMedicalHistory']" :options="medicalHistoryoptions"
+          emit-value map-options dense outlined/>
+          <q-input v-if="edit && data['isMedicalHistory']" dense outlined bg-color="white"
+            v-model="data['medicalHistory']" :disable="loading" :label="t('applicant.attendant.medicalHistoryDetails')"/>
         </div>
         <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
           {{ $t('applicant.attendant.vaccinationStatus') }}
@@ -211,17 +213,18 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { marriedStatusList, smokingStatusList, tattoosStatusList } from 'src/shared/constants/Applicant.const';
+import { marriedStatusList, smokingStatusList, tattoosStatusList, medicalHistoryoptions } from 'src/shared/constants/Applicant.const';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { Alert } from 'src/shared/utils/Alert.utils';
-
+import { useI18n } from 'vue-i18n';
 const props = defineProps<{
   applicant: Applicant,
   bo?:BackOrderModel
 }>()
 
+const t = useI18n({ useScope: 'global' }).t;
 const applicantStore = useApplicant();
 const edit = ref(false);
 const loading = ref(false);
@@ -243,6 +246,7 @@ function resetData() {
     childrenNumber: props?.applicant['childrenNumber'],
     childrenAge: props?.applicant['childrenAge'],
     medicalHistory: props?.applicant['medicalHistory'],
+    isMedicalHistory: props?.applicant['isMedicalHistory'],
     vaccinationStatus: props?.applicant['vaccinationStatus'],
     startCaring: props?.applicant['startCaring'],
     interviewsWaitingList: props?.applicant['interviewsWaitingList'],
@@ -256,10 +260,13 @@ resetData()
 
 async function save() {
   loading.value = true
+  if(!data.value.isMedicalHistory){
+    data.value.medicalHistory = ''
+  }
   try {
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
-    
+
   } catch (error) {
     Alert.warning(error)
   }

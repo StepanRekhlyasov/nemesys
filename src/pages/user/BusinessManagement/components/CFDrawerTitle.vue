@@ -45,7 +45,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
                                 :key="item.value ?? 1"
                                 @click="dropDownHandler(item)"
                                 v-for="item in industryValue.filter(el => el.value !== selectedIndustry?.value)">
-                                
+
                                     <q-item-label>
                                         {{ item.value }}
                                     </q-item-label>
@@ -74,7 +74,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
 
         <div>
             <div class="text-bold">
-                {{ props.selectedItem.address.slice(0, 12) + '...' }}
+                {{ props.selectedItem.address }}
             </div>
             <div>
                 {{ props.selectedItem.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）' }}

@@ -21,7 +21,8 @@ const props = defineProps<{
     isReflecting: boolean,
     isImporting: boolean,
     newReflectLog: ReflectLog | undefined,
-    newImportLog: ImportLog | undefined
+    newImportLog: ImportLog | undefined,
+    selectedIndustry?: { value: string, isSelected: boolean }
 }>();
 const emit = defineEmits<{
     (e: 'handleImport'),
@@ -63,12 +64,12 @@ watchEffect(() => {
         <div style="height: 5px;" class="q-my-none q-pa-none">
             <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
         </div>
-
         <HighlightTwoColumn 
             :data="mainInfo.officeInfo"
             :is-disable-edit="isLoading"
             :is-edit="isEditForm.officeInfo"
             :label="t('client.add.officeInfo')"
+            :selectedIndustry="selectedIndustry"
             theme="accent"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
@@ -82,17 +83,18 @@ watchEffect(() => {
                     </div>
                 </template>
         </HighlightTwoColumn>
-        
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"
             @data-changed="e => getNewDataToUpdate(e, 'officeInfo')"
-            theme="accent"/>
-
+            theme="accent"
+            :selectedIndustry="selectedIndustry"
+          />
         <HighlightTwoColumn
             :data="mainInfo.contactInfo"
             :is-edit="isEditForm.contactInfo"
             :is-disable-edit="isLoading"
             :label="t('client.add.contactInfo')"
+            :selectedIndustry="selectedIndustry"
             theme="accent"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"
@@ -101,7 +103,9 @@ watchEffect(() => {
         <EditableColumnsCF v-if="isEditForm.contactInfo"
             :data="mainInfo.contactInfo"
             @data-changed="e => getNewDataToUpdate(e, 'contactInfo')"
-            theme="accent"/>
+            theme="accent"
+            :selectedIndustry="selectedIndustry"
+        />
 
     </div>
 

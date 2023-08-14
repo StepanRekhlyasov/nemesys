@@ -20,6 +20,7 @@ export default {
     approved: 'Approved',
     pending: 'Pending',
     denied: 'Denied',
+    everything: 'Everything',
     minimum: 'min',
     maximum: 'max',
     BO: 'BO',
@@ -104,6 +105,7 @@ export default {
     },
     more: 'More',
     downloadCSV: 'Download CSV',
+    csvOutput:'CSV Output',
     branch: 'Branch',
   },
   rule: {
@@ -182,6 +184,7 @@ export default {
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
+      mediaControl: 'Media Control',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
       releaseNotesInquiry: 'Release Notes and Inquiries',
@@ -197,6 +200,7 @@ export default {
         organizationId: 'Organization ID',
         organizationName: 'Organization name',
         operator: 'Person in charge',
+        manager: 'Manager ',
         phoneNumber: 'Phone number',
         fax: 'FAX number',
         email: 'Email',
@@ -263,7 +267,7 @@ export default {
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
       billingHistory: 'Billing history',
-      aggregateDataDisplay: 'Aggregated Data Display',
+      aggregateDataDisplay: 'Option Master',
       dataOutputDisplay: 'Data Output',
       dataOutputDisplayTable: {
         outputMonth: 'Output month',
@@ -297,10 +301,14 @@ export default {
       deletedInfo: 'All data related to this branch will be deleted.',
       flags: {
         all: 'All',
-        working: 'Working'
+        working: 'Working',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
       },
       business: 'Business',
-      branchFlag: 'Branch flag'
+      branchFlag: 'Branch flag',
+      enable: 'Be enabled',
+      enableFlag: 'Enabling flag'
     },
     template: {
       addNew: 'New mail template added',
@@ -468,6 +476,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: 'Types from other industries:',
       newReg: 'Client new registration',
       clientBasicInfo: 'Client basic information',
       clientName: 'Client Name',
@@ -505,7 +514,12 @@ export default {
       emailLabel2: 'example.co.jp',
       manager: 'Manager',
       managerLabel: 'Ex) Taro Suzuki',
-
+      contactInformation: 'Contact Information',
+      contactPersonName: 'Contact Person Name',
+      contactPersonTitle: 'Contact Person Title',
+      contactPersonTel: 'Contact Person TEL',
+      contactPersonMail: 'Contact Person MAIL',
+      regularEmployee: 'Regular employee',
       //
       integrationSource: 'Integration Source',
       copInfo: 'Coperation Info',
@@ -649,6 +663,7 @@ export default {
     },
     backOrder: {
       TTP: 'TTP',
+      remarks: 'Remarks',
       generalDispatch: 'General Dispatch',
       title: 'Backorder',
       noOrders: 'No past backorders',
@@ -671,6 +686,7 @@ export default {
       transactionType: 'Transaction Type',
       introduction: 'Introduction',
       dispatch: 'Dispatch',
+      referralDispatch:'Referral Dispatch',
       ttp: 'TTP',
       reqQualification: 'Required qualification',
       regularReview: 'Regular review',
@@ -1062,6 +1078,7 @@ export default {
       specialDay: 'Working on a special day',
       shiftRemarks: 'Available Shift Remarks',
       days: 'Days',
+      notExist: 'No',
       meansCommuting: 'Means of commuting',
       meansCommutingOptions: {
         walk: 'Walk',
@@ -1081,6 +1098,8 @@ export default {
       transportationServices: 'Transportation services',
       jobSearchPriorities: 'Job Search Priorities',
       possible: 'Possible',
+      allowed:'Allowed',
+      forbidden: 'Forbidden',
       no: 'Not',
       workExperience: 'Work Experience',
       personal: 'Personal Status',
@@ -1114,6 +1133,7 @@ export default {
       cohabitation: 'Cohabitation',
       children: 'Children',
       medicalHistory: 'Medical History',
+      medicalHistoryDetails: 'Medical History Details',
       vaccinationStatus: 'Vaccination Status',
       startCaring: 'How did you start caring?',
       interviewsWaitingList: 'Number of Interviews Waiting List',
@@ -1176,6 +1196,7 @@ export default {
         FIXDate: 'F',
         jobDate: 'V',
         appointmentDate: 'O',
+        contact: 'co',
       },
       table: {
         'fullName': 'Full Name',
@@ -1557,6 +1578,7 @@ export default {
   clientFactory: {
     numberEmployees: 'Number of employees',
     facilityType: 'Facility type',
+    mediaOptions: 'Media Options',
     homePage: 'Home page',
     conclusionDispatchContract: 'Conclusion of dispatch contract',
     conclusionReferralContract: 'Conclusion of referral contract',
@@ -1579,6 +1601,7 @@ export default {
       headOfficeInfo: 'Head office info',
       clientInfo: 'Client info',
       contractInfo: 'Contract info',
+      relatedOfficeInfo: 'Related office info',
       withMasterData: 'With master data',
       noAutoRenewal: 'No automatic renewal',
       situation: 'Situation',
@@ -1633,7 +1656,9 @@ export default {
         officeTel: 'Office: TEL',
         officeFax: 'Office: FAX',
         inChargeTitle: 'Person in charge: Title',
+        inChargeTitle_ex: 'Ex) Regular employee',
         inChargeTel: 'Person in charge: TEL',
+        inChargeMail: 'Person in charge: MAIL',
         inChargeAddress: 'Person in charge: Address',
 
         representative: 'Representative',
@@ -1649,7 +1674,7 @@ export default {
         contractTel: 'Contract destination: TEL',
         contractFax: 'Contract destination: FAX',
         contractMail: 'Contract destination: MAIL',
-        contractPerson: 'Contractor: Person in charge',
+        contractPerson: 'Contractor: User in charge',
 
         // Import Logs and Reflect Logs
         executionUser: 'Execution User',
@@ -1661,7 +1686,16 @@ export default {
         update: 'Updated',
         create: 'Created',
         basicInfoChanged: 'Changed Basic Info',
-        officeInfoChanged: 'Changed Office Info'
+        officeInfoChanged: 'Changed Office Info',
+
+        noOfOffices: 'Number Of offices',
+        backOrder: 'Backorder',
+        employmentRecord: 'Employment record',
+        fullTimeEmployment: 'Full-time employment',
+        nonRegularEmployee: 'Non-regular employee',
+        temporaryEmployment: 'Temporary Employment',
+        currentlyInOperation: 'Currently in operation',
+        perItems: 'items'
       }
     },
     fax: {
@@ -1714,7 +1748,7 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      recieve: 'date issued',
+      recieve: 'Sent / Recieve Date',
       recieved: 'Recieved',
       sent: 'Sent',
       responseDate: 'response date',
@@ -2236,7 +2270,9 @@ export default {
   errors: {
     'BO_occupied': 'Selected BO is occupied',
     'error': 'Error',
-    'deleteBranchesFirst': 'Please, delete all branches first'
+    'deleteBranchesFirst': 'Please, delete all branches first',
+    titleExist: 'Title already exists',
+    industryRules: 'Invalid input',
   },
   budget: {
     search: 'Budget Search',
@@ -2291,5 +2327,13 @@ export default {
       'process' : 'In process',
       'finish' : 'Finish',
     }
-  }
+  },
+  impressions: {
+    notSet: 'Not Set',
+    A: 'A (The Best)',
+    B: 'B (Good)',
+    C: 'C (Normal)',
+    D: 'D (Bad)',
+    E: 'E (The Worst)',
+  },
 }

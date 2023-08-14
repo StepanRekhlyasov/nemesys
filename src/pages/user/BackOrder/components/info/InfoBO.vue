@@ -4,21 +4,46 @@
     <q-scroll-area class="fit text-left" v-if="selectedBo">
       <q-card class="no-shadow bg-grey-3">
         <q-card-section class="text-white bg-primary no-border-radius">
-          <div class="row">
-            <div class="flex items-end ">
-              <q-btn dense flat icon="close" class="q-mr-md " @click="drawerRight = !drawerRight" />
-            </div>
-            <div>
-              <div class="row text-subtitle2" v-if="selectedBo">
-                {{ nameBo }}
+          <div class="wrapper row items-end justify-between">
+            <div class="row q-mr-sm">
+              <div class="q-mr-xs">
+                <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
               </div>
-              <div class="row text-h6 text-weight-bold q-pr-xs">
-                {{ `${$t('backOrder.backOrderDetails')} ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
+                <div class="column">
+                  <div v-if="selectedBo" class="text-subtitle2 q-mr-sm">
+                    {{ nameBo }}
+                  </div>
+
+                    <span class="text-h6 text-weight-bold">
+                        <q-icon color="white" name="home"/>
+                        {{ `${$t('backOrder.backOrderDetails')} / ${selectedBo.type ? $t(`backOrder.type.${selectedBo.type}`) : ''}` }}
+                    </span>
+                </div>
               </div>
-            </div>
+
+              <div class="q-mr-sm">
+                  <div>
+                      {{ t('client.list.phone') }} :
+                      <span v-if="clientFactory"> {{ clientFactory.tel? clientFactory.tel:'' }}</span>
+                  </div>
+                  <div>
+                      {{ t('client.list.fax') }} :
+                      <span v-if="clientFactory">{{ clientFactory.fax? clientFactory.fax:'' }}</span>
+                  </div>
+              </div>
+
+              <div>
+                  <div v-if="clientFactory" class="q-ml-sm text-bold">
+                    {{ clientFactory.prefecture? clientFactory.prefecture:'' }} {{ clientFactory.municipality? clientFactory.municipality:'' }}
+                  </div>
+                  <div v-if="clientFactory" class="q-ml-sm text-bold">
+                    {{ clientFactory.street? clientFactory.street:'' }} {{ clientFactory.building? clientFactory.building:'' }}
+                  </div>
+              </div>
           </div>
         </q-card-section>
-        <detailInfoBO :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO_dispatch v-if="selectedBo.type === 'dispatch'" :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
+        <detailInfoBO_referral v-if="selectedBo.type === 'referral'" :isHiddenDetails="isHiddenDetails" @openSearchByMap="emit('openSearchByMap')"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -32,7 +57,8 @@ import { useApplicant } from 'src/stores/applicant';
 import { useBackOrder } from 'src/stores/backOrder';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import detailInfoBO from './detailInfoBO.vue';
+import detailInfoBO_dispatch from './detailInfoBO_dispatch.vue';
+import detailInfoBO_referral from './detailInfoBO_referral.vue';
 import { drawerValue } from '../../consts/BackOrder.const';
 import { useClientFactory } from 'src/stores/clientFactory';
 
@@ -49,6 +75,7 @@ const emit = defineEmits(['closeDialog', 'openSearchByMap', 'passClientToMapSear
 
 const client = ref<Client | undefined>(undefined);
 const clientFactoryList = ref<ClientFactory[]>([])
+const clientFactory = ref<ClientFactory>()
 const selectedBo = computed(() => backOrderStore.state.selectedBo);
 const drawerRight = ref(false);
 
@@ -64,8 +91,15 @@ const nameBo = computed(() => {
   return `${clientName} / ${officeName} / ${selectedBo.value?.boId}`
 })
 
-watch(drawerRight, () => {
+watch(drawerRight, async() => {
   drawerValue.value = drawerRight.value;
+  if(drawerRight.value){
+    clientFactoryList.value = await clientFactoryStore.getClientFactoryList(selectedBo.value.client_id)
+    clientFactory.value = clientFactoryList.value.find(office=>office.id === selectedBo.value?.office_id) as ClientFactory;
+    if(!clientFactory.value){
+      clientFactory.value =  await clientFactoryStore.getModifiedCfWithId(selectedBo.value?.office_id)
+    }
+  }
 })
 
 const openDrawer = async (data: BackOrderModel) => {
@@ -89,3 +123,12 @@ watch(() => selectedBo, async () => {
 defineExpose({ openDrawer })
 
 </script>
+
+<style scoped>
+
+.right{
+  position:absolute;
+  right:0px
+}
+
+</style>

@@ -1,4 +1,4 @@
-import { collection, query, getFirestore, getDocs } from 'firebase/firestore';
+import { collection, query, getFirestore, getDocs, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { Media } from 'src/shared/model/Media.model';
 import { defineStore } from 'pinia';
 export const useMedia = defineStore('media', () => {
@@ -13,6 +13,7 @@ export const useMedia = defineStore('media', () => {
       const media: Media = {
         name: doc.data().name,
         id: doc.id,
+        createdAt: doc.data().createdAt
       };
       mediaList.push(media);
     }
@@ -20,3 +21,29 @@ export const useMedia = defineStore('media', () => {
   };
   return { getAllmedia };
 });
+
+
+
+export const addMedia = async (data: Media) => {
+  const db = getFirestore();
+  const mediaRef = collection(db, 'media');
+  const res = await addDoc(mediaRef, data);
+  return res.id;
+}
+
+
+export const deleteMedia = async (id: string) => {
+  const db = getFirestore();
+  const docRef = doc(db, 'media', id);
+  const res = await deleteDoc(docRef);
+  return res;
+}
+
+export const updateMedia = async (id: string, name: string, createdAt: number) => {
+  const db = getFirestore();
+  const docRef = doc(db, 'media', id);
+  const res = await setDoc(docRef, {name: name, createdAt: createdAt});
+  return res;
+}
+
+

@@ -62,3 +62,16 @@ export async function geUsersForLicense(requests: (LicenseHistory | LicenseReque
 }
 
 
+export function filterInPlace(array, fn) {
+  let from = 0, to = 0;
+  while (from < array.length) {
+    if (fn(array[from])) {
+      array[to] = array[from];
+      to++;
+    }
+    from++;
+  }
+  array.length = to;
+}
+
+

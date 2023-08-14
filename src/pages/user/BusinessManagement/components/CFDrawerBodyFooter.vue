@@ -1,20 +1,39 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { defineEmits, ref } from 'vue';
+import { defineEmits, onMounted, ref } from 'vue';
 import TaskRegister from '../../Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
-
-defineProps<{
+import { evaluateAll } from '../utils/evaluateIndex'
+const props =defineProps<{
   clientFactory: ClientFactory,
 }>()
 const emit = defineEmits<{
+
     (e: 'openFaxDrawer')
 }>()
 const openFaxDrawer = () =>{
     emit('openFaxDrawer')
 }
+const situation = ref<number | undefined>()
+
+onMounted(()=>{
+  const situationUpdated = ref<number | undefined>()
+  situationUpdated.value = props.clientFactory.offerRate;
+  if(situationUpdated.value){
+    situationUpdated.value += props.clientFactory.avgWorkLength;
+  }
+  situationUpdated.value = Number((situationUpdated.value)?.toFixed(2));
+  situation.value = situationUpdated.value
+})
+
 const { t } = useI18n({ useScope: 'global' });
 const openTaskRegister = ref(false)
+const dispatchIndex = ref<number|string>('loading')
+const refarralIndex = ref<number|string>('loading')
+onMounted(async()=>{
+    dispatchIndex.value = await evaluateAll(props.clientFactory,'dispatch')
+    refarralIndex.value = await evaluateAll(props.clientFactory,'referral')
+})
 </script>
 
 <template>
@@ -32,10 +51,20 @@ const openTaskRegister = ref(false)
                     <span class="info-footer__label q-mr-sm">
                         {{ t('clientFactory.drawer.situation') }}
                     </span>
-
-                    <span class="info-footer__value">
-                        TEST
+                    <span v-if="situation" class="info-footer__value q-mr-sm">
+                      <q-icon v-if="situation>=90" size="1.5em" name="mdi-emoticon-excited" color="green"></q-icon>
+                      <q-icon v-if="situation<90 && situation>=80"
+                       size="1.5em" name="mdi-emoticon-happy" color="light-green"></q-icon>
+                      <q-icon v-if="situation<80 && situation>=70"
+                      size="1.5em" name="mdi-emoticon-neutral" color="yellow-8"></q-icon>
+                      <q-icon v-if="situation<70 && situation>=60"
+                      size="1.5em" name="mdi-emoticon-wink" color="yellow-10"></q-icon>
+                      <q-icon v-if="situation<60 && situation>=50"
+                      size="1.5em" name="mdi-emoticon-sad" color="amber-10"></q-icon>
+                      <q-icon v-if="situation<50"
+                      size="1.5em" name="mdi-emoticon-angry" color="red"></q-icon>
                     </span>
+                    <span v-else class="info-footer__value q-mr-sm">-</span>
                 </p>
                 <p class="row q-ma-none q-pt-sm">
                     <span class="info-footer__label q-mr-sm">
@@ -60,7 +89,7 @@ const openTaskRegister = ref(false)
                     </span>
 
                     <span class="info-footer__value">
-                        TEST
+                        {{ dispatchIndex }}
                     </span>
                 </p>
 
@@ -70,7 +99,7 @@ const openTaskRegister = ref(false)
                     </span>
 
                     <span class="info-footer__value">
-                        TEST
+                        {{ refarralIndex }}
                     </span>
                 </p>
             </div>
@@ -85,11 +114,11 @@ const openTaskRegister = ref(false)
                     </q-btn>
                 </div>
             </div>
-            <task-register 
+            <task-register
               :entity="'office'"
               :entityData="clientFactory"
-              v-model="openTaskRegister" 
-              @closeDrawer="openTaskRegister=false" 
+              v-model="openTaskRegister"
+              @closeDrawer="openTaskRegister=false"
             />
     </div>
 </template>

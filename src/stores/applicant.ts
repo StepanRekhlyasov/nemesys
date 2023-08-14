@@ -1,7 +1,7 @@
 import { QueryDocumentSnapshot, Timestamp, collection, deleteField, doc, getCountFromServer, getDoc, getDocs, getFirestore, limit, orderBy, query, serverTimestamp, setDoc, startAt, updateDoc, where, writeBatch } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { ApplicantElasticFilter, ApplicantElasticSearchData, ApplicantProgressFilter } from 'src/pages/user/Applicant/types/applicant.types';
-import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client } from 'src/shared/model';
+import { Applicant, ApplicantExperience, ApplicantExperienceInputs, ApplicantFix, ApplicantInputs, ApplicantStatus, Client, ContactInfo } from 'src/shared/model';
 import { countApplicantRank, getClientList } from 'src/shared/utils/Applicant.utils';
 import { ref, watch } from 'vue'
 import { Alert } from 'src/shared/utils/Alert.utils';
@@ -203,9 +203,7 @@ export const useApplicant = defineStore('applicant', () => {
     searchData = deepCopy(searchData);
 
     if (searchData['status']) {
-      filters['all'].push({
-        'status': searchData['status']
-      });
+        filters['all'].push({ 'status': searchData['status'] });
     }
     if (searchData.applicationDateMin && searchData.applicationDateMax) {
       filters['all'].push({
@@ -511,12 +509,12 @@ export const useApplicant = defineStore('applicant', () => {
     return { ...result.data(), id: result.id } as Applicant
   }
 
-  async function getApplicantContactData(applicantId: string, constraints: ConstraintsType) {
-    constraints.push(where('organizationId', '==', organization.currentOrganizationId))
-    const q = query(collection(db, 'applicants/' + applicantId + '/contacts'), ...constraints);
+  async function getApplicantContactData(applicantId: string, constraints: ConstraintsType = [], limitValue?: number) {
+    const collectionRef = collection(db, 'applicants/' + applicantId + '/contacts')
+    const q = limitValue ? query(collectionRef, ...constraints, limit(limitValue)) : query(collectionRef, ...constraints);
     const snapshot = await getDocs(q);
     const result = snapshot?.docs.map((doc) => {
-      return { id: doc.id, ...doc.data() }
+      return { id: doc.id, ...doc.data() } as ContactInfo
     })
     return result
   }

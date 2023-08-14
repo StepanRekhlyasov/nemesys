@@ -110,7 +110,7 @@
 
         <template v-slot:body-cell-selected="props">
           <q-td :props="props" class="no-wrap q-pa-none">
-            <q-checkbox v-model="props.row.selected" :true-value="props.row" :false-value="null"
+            <q-checkbox v-model="props.row.selected"  :true-value="props.row" :false-value="null"
               @click="updateSelected(props.row)" />
           </q-td>
         </template>
@@ -132,7 +132,7 @@
         <template v-slot:body-cell-occupationAdress="props">
           <q-td v-if="Array.isArray(props.row.classification)" :props="props" class="no-wrap q-pa-none">
             {{ t(`applicant.add.${props.row.occupation}`) }}/
-            {{ props.row.classification.map(((row : string)=>row.toLowerCase())).join(', ') }}
+            {{ props.row.classification.map(((row : string)=>t(`applicant.list.info.classification.${row.toLowerCase()}`))).join(', ') }}
             <br />
             {{ props.row.address }}
           </q-td>
@@ -148,7 +148,7 @@
             <div v-for="q in props.row.qualification" :key="q">
               {{ t(`applicant.qualification.${q}`) }}
             </div>
-            {{ props.row.totalYear }}
+            {{ props.row.totalMonthes ? Math.floor(props.row.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
           </q-td>
         </template>
 
@@ -166,7 +166,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, ComputedRef, watch } from 'vue';
+import { ref, onMounted, ComputedRef, watch, onBeforeMount } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useI18n } from 'vue-i18n';
 import { destinationApplicant } from 'src/pages/user/Applicant/const/sms';
@@ -191,6 +191,9 @@ const template = ref<string | null>(null)
 const getApplicant = useApplicant();
 const templates = ref<DocumentData | QSelectProps>([]);
 const smsStore = useSMS();
+const props = defineProps({
+  id: String
+})
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -217,14 +220,18 @@ watch(template, (newTemplate) => {
 const sendMsg = async () => {
   try {
     await smsStore.send(message.value, selected.value)
-    
+
     message.value = ''
   } catch (error) {
     Alert.warning(error)
   }
 }
 
-const updateSelected = (rowItem) => {
+onBeforeMount(async () => {
+  row.value = await smsStore.filterData(status.value, keyword.value, date.value);
+})
+
+const updateSelected = (rowItem: Applicant) => {
   selected.value[rowItem.id]['selected'] = !selected.value[rowItem.id]['selected']
 };
 
@@ -249,9 +256,8 @@ const clear = async () => {
 }
 
 onMounted(async () => {
- await fetchData()
+  await fetchData()
 });
-
 
 async function fetchData() {
   templates.value = await smsStore.options
@@ -263,10 +269,20 @@ async function fetchData() {
       'selected': false,
     }
   });
+  if (props.id) {
+    row.value = row.value.filter((e) => {
+      if(e.id === props.id) {
+        e.selected = e;
+        selected.value[e.id]['selected'] = true;
+        return true;
+      }
+      return false;
+    });
+  }
   loading.value = false
 }
 
-watchCurrentOrganization(async()=>{
+watchCurrentOrganization(async () => {
   await fetchData()
 })
 

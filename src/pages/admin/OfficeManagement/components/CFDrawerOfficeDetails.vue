@@ -14,7 +14,7 @@ const props = defineProps<{
     clientFactory: ClientFactory
     draft: Partial<ClientFactory>
     isLoading: boolean
-    industryType: string
+    industryType?: string
 }>()
 const emit = defineEmits<{
     (e: 'editDraft', changedData: ChangedData)
@@ -103,8 +103,7 @@ watchEffect(() => {
         @open-edit="isEditForm.uniqueItems = true"
         @close-edit="isEditForm.uniqueItems = false"
         @on-save="isEditForm.uniqueItems = false; handleEditDraft(dataForUpdating[`${industryType}.uniqueItems`] as Data[])"/>
-
-    <EditableColumnsCF
+        <EditableColumnsCF
         v-if="isEditForm.uniqueItems && industryType"
         @data-changed="e => getNewDataToUpdate(e, `${industryType}.uniqueItems`)"
         :data="officeDetails[`${industryType}.uniqueItems`]" theme="accent"/>

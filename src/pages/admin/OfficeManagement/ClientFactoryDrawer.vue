@@ -125,7 +125,7 @@ const onImport = async (data: ChangedData) => {
     const isOfficeDetailsChanged = localDraft.value.officeDetails && Object.keys(localDraft.value.officeDetails).length ? true : false
     localData.value = copyBeforeRemoveDraft
     localDraft.value = {}
-
+    clientFactoryToUpdate.organizationId = null
     await updateClientFactory({ ...clientFactoryToUpdate, draft: localDraft.value }, )
 
     const importLog = await addImportLog(currentUser, localData.value, organizations[0], isOfficeDetailsChanged)
@@ -211,6 +211,7 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                         :is-loading="isLoading.isGeneral"
                         :is-reflecting="isLoading.isReflecting"
                         :is-importing="isLoading.isImporting"
+                        :selectedIndustry="selectedIndustry"
                         @handle-import="openModifiedCFsDrawer"
                         @handle-reflect="onReflect"/>
                 </q-card-section>

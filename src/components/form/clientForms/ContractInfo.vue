@@ -73,10 +73,22 @@ watch(clientData, () => {
                         :label="t('client.list.presenceContract')" />
                 </div>
 
-                </div>
+            </div>
 
             <div class="row q-mt-sm">
                 <div class="col-6">
+                    <q-item-label class="q-pb-xs">
+                        {{ t('client.add.contractor') }} : {{ t('client.list.personIncharge') }}
+                    </q-item-label>
+
+                    <q-input
+                        :color="theme"
+                        outlined dense
+                        v-model="clientData['personInCharge']"
+                        :placeholder="t('client.add.managerLabel')"
+                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
+                </div>
+                <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
                         {{ t('client.add.contractor') }} : TEL
                     </q-item-label>
@@ -85,18 +97,6 @@ watch(clientData, () => {
                         :color="theme"
                         outlined dense
                         v-model="clientData['personInChargeTel']"
-                        :placeholder="t('client.add.phoneLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
-                </div>
-                    <div class="col-6 q-pl-sm">
-                        <q-item-label class="q-pb-xs">
-                            {{ t('client.add.contractor') }} : FAX
-                        </q-item-label>
-
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="clientData['personInChargeFax']"
                         :placeholder="t('client.add.phoneLabel')"
                         :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
                 </div>
@@ -117,16 +117,16 @@ watch(clientData, () => {
                 </div>
                 <div class="col-6 q-pl-sm">
                     <q-item-label class="q-pb-xs">
-                        {{ t('client.add.contractor') }} : {{ t('client.list.personIncharge') }}
+                        {{ t('client.add.contractor') }} : FAX
                     </q-item-label>
 
-                    <q-input
-                        :color="theme"
-                        outlined dense
-                        v-model="clientData['personInCharge']"
-                        :placeholder="t('client.add.managerLabel')"
-                        :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
-                </div>
+                <q-input
+                    :color="theme"
+                    outlined dense
+                    v-model="clientData['personInChargeFax']"
+                    :placeholder="t('client.add.phoneLabel')"
+                    :rules="[val => (val === '' || (val && val.trim().length > 0)) || true]"/>
+            </div>
             </div>
         </q-item-section>
     </q-item>

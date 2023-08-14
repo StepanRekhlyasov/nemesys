@@ -14,7 +14,7 @@ defineProps<{
     clientFactory: ClientFactory
     draft: Partial<ClientFactory>
     isLoading: boolean
-    industryType: string
+    industryType?: string
 }>()
 
 const emit = defineEmits<{
@@ -69,7 +69,7 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
         </q-tab-panel>
         <q-tab-panel :name="clientFactory.isHead ? ClientFactoryDetailTabs.Client : ClientFactoryDetailTabs.HeadOffice">
             <CFDrawerClientDetails v-if="clientFactory.isHead" :clientFactory="clientFactory"/>
-            <CFDrawerHeadDetailsVue v-else :clientId="clientFactory.clientID"/>
+            <CFDrawerHeadDetailsVue v-else :clientId="clientFactory.clientID" :clientFactory="clientFactory"/>
         </q-tab-panel>
         <q-tab-panel :name="ClientFactoryDetailTabs.ReflectionHistory">
             <CFDrawerReflectDetail :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id" />
