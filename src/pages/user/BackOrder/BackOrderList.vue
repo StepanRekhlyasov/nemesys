@@ -11,9 +11,9 @@
           <q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus" @click="addNewBo" />
         </div>
         <div class="row">
-        <searchForm class="q-mr-md" @load-search-staff="loadSearchStaff" /> 
-        <q-btn :label="$t('backOrder.deleteBO')" color="red" icon="delete" @click="deleteSelected"></q-btn>
-      </div>
+          <searchForm class="q-mr-md" @load-search-staff="loadSearchStaff" />
+          <q-btn :label="$t('backOrder.deleteBO')" color="red" :disable="selected.length === 0" icon="delete" @click="deleteSelected"></q-btn>
+        </div>
       </q-card-section>
       <q-separator color="white" size="2px" />
       <q-card-section class="q-pa-none">
@@ -55,9 +55,10 @@
 
           <template v-slot:body-cell-employmentType="props">
             <q-td :props="props" class="q-pa-none">
-                {{
-                  props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
-                }}
+              {{
+                props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ?
+                props.row.employmentType.map((row: string) => $t('client.backOrder.' + row)).join(', ') : '-'
+              }}
             </q-td>
           </template>
 
@@ -190,6 +191,7 @@ const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
 const selectedBo = ref<BackOrderModel | ComputedRef>(
   computed(() => backOrderStore.state.selectedBo)
 );
+
 const selectedClient = ref<Client | undefined>(undefined);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const pagination = ref({
@@ -303,10 +305,10 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        if(user?.branchName){
+        if (user?.branchName) {
           userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
         }
-        else{
+        else {
           userNames.value[registrant] = user?.displayName || '';
         }
         userDisplayName.value = userNames.value[registrant];
@@ -330,10 +332,24 @@ const closeMap = () => {
 };
 
 async function deleteSelected() {
-  if(selected.value) {
+  $q.dialog({
+    title: 'Confirm delete ?',
+    cancel: 'Cancel deletion',
+    ok: 'Confirm',
+  })
+
+  .onOk(async () => {
+    if (selected.value) {
     selected.value.map(async (val) => await deleteBO(val.id));
   }
-  await backOrderStore.loadBackOrder({}, pagination.value);
+    await backOrderStore.loadBackOrder({}, pagination.value);
+  })
+  .onDismiss(() => {
+    selected.value = []
+  })
+  .onCancel(() => {
+    selected.value = []
+  })
 }
 
 function addNewBo() {
