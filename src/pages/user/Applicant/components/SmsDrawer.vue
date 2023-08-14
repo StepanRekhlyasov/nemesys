@@ -148,7 +148,7 @@
             <div v-for="q in props.row.qualification" :key="q">
               {{ t(`applicant.qualification.${q}`) }}
             </div>
-            {{ props.row.totalYear }}
+            {{ props.row.totalMonthes ? Math.floor(props.row.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
           </q-td>
         </template>
 
@@ -271,7 +271,7 @@ async function fetchData() {
     }
   });
   if (numberProp.phoneNumber) {
-    row.value = row.value.filter((e) => { 
+    row.value = row.value.filter((e) => {
       if(e.phone === numberProp.phoneNumber) {
         e.selected = e;
         selected.value[e.id]['selected'] = true;
