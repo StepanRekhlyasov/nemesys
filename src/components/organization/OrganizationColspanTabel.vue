@@ -37,7 +37,7 @@
                   </div>
                 </q-td>
 
-                <q-td v-if="Object.keys(branchItem).length">
+                <q-td v-if="Object.keys(branchItem).length && branchItem.working === true">
                   <div class="column items-start">
                     {{ branchItem.name }}
 
@@ -48,7 +48,9 @@
                     </slot>
                   </div>
                 </q-td>
-
+                <q-td v-else-if="branchItem.working === false" class="emptyCell">
+                {{ branchItem.name }}
+                </q-td>
                 <q-td v-else class="emptyCell">
                 </q-td>
                 <slot name="after" :branchItem="branchItem">
