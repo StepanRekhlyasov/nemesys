@@ -340,7 +340,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: false,
                 numberUpdates: modifiedCF.numberUpdates + 1,
                 numberImports: modifiedCF.numberImports,
-                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)),
+                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)) ?? serverTimestamp(),
                 updated_at: serverTimestamp(),
             })
 

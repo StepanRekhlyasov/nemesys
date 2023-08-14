@@ -63,7 +63,7 @@ watch(() => [props.industryName], async () => {
                     @update:modelValue="(isChecked) => updateType(option, isChecked)"
                 />
                 <template v-for="option, index in localType">
-                  <p class="q-my-sm" v-if="index===0" :key="index">{{ t('client.add.otherFacilitiesTitle') }}</p>
+                  <p class="q-my-sm" v-if="index===0 && !facilityList.includes(option)" :key="index">{{ t('client.add.otherFacilitiesTitle') }}</p>
                   <q-checkbox
                       v-if="!facilityList.includes(option)"
                       size="xs"
