@@ -4,6 +4,9 @@ import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermis
 import { serializeTimestamp } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
 import { useUserStore } from './user';
+import { i18n } from 'boot/i18n';
+
+const { t } = i18n.global
 
 interface OrganizationState {
   organizations: Organization[],
@@ -121,10 +124,10 @@ export const useOrganization = defineStore('organization', () => {
     if (querySnapshot.size == 0) {
       throw new Error('Organization not found')
     }
-
-    return querySnapshot.docs.map((doc) => {
-      return doc.data() as Organization
-    });
+    if (querySnapshot.size > 1) {
+      throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
+    }
+    return querySnapshot.docs[0].data() as Organization
   }
 
   async function getOrganizationsByName(name: string) {
