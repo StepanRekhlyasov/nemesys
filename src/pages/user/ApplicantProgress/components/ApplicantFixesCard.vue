@@ -2,30 +2,29 @@
   <q-card
     v-if="applicant"
     bordered
-    class='cursor-move q-mb-md text-caption full-width applicant-card'
-    square
+    class='cursor-move q-mb-sm text-caption full-width applicant-card'
     flat
     :class='{redAlert:redAlert, highlighted: applicantStore.state.highlightedApplicant === applicant.id}'
   >
-    <div class='row q-gutter-sm items-center'>
-      <span class='col-1 q-mr-sm'>{{ RankCount.getRank(applicant.staffRank) }}</span>
+    <div class='row q-gutter-xs items-center'>
+      <span class='col-3' style="word-break: break-all;">{{ RankCount.getRank(applicant.staffRank) }}</span>
       <span class='col applicant-clickable' @click="emit('selectApplicant', applicant)">{{ applicant.name }}</span>
     </div>
-    <div class='row q-gutter-md items-center'>
-      <div class='col'><q-icon :name="'business'" style="font-size: 14px;"/></div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;"><q-icon :name="'business'" style="font-size: 14px;"/></div>
       <div class='col'>{{ applicantStore.state.clientList.find(client => client.id === fix.client)?.name }}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1 q-mr-sm' v-html="statusDateName[status]"></div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;" v-html="statusDateName[status]"></div>
       <div class='col' v-if="(fix[applicantStatusDates[status]] instanceof Timestamp)">{{ myDateFormat(fix[applicantStatusDates[status]], 'YYYY.MM.DD') }}</div>
       <div class='col' v-else>{{ fix[applicantStatusDates[status]]?fix[applicantStatusDates[status]]:'-' }}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1 q-mr-sm'>{{$t('applicant.progress.card.contact')}}</div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">{{$t('applicant.progress.card.contact')}}</div>
       <div class='col'>{{ contactDate ? myDateFormat(contactDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1 q-mr-sm'>FAX</div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">FAX</div>
       <div class='col'>{{ faxDate ? myDateFormat(faxDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
     <q-btn
@@ -132,7 +131,8 @@ onMounted(async ()=>{
 <style scoped lang="scss">
 .applicant-card{
   border: 1px solid #333; 
-  padding: 8px
+  padding: 8px;
+  border-radius: 9px;
 }
 .applicant-card.redAlert{
   border: 1px solid #FF5252; 
@@ -156,7 +156,7 @@ onMounted(async ()=>{
   border-radius: 50%;
   position: absolute;
   right: -18px;
-  top: 18px;
+  top: calc(50% - 18px);
   font-size: 14px;
 }
 </style>

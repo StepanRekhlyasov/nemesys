@@ -32,3 +32,11 @@ export const getAllMunicipalities = async () => {
   const docData = await getDoc(docRef);
   return docData.data();
 }
+
+export const getAddresses = async (pincode : string) => {
+  const db = getFirestore();
+
+  const docRef = doc(db, 'pincodes', pincode);
+  const docData = await getDoc(docRef);
+  return docData.data();
+}

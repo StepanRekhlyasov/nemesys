@@ -20,3 +20,5 @@ export const useMedia = defineStore('media', () => {
   };
   return { getAllmedia };
 });
+
+

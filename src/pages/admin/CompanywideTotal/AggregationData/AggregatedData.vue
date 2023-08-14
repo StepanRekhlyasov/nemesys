@@ -1,15 +1,21 @@
-<template>
-    <PageHader>
-        {{ t('menu.admin.aggregateDataDisplay') }}
-    </PageHader>
-</template>
-
-<script lang="ts" setup>
+<script setup lang = "ts">
 
 import { useI18n } from 'vue-i18n';
-import PageHader from 'src/components/PageHeader.vue';
 const { t } = useI18n({ useScope: 'global' });
 
+
 </script>
-<style lang="scss">
+<template>
+    <q-card class="no-shadow full-width bg-grey-3">
+        <q-card-section class="bg-grey-3">
+            <div class="title">{{ t('menu.admin.aggregateDataDisplay') }}</div>
+        </q-card-section>
+    </q-card>
+</template>
+
+<style lang="scss" scoped>
 </style>
+
+
+
+

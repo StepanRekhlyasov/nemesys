@@ -184,6 +184,7 @@ export default {
       officeManagement: '事業所マスタ管理',
       enterpriseManagement: '企業管理',
       aggregationData: '全社集計',
+      mediaControl: 'メディアコントロール',
       billingInformation: '請求情報管理',
       systemsOperationManagement: 'システム稼働管理',
       releaseNotesInquiry: 'リリースノート・問い合わせ',
@@ -266,7 +267,7 @@ export default {
       operationHistory: '稼働履歴',
       variousFeeAggregates: '各種料金集計',
       billingHistory: '請求履歴',
-      aggregateDataDisplay: '集計データ表示',
+      aggregateDataDisplay: '選択肢マスタ',
       dataOutputDisplay: 'データ出力',
       dataOutputDisplayTable: {
         outputMonth: '出力月',
@@ -380,7 +381,7 @@ export default {
       corporation: '法人',
       contractStatus: '契約状態',
       contractInfo: '契約先情報',
-      personIncharge: '担当ユーザー',
+      personIncharge: '担当者',
       contactPerson: '連絡先担当者',
       basicInfoUpdated: '基本情報 最終更新',
       infoUpdated: '情報 最終更新',
@@ -472,6 +473,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: '他種別での施設形態',
       newReg: 'クライアント 新規登録',
       clientBasicInfo: 'クライアント基本情報',
       clientName: 'クライアント名',
@@ -509,7 +511,12 @@ export default {
       emailLabel2: 'example.co.jp',
       manager: '担当者名',
       managerLabel: '例）鈴木 太郎',
-
+      contactInformation: '担当者情報',
+      contactPersonName: '担当者名',
+      contactPersonTitle: '担当者：役職 ',
+      contactPersonTel: '担当者：TEL',
+      contactPersonMail: '担当者：MAIL',
+      regularEmployee: '例）一般社員',
       //
       integrationSource: '統合元',
       copInfo: '企業情報',
@@ -674,6 +681,7 @@ export default {
       transactionType: '取引種別',
       introduction: '紹介',
       dispatch: '一般派遣',
+      referralDispatch: '紹介予定派遣',
       ttp: 'TTP',
       reqQualification: '必要な資格',
       regularReview: '正看',
@@ -1066,6 +1074,7 @@ export default {
       specialDay: '特日出勤',
       shiftRemarks: '勤務可能シフト備考',
       days: '日',
+      notExist:'なし',
       meansCommuting: '通勤手段',
       meansCommutingOptions: {
         walk: '徒歩',
@@ -1560,6 +1569,7 @@ export default {
   clientFactory: {
     numberEmployees: '従業員数',
     facilityType: '施設形態',
+    mediaOptions: 'メディアオプション',
     homePage: 'ホームページ',
     conclusionDispatchContract: '派遣契約締結',
     conclusionReferralContract: '紹介契約締結',
@@ -1582,6 +1592,7 @@ export default {
       headOfficeInfo: '本社事業所情報',
       clientInfo: 'クライアント情報',
       contractInfo: '契約情報',
+      relatedOfficeInfo: '関連事業所情報',
       withMasterData: 'マスタデータあり',
       noAutoRenewal: '自動更新なし',
       situation: '状態',
@@ -1666,7 +1677,16 @@ export default {
         update: '更新',
         create: '作成',
         basicInfoChanged: '基本情報',
-        officeInfoChanged: '事業所詳細情報'
+        officeInfoChanged: '事業所詳細情報',
+
+        noOfOffices: '該当事業所数',
+        backOrder: 'バックオーダー',
+        employmentRecord: '就業実績',
+        fullTimeEmployment: '正社員入職',
+        nonRegularEmployee: '非正規社員入職',
+        temporaryEmployment: '派遣入職',
+        currentlyInOperation: '現在稼働',
+        perItems: '件'
       }
     },
     fax: {
@@ -2241,7 +2261,9 @@ export default {
   errors: {
     'BO_occupied': '選択されたBOは既に使用されています',
     'error': 'エラー',
-    'deleteBranchesFirst': 'まずすべての支店を削除してください'
+    'deleteBranchesFirst': 'まずすべての支店を削除してください',
+    titleExist: 'タイトルはすでに存在します',
+    industryRules: '無効入力',
   },
   budget: {
     search: '予算検索',
