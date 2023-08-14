@@ -21,7 +21,6 @@
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date v-model="data['timeToWork']" mask="YYYY/MM/DD" 
                   :navigation-min-year-month="nextMonth"
-                  :navigation-max-year-month="nextMonth"
                   :default-year-month="nextMonth"
                   >
                   <div class="row items-center justify-end">
