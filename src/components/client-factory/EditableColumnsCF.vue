@@ -9,6 +9,7 @@ import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { deepCopy } from 'src/shared/utils';
 import { InputType } from './types';
 import { commaSeparatedNumber } from 'src/shared/utils/utils';
+import { validateTime } from 'src/shared/constants/Form.const';
 const { t } = useI18n({ useScope: 'global' });
 
 
@@ -98,6 +99,37 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                       :label="item.label"
                     />
                 </template>
+                <div v-else-if="row.editType === InputType.HOURS" class="row q-ml-md">
+                  <q-input dense outlined bg-color="white" v-model="row.value.from"
+                      :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space class="col">
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time v-model="row.value.from" mask="HH:mm" format24h>
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <span class="q-ma-sm flex-center col-1 text-center">{{ '~' }}</span>
+                    <q-input dense outlined bg-color="white" class="col" v-model="row.value.to"
+                      :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time v-model="row.value.to" mask="HH:mm" format24h>
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                </div>
                 <!-- Add more conditions for other data types as needed -->
             </div>
         </div>
@@ -139,6 +171,37 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                       :label="item.label"
                     />
                 </template>
+                <div v-else-if="row.editType === InputType.HOURS" class="row q-ml-md">
+                  <q-input dense outlined bg-color="white" v-model="row.value.from"
+                      :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space class="col">
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time v-model="row.value.from" mask="HH:mm" format24h>
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <span class="q-ma-sm flex-center col-1 text-center">{{ '~' }}</span>
+                    <q-input dense outlined bg-color="white" class="col" v-model="row.value.to"
+                      :rules="[(val) => val ? validateTime(val) : true]" hide-bottom-space >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time v-model="row.value.to" mask="HH:mm" format24h>
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                </div>
                     <!-- Add more conditions for other data types as needed -->
             </div>
         </div>

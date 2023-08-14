@@ -6,7 +6,7 @@ import { InputType } from './types';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string, editType?: string }[]
+    data: { label: string; value: string | number | string[] | boolean | {from: string, to: string}, isHighlight?: boolean, key?: string, editType?: string }[]
     selectedIndustry?: { value: string, isSelected: boolean }
     isEdit: boolean
     label?: string
@@ -103,6 +103,10 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
 
                 <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`"/>
 
+                <span v-else-if="row.editType === InputType.HOURS" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
+                  <template v-if="row.value && row.value['from'] && row.value['to']">{{ row.value['from'] }} ~ {{ row.value['to'] }}</template>
+                </span>
+
                 <span v-else :class="`line__value q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </span>
@@ -124,6 +128,10 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
                 </span>
 
                 <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`"/>
+
+                <span v-else-if="row.editType === InputType.HOURS" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
+                  <template v-if="row.value && row.value['from'] && row.value['to']">{{ row.value['from'] }} ~ {{ row.value['to'] }}</template>
+                </span>
 
                 <span v-else :class="`line__value q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}

@@ -424,7 +424,11 @@ export const useClientFactory = defineStore('client-factory', () => {
     const updateClientFactory = async(updatedClientFactory: ClientFactory) => {
 
         try {
-
+            for (const [key, value] of Object.entries(updatedClientFactory)){
+              if(typeof value === 'undefined'){
+                delete updatedClientFactory[key]
+              }
+            }
             await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
                 ...updatedClientFactory,
                 created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
