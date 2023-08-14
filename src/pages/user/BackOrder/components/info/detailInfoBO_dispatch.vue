@@ -22,8 +22,8 @@
       </LabelField>
       <LabelField :label="$t('backOrder.create.customerRepresentative')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['customerRepresentative'] || ''}`" :autogrow="true">
-        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" type="textarea" autogrow />
+        :value="`${selectedBo['customerRepresentative'] || ''}`">
+        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" type="text" />
       </LabelField>
     </div>
 
@@ -55,8 +55,8 @@
       <!-- $t('backOrder.create.somethingNotQuestioned') -->
       <LabelField :label="$t('client.backOrder.experienceReq')" :edit="edit"
         :value="data['experienceReq'] ? data['experienceReq'] : ''"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">
-        <q-input v-model="data['experienceReq']" outlined dense :disable="loading" type="textarea" autogrow/>
+        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
+        <q-input v-model="data['experienceReq']" outlined dense :disable="loading" type="text"/>
       </LabelField>
       <LabelField :label="$t('client.backOrder.caseType')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"

@@ -90,7 +90,7 @@
     <div class="row q-pt-sm">
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
-        <q-input v-model="data['upperAgeLimit']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <q-input v-model="data['upperAgeLimit']" type="text" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </labelField>
     </div>
@@ -98,7 +98,7 @@
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['invoice'] = commaSeparatedNumber(value) }"/>
+        <q-input v-model="data['invoice']" type="text" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['invoice'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -106,7 +106,7 @@
     <div class="row q-pt-sm"  v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['payment'] = commaSeparatedNumber(value) }"/>
+        <q-input v-model="data['payment']" type="text" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['payment'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
