@@ -8,9 +8,9 @@
             <div class="flex">
               <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
             </div>
-            <div class="row q-mr-md">
+            <div class="row q-mr-sm">
                 <div class="column">
-                  <div v-if="selectedBo" class="text-subtitle2 q-mr-md">
+                  <div v-if="selectedBo" class="text-subtitle2 q-mr-sm">
                     {{ nameBo }}
                   </div>
 
