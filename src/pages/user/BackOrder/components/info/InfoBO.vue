@@ -5,10 +5,10 @@
       <q-card class="no-shadow bg-grey-3">
         <q-card-section class="text-white bg-primary no-border-radius">
           <div class="wrapper row items-end justify-between">
-            <div class="flex">
-              <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
-            </div>
             <div class="row q-mr-sm">
+              <div class="q-mr-xs">
+                <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
+              </div>
                 <div class="column">
                   <div v-if="selectedBo" class="text-subtitle2 q-mr-sm">
                     {{ nameBo }}
