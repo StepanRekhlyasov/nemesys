@@ -315,7 +315,8 @@ const meansCommutingOptions = computed(() => [
 const nextMonth = computed(()=>{
   let result = new Date().getFullYear()+'/'
   if(new Date().getMonth() === 11){
-    return 1
+    result += 1
+    return result
   }
   result += (new Date().getMonth()+2)
   return result
