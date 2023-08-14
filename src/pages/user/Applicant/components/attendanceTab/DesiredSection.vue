@@ -15,14 +15,18 @@
             :class="!data['timeAvailable']?'lowOpacity':''"
             :label="!data['timeAvailable'] ? $t('applicant.attendant.sameDay') : $t('applicant.attendant.sameDay')" />
           <q-input v-if="!data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
-            :disable="loading">
+            :disable="loading" readonly>
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="data['timeToWork']" mask="YYYY/MM/DD">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
-                    </div>
+                  <q-date v-model="data['timeToWork']" mask="YYYY/MM/DD" 
+                  :navigation-min-year-month="nextMonth"
+                  :navigation-max-year-month="nextMonth"
+                  :default-year-month="nextMonth"
+                  >
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup :label="$t('common.close')" color="primary" flat />
+                  </div>
                   </q-date>
                 </q-popup-proxy>
               </q-icon>
@@ -307,6 +311,15 @@ const meansCommutingOptions = computed(() => [
   { value: 'train', label: t('applicant.attendant.meansCommutingOptions.train') },
   { value: 'bus', label: t('applicant.attendant.meansCommutingOptions.bus') },
 ])
+
+const nextMonth = computed(()=>{
+  let result = new Date().getFullYear()+'/'
+  if(new Date().getMonth() === 11){
+    return 1
+  }
+  result += (new Date().getMonth()+2)
+  return result
+})
 
 const daysPerWeekComputed = computed(() => {
   if (Array.isArray(props.applicant.daysPerWeek)) {
