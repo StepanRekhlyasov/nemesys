@@ -105,6 +105,7 @@ export default {
     },
     more: 'More',
     downloadCSV: 'Download CSV',
+    csvOutput:'CSV Output',
     branch: 'Branch',
   },
   rule: {
@@ -183,6 +184,7 @@ export default {
       officeManagement: 'Office management',
       enterpriseManagement: 'Enterprise management',
       aggregationData: 'Companywide total',
+      mediaControl: 'Media Control',
       billingInformation: 'Billing Information Management',
       systemsOperationManagement: 'Systems Operation Management',
       releaseNotesInquiry: 'Release Notes and Inquiries',
@@ -265,7 +267,7 @@ export default {
       operationHistory: 'Operational history',
       variousFeeAggregates: 'Various fee aggregates',
       billingHistory: 'Billing history',
-      aggregateDataDisplay: 'Aggregated Data Display',
+      aggregateDataDisplay: 'Option Master',
       dataOutputDisplay: 'Data Output',
       dataOutputDisplayTable: {
         outputMonth: 'Output month',
@@ -474,6 +476,7 @@ export default {
 
     },
     add: {
+      otherFacilitiesTitle: 'Types from other industries:',
       newReg: 'Client new registration',
       clientBasicInfo: 'Client basic information',
       clientName: 'Client Name',
@@ -511,7 +514,12 @@ export default {
       emailLabel2: 'example.co.jp',
       manager: 'Manager',
       managerLabel: 'Ex) Taro Suzuki',
-
+      contactInformation: 'Contact Information',
+      contactPersonName: 'Contact Person Name',
+      contactPersonTitle: 'Contact Person Title',
+      contactPersonTel: 'Contact Person TEL',
+      contactPersonMail: 'Contact Person MAIL',
+      regularEmployee: 'Regular employee',
       //
       integrationSource: 'Integration Source',
       copInfo: 'Coperation Info',
@@ -680,6 +688,7 @@ export default {
       transactionType: 'Transaction Type',
       introduction: 'Introduction',
       dispatch: 'Dispatch',
+      referralDispatch:'Referral Dispatch',
       ttp: 'TTP',
       reqQualification: 'Required qualification',
       regularReview: 'Regular review',
@@ -1072,6 +1081,7 @@ export default {
       specialDay: 'Working on a special day',
       shiftRemarks: 'Available Shift Remarks',
       days: 'Days',
+      notExist: 'No',
       meansCommuting: 'Means of commuting',
       meansCommutingOptions: {
         walk: 'Walk',
@@ -1569,6 +1579,7 @@ export default {
   clientFactory: {
     numberEmployees: 'Number of employees',
     facilityType: 'Facility type',
+    mediaOptions: 'Media Options',
     homePage: 'Home page',
     conclusionDispatchContract: 'Conclusion of dispatch contract',
     conclusionReferralContract: 'Conclusion of referral contract',
@@ -1591,6 +1602,7 @@ export default {
       headOfficeInfo: 'Head office info',
       clientInfo: 'Client info',
       contractInfo: 'Contract info',
+      relatedOfficeInfo: 'Related office info',
       withMasterData: 'With master data',
       noAutoRenewal: 'No automatic renewal',
       situation: 'Situation',
@@ -1663,7 +1675,7 @@ export default {
         contractTel: 'Contract destination: TEL',
         contractFax: 'Contract destination: FAX',
         contractMail: 'Contract destination: MAIL',
-        contractPerson: 'Contractor: Person in charge',
+        contractPerson: 'Contractor: User in charge',
 
         // Import Logs and Reflect Logs
         executionUser: 'Execution User',
@@ -1675,7 +1687,16 @@ export default {
         update: 'Updated',
         create: 'Created',
         basicInfoChanged: 'Changed Basic Info',
-        officeInfoChanged: 'Changed Office Info'
+        officeInfoChanged: 'Changed Office Info',
+
+        noOfOffices: 'Number Of offices',
+        backOrder: 'Backorder',
+        employmentRecord: 'Employment record',
+        fullTimeEmployment: 'Full-time employment',
+        nonRegularEmployee: 'Non-regular employee',
+        temporaryEmployment: 'Temporary Employment',
+        currentlyInOperation: 'Currently in operation',
+        perItems: 'items'
       }
     },
     fax: {
@@ -1728,7 +1749,7 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      recieve: 'date issued',
+      recieve: 'Sent / Recieve Date',
       recieved: 'Recieved',
       sent: 'Sent',
       responseDate: 'response date',
@@ -2252,7 +2273,9 @@ export default {
   errors: {
     'BO_occupied': 'Selected BO is occupied',
     'error': 'Error',
-    'deleteBranchesFirst': 'Please, delete all branches first'
+    'deleteBranchesFirst': 'Please, delete all branches first',
+    titleExist: 'Title already exists',
+    industryRules: 'Invalid input',
   },
   budget: {
     search: 'Budget Search',
@@ -2315,5 +2338,5 @@ export default {
     C: 'C (Normal)',
     D: 'D (Bad)',
     E: 'E (The Worst)',
-  }
+  },
 }

@@ -1,14 +1,15 @@
-import { getFirestore, onSnapshot, collection, addDoc, setDoc, doc, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, onSnapshot, collection, addDoc, setDoc, doc, query, where, getDocs ,serverTimestamp ,writeBatch} from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { Industry } from 'src/shared/model/Industry.model';
 import { ref, onBeforeUnmount } from 'vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
+import { getAuth } from 'firebase/auth';
 
 export const useIndsutry = defineStore('industries', () => {
 
     // db
     const db = getFirestore();
-
+    const auth = getAuth()
     // state
     const industries = ref<Industry[]>([])
     const isFirstLoading = ref(true)
@@ -19,25 +20,29 @@ export const useIndsutry = defineStore('industries', () => {
     // methods
 
     const getIndustries = () => {
-        unsubscribe.value = onSnapshot(collection(db, 'industries'), (snapshot) => {
-            industries.value = snapshot.docs.map(doc => {
-                const industry = { id: doc.id, ...doc.data() } as Industry;
+      unsubscribe.value = onSnapshot(
+          query(collection(db, 'industries'), where('deleted', '==', false)),
+          (snapshot) => {
+              industries.value = snapshot.docs.map(doc => {
+                  const industry = { id: doc.id, ...doc.data() } as Industry;
 
-                industry.uniqueItems.typeSpecificItems = Object.entries(industry.uniqueItems.typeSpecificItems)
-                    .sort(([, a], [, b]) => a.order - b.order)
-                    .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+                  industry.uniqueItems.typeSpecificItems = Object.entries(industry.uniqueItems.typeSpecificItems)
+                      .sort(([, a], [, b]) => a.order - b.order)
+                      .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
 
-                industry.uniqueItems.facilityForms = Object.entries(industry.uniqueItems.facilityForms)
-                    .sort(([, a], [, b]) => a.order - b.order)
-                    .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+                  industry.uniqueItems.facilityForms = Object.entries(industry.uniqueItems.facilityForms)
+                      .sort(([, a], [, b]) => a.order - b.order)
+                      .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+
+                  return industry;
+              });
+
+              isFirstLoading.value = false;
+          }
+      );
+  };
 
 
-                return industry;
-            });
-
-            isFirstLoading.value = false;
-        });
-    };
 
     const stopListening = () => {
         if (unsubscribe.value) {
@@ -49,9 +54,8 @@ export const useIndsutry = defineStore('industries', () => {
     const addIndustry = async (industry: Omit<Industry, 'id'>) => {
         try {
             const docRef = await addDoc(collection(db, 'industries'), industry);
-
             if(docRef.id) {
-                console.log('Document written with ID: ', docRef.id);
+              return docRef.id
             }
         } catch (e) {
             Alert.warning(e)
@@ -59,16 +63,35 @@ export const useIndsutry = defineStore('industries', () => {
         }
     };
 
-    const updateIndustry = async (industryId: string, updatedIndustry: Industry) => {
+    const updateIndustry = async (industryId: string , updatedIndustry: Industry) => {
         try {
             await setDoc(doc(db, 'industries', industryId), updatedIndustry)
-
-
         } catch(e) {
             Alert.warning(e)
             console.log(e)
         }
     }
+    const addId = async (industryId: string , updatedIndustry) => {
+      try {
+          await setDoc(doc(db, 'industries', industryId), updatedIndustry)
+      } catch(e) {
+          Alert.warning(e)
+          console.log(e)
+      }
+  }
+
+    const deleteIndustry = async (id: string |  undefined) => {
+      const updateData = {}
+      updateData['deleted'] = true;
+      updateData['deleted_by'] = auth.currentUser?.uid;
+      updateData['deleted_at'] = serverTimestamp();
+      const batch = writeBatch(db);
+        batch.update(
+          doc(db, 'industries/' + id),
+          updateData
+        );
+      await batch.commit();
+    };
 
     const getIndustryByName = async (industryName: string) => {
         try {
@@ -99,6 +122,8 @@ export const useIndsutry = defineStore('industries', () => {
         getIndustries,
         addIndustry,
         updateIndustry,
-        getIndustryByName
+        getIndustryByName,
+        deleteIndustry,
+        addId
     }
 })

@@ -1,29 +1,28 @@
 <template>
   <q-card
     bordered
-    class='cursor-move q-mb-md text-caption full-width applicant-card'
-    square
+    class='cursor-move q-mb-sm text-caption full-width applicant-card'
     flat
     :class='{redAlert:redAlert}'
   >
-    <div class='row q-gutter-sm items-center'>
-      <span class='col-1 q-mr-sm'>{{ RankCount.getRank(item.staffRank) }}</span>
+    <div class='row q-gutter-xs items-center'>
+      <span class='col-3' style="word-break: break-all;">{{ RankCount.getRank(item.staffRank) }}</span>
       <span class='col applicant-clickable' @click="emit('selectApplicant', item)">{{ item.name }}</span>
     </div>
-    <div class='row q-gutter-md items-center'>
-      <div class='col'>{{ item.occupation && $t('applicant.add.' + item.occupation) }}</div>
-      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }} <br/> {{ item.municipalities }}</div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">{{ item.occupation && $t('applicant.add.' + item.occupation) }}</div>
+      <div class='col' v-if="item.prefecture">{{ $t('prefectures.'+(prefectureLocaleKey[item.prefecture]?prefectureLocaleKey[item.prefecture]:item.prefecture)) }} {{ item.municipalities }}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1 q-mr-sm' v-if="item.status" v-html="statusDateName[item.status]"></div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;" v-if="item.status" v-html="statusDateName[item.status]"></div>
       <div class='col' v-if="item.status">{{ item[applicantStatusDates[item.status]] ? myDateFormat(item[applicantStatusDates[item.status]], 'YYYY.MM.DD') : '—' }}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1 q-mr-sm'>{{$t('applicant.progress.card.contact')}}</div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">{{$t('applicant.progress.card.contact')}}</div>
       <div class='col'>{{ contactDate ? myDateFormat(contactDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
-    <div class='row q-gutter-sm items-center'>
-      <div class='col-1 q-mr-sm'>FAX</div>
+    <div class='row q-gutter-xs items-center'>
+      <div class='col-3' style="word-break: break-all;">FAX</div>
       <div class='col'>{{ faxDate ? myDateFormat(faxDate, 'YYYY.MM.DD') : '-'}}</div>
     </div>
   </q-card>
@@ -99,7 +98,8 @@ onMounted(async ()=>{
 <style scoped lang="scss">
 .applicant-card{
   border: 1px solid #333; 
-  padding: 8px
+  padding: 8px;
+  border-radius: 9px;
 }
 .applicant-card.redAlert{
   border: 1px solid #FF5252; 

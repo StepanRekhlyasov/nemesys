@@ -62,4 +62,21 @@ export interface RenderHeadDetails {
     headOfficeInfo: {label: string; value: string | number; editType: string; key: string}[]
     clientInfo: {label: string; value: string | number; editType: string; key: string}[]
     contractInfo: {label: string; value: string | number | string[]; editType: string; key: string}[]
+    relatedOfficeInfo: {label: string; value: string | number | string[]; editType: string; key: string}[]
+}
+
+
+export enum InputType {
+  TEXT = 'text',
+  NUMBER = 'number',
+  PREFECTURE = 'prefecture',
+  MUNICIPALITY = 'municipality',
+  CLIENT = 'client',
+  CONTRACT_UNIT = 'contract_unit',
+  INDUSTRY = 'industry',
+  DISPATCH_CONTRACT = 'dispatch_contract',
+  REFERRAL_CONTRACT = 'referral_contract',
+  FACILITY = 'facility',
+  RADIO = 'radio',
+  COMMA_SEPARATED = 'comma_separated',
 }
