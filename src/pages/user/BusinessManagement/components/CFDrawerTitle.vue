@@ -73,14 +73,11 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
         </div>
 
         <div>
-            <div class="text-bold">
-                {{ props.selectedItem.address }}
+            <div>
+                {{ props.selectedItem.prefecture+' '+props.selectedItem.municipality }}
             </div>
             <div>
-                {{ props.selectedItem.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）' }}
-                <span>
-                    {{ props.selectedItem.distance }}
-                </span>
+                {{ props.selectedItem.street+' '+props.selectedItem.building }}
             </div>
         </div>
     </div>
