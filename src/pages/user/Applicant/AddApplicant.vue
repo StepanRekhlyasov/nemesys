@@ -225,7 +225,7 @@
                 {{ $t('applicant.add.applicationMedia') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
+                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" option-label="name" option-value="id" bg-color="white"
                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
@@ -304,11 +304,11 @@
 
 <script lang="ts" setup>
 import { QForm } from 'quasar';
-import { Ref, ref, watch } from 'vue';
+import { Ref, ref, watch, onBeforeMount } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
+import { applicationMethod, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
@@ -323,6 +323,10 @@ import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { toKatakana } from 'src/shared/utils/ToKatakana.utils.ts';
 import { useIndsutry } from 'src/stores/industry';
 import { storeToRefs } from 'pinia';
+import { Media } from 'src/shared/model/Media.model';
+import { useMedia } from 'src/stores/media';
+const { getAllmedia } = useMedia();
+
 const applicantDataSample = {
   qualification: [],
   status: ApplicantStatus.UNSUPPORTED,
@@ -348,6 +352,8 @@ const addressList = ref(<{ prefecture: string, municipality: string, street: str
 const keepDetails = ref(false)
 const fetchMunicipalities = ref(false)
 const { industries } = storeToRefs(industryStore)
+const mediaList = ref<Media[]>([]);
+
 
 watch(() => applicantData.value.postCode, (newVal, oldVal) => {
   if (newVal !== oldVal) {
@@ -379,6 +385,14 @@ async function fetchAddress() {
   showAddress.value = true
   addressList.value = address.address;
 }
+
+const fetchMedia = async () => {
+    mediaList.value = await getAllmedia();
+}
+
+onBeforeMount(() => {
+    fetchMedia();
+})
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));
