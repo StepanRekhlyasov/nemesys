@@ -76,7 +76,7 @@ watchEffect(() => {
             <q-separator color="bg-grey-3 q-mt-md"></q-separator>
         </div>
 
-        <HighlightTwoColumn 
+        <HighlightTwoColumn
             :data="mainInfo.officeInfo"
             :is-edit="isEditForm.officeInfo"
             :label="t('client.add.officeInfo')"
@@ -120,7 +120,7 @@ watchEffect(() => {
 
     <q-separator color="bg-grey-3 q-mt-md"></q-separator>
 
-    <CFDrawerBodyFooter 
+    <CFDrawerBodyFooter
       @open-fax-drawer="openFaxDrawer"
       :clientFactory="clientFactory"
     />
