@@ -80,7 +80,7 @@
     <div class="row">
       <labelField :label="$t('client.backOrder.experienceReq')" :edit="true"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center q-pl-md">
-        <q-input v-model="data['experienceReq']" type="textarea" autogrow outlined dense :disable="loading" />
+        <q-input v-model="data['experienceReq']" type="text" outlined dense :disable="loading" />
       </labelField>
       <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md self-center ">
