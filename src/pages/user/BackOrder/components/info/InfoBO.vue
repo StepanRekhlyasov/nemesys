@@ -4,7 +4,7 @@
     <q-scroll-area class="fit text-left" v-if="selectedBo">
       <q-card class="no-shadow bg-grey-3">
         <q-card-section class="text-white bg-primary no-border-radius">
-          <div class="wrapper row items-end justify-start">
+          <div class="wrapper row items-end justify-between">
             <div class="flex">
               <q-btn dense flat icon="close" @click="drawerRight = !drawerRight" />
             </div>
@@ -21,7 +21,7 @@
                 </div>
               </div>
 
-              <div class="q-mr-md">
+              <div class="q-mr-sm">
                   <div>
                       {{ t('client.list.phone') }} :
                       <span v-if="clientFactory"> {{ clientFactory.tel? clientFactory.tel:'' }}</span>
@@ -33,10 +33,10 @@
               </div>
 
               <div>
-                  <div v-if="clientFactory" class="q-ml-md text-bold">
+                  <div v-if="clientFactory" class="q-ml-sm text-bold">
                     {{ clientFactory.prefecture? clientFactory.prefecture:'' }} {{ clientFactory.municipality? clientFactory.municipality:'' }}
                   </div>
-                  <div v-if="clientFactory" class="q-ml-md text-bold">
+                  <div v-if="clientFactory" class="q-ml-sm text-bold">
                     {{ clientFactory.street? clientFactory.street:'' }} {{ clientFactory.building? clientFactory.building:'' }}
                   </div>
               </div>
