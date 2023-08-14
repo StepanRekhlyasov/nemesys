@@ -3,10 +3,8 @@ import { defineStore } from 'pinia';
 import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
-// import { i18n } from 'boot/i18n';
 import { useUserStore } from './user';
 
-// const { t } = i18n.global
 interface OrganizationState {
   organizations: Organization[],
   activeOrganization: number,
@@ -66,7 +64,7 @@ export const useOrganization = defineStore('organization', () => {
 
   async function getCurrentOrganizationBranches() {
     const organizationRef = doc(db, `/organization/${currentOrganizationId.value}/`);
-    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()),endAt(organizationRef.path + '\uf8ff'));
+    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()),startAt(organizationRef.path),endAt(organizationRef.path + '\uf8ff'));
     const querySnapshot = await getDocs(branchesQuery);
     const branches: { [id: string]: Branch; } = {}
     querySnapshot.forEach((doc) => {
