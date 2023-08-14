@@ -823,8 +823,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
                         }
                     }
                 })
-                console.log(industry)
-            office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], facilityType))
+            office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], industry, facilityType))
         }
         if (dispatchRecordStatus.status) {
             office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch', true))

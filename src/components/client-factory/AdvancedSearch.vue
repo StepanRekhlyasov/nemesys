@@ -510,7 +510,6 @@ const hideCSDrawer = () => {
   emit('hideCSDrawer')
 }
 const searchClients = async () => {
-  console.log(backOrderData)
   isLoadingProgress.value = true;
   let office: string[] = [];
   let cIds = {}
