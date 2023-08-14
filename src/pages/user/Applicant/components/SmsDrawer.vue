@@ -148,7 +148,7 @@
             <div v-for="q in props.row.qualification" :key="q">
               {{ t(`applicant.qualification.${q}`) }}
             </div>
-            {{ props.row.totalYear }}
+            {{ props.row.totalMonthes ? Math.floor(props.row.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
           </q-td>
         </template>
 
