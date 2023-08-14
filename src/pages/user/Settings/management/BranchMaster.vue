@@ -30,11 +30,6 @@
         <q-card-section class="q-pa-none">
           <q-table :columns="columns" :rows="branches" row-key="id" :loading="loading" v-model:pagination="pagination"
             hide-pagination class="no-shadow">
-            <template v-slot:body-cell-delete="props">
-              <q-td :props="props" auto-width>
-                <q-btn icon="delete" flat @click=" deleteBranch(props.row)" />
-              </q-td>
-            </template>
             <template v-slot:body-cell-edit="props">
               <q-td :props="props" auto-width>
                 <q-btn icon="edit" flat @click="editBranch = props.row; openDialog = true; dialogType = 'Branch'" />
@@ -116,12 +111,9 @@
 </template>
 
 <script setup lang="ts">
-import { serverTimestamp } from '@firebase/firestore';
 import { Ref, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { Branch, BranchesSearch, branchEnablityFilter } from 'src/shared/model/Branch.model';
 import BranchCreateForm from 'src/components/organization/BranchCreate.form.vue';
-import { useQuasar } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useOrganization } from 'src/stores/organization';
 import { flagOptions } from 'src/components/handlers/flagOptions';
@@ -133,9 +125,6 @@ import DefaultButton from 'src/components/buttons/DefaultButton.vue';
 import RequestList from './components/RequestList.vue';
 import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue';
-
-const { t } = useI18n({ useScope: 'global' });
-const $q = useQuasar();
 
 const search: Ref<BranchesSearch> = ref({
   queryText: '',
@@ -179,29 +168,6 @@ async function loadBranchesList() {
     loading.value = false;
     Alert.warning(e);
   }
-}
-async function deleteBranch(branch) {
-  $q.dialog({
-    title: t('common.delete'),
-    message: t('settings.branch.deletedInfo'),
-    ok: {
-      label: t('common.delete'),
-      color: 'negative',
-      class: 'no-shadow',
-      unelevated: true
-    },
-  }).onOk(async () => {
-    try {
-      loading.value = true;
-      await branchStore.editBranch({ deleted: true, deletedAt: serverTimestamp(), updated_at: serverTimestamp() }, organization.currentOrganizationId, branch.businessId, branch.id)
-      loadBranchesList();
-
-    } catch (e) {
-      console.log(e)
-      Alert.warning(e)
-      loading.value = false;
-    }
-  })
 }
 
 </script>
