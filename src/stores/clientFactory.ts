@@ -307,6 +307,12 @@ export const useClientFactory = defineStore('client-factory', () => {
                 createdAt = new Timestamp(createdAt.seconds as number, createdAt.nanoseconds as number).toDate()
             }
           }
+
+          for(const [key, value] of Object.entries(modifiedClientFactory)){
+            if(!key || typeof value === undefined){
+              delete modifiedClientFactory[key]
+            }
+          }
             
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
