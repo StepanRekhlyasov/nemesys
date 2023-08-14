@@ -5,6 +5,7 @@ import draggable from 'vuedraggable'
 
 import { FacilityForm, Industry } from 'src/shared/model/Industry.model';
 import { QInput } from 'quasar';
+import { uniqueItemsMask } from '../consts/uniqueItems';
 const { t } = useI18n({ useScope: 'global' });
 
 const props =  defineProps<{
@@ -94,7 +95,7 @@ watch(()=>props.activeIndustry, ()=>{
                             <q-input style="width:300px" class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
 
                             <q-popup-edit
-                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val) && titleExists(val, element[1].title))"
+                                :validate="(val) => (val !== null && val !== '' && uniqueItemsMask(val) && titleExists(val, element[1].title))"
                                 v-model="element[1].title"
                                 :cover="false"
                                 :offset="[0, 10]"
@@ -135,7 +136,7 @@ watch(()=>props.activeIndustry, ()=>{
                 ref="inputVal"
                 :rules="[
                      (val) => (val && val.length > 0) || '',
-                     (val) => (/^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val)) || $t('errors.industryRules'),
+                     (val) => (uniqueItemsMask(val)) || $t('errors.industryRules'),
                      (val) => titleExists(val) || $t('errors.titleExist')
                 ]"
                 color="accent" hide-bottom-space/>

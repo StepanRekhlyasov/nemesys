@@ -4,6 +4,7 @@ import { QInput } from 'quasar';
 import { defineEmits, defineProps, ref} from 'vue';
 import { useQuasar } from 'quasar';
 import { Industry } from 'src/shared/model/Industry.model';
+import { uniqueItemsMask } from '../consts/uniqueItems';
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -108,7 +109,7 @@ const saveNewIndustry = async () => {
                hide-bottom-space
                :rules="[
                    (val) => (val && val.length > 0) || '',
-                   (val) => (/^[a-zA-Z_$ぁ-んァ-ン一-龯ー]*$/.test(val)) || $t('errors.industryRules'),
+                   (val) => (uniqueItemsMask(val)) || $t('errors.industryRules'),
                    (val) => titleExists(val) || $t('errors.titleExist')
                ]"
                 />
