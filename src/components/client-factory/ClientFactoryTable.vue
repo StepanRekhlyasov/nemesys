@@ -105,7 +105,7 @@ watch(()=>[props.rows, props.pagination], () => {
   const start = (props.pagination.page - 1) * props.pagination.rowsPerPage;
   const end = start + props.pagination.rowsPerPage;
   paginatedAndSortedRows.value = sortedRows.slice(start, end);
-}, {immediate: true});
+}, {immediate: true, deep:true});
 </script>
 
 <template>
