@@ -107,7 +107,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                             <q-time v-model="row.value.from" mask="HH:mm" format24h>
                               <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                                <q-btn v-close-popup :label="$t('common.close')" :color="theme" flat />
                               </div>
                             </q-time>
                           </q-popup-proxy>
@@ -122,7 +122,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                             <q-time v-model="row.value.to" mask="HH:mm" format24h>
                               <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                                <q-btn v-close-popup :label="$t('common.close')" :color="theme" flat />
                               </div>
                             </q-time>
                           </q-popup-proxy>
@@ -179,7 +179,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                             <q-time v-model="row.value.from" mask="HH:mm" format24h>
                               <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                                <q-btn v-close-popup :label="$t('common.close')" :color="theme" flat />
                               </div>
                             </q-time>
                           </q-popup-proxy>
@@ -194,7 +194,7 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                           <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                             <q-time v-model="row.value.to" mask="HH:mm" format24h>
                               <div class="row items-center justify-end">
-                                <q-btn v-close-popup :label="$t('common.close')" color="accent" flat />
+                                <q-btn v-close-popup :label="$t('common.close')" :color="theme" flat />
                               </div>
                             </q-time>
                           </q-popup-proxy>
