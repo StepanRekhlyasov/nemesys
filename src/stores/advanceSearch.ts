@@ -462,7 +462,7 @@ export const getBackOrderData = () => {
     return{
         client_name: '',
         industry: [],
-        facilityType: [],
+        facilityType: {},
         basic_contract_signed: false,
         avail_job_postings: false,
         status: [],
@@ -598,23 +598,24 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         return arr1.filter(element => arr2.includes(element));
     }
     const getKeywordData = async (officeData: string[], keyword: string, industry: string[], facilityType: string[]) => {
-        if (industry.length === 0) {
-            industry = [];
-        } else if (industry.length === 2) {
-            industry = ['nurse', '看護', 'nursing', '介護', '看護師'];
-        } else {
-            if (industry[0] === 'nurse') {
-                industry = ['nurse', '看護', '看護師'];
-            } else {
-                industry = ['nursing', '介護'];
-            }
-        }
+        // if (industry.length === 0) {
+        //     industry = [];
+        // } else if (industry.length === 2) {
+        //     industry = ['nurse', '看護', 'nursing', '介護', '看護師'];
+        // } else {
+        //     if (industry[0] === 'nurse') {
+        //         industry = ['nurse', '看護', '看護師'];
+        //     } else {
+        //         industry = ['nursing', '介護'];
+        //     }
+        // }
         const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
         const office: string[] = [];
         cfSnapshot.docs.forEach((doc) => {
             if (officeData.includes(doc.id)) {
                 const name: string = doc.data()['name'] || '';
-                if (name.substring(0, keyword.length) === keyword) {
+                const regex = new RegExp(keyword.split('').join('.*'), 'i');
+                if (regex.test(name)) {
                     const type: string[] = doc.data()['industry'] || [];
                     if (industry.length == 0) {
                         const id: string = doc.id
@@ -809,9 +810,21 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
         const otherCompanyReferralResultsStatus = getDate(backOrderData, 'otherCompanyReferralResults')
         const employmentStatus = getEmploymentStatus(backOrderData);
         if (backOrderData['client_name'] !== ''
-            || backOrderData['industry'].length > 0
-            || backOrderData['facilityType'].length > 0) {
-            office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], backOrderData['facilityType']))
+            || backOrderData['industry'].length > 0) {
+                const facilityType:string[]=[];
+                for(const key of Object.keys(backOrderData['facilityType'])){
+                    facilityType.push(...backOrderData['facilityType'][key])
+                }
+                const industry:string[]=[];
+                backOrderData['industry'].forEach((id)=>{
+                    for(const ind of industries.value){
+                        if(ind.id == id){
+                            industry.push(ind.industryName)
+                        }
+                    }
+                })
+                console.log(industry)
+            office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], facilityType))
         }
         if (dispatchRecordStatus.status) {
             office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch', true))

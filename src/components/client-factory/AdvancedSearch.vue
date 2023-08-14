@@ -59,18 +59,20 @@
                 {{ $t('client.add.clientType') }}
               </q-item-label>
               <div style="flex">
-                <span v-for="industry in industries" :key="industry.id">
-                <q-checkbox v-model="backOrderData['industry']" dense :label="industry.industryName"
-                  :val="industry.industryName" />
-                <!-- <q-item v-if="backOrderData['industry'].includes(industry.industryName)">
+                <span v-for="industry,id in industries" :key="id" style="margin:5px">
+                <q-checkbox v-model="backOrderData['industry']" dense
+                  :val="industry.id" @click="(()=>{backOrderData['facilityType'][industry.id]=[]})">
+                  <span class="q-pl-0">{{ industry.industryName }}</span>
+                </q-checkbox>
+                <q-item v-if="backOrderData['industry'].includes(industry.id)" class="custom-border">
                   <div class="q-gutter-sm">
                     <q-item-label class="q-pb-xs">{{
                       $t('client.add.facilityType')
                     }}</q-item-label>
-                    <q-checkbox size="xs" v-model="backOrderData['facilityType'][industry.industryName]" :val="option.title" :label="option.title"
+                    <q-checkbox size="xs" v-model="backOrderData['facilityType'][industry.id]" :val="option.title" :label="option.title"
                       v-for="option in industry.uniqueItems.facilityForms" :key="option.order" :disable="backOrderData['industry'].length == 0" />
                   </div>
-                </q-item> -->
+                </q-item>
                 </span>
               </div>
             </q-item-section>
@@ -509,7 +511,6 @@ const hideCSDrawer = () => {
 }
 const searchClients = async () => {
   console.log(backOrderData)
-  return
   isLoadingProgress.value = true;
   let office: string[] = [];
   let cIds = {}
@@ -529,5 +530,15 @@ const searchClients = async () => {
 };
 
 </script>
+
+<style>
+.custom-border {
+  margin: 10px;
+  border: 2px solid #ccc; /* Adjust the border style as needed */
+  border-radius: 5px; /* Optional: add rounded corners */
+  padding: 10px; /* Optional: add padding around the item */
+  margin-bottom: 10px; /* Optional: adjust margin between items */
+}
+</style>
   
   
