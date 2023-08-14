@@ -1232,6 +1232,7 @@ export default {
   backOrder: {
     changeSearchCriteria: 'Change search criteria',
     addBO: 'BO new added',
+    deleteBO:'Delete BO',
     status: 'Status',
     personnel: 'BO Personnel',
     registrationDate: 'BO Registration Date',

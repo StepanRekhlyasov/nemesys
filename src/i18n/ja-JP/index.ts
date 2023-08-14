@@ -1229,6 +1229,7 @@ export default {
   backOrder: {
     changeSearchCriteria: '検索条件変更',
     addBO: 'BO新規追加',
+    deleteBO: 'BOの削除',
     status: 'ステータス',
     personnel: 'BO担当者',
     registrationDate: 'BO登録日',

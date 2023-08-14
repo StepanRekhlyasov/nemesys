@@ -10,7 +10,10 @@
           検索条件 / エリア：東京都全域,　詳細条件：…
           <q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus" @click="addNewBo" />
         </div>
-        <searchForm @load-search-staff="loadSearchStaff" />
+        <div class="row">
+        <searchForm class="q-mr-md" @load-search-staff="loadSearchStaff" /> 
+        <q-btn :label="$t('backOrder.deleteBO')" color="red" icon="delete" @click="deleteSelected"></q-btn>
+      </div>
       </q-card-section>
       <q-separator color="white" size="2px" />
       <q-card-section class="q-pa-none">
@@ -163,7 +166,7 @@ import createBO from './components/create/createBO.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from 'src/stores/applicant';
-import { radius } from './consts/BackOrder.const';
+import { radius, deleteBO } from './consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
@@ -171,6 +174,7 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 import { useUserStore } from 'src/stores/user'
 import { myDateFormat } from 'src/shared/utils/utils';
+
 
 const userStore = useUserStore();
 const backOrderStore = useBackOrder();
@@ -324,6 +328,13 @@ const closeMap = () => {
   showSearchByMap.value = false;
   radius.value = 0;
 };
+
+async function deleteSelected() {
+  if(selected.value) {
+    selected.value.map(async (val) => await deleteBO(val.id));
+  }
+  await backOrderStore.loadBackOrder({}, pagination.value);
+}
 
 function addNewBo() {
   $q.dialog({
