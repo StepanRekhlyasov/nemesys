@@ -15,7 +15,7 @@
 
     <div class="row q-mt-sm">
       <labelField :label="$t('backOrder.create.referralFeeAmount')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 flex">
-        <q-input v-model="data['stipulatedAmount']" outlined dense type="number" :disable="loading"/>
+        <q-input v-model="data['stipulatedAmount']" outlined dense type="text" :disable="loading" @update:model-value="((value)=>{ data['stipulatedAmount'] = commaSeparatedNumber(value) })" />
         <span class="col-2 q-ma-sm flex-center">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -32,6 +32,7 @@
 import labelField from 'src/components/form/LabelField.vue';
 import { creationRule } from 'src/components/handlers/rules';
 import { BackOrderModel } from 'src/shared/model';
+import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { ref, watch} from 'vue';
 
 const props = defineProps<{
