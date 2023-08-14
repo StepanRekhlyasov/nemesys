@@ -77,7 +77,6 @@ watchCurrentOrganization(async () => {
 })
 
 async function getData() {
-    console.log(selectedCFsId.value)
     fetchData.value = true
     const [CFByOrganization, CFByAdmin] = await Promise.all([clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', organization.currentOrganizationId)]), clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', null)])])
     const cf = [...CFByOrganization, ...CFByAdmin]
