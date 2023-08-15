@@ -164,7 +164,7 @@
         </LabelField>
         <LabelField :label="`${$t('office.workingHours')}  ${$t('office.dayShift')}`" :edit="edit"
           labelClass="q-pl-md col-2 text-right self-center" valueClass="q-pl-md col-4 flex self-center flex no-wrap items-center"
-          :value="`${selectedBo['workingHoursDay_min'] || ''} ~ ${selectedBo['workingHoursDay_max'] || ''}`">=
+          :value="`${selectedBo['workingHoursDay_min'] || ''} ~ ${selectedBo['workingHoursDay_max'] || ''}`">
         </LabelField>
       </div>
     </template>

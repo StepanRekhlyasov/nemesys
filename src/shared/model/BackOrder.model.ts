@@ -2,7 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 
 export interface BackOrderModel {
   id: string;
-  type: 'dispatch' | 'referral' | 'TTP';
+  type: 'dispatch' | 'referral';
   BOGenerationRoute: 'coldCall' | 'fax';
   client_id: string;
   office_id: string;

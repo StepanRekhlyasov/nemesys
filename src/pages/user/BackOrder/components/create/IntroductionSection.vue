@@ -6,8 +6,7 @@
     <div class="row ">
       <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input dense outlined bg-color="white" v-model="data['dateOfRegistration']"
-          :rules="[(val) => val ? validateDate(val) : true, creationRule]" hide-bottom-space >
+        <q-input dense outlined bg-color="white" v-model="formattedDate" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -123,11 +122,11 @@
 <script lang="ts" setup>
 import labelField from 'src/components/form/LabelField.vue';
 import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
-import { validateDate } from 'src/shared/constants/Form.const';
 import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
 import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { useUserStore } from 'src/stores/user';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
@@ -143,8 +142,9 @@ user.getCurrentUser();
 watch([props], () => {
   data.value = props.backOrder
 }, { deep: true })
+
+const formattedDate = computed(()=> {
+      return myDateFormat(data.value['dateOfRegistration'])
+})
+
 </script>
-
-<style>
-
-</style>
