@@ -1237,6 +1237,10 @@ export default {
   backOrder: {
     changeSearchCriteria: 'Change search criteria',
     addBO: 'BO new added',
+    deleteBO:'Delete BO',
+    confirmDelete: 'Confirm Deletion ?',
+    confirm: 'Confirm',
+    cancel:'Cancel',
     status: 'Status',
     personnel: 'BO Personnel',
     registrationDate: 'BO Registration Date',
