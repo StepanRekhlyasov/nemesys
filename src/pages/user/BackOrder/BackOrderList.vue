@@ -333,9 +333,9 @@ const closeMap = () => {
 
 async function deleteSelected() {
   $q.dialog({
-    title: 'Confirm delete ?',
-    cancel: 'Cancel deletion',
-    ok: 'Confirm',
+    title: t('backOrder.confirmDelete'),
+    cancel: t('backOrder.cancel'),
+    ok: t('backOrder.confirm'),
   })
 
   .onOk(async () => {
