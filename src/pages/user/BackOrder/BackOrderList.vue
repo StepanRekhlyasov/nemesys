@@ -158,7 +158,7 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
-import { useBackOrder } from 'src/stores/backOrder';
+import { useBackOrder, deleteBO } from 'src/stores/backOrder';
 import { Ref, ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
@@ -167,7 +167,7 @@ import createBO from './components/create/createBO.vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useApplicant } from 'src/stores/applicant';
-import { radius, deleteBO } from './consts/BackOrder.const';
+import { radius } from './consts/BackOrder.const';
 import { QTableProps } from 'quasar';
 import searchForm from './components/search/searchForm.vue';
 import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';

@@ -1,6 +1,5 @@
 import { computed, ref } from 'vue';
 import { i18n } from 'boot/i18n';
-import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
 
 export const radius = ref<number>(0);
 
@@ -190,10 +189,3 @@ export const qualificationOption = computed(() => {
     },
   ];
 });
-
-export const deleteBO = async (id: string) => {
-  const db = getFirestore();
-  const docRef = doc(db, 'BO', id);
-  const res = await deleteDoc(docRef);
-  return res;
-}
