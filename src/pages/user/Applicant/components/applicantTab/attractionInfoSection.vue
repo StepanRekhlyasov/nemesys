@@ -53,6 +53,12 @@
           </template>
         </q-input>
       </div>
+      <div v-if="!edit && applicant.industry && applicant.industry.industryName" class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+        {{ $t('applicant.list.industryName') }}
+      </div>
+      <div v-if="!edit && applicant.industry && applicant.industry.industryName" class="col-3 q-pl-md blue">
+        <hidden-text :value="applicant.industry.industryName" />
+      </div>
     </div>
 
     <div class="row q-pb-sm">
