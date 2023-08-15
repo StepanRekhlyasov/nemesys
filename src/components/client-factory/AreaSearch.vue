@@ -178,7 +178,7 @@ const searchClientsByCondition = async () => {
         office.push(id)
     })
     if (advanceSearch.areaCSelected) {
-        await advanceSearch.searchClients(office,[], 'area');
+        await advanceSearch.searchClients(office, 'area');
     }
     else if(props.actionsType === ActionsType.ADMIN){
         clientFactoryStore.adminCondition = true

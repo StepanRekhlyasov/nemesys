@@ -176,6 +176,7 @@ const hideClientFactoryDrawer = () => {
         <ClientFactoryDrawer 
             v-if="activeClientFactoryItem" 
             v-model:selectedItem="activeClientFactoryItem"
+            :originalOfficeId="activeClientFactoryItem.id"
             :isDrawer="isClientFactoryDrawer" 
             @open-fax-drawer="openFaxDrawer" 
             @hide-drawer="hideClientFactoryDrawer" />

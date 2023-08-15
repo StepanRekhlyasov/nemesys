@@ -75,19 +75,6 @@ const changeRoute = ()=>{
             </div>
             <div v-else>
                 <div class="row q-mt-xs">
-                    <!-- <div class="q-gutter-md" style="max-width: 150px">
-                        <q-select outlined dense class="bg-white" model-value="Test">
-                            <template v-slot:prepend>
-                                <q-icon name="filter_alt" color="primary" />
-                            </template>
-                        </q-select>
-                    </div>
-
-                    <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
-                        <q-select outlined dense class="bg-white" model-value="Test">
-
-                        </q-select>
-                    </div> -->
                     <div class="q-gutter-md">
                         <q-btn outline color="primary" :label="t('actions.changeSearchCriteria')" @click="changeRoute"></q-btn>
                     </div>

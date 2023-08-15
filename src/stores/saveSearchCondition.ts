@@ -7,7 +7,6 @@ import {
   collection,
   getFirestore,
   serverTimestamp,
-  Timestamp,
   query,
   where,
   onSnapshot,
@@ -25,10 +24,6 @@ export const useSaveSearchCondition = defineStore('saveSearchCondition', () => {
   const organizationStore = useOrganization();
   const currentOrganization = ref(organizationStore.currentOrganizationId)
   const saveSearchCondition = async (data) => {
-    // const user = await useStore.getUserById(auth.currentUser?.uid as string);
-    // if (user) {
-    //   data['branch_id'] = user.branch_id;
-    // }
     data['organizationIds'] = organizationStore.currentOrganizationId
     data['created_at'] = serverTimestamp();
     data['deleted'] = false;
@@ -40,10 +35,6 @@ export const useSaveSearchCondition = defineStore('saveSearchCondition', () => {
     ;
   };
   async function getSaveSearchConditions() {
-    
-    // if(searchData.selectedOrganization) {
-    //   filters.push(where('organizationIds', '==', searchData.selectedOrganization))
-    // }
     const q = query(collection(db, 'saveSearchCondition'),where('organizationIds','==',currentOrganization.value),where('page','==','user'));
 
     if (unsubscribe.value) {

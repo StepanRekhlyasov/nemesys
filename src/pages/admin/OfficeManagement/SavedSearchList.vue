@@ -74,9 +74,9 @@ const hideDrawer = () => {
     isDrawer.value = false;
 }
 const searchCF = async(row) => {
-    const [office,cfsId] = await advanceSearch.getCFsId()
+    const office = await advanceSearch.getCFsId()
     advanceSearch.saveConditionData = row
-    await advanceSearch.searchClients(office,cfsId,'saveCondition')
+    await advanceSearch.searchClients(office,'saveCondition')
 }
 </script>
 

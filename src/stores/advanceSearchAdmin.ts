@@ -307,20 +307,13 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
     };
     const getCFsId = async () => {
         const office: string[] = []
-        const cfIds = {}
         const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
         cfSnapshot.docs.forEach((doc) => {
             office.push(doc.id)
-            if (cfIds[doc.id]) {
-                cfIds[doc.id].push(doc.data()['id'])
-            }
-            else {
-                cfIds[doc.id] = [doc.data()['id']]
-            }
         })
-        return [office, cfIds]
+        return office;
     }
-    const searchClients = async (office, cfIds, from) => {
+    const searchClients = async (office, from) => {
         let backOrderData = getBackOrderData();
         if (from === 'advance') {
             backOrderData = advanceConditionData.value
@@ -376,9 +369,7 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
             }
         }
         if (backOrderData['route'].length !== 0) {
-
             office = interSectionOfArray(office, await getTeleAppointmentData(backOrderData['route']));
-
         }
         clientFactoryStore.adminCondition = true
         clientFactoryStore.adminSelectedCFsId = office

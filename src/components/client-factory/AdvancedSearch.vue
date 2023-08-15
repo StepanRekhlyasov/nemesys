@@ -362,7 +362,6 @@
 import { defineProps, withDefaults, defineEmits, computed, watch, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ActionsType } from './types'
-import { facilityList } from 'src/shared/constants/Organization.const';
 import { useAdvanceSearch, getBackOrderData } from 'src/stores/advanceSearch';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 import { useSaveSearchCondition } from 'src/stores/saveSearchCondition'
@@ -430,7 +429,6 @@ onMounted(async () => {
   await saveSearchCondition.getSaveSearchConditions();
 })
 const confirmSaveDialog = ref(false);
-const facilityOp = facilityList;
 const recordOp = computed(() => {
   return [
     { name: t('client.list.numBOs'), value: 'numBOs', label: t('client.list.numBOsAcquired') },
@@ -512,18 +510,13 @@ const hideCSDrawer = () => {
 const searchClients = async () => {
   isLoadingProgress.value = true;
   let office: string[] = [];
-  let cIds = {}
   if (advanceSearch.advanceMapSelected || advanceSearch.advanceAreaSelected) {
     office = advanceSearch.getCombineId() || [];
   }
   else {
-    const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
-    cfSnapshot.docs.forEach((doc) => {
-      office.push(doc.id)
-      cIds[doc.id] = doc.data()['clientID']
-    })
+    office = await advanceSearch.getCFsId();
   }
-  await advanceSearch.searchClients(office, cIds, 'advance');
+  await advanceSearch.searchClients(office,'advance');
   isLoadingProgress.value = false
 };
 

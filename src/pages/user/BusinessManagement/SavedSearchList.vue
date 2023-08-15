@@ -9,7 +9,6 @@ import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { useI18n } from 'vue-i18n';
 import { tableColumnsSavedCriteriaList } from './consts';
 import { useSaveSearchCondition } from 'src/stores/saveSearchCondition';
-import { checkActionCode } from 'firebase/auth';
 const saveSearchCondition = useSaveSearchCondition();
 const advanceSearch = useAdvanceSearch();
 const { t } = useI18n({ useScope: 'global' });
@@ -79,9 +78,9 @@ const hideDrawer = () => {
     isDrawer.value = false;
 }
 const searchCF = async(row) => {
-    const [office,cfsId] = await advanceSearch.getCFsId()
+    const office = await advanceSearch.getCFsId()
     advanceSearch.saveConditionData = row
-    await advanceSearch.searchClients(office,cfsId,'saveCondition')
+    await advanceSearch.searchClients(office,'saveCondition')
 }
 </script>
 

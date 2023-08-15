@@ -7,7 +7,6 @@ import {
   collection,
   getFirestore,
   serverTimestamp,
-  Timestamp,
   query,
   where,
   onSnapshot,
@@ -15,20 +14,13 @@ import {
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { ref } from 'vue';
-import { useOrganization } from 'src/stores/organization';
 export const useSaveSearchConditionAdmin = defineStore('saveSearchConditionAdmin', () => {
   const db = getFirestore();
   const auth = getAuth();
   const unsubscribe = ref();
   const searchConditions = ref(<DocumentData[]>[]);
-  const organizationStore = useOrganization();
   
   const saveSearchCondition = async (data) => {
-    // const user = await useStore.getUserById(auth.currentUser?.uid as string);
-    // if (user) {
-    //   data['branch_id'] = user.branch_id;
-    // }
-    data['organizationIds'] = organizationStore.currentOrganizationId
     data['created_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
