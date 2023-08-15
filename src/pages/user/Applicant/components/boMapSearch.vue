@@ -219,11 +219,11 @@ function showDialog(bo: BackOrderModel) {
           <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')" />
         </div>
       </div>
-      <!-- <q-tab-panels v-model="tab" animated>
-          <q-tab-panel name="boSearchList"> -->
+      <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="boSearchList">
             <boSearchList :applicant="applicant" :boList="boList" :hideMapButton="true" />
-          <!-- </q-tab-panel>
-        </q-tab-panels> -->
+          </q-tab-panel>
+        </q-tab-panels>
     </q-card-section>
   </q-card>
 
