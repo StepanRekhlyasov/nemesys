@@ -185,16 +185,16 @@ const hideClientFactoryDrawer = () => {
             @hide-drawer="hideClientFactoryDrawer" />
         <FaxDrawer 
             @hide-drawer="hideFaxDrawer" 
-            theme="primary" 
+            theme="accent" 
             :selectedCF="selectedCF" 
             :is-drawer="isFaxDrawer" />
         <NewClientDrawer
             @hide-drawer="hideNewClientDrawer"
-            theme="primary"
+            theme="accent"
             :is-drawer="isDrawer.isNewClientDrawer" />
         <NewClientFactoryDrawer
             @hide-drawer="hideNewClientFactoryDrawer"
-            theme="primary"
+            theme="accent"
             :is-drawer="isDrawer.isNewClientFactoryDrawer"/>
     </div>
 </template>
