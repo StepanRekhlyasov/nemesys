@@ -122,6 +122,26 @@
                   @on-end-loading="disableSubmit = false" />
               </div>
             </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('clientFactory.drawer.details.industry') }}
+              </div>
+              <div class="col-6 q-ml-sm bg-white">
+                <q-select
+                  :disable="!industries.length"
+                  v-model="applicantData['industry']"
+                  emit-value
+                  map-options
+                  outlined
+                  dense
+                  :options="industries"
+                  option-label="industryName"
+                  option-value="."
+                  > <template v-if="!applicantData['industry']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template></q-select>
+              </div>
+            </div>
           </div>
           <div class="col-6">
             <div class="row q-pt-sm">
@@ -205,7 +225,7 @@
                 {{ $t('applicant.add.applicationMedia') }}
               </div>
               <div class="col-9 q-pl-sm">
-                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" bg-color="white"
+                <q-select outlined dense v-model="applicantData['media']" :options="mediaList" option-label="name" option-value="id" bg-color="white"
                   hide-bottom-space :label="$t('common.pleaseSelect')" emit-value map-options />
               </div>
             </div>
@@ -284,11 +304,11 @@
 
 <script lang="ts" setup>
 import { QForm } from 'quasar';
-import { Ref, ref, watch } from 'vue';
+import { Ref, ref, watch, onBeforeMount } from 'vue';
 import { serverTimestamp, Timestamp, } from 'firebase/firestore';
 import { limitDate, toMonthYear } from 'src/shared/utils/utils'
 import { prefectureList } from 'src/shared/constants/Prefecture.const';
-import { applicationMethod, mediaList, statusList } from 'src/shared/constants/Applicant.const';
+import { applicationMethod, statusList } from 'src/shared/constants/Applicant.const';
 import { ApplicantStatus } from 'src/shared/model';
 import SelectBranch from '../Settings/management/components/SelectBranch.vue';
 import { useOrganization } from 'src/stores/organization';
@@ -301,6 +321,11 @@ import { getAddresses } from 'src/shared/constants/Municipalities.const';
 import AddressDialog from './components/AddressDialog.vue';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { toKatakana } from 'src/shared/utils/ToKatakana.utils.ts';
+import { useIndsutry } from 'src/stores/industry';
+import { storeToRefs } from 'pinia';
+import { Media } from 'src/shared/model/Media.model';
+import { useMedia } from 'src/stores/media';
+const { getAllmedia } = useMedia();
 
 const applicantDataSample = {
   qualification: [],
@@ -310,7 +335,7 @@ const applicantDataSample = {
 };
 const organizationStore = useOrganization();
 const applicantStore = useApplicant();
-
+const industryStore = useIndsutry()
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList.value);
 const applicationMethodOption = ref(applicationMethod)
@@ -326,6 +351,9 @@ const showAddress = ref(false)
 const addressList = ref(<{ prefecture: string, municipality: string, street: string }[]>[]);
 const keepDetails = ref(false)
 const fetchMunicipalities = ref(false)
+const { industries } = storeToRefs(industryStore)
+const mediaList = ref<Media[]>([]);
+
 
 watch(() => applicantData.value.postCode, (newVal, oldVal) => {
   if (newVal !== oldVal) {
@@ -357,6 +385,14 @@ async function fetchAddress() {
   showAddress.value = true
   addressList.value = address.address;
 }
+
+const fetchMedia = async () => {
+    mediaList.value = await getAllmedia();
+}
+
+onBeforeMount(() => {
+    fetchMedia();
+})
 
 function resetData() {
   applicantData.value = JSON.parse(JSON.stringify(applicantDataSample));

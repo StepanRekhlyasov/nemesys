@@ -25,7 +25,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
         <div class="row">
             <div class="q-mr-md column">
                 <div>
-                    {{ props.selectedItem.client?.representativeName }}
+                    {{ props.selectedItem.client?.name }}
                     <q-btn-dropdown
                         v-if="selectedItem.isHead && selectedItem.industry?.length && selectedIndustry"
                         rounded

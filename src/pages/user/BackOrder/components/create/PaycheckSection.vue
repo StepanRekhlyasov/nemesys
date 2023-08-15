@@ -3,17 +3,17 @@
     <div class="row text-primary text-h6" >
       {{ '■ '+ $t('backOrder.create.paycheck') }}
     </div>
-    <div class="row">      
+    <div class="row">
       <labelField :label="$t('backOrder.create.hourlyMonthly')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
         <q-field v-model="data['wage']" borderless hide-bottom-space :rules="[creationRule]">
-          <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')" 
+          <q-radio :disable="loading" :label="$t('backOrder.create.monthlySalary')"
           val="monthlySalary" v-model="data['wage']" />
-          <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')" 
+          <q-radio :disable="loading" :label="$t('backOrder.create.hourlyWage')"
           val="hourlyWage" v-model="data['wage']" />
         </q-field>
       </labelField>
-    </div>  
+    </div>
 
     <div class="row ">
       <labelField :label="$t('backOrder.create.salary')" :edit="true" required
@@ -29,31 +29,31 @@
         <q-input v-model="data['benefit']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
-    
+
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.bonus')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
         <q-input v-model="data['bonus']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
-    
+
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.travelingExpenses')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
         <q-input v-model="data['travelingExpenses']" outlined dense type="textarea" autogrow :disable="loading"/>
       </labelField>
     </div>
-    
+
     <div class="row q-pt-sm">
       <labelField :label="$t('backOrder.create.payday')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md flex">
         <q-input v-model="data['payday']" outlined dense type="textarea" autogrow :disable="loading"/>
       </labelField>
     </div>
-    
+
     <div class="row q-pt-sm">
-      <labelField :label="$t('backOrder.create.remarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
+      <labelField :label="$t('client.backOrder.remarks')" :edit="true" labelClass="q-pl-md col-2 self-center text-right "  valueClass="col-10 q-pl-md ">
         <q-input v-model="data['remarks']" outlined dense :disable="loading" type="textarea" autogrow/>
       </labelField>
     </div>
-    
+
   </q-card-section>
 </template>
 

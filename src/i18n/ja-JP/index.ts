@@ -611,6 +611,8 @@ export default {
       conclusionReferralContract: '紹介契約締結',
       contactInfo: '担当者情報',
       officeReg: '事業所情報登録',
+      Occupation:'職種',
+      Certification:'資格',
     },
     tele: {
       teleAppointHistory: 'テレアポ履歴',
@@ -792,6 +794,7 @@ export default {
       note5: '・1通あたり8円の費用が発生します。'
     },
     add: {
+      applicantInfo:'応募情報',
       name: '氏名',
       kanaName: 'フリガナ',
       postCode: '郵便番号',
@@ -1094,6 +1097,8 @@ export default {
       transportationServices: '送迎業務可否',
       jobSearchPriorities: '仕事探しの優先順位',
       possible: '可',
+      allowed: '可',
+      forbidden: '不可',
       no: '不可',
       workExperience: '職務経験',
       personal: '本人状況',
@@ -1743,7 +1748,7 @@ export default {
       companyID: '企業ID',
       companyName: '企業名',
       recievedDate: '送受信日',
-      recieve: '受信',
+      recieve: '送受信日時',
       recieved: '受信',
       sent: '送信',
       responseDate: '返信日',
@@ -2167,6 +2172,8 @@ export default {
     modeBranch: '支店別集客データ集計',
     dailyTotal: '日次集計',
     item: '項目',
+    occupation: '職種',
+    certificate:'資格',
     actualFigures: '実績数値',
     unitPrice: '単価/LT',
     applicationAttribute: '応募属性',

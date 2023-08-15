@@ -1,6 +1,6 @@
 import { User } from 'firebase/auth';
 import { FieldValue, Timestamp } from 'firebase/firestore';
-
+import { Industry } from './Industry.model';
 export interface ApplicantExperience extends ApplicantExperienceBase, ApplicantExperienceDates { }
 export interface ApplicantExperienceInputs extends ApplicantExperienceBase, ApplicantExperienceInputDates { }
 export interface ApplicantExperienceBase {
@@ -61,6 +61,7 @@ export interface ApplicantBase {
   prefecture?: string;
   municipalities?: string;
   street?: string;
+  industry?:Industry,
   apartment?: string;
   status?: ApplicantStatus;
   statusChangeTimestamp?: { [key: string]: Timestamp | FieldValue }
@@ -126,6 +127,7 @@ export interface DesiredConditions {
   workingHoursLate?: string;
   workingHoursNight?: string;
   shortTime?: boolean;
+  ngClient:string[],
   shiftRemarks?: string;
   meansCommuting?: string[];
   nearestStation?: string;
@@ -293,9 +295,9 @@ export interface FixJobSearchInfo {
   inspectionReasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   inspectionReasonNGDetail?: string;
   chargeOfInspection?: string;
-  personalStatus: boolean,
-  corporationStatus: boolean,
-  businessStatus: boolean,
+  personalStatus: StatusCheckBox,
+  corporationStatus: StatusCheckBox,
+  businessStatus: StatusCheckBox,
   reasonNG: 'excluded' | 'anotherCompany' | 'break_contact' | 'decline';
   reasonJobDetal?: string;
   chargeOfFacility: string;
@@ -350,4 +352,8 @@ export enum ContactMethod {
 
 export interface ApplicantWithFix extends Applicant {
   fix?: ApplicantFix
+}
+export enum StatusCheckBox{
+  OK = 'OK',
+  NG = 'NG',
 }

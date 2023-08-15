@@ -65,6 +65,7 @@
           <template v-slot:body-cell-info="props">
             <q-td :props="props" class="q-pa-none">
               <q-btn icon="mdi-information-outline" round style="color: #175680" flat @click="showDialog(props.row)" />
+              <q-btn icon="content_copy" round style="color: #175680" flat @click="addDuplicateBo(props.row)" />
             </q-td>
           </template>
 
@@ -150,7 +151,7 @@
   }
     " />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" v-if="cteateBoDrawer" />
+    <createBO :duplicateBo="duplicateBo" :client-id="duplicateBo?.client_id" :office-id="duplicateBo?.office_id" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" v-if="cteateBoDrawer" />
   </q-drawer>
   <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="closeMap">
   </SearchByMapDrawer>
@@ -186,6 +187,7 @@ const state = backOrderStore.state;
 const columns = ref<QTableProps | Ref>(BackOrderColumns);
 const showSearchByMap = ref(false);
 const selected = ref<BackOrderModel[]>([]);
+const duplicateBo = ref<BackOrderModel>();
 const cteateBoDrawer = ref(false);
 const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
 const selectedBo = ref<BackOrderModel | ComputedRef>(
@@ -366,6 +368,12 @@ function addNewBo() {
       typeBoCreate.value = 'dispatch';
       cteateBoDrawer.value = true;
     });
+}
+
+function addDuplicateBo(bo: BackOrderModel) {
+  typeBoCreate.value = bo.type;
+  duplicateBo.value = bo
+  cteateBoDrawer.value = true;
 }
 
 function showDialog(bo: BackOrderModel) {

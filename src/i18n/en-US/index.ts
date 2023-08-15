@@ -617,6 +617,8 @@ export default {
       conclusionReferralContract: 'Conclusion of referral contract',
       contactInfo: 'Contact Information',
       officeReg: 'Office Registration',
+      Occupation:'Occupation',
+      Certification:'Certification',
     },
     tele: {
       teleAppointHistory: 'Tele Appointment History',
@@ -797,6 +799,7 @@ export default {
       note5: '・Each message will incur a cost of 8 yen.'
     },
     add: {
+      applicantInfo:'Applicant Information',
       name: 'Name',
       kanaName: 'Kana Name',
       postCode: 'Post Code',
@@ -1098,6 +1101,8 @@ export default {
       transportationServices: 'Transportation services',
       jobSearchPriorities: 'Job Search Priorities',
       possible: 'Possible',
+      allowed:'Allowed',
+      forbidden: 'Forbidden',
       no: 'Not',
       workExperience: 'Work Experience',
       personal: 'Personal Status',
@@ -1750,7 +1755,7 @@ export default {
       companyID: 'companyID',
       companyName: 'Company name',
       recievedDate: 'date issued',
-      recieve: 'date issued',
+      recieve: 'Sent / Recieve Date',
       recieved: 'Recieved',
       sent: 'Sent',
       responseDate: 'response date',
@@ -2174,6 +2179,8 @@ export default {
     modeIndividual: 'Individual Data Aggregation',
     dailyTotal: 'daily total',
     item: 'Item',
+    occupation: 'Occupation',
+    certificate: 'Certificate',
     actualFigures: 'Actual figures',
     unitPrice: 'Unit price/LT',
     applicationAttribute: 'Application attribute',
