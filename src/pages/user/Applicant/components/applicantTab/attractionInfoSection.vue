@@ -54,7 +54,7 @@
         </q-input>
       </div>
       <div v-if="!edit && applicant.industry && applicant.industry.industryName" class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
-        {{ $t('applicant.list.industryName') }}
+        {{ $t('clientFactory.drawer.details.industry') }}
       </div>
       <div v-if="!edit && applicant.industry && applicant.industry.industryName" class="col-3 q-pl-md blue">
         <hidden-text :value="applicant.industry.industryName" />
@@ -244,7 +244,7 @@ async function save() {
   try {
     await applicantStore.updateApplicant(data.value);
     edit.value = false;
-    
+
   } catch (error) {
     Alert.warning(error)
   }
