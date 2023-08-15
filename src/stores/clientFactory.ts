@@ -267,19 +267,28 @@ export const useClientFactory = defineStore('client-factory', () => {
     };
 
     const getClientFactoryList = async (client_id: string) => {
-        const docSnap =  await getDocs(query(
-            collection(db, 'clients/'+client_id+'/client-factory'),
-            orderBy('name')
-        ))
-        return docSnap.docs.map((doc) => {
-            return {
-                ...doc.data(),
-                id: doc.id,
-                updated_at: date.formatDate(doc.data()?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
-            } as ClientFactory;
-        })
-    }
+      const docSnap = await getDocs(query(
+          collection(db, `clients/${client_id}/client-factory`),
+          orderBy('name')
+      ));
+
+      const formattedData = docSnap.docs.map((doc) => {
+          const data = doc.data();
+          const created_at = data.created_at ? data.created_at.toDate() : null;
+          const updated_at = data.updated_at ? data.updated_at.toDate() : null;
+
+          return {
+              ...data,
+              id: doc.id,
+              updated_at: updated_at ? date.formatDate(updated_at, 'YYYY-MM-DD HH:mm:ss') : null,
+              created_at: created_at ? date.formatDate(created_at, 'YYYY-MM-DD HH:mm:ss') : null
+          } as ClientFactory;
+      });
+
+      return formattedData;
+  };
+
+
 
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
