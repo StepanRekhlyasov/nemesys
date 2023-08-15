@@ -307,6 +307,12 @@ export const useClientFactory = defineStore('client-factory', () => {
                 createdAt = new Timestamp(createdAt.seconds as number, createdAt.nanoseconds as number).toDate()
             }
           }
+
+          for(const [key, value] of Object.entries(modifiedClientFactory)){
+            if(!key || typeof value === undefined){
+              delete modifiedClientFactory[key]
+            }
+          }
             
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
@@ -340,7 +346,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: false,
                 numberUpdates: modifiedCF.numberUpdates + 1,
                 numberImports: modifiedCF.numberImports,
-                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)),
+                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)) ?? serverTimestamp(),
                 updated_at: serverTimestamp(),
             })
 
@@ -424,7 +430,11 @@ export const useClientFactory = defineStore('client-factory', () => {
     const updateClientFactory = async(updatedClientFactory: ClientFactory) => {
 
         try {
-
+            for (const [key, value] of Object.entries(updatedClientFactory)){
+              if(typeof value === 'undefined'){
+                delete updatedClientFactory[key]
+              }
+            }
             await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
                 ...updatedClientFactory,
                 created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
