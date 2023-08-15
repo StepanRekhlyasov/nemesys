@@ -1006,7 +1006,6 @@ export default {
         assigned: '勤務中',
         unassigned: '離職中',
       }
-
     },
     statusList: {
       unsupported: '未対応',
