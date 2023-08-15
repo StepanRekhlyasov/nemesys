@@ -1010,7 +1010,8 @@ export default {
         placementDispatching: 'Employment placement dispatching',
         assigned: 'Assigned',
         unassigned: 'Unassigned',
-      }
+      },
+      industryName:'Industry name'
     },
     statusList: {
       unsupported: 'Unsupported',

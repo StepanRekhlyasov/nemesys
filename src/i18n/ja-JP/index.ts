@@ -1005,8 +1005,8 @@ export default {
         placementDispatching: '紹介予定派遣',
         assigned: '勤務中',
         unassigned: '離職中',
-      }
-
+      },
+      industryName:'業界名'
     },
     statusList: {
       unsupported: '未対応',
