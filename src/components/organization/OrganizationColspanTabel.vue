@@ -37,7 +37,7 @@
                   </div>
                 </q-td>
 
-                <q-td v-if="Object.keys(branchItem).length && branchItem.working === true">
+                <q-td v-if="Object.keys(branchItem).length && branchItem.working">
                   <div class="column items-start">
                     {{ branchItem.name }}
 
