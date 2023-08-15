@@ -6,7 +6,7 @@ import { InputType } from './types';
 const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
-    data: { label: string; value: string | number | string[] | boolean, isHighlight?: boolean, key?: string, editType?: string }[]
+    data: { label: string; value: string | number | string[] | boolean | {from: string, to: string}, isHighlight?: boolean, key?: string, editType?: string }[]
     selectedIndustry?: { value: string, isSelected: boolean }
     isEdit: boolean
     label?: string
@@ -84,13 +84,12 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
         <div class="column">
             <div v-for="row in leftColumn" :key="row.label" class="line">
                 <span :class="`text-${theme} line__label`">
-                    {{ row.label }}
+                    {{ row.label }} 
                 </span>
 
                 <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" :class="`link q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </a>
-
                 <span v-else-if="row.editType === InputType.FACILITY && Array.isArray(row.value)" :class="`facilityRow q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     <template v-for="item in selectedIndustryFacilityTypes">
                       <template v-if="row.value.includes(item.title)">{{ item.title }}<span :key="item.title" class="lastCommaHide">, </span></template>
@@ -102,6 +101,10 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
                 </span>
 
                 <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`"/>
+
+                <span v-else-if="row.editType === InputType.HOURS" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
+                  <template v-if="row.value && row.value['from'] && row.value['to']">{{ row.value['from'] }} ~ {{ row.value['to'] }}</template>
+                </span>
 
                 <span v-else :class="`line__value q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
@@ -124,6 +127,10 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
                 </span>
 
                 <q-icon v-else-if="(typeof row.value === 'boolean')" color="black" :name="row.value ? 'circle' : 'mdi-close'" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`"/>
+
+                <span v-else-if="row.editType === InputType.HOURS" :class="`q-pl-sm ${row.isHighlight && 'line__highlight'}`">
+                  <template v-if="row.value && row.value['from'] && row.value['to']">{{ row.value['from'] }} ~ {{ row.value['to'] }}</template>
+                </span>
 
                 <span v-else :class="`line__value q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}

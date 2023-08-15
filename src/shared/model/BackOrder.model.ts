@@ -58,7 +58,7 @@ export interface BackOrderModel {
 
   // In House Information Section (only referal type)
   retirementAge: string;
-  stipulatedAmount: number;
+  stipulatedAmount: string;
   retirementAge_house: number;
   memo_house: string;
 

@@ -25,7 +25,7 @@
             :label="day.label"
             :key="day.value"
             @update:model-value="(val : string[])=>{
-              if(val.length >= 7){
+              if(val.length === 8){
                 everythingTrgger = true
               } else {
                 everythingTrgger = false

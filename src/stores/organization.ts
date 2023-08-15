@@ -3,10 +3,11 @@ import { defineStore } from 'pinia';
 import { Branch, Organization, RequestType, ReturnedObjectType, User, UserPermissionNames } from 'src/shared/model';
 import { serializeTimestamp } from 'src/shared/utils/utils';
 import { computed, ref, watch } from 'vue';
-import { i18n } from 'boot/i18n';
 import { useUserStore } from './user';
+import { i18n } from 'boot/i18n';
 
 const { t } = i18n.global
+
 interface OrganizationState {
   organizations: Organization[],
   activeOrganization: number,
@@ -66,7 +67,7 @@ export const useOrganization = defineStore('organization', () => {
 
   async function getCurrentOrganizationBranches() {
     const organizationRef = doc(db, `/organization/${currentOrganizationId.value}/`);
-    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()), startAt(organizationRef.path), endAt(organizationRef.path + '\uf8ff'));
+    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()),startAt(organizationRef.path),endAt(organizationRef.path + '\uf8ff'));
     const querySnapshot = await getDocs(branchesQuery);
     const branches: { [id: string]: Branch; } = {}
     querySnapshot.forEach((doc) => {
@@ -120,14 +121,12 @@ export const useOrganization = defineStore('organization', () => {
     const organizationQuery = query(organizationRef, where('code', '==', code))
     const querySnapshot = await getDocs(organizationQuery)
 
-    if (querySnapshot.size > 1) {
-      throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
-    }
-
     if (querySnapshot.size == 0) {
       throw new Error('Organization not found')
     }
-
+    if (querySnapshot.size > 1) {
+      throw new Error(t('menu.admin.organizationsTable.codeNotUnique'))
+    }
     return querySnapshot.docs[0].data() as Organization
   }
 

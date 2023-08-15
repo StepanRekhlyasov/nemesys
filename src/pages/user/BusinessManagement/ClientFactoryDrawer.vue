@@ -130,6 +130,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                             @cancel-draft="cancelHandler"
                             @save-draft="saveHandler"
                             @open-fax-drawer="openFaxDrawer"
+                            :selectedIndustry="selectedIndustry"
                             :clientFactory="modifiedCF ?? selectedItem"
                             :draft="draft"
                             :is-loading="isLoading"/>

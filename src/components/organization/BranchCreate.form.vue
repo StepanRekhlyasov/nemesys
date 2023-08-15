@@ -1,7 +1,7 @@
 <template>
   <q-form @submit="addBranch">
 
-    <DialogHeader header-key="settings.branch.addBranch" />
+    <DialogHeader header-key="settings.branch.editBranch"/>
 
     <q-card-section class="q-pb-none">
 
@@ -39,7 +39,7 @@
     <q-card-actions align="center" class="bg-white text-teal q-pb-md q-pr-md">
       <q-btn v-if="!editBranch?.id" :label="$t('common.addNew')" :color="color" class="no-shadow" type="submit"
         :loading="loading" />
-      <q-btn v-if="editBranch?.id" :label="$t('common.edit')" :color="color" class="no-shadow" :loading="loading"
+      <q-btn v-if="editBranch?.id" :label="$t('common.save')" :color="color" class="no-shadow" :loading="loading"
         @click="saveBranch" />
     </q-card-actions>
 

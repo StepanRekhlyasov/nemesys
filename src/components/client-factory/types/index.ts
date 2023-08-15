@@ -79,4 +79,5 @@ export enum InputType {
   FACILITY = 'facility',
   RADIO = 'radio',
   COMMA_SEPARATED = 'comma_separated',
+  HOURS = 'hours',
 }

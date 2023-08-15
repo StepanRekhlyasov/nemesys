@@ -10,7 +10,10 @@
           検索条件 / エリア：東京都全域,　詳細条件：…
           <q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus" @click="addNewBo" />
         </div>
-        <searchForm @load-search-staff="loadSearchStaff" />
+        <div class="row">
+          <searchForm class="q-mr-md" @load-search-staff="loadSearchStaff" />
+          <q-btn :label="$t('backOrder.deleteBO')" color="red" :disable="selected.length === 0" icon="delete" @click="deleteSelected"></q-btn>
+        </div>
       </q-card-section>
       <q-separator color="white" size="2px" />
       <q-card-section class="q-pa-none">
@@ -52,9 +55,10 @@
 
           <template v-slot:body-cell-employmentType="props">
             <q-td :props="props" class="q-pa-none">
-                {{
-                  props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
-                }}
+              {{
+                props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ?
+                props.row.employmentType.map((row: string) => $t('client.backOrder.' + row)).join(', ') : '-'
+              }}
             </q-td>
           </template>
 
@@ -155,7 +159,7 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
-import { useBackOrder } from 'src/stores/backOrder';
+import { useBackOrder, deleteBO } from 'src/stores/backOrder';
 import { Ref, ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
@@ -173,6 +177,7 @@ import TablePaginationSimple from 'src/components/pagination/TablePaginationSimp
 import { useUserStore } from 'src/stores/user'
 import { myDateFormat } from 'src/shared/utils/utils';
 
+
 const userStore = useUserStore();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -188,6 +193,7 @@ const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
 const selectedBo = ref<BackOrderModel | ComputedRef>(
   computed(() => backOrderStore.state.selectedBo)
 );
+
 const selectedClient = ref<Client | undefined>(undefined);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const pagination = ref({
@@ -301,10 +307,10 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        if(user?.branchName){
+        if (user?.branchName) {
           userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
         }
-        else{
+        else {
           userNames.value[registrant] = user?.displayName || '';
         }
         userDisplayName.value = userNames.value[registrant];
@@ -326,6 +332,27 @@ const closeMap = () => {
   showSearchByMap.value = false;
   radius.value = 0;
 };
+
+async function deleteSelected() {
+  $q.dialog({
+    title: t('backOrder.confirmDelete'),
+    cancel: t('backOrder.cancel'),
+    ok: t('backOrder.confirm'),
+  })
+
+  .onOk(async () => {
+    if (selected.value) {
+    selected.value.map(async (val) => await deleteBO(val.id));
+  }
+    await backOrderStore.loadBackOrder({}, pagination.value);
+  })
+  .onDismiss(() => {
+    selected.value = []
+  })
+  .onCancel(() => {
+    selected.value = []
+  })
+}
 
 function addNewBo() {
   $q.dialog({
