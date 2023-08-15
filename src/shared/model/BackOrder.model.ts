@@ -107,3 +107,8 @@ export enum WorkingDaysWeek {
   Sunday = 'sunday',
   Holiday = 'holiday',
 }
+
+export interface BoForMapSearch extends BackOrderModel {
+  distanceBusiness: number;
+  matchDegree: number;
+}
