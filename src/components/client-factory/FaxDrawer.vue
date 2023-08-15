@@ -254,7 +254,7 @@ const confirmContent = () => {
                 <p>{{ faxData['transmissionDateTime'] }}</p>
               </div>
             </div>
-            <div v-if="selectedCF.length > 1">
+            <div v-if="selectedCF.length > 1 || selectedCF.includes('all')">
               <div class="row q-mt-sm">
                 <q-icon name="square" color="primary" class="q-mt-xs" />
                 <span class="text-primary text-bold q-ml-xs">
