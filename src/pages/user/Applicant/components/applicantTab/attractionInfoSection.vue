@@ -53,11 +53,11 @@
           </template>
         </q-input>
       </div>
-      <div v-if="!edit && applicant.industry && applicant.industry.industryName" class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
+      <div v-if="!edit" class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('clientFactory.drawer.details.industry') }}
       </div>
-      <div v-if="!edit && applicant.industry && applicant.industry.industryName" class="col-3 q-pl-md blue">
-        <hidden-text :value="applicant.industry.industryName" />
+      <div v-if="!edit" class="col-3 q-pl-md blue">
+        <hidden-text :value="applicant.industry && applicant.industry.industryName? applicant.industry.industryName : '-'" />
       </div>
     </div>
 
