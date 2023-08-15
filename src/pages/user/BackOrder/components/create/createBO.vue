@@ -244,14 +244,16 @@ async function resetData() {
 resetData();
 
 onMounted(async () => {
-  data.value = props.duplicateBo
-  if(props.clientId){
-    data.value['client_id'] = props.clientId
+  if(props.duplicateBo){
+    data.value = props.duplicateBo
+    if(props.clientId){
+      data.value['client_id'] = props.clientId
+    }
+    if(props.officeId){
+    data.value['office_id'] = props.officeId
+    }
+    await applicantStore.getClients()
   }
-  if(props.officeId){
-  data.value['office_id'] = props.officeId
-  }
-  await applicantStore.getClients()
 })
 
 watch(() => data.value.client_id, async () => {
