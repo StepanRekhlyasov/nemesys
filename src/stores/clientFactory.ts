@@ -538,7 +538,6 @@ export const useClientFactory = defineStore('client-factory', () => {
       return { ...result.data(), id: result.id } as ClientFactory
     }
 
-
     async function getClientFactoryByConstraints(constraints: ConstraintsType) {
         const ref = query(collectionGroup(db, 'client-factory'), ...constraints)
         const data = await getDocs(ref)
@@ -568,7 +567,16 @@ export const useClientFactory = defineStore('client-factory', () => {
         return modifiedCF.value ? modifiedCF.value : {};
     }
 
+    const condition = false
+    const selectedCFsId:string[] = []
+    const adminCondition = false
+    const adminSelectedCFsId:string[] = []
+
     return {
+        condition,
+        selectedCFsId,
+        adminCondition,
+        adminSelectedCFsId,
         clientFactories,
         modifiedCFs,
         getModifiedCfWithId,

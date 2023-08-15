@@ -83,7 +83,8 @@ export const useTele = defineStore('TeleAppoint', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['created_by'] = auth.currentUser?.uid;
-    data['organizationId'] = organization.currentOrganizationId
+    data['organizationId'] = organization.currentOrganizationId;
+    data['officeId'] = clientFactoryId;
     await addDoc(collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments'), data);
   };
 

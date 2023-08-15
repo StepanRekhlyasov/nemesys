@@ -2,9 +2,11 @@
 import { useI18n } from 'vue-i18n';
 import { defineEmits, defineProps, withDefaults } from 'vue';
 import {ActionsType} from './types'
+import { useRouter } from 'vue-router';
 const { t } = useI18n({ useScope: 'global' });
-
-withDefaults(defineProps<{
+const router = useRouter()
+const props = withDefaults(defineProps<{
+    isReset:boolean
     actionsType?: ActionsType
     theme?: string
 }>(), {
@@ -16,7 +18,12 @@ const emit = defineEmits<{
     (e: 'openClientDrawer'),
     (e: 'openClientFactoryDrawer'),
     (e:'openFaxDrawer')
+    (e:'resetSelectedId')
 }>()
+
+const resetSelectedCFsId = () =>{
+    emit('resetSelectedId')
+}
 
 const openNewClientDrawer = () => {
     emit('openClientDrawer')
@@ -28,7 +35,14 @@ const openNewClientFactoryDrawer = () => {
 const openNewFaxDrawer=()=>{
   emit('openFaxDrawer')
 }
-
+const changeRoute = ()=>{
+    if(props.actionsType === ActionsType.ADMIN){
+        router.push('/admin/officeSearch')
+    }
+    else{
+        router.push('/officeSearch')
+    }
+}
 </script>
 
 <template>
@@ -53,27 +67,22 @@ const openNewFaxDrawer=()=>{
         </div>
 
         <div class="row items-center justify-between q-mt-sm">
-            <q-btn v-if="actionsType === ActionsType.ADMIN" class="action_btn" :color="theme">
-                {{ t('actions.searchConditionChange') }}
-            </q-btn>
-
+            <div v-if="actionsType === ActionsType.ADMIN">
+                <q-btn class="action_btn" :color="theme" @click="changeRoute">
+                    {{ t('actions.searchConditionChange') }}
+                </q-btn>
+                <q-btn class="q-ml-sm" @click="resetSelectedCFsId" :label="t('client.list.resetConditions')" v-if="props.isReset" :color="theme"/>
+            </div>
             <div v-else>
                 <div class="row q-mt-xs">
-                    <div class="q-gutter-md" style="max-width: 150px">
-                        <q-select outlined dense class="bg-white" model-value="Test">
-                            <template v-slot:prepend>
-                                <q-icon name="filter_alt" color="primary" />
-                            </template>
-                        </q-select>
-                    </div>
-
-                    <div class="q-gutter-md q-ml-sm" style="max-width: 250px">
-                        <q-select outlined dense class="bg-white" model-value="Test">
-
-                        </q-select>
+                    <div class="q-gutter-md">
+                        <q-btn outline color="primary" :label="t('actions.changeSearchCriteria')" @click="changeRoute"></q-btn>
                     </div>
                     <div class="q-gutter-md q-ml-sm">
                       <q-btn class="action_btn"  @click="openNewFaxDrawer" :color="theme"> {{ t('actions.faxBatchTransmission') }}</q-btn>
+                    </div>
+                    <div class="q-gutter-md q-ml-sm">
+                        <q-btn @click="resetSelectedCFsId" :label="t('client.list.resetConditions')" v-if="props.isReset" :color="theme"/>
                     </div>
                 </div>
             </div> 

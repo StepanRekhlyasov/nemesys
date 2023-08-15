@@ -7,7 +7,6 @@ import CFPageActions from 'src/components/client-factory/CFPageActions.vue';
 import ClientFactoryDrawer from './ClientFactoryDrawer.vue';
 import NewClientDrawer from 'src/components/client-factory/NewClientDrawer.vue';
 import NewClientFactoryDrawer from 'src/components/client-factory/NewClientFactoryDrawer.vue';
-import FaxDrawer from 'src/components/client-factory/FaxDrawer.vue'
 import ClientFactoryTable from 'src/components/client-factory/ClientFactoryTable.vue';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
@@ -26,6 +25,8 @@ const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
 
+const adminSelectedCFsId = ref<string[]>(clientFactoryStore.adminSelectedCFsId);
+const adminCondition = ref<boolean>(clientFactoryStore.adminCondition);
 // drawers
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
@@ -37,7 +38,7 @@ const pagination = ref({
     descending: false,
     page: 1,
     rowsPerPage: 100,
-    rowsNumber: clientFactories.value.length
+    rowsNumber: tableRows.value.length
 });
 
 const paginatedTableRows = computed(() => {
@@ -45,6 +46,13 @@ const paginatedTableRows = computed(() => {
     const end = start + pagination.value.rowsPerPage;
     return tableRows.value.slice(start, end);
 });
+
+const resetAdminSelectedCFsId = () =>{
+    adminCondition.value = false
+    clientFactoryStore.adminCondition = false
+    adminSelectedCFsId.value = []
+    clientFactoryStore.adminSelectedCFsId = []
+}
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
@@ -58,21 +66,27 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
         }
     }, 200);
 }
-
+const selected = ref<number[]>([])
+const selectedCFHandler = (item:number[]) =>{
+    selected.value = item
+}
 watch([clients], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
         tableRows.value.length ? fetchData.value = false : fetchData.value = true
     })
-
 }, { deep: true, immediate: true });
 
-watch([clientFactories], () => {
+watch([clientFactories,adminCondition], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
-    tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+    if(adminCondition.value){
+        tableRows.value = clientFactoriesToTableRows(clientFactories.value).filter((item)=>adminSelectedCFsId.value.includes(item.id))
+    }
+    else{
+        tableRows.value = clientFactoriesToTableRows(clientFactories.value)
+    }
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
-
-}, {deep: true, immediate: true})
+}, { deep: true, immediate: true })
 
 // client-factory drawer
 
@@ -120,15 +134,16 @@ const openNewFaxDrawer = () => {
             </q-card-section>
             <q-separator color="grey-4" size="2px" />
             <CFPageActions
+                :is-reset="adminCondition"
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
-                @open-Fax-drawer="openNewFaxDrawer"
+                @reset-selected-id="resetAdminSelectedCFsId"
                 :actions-type="ActionsType.ADMIN"
                 theme="accent"/>
             <q-card-section class="table no-padding">
                 <ClientFactoryTable
                 @select-item="clientFactoryDrawerHandler"
-                :isFetching="fetchData"
+                :isFetching="fetchData && !(adminCondition && tableRows.length===0)"
                 :rows="paginatedTableRows"
                 :pagination="pagination"
                 :table-columns="consts.tableColumnsClientFactory.value"
@@ -158,11 +173,6 @@ const openNewFaxDrawer = () => {
         theme="accent"
         :is-drawer="isNewClientFactoryDrawer"/>
 
-        <FaxDrawer
-        @hide-drawer="hideNewFaxDrawer"
-        theme="accent"
-        :is-drawer="isNewFaxDrawer"
-        />
     </div>
 </template>
 
