@@ -29,18 +29,21 @@
           <q-select
               v-model="data.client"
               @update:model-value="data['office']=undefined"
+              use-input
               :loading="loading"
-              :options="applicantStore.state.clientList"
+              :options="clientList"
               option-value="id"
               option-label="name"
               :rules="[creationRule]" 
               hide-bottom-space
               emit-value 
               map-options
+              @filter="filterClient"
               :label="$t('applicant.list.fixEmployment.client')"  />
             <q-select
               v-model="data['office']"
               :loading="loading"
+              use-input
               emit-value 
               map-options
               option-value="id"
@@ -49,6 +52,7 @@
               hide-bottom-space
               :options="clientFactoryList"
               :disable="!data['client']"
+              @filter="filterOffice"
               :label="$t('applicant.list.fixEmployment.office')" />
             <q-select
               v-model="data['backOrder']"
@@ -170,6 +174,8 @@ const loading = ref(false);
 const edit = ref<string[]>([]);
 const usersListOption = ref<selectOptions[]>([]);
 const name = ref('');
+const clientList = ref(applicantStore.state.clientList);
+
 
 const backOrderOptions = computed(()=>{
   return backOrderList.value.map((row)=>{
@@ -227,6 +233,43 @@ watch(
   },
   { deep: true, immediate: true }
 )
+
+async function filterClient(val: string, update) {
+  if(val == '') {
+    update(() => {
+      clientList.value = applicantStore.state.clientList;
+    })
+  } else {
+    update(() => {
+      const prefix = val.toLowerCase();
+      clientList.value = applicantStore.state.clientList.filter((val) => {
+        const str = val.name?.toLowerCase();
+        if(str == undefined) return false;
+        return str?.indexOf(prefix) > -1;
+      })
+    })
+  }
+}
+async function filterOffice(val: string, update) {
+  if(val !== '') {
+    update(() => {
+      const prefix = val.toLowerCase();
+      clientFactoryList.value = clientFactoryList.value.filter((val) => {
+        const str = val.name?.toLowerCase();
+        if(str == undefined) return false;
+        return str?.indexOf(prefix) > -1;
+      })
+    })
+  }
+  else {
+    update(async () => {
+      if(data.value.client) {
+        clientFactoryList.value = await clientFactoryStore.getClientFactoryList(data.value.client)
+      }
+    })
+  }
+}
+
 
 async function loadUser() {
   const users = await userStore.getUsersByPermission(UserPermissionNames.UserUpdate, '', organization.currentOrganizationId);

@@ -108,8 +108,8 @@ const saveNewIndustry = async () => {
                hide-bottom-space
                :rules="[
                    (val) => (val && val.length > 0) || '',
-                   (val) => (/^[a-zA-Z_$ぁ-んァ-ン一-龯ー]*$/.test(val)) || 'Invalid input. Text should not contain spaces or special characters.',
-                   (val) => titleExists(val) || 'Title already exists'
+                   (val) => (/^[a-zA-Z_$ぁ-んァ-ン一-龯ー]*$/.test(val)) || $t('errors.industryRules'),
+                   (val) => titleExists(val) || $t('errors.titleExist')
                ]"
                 />
 

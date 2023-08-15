@@ -12,7 +12,8 @@
           $t('applicant.attendant.sameDay') }}</span>
         <template v-if="desiredEdit">
           <q-toggle v-model="data['timeAvailable']"
-            :label="!data['timeAvailable'] ? '' : $t('applicant.attendant.sameDay')" />
+            :class="!data['timeAvailable']?'lowOpacity':''"
+            :label="!data['timeAvailable'] ? $t('applicant.attendant.sameDay') : $t('applicant.attendant.sameDay')" />
           <q-input v-if="!data['timeAvailable']" dense outlined bg-color="white" v-model="data['timeToWork']"
             :disable="loading">
             <template v-slot:prepend>
@@ -186,7 +187,7 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityDesired }}</span>
-        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options v-if="desiredEdit"
+        <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options v-if="desiredEdit"
           option-label="name" v-model="data['facilityDesired']" :disable="loading" />
       </div>
     </div>
@@ -197,12 +198,21 @@
       </div>
       <div class="col-9 q-pl-md blue ">
         <span v-if="!desiredEdit" class="text_dots">{{ joinFacilityType }}</span>
-        <q-select outlined dense multiple :options="facilityOp" use-chips emit-value map-options v-if="desiredEdit"
-          option-label="name" v-model="data['ngFacilityType']" :disable="loading" />
+        <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options
+          option-label="name" v-model="data['ngFacilityType']" :disable="loading" v-if="desiredEdit"/>
       </div>
     </div>
-
-    <div class="row q-pa-md"></div>
+    <div class="row q-pb-sm">
+       <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
+         {{ $t('clientFactory.fax.clientNG') }}
+       </div>
+       <div class="col-9 q-pl-md blue ">
+        <span v-if="!desiredEdit" class="text_dots q-mt-sm">{{ formattedNgClients }}</span>
+        <q-select outlined dense multiple use-chips :options="clients"
+          option-label="name" v-model="data['ngClient']" :disable="loading" v-if="desiredEdit"
+          use-input input-debounce="0"  class="custom-q-select" emit-value map-options @filter="filterClients"/>
+       </div>
+     </div>
 
     <div class="row q-pb-sm">
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
@@ -212,7 +222,14 @@
         <span v-if="!desiredEdit">{{ applicant.hourlyRate ? parseInt(applicant.hourlyRate).toLocaleString('en-US')
           + ' ' + $t('common.yen') : '' }}</span>
         <div v-if="desiredEdit" class="flex items-center no-wrap">
-          <q-input dense outlined bg-color="white" min="0" v-model="data['hourlyRate']" :disable="loading" />
+          <q-input
+            dense
+            outlined
+            bg-color="white"
+            min="0"
+            v-model="data['hourlyRate']"
+            :disable="loading"
+          />
           <span class="q-ml-sm">{{ $t('common.yen') }}</span>
         </div>
       </div>
@@ -266,22 +283,28 @@
 
 <script lang="ts" setup>
 import { daysList, PossibleTransportationServicesList, specialDaysList } from 'src/shared/constants/Applicant.const';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch , Ref} from 'vue';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { Applicant, ApplicantInputs, BackOrderModel } from 'src/shared/model';
 import { useApplicant } from 'src/stores/applicant';
 import { myDateFormat } from 'src/shared/utils/utils';
-import { facilityOp } from 'src/pages/user/Clients/consts/facilityType.const';
 import { i18n } from 'boot/i18n';
 import { useMetadata } from 'src/stores/metadata';
+import { where } from 'firebase/firestore'
 import { Alert } from 'src/shared/utils/Alert.utils';
+import {useClient} from 'src/stores/client'
+import { useOrganization } from 'src/stores/organization';
+import { Client } from 'src/shared/model';
 
 const props = defineProps<{
   applicant: Applicant,
   bo?: BackOrderModel
 }>()
-
+const clients:Ref<Client[]> = ref([]);
+const organization = useOrganization()
+const clientStore =useClient()
+const facilityTypeOptions: { name: string }[] = [];
 const applicantStore = useApplicant();
 const { t } = i18n.global;
 const shiftOptions = [
@@ -295,7 +318,7 @@ const specialDays = ref(specialDaysList);
 const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({});
-const data = ref<Partial<ApplicantInputs>>({});
+  const data = ref<Partial<ApplicantInputs>>({});
 const routeData = ref([]);
 const stationData = ref([]);
 const meansCommutingOptions = computed(() => [
@@ -324,6 +347,8 @@ const specialDayComputed = computed(() => {
 const metadataStore = useMetadata()
 onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
+  clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
+  getFacilityTypeOptions()
 });
 
 watch(() => data.value['route'], async (newVal) => {
@@ -340,8 +365,6 @@ watch(() => desiredEdit.value, (newVal) => {
   }
 }
 )
-
-
 function resetData() {
   defaultData.value = {
     timeToWork: myDateFormat(props.applicant['timeToWork']),
@@ -356,6 +379,7 @@ function resetData() {
     commutingTimeRemarks: props.applicant['commutingTimeRemarks'],
     facilityDesired: props.applicant['facilityDesired'] || [],
     ngFacilityType: props.applicant['ngFacilityType'] || [],
+    ngClient: props.applicant['ngClient'] || [],
     hourlyRate: props.applicant['hourlyRate'],
     transportationServices: props.applicant['transportationServices'],
     jobSearchPriorities1: props.applicant['jobSearchPriorities1'],
@@ -372,9 +396,13 @@ function resetData() {
 }
 resetData();
 
-const joinFacilityType = computed(() => props.applicant.ngFacilityType?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
-const joinFacilityDesired = computed(() => props.applicant.facilityDesired?.map(val => t(`client.add.facilityOp.${val}`)).join(', '))
-
+const joinFacilityType = computed(() =>
+  props.applicant.ngFacilityType?.map(option => `${option.name}`).join(', ')
+);
+const joinFacilityDesired = computed(() =>
+  props.applicant.facilityDesired?.map(option => `${option.name}`).join(', ')
+);
+const formattedNgClients = computed(() => props.applicant.ngClient?.map(val => (`${val.name}`)).join(', '))
 async function saveDesired() {
   loading.value = true;
   try {
@@ -387,6 +415,16 @@ async function saveDesired() {
   }
   loading.value = false
 }
+
+const getFacilityTypeOptions = () => {
+  if (props.applicant.industry && props.applicant.industry.uniqueItems && props.applicant.industry.uniqueItems.facilityForms) {
+    const industryArray = Object.values(props.applicant.industry.uniqueItems.facilityForms).map(formData => ({
+      name: formData.title,
+    }));
+
+    facilityTypeOptions.push(...industryArray);
+  }
+};
 
 const filterStation = async (val: string, update) => {
   if (val === '' && data.value.route) {
@@ -413,13 +451,29 @@ const filterRoute = async (val: string, update) => {
     routeData.value = routeData.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
   })
 };
+const filterClients = (val:string, update) => {
+  if (val === '') {
+    update(async() => {
+    clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
+    });
+    return;
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clients.value = clients.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  });
+};
 </script>
-
 <style lang="scss">
 .text_dots {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+.lowOpacity{
+  .q-toggle__label{
+    opacity: 0.5;
+  }
 }
 </style>

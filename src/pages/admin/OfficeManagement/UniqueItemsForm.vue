@@ -6,9 +6,11 @@ import { watch, ref, nextTick  } from 'vue';
 import UniqueItemsIndustrySelect from './components/UniqueItemsIndustrySelect.vue';
 import UniqueItemsSpecificTypes from './components/UniqueItemsSpecificTypes.vue';
 import UniqueItemsFacilityForms from './components/UniqueItemsFacilityForms.vue';
+import UniqueCertificateForms from './components/UniqueCertificateForms.vue';
+import UniqueOccupationForm from './components/UniqueOccupationForm.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import { useIndsutry } from 'src/stores/industry';
-import { FacilityForm, Industry, SpecificItem } from 'src/shared/model/Industry.model';
+import { FacilityForm, Industry, SpecificItem, OccupationForm,CertificateForm } from 'src/shared/model/Industry.model';
 import { deepCopy } from 'src/shared/utils';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -28,7 +30,9 @@ const handleActiveIndustry = (selectedIndustry: Industry) => {
 
 const isCanBeSaved = ref({
     typeSpecificItems: false,
-    facilityForms: false
+    facilityForms: false,
+    occupationForms: false,
+    certificateForms: false
 })
 const isLoading = ref(isFirstLoading)
 const isNewIndustryPopup = ref(false)
@@ -68,7 +72,9 @@ const onNewIndustry = async (industryName: string) => {
         industryName: industryName,
         uniqueItems: {
             typeSpecificItems: {},
-            facilityForms: {}
+            facilityForms: {},
+            occupationForms: {},
+            certificateForms: {},
         }
     })
     if (newId) {
@@ -128,7 +134,7 @@ const sortHandler = (
 ) => {
 
     if(industryToUpdate.value && activeIndustry.value) {
-        const items: { [key: string]: SpecificItem  | FacilityForm} = industryToUpdate.value.uniqueItems[path];
+        const items: { [key: string]: SpecificItem  | FacilityForm | OccupationForm | CertificateForm} = industryToUpdate.value.uniqueItems[path];
 
         const keys = Object.keys(items);
         const movedKey = keys[event.oldIndex];
@@ -165,6 +171,52 @@ const deleteFacilityForm = (id: string) => {
 
 const updateFacilityForm = () => {
     isCanBeSaved.value.facilityForms = true
+}
+
+const newOccupationForm = (data: string) => {
+    const id = uid();
+    if(industryToUpdate.value) {
+        industryToUpdate.value.uniqueItems.occupationForms[id] = { title: data, order: Object.keys(industryToUpdate.value.uniqueItems.occupationForms).length + 1 };
+
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.occupationForms as Record<string, OccupationForm>, activeIndustry.value?.uniqueItems.occupationForms as Record<string, OccupationForm>)) {
+            isCanBeSaved.value.occupationForms = true;
+        }
+    }
+}
+const deleteOccupationForm = (id: string) => {
+    if (industryToUpdate.value) {
+        delete industryToUpdate.value.uniqueItems.occupationForms[id]
+        Object.values(industryToUpdate.value.uniqueItems.occupationForms).forEach((item, index) => {
+            item.order = index + 1;
+        });
+        isCanBeSaved.value.occupationForms = true;
+    }
+}
+
+const updateOccupationForm = () => {
+    isCanBeSaved.value.occupationForms = true
+}
+
+const newCertificateForm = (data: string) => {
+    const id = uid();
+    if(industryToUpdate.value) {
+        industryToUpdate.value.uniqueItems.certificateForms[id] = { title: data, order: Object.keys(industryToUpdate.value.uniqueItems.certificateForms).length + 1 };
+        if (!is.deepEqual(industryToUpdate.value?.uniqueItems.certificateForms as Record<string, CertificateForm>, activeIndustry.value?.uniqueItems.certificateForms as Record<string, CertificateForm>)) {
+            isCanBeSaved.value.certificateForms = true;
+        }
+    }
+}
+const deleteCertificateForm = (id: string) => {
+    if (industryToUpdate.value) {
+        delete industryToUpdate.value.uniqueItems.certificateForms[id]
+        Object.values(industryToUpdate.value.uniqueItems.certificateForms).forEach((item, index) => {
+            item.order = index + 1;
+        });
+        isCanBeSaved.value.certificateForms = true;
+    }
+}
+const updateCertificateForm = () => {
+    isCanBeSaved.value.certificateForms = true
 }
 
 const isNewIndustryPopupHandler = (val: boolean) => {
@@ -235,6 +287,37 @@ watch(async() => activeIndustry.value, () => {
                     @delete-facility-form="deleteFacilityForm"
                     @update-facility-form="updateFacilityForm"
                     @sort-facility-form="(e) => sortHandler(e, 'facilityForms')"/>
+            </DropDownEditGroup>
+            <DropDownEditGroup
+                :label="t('client.add.Occupation') + ' (' + t('applicant.add.applicantInfo') + ')'"
+                :is-edit="true"
+                :isLabelSquare="true"
+                :is-disabled-button="!isCanBeSaved.occupationForms"
+                :is-without-cancel="true"
+                @on-save="updateIndustryHandler('occupationForms')"
+                theme="accent">
+                <UniqueOccupationForm
+                    :active-industry="industryToUpdate"
+                    @new-occupation-form="newOccupationForm"
+                    @delete-occupation-form="deleteOccupationForm"
+                    @update-occupation-form="updateOccupationForm"
+                    @sort-occupation-form="(e) => sortHandler(e, 'occupationForms')"
+                    />
+            </DropDownEditGroup>
+            <DropDownEditGroup
+                :label="t('client.add.Certification') + ' (' + t('applicant.add.applicantInfo') + ')'"
+                :is-edit="true"
+                :isLabelSquare="true"
+                :is-disabled-button="!isCanBeSaved.certificateForms"
+                :is-without-cancel="true"
+                @on-save="updateIndustryHandler('certificateForms')"
+                theme="accent">
+                <UniqueCertificateForms
+                    :active-industry="industryToUpdate"
+                    @new-certificate-form="newCertificateForm"
+                    @delete-certificate-form="deleteCertificateForm"
+                    @update-certificate-form="updateCertificateForm"
+                    @sort-certificate-form="(e) => sortHandler(e, 'certificateForms')"/>
             </DropDownEditGroup>
         </q-card>
     </div>

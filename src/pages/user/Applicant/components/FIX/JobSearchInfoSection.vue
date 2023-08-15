@@ -1,5 +1,5 @@
 <template>
-  <DropDownEditGroup 
+  <DropDownEditGroup
 		:isEdit="edit.includes('jobSearchInfo')"
 		:label="$t('applicant.list.fixEmployment.jobSearchInfo')"
 		@openEdit="emit('openEdit');resetData();"
@@ -9,20 +9,20 @@
 		<q-form ref="form">
 
 			<div class="row q-pb-sm">
-				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')" 
+				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.status')"
 					:value="fixData.inspectionStatus? 'OK' : 'NG' " valueClass="text-uppercase col-3 q-pl-md" required>
 					<q-field dense :outlined="false" class="q-pb-none" borderless hide-bottom-space
             v-model="data['inspectionStatus']" :rules="[() => 'inspectionStatus' in data || '']">
-						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="emit('disableChange')" 
+						<q-checkbox v-model="data['inspectionStatus']" label="OK" @click="emit('disableChange')"
 							checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
-						<q-checkbox v-model="data['inspectionStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')" 
+						<q-checkbox v-model="data['inspectionStatus']" label="NG" class="q-ml-sm" @click="emit('disableChange')"
 							unchecked-icon="mdi-checkbox-intermediate" checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
 					</q-field>
 				</labelField>
-				
-				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.date')" 
-					:value="fixData.inspectionDate" required>                
-					<q-input dense outlined bg-color="white" v-model="data['inspectionDate']"  
+
+				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.date')"
+					:value="fixData.inspectionDate" required>
+					<q-input dense outlined bg-color="white" v-model="data['inspectionDate']"
 						:disable="loading || disableLevel < 1" :rules="[creationRule, validateDate]" hide-bottom-space>
 						<template v-slot:prepend>
 							<q-icon name="event" class="cursor-pointer">
@@ -49,11 +49,11 @@
 					</q-input>
 				</labelField>
 			</div>
-			
+
 			<div class="row q-pb-sm" v-if="!data['inspectionStatus']">
 				<NGReasonSelect
 					:value="data[reasonKey]?$t('applicant.list.fixEmployment.' + data[reasonKey]) + (data[detailKey]?' (' + $t('applicant.list.fixEmployment.' + data[detailKey])+ ')' : '') : ''"
-					:edit="edit.includes(tabKey)" 
+					:edit="edit.includes(tabKey)"
 					:label="$t('applicant.list.fixEmployment.'+reasonKey)"
 					:reasonValue="data[reasonKey]"
 					@update:reasonValue="(newValue : string) => data[reasonKey as string] = newValue"
@@ -63,10 +63,10 @@
 					:hightlightError="hightlightError"
 				/>
 			</div>
-			
+
 			<div class="row q-pb-sm">
 				<labelField :edit="edit.includes('jobSearchInfo')" required
-					:label="$t('applicant.list.fixEmployment.userInChargeVisit')" 
+					:label="$t('applicant.list.fixEmployment.userInChargeVisit')"
 					:value="usersListOption
 						.filter(user => user.value === fixData['chargeOfInspection'])
 						.map(user => user.label).join('')">
@@ -78,31 +78,28 @@
 							:options="usersListOption" :label="$t('common.pleaseSelect')" />
 				</labelField>
 			</div>
-			
+
 			<div class="row q-pb-sm">
-				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.visitRecotd')" 
+				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.visitRecotd')"
 						:value="visitRecotd" valueClass="text-uppercase col-9 q-pl-md">
 						<div class="row">
 							<div class="col-4">
-								<span class="text-blue text-weight-regular">{{ $t('applicant.list.fixEmployment.personalStatus') }}</span>
-								<q-checkbox v-model="data['personalStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
-									unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
-								<q-checkbox v-model="data['personalStatus']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
-									checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+								<span class="text-blue text-weight-regular q-ml-sm">{{ $t('applicant.list.fixEmployment.personalStatus') }}</span>
+                <q-radio v-for="key in StatusCheckBox" v-model="data['personalStatus']" :label="key"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
+                :disable="disableLevel < 1" class="q-pr-md" :color="getRadioColor(key)"/>
 							</div>
 							<div class="col-4">
 								<span class="text-blue text-weight-regular">{{ $t('applicant.list.fixEmployment.corporationStatus') }}</span>
-								<q-checkbox v-model="data['corporationStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
-									unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
-								<q-checkbox v-model="data['corporationStatus']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
-									checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+                <q-radio v-for="key in StatusCheckBox" v-model="data['corporationStatus']" :label="key"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
+                :disable="disableLevel < 1" class="q-pr-md" :color="getRadioColor(key)"/>
 							</div>
 							<div class="col-4">
-								<span class="text-blue text-weight-regular">{{ $t('applicant.list.fixEmployment.businessStatus') }}</span>
-								<q-checkbox v-model="data['businessStatus']" label="OK" checked-icon="mdi-checkbox-intermediate" 
-									unchecked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
-								<q-checkbox v-model="data['businessStatus']" label="NG" class="q-ml-sm" unchecked-icon="mdi-checkbox-intermediate" 
-									checked-icon="mdi-checkbox-blank-outline" color="primary" :disable="disableLevel < 1"/>
+								<span class="text-blue text-weight-regular q-ml-sm q-pl-xs">{{ $t('applicant.list.fixEmployment.businessStatus') }}</span>
+								<q-radio v-for="key in StatusCheckBox" v-model="data['businessStatus']" :label="key"
+                checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="key" :key="key"
+                :disable="disableLevel < 1" class="q-pr-md" :color="getRadioColor(key)"/>
 							</div>
 
 						</div>
@@ -110,15 +107,15 @@
 			</div>
 
 			<div class="row q-pb-sm">
-				<labelField :edit="edit.includes('jobSearchInfo')" 
-					:label="$t('applicant.list.fixEmployment.inspection.chargeOfFacility')" 
+				<labelField :edit="edit.includes('jobSearchInfo')"
+					:label="$t('applicant.list.fixEmployment.inspection.chargeOfFacility')"
 					:value="fixData.chargeOfFacility">
 					<q-input v-if="edit" dense outlined bg-color="white"
 						v-model="data['chargeOfFacility']" :disable="loading || disableLevel < 1" />
-				</labelField>              
-				
-				<labelField :edit="edit.includes('jobSearchInfo')" 
-					:label="$t('applicant.list.fixEmployment.inspection.jobTitle')" 
+				</labelField>
+
+				<labelField :edit="edit.includes('jobSearchInfo')"
+					:label="$t('applicant.list.fixEmployment.inspection.jobTitle')"
 					:value="fixData.jobTitle">
 					<q-input dense outlined bg-color="white"
 						v-model="data['jobTitle']" :disable="loading || disableLevel < 1" />
@@ -126,7 +123,7 @@
 			</div>
 
 			<div class="row q-pb-sm">
-				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')" 
+				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.contact')"
 					:value="fixData['contact']">
 							<q-input dense outlined bg-color="white"
 						v-model="data['contact']" :disable="loading || disableLevel < 1" />
@@ -148,7 +145,7 @@
 			</div>
 
 			<div class="row q-pb-sm">
-				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')" 
+				<labelField :edit="edit.includes('jobSearchInfo')" :label="$t('applicant.list.fixEmployment.inspection.notes')"
 					:value="fixData.inspectionMemo" valueClass="col-9 q-pl-md">
 					<q-input dense outlined bg-color="white"
 						v-model="data['inspectionMemo']" :disable="loading || disableLevel < 1" />
@@ -162,7 +159,7 @@
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
 import labelField from 'src/components/form/LabelField.vue';
 import NGReasonSelect from 'src/components/inputs/NGReasonSelect.vue';
-
+import { StatusCheckBox } from 'src/shared/model';
 import { computed, Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ApplicantFix, FixJobSearchInfo, selectOptions } from 'src/shared/model';
@@ -205,13 +202,19 @@ const saveHandler = () => {
 	})
 }
 useNGWatchers(data, hightlightError, reasonKey, detailKey, statusKey)
+const getRadioColor = (key) => {
+  if (key === 'NG') {
+    return 'grey-8';
+  }
+  return 'primary';
+};
 
 const visitRecotd = computed(() => {
-	const personalStatus = props.fixData['personalStatus']? 'OK' : 'personalStatus' in props.fixData ? 'NG' : '-' 
-	const corporationStatus = props.fixData['corporationStatus']? 'OK' : 'corporationStatus' in props.fixData ? 'NG' : '-' 
-	const businessStatus = props.fixData['businessStatus']? 'OK' : 'businessStatus' in props.fixData ? 'NG' : '-' 
-	return `${t('applicant.list.fixEmployment.personalStatus')} : ${personalStatus}  / 
-	 ${t('applicant.list.fixEmployment.corporationStatus')} : ${corporationStatus}  /  
+	const personalStatus = props.fixData['personalStatus']? props.fixData['personalStatus'] : '-'
+	const corporationStatus = props.fixData['corporationStatus']? props.fixData['corporationStatus'] : '-'
+	const businessStatus = props.fixData['businessStatus']? props.fixData['businessStatus'] : '-'
+	return `${t('applicant.list.fixEmployment.personalStatus')} : ${personalStatus}  /
+	 ${t('applicant.list.fixEmployment.corporationStatus')} : ${corporationStatus}  /
 	 ${t('applicant.list.fixEmployment.businessStatus')} : ${businessStatus}`
 })
 
@@ -242,5 +245,5 @@ watch(
   () =>{
     resetData();
   }, {deep: true, immediate: true}
-) 
+)
 </script>

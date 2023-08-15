@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit, deleteDoc } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -569,5 +569,42 @@ export const useBackOrder = defineStore('backOrder', () => {
     ;
   }
 
-  return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints }
+  const countDaysByOfficeId = async (
+    officeId: string,
+    day?: string,
+    route?: string,
+    type?: string
+  ) => {
+    const collectionRef = collection(db, 'BO');
+    const today = new Date();
+    const halfYearAgo = new Date();
+    halfYearAgo.setMonth(halfYearAgo.getMonth() - 6);
+    const filters = [
+      where('office_id', '==', officeId),
+      where('deleted', '==', false),
+      where('created_at', '>=', halfYearAgo),
+      where('created_at', '<=', today),
+    ];
+    if (day) {
+      filters.push(where('daysPerWeekList', '==', day));
+    }
+    if (route) {
+      filters.push(where('BOGenerationRoute', '==', route));
+    }
+    if (type) {
+      filters.push(where('type', '==', type));
+    }
+    const q = query(collectionRef, ...filters);
+    const counted = await getCountFromServer(q);
+    return counted.data().count;
+  };
+
+  return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })
+
+export const deleteBO = async (id: string) => {
+  const db = getFirestore();
+  const docRef = doc(db, 'BO', id);
+  const res = await deleteDoc(docRef);
+  return res;
+}

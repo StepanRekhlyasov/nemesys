@@ -203,9 +203,7 @@ export const useApplicant = defineStore('applicant', () => {
     searchData = deepCopy(searchData);
 
     if (searchData['status']) {
-      filters['all'].push({
-        'status': searchData['status']
-      });
+        filters['all'].push({ 'status': searchData['status'] });
     }
     if (searchData.applicationDateMin && searchData.applicationDateMax) {
       filters['all'].push({

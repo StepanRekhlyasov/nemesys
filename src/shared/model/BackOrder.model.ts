@@ -2,7 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 
 export interface BackOrderModel {
   id: string;
-  type: 'dispatch' | 'referral' | 'TTP';
+  type: 'dispatch' | 'referral';
   BOGenerationRoute: 'coldCall' | 'fax';
   client_id: string;
   office_id: string;
@@ -13,6 +13,7 @@ export interface BackOrderModel {
   deleted: false;
   registrant?: string;
   organizationId: string;
+  industry?: string
 
   // Introduction Section
   dateOfRegistration: Timestamp | undefined | string;
@@ -39,7 +40,7 @@ export interface BackOrderModel {
 
   // Paycheck Section
   wage: 'monthlySalary' | 'hourlyWage';
-  salary: number;
+  salary: string;
   benefit: number;
   bonus: number;
   travelingExpenses: 'yesRegular' | 'yesDaily' | 'none';
@@ -92,7 +93,8 @@ export enum BackOrderStatus {
 export enum EmploymentBOStatus {
   FullTime = 'fullTime',
   PartTime = 'partTime',
-  PartTimeEmployee = 'partTimeEmployee',
+  Dispatch = 'dispatch',
+  ReferralDispatch = 'referralDispatch'
 }
 
 export enum WorkingDaysWeek {
