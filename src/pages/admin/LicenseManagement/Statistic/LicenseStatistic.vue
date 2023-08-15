@@ -26,12 +26,19 @@
           </div>
         </template>
         <template #after="props">
-          <q-td>
+          <q-td v-if="props.branchItem.working === false" class="emptyCell">
+            {{ 'nemesys' }}
+           </q-td>
+           <q-td v-else>
             {{ 'nemesys' }}
           </q-td>
-          <q-td>
+          <q-td v-if="props.branchItem.working === false" class="emptyCell">
+            {{ props.branchItem.licensesSlots }}
+           </q-td>
+          <q-td v-else>
             {{ props.branchItem.licensesSlots }}
           </q-td>
+
         </template>
       </OrganizationColspanTabel>
     </div>
@@ -296,5 +303,8 @@ td {
 
 .container {
   margin: 20px 90px 0px 90px;
+}
+.emptyCell {
+  background: $grey-4;
 }
 </style>

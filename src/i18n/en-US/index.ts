@@ -279,6 +279,7 @@ export default {
   settings: {
     branch: {
       addBranch: 'Add Branch',
+      editBranch:'Edit Branch',
       id: 'Branch ID',
       name: 'Branch Name',
       flag: 'Enable Flag',

@@ -65,7 +65,7 @@
           <div class="row q-pt-sm items-center">
             <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true"
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
-              <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
+              <q-input v-model="data['customerRepresentative']" type="text" dense outlined/>
             </labelField>
           </div>
           <div class="row">
@@ -244,7 +244,9 @@ async function resetData() {
 resetData();
 
 onMounted(async () => {
-  data.value = props.duplicateBo
+  if(props.duplicateBo){
+    data.value = props.duplicateBo
+  }
   if(props.clientId){
     data.value['client_id'] = props.clientId
   }

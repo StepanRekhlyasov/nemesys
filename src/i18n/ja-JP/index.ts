@@ -279,6 +279,7 @@ export default {
   settings: {
     branch: {
       addBranch: '支店新規追加',
+      editBranch:'支店情報編集',
       id: '支店ID',
       name: '支店名',
       prefectures: '都道府県',
@@ -1005,7 +1006,6 @@ export default {
         assigned: '勤務中',
         unassigned: '離職中',
       }
-
     },
     statusList: {
       unsupported: '未対応',

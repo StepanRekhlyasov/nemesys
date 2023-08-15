@@ -4,6 +4,7 @@ import { i18n } from 'boot/i18n';
 
 const { t } = i18n.global
 
+export const radius = ref<number>(0);
 export const boMapDrawerValue = ref<boolean>(false);
 
 const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };

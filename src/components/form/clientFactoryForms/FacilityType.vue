@@ -52,7 +52,6 @@ watch(() => [props.industryName], async () => {
             <q-item-label v-if="isLabel" class="q-pb-xs">
                     {{t('client.add.facilityType')}}
             </q-item-label>
-
             <div v-if="!isLoading">
                 <q-checkbox
                     size="xs"
@@ -63,8 +62,8 @@ watch(() => [props.industryName], async () => {
                     :key="option"
                     @update:modelValue="(isChecked) => updateType(option, isChecked)"
                 />
-                <p class="q-my-sm" v-if="localType.length > facilityList.length">{{ t('client.add.otherFacilitiesTitle') }}</p>
-                <template v-for="option in localType">
+                <template v-for="option, index in localType">
+                  <p class="q-my-sm" v-if="index===0 && !facilityList.includes(option)" :key="index">{{ t('client.add.otherFacilitiesTitle') }}</p>
                   <q-checkbox
                       v-if="!facilityList.includes(option)"
                       size="xs"

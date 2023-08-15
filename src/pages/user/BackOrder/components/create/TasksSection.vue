@@ -25,7 +25,7 @@
     </div>
 
     <div class="row ">
-      <labelField :label="$t('backOrder.create.onCallSupport')" :edit="true" labelClass="q-pl-md col-2 text-right self-center"  valueClass="q-pl-md col-10 row" required>
+      <labelField :label="$t('backOrder.create.onCallSupport')" :edit="true" labelClass="q-pl-md q-pt-md col-2 text-right"  valueClass="q-pl-md col-10 row" required>
         <q-field
           borderless dense
           v-model="data['onCallSupport']"
