@@ -31,7 +31,8 @@ const titleExists = (val: string, exception = '') => {
     if(props.activeIndustry) {
         const titles = [
             ...Object.values(props.activeIndustry.uniqueItems.typeSpecificItems || {}).map(item => item.title),
-            ...Object.values(props.activeIndustry.uniqueItems.facilityForms || {}).map(item => item.title)
+            ...Object.values(props.activeIndustry.uniqueItems.facilityForms || {}).map(item => item.title),
+            ...Object.values(props.activeIndustry.uniqueItems.occupationForms || {}).map(item => item.title)
         ].filter(title => title !== exception)
         return !titles.includes(val)
     }
