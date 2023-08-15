@@ -118,16 +118,13 @@ const closePopup = () => {
 };
 
 watch(() => radius.value, async() => {
+  loading.value = true;
   await getFormatedData();
   if (radius.value) {
     allBoList.value = allBoList.value.filter((bo) => bo.distanceBusiness <= radius.value)
     allBoList.value.sort((a, b) => a.distanceBusiness - b.distanceBusiness);
   }
-  else {
-    loading.value = true;
-    await getFormatedData();
-    loading.value = false;
-  }
+  loading.value = false;
 })
 
 watch(boMapDrawerValue,async ()=>{
