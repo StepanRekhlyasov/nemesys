@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineProps, ref, watch } from 'vue';
 import draggable from 'vuedraggable'
 
-import { FacilityForm, Industry } from 'src/shared/model/Industry.model';
+import { OccupationForm, Industry } from 'src/shared/model/Industry.model';
 import { QInput } from 'quasar';
 const { t } = useI18n({ useScope: 'global' });
 
@@ -12,16 +12,16 @@ const props =  defineProps<{
 }>()
 
 const emit = defineEmits<{
-    (e: 'newFacilityForm', data: string),
-    (e: 'deleteFacilityForm', id: string),
-    (e: 'updateFacilityForm'),
-    (e: 'sortFacilityForm', event: {
+    (e: 'newOccupationForm', data: string),
+    (e: 'deleteOccupationForm', id: string),
+    (e: 'updateOccupationForm'),
+    (e: 'sortOccupationForm', event: {
         newIndex: number,
         oldIndex: number
     })
 }>()
 
-const newFacilityForm = ref('')
+const newOccupationForm = ref('')
 const inputVal = ref<QInput>()
 
 const titleExists = (val: string, exception = '') => {
@@ -37,23 +37,23 @@ const titleExists = (val: string, exception = '') => {
     return false
 }
 
-const newFacilityFormHandle = () => {
+const newOccupationFormHandle = () => {
     if(inputVal.value && inputVal.value.validate()) {
-        emit('newFacilityForm', newFacilityForm.value)
-        newFacilityForm.value = ''
+        emit('newOccupationForm', newOccupationForm.value)
+        newOccupationForm.value = ''
         setTimeout(()=>{
           inputVal.value?.resetValidation()
         }, 1)
     }
 }
 
-const deleteFacilityForm = (id: string) => {
-    emit('deleteFacilityForm', id)
+const deleteOccupationForm = (id: string) => {
+    emit('deleteOccupationForm', id)
 }
 
-const updateFacilityForm = (val: string, initVal: string) => {
+const updateOccupationForm = (val: string, initVal: string) => {
     if(val !== initVal) {
-        emit('updateFacilityForm')
+        emit('updateOccupationForm')
     }
 }
 
@@ -64,12 +64,12 @@ const updateItemsOrder = (event: {
 
     const { newIndex, oldIndex } = event;
 
-    emit('sortFacilityForm', { newIndex, oldIndex })
+    emit('sortOccupationForm', { newIndex, oldIndex })
 }
-const sortedList = ref<[string, FacilityForm][]>()
+const sortedList = ref<[string, OccupationForm][]>()
 watch(()=>props.activeIndustry, ()=>{
   if(props.activeIndustry){
-    sortedList.value = Object.entries(props.activeIndustry.uniqueItems.facilityForms)
+    sortedList.value = Object.entries(props.activeIndustry.uniqueItems.occupationForms)
     sortedList.value.sort((a, b)=>{
       if(b?.[1].order && a?.[1].order){
         return a?.[1].order - b?.[1].order
@@ -82,25 +82,25 @@ watch(()=>props.activeIndustry, ()=>{
 
 <template>
     <div v-if="activeIndustry">
-        <div v-if="Object.keys(activeIndustry.uniqueItems.facilityForms).length">
+        <div v-if="Object.keys(activeIndustry.uniqueItems.occupationForms).length">
 
             <draggable :list="sortedList" :itemKey="({index})=>index" handle=".cursor_grab" @end="updateItemsOrder">
                 <template #item="{ element, index }">
                     <div class="row items-center q-mt-md" :key="element[1].order">
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab"/>
 
-                        <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${index + 1}` }}</div>
+                        <div class="q-mr-md">{{ t('KPI.occupation') + ` ${index + 1}` }}</div>
 
                         <div>
-                            <q-input style="width:300px" class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
+                            <q-input class="q-mr-md" outlined readonly dense v-model="element[1].title"/>
 
                             <q-popup-edit
-                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val) && titleExists(val, element[1].title))"
+                                :validate="(val) => (val !== null && val !== '' && /^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val) && titleExists(val, element[1].title))"
                                 v-model="element[1].title"
                                 :cover="false"
                                 :offset="[0, 10]"
                                 v-slot="scope"
-                                @save="updateFacilityForm">
+                                @save="updateOccupationForm">
 
                                 <q-input
                                     color="accent"
@@ -117,7 +117,7 @@ watch(()=>props.activeIndustry, ()=>{
                             </q-popup-edit>
                         </div>
 
-                        <q-btn @click="deleteFacilityForm(element[0] as string)" icon="mdi-delete-outline" round flat>
+                        <q-btn @click="deleteOccupationForm(element[0] as string)" icon="mdi-delete-outline" round flat>
                         </q-btn>
                     </div>
                 </template>
@@ -127,22 +127,21 @@ watch(()=>props.activeIndustry, ()=>{
         <div class="row items-center q-mt-md">
             <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md"/>
 
-            <div class="q-mr-md">{{ t('clientFactory.facilityType') + ` ${Object.keys(activeIndustry.uniqueItems.facilityForms).length + 1}` }}</div>
+            <div class="q-mr-md">{{ t('KPI.occupation') + ` ${Object.keys(activeIndustry.uniqueItems.occupationForms).length + 1}` }}</div>
 
             <q-input
-                style="width:300px"
                 class="q-mr-md" outlined dense
-                v-model="newFacilityForm"
+                v-model="newOccupationForm"
                 ref="inputVal"
                 :rules="[
                      (val) => (val && val.length > 0) || '',
-                     (val) => (/^[\p{L}_$()（）][\p{L}\p{N}_$()（）]*$/u.test(val)) || $t('errors.industryRules'),
-                     (val) => titleExists(val) || $t('errors.titleExist')
+                     (val) => (/^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(val)) || 'Invalid input. Keys should start with a letter, $ or _, and should not contain spaces or special characters.',
+                     (val) => titleExists(val) || 'Title already exists'
                 ]"
                 color="accent" hide-bottom-space/>
 
             <div class="q-mr-md">
-                <q-btn color="accent" icon="mdi-plus" :label="t('industry.addLine')" size="sm" @click="newFacilityFormHandle"/>
+                <q-btn color="accent" icon="mdi-plus" :label="t('industry.addLine')" size="sm" @click="newOccupationFormHandle"/>
             </div>
         </div>
     </div>
