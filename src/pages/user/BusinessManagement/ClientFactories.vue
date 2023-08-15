@@ -161,7 +161,7 @@ const openFaxDrawer = (id: string) => {
         <NewClientFactoryDrawer v-if="isNewClientFactoryDrawerRender" @hide-drawer="hideNewClientFactoryDrawer"
             theme="primary" :is-drawer="isNewClientFactoryDrawer" />
 
-        <FaxDrawer @hide-drawer="hideNewFaxDrawer" theme="primaery" :selectedCF="selectedCF" :is-drawer="isNewFaxDrawer" />
+        <FaxDrawer @hide-drawer="hideNewFaxDrawer" theme="primaery" :selectedCF="selectedCF" :is-drawer="isNewFaxDrawer"/>
     </div>
 </template>
 
