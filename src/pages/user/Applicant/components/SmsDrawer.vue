@@ -148,7 +148,7 @@
             <div v-for="q in props.row.qualification" :key="q">
               {{ t(`applicant.qualification.${q}`) }}
             </div>
-            {{ props.row.totalYear }}
+            {{ props.row.totalMonthes ? Math.floor(props.row.totalMonthes / 12) + ' ' + $t('common.year') : '' }}
           </q-td>
         </template>
 
@@ -191,8 +191,8 @@ const template = ref<string | null>(null)
 const getApplicant = useApplicant();
 const templates = ref<DocumentData | QSelectProps>([]);
 const smsStore = useSMS();
-const numberProp = defineProps({
-  phoneNumber: String
+const props = defineProps({
+  id: String
 })
 
 const { t } = useI18n({ useScope: 'global' });
@@ -259,7 +259,6 @@ onMounted(async () => {
   await fetchData()
 });
 
-
 async function fetchData() {
   templates.value = await smsStore.options
   loading.value = true;
@@ -270,9 +269,9 @@ async function fetchData() {
       'selected': false,
     }
   });
-  if (numberProp.phoneNumber) {
-    row.value = row.value.filter((e) => { 
-      if(e.phone === numberProp.phoneNumber) {
+  if (props.id) {
+    row.value = row.value.filter((e) => {
+      if(e.id === props.id) {
         e.selected = e;
         selected.value[e.id]['selected'] = true;
         return true;

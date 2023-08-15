@@ -1101,6 +1101,8 @@ export default {
       transportationServices: 'Transportation services',
       jobSearchPriorities: 'Job Search Priorities',
       possible: 'Possible',
+      allowed:'Allowed',
+      forbidden: 'Forbidden',
       no: 'Not',
       workExperience: 'Work Experience',
       personal: 'Personal Status',

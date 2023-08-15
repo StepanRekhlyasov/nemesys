@@ -147,6 +147,7 @@ const props = defineProps<{
   clientId?: string,
   officeId?: string,
   originalOfficeId?: string,
+  duplicateBo?: BackOrderModel,
 }>()
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -243,6 +244,7 @@ async function resetData() {
 resetData();
 
 onMounted(async () => {
+  data.value = props.duplicateBo
   if(props.clientId){
     data.value['client_id'] = props.clientId
   }

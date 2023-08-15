@@ -1097,6 +1097,8 @@ export default {
       transportationServices: '送迎業務可否',
       jobSearchPriorities: '仕事探しの優先順位',
       possible: '可',
+      allowed: '可',
+      forbidden: '不可',
       no: '不可',
       workExperience: '職務経験',
       personal: '本人状況',
