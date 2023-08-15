@@ -13,7 +13,8 @@ const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
     clientFactory: ClientFactory,
     draft: Partial<ClientFactory>,
-    isLoading: boolean
+    isLoading: boolean,
+    selectedIndustry?: { value: string, isSelected: boolean }
 }>();
 
 const emit = defineEmits<{
@@ -75,11 +76,12 @@ watchEffect(() => {
             <q-separator color="bg-grey-3 q-mt-md"></q-separator>
         </div>
 
-        <HighlightTwoColumn 
+        <HighlightTwoColumn
             :data="mainInfo.officeInfo"
             :is-edit="isEditForm.officeInfo"
             :label="t('client.add.officeInfo')"
             theme="primary"
+            :selectedIndustry="selectedIndustry"
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
             @on-save="isEditForm.officeInfo = false; editDraft(dataForUpdating.officeInfo)">
@@ -95,6 +97,7 @@ watchEffect(() => {
 
         <EditableColumnsCF v-if="isEditForm.officeInfo"
             :data="mainInfo.officeInfo"
+            :selectedIndustry="selectedIndustry"
             @data-changed="e => getNewDataToUpdate(e, 'officeInfo')"
             theme="primary"/>
 
@@ -103,19 +106,21 @@ watchEffect(() => {
             :is-edit="isEditForm.contactInfo"
             :label="t('client.add.contactInfo')"
             theme="primary"
+            :selectedIndustry="selectedIndustry"
             @open-edit="isEditForm.contactInfo = true"
             @close-edit="isEditForm.contactInfo = false"
             @on-save="isEditForm.contactInfo = false; editDraft(dataForUpdating.contactInfo)"/>
 
         <EditableColumnsCF v-if="isEditForm.contactInfo"
             :data="mainInfo.contactInfo"
+            :selectedIndustry="selectedIndustry"
             @data-changed="e => getNewDataToUpdate(e, 'contactInfo')"
             theme="primary"/>
     </div>
 
     <q-separator color="bg-grey-3 q-mt-md"></q-separator>
 
-    <CFDrawerBodyFooter 
+    <CFDrawerBodyFooter
       @open-fax-drawer="openFaxDrawer"
       :clientFactory="clientFactory"
     />

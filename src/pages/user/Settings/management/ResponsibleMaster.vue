@@ -228,9 +228,7 @@ async function searchUsers() {
   loading.value = true
   usersListData.value = [...copyUsersListData.value]
   usersListData.value = usersListData.value.filter(function (el) {
-    const name=el['displayName']
-    const email=el['email']
-    return name.includes(search.value) || email.includes(search.value);
+    return el['displayName'].toLowerCase().includes(search.value.toLowerCase()) ||el['email'].toLowerCase().includes(search.value.toLowerCase())
   });
   loading.value = false
 }

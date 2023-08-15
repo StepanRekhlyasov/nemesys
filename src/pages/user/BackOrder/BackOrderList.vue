@@ -10,7 +10,10 @@
           検索条件 / エリア：東京都全域,　詳細条件：…
           <q-btn :label="$t('backOrder.addBO')" color="primary" icon="mdi-plus" @click="addNewBo" />
         </div>
-        <searchForm @load-search-staff="loadSearchStaff" />
+        <div class="row">
+          <searchForm class="q-mr-md" @load-search-staff="loadSearchStaff" />
+          <q-btn :label="$t('backOrder.deleteBO')" color="red" :disable="selected.length === 0" icon="delete" @click="deleteSelected"></q-btn>
+        </div>
       </q-card-section>
       <q-separator color="white" size="2px" />
       <q-card-section class="q-pa-none">
@@ -52,15 +55,17 @@
 
           <template v-slot:body-cell-employmentType="props">
             <q-td :props="props" class="q-pa-none">
-                {{
-                  props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-'
-                }}
+              {{
+                props.row.employmentType && props.row.employmentType.length && Array.isArray(props.row.employmentType) ?
+                props.row.employmentType.map((row: string) => $t('client.backOrder.' + row)).join(', ') : '-'
+              }}
             </q-td>
           </template>
 
           <template v-slot:body-cell-info="props">
             <q-td :props="props" class="q-pa-none">
               <q-btn icon="mdi-information-outline" round style="color: #175680" flat @click="showDialog(props.row)" />
+              <q-btn icon="content_copy" round style="color: #175680" flat @click="addDuplicateBo(props.row)" />
             </q-td>
           </template>
 
@@ -146,7 +151,7 @@
   }
     " />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
-    <createBO :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" v-if="cteateBoDrawer" />
+    <createBO :duplicateBo="duplicateBo" :client-id="duplicateBo?.client_id" :office-id="duplicateBo?.office_id" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" v-if="cteateBoDrawer" />
   </q-drawer>
   <SearchByMapDrawer v-model="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="closeMap">
   </SearchByMapDrawer>
@@ -154,7 +159,7 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
-import { useBackOrder } from 'src/stores/backOrder';
+import { useBackOrder, deleteBO } from 'src/stores/backOrder';
 import { Ref, ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
@@ -172,6 +177,7 @@ import TablePaginationSimple from 'src/components/pagination/TablePaginationSimp
 import { useUserStore } from 'src/stores/user'
 import { myDateFormat } from 'src/shared/utils/utils';
 
+
 const userStore = useUserStore();
 const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
@@ -181,11 +187,13 @@ const state = backOrderStore.state;
 const columns = ref<QTableProps | Ref>(BackOrderColumns);
 const showSearchByMap = ref(false);
 const selected = ref<BackOrderModel[]>([]);
+const duplicateBo = ref<BackOrderModel>();
 const cteateBoDrawer = ref(false);
 const typeBoCreate: Ref<'referral' | 'dispatch'> = ref('referral');
 const selectedBo = ref<BackOrderModel | ComputedRef>(
   computed(() => backOrderStore.state.selectedBo)
 );
+
 const selectedClient = ref<Client | undefined>(undefined);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const pagination = ref({
@@ -299,10 +307,10 @@ const getUserDisplayName = (registrant: string | undefined) => {
     userStore
       .getUserById(registrant)
       .then((user) => {
-        if(user?.branchName){
+        if (user?.branchName) {
           userNames.value[registrant] = user?.displayName + ' / ' + user.branchName || '';
         }
-        else{
+        else {
           userNames.value[registrant] = user?.displayName || '';
         }
         userDisplayName.value = userNames.value[registrant];
@@ -325,6 +333,27 @@ const closeMap = () => {
   radius.value = 0;
 };
 
+async function deleteSelected() {
+  $q.dialog({
+    title: t('backOrder.confirmDelete'),
+    cancel: t('backOrder.cancel'),
+    ok: t('backOrder.confirm'),
+  })
+
+  .onOk(async () => {
+    if (selected.value) {
+    selected.value.map(async (val) => await deleteBO(val.id));
+  }
+    await backOrderStore.loadBackOrder({}, pagination.value);
+  })
+  .onDismiss(() => {
+    selected.value = []
+  })
+  .onCancel(() => {
+    selected.value = []
+  })
+}
+
 function addNewBo() {
   $q.dialog({
     title: t('backOrder.selectBOType'),
@@ -339,6 +368,12 @@ function addNewBo() {
       typeBoCreate.value = 'dispatch';
       cteateBoDrawer.value = true;
     });
+}
+
+function addDuplicateBo(bo: BackOrderModel) {
+  typeBoCreate.value = bo.type;
+  duplicateBo.value = bo
+  cteateBoDrawer.value = true;
 }
 
 function showDialog(bo: BackOrderModel) {

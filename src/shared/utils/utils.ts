@@ -1,4 +1,4 @@
-import { collection, endAt, Firestore, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QueryStartAtConstraint, startAt, Timestamp, where, } from 'firebase/firestore';
+import { collection, Firestore, getDocs, orderBy, query, QueryEndAtConstraint, QueryFieldFilterConstraint, QueryOrderByConstraint, QueryStartAtConstraint,Timestamp, where, } from 'firebase/firestore';
 import { date, is } from 'quasar';
 import { toRaw } from 'vue';
 
@@ -147,14 +147,15 @@ export const branchCollection = (db: Firestore, organization_id: string) => coll
 
 // DB request
 
-export const getTemplates = (db: Firestore, organization_id: string, queryText?: string) => {
-  return getDocs(query(
+export const getTemplates = async(db: Firestore, organization_id: string, queryText?: string) => {
+  const queryDocs= await getDocs(query(
     templateCollection(db, organization_id),
     where('deleted', '==', false),
-    orderBy('name'),
-    startAt(queryText),
-    endAt(queryText + '\uf8ff')
+    orderBy('name')
   ))
+  queryText=queryText?.toLowerCase()
+  const filteredText=queryDocs.docs.filter(doc=>doc.data().name.toLowerCase().includes(queryText))
+  return filteredText
 }
 
 export const remainingDays = (date1: Date, date2: Date) => {
@@ -217,7 +218,6 @@ export const formatTextToNumber = (text: string | number, sum = false) => {
   }
   return num
 }
-
 export const commaSeparatedNumber = (value : string | number | null) => {
   if(!value){
     return ''

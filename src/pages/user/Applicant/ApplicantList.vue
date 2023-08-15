@@ -27,7 +27,7 @@
             <q-th :props="props" class="q-pa-none">
               <div> {{ $t('applicant.list.lastContact') }} </div>
               <div> {{ $t('applicant.list.contactNote') }} </div>
-                
+
             </q-th>
           </template>
 
@@ -119,7 +119,7 @@
           </template>
           <template v-slot:body-cell-phone="props">
             <q-td :props="props">
-              <span class="link" cursor @click="feedContact(props.row.phone)"> {{ props.row.phone }}</span>
+              <span class="link" cursor @click="feedContact(props.row.id)"> {{ props.row.phone }}</span>
             </q-td>
           </template>
 
@@ -149,7 +149,7 @@
             </span>
           </div>
         </q-card-section>
-        <SmsDrawer :key="phoneNumber" :phoneNumber="phoneNumber" v-bind="phoneNumber && phoneNumber.length"/>
+        <SmsDrawer :key="applicantId" :id="applicantId" v-bind="applicantId && applicantId.length"/>
       </q-card>
     </q-scroll-area>
   </q-drawer>
@@ -177,7 +177,7 @@ const sendSMSDrawer = ref<boolean>(false);
 const applicantStore = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const sendNumber = ref(false);
-const phoneNumber = ref<string>('');
+const applicantId = ref<string>('');
 
 const pagination = ref({
   sortBy: 'desc',
@@ -323,14 +323,14 @@ const openDrawer = (data: Applicant) => {
 };
 const openSMSDrawer = async () => {
   if(sendNumber.value === false) {
-    phoneNumber.value = '';
+    applicantId.value = '';
   }
   sendSMSDrawer.value = true
 };
 
-const feedContact = async (phoneNumberarg: string) => {
+const feedContact = async (id: string) => {
   sendNumber.value = true;
-  phoneNumber.value = phoneNumberarg;
+  applicantId.value = id;
   await openSMSDrawer();
   sendNumber.value = false;
 }

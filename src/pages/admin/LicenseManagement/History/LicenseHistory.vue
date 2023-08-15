@@ -104,7 +104,11 @@ async function getRows(licenseHistory: LicenseHistory[]) {
 
 async function searchLicense() {
   loading.value = true
-  const licences = await licenceStore.search(search.value, 'licenseHistory')
+  let licences = await licenceStore.search(search.value, 'licenseHistory')
+  if(!licences){
+    const searchedValue=search.value.toUpperCase()
+    licences=await licenceStore.searchByCode(searchedValue, 'licenseHistory')
+  }
   if (!licences) {
     loading.value = false
     rows.value = []

@@ -6,8 +6,7 @@
     <div class="row ">
       <labelField :label="$t('client.backOrder.dateOfRegistration')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md ">
-        <q-input dense outlined bg-color="white" v-model="data['dateOfRegistration']"
-          :rules="[(val) => val ? validateDate(val) : true, creationRule]" hide-bottom-space >
+        <q-input dense outlined bg-color="white" v-model="formattedDate" hide-bottom-space >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -80,7 +79,7 @@
     <div class="row">
       <labelField :label="$t('client.backOrder.experienceReq')" :edit="true"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 self-center q-pl-md">
-        <q-input v-model="data['experienceReq']" type="textarea" autogrow outlined dense :disable="loading" />
+        <q-input v-model="data['experienceReq']" type="text" outlined dense :disable="loading" />
       </labelField>
       <labelField :label="$t('backOrder.create.experienceRemarks')" :edit="true"
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md self-center ">
@@ -90,7 +89,7 @@
     <div class="row q-pt-sm">
       <labelField :label="$t('client.backOrder.upperAgeLimit')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex">
-        <q-input v-model="data['upperAgeLimit']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
+        <q-input v-model="data['upperAgeLimit']" type="text" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" />
         <span class="self-center q-pl-md">{{ $t('common.ageShort') }}</span>
       </labelField>
     </div>
@@ -98,7 +97,7 @@
     <div class="row q-pt-sm" v-if="type == 'dispatch'">
       <labelField :label="$t('applicant.progress.table.invoice')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['invoice']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['invoice'] = commaSeparatedNumber(value) }"/>
+        <q-input v-model="data['invoice']" type="text" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['invoice'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -106,7 +105,7 @@
     <div class="row q-pt-sm"  v-if="type == 'dispatch'">
       <labelField :label="$t('backOrder.payment')" :edit="true" required
         labelClass="q-pl-md col-2 self-center text-right"  valueClass="col-4 q-pl-md flex ">
-        <q-input v-model="data['payment']" type="textarea" autogrow outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['payment'] = commaSeparatedNumber(value) }"/>
+        <q-input v-model="data['payment']" type="text" outlined dense :disable="loading" hide-bottom-space :rules="[creationRule]" @update:model-value="(value)=>{ data['payment'] = commaSeparatedNumber(value) }"/>
         <span class="self-center q-pl-md">{{ $t('common.yen') }}</span>
       </labelField>
     </div>
@@ -123,11 +122,11 @@
 <script lang="ts" setup>
 import labelField from 'src/components/form/LabelField.vue';
 import { creationArrayRule, creationRule } from 'src/components/handlers/rules';
-import { validateDate } from 'src/shared/constants/Form.const';
 import { BackOrderModel, TypeOfCase, EmploymentBOStatus, TypeQualifications, selectOptions } from 'src/shared/model';
 import { commaSeparatedNumber } from 'src/shared/utils/utils';
 import { useUserStore } from 'src/stores/user';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const props = defineProps<{
   backOrder: Partial<BackOrderModel>,
@@ -143,8 +142,9 @@ user.getCurrentUser();
 watch([props], () => {
   data.value = props.backOrder
 }, { deep: true })
+
+const formattedDate = computed(()=> {
+      return myDateFormat(data.value['dateOfRegistration'])
+})
+
 </script>
-
-<style>
-
-</style>

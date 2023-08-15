@@ -122,6 +122,26 @@
                   @on-end-loading="disableSubmit = false" />
               </div>
             </div>
+            <div class="row q-pt-sm">
+              <div class="col-3 text-right self-center q-pr-sm">
+                {{ $t('clientFactory.drawer.details.industry') }}
+              </div>
+              <div class="col-6 q-ml-sm bg-white">
+                <q-select
+                  :disable="!industries.length"
+                  v-model="applicantData['industry']"
+                  emit-value
+                  map-options
+                  outlined
+                  dense
+                  :options="industries"
+                  option-label="industryName"
+                  option-value="."
+                  > <template v-if="!applicantData['industry']" v-slot:selected>
+                <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
+              </template></q-select>
+              </div>
+            </div>
           </div>
           <div class="col-6">
             <div class="row q-pt-sm">
@@ -301,6 +321,8 @@ import { getAddresses } from 'src/shared/constants/Municipalities.const';
 import AddressDialog from './components/AddressDialog.vue';
 import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 import { toKatakana } from 'src/shared/utils/ToKatakana.utils.ts';
+import { useIndsutry } from 'src/stores/industry';
+import { storeToRefs } from 'pinia';
 import { Media } from 'src/shared/model/Media.model';
 import { useMedia } from 'src/stores/media';
 const { getAllmedia } = useMedia();
@@ -313,7 +335,7 @@ const applicantDataSample = {
 };
 const organizationStore = useOrganization();
 const applicantStore = useApplicant();
-
+const industryStore = useIndsutry()
 const applicantData = ref(JSON.parse(JSON.stringify(applicantDataSample)));
 const prefectureOption = ref(prefectureList.value);
 const applicationMethodOption = ref(applicationMethod)
@@ -329,6 +351,7 @@ const showAddress = ref(false)
 const addressList = ref(<{ prefecture: string, municipality: string, street: string }[]>[]);
 const keepDetails = ref(false)
 const fetchMunicipalities = ref(false)
+const { industries } = storeToRefs(industryStore)
 const mediaList = ref<Media[]>([]);
 
 

@@ -279,6 +279,7 @@ export default {
   settings: {
     branch: {
       addBranch: 'Add Branch',
+      editBranch:'Edit Branch',
       id: 'Branch ID',
       name: 'Branch Name',
       flag: 'Enable Flag',
@@ -620,6 +621,8 @@ export default {
       conclusionReferralContract: 'Conclusion of referral contract',
       contactInfo: 'Contact Information',
       officeReg: 'Office Registration',
+      Occupation:'Occupation',
+      Certification:'Certification',
     },
     tele: {
       teleAppointHistory: 'Tele Appointment History',
@@ -800,6 +803,7 @@ export default {
       note5: '・Each message will incur a cost of 8 yen.'
     },
     add: {
+      applicantInfo:'Applicant Information',
       name: 'Name',
       kanaName: 'Kana Name',
       postCode: 'Post Code',
@@ -1101,6 +1105,8 @@ export default {
       transportationServices: 'Transportation services',
       jobSearchPriorities: 'Job Search Priorities',
       possible: 'Possible',
+      allowed:'Allowed',
+      forbidden: 'Forbidden',
       no: 'Not',
       workExperience: 'Work Experience',
       personal: 'Personal Status',
@@ -1235,6 +1241,10 @@ export default {
   backOrder: {
     changeSearchCriteria: 'Change search criteria',
     addBO: 'BO new added',
+    deleteBO:'Delete BO',
+    confirmDelete: 'Confirm Deletion ?',
+    confirm: 'Confirm',
+    cancel:'Cancel',
     status: 'Status',
     personnel: 'BO Personnel',
     registrationDate: 'BO Registration Date',
@@ -2174,6 +2184,8 @@ export default {
     modeIndividual: 'Individual Data Aggregation',
     dailyTotal: 'daily total',
     item: 'Item',
+    occupation: 'Occupation',
+    certificate: 'Certificate',
     actualFigures: 'Actual figures',
     unitPrice: 'Unit price/LT',
     applicationAttribute: 'Application attribute',
