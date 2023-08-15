@@ -244,7 +244,9 @@ async function resetData() {
 resetData();
 
 onMounted(async () => {
-  data.value = props.duplicateBo
+  if(props.duplicateBo){
+    data.value = props.duplicateBo
+  }
   if(props.clientId){
     data.value['client_id'] = props.clientId
   }
