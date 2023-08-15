@@ -5,7 +5,6 @@ import { useUserStore } from 'src/stores/user';
 import { toDate } from 'src/shared/utils/utils';
 import { User } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
-// import { useApplicant } from 'src/stores/applicant';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 import { useI18n } from 'vue-i18n';
@@ -24,7 +23,6 @@ const pagination = ref({
 });
 
 
-// const applicantStore = useApplicant();
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
 
@@ -44,26 +42,22 @@ onMounted(async () => {
 const getUserName = (userId: string) => {
     return allUsers.value.find((user) => user.id === userId)?.name;
 };
-// const filterFn = (val: string, update) => {
-//   const pagination = {
-//     sortBy: 'desc',
-//     descending: false,
-//     page: 1,
-//     rowsPerPage: 100,
-//   };
-//   update(async () => {
-//     if (val === '') {
-//       applicantStore.state.applicantList = [];
-//     } else {
-//       loading.value = true;
-//       await applicantStore.loadApplicantData(
-//         { keyword: val as string },
-//         pagination
-//       );
-//       loading.value = false;
-//     }
-//   });
-// };
+const keyword = ref('');
+const filterConditionList = ref();
+const filter = ref(false)
+const filterFn = () => {
+    filterConditionList.value = conditionList.value.filter(item => {if(check(item['conditionName'])){return item}})
+    filter.value=true;
+};
+const clearFilter = () =>{
+    filter.value=false;
+    filterConditionList.value={}
+    keyword.value=''
+}
+const check = (name:string) => {
+    const regex = new RegExp(keyword.value.split('').join('.*'), 'i');
+    return regex.test(name)
+}
 const deleteCondition = (id) => {
     saveSearchCondition.deleteSaveSearchCondition(id)
 }
@@ -98,11 +92,11 @@ const searchCF = async(row) => {
                     {{ t('common.searchKeyword') }} / {{ t('common.searchCondition') }}
                 </div>
                 <form class="form q-mt-sm">
-                    <input class="form__input" type="text" :placeholder="t('form.searchPlaceholder')">
-                    <q-btn color="accent">
+                    <input class="form__input" type="text" v-model="keyword" :placeholder="t('form.searchPlaceholder')">
+                    <q-btn color="accent" @click="filterFn">
                         {{ t('common.search') }}
                     </q-btn>
-                    <q-btn>
+                    <q-btn @click="clearFilter">
                         {{ t('common.clear') }}
                     </q-btn>
                 </form>
@@ -119,7 +113,7 @@ const searchCF = async(row) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table__row wrapper_animate_left_border_client" :key="item.id" v-for="item in conditionList">
+                        <tr class="table__row wrapper_animate_left_border_client" :key="item.id" v-for="item in !filter?conditionList:filterConditionList">
                             <td class="table__btn-wrapper q-ml-xs"><q-icon size="1.5rem" color="accent"
                                     class="table__edit-btn" name="edit" @click="openDrawer(item.id,item)"/></td>
                             <td class="table__row_name text-left">
