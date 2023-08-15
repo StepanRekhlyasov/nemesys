@@ -521,7 +521,7 @@ const searchClients = async () => {
     const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
     cfSnapshot.docs.forEach((doc) => {
       office.push(doc.id)
-        cIds[doc.id] = doc.data()['clientID']
+      cIds[doc.id] = doc.data()['clientID']
     })
   }
   await advanceSearch.searchClients(office, cIds, 'advance');
