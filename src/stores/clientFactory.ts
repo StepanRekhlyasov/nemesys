@@ -532,12 +532,15 @@ export const useClientFactory = defineStore('client-factory', () => {
     async function getClientFactoryByConstraints(constraints: ConstraintsType) {
         const ref = query(collectionGroup(db, 'client-factory'), ...constraints)
         const data = await getDocs(ref)
-        return data.docs.map((doc)=>{
-           return{
-            ...doc.data(),
-            id: doc.id
-        } as ClientFactory
-        })
+        return await Promise.all(data.docs.map(async (d) => {
+            const data = d.data()
+            const client = await getDoc(doc(db, `clients/${data.clientID}`))
+            return {
+                ...data,
+                id: d.id,
+                client: client.data(),
+            } as ClientFactory
+        }))
     }
     
     async function getModifiedCfWithId(office_id: string) {
