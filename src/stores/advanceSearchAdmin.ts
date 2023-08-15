@@ -1,15 +1,19 @@
 import { ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { Client } from 'src/shared/model';
-import { collection, getFirestore, Timestamp, getDocs, collectionGroup } from 'firebase/firestore';
+import { collection, getFirestore, Timestamp, getDocs, collectionGroup, query, where } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import { useIndsutry } from 'src/stores/industry';
+const industryStore = useIndsutry();
+const { industries } = storeToRefs(industryStore);
 export const getBackOrderData = () => {
     return {
         client_name: '',
         industry: [],
-        facilityType: [],
+        facilityType: {},
         basic_contract_signed: false,
         avail_job_postings: false,
         status: [],
@@ -36,7 +40,7 @@ export const getBackOrderData = () => {
         numFullTimeEmployees: '',
         numPartTimeEmployees: '',
         numTempEmployees: '',
-        route: ''
+        route: []
     }
 };
 export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
@@ -145,23 +149,13 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
         return arr1.filter(element => arr2.includes(element));
     }
     const getKeywordData = async (officeData: string[], keyword: string, industry: string[], facilityType: string[]) => {
-        if (industry.length === 0) {
-            industry = [];
-        } else if (industry.length === 2) {
-            industry = ['nurse', '看護', 'nursing', '介護', '看護師'];
-        } else {
-            if (industry[0] === 'nurse') {
-                industry = ['nurse', '看護', '看護師'];
-            } else {
-                industry = ['nursing', '介護'];
-            }
-        }
         const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
         const office: string[] = [];
         cfSnapshot.docs.forEach((doc) => {
             if (officeData.includes(doc.id)) {
                 const name: string = doc.data()['name'] || '';
-                if (name.substring(0, keyword.length) === keyword) {
+                const regex = new RegExp(keyword.split('').join('.*'), 'i');
+                if (regex.test(name)) {
                     const type: string[] = doc.data()['industry'] || [];
                     if (industry.length == 0) {
                         const id: string = doc.id
@@ -281,56 +275,34 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
         })
         return officeData;
     };
-    const getTeleAppointmentData = async (officeData: string[], constraint: string) => {
-        const teleAppointmentSnapshot = await getDocs(collection(db, 'teleAppointment'));
+    const getTeleAppointmentData = async (constraint: string[]) => {
         const currentDate = new Date();
-        currentDate.setMonth(currentDate.getMonth() - 2);
+        currentDate.setMonth(currentDate.getMonth() - 3);
         const prevDate = convertDate(currentDate.toString())
         const offices: string[] = []
-        if (constraint === 'exist') {
-            for (const item of officeData) {
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['office_id'] === item
-                            && doc.data()['created_at'] >= prevDate) {
-                            if (!offices.includes(item)) { offices.push(item) }
-                        }
-                    }
-                )
+        const teleAppointmentSnapshot = await getDocs(
+            query(
+                collectionGroup(db,'teleAppointments'),
+                where('deleted','==',false),
+                where('created_at','>=',prevDate),
+            )
+        );
+        teleAppointmentSnapshot.docs.forEach((doc)=>{
+            const item = doc.data()['officeId']
+            if (constraint.length === 3 || constraint.includes('exist')) {
+                if (!offices.includes(item)) { offices.push(item) }
             }
-        }
-        else if (constraint === 'connected') {
-            for (const item of officeData) {
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['office_id'] === item
-                            && doc.data()['created_at'] >= prevDate
-                            && doc.data()['result'] === 'connected') {
-                            if (!offices.includes(item)) { offices.push(item) }
-                        }
-                    }
-                )
-            }
-        }
-        else if (constraint === 'notConnected') {
-            for (const item of officeData) {
-                let count = 0;
-                teleAppointmentSnapshot.docs.forEach(
-                    (doc) => {
-                        if (doc.data()['office_id'] === item
-                            && doc.data()['created_at'] >= prevDate) {
-                            if (doc.data()['result'] === 'notConnected') {
-                                count++;
-                            }
-                        }
-                    }
-                )
-                if (teleAppointmentSnapshot.docs.length > 0
-                    && teleAppointmentSnapshot.docs.length === count) {
+            else if (constraint.length === 2) {
+                if (['connected', 'notConnected'].includes(doc.data()['result'])) {
                     if (!offices.includes(item)) { offices.push(item) }
                 }
             }
-        }
+            else {
+                if (constraint.includes(doc.data()['result'])) {
+                    if (!offices.includes(item)) { offices.push(item) }
+                }
+            }
+        })
         return offices;
     };
     const getCFsId = async () => {
@@ -368,9 +340,20 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
         const otherCompanyReferralResultsStatus = getDate(backOrderData, 'otherCompanyReferralResults')
         const employmentStatus = getEmploymentStatus(backOrderData);
         if (backOrderData['client_name'] !== ''
-            || backOrderData['industry'].length > 0
-            || backOrderData['facilityType'].length > 0) {
-            office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], backOrderData['industry'], backOrderData['facilityType']))
+            || backOrderData['industry'].length > 0) {
+                const facilityType:string[]=[];
+                for(const key of Object.keys(backOrderData['facilityType'])){
+                    facilityType.push(...backOrderData['facilityType'][key])
+                }
+                const industry:string[]=[];
+                backOrderData['industry'].forEach((id)=>{
+                    for(const ind of industries.value){
+                        if(ind.id == id){
+                            industry.push(ind.industryName)
+                        }
+                    }
+                })
+            office = interSectionOfArray(office, await getKeywordData(office, backOrderData['client_name'], industry, facilityType))
         }
         if (dispatchRecordStatus.status) {
             office = interSectionOfArray(office, await getOffices(office, dispatchRecordStatus.date, 'dispatch'))
@@ -392,8 +375,10 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
                 }
             }
         }
-        if (backOrderData['route'] !== '') {
-            office = interSectionOfArray(office, await getTeleAppointmentData(office, backOrderData['route']));
+        if (backOrderData['route'].length !== 0) {
+
+            office = interSectionOfArray(office, await getTeleAppointmentData(backOrderData['route']));
+
         }
         clientFactoryStore.adminCondition = true
         clientFactoryStore.adminSelectedCFsId = office

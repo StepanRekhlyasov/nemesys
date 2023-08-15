@@ -517,7 +517,6 @@ const searchClients = async () => {
     office = advanceSearch.getCombineId() || [];
   }
   else {
-    // const cfSnapshot = props.actionsType === ActionsType.CLIENT ? await getDocs(collectionGroup(db, 'modifiedCF')) : await getDocs(collectionGroup(db, 'client-factory'));
     const cfSnapshot = await getDocs(collectionGroup(db, 'client-factory'));
     cfSnapshot.docs.forEach((doc) => {
       office.push(doc.id)
