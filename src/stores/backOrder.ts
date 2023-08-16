@@ -223,7 +223,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['registrant'] = auth.currentUser?.uid;
-    const snapshot = await getCountFromServer(query(collection(db, '/BO')));
+    const snapshot = await getCountFromServer(query(collection(db, '/BO'), where('organizationId', '==', organization.currentOrganizationId)));
     data['boId'] = snapshot.data().count;
 
     const checkNew = await getDocs(query(collection(db, '/BO'), where('office_id', '==', data.office_id), limit(1)))
