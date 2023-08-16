@@ -227,6 +227,7 @@ const getClientFactoryData = async(client_id: string | undefined) => {
       }
     }
   }
+  industryList.value = clientFactory.value?.industry
 }
 
 const updateOfficeName = async ()=>{
@@ -293,6 +294,9 @@ watch(() => data.value.office_id, async () => {
   }
   const office = clientFactoryList.value.find(office => office.id === data.value['office_id'])
   industryList.value = office?.industry
+  if(!industryList.value){
+    industryList.value = clientFactory.value?.industry
+  }
   if(!office?.isHead){
     data.value.industry = office?.industry?.[0]
   }
