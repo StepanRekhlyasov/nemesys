@@ -52,7 +52,7 @@
           </div>
         </div>
         <div class="q-pt-sm">
-          <q-btn :label="$t('common.addNew')" @click="onSubmit" color="primary" icon="mdi-plus-thick"
+          <q-btn :label="dialogType==='create' ? $t('common.addNew') : $t('common.save')" @click="onSubmit" color="primary" icon="mdi-plus-thick"
             class="no-shadow q-ml-md" />
           <q-btn :label="$t('common.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
@@ -102,6 +102,11 @@
           <q-btn size="sm" icon="delete" class="delete_btn" flat @click="showDeleteDialog([props.row.id])" />
         </q-td>
       </template>
+      <template v-slot:body-cell-timeFrame="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          <div>{{ $t('clientFactory.drawer.' + getTimeFrame(props.row.created_at)) }}</div>
+        </q-td>
+      </template>
       <template v-slot:body-cell-remark="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           <div class="remark" v-html="formatMultilineText(props.value)"></div>
@@ -118,7 +123,7 @@ import { useQuasar } from 'quasar';
 import { TeleColumns } from 'src/shared/constants/TeleAppoint.const';
 import { useTele } from 'src/stores/TeleAppointment';
 import { TeleAppointmentHistory } from 'src/shared/model/TeleAppoint.model';
-import { DocumentData } from 'firebase/firestore';
+import { DocumentData, Timestamp } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { QTableProps } from 'quasar';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
@@ -158,6 +163,20 @@ const formatMultilineText = (text: string) => {
   }
   return '';
 };
+
+const getTimeFrame = (created_at:string)=>{
+  const date = new Date(created_at);
+  const hours = date.getHours();
+  if (hours >= 8 && hours < 12) {
+    return 'morning';
+  } else if (hours >= 12 && hours < 16) {
+    return 'afternoon';
+  } else if (hours >= 16 && hours <= 20) {
+    return 'evening';
+  } else {
+    return '';
+  }
+}
 
 const fetchTeleData = async () => {
   loading.value = true;

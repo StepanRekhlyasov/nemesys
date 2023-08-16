@@ -780,6 +780,7 @@ export default {
       jobResult: 'Job Result',
       requiredService: 'Required Service',
       remark: 'Remark',
+      timeFrame:'Time Frame',
     },
     memo: {
       registredUser: 'Registred User',

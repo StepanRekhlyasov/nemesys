@@ -609,10 +609,3 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })
-
-export const deleteBO = async (id: string) => {
-  const db = getFirestore();
-  const docRef = doc(db, 'BO', id);
-  const res = await deleteDoc(docRef);
-  return res;
-}
