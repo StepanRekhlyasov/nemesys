@@ -175,9 +175,7 @@ import { BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.ty
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 import { useUserStore } from 'src/stores/user'
-import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
-import { Timestamp } from 'firebase/firestore';
-
+import { myDateFormat } from 'src/shared/utils/utils';
 
 const userStore = useUserStore();
 const backOrderStore = useBackOrder();
