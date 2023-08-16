@@ -269,8 +269,8 @@ resetData();
 
 onMounted(async () => {
   if(props.duplicateBo){
-    console.log(props.duplicateBo)
     data.value = props.duplicateBo
+    await getClientFactoryData(props.duplicateBo.client_id)
   }
   if(props.clientId){
     data.value['client_id'] = props.clientId
@@ -297,12 +297,17 @@ watch(() => data.value.office_id, async () => {
     loading.value = false
   }
   const office = clientFactoryList.value.find(office => office.id === data.value['office_id'])
-  industryList.value = office?.industry
-  if(!industryList.value){
+  if(office?.industry){
+    industryList.value = office?.industry
+  }
+  else{
     industryList.value = clientFactory.value?.industry
   }
-  if(!office?.isHead){
+  if(office && !office?.isHead){
     data.value.industry = office?.industry?.[0]
+  }
+  else if(!clientFactory.value?.isHead){
+    data.value.industry = clientFactory.value?.industry[0]
   }
 }, { deep: true, immediate: true })
 

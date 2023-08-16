@@ -1,6 +1,6 @@
 <template>
   <q-card-section>
-  
+
     <div class="row text-primary text-h6" >
       {{'■ '+ $t('backOrder.basicInfo') }}
     </div>
@@ -11,12 +11,12 @@
       <labelField :label="$t('backOrder.officeName')" :edit="false" :value="offices.find(office => office.id == backOrder['office_id'])?.name"
         labelClass="q-pl-md col-2 text-right self-center"  valueClass="col-4 q-pl-md self-center" >
       </labelField>
-      <template v-for="item in ui" :key="item.title"> 
-        <labelField 
-          :label="item.title" 
+      <template v-for="item in ui" :key="item.title">
+        <labelField
+          :label="item.title"
           :edit="false"
-          labelClass="q-pl-md col-2 text-right self-center" 
-          valueClass="col-4 q-pl-md self-center" 
+          labelClass="q-pl-md col-2 text-right self-center"
+          valueClass="col-4 q-pl-md self-center"
           :value="item.value"
         />
       </template>
@@ -43,7 +43,7 @@ const props = defineProps<{
 const cF = ref<ClientFactory>()
 const ui = ref()
 
-watch(()=>[props.backOrder.industry, props.officeID], ()=>{
+watch(()=>[props.backOrder.industry, props.officeID, props.offices], ()=>{
   if(props.backOrder.industry){
     cF.value = props.offices.find(office => office.id == props.backOrder['office_id'])
     if(cF.value?.officeDetails?.[props.backOrder.industry]?.uniqueItems){
@@ -51,7 +51,7 @@ watch(()=>[props.backOrder.industry, props.officeID], ()=>{
         const key = row[0]
         const item = row[1]
         return {
-          title: item.title, 
+          title: item.title,
           value: safeGet(cF.value, `officeDetails.${props.backOrder.industry}.uniqueItems.${key}.value`),
           order: item.order
         }
