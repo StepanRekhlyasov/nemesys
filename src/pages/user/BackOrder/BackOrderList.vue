@@ -176,6 +176,7 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 import { useUserStore } from 'src/stores/user'
 import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
+import { Timestamp } from 'firebase/firestore';
 
 
 const userStore = useUserStore();
@@ -378,7 +379,7 @@ function addNewBo() {
 function addDuplicateBo(bo: BackOrderModel) {
   typeBoCreate.value = bo.type;
   duplicateBo.value = bo
-  duplicateBo.value.dateOfRegistration = dateToTimestampFormat(new Date())
+  duplicateBo.value.dateOfRegistration = (new Date()).toString()
   cteateBoDrawer.value = true;
 }
 
