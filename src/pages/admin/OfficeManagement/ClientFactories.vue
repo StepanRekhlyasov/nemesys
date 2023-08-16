@@ -31,7 +31,6 @@ const adminCondition = ref<boolean>(clientFactoryStore.adminCondition);
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
 const isNewClientFactoryDrawer = ref(false)
-const isNewFaxDrawer = ref(false)
 
 const pagination = ref({
     sortBy: 'name',
@@ -54,9 +53,10 @@ const resetAdminSelectedCFsId = () =>{
     clientFactoryStore.adminSelectedCFsId = []
 }
 
+const originalOfficeId = ref('')
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
-
+    originalOfficeId.value = item.id
 
     setTimeout(() => {
         activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
@@ -65,10 +65,6 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
             isClientFactoryDrawer.value = true
         }
     }, 200);
-}
-const selected = ref<number[]>([])
-const selectedCFHandler = (item:number[]) =>{
-    selected.value = item
 }
 watch([clients], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
@@ -114,16 +110,6 @@ const openNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = true
 }
 
-// new fax-drawer
-
-const hideNewFaxDrawer = () => {
-    isNewFaxDrawer.value = false
-}
-
-const openNewFaxDrawer = () => {
-  isNewFaxDrawer.value = true
-}
-
 </script>
 
 <template>
@@ -157,11 +143,13 @@ const openNewFaxDrawer = () => {
         </q-card>
 
         <ClientFactoryDrawer
-        v-if="activeClientFactoryItem"
-        :key="activeClientFactoryItem.id"
-        v-model:selectedItem="activeClientFactoryItem"
-        :isDrawer="isClientFactoryDrawer"
-        @hide-drawer="hideClientFactoryDrawer"/>
+          v-if="activeClientFactoryItem"
+          :key="activeClientFactoryItem.id"
+          v-model:selectedItem="activeClientFactoryItem"
+          :isDrawer="isClientFactoryDrawer"
+          :originalOfficeId="originalOfficeId"
+          @hide-drawer="hideClientFactoryDrawer"
+        />
 
         <NewClientDrawer
         @hide-drawer="hideNewClientDrawer"
