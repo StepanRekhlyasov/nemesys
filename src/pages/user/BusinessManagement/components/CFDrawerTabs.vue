@@ -3,12 +3,16 @@ import { defineProps, defineEmits, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
 import CFDrawerHeadDetails from './CFDrawerHeadDetails.vue';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ClientFactoryTabs } from 'src/components/client-factory/types';
+
+
 import CFDrawerVariousAchievement from './CFDrawerVariousAchievement.vue';
 import CFDrawerMemo from './CFDrawerMemo.vue'
 import CFDrawerTeleAppointment from './CFDrawerTeleAppointment.vue';
 import CFDrawerBackOrder from './CFDrawerBackOrder.vue';
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryTabs } from '../types';
+
+
 
 const { t } = useI18n({ useScope: 'global' });
 defineProps<{
@@ -23,8 +27,7 @@ const emit = defineEmits<{
   (e: 'editDraft', changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>)
 }>()
 
-const editDraft = (changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
-
+const editDraftHandle = (changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
   emit('editDraft', changedData)
 }
 
@@ -51,25 +54,38 @@ const activeTab = ref(ClientFactoryTabs.TeleAppointmentHistory)
     <q-tab-panels v-model="activeTab" animated>
         <q-tab-panel :name="ClientFactoryTabs.TeleAppointmentHistory">
           <CFDrawerTeleAppointment
-              :client-id="clientFactory.clientID" :client-factory-id="clientFactory.id"/>
+              :client-id="clientFactory.clientID" :client-factory-id="clientFactory.id"
+          />
         </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.OfficeDetails">
-      <CFDrawerOfficeDetails @edit-draft="editDraft" :client-factory="clientFactory" :industryType="industryType"
-        :draft="draft" :is-loading="isLoading" />
+      <CFDrawerOfficeDetails 
+        @edit-draft="editDraftHandle" 
+        :client-factory="clientFactory" 
+        :industryType="industryType"
+        :draft="draft" 
+        :is-loading="isLoading" 
+      />
     </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.BOHistory">
-          <CFDrawerBackOrder :officeId="clientFactory.id" :clientId="clientFactory.clientID" :originalOfficeId="originalOfficeId"/>
+          <CFDrawerBackOrder 
+            :officeId="clientFactory.id" 
+            :clientId="clientFactory.clientID" :originalOfficeId="originalOfficeId"
+          />
         </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.HeadOffice">
-      <CFDrawerHeadDetails :client-id="clientFactory.clientID" :client-factory="clientFactory" @edit-draft="editDraft"/>
+      <CFDrawerHeadDetails 
+        :client-id="clientFactory.clientID" 
+        :client-factory="clientFactory" 
+        @edit-draft="editDraftHandle"
+      />
     </q-tab-panel>
 
-        <q-tab-panel :name="ClientFactoryTabs.VariousAchievements">
-          <CFDrawerVariousAchievement />
-        </q-tab-panel>
+    <q-tab-panel :name="ClientFactoryTabs.VariousAchievements">
+      <CFDrawerVariousAchievement />
+    </q-tab-panel>
 
     <q-tab-panel :name="ClientFactoryTabs.Memo">
       <CFDrawerMemo :is-loading="isLoading" :client-id="clientFactory.clientID" :client-factory-id="clientFactory.id" />

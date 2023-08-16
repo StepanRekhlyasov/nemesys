@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { defineEmits, defineProps, ref, watch, watchEffect } from 'vue';
-import CFDrawerTitle from './components/CFDrawerTitle.vue';
-import CFDrawerBody from './components/CFDrawerBody.vue';
-import CFDrawerTabs from './components/CFDrawerTabs.vue';
+import CFDrawerTitle from 'src/components/client-factory/common-components/CFDrawerTitle.vue';
+import CFDrawerBody from 'src/components/client-factory/common-components/CFDrawerBody.vue';
+import CFDrawerTabs from 'src/components/client-factory/common-components/CFDrawerTabs.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { mergeWithDraft } from 'src/components/client-factory/handlers';
 import { finishEditing } from 'src/components/client-factory/handlers';

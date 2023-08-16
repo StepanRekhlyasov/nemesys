@@ -54,9 +54,10 @@ const resetAdminSelectedCFsId = () =>{
     clientFactoryStore.adminSelectedCFsId = []
 }
 
+const originalOfficeId = ref('')
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
-
+    originalOfficeId.value = item.id
 
     setTimeout(() => {
         activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
@@ -157,11 +158,13 @@ const openNewFaxDrawer = () => {
         </q-card>
 
         <ClientFactoryDrawer
-        v-if="activeClientFactoryItem"
-        :key="activeClientFactoryItem.id"
-        v-model:selectedItem="activeClientFactoryItem"
-        :isDrawer="isClientFactoryDrawer"
-        @hide-drawer="hideClientFactoryDrawer"/>
+          v-if="activeClientFactoryItem"
+          :key="activeClientFactoryItem.id"
+          v-model:selectedItem="activeClientFactoryItem"
+          :isDrawer="isClientFactoryDrawer"
+          :originalOfficeId="originalOfficeId"
+          @hide-drawer="hideClientFactoryDrawer"
+        />
 
         <NewClientDrawer
         @hide-drawer="hideNewClientDrawer"

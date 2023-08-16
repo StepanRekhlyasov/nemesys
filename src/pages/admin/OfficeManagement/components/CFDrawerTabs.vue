@@ -2,14 +2,18 @@
 import { defineProps, defineEmits, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CFDrawerOfficeDetails from './CFDrawerOfficeDetails.vue';
-import CFDrawerHeadDetailsVue from './CFDrawerHeadDetails.vue';
+import CFDrawerHeadDetails from './CFDrawerHeadDetails.vue';
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { ClientFactoryTabs } from 'src/components/client-factory/types';
+import { ChangedData } from 'src/components/client-factory/types';
+
+
 import CFDrawerClientDetails from './CFDrawerClientDetails.vue';
 import CFDrawerImportDetails from './CFDrawerImportDetails.vue';
 import CFDrawerReflectDetail from './CFDrawerReflectDetail.vue';
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ClientFactoryDetailTabs } from '../types'
-import { ChangedData } from 'src/components/client-factory/types';
 
+
+const { t } = useI18n({ useScope: 'global' });
 defineProps<{
     clientFactory: ClientFactory
     draft: Partial<ClientFactory>
@@ -20,14 +24,12 @@ defineProps<{
 const emit = defineEmits<{
     (e: 'editDraft', changedData: ChangedData)
 }>()
-const { t } = useI18n({ useScope: 'global' });
 
 const editDraftHandle = (changedData: ChangedData) => {
     emit('editDraft', changedData)
 }
 
-const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
-
+const activeTab = ref(ClientFactoryTabs.OfficeDetails)
 </script>
 
 <template>
@@ -39,24 +41,24 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
         align="justify"
         active-bg-color="white">
         <q-tab
-            :name="ClientFactoryDetailTabs.OfficeDetails"
+            :name="ClientFactoryTabs.OfficeDetails"
             :label="t('clientFactory.officeDetails')"/>
         <q-tab
-            :name="ClientFactoryDetailTabs.CompanyWideBOHistory"
+            :name="ClientFactoryTabs.CompanyWideBOHistory"
             :label="t('clientFactory.companyWideBOHistory')"/>
         <q-tab
-            :name="clientFactory.isHead ? ClientFactoryDetailTabs.Client : ClientFactoryDetailTabs.HeadOffice"
+            :name="clientFactory.isHead ? ClientFactoryTabs.Client : ClientFactoryTabs.HeadOffice"
             :label="t(`${clientFactory.isHead ? 'clientFactory.drawer.client' : 'clientFactory.headOffice'}`)"/>
         <q-tab
-            :name="ClientFactoryDetailTabs.ReflectionHistory"
+            :name="ClientFactoryTabs.ReflectionHistory"
             :label="t('clientFactory.reflectionHistory')"/>
         <q-tab
-            :name="ClientFactoryDetailTabs.ImportHistory"
+            :name="ClientFactoryTabs.ImportHistory"
             :label="t('clientFactory.importHistory')"/>
     </q-tabs>
 
     <q-tab-panels v-model="activeTab" animated>
-        <q-tab-panel :name="ClientFactoryDetailTabs.OfficeDetails">
+        <q-tab-panel :name="ClientFactoryTabs.OfficeDetails">
             <CFDrawerOfficeDetails
                 :clientFactory="clientFactory"
                 :draft="draft"
@@ -64,17 +66,17 @@ const activeTab = ref(ClientFactoryDetailTabs.OfficeDetails)
                 :industryType="industryType"
                 @edit-draft="editDraftHandle"/>
         </q-tab-panel>
-        <q-tab-panel :name="ClientFactoryDetailTabs.CompanyWideBOHistory">
+        <q-tab-panel :name="ClientFactoryTabs.CompanyWideBOHistory">
        
         </q-tab-panel>
-        <q-tab-panel :name="clientFactory.isHead ? ClientFactoryDetailTabs.Client : ClientFactoryDetailTabs.HeadOffice">
+        <q-tab-panel :name="clientFactory.isHead ? ClientFactoryTabs.Client : ClientFactoryTabs.HeadOffice">
             <CFDrawerClientDetails v-if="clientFactory.isHead" :clientFactory="clientFactory"/>
-            <CFDrawerHeadDetailsVue v-else :clientId="clientFactory.clientID" :clientFactory="clientFactory"/>
+            <CFDrawerHeadDetails v-else :clientId="clientFactory.clientID" :clientFactory="clientFactory"/>
         </q-tab-panel>
-        <q-tab-panel :name="ClientFactoryDetailTabs.ReflectionHistory">
+        <q-tab-panel :name="ClientFactoryTabs.ReflectionHistory">
             <CFDrawerReflectDetail :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id" />
         </q-tab-panel>
-        <q-tab-panel :name="ClientFactoryDetailTabs.ImportHistory" class="q-pa-xs">
+        <q-tab-panel :name="ClientFactoryTabs.ImportHistory" class="q-pa-xs">
             <CFDrawerImportDetails :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id"  />
         </q-tab-panel>
     </q-tab-panels>

@@ -252,3 +252,12 @@ export const useClientDetails = (clientFactory: ClientFactory): RenderHeadDetail
       {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(clientFactory, 'client.companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
   ]).value
 }
+
+export const useReflectLogLabels = computed(() => {
+  return [
+    t('clientFactory.drawer.details.executionUser'),
+    t('clientFactory.drawer.details.executionDateTime'),
+    t('clientFactory.drawer.details.update_create'),
+    t('clientFactory.drawer.details.captured'),
+  ]
+})
