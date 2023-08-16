@@ -266,6 +266,7 @@ resetData();
 
 onMounted(async () => {
   if(props.duplicateBo){
+    console.log(props.duplicateBo)
     data.value = props.duplicateBo
   }
   if(props.clientId){
