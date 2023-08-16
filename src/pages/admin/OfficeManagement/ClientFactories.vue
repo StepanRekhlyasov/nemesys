@@ -53,9 +53,10 @@ const resetAdminSelectedCFsId = () =>{
     clientFactoryStore.adminSelectedCFsId = []
 }
 
+const originalOfficeId = ref('')
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
-
+    originalOfficeId.value = item.id
 
     setTimeout(() => {
         activeClientFactoryItem.value = clientFactories.value.find((factory) => factory.id === item.id) as ClientFactory
@@ -65,8 +66,6 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
         }
     }, 200);
 }
-
-
 watch([clients], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
@@ -111,7 +110,6 @@ const openNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = true
 }
 
-
 </script>
 
 <template>
@@ -145,11 +143,13 @@ const openNewClientFactoryDrawer = () => {
         </q-card>
 
         <ClientFactoryDrawer
-        v-if="activeClientFactoryItem"
-        :key="activeClientFactoryItem.id"
-        v-model:selectedItem="activeClientFactoryItem"
-        :isDrawer="isClientFactoryDrawer"
-        @hide-drawer="hideClientFactoryDrawer"/>
+          v-if="activeClientFactoryItem"
+          :key="activeClientFactoryItem.id"
+          v-model:selectedItem="activeClientFactoryItem"
+          :isDrawer="isClientFactoryDrawer"
+          :originalOfficeId="originalOfficeId"
+          @hide-drawer="hideClientFactoryDrawer"
+        />
 
         <NewClientDrawer
         @hide-drawer="hideNewClientDrawer"

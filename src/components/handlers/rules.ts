@@ -17,7 +17,7 @@ export const phoneRule = (val: string) => {
 
 export const organizationCodeRule = async (val: string) => {
 
-  if (!/^[A-Za-z1-9!?#$%&]+$/.test(val)) {
+  if (!/^[A-Za-z0-9!?#$%&]+$/.test(val)) {
     return t('menu.admin.organizationsTable.onlyUppercase')
   }
 

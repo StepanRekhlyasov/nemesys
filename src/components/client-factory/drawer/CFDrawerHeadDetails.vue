@@ -6,15 +6,19 @@ import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableCol
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useHeadDetails } from 'src/components/client-factory//handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { RenderHeadDetails } from 'src/components/client-factory/types'
+import { ChangedData, RenderHeadDetails } from 'src/components/client-factory/types'
+import { useRoute } from 'vue-router';
 
 const { t } = useI18n({ useScope: 'global' });
-
+const route = useRoute()
+const theme = route.meta.isAdmin ? 'accent' : 'primary'
 const props = defineProps<{
     clientId: string,
     clientFactory:ClientFactory
 }>()
-
+const emit = defineEmits<{
+    (e: 'editDraft', changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>)
+}>()
 const { getHeadClientFactory, getRelatedOfficeInfo } = useClientFactory()
 
 const headDetails = ref<RenderHeadDetails>({} as RenderHeadDetails)
@@ -49,11 +53,14 @@ watchEffect(() => {
 
 watch(localClientId, fetchHeadClientFactory, {immediate: true})
 
+const editDraft = (changedData: ChangedData) => {
+    emit('editDraft', changedData)
+}
 </script>
 
 <template>
     <div style="height: 5px;" class="q-my-none q-pa-none">
-        <q-linear-progress v-if="isLoading" indeterminate rounded color="accent" />
+        <q-linear-progress v-if="isLoading" indeterminate rounded :color="theme" />
     </div>
 
     <div v-if="!isLoading">
@@ -66,9 +73,10 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             :is-disable-edit="isLoading"
             @open-edit="isOpenEditDropDown.headOfficeInfo = true"
             @close-edit="isOpenEditDropDown.headOfficeInfo = false"
-            theme="accent"/>
+            @on-save="isOpenEditDropDown.headOfficeInfo = false; editDraft(dataForUpdating.headOfficeInfo as Data[])"
+            :theme="theme"/>
 
-        <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo" @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" theme="accent"/>
+        <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo" @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" :theme="theme"/>
 
         <HighlightTwoColumn 
             :data="headDetails.clientInfo"
@@ -79,9 +87,9 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             :is-disable-edit="isLoading"
             @open-edit="isOpenEditDropDown.clientInfo = true"
             @close-edit="isOpenEditDropDown.clientInfo = false"
-            theme="accent"/>
+            :theme="theme"/>
 
-        <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" theme="accent"/>
+        <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" :theme="theme"/>
 
         <HighlightTwoColumn 
             :data="headDetails.contractInfo"
@@ -92,9 +100,9 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             :is-disable-edit="isLoading"
             @open-edit="isOpenEditDropDown.contractInfo = true"
             @close-edit="isOpenEditDropDown.contractInfo = false"
-            theme="accent"/>
+            :theme="theme"/>
 
-        <EditableColumnsCF v-if="isOpenEditDropDown.contractInfo" @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" theme="accent"/>
+        <EditableColumnsCF v-if="isOpenEditDropDown.contractInfo" @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" :theme="theme"/>
         
         <HighlightTwoColumn 
             :data="headDetails.relatedOfficeInfo" 
@@ -105,12 +113,8 @@ watch(localClientId, fetchHeadClientFactory, {immediate: true})
             :is-disable-edit="isLoading"
             @open-edit="isOpenEditDropDown.relatedOfficeInfo = true"
             @close-edit="isOpenEditDropDown.relatedOfficeInfo = false"
-            theme="accent" />
+            :theme="theme" />
 
-        <EditableColumnsCF v-if="isOpenEditDropDown.relatedOfficeInfo" @data-changed="e => getNewDataToUpdate(e, 'relatedOfficeInfo')" :data="headDetails.relatedOfficeInfo" theme="accent"/>
+        <EditableColumnsCF v-if="isOpenEditDropDown.relatedOfficeInfo" @data-changed="e => getNewDataToUpdate(e, 'relatedOfficeInfo')" :data="headDetails.relatedOfficeInfo" :theme="theme"/>
     </div>
 </template>
-
-<style lang="scss" scoped>
-
-</style>
