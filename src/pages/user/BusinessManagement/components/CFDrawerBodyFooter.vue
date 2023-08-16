@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineEmits, onMounted, ref } from 'vue';
 import TaskRegister from '../../Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
-import { evaluateAll } from '../utils/evaluateIndex'
+import { evaluateAll ,evaluateTeleapoIndex } from '../utils/evaluateIndex'
 const props =defineProps<{
   clientFactory: ClientFactory,
 }>()
@@ -30,9 +30,16 @@ const { t } = useI18n({ useScope: 'global' });
 const openTaskRegister = ref(false)
 const dispatchIndex = ref<number|string>('loading')
 const refarralIndex = ref<number|string>('loading')
+const morningTeleApoIndex = ref<number|string>('loading')
+const afternoonTeleApoIndex = ref<number|string>('loading')
+const eveningTeleApoIndex = ref<number|string>('loading')
+
 onMounted(async()=>{
     dispatchIndex.value = await evaluateAll(props.clientFactory,'dispatch')
     refarralIndex.value = await evaluateAll(props.clientFactory,'referral')
+    morningTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory)
+    afternoonTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory)
+    eveningTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory)
 })
 </script>
 
@@ -73,11 +80,11 @@ onMounted(async()=>{
 
                     <span class="info-footer__value">
                         <span class="q-mr-sm">{{ t('clientFactory.drawer.morning') }} :</span>
-                        <span class="q-mr-sm">test</span>
+                        <span class="q-mr-sm"> {{morningTeleApoIndex}} </span>
                         <span class="q-mr-sm">{{ t('clientFactory.drawer.afternoon') }} :</span>
-                        <span class="q-mr-sm">test</span>
+                        <span class="q-mr-sm"> {{afternoonTeleApoIndex}} </span>
                         <span class="q-mr-sm">{{ t('clientFactory.drawer.evening') }} :</span>
-                        <span>test</span>
+                        <span> {{eveningTeleApoIndex}} </span>
                     </span>
                 </p>
             </div>
