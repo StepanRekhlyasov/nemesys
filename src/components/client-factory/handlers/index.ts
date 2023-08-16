@@ -170,7 +170,6 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
 
 export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo:object, client?: Client): RenderHeadDetails => {
   const headDetails = {} as RenderHeadDetails
-
   headDetails.headOfficeInfo = computed(() => {
     return [
       {label: t('client.add.contactPersonName'), value: safeGet(clientFactory, 'contactPersonName') || '', editType: 'text', key: 'officeDetails.contactPersonName'},
