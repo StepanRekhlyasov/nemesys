@@ -75,6 +75,17 @@ watchEffect(() => {
         <div style="height: 5px;" class="q-my-none q-pa-none">
             <q-linear-progress v-if="isLoading" indeterminate rounded :color="theme" />
         </div>
+        <div v-if="!route.meta.isAdmin && Object.keys(draft).length && !isEditForm.contactInfo && !isEditForm.officeInfo" class="q-mb-md">
+            <div class="row">
+                <q-btn @click="saveHandler" size="sm" color="primary" class="no-shadow q-mr-md" :disable="isLoading">
+                    {{ t('common.save') }}
+                </q-btn>
+                <q-btn @click="cancelHandler" size="sm" outline :disable="isLoading">
+                    {{ t('common.cancel') }}
+                </q-btn>
+            </div>
+            <q-separator color="bg-grey-3 q-mt-md"></q-separator>
+        </div>
         <HighlightTwoColumn 
             :data="mainInfo.officeInfo"
             :is-disable-edit="isLoading"
