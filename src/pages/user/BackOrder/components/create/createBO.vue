@@ -228,6 +228,9 @@ const getClientFactoryData = async(client_id: string | undefined) => {
     }
   }
   industryList.value = clientFactory.value?.industry
+  if(industryList.value.length==1){
+    data.value.industry = industryList.value[0]
+  }
 }
 
 const updateOfficeName = async ()=>{
