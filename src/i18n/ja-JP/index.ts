@@ -775,6 +775,7 @@ export default {
       jobResult: '求人ヒアリング結果',
       requiredService: '必要なサービス',
       remark: '備考',
+      timeFrame:'タイムフレーム',
     },
     memo: {
       registredUser: '登録ユーザー',

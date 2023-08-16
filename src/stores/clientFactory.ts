@@ -313,7 +313,7 @@ export const useClientFactory = defineStore('client-factory', () => {
               delete modifiedClientFactory[key]
             }
           }
-            
+
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
                 organizationId: organizationId,
@@ -482,7 +482,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         const array:string[]=[]
         boSnapshot.docs.forEach(
             (doc) => {
-                if ((doc.data()['employmentType'] 
+                if ((doc.data()['employmentType']
                 && (doc.data()['employmentType'].includes(employmentType1)
                 || (employmentType2!=='' && doc.data()['employmentType'].includes(employmentType2))))) {
                     array.push(doc.id)
@@ -490,7 +490,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
         )
         let count = 0;
-        
+
         array.forEach((id) => {
             fixSnapshot.docs.forEach(
                 (doc) => {
@@ -551,7 +551,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             } as ClientFactory
         }))
     }
-    
+
     async function getModifiedCfWithId(office_id: string) {
         const querySnapshot = await getDocs(
             query(
