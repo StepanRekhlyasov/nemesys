@@ -355,6 +355,7 @@ async function deleteSelected() {
 }
 
 function addNewBo() {
+  duplicateBo.value = <BackOrderModel>({});
   $q.dialog({
     title: t('backOrder.selectBOType'),
     cancel: t('backOrder.type.dispatch'),
