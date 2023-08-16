@@ -11,7 +11,7 @@ import { useRoute } from 'vue-router';
 
 const { t } = useI18n({ useScope: 'global' });
 const route = useRoute()
-const theme = route ? 'accent' : 'primary'
+const theme = route.meta.isAdmin ? 'accent' : 'primary'
 const props = defineProps<{
     clientId: string,
     clientFactory:ClientFactory

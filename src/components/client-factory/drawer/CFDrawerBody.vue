@@ -33,7 +33,9 @@ const emit = defineEmits<{
     (e: 'handleImport'),
     (e: 'handleReflect'),
     (e: 'editDraft', changedData: ChangedData)
-    (e: 'openFaxDrawer')
+    (e: 'openFaxDrawer'),
+    (e: 'cancelDraft'),
+    (e: 'saveDraft'),
 }>()
 
 
@@ -63,6 +65,14 @@ const handleEditDraft = (changedData: ChangedData) => {
 
 const openFaxDrawer = () =>{
     emit('openFaxDrawer')
+}
+
+const cancelHandler = () => {
+    emit('cancelDraft')
+}
+
+const saveHandler = () => {
+    emit('saveDraft')
 }
 
 watchEffect(() => {
@@ -98,7 +108,7 @@ watchEffect(() => {
             @on-save="isEditForm.officeInfo = false; handleEditDraft(dataForUpdating.officeInfo as RenderMainInfo['officeInfo'])">
         
                 <template #tag v-if="clientFactory.isHead">
-                    <div :class="theme==='accent'?'bg-accent':'bg-primary'" class="bg-accent text-white q-ml-sm rounded-borders">
+                    <div :class="theme==='accent'?'bg-accent':'bg-primary'" class="text-white q-ml-sm rounded-borders">
                         <span class="q-pa-sm">
                             {{ t('clientFactory.headOffice') }}
                         </span>

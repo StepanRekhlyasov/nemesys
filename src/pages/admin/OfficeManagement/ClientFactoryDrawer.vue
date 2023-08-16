@@ -3,9 +3,9 @@ import { getAuth } from 'firebase/auth';
 import { storeToRefs } from 'pinia'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps, watch, ref, watchEffect } from 'vue';
-import CFDrawerTitle from 'src/components/client-factory/common-components/CFDrawerTitle.vue';
-import CFDrawerBody from 'src/components/client-factory/common-components/CFDrawerBody.vue';
-import CFDrawerTabs from 'src/components/client-factory/common-components/CFDrawerTabs.vue';
+import CFDrawerTitle from 'src/components/client-factory/drawer/CFDrawerTitle.vue';
+import CFDrawerBody from 'src/components/client-factory/drawer/CFDrawerBody.vue';
+import CFDrawerTabs from 'src/components/client-factory/drawer/CFDrawerTabs.vue';
 import ModifiedCFsDrawer from './ModifiedCFsDrawer.vue';
 import UpdatedCFDrawer from './UpdatedCFDrawer.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
