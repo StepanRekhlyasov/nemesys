@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 import { defineEmits, onMounted, ref } from 'vue';
 import TaskRegister from 'src/pages/user/Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
-import { evaluateAll ,evaluateTeleapoIndex } from '../utils/evaluateIndex'
+import { evaluateAll ,evaluateTeleapoIndex } from 'src/pages/user/BusinessManagement/utils/evaluateIndex'
 const props =defineProps<{
   clientFactory: ClientFactory,
 }>()

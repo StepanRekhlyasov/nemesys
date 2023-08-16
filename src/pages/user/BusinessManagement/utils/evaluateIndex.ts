@@ -49,12 +49,12 @@ export const evaluateAll = async (
       targetPoint = totalPoint;
     }
   }
-  if (totalPoints.length === 0) return 'no data';
+  if (totalPoints.length === 0) return '-';
   const totalPointsAverage =
     totalPoints.reduce((acc, point) => {
       return acc + point;
     }, 0) / totalPoints.length;
-  if (totalPointsAverage === 0) return 'no data';
+  if (totalPointsAverage === 0) return '-';
   return Math.round((targetPoint / totalPointsAverage) * 100);
 };
 
@@ -75,7 +75,7 @@ export const evaluateTeleapoIndex = async (clientFactory: ClientFactory,timeFram
   if (teleAll === 0 || !teleAll) {
     return '-';
   }
-  if (conectedTele * 2 > teleAll) {
+  if (conectedTele * 2 >= teleAll) {
     return 'O';
   } else {
     return 'X';
