@@ -5,6 +5,7 @@ import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { RenderMainInfo, RenderOfficeDetailsWithoutIndustryType, RenderOfficeDetailsWithIndustryType, RenderHeadDetails, InputType } from '../types';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { deepCopy, safeGet } from 'src/shared/utils';
+import { Client } from 'src/shared/model';
 const { t } = i18n.global
 
 export const finishEditing = (
@@ -79,9 +80,9 @@ export const useHighlightMainInfo = (traceableClientFactory: ClientFactory, draf
   mainInfo.contactInfo = computed(() => {
     return [
       {label: t('clientFactory.namePersonInCharge'), value: (safeGet(draft, namePersonInCharge) ?? safeGet(clientFactory, namePersonInCharge)) || '', editType: 'text', key: namePersonInCharge, isHighlight: safeGet(draft, namePersonInCharge) !== undefined && safeGet(clientFactory, namePersonInCharge) !== safeGet(draft, namePersonInCharge)},
-      {label: t('menu.admin.organizationsTable.manager')+'TEL', value: (safeGet(draft, 'telContact') ?? safeGet(clientFactory, 'telContact')) || '', editType: 'text', key: 'telContact', isHighlight: safeGet(draft, 'telContact') !== undefined && safeGet(clientFactory, 'telContact') !== safeGet(draft, 'telContact')},
+      {label: t('menu.admin.organizationsTable.manager')+'TEL', value: (safeGet(draft, 'contactPersonTel') ?? safeGet(clientFactory, 'contactPersonTel')) || '', editType: 'text', key: 'contactPersonTel', isHighlight: safeGet(draft, 'contactPersonTel') !== undefined && safeGet(clientFactory, 'contactPersonTel') !== safeGet(draft, 'contactPersonTel')},
       {label: t('clientFactory.personInChargeTitle'), value: (safeGet(draft, personInChargeTitle) ?? safeGet(clientFactory, personInChargeTitle)) || '', editType: 'text', key: personInChargeTitle, isHighlight: safeGet(draft, personInChargeTitle) !== undefined && safeGet(clientFactory, personInChargeTitle) !== safeGet(draft, personInChargeTitle)},
-      {label: t('menu.admin.organizationsTable.manager')+'MAIL', value: (safeGet(draft, 'mailContact') ?? safeGet(clientFactory, 'mailContact')) ||'', editType: 'text', key: 'mailContact', isHighlight: safeGet(draft, 'mailContact') !== undefined && safeGet(clientFactory, 'mailContact') !== safeGet(draft, 'mailContact')},
+      {label: t('menu.admin.organizationsTable.manager')+'MAIL', value: (safeGet(draft, 'contactPersonMail') ?? safeGet(clientFactory, 'contactPersonMail')) ||'', editType: 'text', key: 'contactPersonMail', isHighlight: safeGet(draft, 'contactPersonMail') !== undefined && safeGet(clientFactory, 'contactPersonMail') !== safeGet(draft, 'contactPersonMail')},
     ]
   }).value
 
@@ -167,7 +168,7 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
   return officeDetails
 }
 
-export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:object): RenderHeadDetails => {
+export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo:object, client?: Client): RenderHeadDetails => {
   const headDetails = {} as RenderHeadDetails
 
   headDetails.headOfficeInfo = computed(() => {
@@ -187,13 +188,13 @@ export const useHeadDetails = (clientFactory: ClientFactory,relatedOfficeInfo:ob
 
   headDetails.clientInfo = computed(() => {
     return [
-      {label: t('clientFactory.drawer.details.representative'), value: safeGet(clientFactory, 'client.representativeName') ?? '', editType: 'text', key: 'representativeName'},
-      {label: t('clientFactory.drawer.details.established'), value: safeGet(clientFactory, 'client.established') ?? '', editType: 'text', key: 'established'},
-      {label: t('clientFactory.drawer.details.capital'), value: safeGet(clientFactory, 'client.capital') ?? '', editType: 'text', key: 'capital'},
-      {label: t('clientFactory.drawer.details.earnings'), value: safeGet(clientFactory, 'client.earnings') ?? '', editType: 'text', key: 'earnings'},
-      {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(clientFactory, 'client.numberOffices') ?? 0, editType: 'number', key: 'numberOffices'},
-      {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(clientFactory, 'client.numberEmployees') ?? 0, editType: 'number', key: 'numberEmployees'},
-      {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(clientFactory, 'client.companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
+      {label: t('clientFactory.drawer.details.representative'), value: safeGet(client, 'representativeName') ?? '', editType: 'text', key: 'representativeName'},
+      {label: t('clientFactory.drawer.details.established'), value: safeGet(client, 'established') ?? '', editType: 'text', key: 'established'},
+      {label: t('clientFactory.drawer.details.capital'), value: safeGet(client, 'capital') ?? '', editType: 'text', key: 'capital'},
+      {label: t('clientFactory.drawer.details.earnings'), value: safeGet(client, 'earnings') ?? '', editType: 'text', key: 'earnings'},
+      {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(client, 'numberOffices') ?? 0, editType: 'number', key: 'numberOffices'},
+      {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(client, 'numberEmployees') ?? 0, editType: 'number', key: 'numberEmployees'},
+      {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(client, 'companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
     ]
   }).value
 

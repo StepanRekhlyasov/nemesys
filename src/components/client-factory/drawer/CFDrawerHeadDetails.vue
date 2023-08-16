@@ -8,6 +8,7 @@ import { useHeadDetails } from 'src/components/client-factory//handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ChangedData, RenderHeadDetails } from 'src/components/client-factory/types'
 import { useRoute } from 'vue-router';
+import { useClient } from 'src/stores/client';
 
 const { t } = useI18n({ useScope: 'global' });
 const route = useRoute()
@@ -33,6 +34,9 @@ const isOpenEditDropDown = ref({
     relatedOfficeInfo: false
 })
 
+const clientStore = useClient()
+const client = ref()
+
 const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>)
 
 const getNewDataToUpdate = (data: Data[], key: string) => {
@@ -44,11 +48,13 @@ const fetchHeadClientFactory = async () => {
 
     headClientFactory.value = await getHeadClientFactory(props.clientId, ) as ClientFactory
     relatedOfficeInfo.value = await getRelatedOfficeInfo(props.clientId)
+
     isLoading.value = false
 }
 
-watchEffect(() => {
-    headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory,relatedOfficeInfo.value)
+watchEffect(async () => {
+  client.value = await clientStore.fetchClientsById(props.clientId)
+  headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
 })
 
 watch(localClientId, fetchHeadClientFactory, {immediate: true})
