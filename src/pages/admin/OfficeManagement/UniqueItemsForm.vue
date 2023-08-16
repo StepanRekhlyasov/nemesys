@@ -123,6 +123,7 @@ const deleteSpecificTypeHandle = (id: string) => {
 
 const updateSpecificTypeHandle = () => {
     isCanBeSaved.value.typeSpecificItems = true
+    updateIndustryHandler('typeSpecificItems')
 }
 
 const sortHandler = (
@@ -171,6 +172,7 @@ const deleteFacilityForm = (id: string) => {
 
 const updateFacilityForm = () => {
     isCanBeSaved.value.facilityForms = true
+    updateIndustryHandler('facilityForms')
 }
 
 const newOccupationForm = (data: string) => {
@@ -195,6 +197,7 @@ const deleteOccupationForm = (id: string) => {
 
 const updateOccupationForm = () => {
     isCanBeSaved.value.occupationForms = true
+    updateIndustryHandler('occupationForms')
 }
 
 const newCertificateForm = (data: string) => {
@@ -217,6 +220,7 @@ const deleteCertificateForm = (id: string) => {
 }
 const updateCertificateForm = () => {
     isCanBeSaved.value.certificateForms = true
+    updateIndustryHandler('certificateForms')
 }
 
 const isNewIndustryPopupHandler = (val: boolean) => {

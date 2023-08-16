@@ -111,6 +111,50 @@ export const useIndsutry = defineStore('industries', () => {
         }
     }
 
+      const getCertificate = async (industryName: string) => {
+        try {
+            const industry = await getIndustryByName(industryName);
+
+            if (industry) {
+                const certificateTitles: string[] = [];
+
+                for (const key in industry.uniqueItems.certificateForms) {
+                    certificateTitles.push(industry.uniqueItems.certificateForms[key].title);
+                }
+                return {
+                    certificateTitles
+                };
+            } else {
+                console.log('no industry');
+                return null;
+            }
+        } catch (e) {
+            console.error('Error fetching industry:', e);
+            return null;
+        }
+    }
+    const getOccupation = async (industryName: string) => {
+      try {
+          const industry = await getIndustryByName(industryName);
+
+          if (industry) {
+              const occupationTitles: string[] = [];
+              for (const key in industry.uniqueItems.occupationForms) {
+                occupationTitles.push(industry.uniqueItems.occupationForms[key].title);
+              }
+              return {
+                occupationTitles
+              };
+          } else {
+              console.log('no industry');
+              return null;
+          }
+      } catch (e) {
+          console.error('Error fetching industry:', e);
+          return null;
+      }
+  }
+
     getIndustries();
 
     // cleanup
@@ -123,6 +167,8 @@ export const useIndsutry = defineStore('industries', () => {
         addIndustry,
         updateIndustry,
         getIndustryByName,
+        getOccupation,
+        getCertificate,
         deleteIndustry,
         addId
     }
