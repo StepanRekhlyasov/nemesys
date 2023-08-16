@@ -49,26 +49,6 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
         return row
     })
 }
-
-export const useImportLogLabels = computed(() => {
-  return [
-    t('clientFactory.drawer.details.executionUser'),
-    t('clientFactory.drawer.details.executionDateTime'),
-    t('clientFactory.drawer.details.sourceCompany'),
-    t('clientFactory.drawer.details.update_create'),
-    t('clientFactory.drawer.details.captured')
-  ]
-})
-
-export const useReflectLogLabels = computed(() => {
-  return [
-    t('clientFactory.drawer.details.executionUser'),
-    t('clientFactory.drawer.details.executionDateTime'),
-    t('clientFactory.drawer.details.update_create'),
-    t('clientFactory.drawer.details.captured'),
-  ]
-})
-
 export const useImportCandidatesLabels = computed(() => {
   return [
     t('clientFactory.drawer.details.sourceCompany'),

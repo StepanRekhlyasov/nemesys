@@ -65,7 +65,6 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 import InfoBO from 'src/pages/user/BackOrder/components/info/InfoBO.vue';
 import SearchByMapDrawer from 'src/pages/user/BackOrder/components/info/searchByMapDrawer.vue';
 import { boMapDrawerValue } from '../const';
-import { appendFile } from 'fs';
 import { Timestamp, where } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { myDateFormat } from 'src/shared/utils/utils';
