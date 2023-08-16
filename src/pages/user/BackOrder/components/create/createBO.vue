@@ -234,7 +234,6 @@ async function resetData() {
     lat: 0,
     type: props.type
   } as Partial<BackOrderModel>
-    console.log(data.value)
   if(props.clientId){
     data.value['client_id'] = props.clientId
   }
