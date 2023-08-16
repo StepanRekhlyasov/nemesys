@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { toDate } from 'src/shared/utils/utils';
 import { User } from 'src/shared/model';
-import { useOrganization } from 'src/stores/organization';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { useI18n } from 'vue-i18n';
@@ -13,16 +12,7 @@ const saveSearchCondition = useSaveSearchCondition();
 const advanceSearch = useAdvanceSearch();
 const { t } = useI18n({ useScope: 'global' });
 const loading = ref(true);
-const pagination = ref({
-    sortBy: 'desc',
-    descending: false,
-    page: 1,
-    rowsPerPage: 10
-    // rowsNumber: xx if getting data from a server
-});
 
-
-const organizationStore = useOrganization();
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
 
@@ -30,13 +20,6 @@ const allUsers = ref(<User[]>[]);
 const conditionList = computed(() => {
     return saveSearchCondition.searchConditions;
 });
-const currentOrganization = ref(organizationStore.currentOrganizationId)
-// watch(() => organizationStore.state.userAndBranchesUpdated, async () => {
-//     loading.value = true;
-//     currentOrganization.value = organizationStore.currentOrganizationId
-//     await saveSearchCondition.getSaveSearchConditions(currentOrganization.value);
-//     loading.value = false;
-// })
 
 onMounted(async () => {
     await saveSearchCondition.getSaveSearchConditions();
@@ -49,6 +32,16 @@ const getUserName = (userId: string) => {
 const keyword = ref('');
 const filterConditionList = ref();
 const filter = ref(false)
+
+const pagination = ref({
+    sortBy: 'desc',
+    descending: false,
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: filter.value?filterConditionList.value.length:conditionList.value.length
+});
+
+
 const filterFn = () => {
     filterConditionList.value = conditionList.value.filter(item => {if(check(item['conditionName'])){return item}})
     filter.value=true;

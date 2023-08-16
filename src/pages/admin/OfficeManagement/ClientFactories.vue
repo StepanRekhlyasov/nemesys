@@ -31,7 +31,6 @@ const adminCondition = ref<boolean>(clientFactoryStore.adminCondition);
 const isClientFactoryDrawer = ref(false)
 const isNewClientDrawer = ref(false)
 const isNewClientFactoryDrawer = ref(false)
-const isNewFaxDrawer = ref(false)
 
 const pagination = ref({
     sortBy: 'name',
@@ -66,10 +65,8 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
         }
     }, 200);
 }
-const selected = ref<number[]>([])
-const selectedCFHandler = (item:number[]) =>{
-    selected.value = item
-}
+
+
 watch([clients], () => {
     tableRows.value.length ? fetchData.value = false : fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
@@ -114,15 +111,6 @@ const openNewClientFactoryDrawer = () => {
     isNewClientFactoryDrawer.value = true
 }
 
-// new fax-drawer
-
-const hideNewFaxDrawer = () => {
-    isNewFaxDrawer.value = false
-}
-
-const openNewFaxDrawer = () => {
-  isNewFaxDrawer.value = true
-}
 
 </script>
 
