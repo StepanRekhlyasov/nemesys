@@ -93,7 +93,6 @@ watchEffect(() => {
         @data-changed="e => getNewDataToUpdate(e, `${industryType ? `${industryType}.commonItems` : 'commonItems'}`)"
         :data="officeDetails[`${industryType ? `${industryType}.commonItems` : 'commonItems'}`]" :theme="theme"/>
     
-
     <HighlightTwoColumn
         v-if="industryType"
         :is-drop-down="true"

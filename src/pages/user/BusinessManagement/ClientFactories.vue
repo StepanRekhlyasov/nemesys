@@ -27,7 +27,6 @@ const fetchData = ref(false)
 
 const selectedCFsId = ref<string[]>(clientFactoryStore.selectedCFsId);
 const condition = ref<boolean>(clientFactoryStore.condition);
-// const modifiedCF = ref<ModifiedCF[]>([])
 const originalOfficeId = ref('');
 
 // drawers
