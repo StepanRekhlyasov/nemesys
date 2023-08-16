@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { Client } from 'src/shared/model';
-import { collection, getFirestore, Timestamp, getDocs, collectionGroup, where, query, orderBy } from 'firebase/firestore';
+import { collection, getFirestore, Timestamp, getDocs, collectionGroup, where, query } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter } from 'vue-router';
