@@ -271,6 +271,7 @@ resetData();
 onMounted(async () => {
   if(props.duplicateBo){
     data.value = props.duplicateBo
+    data.value.dateOfRegistration = date.formatDate(Date.now(), 'YYYY/MM/DD');
     await getClientFactoryData(props.duplicateBo.client_id)
   }
   if(props.clientId){

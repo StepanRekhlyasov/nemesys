@@ -379,7 +379,6 @@ function addNewBo() {
 function addDuplicateBo(bo: BackOrderModel) {
   typeBoCreate.value = bo.type;
   duplicateBo.value = bo
-  duplicateBo.value.dateOfRegistration = (new Date()).toString()
   cteateBoDrawer.value = true;
 }
 
