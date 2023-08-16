@@ -14,8 +14,8 @@ const { modifiedCFs } = storeToRefs(clientFactoryStore)
 const props = defineProps<{
     clientFactory: ClientFactory
     draft?: Partial<ClientFactory>
-    isReflectLoading: boolean
-    isImportLoading: boolean
+    isReflectLoading?: boolean
+    isImportLoading?: boolean
     newReflectLog: ReflectLog | undefined
     newImportLog: ImportLog | undefined
 }>()

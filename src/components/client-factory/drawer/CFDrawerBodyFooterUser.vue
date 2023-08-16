@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineEmits, onMounted, ref } from 'vue';
-import TaskRegister from '../../Applicant/components/TaskRegister.vue';
+import TaskRegister from 'src/pages/user/Applicant/components/TaskRegister.vue';
 import { ClientFactory } from 'src/shared/model';
 import { evaluateAll ,evaluateTeleapoIndex } from '../utils/evaluateIndex'
 const props =defineProps<{
@@ -19,7 +19,7 @@ const situation = ref<number | undefined>()
 onMounted(()=>{
   const situationUpdated = ref<number | undefined>()
   situationUpdated.value = props.clientFactory.offerRate;
-  if(situationUpdated.value){
+  if(situationUpdated.value && props.clientFactory.avgWorkLength){
     situationUpdated.value += props.clientFactory.avgWorkLength;
   }
   situationUpdated.value = Number((situationUpdated.value)?.toFixed(2));
