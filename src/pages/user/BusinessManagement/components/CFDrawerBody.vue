@@ -24,13 +24,6 @@ const emit = defineEmits<{
     (e: 'openFaxDrawer')
 }>()
 
-const cancelHandler = () => {
-    emit('cancelDraft')
-}
-
-const saveHandler = () => {
-    emit('saveDraft')
-}
 
 const editDraft = (changedData: ChangedData) => {
 
