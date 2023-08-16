@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ActionsType } from 'src/components/client-factory/types';
 import { useUserStore } from 'src/stores/user';
 import { toDate } from 'src/shared/utils/utils';
 import { User } from 'src/shared/model';
-import { useOrganization } from 'src/stores/organization';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 import { useI18n } from 'vue-i18n';
