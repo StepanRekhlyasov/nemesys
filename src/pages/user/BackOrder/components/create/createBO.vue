@@ -179,7 +179,13 @@ const transactionTypeOptions = computed(()=>{
 async function addBackOrder() {
   loading.value = true
   data.value['clientName'] = applicantStore.state.clientList.find(client => client.id === data.value['client_id'])?.name
-  data.value['officeName'] = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
+  const officeName = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
+  if(officeName){
+    data.value['officeName'] = officeName
+  }
+  else{
+    data.value['officeName'] = clientFactory.value?.name
+  }
   if (data.value.client_id && boForm.value?.validate) {
     await backOrderStore.addBackOrder({ ...data.value, type: props.type });
     loading.value = false;
@@ -196,6 +202,7 @@ function closeDialog() {
 
 const getClientFactoryData = async(client_id: string | undefined) => {
   clientFactoryList.value = await clientFactoryStore.getClientFactoryList(client_id as string)
+  if(props.originalOfficeId){
   const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.originalOfficeId);
   clientFactory.value = clientFactoryList.value[targetIndex]
     if(props.officeId != props.originalOfficeId){
@@ -207,6 +214,19 @@ const getClientFactoryData = async(client_id: string | undefined) => {
       }
     }
     }
+  }
+  else{
+    const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.officeId);
+    if(targetIndex!=-1){
+      clientFactory.value = clientFactoryList.value[targetIndex]
+    }
+    else{
+      clientFactory.value = await clientFactoryStore.getModifiedCfWithId( props.officeId as string) as ClientFactory
+      if(clientFactory.value){
+        clientFactoryList.value.push(clientFactory.value)
+      }
+    }
+  }
 }
 
 const updateOfficeName = async ()=>{
