@@ -317,6 +317,12 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
           }
 
+          for(const [key, value] of Object.entries(modifiedClientFactory)){
+            if(!key || typeof value === undefined){
+              delete modifiedClientFactory[key]
+            }
+          }
+
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
                 organizationId: organizationId,
@@ -349,7 +355,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: false,
                 numberUpdates: modifiedCF.numberUpdates + 1,
                 numberImports: modifiedCF.numberImports,
-                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)),
+                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)) ?? serverTimestamp(),
                 updated_at: serverTimestamp(),
             })
 
@@ -536,7 +542,6 @@ export const useClientFactory = defineStore('client-factory', () => {
       return { ...result.data(), id: result.id } as ClientFactory
     }
 
-
     async function getClientFactoryByConstraints(constraints: ConstraintsType) {
         const ref = query(collectionGroup(db, 'client-factory'), ...constraints)
         const data = await getDocs(ref)
@@ -566,7 +571,16 @@ export const useClientFactory = defineStore('client-factory', () => {
         return modifiedCF.value ? modifiedCF.value : {};
     }
 
+    const condition = false
+    const selectedCFsId:string[] = []
+    const adminCondition = false
+    const adminSelectedCFsId:string[] = []
+
     return {
+        condition,
+        selectedCFsId,
+        adminCondition,
+        adminSelectedCFsId,
         clientFactories,
         modifiedCFs,
         getModifiedCfWithId,

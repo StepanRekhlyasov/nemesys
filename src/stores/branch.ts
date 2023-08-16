@@ -12,13 +12,14 @@ export const useBranch = defineStore('branch', () => {
 
   async function getBranchesInOrganization(organizationId?: string) {
     const organizationRef = doc(db, `/organization/${organizationId}/`)
-    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('working', '==', true), where('hidden', '==', false), orderBy(documentId()), startAt(organizationRef.path), endAt(organizationRef.path + '\uf8ff'));
+    const branchesQuery = query(collectionGroup(db, 'branches'), where('deleted', '==', false), where('hidden', '==', false), orderBy(documentId()), startAt(organizationRef.path), endAt(organizationRef.path + '\uf8ff'));
     const querySnapshot = await getDocs(branchesQuery);
     const branches: { [id: string]: Branch; } = {}
 
     querySnapshot.forEach((doc) => {
       branches[doc.id] = doc.data() as Branch
     })
+
     return branches
   }
 

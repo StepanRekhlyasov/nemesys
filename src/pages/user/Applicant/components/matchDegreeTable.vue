@@ -14,7 +14,7 @@
         <td class="item-cell bg-grey">{{$t('applicant.attendant.daysToWork')}}</td>
         <td>{{ props.bo.daysPerWeekList?getNumberFromString(props.bo.daysPerWeekList):'-' }}</td>
         <td>{{ props.staff.daysToWork?props.staff.daysToWork:'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].daysToWork.value }}%</td>
+        <td>{{ props.matchedData[props.bo.id].daysToWork.value }}%</td>
       </tr>
 
       <tr>
@@ -83,7 +83,7 @@
             </tr>
           </table>
         </td>
-        <td>{{ props.matchedData[props.staff.id].daysPerWeek.value }}%</td>
+        <td>{{ props.matchedData[props.bo.id].daysPerWeek.value }}%</td>
       </tr>
 
       <tr>
@@ -128,35 +128,35 @@
             </tr>
           </table>
         </td>
-        <td>{{ props.matchedData[props.staff.id].workingHours.value }}%</td>
+        <td>{{ props.matchedData[props.bo.id].workingHours.value }}%</td>
       </tr>
 
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.commutesDisatnce')}}</td>
-        <td>{{ props.staff.distanceBusiness }}Km</td>
-        <td>{{ props.staff.commutingTime?props.matchedData[props.staff.id].commuteDistance.label+'Km':'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].commuteDistance.value }}%</td>
+        <td>{{ props.bo.distanceBusiness }}Km</td>
+        <td>{{ props.staff.commutingTime?props.matchedData[props.bo.id].commuteDistance.label+'Km':'-' }}</td>
+        <td>{{ props.matchedData[props.bo.id].commuteDistance.value }}%</td>
       </tr>
 
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.yearsExperience')}}</td>
         <td>{{ props.bo.experience_req?props.bo.experience_req + ` ${$t('common.year')}`:'-' }}</td>
         <td>{{ props.staff.totalYear?props.staff.totalYear + ` ${$t('common.year')}`:'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].expReq.value }}%</td>
+        <td>{{ props.matchedData[props.bo.id].expReq.value }}%</td>
       </tr>
 
       <tr>
         <td class="item-cell bg-grey">{{$t('common.age')}}</td>
         <td>{{ props.bo.upperAgeLimit?props.bo.upperAgeLimit + ` ${$t('common.year')}`:'-' }}</td>
-        <td>{{ props.staff.dob?props.matchedData[props.staff.id].agePercent.label + ` ${$t('common.year')}`:'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].agePercent.value }}%</td>
+        <td>{{ props.staff.dob?props.matchedData[props.bo.id].agePercent.label + ` ${$t('common.year')}`:'-' }}</td>
+        <td>{{ props.matchedData[props.bo.id].agePercent.value }}%</td>
       </tr>
 
       <tr>
         <td class="item-cell bg-grey">{{$t('applicant.list.qualification')}}</td>
         <td>{{props.bo.qualifications && props.bo.qualifications.length? props.bo.qualifications.map(q => $t('applicant.qualification.' + q)).join(', '):'-' }}</td>
         <td>{{props.staff.qualification && props.staff.qualification.length? props.staff.qualification.map(q => $t('applicant.qualification.' + q)).join(', '):'-' }}</td>
-        <td>{{ props.matchedData[props.staff.id].qualification.value }}%</td>
+        <td>{{ props.matchedData[props.bo.id].qualification.value }}%</td>
       </tr>
 
     </tbody>
@@ -164,11 +164,10 @@
 </template>
 
 <script lang="ts" setup>
-import { DocumentData } from 'firebase/firestore';
 import { useBackOrder } from 'src/stores/backOrder';
 
 const props = defineProps<{
-  bo: DocumentData,
+  bo,
   staff,
   matchedData,
 }>()

@@ -279,6 +279,7 @@ export default {
   settings: {
     branch: {
       addBranch: 'Add Branch',
+      editBranch:'Edit Branch',
       id: 'Branch ID',
       name: 'Branch Name',
       flag: 'Enable Flag',
@@ -444,6 +445,9 @@ export default {
       allTeleAppointedCompanies: 'All tele-appointed companies',
       connectedCompanies: 'Connected companies only',
       companiesOutService: 'Only companies that are all out of service',
+      addConditions : 'Add Conditions',
+      resetConditions: 'Reset Condition',
+      updateCondition: 'Update Condition',
       saveSearchConditions: 'Save Search Conditions',
       areaSearch: 'Area Search',
       listPrefectures: 'List of prefectures',
@@ -489,7 +493,7 @@ export default {
       clientType: 'Client Type',
       jobType: 'Job Categories',
       nurse: 'Nurse',
-      nursing: 'Nurse Care',
+      nursing: 'Nursing',
       clientRepresentative: 'Client Representative',
       clientRepLabel: 'Ex) General Affairs Department: Taro Suzuki',
       address: 'Address',
@@ -1237,6 +1241,10 @@ export default {
   backOrder: {
     changeSearchCriteria: 'Change search criteria',
     addBO: 'BO new added',
+    deleteBO:'Delete BO',
+    confirmDelete: 'Confirm Deletion ?',
+    confirm: 'Confirm',
+    cancel:'Cancel',
     status: 'Status',
     personnel: 'BO Personnel',
     registrationDate: 'BO Registration Date',
@@ -1498,6 +1506,7 @@ export default {
     clickToAddNewClient: 'Click here to add a new client',
     searchConditionChange: 'Search condition change',
     faxBatchTransmission: 'Fax batch transmission',
+    changeSearchCriteria: 'Change Search Critertia'
   },
   failed: 'Action failed',
   success: 'Action was successful',

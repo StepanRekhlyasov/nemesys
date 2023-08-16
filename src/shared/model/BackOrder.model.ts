@@ -58,7 +58,7 @@ export interface BackOrderModel {
 
   // In House Information Section (only referal type)
   retirementAge: string;
-  stipulatedAmount: number;
+  stipulatedAmount: string;
   retirementAge_house: number;
   memo_house: string;
 
@@ -106,4 +106,9 @@ export enum WorkingDaysWeek {
   Saturday = 'saturday',
   Sunday = 'sunday',
   Holiday = 'holiday',
+}
+
+export interface BoForMapSearch extends BackOrderModel {
+  distanceBusiness: number;
+  matchDegree: number;
 }
