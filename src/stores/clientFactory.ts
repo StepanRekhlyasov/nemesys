@@ -276,7 +276,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 ...doc.data(),
                 id: doc.id,
                 updated_at: date.formatDate(doc.data()?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                // created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
             } as ClientFactory;
         })
     }
