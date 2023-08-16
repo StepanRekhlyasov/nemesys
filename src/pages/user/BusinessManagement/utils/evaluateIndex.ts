@@ -58,17 +58,19 @@ export const evaluateAll = async (
   return Math.round((targetPoint / totalPointsAverage) * 100);
 };
 
-export const evaluateTeleapoIndex = async (clientFactory: ClientFactory) => {
+export const evaluateTeleapoIndex = async (clientFactory: ClientFactory,timeFrame:string) => {
   const conectedTele = await countTeleApo(
     clientFactory.clientID,
     clientFactory.id,
     2,
+    timeFrame,
     'connected'
   );
   const teleAll = await countTeleApo(
     clientFactory.clientID,
     clientFactory.id,
-    2
+    2,
+    timeFrame,
   );
   if (teleAll === 0 || !teleAll) {
     return '-';

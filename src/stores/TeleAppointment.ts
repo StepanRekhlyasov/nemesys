@@ -89,7 +89,7 @@ export const useTele = defineStore('TeleAppoint', () => {
     await addDoc(collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments'), data);
   };
 
-  const countTeleApo = async (clientId: string, clientFactoryId: string,month = 2 ,result?:'noConnected'|'connected') => {
+  const countTeleApo = async (clientId: string, clientFactoryId: string,month = 2 ,timeFrame?:string,result?:'noConnected'|'connected') => {
     const monthAgo = new Date();
     monthAgo.setDate(monthAgo.getDate() - 30*month);
     const filters =[
@@ -99,6 +99,9 @@ export const useTele = defineStore('TeleAppoint', () => {
     ]
     if(result){
       filters.push(where('result', '==', result))
+    }
+    if(timeFrame){
+      filters.push(where('timeFrame', '==', timeFrame))
     }
     const counted = await getCountFromServer(
       query(

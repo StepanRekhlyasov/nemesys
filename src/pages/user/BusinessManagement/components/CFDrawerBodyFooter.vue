@@ -37,9 +37,9 @@ const eveningTeleApoIndex = ref<number|string>('loading')
 onMounted(async()=>{
     dispatchIndex.value = await evaluateAll(props.clientFactory,'dispatch')
     refarralIndex.value = await evaluateAll(props.clientFactory,'referral')
-    morningTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory)
-    afternoonTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory)
-    eveningTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory)
+    morningTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory ,'morning')
+    afternoonTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory ,'afternoon')
+    eveningTeleApoIndex.value = await evaluateTeleapoIndex(props.clientFactory ,'evening')
 })
 </script>
 
