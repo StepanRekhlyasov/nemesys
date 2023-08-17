@@ -3,12 +3,12 @@
     class="q-py-none no-shadow CFDrawerBO">
     <template v-slot:body-cell-boid="props">
       <q-td :props="props">
-        <q-btn flat dense no-caps @click="openDrawer(props.row)" :color="theme" :label="props.row.boId"
+        <q-btn v-if="theme==='primary'" flat dense no-caps @click="openDrawer(props.row)" :color="theme" :label="props.row.boId"
           class="q-pa-none text-body1" />
-        <div></div>
+        <div v-else>{{ props.value }}</div>
       </q-td>
     </template>
-    <template v-slot:body-cell-select="props">
+    <template v-if="theme==='primary'" v-slot:body-cell-select="props">
       <q-td :props="props">
         <q-checkbox v-model="props.row.selected" />
       </q-td>
@@ -100,7 +100,7 @@
       </q-td>
     </template>
 
-    <template v-slot:top>
+    <template v-slot:top v-if="theme==='primary'">
       <q-checkbox val="xs" class="q-pt-sm" color="blue" v-model="selected" />
       <div class="q-ml-sm q-pt-sm">{{ $t('common.numberOfSelections') }}: {{ selectedCount() }}</div>
       <q-btn class="no-shadow q-ml-md q-mt-sm q-py-none q-px-md " :label="$t('common.delete')"
@@ -111,7 +111,7 @@
     </template>
 
   </q-table>
-  <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
+  <Pagination :theme="theme" :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
     <createBO :clientId="clientId" :original-office-id="originalOfficeId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" @fetch-bo="fetchBOData()"
     v-if="cteateBoDrawer"
@@ -221,6 +221,7 @@ const selectedCount = () => {
 
 function addNewBo() {
   $q.dialog({
+    color:theme,
     title: t('backOrder.selectBOType'),
     cancel: t('backOrder.type.dispatch'),
     ok: t('backOrder.type.referral'),
