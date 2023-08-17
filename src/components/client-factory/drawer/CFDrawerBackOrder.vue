@@ -13,8 +13,8 @@
         <q-checkbox v-model="props.row.selected" />
       </q-td>
       <q-td v-else>
-        {{ organizations[props.row.organizationId].code }}<br>
-        {{ organizations[props.row.organizationId].name }}
+        {{allOrganizationBo? allOrganizationBo[props.row.organizationId].code:'' }}<br>
+        {{allOrganizationBo? allOrganizationBo[props.row.organizationId].name:'' }}
       </q-td>
     </template>
 
@@ -168,6 +168,7 @@ const loading = ref(false);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 const organization = useOrganization();
 const organizations = ref({})
+const allOrganizationBo = ref()
 const $q = useQuasar();
 const pagination = ref({
   sortBy: 'desc',
@@ -260,6 +261,10 @@ const getOrganizationCodes = async () => {
     }
   })
 }
+
+watch(organizations.value,()=>{
+  allOrganizationBo.value = organizations.value;
+})
 
 </script>
 
