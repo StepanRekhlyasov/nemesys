@@ -33,7 +33,22 @@ export const useIndsutry = defineStore('industries', () => {
                   industry.uniqueItems.facilityForms = Object.entries(industry.uniqueItems.facilityForms)
                       .sort(([, a], [, b]) => a.order - b.order)
                       .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
-
+                  if((industry.uniqueItems.certificateForms)){
+                    industry.uniqueItems.certificateForms = Object.entries(industry.uniqueItems.certificateForms)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+                  }
+                  else{
+                    industry.uniqueItems.certificateForms = {}
+                  }
+                  if((industry.uniqueItems.occupationForms)){
+                    industry.uniqueItems.occupationForms = Object.entries(industry.uniqueItems.occupationForms)
+                    .sort(([, a], [, b]) => a.order - b.order)
+                    .reduce((acc, [key, item]) => ({ ...acc, [key]: item }), {});
+                  }
+                  else{
+                    industry.uniqueItems.occupationForms = {}
+                  }
                   return industry;
               });
 

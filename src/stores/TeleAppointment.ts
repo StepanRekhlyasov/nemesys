@@ -10,7 +10,8 @@ import {
   where,
   doc as docDb,
   getDoc,
-  writeBatch
+  writeBatch,
+  getCountFromServer,
 } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { toDate } from 'src/shared/utils/utils';
@@ -88,10 +89,34 @@ export const useTele = defineStore('TeleAppoint', () => {
     await addDoc(collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments'), data);
   };
 
+  const countTeleApo = async (clientId: string, clientFactoryId: string,month = 2 ,timeFrame?:string,result?:'noConnected'|'connected') => {
+    const monthAgo = new Date();
+    monthAgo.setDate(monthAgo.getDate() - 30*month);
+    const filters =[
+      where('deleted', '==', false),
+      where('created_at', '>=', monthAgo),
+      where('organizationId', '==', organization.currentOrganizationId)
+    ]
+    if(result){
+      filters.push(where('result', '==', result))
+    }
+    if(timeFrame){
+      filters.push(where('timeFrame', '==', timeFrame))
+    }
+    const counted = await getCountFromServer(
+      query(
+        collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'teleAppointments'),
+        ...filters,
+      )
+    );
+    return counted.data().count;
+  };
+
   return {
     loadTeleAppointmentData,
     deleteTele,
     addData,
-    updateData
+    updateData,
+    countTeleApo
   };
 });
