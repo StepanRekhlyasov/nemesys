@@ -325,6 +325,7 @@ const defaultData = ref<Partial<ApplicantInputs>>({});
   const data = ref<Partial<ApplicantInputs>>({});
 const routeData:Ref<string[]> = ref([]);
 const firstSelect = ref<string>('');
+const routeName:Ref<string[]> = ref([])
 const stationData:DocumentData = ref([]);
 const meansCommutingOptions = computed(() => [
   { value: 'walk', label: t('applicant.attendant.meansCommutingOptions.walk') },
@@ -391,8 +392,8 @@ watch(
   }
   else if(firstSelect.value==='station'){
     data.value['route'] = '';
-    const routeName = await metadataStore.getRouteByStation(data.value['nearestStation']);
-      const formattedRoutes = routeName.map(routeName => `${data.value['nearestStation']}(${routeName})`);
+     routeName.value = await metadataStore.getRouteByStation(data.value['nearestStation']);
+      const formattedRoutes = routeName.value.map(routeName => `${data.value['nearestStation']}(${routeName})`);
       routeData.value = formattedRoutes;
   }
   }
@@ -481,13 +482,18 @@ const getFacilityTypeOptions = () => {
 };
 
 const filterStation = async (val: string, update) => {
+  debugger
   if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')') && !data.value.nearestStation){
     stationData.value = await metadataStore.createStationOptions()
     data.value['route'] = ''
     routeData.value = []
   }
   else if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')')){
-    stationData.value = await metadataStore.createStationOptions()
+    const routeSubstring = data.value['route'].match(/\(([^)]+)\)/)?.[1];
+
+if (routeSubstring) {
+  stationData.value = await metadataStore.getStationByID(routeSubstring)
+}
   }
   else if (val === '' && data.value.route ) {
     update(async () => {
