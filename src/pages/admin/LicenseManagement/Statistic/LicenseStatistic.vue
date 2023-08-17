@@ -9,10 +9,10 @@
         :max-year-month="currentDate.replace('-', '/')" :disable="loading" />
     </div>
 
-    <q-card flat class="q-pt-sm q-px-lg">
-      <SearchField :on-click-search="searchLicense" :on-click-clear="() => { search = ''; data = copyData }"
-        v-model:model-value="search">
-      </SearchField>
+    <q-card flat class=" q-px-lg">
+
+      <StatisticSearch @update-search="search" />
+
     </q-card>
 
     <div class="container">
@@ -28,13 +28,13 @@
         <template #after="props">
           <q-td v-if="props.branchItem.working === false" class="emptyCell">
             {{ 'nemesys' }}
-           </q-td>
-           <q-td v-else>
+          </q-td>
+          <q-td v-else>
             {{ 'nemesys' }}
           </q-td>
           <q-td v-if="props.branchItem.working === false" class="emptyCell">
             {{ props.branchItem.licensesSlots }}
-           </q-td>
+          </q-td>
           <q-td v-else>
             {{ props.branchItem.licensesSlots }}
           </q-td>
@@ -62,9 +62,10 @@ import { useLicense } from 'src/stores/license';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useBranch } from 'src/stores/branch';
 import { useBusiness } from 'src/stores/business';
-import SearchField from 'src/components/SearchField.vue';
-import { SearchData } from '../types/LicenseStatistic'
-import { filterInPlace } from '../handlers/LicenseHandlers';
+import { Search } from '../types/LicenseStatistic'
+import StatisticSearch from './StatisticSearch.vue';
+import Fuse from 'fuse.js'
+
 
 const { t } = useI18n({ useScope: 'global' });
 const currentDate = date.formatDate(Date.now(), 'YYYY-MM')
@@ -76,12 +77,9 @@ const organization = useOrganization()
 const licenceStore = useLicense()
 const branchStore = useBranch()
 const business = useBusiness()
-const search = ref('')
-const searchData = ref<SearchData>({})
 
 async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
   data.value = []
-  searchData.value = {}
   const organizationIds = await organization.getAllOrganizationsIds()
   try {
     const tableData = await Promise.all(organizationIds.map(async (id) => {
@@ -91,12 +89,6 @@ async function loadDataInMonth(selectedYear: number, selectedMonth: number) {
         selectedMonth,
         selectedYear,
       })
-
-      searchData.value[id] = {
-        businesses: business,
-        branches: branchesInBusiness,
-        organization: organization
-      }
 
       return toTable(business, branchesInBusiness, organization)
     }))
@@ -130,77 +122,90 @@ onMounted(async () => {
   loading.value = false
 })
 
-function searchLicense() {
+
+function getSearchKeys(v: Search) {
+  type SearchKey = keyof Omit<Search, 'arroba' | 'nemesys'>
+
+  const searchedKeys: SearchKey[] = []
+
+  for (const [key, item] of Object.entries(v)) {
+    if (key == 'arroba' || key == 'nemesys') {
+      continue
+    }
+
+    if (item) {
+      searchedKeys.push(key as SearchKey)
+    }
+  }
+  return searchedKeys
+}
+
+function search(searchQuery: Search) {
   data.value = []
-  Object.values(searchData.value).forEach((d) => {
 
-    const copy = JSON.parse(JSON.stringify(d)) as typeof d
-
-    let foundBranch = false
-    let foundBusiness = false
-    let foundOrganization = false
-
-    Object.values(copy.branches).forEach((v) => {
-      filterInPlace(v, (v) => {
-        const includes = v.name.includes(search.value)
-        foundBranch = foundBranch || includes
-        return includes
-      })
-
-    })
-
-    for (const key in copy.businesses) {
-      const business = copy.businesses[key]
-      const includes = business.name?.includes(search.value)
-
-      foundBusiness = foundBusiness || includes
-
-      if (!includes) {
-        delete copy.businesses[key]
+  let setDefault = true
+  for (let key in searchQuery) {
+    const value = searchQuery[key]
+    if (key == 'arroba' || key == 'nemesys') {
+      if (!value && key == 'nemesys') {
+        data.value = []
+        return
       }
+      continue
     }
-
-    foundOrganization = foundOrganization || copy.organization.name.includes(search.value)
-
-    if (foundOrganization && foundBranch && foundBusiness) {
-      data.value.push(toTable(copy.businesses, copy.branches, copy.organization))
+    if (value) {
+      setDefault = false
     }
+  }
 
-    if (foundOrganization && foundBranch && !foundBusiness) {
-      data.value.push(toTable(d.businesses, copy.branches, copy.organization))
-    }
+  if (setDefault) {
+    data.value = copyData.value
+    return
+  }
 
-    if (foundOrganization && !foundBranch && !foundBusiness) {
-      data.value.push(toTable(d.businesses, d.branches, copy.organization))
+  const searchKeys = getSearchKeys(searchQuery)
 
-    }
+  if (!searchKeys) {
+    return
+  }
 
-    if (!foundOrganization && !foundBranch && !foundBusiness) {
-      data.value.push(toTable(copy.businesses, copy.branches, copy.organization))
+  const pathDict = {
+    'branchName': 'organization.buisneses.branches.name',
+    'businessName': 'organization.buisneses.name',
+    'orgaName': 'organization.name',
+    'code': 'organization.code'
+  }
+  const keys: string[] = []
 
-    }
+  if (searchKeys.length == 1) {
+    const key = searchKeys[0]
+    keys.push(pathDict[key])
+    data.value = configureFuse(copyData.value, keys, searchQuery[key])
+    return
+  }
 
-    if (foundOrganization && !foundBranch && foundBusiness) {
-      data.value.push(toTable(copy.businesses, d.branches, copy.organization))
+  const andArray: Fuse.Expression[] = []
+  searchKeys.forEach((key) => {
+    const path = pathDict[key]
+    keys.push(path)
 
-    }
-
-    if (!foundOrganization && foundBranch && !foundBusiness) {
-      data.value.push(toTable(d.businesses, copy.branches, d.organization))
-
-    }
-
-
-    if (!foundOrganization && !foundBranch && foundBusiness) {
-      data.value.push(toTable(copy.businesses, d.branches, d.organization))
-    }
-
-
-    if (!foundOrganization && foundBranch && foundBusiness) {
-      data.value.push(toTable(copy.businesses, d.branches, d.organization))
-    }
-
+    andArray.push({
+      $path: path,
+      $val: searchQuery[key]
+    })
   })
+  data.value = configureFuse(copyData.value, keys, { $and: andArray })
+}
+
+function configureFuse(list: ReadonlyArray<Table>, keys: string[], pattren: string | Fuse.Expression) {
+
+  const options: Fuse.IFuseOptions<Table> = {
+    keys,
+  }
+
+  const fuse = new Fuse(list, options)
+  const searchResult = fuse.search(pattren)
+  return searchResult.map((r) => r.item)
 }
 
 function sort(rows, sortBy: string, descending: boolean) {
@@ -243,7 +248,6 @@ function sort(rows, sortBy: string, descending: boolean) {
 
 async function loadCurrentData() {
   data.value = []
-  searchData.value = {}
   const organizationIds = await organization.getAllOrganizationsIds()
   const dataArray = await Promise.all(organizationIds.map(async (id) => {
     return Promise.all([
@@ -263,11 +267,6 @@ async function loadCurrentData() {
         branches[branch.businessId] = []
       }
       branches[branch.businessId].push(branch)
-    }
-    searchData.value[organizations[0].id] = {
-      businesses,
-      branches,
-      organization: organizations[0]
     }
     data.value.push(toTable(businesses, branches, organizations[0]))
   })
@@ -304,6 +303,7 @@ td {
 .container {
   margin: 20px 90px 0px 90px;
 }
+
 .emptyCell {
   background: $grey-4;
 }

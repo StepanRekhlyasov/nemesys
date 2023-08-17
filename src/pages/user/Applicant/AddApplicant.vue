@@ -117,16 +117,16 @@
               </div>
               <div class="col-6 q-ml-sm bg-white">
                 <select-branch :organization-id="organizationStore.currentOrganizationId"
-                  v-model="applicantData['branchIncharge']" :rules="[creationRule]" hide-bottom-space
+                  v-model="applicantData['branchIncharge']" use-chips :rules="[creationRule]" hide-bottom-space
                   @on-start-loading="disableSubmit = true; applicantData['branchIncharge'] = ''"
                   @on-end-loading="disableSubmit = false" />
               </div>
             </div>
             <div class="row q-pt-sm">
-              <div class="col-3 text-right self-center q-pr-sm">
-                {{ $t('clientFactory.drawer.details.industry') }}
+              <div class="col-3 text-right self-center q-pr-sm q-mb-md">
+                {{ $t('clientFactory.drawer.details.industry') }}<span style="color: red">*</span>
               </div>
-              <div class="col-6 q-ml-sm bg-white">
+              <div class="col-6 q-ml-sm ">
                 <q-select
                   :disable="!industries.length"
                   v-model="applicantData['industry']"
@@ -134,6 +134,8 @@
                   map-options
                   outlined
                   dense
+                  use-chips
+                  bg-color="white"
                   :options="industries"
                   option-label="industryName"
                   option-value="."

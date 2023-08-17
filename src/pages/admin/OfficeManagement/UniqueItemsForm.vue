@@ -86,7 +86,9 @@ const onNewIndustry = async (industryName: string) => {
         industryName: industryName,
         uniqueItems: {
             typeSpecificItems: {},
-            facilityForms: {}
+            facilityForms: {},
+            occupationForms: {},
+            certificateForms: {}
         }
       };
       await addId(currentId.value, updatedIndustry)

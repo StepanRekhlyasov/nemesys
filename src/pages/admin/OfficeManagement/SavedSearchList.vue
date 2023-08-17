@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ActionsType } from 'src/components/client-factory/types';
 import { useUserStore } from 'src/stores/user';
 import { toDate } from 'src/shared/utils/utils';
 import { User } from 'src/shared/model';
-import { useOrganization } from 'src/stores/organization';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
 import { useI18n } from 'vue-i18n';
@@ -14,14 +13,6 @@ const saveSearchCondition = useSaveSearchConditionAdmin();
 const advanceSearch = useAdvanceSearchAdmin();
 const { t } = useI18n({ useScope: 'global' });
 const loading = ref(true);
-const pagination = ref({
-    sortBy: 'desc',
-    descending: false,
-    page: 1,
-    rowsPerPage: 10
-    // rowsNumber: xx if getting data from a server
-});
-
 
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
@@ -45,6 +36,15 @@ const getUserName = (userId: string) => {
 const keyword = ref('');
 const filterConditionList = ref();
 const filter = ref(false)
+
+const pagination = ref({
+    sortBy: 'desc',
+    descending: false,
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: filter.value?filterConditionList.value.length:conditionList.value.length
+});
+
 const filterFn = () => {
     filterConditionList.value = conditionList.value.filter(item => {if(check(item['conditionName'])){return item}})
     filter.value=true;

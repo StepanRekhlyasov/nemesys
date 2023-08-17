@@ -52,6 +52,12 @@ export const TeleColumns = computed<QTableProps['columns']>(() => {
         align: 'left',
       },
       {
+        name: 'timeFrame',
+        label: t('detal.teleAppoint.timeFrame'),
+        field: 'timeFrame',
+        align: 'left',
+      },
+      {
        label: '',
        field: 'action',
        name: 'action',
