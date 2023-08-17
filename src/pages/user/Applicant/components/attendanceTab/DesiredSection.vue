@@ -324,6 +324,7 @@ const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({});
   const data = ref<Partial<ApplicantInputs>>({});
 const routeData = ref([]);
+const firstSelect = ref<string>('');
 const stationData:DocumentData = ref([]);
 const meansCommutingOptions = computed(() => [
   { value: 'walk', label: t('applicant.attendant.meansCommutingOptions.walk') },
@@ -367,21 +368,32 @@ onMounted(async () => {
 });
 
 watch(() => data.value['route'], async (newVal) => {
+  if(!data.value['nearestStation'] && newVal){
+    firstSelect.value = 'route';
+  }
+  else if(!data.value['nearestStation'] && !newVal){
+    firstSelect.value = '';
+  }
    if (newVal && !data.value['route']?.includes('(')) {
     data.value['nearestStation'] = ''
     stationData.value = []
     stationData.value = await metadataStore.getStationByID(newVal)
   }
-  else if(!data.value['route']?.includes('(') && data.value.nearestStation){
+  else if(!data.value['route']?.includes('(')){
     routeData.value = await metadataStore.getStationRoutes()
-  }else{
-    routeData.value = await metadataStore.getStationRoutes()
+    data.value['nearestStation'] = ''
   }
 }
 )
 watch(
   () => data.value['nearestStation'],
   async (newVal) => {
+    if(!data.value['route'] && newVal){
+    firstSelect.value = 'station';
+  }
+  else if(!data.value['route'] && !newVal){
+    firstSelect.value = '';
+  }
     if(!data.value['route']?.includes('(') && data.value['route'] ){
     }
     else if (newVal) {
