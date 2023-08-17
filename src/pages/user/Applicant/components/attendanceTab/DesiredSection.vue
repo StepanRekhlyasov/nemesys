@@ -323,7 +323,7 @@ const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({});
   const data = ref<Partial<ApplicantInputs>>({});
-const routeData = ref([]);
+const routeData:Ref<string[]> = ref([]);
 const firstSelect = ref<string>('');
 const stationData:DocumentData = ref([]);
 const meansCommutingOptions = computed(() => [
@@ -374,14 +374,9 @@ watch(() => data.value['route'], async (newVal) => {
   else if(!data.value['nearestStation'] && !newVal){
     firstSelect.value = '';
   }
-   if (newVal && !data.value['route']?.includes('(')) {
-    data.value['nearestStation'] = ''
-    stationData.value = []
-    stationData.value = await metadataStore.getStationByID(newVal)
-  }
-  else if(!data.value['route']?.includes('(')){
-    routeData.value = await metadataStore.getStationRoutes()
-    data.value['nearestStation'] = ''
+  else if(firstSelect.value==='route'){
+    data.value['nearestStation'] = '';
+    stationData.value = await metadataStore.getStationByID(newVal as string)
   }
 }
 )
@@ -394,23 +389,30 @@ watch(
   else if(!data.value['route'] && !newVal){
     firstSelect.value = '';
   }
-    if(!data.value['route']?.includes('(') && data.value['route'] ){
-    }
-    else if (newVal) {
-      const routeName = await metadataStore.getRouteByStation(newVal);
-      const formattedRoutes = routeName.map(routeName => `${newVal}(${routeName})`);
+  else if(firstSelect.value==='station'){
+    data.value['route'] = '';
+    const routeName = await metadataStore.getRouteByStation(data.value['nearestStation']);
+      const formattedRoutes = routeName.map(routeName => `${data.value['nearestStation']}(${routeName})`);
       routeData.value = formattedRoutes;
-    }
-    else if(data.value['route']?.includes('(')){
-      data.value['route'] = ''
-    }
-    else{
-      stationData.value = await metadataStore.createStationOptions()
-    }
+  }
   }
   ,
   { deep: true , immediate:true}
 );
+watch(firstSelect,async (newVal)=>{
+  if(newVal==='route'){
+    stationData.value = await metadataStore.getStationByID(data.value['route'] as string)
+  }
+  else if(newVal==='station'){
+    const routeName = await metadataStore.getRouteByStation(data.value['nearestStation']);
+      const formattedRoutes = routeName.map(routeName => `${data.value['nearestStation']}(${routeName})`);
+      routeData.value = formattedRoutes;
+  }
+  else{
+    routeData.value = await metadataStore.getStationRoutes()
+    stationData.value = await metadataStore.createStationOptions()
+  }
+})
 watch(() => desiredEdit.value, (newVal) => {
   if (newVal) {
     data.value['nearestStation'] = props.applicant['nearestStation'];
