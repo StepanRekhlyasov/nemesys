@@ -373,7 +373,7 @@ watch(() => data.value['route'], async (newVal) => {
     stationData.value = await metadataStore.getStationByID(newVal)
   }
   else if(!data.value['route']?.includes('(')){
-    data.value['nearestStation'] = ''
+    routeData.value = await metadataStore.getStationRoutes()
   }
 }
 )
