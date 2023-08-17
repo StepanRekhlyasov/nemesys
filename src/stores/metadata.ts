@@ -68,16 +68,18 @@ export const useMetadata = defineStore('metadata', () => {
   async function getRouteByStation(station) {
     const collectionRef = collection(db, 'metadata', 'stationRoutes', 'station');
     const querySnapshot = await getDocs(collectionRef);
+    const routeNames:string[] = []; // Initialize an array to store route names
+
     for (const docSnap of querySnapshot.docs) {
       const routeName = docSnap.id;
       const stationData = docSnap.data().stations;
       for (let i = 0; i < stationData.length; i++) {
         if (stationData[i] === station) {
-          return routeName;
+          routeNames.push(routeName);
         }
       }
     }
-    return '';
+    return routeNames;
   }
 
   return { state, getPrefectureJP, getStationRoutes, getStationByID ,createStationOptions , getRouteByStation}

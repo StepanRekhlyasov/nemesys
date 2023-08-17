@@ -367,7 +367,7 @@ onMounted(async () => {
 });
 
 watch(() => data.value['route'], async (newVal) => {
-  if (newVal && !data.value['route']?.includes('(')) {
+   if (newVal && !data.value['route']?.includes('(')) {
     data.value['nearestStation'] = ''
     stationData.value = []
     stationData.value = await metadataStore.getStationByID(newVal)
@@ -384,10 +384,14 @@ watch(
     }
     else if (newVal) {
       const routeName = await metadataStore.getRouteByStation(newVal);
-      data.value['route'] = `${newVal}(${routeName})`;
+      const formattedRoutes = routeName.map(routeName => `${newVal}(${routeName})`);
+      routeData.value = formattedRoutes;
     }
     else if(data.value['route']?.includes('(')){
       data.value['route'] = ''
+    }
+    else{
+      stationData.value = await metadataStore.createStationOptions()
     }
   }
   ,
@@ -461,9 +465,13 @@ const getFacilityTypeOptions = () => {
 };
 
 const filterStation = async (val: string, update) => {
-  if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')')){
+  if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')') && !data.value.nearestStation){
     stationData.value = await metadataStore.createStationOptions()
+    data.value['route'] = ''
     routeData.value = []
+  }
+  else if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')')){
+    stationData.value = await metadataStore.createStationOptions()
   }
   else if (val === '' && data.value.route ) {
     update(async () => {
@@ -474,6 +482,9 @@ const filterStation = async (val: string, update) => {
     })
     return
   }
+  else{
+    stationData.value = await metadataStore.createStationOptions()
+  }
   update(async() => {
     const needle = val.toLowerCase()
     stationData.value = stationData.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
@@ -481,7 +492,7 @@ const filterStation = async (val: string, update) => {
 };
 
 const filterRoute = async (val: string, update) => {
-  if (val === '') {
+  if (val === '' && !routeData.value.some(route => route.includes('('))) {
     update(async () => {
       routeData.value = await metadataStore.getStationRoutes();
     })
