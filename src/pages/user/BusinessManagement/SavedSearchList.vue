@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { toDate } from 'src/shared/utils/utils';
 import { User } from 'src/shared/model';
-import { useOrganization } from 'src/stores/organization';
 import AdvanceSearchDrawer from './AdvanceSearchDrawer.vue';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { useI18n } from 'vue-i18n';
@@ -22,7 +21,6 @@ const pagination = ref({
 });
 
 
-const organizationStore = useOrganization();
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
 
@@ -30,13 +28,6 @@ const allUsers = ref(<User[]>[]);
 const conditionList = computed(() => {
     return saveSearchCondition.searchConditions;
 });
-const currentOrganization = ref(organizationStore.currentOrganizationId)
-// watch(() => organizationStore.state.userAndBranchesUpdated, async () => {
-//     loading.value = true;
-//     currentOrganization.value = organizationStore.currentOrganizationId
-//     await saveSearchCondition.getSaveSearchConditions(currentOrganization.value);
-//     loading.value = false;
-// })
 
 onMounted(async () => {
     await saveSearchCondition.getSaveSearchConditions();

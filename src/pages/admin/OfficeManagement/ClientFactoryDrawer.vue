@@ -3,9 +3,9 @@ import { getAuth } from 'firebase/auth';
 import { storeToRefs } from 'pinia'
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineEmits, defineProps, watch, ref, watchEffect } from 'vue';
-import CFDrawerTitle from './components/CFDrawerTitle.vue';
-import CFDrawerBody from './components/CFDrawerBody.vue';
-import CFDrawerTabs from './components/CFDrawerTabs.vue';
+import CFDrawerTitle from 'src/components/client-factory/drawer/CFDrawerTitle.vue';
+import CFDrawerBody from 'src/components/client-factory/drawer/CFDrawerBody.vue';
+import CFDrawerTabs from 'src/components/client-factory/drawer/CFDrawerTabs.vue';
 import ModifiedCFsDrawer from './ModifiedCFsDrawer.vue';
 import UpdatedCFDrawer from './UpdatedCFDrawer.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
@@ -21,6 +21,7 @@ import { ImportLog } from 'src/shared/model/ImportLog';
 const props = defineProps<{
     isDrawer: boolean,
     selectedItem: ClientFactory
+    originalOfficeId: string
 }>()
 
 const { updateClientFactory, addReflectLog, addImportLog } = useClientFactory()
@@ -221,7 +222,9 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                         :draft="localDraft"
                         :is-loading="isLoading.isGeneral"
                         :industryType="localData.isHead ? selectedIndustry.value ?? '' : localData.industry[0]"
-                        @edit-draft="editDraftHandler" />
+                        @edit-draft="editDraftHandler" 
+                        :originalOfficeId="originalOfficeId"
+                      />
                 </q-card-section>
             </q-card>
         </q-scroll-area>

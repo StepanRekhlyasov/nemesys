@@ -2,6 +2,7 @@
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -12,10 +13,11 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'editIndustry', value: { value: string, isSelected: boolean })
 }>()
-
 const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
     emit('editIndustry', item)
 }
+const route = useRoute()
+const theme = route.meta.isAdmin ? 'accent' : 'primary'
 </script>
 
 <template>
@@ -34,7 +36,7 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
                         auto-close
                         :label="selectedIndustry.value ?? ''"
                         color="white"
-                        text-color="primary">
+                        :text-color="theme">
 
                         <q-list>
                             <q-item

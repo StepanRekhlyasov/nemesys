@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit, deleteDoc } from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -223,8 +223,9 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['registrant'] = auth.currentUser?.uid;
-    const snapshot = await getCountFromServer(query(collection(db, '/BO')));
-    data['boId'] = snapshot.data().count;
+    const snapshot = query(collection(db, '/BO'), where('organizationId', '==', organization.currentOrganizationId),orderBy('boId', 'desc'),limit(1));
+    const largestBoId = await getDocs(snapshot);
+    data['boId'] = largestBoId.docs[0].data().boId + 1;
 
     const checkNew = await getDocs(query(collection(db, '/BO'), where('office_id', '==', data.office_id), limit(1)))
     if (checkNew.docs.length > 0) {
@@ -609,10 +610,3 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })
-
-export const deleteBO = async (id: string) => {
-  const db = getFirestore();
-  const docRef = doc(db, 'BO', id);
-  const res = await deleteDoc(docRef);
-  return res;
-}

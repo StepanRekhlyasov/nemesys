@@ -780,6 +780,7 @@ export default {
       jobResult: 'Job Result',
       requiredService: 'Required Service',
       remark: 'Remark',
+      timeFrame:'Time Frame',
     },
     memo: {
       registredUser: 'Registred User',
@@ -1757,8 +1758,8 @@ export default {
       status: 'status',
       category: 'category',
       subject: 'subject',
-      companyID: 'companyID',
-      companyName: 'Company name',
+      companyID: 'CompanyID',
+      companyName: 'Company Name',
       recievedDate: 'date issued',
       recieve: 'Sent / Recieve Date',
       recieved: 'Recieved',
