@@ -12,14 +12,6 @@ const saveSearchCondition = useSaveSearchCondition();
 const advanceSearch = useAdvanceSearch();
 const { t } = useI18n({ useScope: 'global' });
 const loading = ref(true);
-const pagination = ref({
-    sortBy: 'desc',
-    descending: false,
-    page: 1,
-    rowsPerPage: 10
-    // rowsNumber: xx if getting data from a server
-});
-
 
 const useStore = useUserStore();
 const allUsers = ref(<User[]>[]);
@@ -40,6 +32,16 @@ const getUserName = (userId: string) => {
 const keyword = ref('');
 const filterConditionList = ref();
 const filter = ref(false)
+
+const pagination = ref({
+    sortBy: 'desc',
+    descending: false,
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: filter.value?filterConditionList.value.length:conditionList.value.length
+});
+
+
 const filterFn = () => {
     filterConditionList.value = conditionList.value.filter(item => {if(check(item['conditionName'])){return item}})
     filter.value=true;

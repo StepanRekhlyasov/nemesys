@@ -277,7 +277,7 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
     };
     const getTeleAppointmentData = async (constraint: string[]) => {
         const currentDate = new Date();
-        currentDate.setMonth(currentDate.getMonth() - 3);
+        currentDate.setMonth(currentDate.getMonth() - 2);
         const prevDate = convertDate(currentDate.toString())
         const offices: string[] = []
         const teleAppointmentSnapshot = await getDocs(
@@ -287,6 +287,7 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
                 where('created_at','>=',prevDate),
             )
         );
+        const notConnectedId:string[] = [];
         teleAppointmentSnapshot.docs.forEach((doc)=>{
             const item = doc.data()['officeId']
             if (constraint.length === 3 || constraint.includes('exist')) {
@@ -301,8 +302,15 @@ export const useAdvanceSearchAdmin = defineStore('advanceSearchAdmin', () => {
                 if (constraint.includes(doc.data()['result'])) {
                     if (!offices.includes(item)) { offices.push(item) }
                 }
+                if(doc.data()['result']==='connected'){
+                    if (!notConnectedId.includes(item)) { notConnectedId.push(item) }
+                }
             }
         })
+        if(constraint.length===1 && constraint.includes('notConnected')){
+            const office = offices.filter(id=>{if(!notConnectedId.includes(id)){return id}})
+            return office;
+        }
         return offices;
     };
     const getCFsId = async () => {
