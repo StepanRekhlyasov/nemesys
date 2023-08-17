@@ -368,7 +368,6 @@ import { useSaveSearchCondition } from 'src/stores/saveSearchCondition'
 import { useSaveSearchConditionAdmin } from 'src/stores/saveSearchConditionAdmin'
 import { storeToRefs } from 'pinia';
 import { useIndsutry } from 'src/stores/industry';
-
 const props = withDefaults(defineProps<{
   actionsType?: ActionsType
   from: string,
