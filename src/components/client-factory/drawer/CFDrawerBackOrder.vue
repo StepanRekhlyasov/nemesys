@@ -8,9 +8,13 @@
         <div v-else>{{ props.value }}</div>
       </q-td>
     </template>
-    <template v-if="theme==='primary'" v-slot:body-cell-select="props">
-      <q-td :props="props">
+    <template v-slot:body-cell-select="props">
+      <q-td v-if="theme==='primary'" :props="props">
         <q-checkbox v-model="props.row.selected" />
+      </q-td>
+      <q-td v-else>
+        {{ organizations[props.row.organizationId].code }}<br>
+        {{ organizations[props.row.organizationId].name }}
       </q-td>
     </template>
 
@@ -18,6 +22,14 @@
       <q-th :props="props">
         {{ $t('client.backOrder.reqQualification') }}<br />
         {{ $t('client.backOrder.experienceReq') }}<br />
+      </q-th>
+    </template>
+
+    <template v-if="theme==='accent'" v-slot:header-cell-select="props">
+      <q-th :props="props">
+        {{ $t('menu.admin.organizationsTable.organizationId') }}
+        <br>
+        {{ $t('menu.admin.organizationsTable.organizationName') }}
       </q-th>
     </template>
 
@@ -138,6 +150,7 @@ import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
 import { useRoute } from 'vue-router';
+import { useOrganization } from 'src/stores/organization'
 
 const route = useRoute()
 const theme = route.meta.isAdmin ? 'accent' : 'primary'
@@ -153,6 +166,8 @@ const cteateBoDrawer = ref(false);
 const columns = ref<QTableProps | Ref>(BackOrderColumns);
 const loading = ref(false);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
+const organization = useOrganization();
+const organizations = ref({})
 const $q = useQuasar();
 const pagination = ref({
   sortBy: 'desc',
@@ -177,7 +192,6 @@ const showDeleteDialog = async (ids: string[]) => {
     backOrderData.value = data.map(row => {
       return { ...row, selected: false };
     });
-
   });
 };
 
@@ -212,7 +226,8 @@ watch(() => selected.value, (newValue) => {
   }
 });
 onMounted(async () => {
-  fetchBOData();
+  await fetchBOData();
+  await getOrganizationCodes();
 });
 
 const selectedCount = () => {
@@ -234,6 +249,16 @@ function addNewBo() {
       cteateBoDrawer.value = true
 
     });
+}
+
+const getOrganizationCodes = async () => {
+  const allOrganizations =  await organization.getAllOrganizations();
+  allOrganizations.forEach(org=>{
+    organizations.value[org.id] = {
+      name:org.name,
+      code:org.code
+    }
+  })
 }
 
 </script>
