@@ -193,7 +193,6 @@ const statusOption  = ref<({
     label: string;
     value: ApplicantStatus;
 }|undefined)[]>([])
-// const statusOption = ref(statusList)
 const setStatusOption = () => {
   statusOption.value =
   [
