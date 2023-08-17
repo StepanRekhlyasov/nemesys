@@ -1,8 +1,10 @@
 import { ClientFactory } from 'src/shared/model';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useBackOrder } from 'src/stores/backOrder';
+import { useTele } from 'src/stores/TeleAppointment';
 const { getClientFactoryList } = useClientFactory();
 const { countDaysByOfficeId } = useBackOrder();
+const { countTeleApo } = useTele();
 const days = ['one', 'two', 'three', 'four', 'five'];
 const route = ['coldCall', 'fax'];
 const getDataListFromOfficeId = async (officeId: string, type: string) => {
@@ -47,11 +49,35 @@ export const evaluateAll = async (
       targetPoint = totalPoint;
     }
   }
-  if (totalPoints.length === 0) return 'no data';
+  if (totalPoints.length === 0) return '-';
   const totalPointsAverage =
     totalPoints.reduce((acc, point) => {
       return acc + point;
     }, 0) / totalPoints.length;
-  if (totalPointsAverage === 0) return 'no data';
+  if (totalPointsAverage === 0) return '-';
   return Math.round((targetPoint / totalPointsAverage) * 100);
+};
+
+export const evaluateTeleapoIndex = async (clientFactory: ClientFactory,timeFrame:string) => {
+  const conectedTele = await countTeleApo(
+    clientFactory.clientID,
+    clientFactory.id,
+    2,
+    timeFrame,
+    'connected'
+  );
+  const teleAll = await countTeleApo(
+    clientFactory.clientID,
+    clientFactory.id,
+    2,
+    timeFrame,
+  );
+  if (teleAll === 0 || !teleAll) {
+    return '-';
+  }
+  if (conectedTele * 2 >= teleAll) {
+    return 'O';
+  } else {
+    return 'X';
+  }
 };
