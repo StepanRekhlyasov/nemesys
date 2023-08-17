@@ -3,7 +3,7 @@
     class="q-py-none no-shadow CFDrawerBO">
     <template v-slot:body-cell-boid="props">
       <q-td :props="props">
-        <q-btn v-if="theme==='primary'" flat dense no-caps @click="openDrawer(props.row)" :color="theme" :label="props.row.boId"
+        <q-btn v-if="theme==='primary'" flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boId"
           class="q-pa-none text-body1" />
         <div v-else>{{ props.value }}</div>
       </q-td>
@@ -106,7 +106,7 @@
       <q-btn class="no-shadow q-ml-md q-mt-sm q-py-none q-px-md " :label="$t('common.delete')"
         :class="selectedCount() == 0 ? 'bg-secondary' : 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'"
         :disable="selectedCount() == 0" @click="deleteSelected()" />
-      <q-btn :color="theme" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
+      <q-btn color="primary" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
         :label="$t('common.add')" @click="addNewBo" />
     </template>
 
@@ -221,7 +221,6 @@ const selectedCount = () => {
 
 function addNewBo() {
   $q.dialog({
-    color:theme,
     title: t('backOrder.selectBOType'),
     cancel: t('backOrder.type.dispatch'),
     ok: t('backOrder.type.referral'),
