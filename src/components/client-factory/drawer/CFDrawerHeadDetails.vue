@@ -6,18 +6,21 @@ import EditableColumnsCF, {Data} from 'src/components/client-factory/EditableCol
 import { useClientFactory } from 'src/stores/clientFactory';
 import { useHeadDetails } from 'src/components/client-factory//handlers';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
-import { ChangedData, RenderHeadDetails } from 'src/components/client-factory/types'
+import { RenderHeadDetails } from 'src/components/client-factory/types'
 import { useRoute } from 'vue-router';
 import { useClient } from 'src/stores/client';
+import { Client } from 'src/shared/model';
+import { ContractInfo } from 'src/shared/model/ClientFactory.model';
 
 const { t } = useI18n({ useScope: 'global' });
 const route = useRoute()
 const theme = route.meta.isAdmin ? 'accent' : 'primary'
 const props = defineProps<{
     clientId: string,
-    clientFactory:ClientFactory
+    clientFactory:ClientFactory,
+    originalOfficeId: string
 }>()
-const emit = defineEmits<{
+defineEmits<{
     (e: 'editDraft', changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>)
 }>()
 const { getHeadClientFactory, getRelatedOfficeInfo } = useClientFactory()
@@ -35,6 +38,7 @@ const isOpenEditDropDown = ref({
 })
 
 const clientStore = useClient()
+const clientFactoryStore = useClientFactory()
 const client = ref()
 
 const dataForUpdating = ref<Record<string, Data[]>>({} as Record<string, Data[]>)
@@ -54,15 +58,42 @@ const fetchHeadClientFactory = async () => {
 
 watchEffect(async () => {
   client.value = await clientStore.fetchClientsById(props.clientId)
-  headClientFactory.value = await getHeadClientFactory(props.clientId, ) as ClientFactory
+  headClientFactory.value = await getHeadClientFactory(props.clientId) as ClientFactory
+  relatedOfficeInfo.value = await getRelatedOfficeInfo(props.clientId)
   headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
 })
 
 watch(localClientId, fetchHeadClientFactory, {immediate: true})
 
-const editDraft = (changedData: ChangedData) => {
-    emit('editDraft', changedData)
+async function editClient(data : Data[]) {
+  const saveData : Partial<Client> = {}
+  data.forEach((row)=>{
+    saveData[row.key] = row.value
+  })
+  await clientStore.updateClient(props.clientId, saveData)
+  client.value = await clientStore.fetchClientsById(props.clientId)
+  headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
 }
+async function editContractor(data : Data[]) {
+  const saveData : Partial<ClientFactory> = {}
+  saveData.contractInfo = {
+    contractUnit: '',
+    industry: [],
+    contractTel: '',
+    contractFax: '',
+    contractMail: '',
+    contractPerson: ''
+  } 
+  data.forEach((row)=>{
+    (saveData.contractInfo as ContractInfo)[row.key.replace('contractInfo.','')] = row.value
+  })
+  saveData.clientID = props.clientId
+  saveData.id = props.originalOfficeId
+  await clientFactoryStore.updateClientFactory({...headClientFactory.value, ...saveData})
+  headClientFactory.value = await getHeadClientFactory(props.clientId) as ClientFactory
+  headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
+}
+
 </script>
 
 <template>
@@ -71,45 +102,61 @@ const editDraft = (changedData: ChangedData) => {
     </div>
 
     <div v-if="!isLoading">
-        <HighlightTwoColumn 
-            :data="headDetails.headOfficeInfo"
-            :label="t('clientFactory.drawer.headOfficeInfo')"
-            :is-edit="isOpenEditDropDown.headOfficeInfo"
-            :show-actions="false"
-            :is-drop-down="true"
-            :is-disable-edit="isLoading"
-            @open-edit="isOpenEditDropDown.headOfficeInfo = true"
-            @close-edit="isOpenEditDropDown.headOfficeInfo = false"
-            @on-save="isOpenEditDropDown.headOfficeInfo = false; editDraft(dataForUpdating.headOfficeInfo as Data[])"
-            :theme="theme"/>
-
-        <EditableColumnsCF v-if="isOpenEditDropDown.headOfficeInfo" @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" :data="headDetails.headOfficeInfo" :theme="theme"/>
-
+        <template v-if="!clientFactory.isHead">
+          <HighlightTwoColumn
+              :data="headDetails.headOfficeInfo"
+              :label="t('clientFactory.drawer.headOfficeInfo')"
+              :is-edit="isOpenEditDropDown.headOfficeInfo"
+              :show-actions="false"
+              :is-drop-down="true"
+              :is-disable-edit="isLoading"
+              @open-edit="isOpenEditDropDown.headOfficeInfo = true"
+              @close-edit="isOpenEditDropDown.headOfficeInfo = false"
+              @on-save="isOpenEditDropDown.headOfficeInfo = false;"
+              :theme="theme"
+          />
+          <EditableColumnsCF 
+            v-if="isOpenEditDropDown.headOfficeInfo" 
+            @data-changed="e => getNewDataToUpdate(e, 'headOfficeInfo')" 
+            :data="headDetails.headOfficeInfo" 
+            :theme="theme"
+          />
+        </template>
         <HighlightTwoColumn 
             :data="headDetails.clientInfo"
             :label="t('clientFactory.drawer.clientInfo')"
             :is-edit="isOpenEditDropDown.clientInfo"
-            :show-actions="false"
             :is-drop-down="true"
             :is-disable-edit="isLoading"
             @open-edit="isOpenEditDropDown.clientInfo = true"
             @close-edit="isOpenEditDropDown.clientInfo = false"
-            :theme="theme"/>
-
-        <EditableColumnsCF v-if="isOpenEditDropDown.clientInfo" @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" :data="headDetails.clientInfo" :theme="theme"/>
+            :theme="theme"
+            @on-save="isOpenEditDropDown.clientInfo = false; editClient(dataForUpdating.clientInfo as Data[])"
+        />
+        <EditableColumnsCF 
+          v-if="isOpenEditDropDown.clientInfo" 
+          @data-changed="e => getNewDataToUpdate(e, 'clientInfo')" 
+          :data="headDetails.clientInfo" 
+          :theme="theme"
+        />
 
         <HighlightTwoColumn 
             :data="headDetails.contractInfo"
             :label="t('clientFactory.drawer.contractInfo')"
             :is-edit="isOpenEditDropDown.contractInfo"
-            :show-actions="false"
             :is-drop-down="true"
             :is-disable-edit="isLoading"
             @open-edit="isOpenEditDropDown.contractInfo = true"
             @close-edit="isOpenEditDropDown.contractInfo = false"
+            @on-save="isOpenEditDropDown.contractInfo = false; editContractor(dataForUpdating.contractInfo as Data[])"
             :theme="theme"/>
 
-        <EditableColumnsCF v-if="isOpenEditDropDown.contractInfo" @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" :data="headDetails.contractInfo" :theme="theme"/>
+        <EditableColumnsCF 
+          v-if="isOpenEditDropDown.contractInfo" 
+          @data-changed="e => getNewDataToUpdate(e, 'contractInfo')" 
+          :data="headDetails.contractInfo" 
+          :theme="theme"
+        />
         
         <HighlightTwoColumn 
             :data="headDetails.relatedOfficeInfo" 

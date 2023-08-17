@@ -8,7 +8,7 @@ import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ConstraintsType } from 'src/shared/utils/utils';
+import { ConstraintsType, myDateFormat } from 'src/shared/utils/utils';
 
 export const useClientFactory = defineStore('client-factory', () => {
 
@@ -280,8 +280,8 @@ export const useClientFactory = defineStore('client-factory', () => {
 
       const formattedData = docSnap.docs.map((doc) => {
           const data = doc.data();
-          const created_at = data.created_at ? data.created_at.toDate() : null;
-          const updated_at = data.updated_at ? data.updated_at.toDate() : null;
+          const created_at = (data.created_at instanceof Timestamp) ? data.created_at.toDate() : null;
+          const updated_at = (data.updated_at instanceof Timestamp) ? data.updated_at.toDate() : null;
 
           return {
               ...data,
@@ -388,9 +388,13 @@ export const useClientFactory = defineStore('client-factory', () => {
                     modifiedCF = {
                         ...docData,
                         id: doc.id,
-                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                     } as ModifiedCF
+                    if(docData?.updated_at instanceof Timestamp){
+                      modifiedCF.updated_at = date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                    }
+                    if(docData?.created_at instanceof Timestamp){
+                      modifiedCF.created_at = date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                    }
                 })
             }
         } catch(e) {
@@ -450,7 +454,6 @@ export const useClientFactory = defineStore('client-factory', () => {
       try {
           await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
               ...updatedClientFactory,
-              created_at: Timestamp.fromMillis(updatedClientFactory.created_at),
               updated_at: serverTimestamp()
           });
       } catch (e) {
@@ -478,8 +481,8 @@ export const useClientFactory = defineStore('client-factory', () => {
                 headClientFactory = {
                     ...docData,
                         id: doc.id,
-                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        updated_at: myDateFormat(docData?.updated_at, 'YYYY-MM-DD HH:mm:ss'),
+                        created_at: myDateFormat(docData?.created_at, 'YYYY-MM-DD HH:mm:ss'),
                 } as ClientFactory
             })
         } catch(e) {

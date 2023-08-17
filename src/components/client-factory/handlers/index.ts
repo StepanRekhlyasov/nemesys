@@ -207,6 +207,7 @@ export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo:o
       {label: t('clientFactory.drawer.details.contractPerson'), value: safeGet(clientFactory, 'contractInfo.contractPerson') ?? '', editType: 'text', key: 'contractInfo.contractPerson'}
     ]
   }).value
+
   headDetails.relatedOfficeInfo = computed(() => {
     return [
       {label: t('clientFactory.drawer.details.noOfOffices'), value:relatedOfficeInfo['numberOffices']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.noOfOffices'},
