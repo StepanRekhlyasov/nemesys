@@ -267,19 +267,28 @@ export const useClientFactory = defineStore('client-factory', () => {
     };
 
     const getClientFactoryList = async (client_id: string) => {
-        const docSnap =  await getDocs(query(
-            collection(db, 'clients/'+client_id+'/client-factory'),
-            orderBy('name')
-        ))
-        return docSnap.docs.map((doc) => {
-            return {
-                ...doc.data(),
-                id: doc.id,
-                updated_at: date.formatDate(doc.data()?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
-            } as ClientFactory;
-        })
-    }
+      const docSnap = await getDocs(query(
+          collection(db, `clients/${client_id}/client-factory`),
+          orderBy('name')
+      ));
+
+      const formattedData = docSnap.docs.map((doc) => {
+          const data = doc.data();
+          const created_at = data.created_at ? data.created_at.toDate() : null;
+          const updated_at = data.updated_at ? data.updated_at.toDate() : null;
+
+          return {
+              ...data,
+              id: doc.id,
+              updated_at: updated_at ? date.formatDate(updated_at, 'YYYY-MM-DD HH:mm:ss') : null,
+              created_at: created_at ? date.formatDate(created_at, 'YYYY-MM-DD HH:mm:ss') : null
+          } as ClientFactory;
+      });
+
+      return formattedData;
+  };
+
+
 
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
@@ -334,7 +343,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
+    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF:ModifiedCF) => {
         for(const [key, value] of Object.entries(modifiedCF)){
           if(!key || typeof value === undefined){
             delete modifiedCF[key]
@@ -357,7 +366,6 @@ export const useClientFactory = defineStore('client-factory', () => {
             console.log(e)
         }
     }
-
     const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory) => {
         let modifiedCF: ModifiedCF | undefined
 
@@ -427,27 +435,23 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateClientFactory = async(updatedClientFactory: ClientFactory) => {
-
-        try {
-            for (const [key, value] of Object.entries(updatedClientFactory)){
-              if(typeof value === 'undefined'){
-                delete updatedClientFactory[key]
-              }
-            }
-            await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
-                ...updatedClientFactory,
-                created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
-                updated_at: serverTimestamp()
-            });
-
-
-        } catch(e) {
-            Alert.warning(e)
-
-            console.log(e)
+    const updateClientFactory = async (updatedClientFactory) => {
+      for(const [key, value] of Object.entries(updatedClientFactory)){
+        if(!key || typeof value === undefined){
+          delete updatedClientFactory[key]
         }
-    }
+      }
+      try {
+          await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
+              ...updatedClientFactory,
+              created_at: Timestamp.fromMillis(updatedClientFactory.created_at),
+              updated_at: serverTimestamp()
+          });
+      } catch (e) {
+          Alert.warning(e);
+          console.log(e);
+      }
+  };
 
     const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
@@ -596,6 +600,6 @@ export const useClientFactory = defineStore('client-factory', () => {
         getModifiedCF,
         updateModifiedCF,
         getModifiedCFs,
-        setIgnoredStatus
+        setIgnoredStatus,
     }
 })

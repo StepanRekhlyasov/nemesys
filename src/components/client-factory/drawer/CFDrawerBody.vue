@@ -38,7 +38,6 @@ const emit = defineEmits<{
     (e: 'saveDraft'),
 }>()
 
-
 const mainInfo = ref<RenderMainInfo>({} as RenderMainInfo)
 const isEditForm = ref({
     officeInfo: false,
@@ -67,14 +66,6 @@ const openFaxDrawer = () =>{
     emit('openFaxDrawer')
 }
 
-const cancelHandler = () => {
-    emit('cancelDraft')
-}
-
-const saveHandler = () => {
-    emit('saveDraft')
-}
-
 watchEffect(() => {
     mainInfo.value = useHighlightMainInfo(props.clientFactory, props.draft)
 })
@@ -85,18 +76,8 @@ watchEffect(() => {
         <div style="height: 5px;" class="q-my-none q-pa-none">
             <q-linear-progress v-if="isLoading" indeterminate rounded :color="theme" />
         </div>
-        <div v-if="!route.meta.isAdmin && Object.keys(draft).length && !isEditForm.contactInfo && !isEditForm.officeInfo" class="q-mb-md">
-            <div class="row">
-                <q-btn @click="saveHandler" size="sm" color="primary" class="no-shadow q-mr-md" :disable="isLoading">
-                    {{ t('common.save') }}
-                </q-btn>
-                <q-btn @click="cancelHandler" size="sm" outline :disable="isLoading">
-                    {{ t('common.cancel') }}
-                </q-btn>
-            </div>
-            <q-separator color="bg-grey-3 q-mt-md"></q-separator>
-        </div>
-        <HighlightTwoColumn 
+
+        <HighlightTwoColumn
             :data="mainInfo.officeInfo"
             :is-disable-edit="isLoading"
             :is-edit="isEditForm.officeInfo"
@@ -106,7 +87,7 @@ watchEffect(() => {
             @open-edit="isEditForm.officeInfo = true"
             @close-edit="isEditForm.officeInfo = false"
             @on-save="isEditForm.officeInfo = false; handleEditDraft(dataForUpdating.officeInfo as RenderMainInfo['officeInfo'])">
-        
+
                 <template #tag v-if="clientFactory.isHead">
                     <div :class="theme==='accent'?'bg-accent':'bg-primary'" class="text-white q-ml-sm rounded-borders">
                         <span class="q-pa-sm">
