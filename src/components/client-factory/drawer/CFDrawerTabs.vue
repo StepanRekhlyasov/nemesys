@@ -41,11 +41,11 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
 </script>
 
 <template>
-  <q-tabs 
-    dense 
-    inline-label 
-    v-model="activeTab" 
-    class="shadow-2" 
+  <q-tabs
+    dense
+    inline-label
+    v-model="activeTab"
+    class="shadow-2"
     :class="theme==='accent'?'text-accent bg-purple-1':'text-primary bg-primary-1'"
     align="justify"
     active-bg-color="white"
@@ -53,19 +53,19 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
 
     <q-tab
       v-if="!route.meta.isAdmin"
-      :name="ClientFactoryTabs.TeleAppointmentHistory" 
-      :label="t('client.tele.teleAppointHistory')" 
+      :name="ClientFactoryTabs.TeleAppointmentHistory"
+      :label="t('client.tele.teleAppointHistory')"
     />
 
-    <q-tab 
-    :name="ClientFactoryTabs.OfficeDetails" 
-    :label="t('clientFactory.officeDetails')" 
+    <q-tab
+    :name="ClientFactoryTabs.OfficeDetails"
+    :label="t('clientFactory.officeDetails')"
     />
 
-    <q-tab 
+    <q-tab
       v-if="!route.meta.isAdmin"
-      :name="ClientFactoryTabs.BOHistory" 
-      label="BO履歴" 
+      :name="ClientFactoryTabs.BOHistory"
+      label="BO履歴"
     />
 
     <q-tab
@@ -73,9 +73,9 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
       :name="ClientFactoryTabs.CompanyWideBOHistory"
       :label="t('clientFactory.companyWideBOHistory')"/>
 
-    <q-tab 
-    :name="ClientFactoryTabs.HeadOffice" 
-    :label="t('clientFactory.headOffice')" 
+    <q-tab
+    :name="ClientFactoryTabs.HeadOffice"
+    :label="t('clientFactory.headOffice')"
     />
 
     <q-tab
@@ -83,16 +83,16 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
       :name="ClientFactoryTabs.ReflectionHistory"
       :label="t('clientFactory.reflectionHistory')"
     />
-    <q-tab 
+    <q-tab
       v-if="!route.meta.isAdmin"
-      :name="ClientFactoryTabs.VariousAchievements" 
-      :label="t('client.list.variousAchievements')" 
+      :name="ClientFactoryTabs.VariousAchievements"
+      :label="t('client.list.variousAchievements')"
     />
 
-    <q-tab 
+    <q-tab
       v-if="!route.meta.isAdmin"
-      :name="ClientFactoryTabs.Memo" 
-      :label="t('client.list.memo')" 
+      :name="ClientFactoryTabs.Memo"
+      :label="t('client.list.memo')"
     />
     <q-tab
       v-if="route.meta.isAdmin"
@@ -102,8 +102,8 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
   </q-tabs>
 
     <q-tab-panels v-model="activeTab" animated>
-        <q-tab-panel 
-          :name="ClientFactoryTabs.TeleAppointmentHistory" 
+        <q-tab-panel
+          :name="ClientFactoryTabs.TeleAppointmentHistory"
           v-if="!route.meta.isAdmin"
         >
           <CFDrawerTeleAppointment
@@ -112,65 +112,69 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.OfficeDetails">
-          <CFDrawerOfficeDetails 
-            @edit-draft="editDraftHandle" 
-            :client-factory="clientFactory" 
+          <CFDrawerOfficeDetails
+            @edit-draft="editDraftHandle"
+            :client-factory="clientFactory"
             :industryType="industryType"
-            :draft="draft" 
-            :is-loading="isLoading" 
+            :draft="draft"
+            :is-loading="isLoading"
           />
         </q-tab-panel>
 
-        <q-tab-panel 
-          v-if="!route.meta.isAdmin"
+        <q-tab-panel
+          v-if="route.meta.isAdmin"
           :name="ClientFactoryTabs.CompanyWideBOHistory"
         >
+        <CFDrawerBackOrder
+            :officeId="clientFactory.id"
+            :clientId="clientFactory.clientID" :originalOfficeId="originalOfficeId"
+          />
         </q-tab-panel>
-        <q-tab-panel 
+        <q-tab-panel
           :name="ClientFactoryTabs.BOHistory"
           v-if="!route.meta.isAdmin"
         >
-          <CFDrawerBackOrder 
-            :officeId="clientFactory.id" 
+          <CFDrawerBackOrder
+            :officeId="clientFactory.id"
             :clientId="clientFactory.clientID" :originalOfficeId="originalOfficeId"
           />
         </q-tab-panel>
 
         <q-tab-panel :name="ClientFactoryTabs.HeadOffice">
-          <CFDrawerHeadDetails 
-            :client-id="clientFactory.clientID" 
-            :client-factory="clientFactory" 
+          <CFDrawerHeadDetails
+            :client-id="clientFactory.clientID"
+            :client-factory="clientFactory"
             @edit-draft="editDraftHandle"
           />
         </q-tab-panel>
 
-        <q-tab-panel 
+        <q-tab-panel
           :name="ClientFactoryTabs.VariousAchievements"
           v-if="!route.meta.isAdmin"
         >
           <CFDrawerVariousAchievement />
         </q-tab-panel>
 
-        <q-tab-panel 
+        <q-tab-panel
           :name="ClientFactoryTabs.Memo"
           v-if="!route.meta.isAdmin"
         >
           <CFDrawerMemo :is-loading="isLoading" :client-id="clientFactory.clientID" :client-factory-id="clientFactory.id" />
         </q-tab-panel>
 
-        <q-tab-panel 
+        <q-tab-panel
           :name="ClientFactoryTabs.ReflectionHistory"
           v-if="route.meta.isAdmin"
         >
             <CFDrawerReflectDetail :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id" />
         </q-tab-panel>
-        <q-tab-panel 
-          :name="ClientFactoryTabs.ImportHistory" 
+        <q-tab-panel
+          :name="ClientFactoryTabs.ImportHistory"
           class="q-pa-xs"
           v-if="route.meta.isAdmin"
         >
-            <CFDrawerImportDetails 
-              :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id"  
+            <CFDrawerImportDetails
+              :clientId="clientFactory.clientID" :clientFactoryId="clientFactory.id"
             />
         </q-tab-panel>
   </q-tab-panels>

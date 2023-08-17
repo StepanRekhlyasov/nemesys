@@ -276,6 +276,32 @@ export const useBackOrder = defineStore('backOrder', () => {
     return list;
   }
 
+  async function getCfBoOfCurrentOrganization(office_id: string, isAdmin: boolean): Promise<BackOrderModel[]> {
+    let constraints: ConstraintsType = []
+    if(isAdmin){
+     constraints = [where('deleted', '==', false), where('office_id', '==', office_id)];
+    }
+    else{
+     constraints = [where('deleted', '==', false), where('office_id', '==', office_id),where('organizationId', '==', organization.currentOrganizationId)];
+    }
+    const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
+
+    const list: BackOrderModel[] = [];
+    docs.forEach((fix) => {
+      const data = fix.data();
+      list.push({
+        ...data,
+        id: fix.id,
+      } as BackOrderModel);
+    });
+    list.forEach(bo=>{
+      bo.dateOfRegistration =  myDateFormat(
+        bo.dateOfRegistration as Timestamp
+      );
+    })
+    return list;
+  }
+
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
     const backOrderData = { ...backOrder };
@@ -608,5 +634,5 @@ export const useBackOrder = defineStore('backOrder', () => {
     return counted.data().count;
   };
 
-  return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
+  return { getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })

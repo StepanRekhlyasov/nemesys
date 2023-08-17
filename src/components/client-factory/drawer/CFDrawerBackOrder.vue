@@ -3,7 +3,7 @@
     class="q-py-none no-shadow CFDrawerBO">
     <template v-slot:body-cell-boid="props">
       <q-td :props="props">
-        <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boId"
+        <q-btn flat dense no-caps @click="openDrawer(props.row)" :color="theme" :label="props.row.boId"
           class="q-pa-none text-body1" />
         <div></div>
       </q-td>
@@ -106,7 +106,7 @@
       <q-btn class="no-shadow q-ml-md q-mt-sm q-py-none q-px-md " :label="$t('common.delete')"
         :class="selectedCount() == 0 ? 'bg-secondary' : 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'"
         :disable="selectedCount() == 0" @click="deleteSelected()" />
-      <q-btn color="primary" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
+      <q-btn :color="theme" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
         :label="$t('common.add')" @click="addNewBo" />
     </template>
 
@@ -137,7 +137,10 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
+import { useRoute } from 'vue-router';
 
+const route = useRoute()
+const theme = route.meta.isAdmin ? 'accent' : 'primary'
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{ clientId: string; officeId?: string; originalOfficeId?: string }>();
 const selected = ref(false);
@@ -170,7 +173,7 @@ const showDeleteDialog = async (ids: string[]) => {
     loading.value = true
     await backOrderStore.deleteBO(ids);
     loading.value = false
-    const data = await backOrderStore.getClientBackOrder(props.clientId)
+    const data = await backOrderStore.getCfBoOfCurrentOrganization(props.officeId?props.officeId:props.originalOfficeId,theme==='accent')
     backOrderData.value = data.map(row => {
       return { ...row, selected: false };
     });
@@ -189,7 +192,7 @@ const deleteSelected = () => {
 
 const fetchBOData = async () => {
   loading.value = true;
-  const data = await backOrderStore.getClientBackOrder(props.clientId);
+  const data = await backOrderStore.getCfBoOfCurrentOrganization(props.officeId?props.officeId:props.originalOfficeId,theme==='accent')
   backOrderData.value = data.map((row) => {
     return { ...row, selected: false, boid: row.boId };
   });
