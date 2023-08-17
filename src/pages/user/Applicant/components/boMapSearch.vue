@@ -9,11 +9,13 @@ import { Applicant, BackOrderModel, Client } from 'src/shared/model';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import InfoBO from 'src/pages/user/BackOrder/components/info/InfoBO.vue';
 import SearchByMapDrawer from 'src/pages/user/BackOrder/components/info/searchByMapDrawer.vue';
-import { radius } from 'src/pages/user/BackOrder/consts/BackOrder.const';
+import { radius } from 'src/pages/user/Applicant/const/index';
 import { useOrganization } from 'src/stores/organization';
 import { myDateFormat } from 'src/shared/utils/utils';
+import boSearchList from './boSearchList.vue';
 
-const props = defineProps<{ theme: string, applicant: Applicant | undefined }>()
+const tab = ref('boSearchList');
+const props = defineProps<{ theme: string, applicant: Applicant }>()
 const organization = useOrganization()
 const emit = defineEmits<{ (e: 'updateMap', mapData) }>()
 const center = ref<{ lat: number, lng: number }>({ lat: 0, lng: 0 });
@@ -105,6 +107,7 @@ const getMarkerColor = () => {
 
 watch(searchRadius, (newVal) => {
   isLoadingProgress.value = true
+  radius.value = searchRadius.value
   getMarkerColor();
   let center = circleOption.value.center;
   if (!newVal) {
@@ -216,6 +219,11 @@ function showDialog(bo: BackOrderModel) {
           <q-btn class="q-ma-sm" @click="clearRadius" :label="$t('common.clear')" />
         </div>
       </div>
+      <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="boSearchList">
+            <boSearchList :applicant="applicant" :boList="boList" :hideMapButton="true" />
+          </q-tab-panel>
+        </q-tab-panels>
     </q-card-section>
   </q-card>
 

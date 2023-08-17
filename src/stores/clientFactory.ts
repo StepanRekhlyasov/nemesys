@@ -267,19 +267,28 @@ export const useClientFactory = defineStore('client-factory', () => {
     };
 
     const getClientFactoryList = async (client_id: string) => {
-        const docSnap =  await getDocs(query(
-            collection(db, 'clients/'+client_id+'/client-factory'),
-            orderBy('name')
-        ))
-        return docSnap.docs.map((doc) => {
-            return {
-                ...doc.data(),
-                id: doc.id,
-                updated_at: date.formatDate(doc.data()?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
-            } as ClientFactory;
-        })
-    }
+      const docSnap = await getDocs(query(
+          collection(db, `clients/${client_id}/client-factory`),
+          orderBy('name')
+      ));
+
+      const formattedData = docSnap.docs.map((doc) => {
+          const data = doc.data();
+          const created_at = data.created_at ? data.created_at.toDate() : null;
+          const updated_at = data.updated_at ? data.updated_at.toDate() : null;
+
+          return {
+              ...data,
+              id: doc.id,
+              updated_at: updated_at ? date.formatDate(updated_at, 'YYYY-MM-DD HH:mm:ss') : null,
+              created_at: created_at ? date.formatDate(created_at, 'YYYY-MM-DD HH:mm:ss') : null
+          } as ClientFactory;
+      });
+
+      return formattedData;
+  };
+
+
 
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
@@ -307,7 +316,13 @@ export const useClientFactory = defineStore('client-factory', () => {
                 createdAt = new Timestamp(createdAt.seconds as number, createdAt.nanoseconds as number).toDate()
             }
           }
-            
+
+          for(const [key, value] of Object.entries(modifiedClientFactory)){
+            if(!key || typeof value === undefined){
+              delete modifiedClientFactory[key]
+            }
+          }
+
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
                 organizationId: organizationId,
@@ -328,7 +343,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
+    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF:ModifiedCF) => {
         for(const [key, value] of Object.entries(modifiedCF)){
           if(!key || typeof value === undefined){
             delete modifiedCF[key]
@@ -340,7 +355,7 @@ export const useClientFactory = defineStore('client-factory', () => {
                 isIgnored: false,
                 numberUpdates: modifiedCF.numberUpdates + 1,
                 numberImports: modifiedCF.numberImports,
-                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)),
+                created_at: Timestamp.fromDate(new Date(modifiedCF.created_at)) ?? serverTimestamp(),
                 updated_at: serverTimestamp(),
             })
 
@@ -351,7 +366,6 @@ export const useClientFactory = defineStore('client-factory', () => {
             console.log(e)
         }
     }
-
     const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory) => {
         let modifiedCF: ModifiedCF | undefined
 
@@ -421,23 +435,23 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateClientFactory = async(updatedClientFactory: ClientFactory) => {
-
-        try {
-
-            await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
-                ...updatedClientFactory,
-                created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
-                updated_at: serverTimestamp()
-            });
-
-
-        } catch(e) {
-            Alert.warning(e)
-
-            console.log(e)
+    const updateClientFactory = async (updatedClientFactory) => {
+      for(const [key, value] of Object.entries(updatedClientFactory)){
+        if(!key || typeof value === undefined){
+          delete updatedClientFactory[key]
         }
-    }
+      }
+      try {
+          await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
+              ...updatedClientFactory,
+              created_at: Timestamp.fromMillis(updatedClientFactory.created_at),
+              updated_at: serverTimestamp()
+          });
+      } catch (e) {
+          Alert.warning(e);
+          console.log(e);
+      }
+  };
 
     const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
@@ -472,7 +486,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         const array:string[]=[]
         boSnapshot.docs.forEach(
             (doc) => {
-                if ((doc.data()['employmentType'] 
+                if ((doc.data()['employmentType']
                 && (doc.data()['employmentType'].includes(employmentType1)
                 || (employmentType2!=='' && doc.data()['employmentType'].includes(employmentType2))))) {
                     array.push(doc.id)
@@ -480,7 +494,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
         )
         let count = 0;
-        
+
         array.forEach((id) => {
             fixSnapshot.docs.forEach(
                 (doc) => {
@@ -528,7 +542,6 @@ export const useClientFactory = defineStore('client-factory', () => {
       return { ...result.data(), id: result.id } as ClientFactory
     }
 
-
     async function getClientFactoryByConstraints(constraints: ConstraintsType) {
         const ref = query(collectionGroup(db, 'client-factory'), ...constraints)
         const data = await getDocs(ref)
@@ -542,7 +555,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             } as ClientFactory
         }))
     }
-    
+
     async function getModifiedCfWithId(office_id: string) {
         const querySnapshot = await getDocs(
             query(
@@ -558,7 +571,16 @@ export const useClientFactory = defineStore('client-factory', () => {
         return modifiedCF.value ? modifiedCF.value : {};
     }
 
+    const condition = false
+    const selectedCFsId:string[] = []
+    const adminCondition = false
+    const adminSelectedCFsId:string[] = []
+
     return {
+        condition,
+        selectedCFsId,
+        adminCondition,
+        adminSelectedCFsId,
         clientFactories,
         modifiedCFs,
         getModifiedCfWithId,
@@ -578,6 +600,6 @@ export const useClientFactory = defineStore('client-factory', () => {
         getModifiedCF,
         updateModifiedCF,
         getModifiedCFs,
-        setIgnoredStatus
+        setIgnoredStatus,
     }
 })

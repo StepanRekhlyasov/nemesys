@@ -79,7 +79,7 @@ export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn
         name: 'search condition name',
         required: true,
         align: 'left',
-        field: 'search condition name',
+        field: 'conditionName',
         sortable: false,
         label: t('office.searchConditionName')
     },
@@ -87,7 +87,7 @@ export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn
         name: 'registered user',
         required: true,
         align: 'left',
-        field: 'registered user',
+        field: 'created_by',
         sortable: false,
         label: t('office.registeredUser')
     },
@@ -95,7 +95,7 @@ export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn
         name: 'registered Date',
         required: true,
         align: 'left',
-        field: 'registered Date',
+        field: 'created_at',
         sortable: false,
         label: t('office.registeredDate')
     },
@@ -103,7 +103,7 @@ export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn
         name: 'updated user',
         required: true,
         align: 'left',
-        field: 'updated user',
+        field: 'updated_by',
         sortable: false,
         label: t('office.updatedUser')
     },
@@ -111,7 +111,7 @@ export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn
         name: 'last modified',
         required: true,
         align: 'left',
-        field: 'last modified',
+        field: 'updated_at',
         sortable: false,
         label: t('office.lastModified')
     }

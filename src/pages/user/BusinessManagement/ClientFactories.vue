@@ -24,6 +24,10 @@ const organization = useOrganization()
 const activeClientFactoryItem = ref<ClientFactory | null>(null)
 const tableRows = ref<ClientFactoryTableRow[]>([])
 const fetchData = ref(false)
+
+const selectedCFsId = ref<string[]>(clientFactoryStore.selectedCFsId);
+const condition = ref<boolean>(clientFactoryStore.condition);
+// const modifiedCF = ref<ModifiedCF[]>([])
 const originalOfficeId = ref('');
 
 // drawers
@@ -36,7 +40,17 @@ const pagination = ref({
     descending: false,
     page: 1,
     rowsPerPage: 100,
+    rowsNumber: tableRows.value.length
 });
+
+
+const resetSelectedCFsId = () =>{
+    condition.value = false
+    clientFactoryStore.condition = false
+    selectedCFsId.value = []
+    clientFactoryStore.selectedCFsId = []
+    getData()
+}
 
 const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
     isClientFactoryDrawer.value = false
@@ -67,7 +81,12 @@ async function getData() {
     const [CFByOrganization, CFByAdmin] = await Promise.all([clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', organization.currentOrganizationId)]), clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', null)])])
     const cf = [...CFByOrganization, ...CFByAdmin]
     clientFactories.value = cf
-    tableRows.value = clientFactoriesToTableRows(cf)
+    if(condition.value){
+        tableRows.value = clientFactoriesToTableRows(cf).filter((item)=>selectedCFsId.value.includes(item.id))
+    }
+    else{
+        tableRows.value = clientFactoriesToTableRows(cf)
+    }
     fetchData.value = false
 }
 
@@ -141,13 +160,25 @@ const openFaxDrawer = (id: string) => {
                 <div class="title text-h6 text-weight-bold">{{ t('menu.admin.masterSearch') }}</div>
             </q-card-section>
             <q-separator color="grey-4" size="2px" />
-            <CFPageActions @open-client-drawer="openNewClientDrawer"
-                @open-client-factory-drawer="openNewClientFactoryDrawer" @open-fax-drawer="openNewFaxDrawer" />
+            <CFPageActions
+                :isReset="condition"
+                @open-client-drawer="openNewClientDrawer"
+                @open-client-factory-drawer="openNewClientFactoryDrawer"
+                @open-fax-drawer="openNewFaxDrawer"
+                @reset-selected-id="resetSelectedCFsId"/>
             <q-card-section class="table no-padding">
-                <ClientFactoryTable @select-item="clientFactoryDrawerHandler" @selected-id="selectedCFHandler"
-                    :isFetching="fetchData" :rows="tableRows" :pagination="pagination"
-                    :table-columns="tableColumnsClientFactory" />
-                <Pagination :rows="tableRows" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
+                <ClientFactoryTable
+                    @select-item="clientFactoryDrawerHandler"
+                    @selected-id="selectedCFHandler"
+                    :isFetching="fetchData && !condition "
+                    :rows="tableRows"
+                    :pagination="pagination"
+                    :table-columns="tableColumnsClientFactory"
+                    key="0"/>
+                <Pagination
+                    :rows="tableRows"
+                    @updatePage="pagination.page = $event"
+                    v-model:pagination="pagination" />
             </q-card-section>
         </q-card>
 
@@ -161,7 +192,7 @@ const openFaxDrawer = (id: string) => {
         <NewClientFactoryDrawer v-if="isNewClientFactoryDrawerRender" @hide-drawer="hideNewClientFactoryDrawer"
             theme="primary" :is-drawer="isNewClientFactoryDrawer" />
 
-        <FaxDrawer @hide-drawer="hideNewFaxDrawer" theme="primaery" :selectedCF="selectedCF" :is-drawer="isNewFaxDrawer" />
+        <FaxDrawer @hide-drawer="hideNewFaxDrawer" theme="primary" :selectedCF="selectedCF" :is-drawer="isNewFaxDrawer"/>
     </div>
 </template>
 

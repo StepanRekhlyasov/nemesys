@@ -65,7 +65,7 @@
           <div class="row q-pt-sm items-center">
             <labelField :label="$t('backOrder.create.customerRepresentative')" :edit="true"
               labelClass="q-pl-md col-2 text-right" :value="data['customerRepresentative']" valueClass="col-4 q-pl-md ">
-              <q-input v-model="data['customerRepresentative']" type="textarea" autogrow dense outlined/>
+              <q-input v-model="data['customerRepresentative']" type="text" dense outlined/>
             </labelField>
           </div>
           <div class="row">
@@ -141,7 +141,7 @@ import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
-const emits = defineEmits(['closeDialog']);
+const emits = defineEmits(['closeDialog','fetchBo']);
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
@@ -179,7 +179,13 @@ const transactionTypeOptions = computed(()=>{
 async function addBackOrder() {
   loading.value = true
   data.value['clientName'] = applicantStore.state.clientList.find(client => client.id === data.value['client_id'])?.name
-  data.value['officeName'] = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
+  const officeName = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
+  if(officeName){
+    data.value['officeName'] = officeName
+  }
+  else{
+    data.value['officeName'] = clientFactory.value?.name
+  }
   if (data.value.client_id && boForm.value?.validate) {
     await backOrderStore.addBackOrder({ ...data.value, type: props.type });
     loading.value = false;
@@ -190,12 +196,14 @@ async function addBackOrder() {
 
 function closeDialog() {
   emits('closeDialog');
+  emits('fetchBo');
   boForm.value?.resetValidation()
   resetData();
 }
 
 const getClientFactoryData = async(client_id: string | undefined) => {
   clientFactoryList.value = await clientFactoryStore.getClientFactoryList(client_id as string)
+  if(props.originalOfficeId){
   const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.originalOfficeId);
   clientFactory.value = clientFactoryList.value[targetIndex]
     if(props.officeId != props.originalOfficeId){
@@ -207,6 +215,23 @@ const getClientFactoryData = async(client_id: string | undefined) => {
       }
     }
     }
+  }
+  else{
+    const targetIndex = clientFactoryList.value.findIndex((item) => item.id === props.officeId);
+    if(targetIndex!=-1){
+      clientFactory.value = clientFactoryList.value[targetIndex]
+    }
+    else{
+      clientFactory.value = await clientFactoryStore.getModifiedCfWithId( props.officeId as string) as ClientFactory
+      if(clientFactory.value){
+        clientFactoryList.value.push(clientFactory.value)
+      }
+    }
+  }
+  industryList.value = clientFactory.value?.industry
+  if(industryList.value.length==1){
+    data.value.industry = industryList.value[0]
+  }
 }
 
 const updateOfficeName = async ()=>{
@@ -244,7 +269,11 @@ async function resetData() {
 resetData();
 
 onMounted(async () => {
-  data.value = props.duplicateBo
+  if(props.duplicateBo){
+    data.value = props.duplicateBo
+    data.value.dateOfRegistration = date.formatDate(Date.now(), 'YYYY/MM/DD');
+    await getClientFactoryData(props.duplicateBo.client_id)
+  }
   if(props.clientId){
     data.value['client_id'] = props.clientId
   }
@@ -270,9 +299,17 @@ watch(() => data.value.office_id, async () => {
     loading.value = false
   }
   const office = clientFactoryList.value.find(office => office.id === data.value['office_id'])
-  industryList.value = office?.industry
-  if(!office?.isHead){
+  if(office?.industry){
+    industryList.value = office?.industry
+  }
+  else{
+    industryList.value = clientFactory.value?.industry
+  }
+  if(office && !office?.isHead){
     data.value.industry = office?.industry?.[0]
+  }
+  else if(!clientFactory.value?.isHead){
+    data.value.industry = clientFactory.value?.industry[0]
   }
 }, { deep: true, immediate: true })
 

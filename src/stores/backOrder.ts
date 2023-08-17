@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit, deleteDoc } from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -223,8 +223,9 @@ export const useBackOrder = defineStore('backOrder', () => {
     data['updated_at'] = serverTimestamp();
     data['deleted'] = false;
     data['registrant'] = auth.currentUser?.uid;
-    const snapshot = await getCountFromServer(query(collection(db, '/BO')));
-    data['boId'] = snapshot.data().count;
+    const snapshot = query(collection(db, '/BO'), where('organizationId', '==', organization.currentOrganizationId),orderBy('boId', 'desc'),limit(1));
+    const largestBoId = await getDocs(snapshot);
+    data['boId'] = largestBoId.docs[0].data().boId + 1;
 
     const checkNew = await getDocs(query(collection(db, '/BO'), where('office_id', '==', data.office_id), limit(1)))
     if (checkNew.docs.length > 0) {
@@ -343,7 +344,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     return deg * (Math.PI / 180);
   };
 
-  function matchData(staff: DocumentData, bo: DocumentData) {
+  function matchData(staff: DocumentData, bo: DocumentData, isBo=false) {
     let qualification = 0;
     let daysToWork = 0;
     let daysPerWeek = 0;
@@ -395,12 +396,12 @@ export const useBackOrder = defineStore('backOrder', () => {
       },
     };
 
-    if(!Array.isArray(bo.working_days_week)){
-      bo.working_days_week = []
+    if(!Array.isArray(bo.workingDays)){
+      bo.workingDays = []
     }
 
     //qualification percentage
-    if (bo.qualifications.length) {
+    if (bo.qualifications && bo.qualifications.length) {
       let totalQualification = 0
       staff.qualification?.forEach((q) => {
         bo.qualifications?.forEach((qBo) => {
@@ -449,21 +450,21 @@ export const useBackOrder = defineStore('backOrder', () => {
     matchedData['daysToWork'].value = daysToWork * 100;
 
     //workingDaysWeek
-    if (bo.working_days_week.length === 0) {
+    if (!bo.workingDays || bo.workingDays.length === 0) {
       daysPerWeek = 1;
     } else {
       if (staff.daysPerWeek && staff.daysPerWeek.length != 0) {
         let matchingDays = 0;
         staff.daysPerWeek.forEach((daySatff) => {
-          bo.working_days_week.forEach((dayClient) => {
+          bo.workingDays.forEach((dayClient) => {
             if (dayClient === daySatff) {
               matchingDays++;
               matchedData['daysPerWeek'][dayClient] = 1;
             }
           });
         });
-        if (bo.working_days_week.length) {
-          daysPerWeek = matchingDays / bo.working_days_week.length;
+        if (bo.workingDays && bo.workingDays.length) {
+          daysPerWeek = matchingDays / bo.workingDays.length;
         }
       }
     }
@@ -533,13 +534,21 @@ export const useBackOrder = defineStore('backOrder', () => {
     //commute distance
     if (staff.commutingTime) {
       const distance = 30 * staff.commutingTime;
-      commuteDistance = distance >= staff.distanceBusiness ? 1 : distance / staff.distanceBusiness;
+      if(isBo){
+        commuteDistance = distance >= bo.distanceBusiness ? 1 : distance / bo.distanceBusiness;
+      }
+      else{
+        commuteDistance = distance >= staff.distanceBusiness ? 1 : distance / staff.distanceBusiness;
+      }
       matchedData.commuteDistance.label = distance.toString();
     }
     matchedData['commuteDistance'].value = Number((commuteDistance * 100).toFixed(2));
 
     const matchPercent = ((agePercent + qualification + daysPerWeek + daysToWork + expReq + workingHours + commuteDistance) / 7) * 100;
     staff.matchDegree = Number(matchPercent.toFixed(2));
+    if(isBo){
+      bo.matchDegree = Number(matchPercent.toFixed(2));
+    }
     return matchedData;
   }
 
@@ -601,10 +610,3 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })
-
-export const deleteBO = async (id: string) => {
-  const db = getFirestore();
-  const docRef = doc(db, 'BO', id);
-  const res = await deleteDoc(docRef);
-  return res;
-}

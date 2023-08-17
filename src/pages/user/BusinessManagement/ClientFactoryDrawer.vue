@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { defineEmits, defineProps, ref, watch, watchEffect } from 'vue';
-import CFDrawerTitle from './components/CFDrawerTitle.vue';
-import CFDrawerBody from './components/CFDrawerBody.vue';
-import CFDrawerTabs from './components/CFDrawerTabs.vue';
+import CFDrawerTitle from 'src/components/client-factory/drawer/CFDrawerTitle.vue';
+import CFDrawerBody from 'src/components/client-factory/drawer/CFDrawerBody.vue';
+import CFDrawerTabs from 'src/components/client-factory/drawer/CFDrawerTabs.vue';
 import { useClientFactory } from 'src/stores/clientFactory';
 import { mergeWithDraft } from 'src/components/client-factory/handlers';
 import { finishEditing } from 'src/components/client-factory/handlers';
-
+import { deepCopy } from 'src/shared/utils';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { ModifiedCF } from 'src/shared/model/ModifiedCF';
 import { useOrganization } from 'src/stores/organization';
 
-const { addModifiedCF, getModifiedCF, updateModifiedCF } = useClientFactory()
+const { addModifiedCF, getModifiedCF, updateModifiedCF , updateClientFactory } = useClientFactory()
 const organizationStore = useOrganization()
 const { currentOrganizationId } = storeToRefs(organizationStore)
 
@@ -21,9 +21,8 @@ const props = defineProps<{
     selectedItem: ClientFactory
     originalOfficeId: string
 }>()
-
 const modifiedCF = ref<ModifiedCF | undefined>()
-const draft = ref<Partial<ClientFactory>>({})
+const draft = ref<Partial<ClientFactory>>(deepCopy(props.selectedItem.draft))
 const isLoading = ref(false)
 const dropDownIndustryValue = ref([] as Array<{ value: string, isSelected: boolean }>)
 const selectedIndustry = ref<{ value: string, isSelected: boolean }>({} as { value: string, isSelected: boolean })
@@ -51,9 +50,22 @@ const cancelHandler = () => {
     draft.value = {} as ClientFactory;
 }
 
-const editDraftHandler = (changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
+const editDraftHandler = async(changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
     draft.value = finishEditing(changedData, draft.value, modifiedCF.value ?? props.selectedItem)
-}
+    if(modifiedCF.value) {
+     const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
+      await updateClientFactory({ ...mergedData })
+      modifiedCF.value = mergedData
+      draft.value = {} as ClientFactory;
+      }
+      else {
+      const mergedDataSelected = mergeWithDraft(props.selectedItem, draft.value)
+      await updateClientFactory({ ...mergedDataSelected })
+      modifiedCF.value = mergedDataSelected
+      draft.value = {} as ClientFactory;
+    }
+  }
+
 
 const saveHandler = async () => {
     isLoading.value = true
@@ -130,6 +142,7 @@ watch([() => props.selectedItem], async (newProps, oldProps) => {
                             @cancel-draft="cancelHandler"
                             @save-draft="saveHandler"
                             @open-fax-drawer="openFaxDrawer"
+                            :selectedIndustry="selectedIndustry"
                             :clientFactory="modifiedCF ?? selectedItem"
                             :draft="draft"
                             :is-loading="isLoading"/>

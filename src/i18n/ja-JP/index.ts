@@ -279,6 +279,7 @@ export default {
   settings: {
     branch: {
       addBranch: '支店新規追加',
+      editBranch:'支店情報編集',
       id: '支店ID',
       name: '支店名',
       prefectures: '都道府県',
@@ -441,6 +442,9 @@ export default {
       allTeleAppointedCompanies: 'テレアポした企業全て',
       connectedCompanies: '接電した企業のみ',
       companiesOutService: '全て不通の企業のみ',
+      addConditions: '条件を追加',
+      resetConditions: '条件をリセット',
+      updateCondition: '条件を更新',
       saveSearchConditions: '検索条件保存',
       areaSearch: 'エリア検索',
       listPrefectures: '都道府県一覧',
@@ -771,6 +775,7 @@ export default {
       jobResult: '求人ヒアリング結果',
       requiredService: '必要なサービス',
       remark: '備考',
+      timeFrame:'タイムフレーム',
     },
     memo: {
       registredUser: '登録ユーザー',
@@ -1005,7 +1010,6 @@ export default {
         assigned: '勤務中',
         unassigned: '離職中',
       }
-
     },
     statusList: {
       unsupported: '未対応',
@@ -1499,6 +1503,7 @@ export default {
     clickToAddNewClient: 'クライアント新規追加はこちら',
     searchConditionChange: '検索条件変更',
     faxBatchTransmission: 'FAX一括送信',
+    changeSearchCriteria: '検索条件を変更する'
   },
   failed: 'アクションに失敗しました',
   success: 'アクションが成功しました',

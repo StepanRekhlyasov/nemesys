@@ -31,8 +31,8 @@
     <div class="row q-pb-sm">
       <LabelField :label="$t('backOrder.create.customerRepresentative')" :edit="edit"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4"
-        :value="`${selectedBo['customerRepresentative'] || ''}`" :autogrow="true">
-        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" type="textarea" autogrow/>
+        :value="`${selectedBo['customerRepresentative'] || ''}`">
+        <q-input v-model="data['customerRepresentative']" outlined dense :disable="loading" type="text"/>
       </LabelField>
       <LabelField :label="$t('backOrder.create.hourlyMonthly')"
         labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4 flex" :edit="edit"
@@ -119,8 +119,8 @@
     <div class="row q-pb-sm">
       <LabelField :label="$t('client.backOrder.experienceReq')" :edit="edit"
         :value="data['experienceReq'] || ''"
-        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4" :autogrow="true">
-        <q-input v-model="data['experienceReq']" outlined dense :disable="loading" type="textarea" autogrow/>
+        labelClass="q-pl-md col-2 text-right self-center" valueClass="self-center q-pl-md col-4">
+        <q-input v-model="data['experienceReq']" outlined dense :disable="loading" type="text"/>
       </LabelField>
       <LabelField :label="$t('client.backOrder.remarks')" labelClass="q-pl-md col-2 text-right self-center"
         valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo.remarks || ''" :autogrow="true">
@@ -173,7 +173,7 @@
             :label="day.label"
             :key="day.value"
             @update:model-value="(val : string[])=>{
-              if(val.length >= 7){
+              if(val.length === 8){
                 everythingTrgger = true
               } else {
                 everythingTrgger = false

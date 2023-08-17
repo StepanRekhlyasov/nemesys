@@ -158,8 +158,11 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.add.prefecture') }}
       </div>
-      <div class="col-3 q-pl-md blue relative-position">
-        <q-input outlined dense v-model="data['prefecture']" />
+      <div class="col-3 q-pl-sm">
+        <q-select outlined dense :options="prefectureOption" v-model="data['prefecture']"
+			:rules="[creationRule]" hide-bottom-space bg-color="white"
+			:label="$t('common.pleaseSelect')" emit-value map-options use-input input-debounce="0"
+			@filter="filterPrefecturre" @update:model-value="data['municipalities'] = ''; data['street'] = ''" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
       <div class="col-3 q-pl-md blue relative-position" />
@@ -167,8 +170,11 @@
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center">
         {{ $t('applicant.add.municipalities') }}
       </div>
-      <div class="col-3 q-pl-md blue relative-position">
-        <q-input outlined dense v-model="data['municipalities']" />
+      <div class="col-3 q-pl-sm">
+        <q-select outlined dense :disable="!fetchMunicipalities" emit-value bg-color="white"
+          :options="municipalities" v-model="data['municipalities']" :label="$t('common.pleaseSelect')"
+          :rules="[creationRule]" hide-bottom-space use-input input-debounce="0" @filter="filterMunicipalities"
+          @update:model-value="data['street'] = ''" />
       </div>
       <div class="col-3 q-pl-md text-right text-blue text-weight-regular self-center" />
       <div class="col-3 q-pl-md blue relative-position" />
@@ -195,7 +201,7 @@
   </DropDownEditGroup>
 </template>
 <script lang="ts" setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { applicationMethod } from 'src/shared/constants/Applicant.const';
 import hiddenText from 'src/components/hiddingText.component.vue';
 import DropDownEditGroup from 'src/components/buttons/DropDownEditGroup.vue';
@@ -206,6 +212,9 @@ import { limitDate, myDateFormat } from 'src/shared/utils/utils'
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useMedia } from 'src/stores/media';
 import { Media } from 'src/shared/model/Media.model';
+import { creationRule } from 'src/components/handlers/rules';
+import { prefectureList } from 'src/shared/constants/Prefecture.const';
+import { getMunicipalities } from 'src/shared/constants/Municipalities.const';
 
 const props = defineProps<{
   applicant: Applicant,
@@ -221,6 +230,9 @@ const media = useMedia();
 const mediaList = ref<Media[]>([]);
 
 const applicationMethodOption = ref(applicationMethod)
+const prefectureOption = ref(prefectureList.value);
+const fetchMunicipalities = ref(false)
+const municipalities = ref<string[]>([])
 
 function resetData() {
   defaultData.value = {
@@ -247,6 +259,42 @@ function resetData() {
 resetData()
 
 const age = computed(() => data.value['dob'] ? RankCount.ageCount(data.value['dob']) : '');
+
+watch(() => data.value.prefecture, async (newVal, oldVal) => {
+  if (newVal !== oldVal && newVal) {
+    fetchMunicipalities.value = false
+    municipalities.value = await getMunicipalities(newVal)
+    fetchMunicipalities.value = true
+  } else {
+    fetchMunicipalities.value = false
+  }
+}, { immediate: true })
+
+const filterMunicipalities = async (val: string, update) => {
+  if (val === '' && data.value.prefecture) {
+    update(async () => {
+      municipalities.value = await getMunicipalities(data.value.prefecture)
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    municipalities.value = municipalities.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
+  })
+};
+
+const filterPrefecturre = async (val: string, update) => {
+  if (val === '') {
+    update(async () => {
+      prefectureOption.value = prefectureList.value
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    prefectureOption.value = prefectureOption.value.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+  })
+};
 
 async function save() {
   loading.value = true

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import { ClientFactory } from 'src/shared/model/ClientFactory.model';
+import { useRoute } from 'vue-router';
 
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{
@@ -10,14 +10,14 @@ const props = defineProps<{
     industryValue: Array<{ value: string, isSelected: boolean }>,
     selectedIndustry: { value: string, isSelected: boolean } | undefined
 }>();
-
 const emit = defineEmits<{
-    (e: 'editIndustry', value: { value: string, isSelected: boolean})
+    (e: 'editIndustry', value: { value: string, isSelected: boolean })
 }>()
-
 const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
     emit('editIndustry', item)
 }
+const route = useRoute()
+const theme = route.meta.isAdmin ? 'accent' : 'primary'
 </script>
 
 <template>
@@ -36,7 +36,8 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
                         auto-close
                         :label="selectedIndustry.value ?? ''"
                         color="white"
-                        text-color="accent">
+                        :text-color="theme">
+
                         <q-list>
                             <q-item
                                 class="row justify-center items-center"
@@ -46,19 +47,22 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
                                 :key="item.value ?? 1"
                                 @click="dropDownHandler(item)"
                                 v-for="item in industryValue.filter(el => el.value !== selectedIndustry?.value)">
-                                <q-item-label>
-                                    {{ item.value }}
-                                </q-item-label>
+
+                                    <q-item-label>
+                                        {{ item.value }}
+                                    </q-item-label>
                             </q-item>
                         </q-list>
                     </q-btn-dropdown>
                 </div>
+
                 <span class="text-h5 text-weight-bolder">
                     <q-icon v-if="selectedItem.isHead" color="white" name="home"/>
                     {{ props.selectedItem.name }}
                 </span>
             </div>
         </div>
+
         <div>
             <div>
                 {{ t('client.list.phone') }}
@@ -69,15 +73,13 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
                 <span>{{ props.selectedItem.fax }}</span>
             </div>
         </div>
+
         <div>
-            <div class="text-bold">
-                {{ props.selectedItem.address.slice(0, 12) + '...' }}
+            <div>
+                {{ props.selectedItem.prefecture+' '+props.selectedItem.municipality }}
             </div>
             <div>
-                {{ props.selectedItem.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）' }}
-                <span>
-                    {{ props.selectedItem.distance }}
-                </span>
+                {{ props.selectedItem.street+' '+props.selectedItem.building }}
             </div>
         </div>
     </div>
@@ -86,6 +88,5 @@ const dropDownHandler = (item: { value: string, isSelected: boolean }) => {
 <style lang="scss" scoped>
 .wrapper {
     flex: 1 1 90%;
-    height: 4rem;
 }
 </style>
