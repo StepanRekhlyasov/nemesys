@@ -76,6 +76,15 @@ export const statusList = computed(() => {
   ];
 });
 
+export  const successorDict = {
+  [ApplicantStatus.UNSUPPORTED] : ApplicantStatus.WAIT_CONTACT,
+  [ApplicantStatus.WAIT_CONTACT] : ApplicantStatus.WAIT_ATTEND,
+  [ApplicantStatus.WAIT_ATTEND] :ApplicantStatus.WAIT_FIX,
+  [ApplicantStatus.WAIT_FIX] : ApplicantStatus.WAIT_VISIT,
+  [ApplicantStatus.WAIT_VISIT] : ApplicantStatus.WAIT_OFFER,
+  [ApplicantStatus.WAIT_OFFER] : ApplicantStatus.WAIT_ENTRY,
+}
+
 export const mediaList = computed(() => [{
   label: 'indeed',
   value: 'indeed'
