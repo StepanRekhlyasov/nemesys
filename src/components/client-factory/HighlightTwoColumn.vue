@@ -28,7 +28,6 @@ const emit = defineEmits<{
     (e: 'openEdit'),
     (e: 'onSave')
 }>()
-
 const leftColumn = computed(() => props.data.filter((_, index) => index % 2 === 0))
 const rightColumn = computed(() => props.data.filter((_, index) => index % 2 !== 0))
 const industryStore = useIndsutry()

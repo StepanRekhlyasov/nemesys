@@ -57,15 +57,18 @@ const fetchHeadClientFactory = async () => {
 }
 
 watchEffect(async () => {
+  isLoading.value = true
   client.value = await clientStore.fetchClientsById(props.clientId)
   headClientFactory.value = await getHeadClientFactory(props.clientId) as ClientFactory
   relatedOfficeInfo.value = await getRelatedOfficeInfo(props.clientId)
   headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
+  isLoading.value = false
 })
 
 watch(localClientId, fetchHeadClientFactory, {immediate: true})
 
 async function editClient(data : Data[]) {
+  isLoading.value = true
   const saveData : Partial<Client> = {}
   data.forEach((row)=>{
     saveData[row.key] = row.value
@@ -73,8 +76,10 @@ async function editClient(data : Data[]) {
   await clientStore.updateClient(props.clientId, saveData)
   client.value = await clientStore.fetchClientsById(props.clientId)
   headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
+  isLoading.value = false
 }
 async function editContractor(data : Data[]) {
+  isLoading.value = true
   const saveData : Partial<ClientFactory> = {}
   saveData.contractInfo = {
     contractUnit: '',
@@ -92,6 +97,7 @@ async function editContractor(data : Data[]) {
   await clientFactoryStore.updateClientFactory({...headClientFactory.value, ...saveData})
   headClientFactory.value = await getHeadClientFactory(props.clientId) as ClientFactory
   headDetails.value = useHeadDetails(headClientFactory.value as ClientFactory, relatedOfficeInfo.value, client.value)
+  isLoading.value = false
 }
 
 </script>
