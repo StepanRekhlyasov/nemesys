@@ -38,8 +38,11 @@ export interface ClientFactory {
     geohash?: string;
     organizationId: string | null
     client?: Client
-
+    street?: string
+    building?: string
     draft: Partial<ClientFactory> | Record<string, never>
+    offerRate?: number
+    avgWorkLength?: number
 }
 
 type OfficeDetails = {
