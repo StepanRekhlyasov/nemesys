@@ -230,7 +230,9 @@ watch(() => selected.value, (newValue) => {
 });
 onMounted(async () => {
   await fetchBOData();
-  await getOrganizationCodes();
+  if(theme==='accent'){
+    await getOrganizationCodes();
+  }
 });
 
 const selectedCount = () => {
