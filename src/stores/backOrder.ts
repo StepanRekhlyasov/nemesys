@@ -276,7 +276,7 @@ export const useBackOrder = defineStore('backOrder', () => {
     return list;
   }
 
-  async function getCfBoOfCurrentOrganization(office_id: string, isAdmin: boolean): Promise<BackOrderModel[]> {
+  async function getCfBoOfCurrentOrganization(office_id: string | undefined, isAdmin: boolean): Promise<BackOrderModel[]> {
     let constraints: ConstraintsType = []
     if(isAdmin){
      constraints = [where('deleted', '==', false), where('office_id', '==', office_id)];
