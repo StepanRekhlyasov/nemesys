@@ -159,7 +159,7 @@
 
 <script lang="ts" setup>
 import { BackOrderModel, Client } from 'src/shared/model';
-import { useBackOrder, deleteBO } from 'src/stores/backOrder';
+import { useBackOrder } from 'src/stores/backOrder';
 import { Ref, ref, computed, ComputedRef, watch, onMounted } from 'vue';
 import { BackOrderColumns } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import InfoBO from './components/info/InfoBO.vue';
@@ -176,7 +176,6 @@ import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganizat
 import TablePaginationSimple from 'src/components/pagination/TablePaginationSimple.vue'
 import { useUserStore } from 'src/stores/user'
 import { myDateFormat } from 'src/shared/utils/utils';
-
 
 const userStore = useUserStore();
 const backOrderStore = useBackOrder();
@@ -342,7 +341,11 @@ async function deleteSelected() {
 
   .onOk(async () => {
     if (selected.value) {
-    selected.value.map(async (val) => await deleteBO(val.id));
+      let ids = ref<string[]>([])
+      selected.value.forEach(bo=>{
+        ids.value.push(bo.id)
+      })
+      backOrderStore.deleteBO(ids.value)
   }
     await backOrderStore.loadBackOrder({}, pagination.value);
   })
@@ -355,6 +358,7 @@ async function deleteSelected() {
 }
 
 function addNewBo() {
+  duplicateBo.value = undefined;
   $q.dialog({
     title: t('backOrder.selectBOType'),
     cancel: t('backOrder.type.dispatch'),
