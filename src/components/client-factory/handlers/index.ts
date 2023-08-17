@@ -168,7 +168,7 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
   return officeDetails
 }
 
-export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo:object, client?: Client): RenderHeadDetails => {
+export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo?:object, client?: Client): RenderHeadDetails => {
   const headDetails = {} as RenderHeadDetails
   headDetails.headOfficeInfo = computed(() => {
     return [
@@ -207,17 +207,18 @@ export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo:o
       {label: t('clientFactory.drawer.details.contractPerson'), value: safeGet(clientFactory, 'contractInfo.contractPerson') ?? '', editType: 'text', key: 'contractInfo.contractPerson'}
     ]
   }).value
-
-  headDetails.relatedOfficeInfo = computed(() => {
-    return [
-      {label: t('clientFactory.drawer.details.noOfOffices'), value:relatedOfficeInfo['numberOffices']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.noOfOffices'},
-      {label: t('clientFactory.drawer.details.backOrder'), value: relatedOfficeInfo['backOrder']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.backOrder'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.fullTimeEmployment'), value:relatedOfficeInfo['fullTime'], editType: 'number', key: 'relatedOfficeInfo.fullTime'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.nonRegularEmployee'), value: relatedOfficeInfo['nonRegular'], editType: 'number', key: 'relatedOfficeInfo.nonRegular'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.temporaryEmployment'), value: relatedOfficeInfo['temporary'], editType: 'number', key: 'relatedOfficeInfo.temporary'},
-      {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.currentlyInOperation'), value:relatedOfficeInfo['current'], editType: 'number', key: 'relatedOfficeInfo.current'}
-    ]
-  }).value
+  if(relatedOfficeInfo){
+    headDetails.relatedOfficeInfo = computed(() => {
+      return [
+        {label: t('clientFactory.drawer.details.noOfOffices'), value:relatedOfficeInfo['numberOffices']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.noOfOffices'},
+        {label: t('clientFactory.drawer.details.backOrder'), value: relatedOfficeInfo['backOrder']+' '+t('clientFactory.drawer.details.perItems'), editType: 'number', key: 'relatedOfficeInfo.backOrder'},
+        {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.fullTimeEmployment'), value:relatedOfficeInfo['fullTime'], editType: 'number', key: 'relatedOfficeInfo.fullTime'},
+        {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.nonRegularEmployee'), value: relatedOfficeInfo['nonRegular'], editType: 'number', key: 'relatedOfficeInfo.nonRegular'},
+        {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.temporaryEmployment'), value: relatedOfficeInfo['temporary'], editType: 'number', key: 'relatedOfficeInfo.temporary'},
+        {label: t('clientFactory.drawer.details.employmentRecord')+':'+t('clientFactory.drawer.details.currentlyInOperation'), value:relatedOfficeInfo['current'], editType: 'number', key: 'relatedOfficeInfo.current'}
+      ]
+    }).value
+  }
   return headDetails
 }
 

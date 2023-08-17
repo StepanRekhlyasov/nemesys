@@ -110,6 +110,7 @@ async function editContractor(data : Data[]) {
     <div v-if="!isLoading">
         <template v-if="!clientFactory.isHead">
           <HighlightTwoColumn
+              v-if="headDetails.headOfficeInfo" 
               :data="headDetails.headOfficeInfo"
               :label="t('clientFactory.drawer.headOfficeInfo')"
               :is-edit="isOpenEditDropDown.headOfficeInfo"
@@ -129,6 +130,7 @@ async function editContractor(data : Data[]) {
           />
         </template>
         <HighlightTwoColumn 
+            v-if="headDetails.clientInfo"
             :data="headDetails.clientInfo"
             :label="t('clientFactory.drawer.clientInfo')"
             :is-edit="isOpenEditDropDown.clientInfo"
@@ -148,6 +150,7 @@ async function editContractor(data : Data[]) {
         />
 
         <HighlightTwoColumn 
+            v-if="headDetails.contractInfo"
             :data="headDetails.contractInfo"
             :label="t('clientFactory.drawer.contractInfo')"
             :is-edit="isOpenEditDropDown.contractInfo"
@@ -167,6 +170,7 @@ async function editContractor(data : Data[]) {
         />
         
         <HighlightTwoColumn 
+            v-if="headDetails.relatedOfficeInfo"
             :data="headDetails.relatedOfficeInfo" 
             :label="t('clientFactory.drawer.relatedOfficeInfo')"
             :is-edit="isOpenEditDropDown.relatedOfficeInfo" 
