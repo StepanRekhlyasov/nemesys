@@ -136,7 +136,8 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
         >
           <CFDrawerBackOrder
             :officeId="clientFactory.id"
-            :clientId="clientFactory.clientID" :originalOfficeId="originalOfficeId"
+            :clientId="clientFactory.clientID"
+            :originalOfficeId="originalOfficeId"
           />
         </q-tab-panel>
 
@@ -144,6 +145,7 @@ const activeTab = ref(route.meta.isAdmin ? ClientFactoryTabs.OfficeDetails : Cli
           <CFDrawerHeadDetails
             :client-id="clientFactory.clientID"
             :client-factory="clientFactory"
+            :originalOfficeId="originalOfficeId"
             @edit-draft="editDraftHandle"
           />
         </q-tab-panel>

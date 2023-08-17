@@ -37,7 +37,7 @@ export const useClient = defineStore('client', () => {
         }
     }
 
-    const updateClient = async (id: string, client: Omit<Client, 'created_at'>) => {
+    const updateClient = async (id: string, client: Partial<Client>) => {
         try {
 
             await setDoc(doc(db, 'clients', id), {
