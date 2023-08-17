@@ -26,14 +26,15 @@ export const useClientFactory = defineStore('client-factory', () => {
     //  methdods
     const getLastReflectLog = async (clientId: string, clientFactoryId: string) => {
         let reflectLog: ReflectLog | undefined
-
+        if(!clientId || !clientFactoryId){
+          return
+        }
         try {
             const lastReflectLogsQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'reflectLog'),
                 orderBy('executionDate', 'desc'),
                 limit(1)
             ))
-
             lastReflectLogsQuerySnapshot.forEach((doc) => {
 
 
@@ -157,7 +158,9 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getLastImportLog = async (clientId: string, clientFactoryId: string) => {
         let importLog: ImportLog | undefined
-
+        if(!clientId || !clientFactoryId){
+          return
+        }
         try {
             const lastImportLogQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'importLog'),
@@ -238,10 +241,13 @@ export const useClientFactory = defineStore('client-factory', () => {
                         const clientFactory = {
                             ...clientFactoryData,
                             id: doc.id,
-                            updated_at: date.formatDate(clientFactoryData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                            created_at: date.formatDate(clientFactoryData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                             client } as ClientFactory;
-
+                        if(clientFactoryData?.updated_at instanceof Timestamp){
+                          clientFactory.updated_at = date.formatDate(clientFactoryData.updated_at.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                        }
+                        if(clientFactoryData?.created_at instanceof Timestamp){
+                          clientFactory.created_at = date.formatDate(clientFactoryData.created_at.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                        }
                         const reflectRes = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
 
                         if(reflectRes) {
