@@ -313,6 +313,8 @@ export const useClientFactory = defineStore('client-factory', () => {
 
           if(typeof createdAt === 'object'){
             if('seconds' in createdAt  && 'nanoseconds' in createdAt){
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
                 createdAt = new Timestamp(createdAt?.seconds as unknown as number, createdAt?.nanoseconds as unknown as number).toDate()
             }
           }
