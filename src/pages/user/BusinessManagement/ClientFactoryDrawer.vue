@@ -56,12 +56,12 @@ const editDraftHandler = async(changedData: Array<{ label: string; value: string
       const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
       await updateClientFactory({ ...mergedData })
       modifiedCF.value = mergedData
-      draft.value = {} as ClientFactory;
+      // draft.value = {} as ClientFactory;
     } else {
       const mergedDataSelected = mergeWithDraft(props.selectedItem, draft.value)
       await updateClientFactory({ ...mergedDataSelected })
       modifiedCF.value = mergedDataSelected
-      draft.value = {} as ClientFactory;
+      // draft.value = {} as ClientFactory;
     }
   }
 
