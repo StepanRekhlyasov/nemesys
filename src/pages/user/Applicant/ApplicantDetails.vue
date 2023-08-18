@@ -199,8 +199,8 @@ const setStatusOption = () => {
   [...statusList.value].find(dic => dic.value == ApplicantStatus.UNSUPPORTED),
   [...statusList.value].find(dic => dic.value == ApplicantStatus.RETIRED),
   ]
-  const next = [...statusList.value].filter(dic => applicantStore.state.selectedApplicant?.status && orderOfStatus[dic.value] <= orderOfStatus[applicantStore.state.selectedApplicant?.status])
-  if(next) statusOption.value = statusOption.value.concat([...next])
+  const preStatus = [...statusList.value].filter(dic => applicantStore.state.selectedApplicant?.status && orderOfStatus[dic.value] <= orderOfStatus[applicantStore.state.selectedApplicant?.status])
+  if(preStatus) statusOption.value = statusOption.value.concat(preStatus)
 }
 onMounted(()=>{
   setStatusOption()
