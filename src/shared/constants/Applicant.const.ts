@@ -76,14 +76,14 @@ export const statusList = computed(() => {
   ];
 });
 
-export  const successorDict = {
-  [ApplicantStatus.UNSUPPORTED] : ApplicantStatus.WAIT_CONTACT,
-  [ApplicantStatus.WAIT_CONTACT] : ApplicantStatus.WAIT_ATTEND,
-  [ApplicantStatus.WAIT_ATTEND] :ApplicantStatus.WAIT_FIX,
-  [ApplicantStatus.WAIT_FIX] : ApplicantStatus.WAIT_VISIT,
-  [ApplicantStatus.WAIT_VISIT] : ApplicantStatus.WAIT_OFFER,
-  [ApplicantStatus.WAIT_OFFER] : ApplicantStatus.WAIT_ENTRY,
+export  const orderOfStatus = {
+  [ApplicantStatus.WAIT_CONTACT] : 11,
+  [ApplicantStatus.WAIT_ATTEND] : 12,
+  [ApplicantStatus.WAIT_FIX] : 13,
+  [ApplicantStatus.WAIT_VISIT] : 14,
+  [ApplicantStatus.WAIT_OFFER] : 15,
 }
+
 
 export const mediaList = computed(() => [{
   label: 'indeed',

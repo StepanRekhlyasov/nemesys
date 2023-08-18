@@ -173,7 +173,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import detailTabs from '../Applicant/components/detailTabs.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 import { QFile } from 'quasar';
-import { statusList, successorDict } from 'src/shared/constants/Applicant.const';
+import { statusList, orderOfStatus } from 'src/shared/constants/Applicant.const';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -199,10 +199,8 @@ const setStatusOption = () => {
   [...statusList.value].find(dic => dic.value == ApplicantStatus.UNSUPPORTED),
   [...statusList.value].find(dic => dic.value == ApplicantStatus.RETIRED),
   ]
-  const current = [...statusList.value].find(dic => dic.value == applicantStore.state.selectedApplicant?.status)
-  if(current) statusOption.value.push(current)
-  const next = [...statusList.value].find(dic => applicantStore.state.selectedApplicant?.status &&  dic.value == successorDict[applicantStore.state.selectedApplicant?.status])
-  if(next) statusOption.value.push(next)
+  const next = [...statusList.value].filter(dic => applicantStore.state.selectedApplicant?.status && orderOfStatus[dic.value] <= orderOfStatus[applicantStore.state.selectedApplicant?.status])
+  if(next) statusOption.value = statusOption.value.concat([...next])
 }
 onMounted(()=>{
   setStatusOption()
