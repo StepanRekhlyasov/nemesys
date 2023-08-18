@@ -62,6 +62,7 @@ onMounted(async ()=>{
     backOrderStore.state.BOList = allBo;
     inputRadiusKm.value = 10;
     radiusKm.value = 10;
+    searchInput.value = await backOrderStore.getAddresses(center.value.lat,center.value.lng)
     getMarkerColor()
 })
 

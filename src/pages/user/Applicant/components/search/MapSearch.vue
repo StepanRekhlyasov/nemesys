@@ -56,6 +56,7 @@ const getMarkerColor = () => {
 
 onMounted(async () => {
   await fetchData()
+  searchInput.value = await backOrderStore.getAddresses(center.value.lat,center.value.lng)
 })
 
 

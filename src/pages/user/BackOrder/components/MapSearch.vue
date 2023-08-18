@@ -32,6 +32,7 @@ watch(()=> [organization.currentOrganizationId], async () => {
 
 watch(mapDrawerValue,async ()=>{
   await getApplicantMarkers();
+  searchInput.value = await backOrderStore.getAddresses(props.bo?.lat,props.bo?.lon);
 })
 
 const getApplicantMarkers = async ()=>{
@@ -45,11 +46,10 @@ const getApplicantMarkers = async ()=>{
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   isLoadingProgress.value = true
   getClientLocation();
   isLoadingProgress.value = false;
-
 })
 
 const getClientLocation = () => {
