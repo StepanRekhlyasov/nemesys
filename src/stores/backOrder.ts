@@ -638,15 +638,9 @@ export const useBackOrder = defineStore('backOrder', () => {
 
   const getAddresses = async (lat=36.083,lon=140.0) => {
     const api = searchConfig.mapApi;
-    const url = 'https://get-address-planwvepxa-an.a.run.app';
+    const url = `https://get-address-planwvepxa-an.a.run.app?lat=${lat}&lon=${lon}&api=${api}`;
     try {
-      const response = await axios.get(url, {
-        params: {
-          lat,
-          lon,
-          api,
-        },
-      });
+      const response = await axios.get(url);
       const data = response.data;
       return data
     } catch (error) {
