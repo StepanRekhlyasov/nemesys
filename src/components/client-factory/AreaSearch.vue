@@ -40,6 +40,16 @@ const isLoadingProgress = ref(false)
 const allPref = ref<string[]>([])
 const allWards = ref<string[]>([])
 const searchKeyword = ref<string[]>([])
+const orderRegion:string[] = [ 
+  '北海道地方',
+  '東北地方',
+  '関東地方',
+  '中部地方',
+  '近畿地方',
+  '中国地方',
+  '四国地方',
+  '九州・沖縄地方'
+]
 onMounted(async () => {
     isLoadingProgress.value = true
     const docRef = doc(db, 'metadata', 'regionData');
@@ -264,7 +274,7 @@ const resetConditionData = () => {
             </q-chip>
         </q-card>
         <q-list bordered class="rounded-borders">
-            <q-expansion-item expand-separator :label="region" v-for="region in Object.keys(regionList)" :key="region">
+            <q-expansion-item expand-separator :label="region" v-for="region in orderRegion" :key="region">
                 <div class="row" v-for="prefecture in regionList[region]" :key="prefecture">
                     <div class="col-1 text-right">
                         <q-checkbox size="sm" v-model="prefectures" :val="Object.keys(prefecture)[0]" />
