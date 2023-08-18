@@ -106,8 +106,7 @@ async function searchLicense() {
   loading.value = true
   let licences = await licenceStore.search(search.value, 'licenseHistory')
   if(!licences){
-    const searchedValue=search.value.toUpperCase()
-    licences=await licenceStore.searchByCode(searchedValue, 'licenseHistory')
+    licences=await licenceStore.searchByCode(search.value, 'licenseHistory')
   }
   if (!licences) {
     loading.value = false
