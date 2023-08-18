@@ -117,7 +117,7 @@ async function addAccount() {
       role: data['role'], // optional OR docId from roles collection like LGrpWMKEG91IQXMJb069
       organization_ids: isAdminRole() ? undefined : [organization.currentOrganizationId],
       hidden: data.hidden,
-      branchName: props.branches[data['branch_id']].name,
+      branchName: props.branches[data['branch_id']] ? props.branches[data['branch_id']].name : ''
     },
     {
       headers: headers,
