@@ -1,9 +1,9 @@
-import { collection, query, getFirestore, getDocs, addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, query, getFirestore, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from 'firebase/firestore';
 import { Media } from 'src/shared/model/Media.model';
 import { defineStore } from 'pinia';
 export const useMedia = defineStore('media', () => {
+  
   const db = getFirestore();
-
   const getAllmedia = async () => {
     const mediaRef = collection(db, 'media');
     const querys = query(mediaRef);
@@ -23,6 +23,19 @@ export const useMedia = defineStore('media', () => {
 });
 
 
+export const saveOrder = async (order: object) => {
+  const db = getFirestore();
+  const docRef = doc(db, 'metadata', 'mediaOrder');
+  const res = await setDoc(docRef, {...order});
+  return res;
+}
+
+export const getOrder = async () => {
+  const db = getFirestore();
+  const docRef = doc(db, 'metadata', 'mediaOrder');
+  const docSnap = await getDoc(docRef);
+  return docSnap.data();
+}
 
 export const addMedia = async (data: Media) => {
   const db = getFirestore();
