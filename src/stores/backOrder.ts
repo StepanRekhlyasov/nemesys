@@ -8,6 +8,7 @@ import { api } from 'src/boot/axios';
 import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
 import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 import { useOrganization } from './organization';
+import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
 
 interface BackOrderState {
   BOList: BackOrderModel[];
@@ -635,7 +636,7 @@ export const useBackOrder = defineStore('backOrder', () => {
   };
 
   const getAddresses = async (lat=36.083,lon=140.0) => {
-    const apiKey = 'AIzaSyDty4AXmQF9uzYdIdz99WJxBxv3sCtEY3c';
+    const apiKey = searchConfig.mapApi;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;
 
     try {
