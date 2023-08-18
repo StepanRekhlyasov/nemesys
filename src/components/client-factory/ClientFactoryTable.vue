@@ -15,12 +15,12 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
     (e: 'selectItem', item: ClientFactoryTableRow)
-    (e: 'selectedId', item: number[])
+    (e: 'selectedId', item: ClientFactoryTableRow[])
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
 
-const selected = ref<number[]>([])
+const selected = ref<ClientFactoryTableRow[]>([])
 const getSelectedString = () => {
     return selected.value.length === 0 ? '' : `${t('common.numberOfSelections')}: ${selected.value.length}`
 }
@@ -29,8 +29,8 @@ const selectItem = (item: ClientFactoryTableRow) => {
     emit('selectItem', item)
 }
 
-watch(()=>selected.value,()=>{
-    emit('selectedId',selected.value)
+watch(()=>selected.value, ()=>{
+    emit('selectedId', selected.value)
 })
 
 const paginatedAndSortedRows = ref<ClientFactoryTableRow[]>([...props.rows]);

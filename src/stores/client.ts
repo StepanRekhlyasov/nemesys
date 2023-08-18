@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
-import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs, writeBatch, collectionGroup } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
+import { ClientFactoryTableRow } from 'src/components/client-factory/types';
+import { useClientFactory } from './clientFactory';
 
 export const useClient = defineStore('client', () => {
     // db
@@ -55,7 +57,7 @@ export const useClient = defineStore('client', () => {
         const clientsCollection = collection(db, 'clients');
         const filteredClientsQuery = query(clientsCollection, where('deleted', '==', false));
         onSnapshot(filteredClientsQuery, (snapshot) => {
-            clients.value = snapshot.docs.map(doc => {
+          clients.value = snapshot.docs.map(doc => {
                 const clientData = doc.data();
                 return {
                     ...clientData,
@@ -79,7 +81,6 @@ export const useClient = defineStore('client', () => {
 
     fetchClients();
 
-
     async function getClientsByConstraints(constraints?: ConstraintsType) {
         const clientsCollection = collection(db, 'clients');
         const currentConstraints: ConstraintsType = [where('deleted', '==', false)]
@@ -99,11 +100,64 @@ export const useClient = defineStore('client', () => {
         }) as Client[];
     }
 
+    async function deleteClientFactories(rowData : ClientFactoryTableRow[]){
+      const batch = writeBatch(db);
+      const deleteData = {deleted: true}
+      const clientFactoryStore = useClientFactory()
+      for(const row of rowData){
+        const isHead = row.office.isHead
+        const cFId = row.id
+        const clientId = row.clientId
+        if(isHead){
+          batch.update(
+            doc(db, 'clients/' + clientId),
+            deleteData
+          );
+          const clientRef = collection(db, 'clients', clientId, 'client-factory')
+          const clientOffices = await getDocs(clientRef)
+          clientOffices.forEach((row)=>{
+            batch.update(
+              doc(db, 'clients/' + clientId + '/client-factory/' + row.id),
+              deleteData
+            );
+          })
+          const boRefs = await getDocs(query(collection(db, 'BO'), where('client_id', '==', clientId)))
+          boRefs.forEach((row)=>{
+            batch.update(
+              doc(db, 'BO/' + row.id),
+              deleteData
+            );
+          })
+          clientFactoryStore.clientFactories = clientFactoryStore.clientFactories.filter((row)=>{
+            return row.id !== cFId
+          })
+        } else {
+          batch.update(
+            doc(db, 'clients/' + clientId + '/client-factory/' + cFId),
+            deleteData
+          );
+          const boRefs = await getDocs(query(collection(db, 'BO'), where('office_id', '==', cFId)))
+          boRefs.forEach((row)=>{
+            batch.update(
+              doc(db, 'BO/' + row.id),
+              deleteData
+            );
+          })
+          clientFactoryStore.clientFactories = clientFactoryStore.clientFactories.filter((row)=>{
+            return row.id !== cFId
+          })
+        }
+      }
+      await batch.commit();
+      
+    }
+
     return {
         clients,
         addNewClient,
         updateClient,
         fetchClientsById,
-        getClientsByConstraints
+        getClientsByConstraints,
+        deleteClientFactories
     }
 })

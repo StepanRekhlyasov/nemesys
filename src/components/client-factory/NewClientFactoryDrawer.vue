@@ -49,7 +49,7 @@ const onSubmit = async (newClientFactoryData: Omit<ClientFactory, 'id'> | null) 
         } else {
             newClientFactoryData.organizationId = null
         }
-
+        
         await addClientFactory(newClientFactoryData as ClientFactory)
         emit('hideDrawer')
     }
