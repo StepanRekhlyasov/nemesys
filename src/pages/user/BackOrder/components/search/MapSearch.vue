@@ -45,6 +45,7 @@ const circleOption = computed(() => {
     fillOpacity: 0.05,
   };
 });
+const locationLoading = ref<boolean>(false)
 
 onMounted(async ()=>{
   const allBo = await backOrderStore.getBOByConstraints([where('deleted', '==', false), where('organizationId', '==', organization.currentOrganizationId)]);
@@ -62,7 +63,9 @@ onMounted(async ()=>{
     backOrderStore.state.BOList = allBo;
     inputRadiusKm.value = 10;
     radiusKm.value = 10;
+    locationLoading.value = true;
     searchInput.value = await backOrderStore.getAddresses(center.value.lat,center.value.lng)
+    locationLoading.value = false;
     getMarkerColor()
 })
 
@@ -178,6 +181,7 @@ const closeMap = () => {
         style="width: 30vw"
         outlined
         dense
+        :loading="locationLoading"
       >
         <template v-slot:prepend>
           <q-btn color="primary" flat icon="place"></q-btn>
