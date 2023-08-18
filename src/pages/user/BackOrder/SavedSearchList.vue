@@ -6,15 +6,13 @@ import { tableColumnsSavedCriteriaList } from 'src/pages/user/BackOrder/consts/i
 import { getFirestore, orderBy, doc, deleteDoc, DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
-// import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
-// import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
 import { useBackOrder } from 'src/stores/backOrder'
 // import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
-// import { useRouter } from 'vue-router';
-// import { updateSharedVariable } from 'src/pages/user/Applicant/components/search/searchData'
+import { useRouter } from 'vue-router';
+import { updateSharedVariable } from 'src/pages/user/BackOrder/consts/index';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
-// const router = useRouter()
+const router = useRouter()
 // const saveSearch = useApplicantSaveSearch()
 const BackOrderStore = useBackOrder()
 const tableData = ref<DocumentData>([])
@@ -66,10 +64,10 @@ const dltSearch = async (id) => {
 //   rowForEdit.value = row
 // };
 
-// const searchApplicants = (row: DocumentData) => {
-//   updateSharedVariable(row)
-//   router.push('/applicant/search')
-// }
+const searchApplicants = (row: DocumentData) => {
+  updateSharedVariable(row)
+  router.push('/backOrder/search')
+}
 // const save = async () => {
 //   isSaving.value = true;
 //   let edit_data = searchData.value
@@ -137,7 +135,7 @@ const clearSearch = () => {
             <q-td class="no-wrap">
               <div class="row">
                 <!-- <q-icon size="sm" color="primary" class="flex table__edit-btn" name="edit" @click="callRow(props.row)" /> -->
-                <!-- <q-icon size="sm" class="table__search-btn" name="search" @click="searchApplicants(props.row)" /> -->
+                <q-icon size="sm" class="table__search-btn" name="search" @click="searchApplicants(props.row)" />
                 <q-icon size="1.5rem" color="primary" class="table__delete-btn" name="delete_outline"
                 @click="dltSearch(props.row.id)" />
               </div>

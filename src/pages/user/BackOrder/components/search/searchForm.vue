@@ -169,13 +169,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import MapSearch from './MapSearch.vue';
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from '../../../Applicant/components/search/components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { useBackOrder } from 'src/stores/backOrder'
-import { checkValidity } from 'src/pages/user/BackOrder/consts/index';
+import { checkValidity, sharedData, resetSharedVariable } from 'src/pages/user/BackOrder/consts/index';
 import {
   employmentTypeOption,
   qualificationOption,
@@ -184,6 +184,8 @@ import {
   applicantClassification,
   occupationList,
 } from 'src/shared/constants/Applicant.const';
+import { DocumentData } from 'firebase/firestore';
+
 
 const isSaving = ref<boolean>(false);
 const searchDataSample = {
@@ -215,7 +217,22 @@ const updateMap = (mapData) => {
   searchData.value['mapData'] = mapData;
 };
 
-const searchStaff = async () => {
+onMounted(()=>{
+  if(checkData(sharedData.value)){
+    expanded.value = true;
+    searchData.value = sharedData.value;
+  }
+})
+
+const checkData = (data:DocumentData)=>{
+  if(data.keyword || data.customerRepresentative || data.ageMin || data.ageMax ||
+  data.registrationDateMax || data.registrationDateMin || data.boid || data.employmenttype.length || data.transactiontype.length || data.typecase.length || data.qualifications.length ){
+    return true;
+  }
+  return false;
+}
+
+const searchStaff = () => {
   emit('isLoading', true);
   drawerRight.value = false;
   expanded.value = false;
@@ -226,6 +243,7 @@ const searchStaff = async () => {
 const cancel = () => {
   expanded.value = false;
   searchData.value = JSON.parse(JSON.stringify(searchDataSample));
+  resetSharedVariable();
   emit('loadSearchStaff', searchData.value);
 };
 
@@ -250,6 +268,7 @@ const saveSearchConditions = async () => {
     await BackOrderStore.saveSearch(searchData.value)
   }
   searchData.value = JSON.parse(JSON.stringify(searchDataSample));
+  resetSharedVariable()
   isSaving.value = false;
 }
 

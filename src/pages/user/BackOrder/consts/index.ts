@@ -1,10 +1,22 @@
 import { ClientFactoryTableColumn } from 'src/components/client-factory/types'
 import { computed, ComputedRef, ref } from 'vue';
 import { i18n } from 'boot/i18n';
+import { DocumentData } from 'firebase/firestore';
 
 const { t } = i18n.global
-
-const searchDataSample = { sex: [], qualification: [], classification: [], occupation: [], availableShift: [], daysperweek: [] };
+const searchDataSample = {
+  employmenttype: [],
+  qualifications: [],
+  transactiontype: [],
+  typecase: [],
+};
+export const sharedData = ref<DocumentData>(JSON.parse(JSON.stringify(searchDataSample)));
+export function updateSharedVariable(newValue: DocumentData) {
+    sharedData.value = newValue;
+}
+export function resetSharedVariable(){
+    sharedData.value = JSON.parse(JSON.stringify(searchDataSample));
+}
 export const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
 
 export const tableColumnsSavedCriteriaList: ComputedRef<ClientFactoryTableColumn[]> = computed(() => [
