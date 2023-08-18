@@ -169,11 +169,11 @@
 </template>
 <script setup lang="ts">
 import { useApplicant } from 'src/stores/applicant';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import detailTabs from '../Applicant/components/detailTabs.vue';
 import { getDownloadURL, getStorage, ref as refStorage, uploadBytes } from 'firebase/storage';
 import { QFile } from 'quasar';
-import { statusList } from 'src/shared/constants/Applicant.const';
+import { statusList, orderOfStatus } from 'src/shared/constants/Applicant.const';
 import { RankCount } from 'src/shared/utils/RankCount.utils';
 import { Applicant } from 'src/shared/model';
 import hiddenText from 'src/components/hiddingText.component.vue';
@@ -186,11 +186,26 @@ import { serverTimestamp, DocumentData } from 'firebase/firestore';
 import { useBackOrder } from 'src/stores/backOrder';
 import boMapSearch from './components/boMapSearch.vue';
 import { boMapDrawerValue } from './const';
-
+import { ApplicantStatus } from 'src/shared/model';
 const applicantStore = useApplicant()
 const drawerRight = ref(false)
+const statusOption  = ref<({
+    label: string;
+    value: ApplicantStatus;
+}|undefined)[]>([])
+const setStatusOption = () => {
+  statusOption.value =
+  [
+  [...statusList.value].find(dic => dic.value == ApplicantStatus.UNSUPPORTED),
+  [...statusList.value].find(dic => dic.value == ApplicantStatus.RETIRED),
+  ]
+  const preStatus = [...statusList.value].filter(dic => applicantStore.state.selectedApplicant?.status && orderOfStatus[dic.value] <= orderOfStatus[applicantStore.state.selectedApplicant?.status])
+  if(preStatus) statusOption.value = statusOption.value.concat(preStatus)
+}
+onMounted(()=>{
+  setStatusOption()
+})
 
-const statusOption = ref(statusList);
 const emit = defineEmits(['statusUpdated'])
 const fileUploadRef = ref<InstanceType<typeof QFile> | null>(null);
 const age = computed(() => selectedApplicant.value && selectedApplicant.value['dob'] ? RankCount.ageCount(myDateFormat(selectedApplicant.value['dob'])) : '0')
@@ -213,6 +228,10 @@ const openMapDrawer = () => {
 
 watch(boMapDrawer,()=>{
   boMapDrawerValue.value = boMapDrawer.value;
+})
+
+watch(applicantStore.state,()=>{
+  setStatusOption()
 })
 
 const assignToBo = async () => {
