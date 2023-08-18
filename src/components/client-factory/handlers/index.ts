@@ -142,8 +142,6 @@ export const useOfficeDetails = (clientFactory: ClientFactory, draft: Partial<Cl
         const title = (item as {title : string}).title
         const order = (item as {order : number}).order
         if(title){
-          console.log(safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`))
-          console.log(safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`))
           uniqueItems.push({
             label: title,
             value: (safeGet(draft, `officeDetails.${industryType}.uniqueItems.${key}.value`) ?? safeGet(clientFactory, `officeDetails.${industryType}.uniqueItems.${key}.value`)),
