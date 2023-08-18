@@ -19,7 +19,7 @@
             <template v-slot:prepend>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="data['timeToWork']" mask="YYYY/MM/DD" 
+                  <q-date v-model="data['timeToWork']" mask="YYYY/MM/DD"
                   :navigation-min-year-month="nextMonth"
                   :default-year-month="nextMonth"
                   >
@@ -167,7 +167,7 @@
         <hidden-text v-if="!desiredEdit" :value="applicant.nearestStation" />
 
         <q-select v-if="desiredEdit" outlined v-model="data['nearestStation']" :options="stationData"
-          :disable="!data['route'] || loading" dense use-input input-debounce="0" @filter="filterStation" />
+          :disable="loading" dense use-input input-debounce="0" @filter="filterStation" />
       </div>
     </div>
 
@@ -299,6 +299,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import {useClient} from 'src/stores/client'
 import { useOrganization } from 'src/stores/organization';
 import { Client } from 'src/shared/model';
+import { DocumentData } from 'firebase/firestore';
 
 const props = defineProps<{
   applicant: Applicant,
@@ -322,8 +323,10 @@ const loading = ref(false);
 const transportationServicesOptions = ref(PossibleTransportationServicesList);
 const defaultData = ref<Partial<ApplicantInputs>>({});
   const data = ref<Partial<ApplicantInputs>>({});
-const routeData = ref([]);
-const stationData = ref([]);
+const routeData:Ref<string[]> = ref([]);
+const firstSelect = ref<string>('');
+const routeName:Ref<string[]> = ref([])
+const stationData:DocumentData = ref([]);
 const meansCommutingOptions = computed(() => [
   { value: 'walk', label: t('applicant.attendant.meansCommutingOptions.walk') },
   { value: 'bicycle', label: t('applicant.attendant.meansCommutingOptions.bicycle') },
@@ -362,16 +365,55 @@ onMounted(async () => {
   routeData.value = await metadataStore.getStationRoutes()
   clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
   getFacilityTypeOptions()
+  stationData.value = await metadataStore.createStationOptions()
 });
 
 watch(() => data.value['route'], async (newVal) => {
-  if (newVal) {
+  if(!data.value['nearestStation'] && newVal){
+    firstSelect.value = 'route';
+  }
+  else if(!data.value['nearestStation'] && !newVal){
+    firstSelect.value = '';
+  }
+  else if(firstSelect.value==='route'){
     data.value['nearestStation'] = '';
-    stationData.value = [];
-    stationData.value = await metadataStore.getStationByID(newVal)
+    stationData.value = await metadataStore.getStationByID(newVal as string)
   }
 }
 )
+watch(
+  () => data.value['nearestStation'],
+  async (newVal) => {
+    if(!data.value['route'] && newVal){
+    firstSelect.value = 'station';
+  }
+  else if(!data.value['route'] && !newVal){
+    firstSelect.value = '';
+  }
+  else if(firstSelect.value==='station'){
+    data.value['route'] = '';
+     routeName.value = await metadataStore.getRouteByStation(data.value['nearestStation']);
+      const formattedRoutes = routeName.value.map(routeName => `${data.value['nearestStation']}(${routeName})`);
+      routeData.value = formattedRoutes;
+  }
+  }
+  ,
+  { deep: true , immediate:true}
+);
+watch(firstSelect,async (newVal)=>{
+  if(newVal==='route'){
+    stationData.value = await metadataStore.getStationByID(data.value['route'] as string)
+  }
+  else if(newVal==='station'){
+    const routeName = await metadataStore.getRouteByStation(data.value['nearestStation']);
+      const formattedRoutes = routeName.map(routeName => `${data.value['nearestStation']}(${routeName})`);
+      routeData.value = formattedRoutes;
+  }
+  else{
+    routeData.value = await metadataStore.getStationRoutes()
+    stationData.value = await metadataStore.createStationOptions()
+  }
+})
 watch(() => desiredEdit.value, (newVal) => {
   if (newVal) {
     data.value['nearestStation'] = props.applicant['nearestStation'];
@@ -440,20 +482,39 @@ const getFacilityTypeOptions = () => {
 };
 
 const filterStation = async (val: string, update) => {
-  if (val === '' && data.value.route) {
+  debugger
+  if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')') && !data.value.nearestStation){
+    stationData.value = await metadataStore.createStationOptions()
+    data.value['route'] = ''
+    routeData.value = []
+  }
+  else if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')')){
+    const routeSubstring = data.value['route'].match(/\(([^)]+)\)/)?.[1];
+
+if (routeSubstring) {
+  stationData.value = await metadataStore.getStationByID(routeSubstring)
+}
+  }
+  else if (val === '' && data.value.route ) {
     update(async () => {
+      if(data.value['route']?.includes('(') && data.value['route'].includes(')')){
+        stationData.value = await metadataStore.createStationOptions()
+      }
       stationData.value = await metadataStore.getStationByID(data.value['route'] as string)
     })
     return
   }
-  update(() => {
+  else{
+    stationData.value = await metadataStore.createStationOptions()
+  }
+  update(async() => {
     const needle = val.toLowerCase()
     stationData.value = stationData.value.filter(v => v.toLowerCase().indexOf(needle) > -1)
   })
 };
 
 const filterRoute = async (val: string, update) => {
-  if (val === '') {
+  if (val === '' && !routeData.value.some(route => route.includes('('))) {
     update(async () => {
       routeData.value = await metadataStore.getStationRoutes();
     })
