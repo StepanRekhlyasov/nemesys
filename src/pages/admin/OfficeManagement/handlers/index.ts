@@ -15,14 +15,14 @@ export const updateClientHandler = (
   const updatedClient = JSON.parse(JSON.stringify(clientFactory.client))
 
   changedData.forEach(({key, value}) => {
-        const keys = key.split('.'); 
+        const keys = key.split('.');
         let nestedObj = updatedClient;
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
             if (i === keys.length - 1) {
                 nestedObj[key] = value;
             } else {
-                nestedObj[key] = nestedObj[key] || {}; 
+                nestedObj[key] = nestedObj[key] || {};
                 nestedObj = nestedObj[key];
             }
         }
@@ -37,9 +37,9 @@ export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
         const row = {} as ClientFactoryTableRow
 
         row.id = factory.id
-        row.distance = `${factory.distance}m`  
+        row.distance = `${factory.distance}m`
         row.fax = factory.fax
-        row.office= {name: factory.name, isHead: factory.isHead, clientName: factory.client?.representativeName}
+        row.office= {name: factory.name, isHead: factory.isHead, clientName: factory.client?.name}
         row.address = factory.address
         row.telephone = factory.tel
         row.basicInfo = factory.basicInfoChangingFlag ? '✓（基本情報変更済）' : 'なし（基本情報変更済）'
