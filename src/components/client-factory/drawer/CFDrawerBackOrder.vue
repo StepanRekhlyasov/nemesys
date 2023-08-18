@@ -1,117 +1,131 @@
 <template>
-  <q-table :columns="columns" :rows="backOrderData" row-key="id" v-model:pagination="pagination" hide-pagination
-    class="q-py-none no-shadow CFDrawerBO">
-    <template v-slot:body-cell-boid="props">
-      <q-td :props="props">
-        <q-btn flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boId"
-          class="q-pa-none text-body1" />
-        <div></div>
-      </q-td>
-    </template>
-    <template v-slot:body-cell-select="props">
-      <q-td :props="props">
-        <q-checkbox v-model="props.row.selected" />
-      </q-td>
-    </template>
+<div class="table-container">
+  <q-table :columns="columns" :rows="backOrderData" row-key="id" v-model:pagination="pagination" hide-pagination :scroll-area="{ horizontal: true }"
+  class="q-py-none no-shadow CFDrawerBO">
+  <template v-slot:body-cell-boid="props">
+    <q-td :props="props">
+      <q-btn v-if="theme==='primary'" flat dense no-caps @click="openDrawer(props.row)" color="primary" :label="props.row.boId"
+        class="q-pa-none text-body1" />
+      <div v-else>{{ props.value }}</div>
+    </q-td>
+  </template>
+  <template v-slot:body-cell-select="props">
+    <q-td v-if="theme==='primary'" :props="props">
+      <q-checkbox v-model="props.row.selected" />
+    </q-td>
+    <q-td v-else>
+      {{allOrganizationBo? allOrganizationBo[props.row.organizationId].code:'' }}<br>
+      {{allOrganizationBo? allOrganizationBo[props.row.organizationId].name:'' }}
+    </q-td>
+  </template>
 
-    <template v-slot:header-cell-qualification="props">
-      <q-th :props="props">
-        {{ $t('client.backOrder.reqQualification') }}<br />
-        {{ $t('client.backOrder.experienceReq') }}<br />
-      </q-th>
-    </template>
+  <template v-slot:header-cell-qualification="props">
+    <q-th :props="props">
+      {{ $t('client.backOrder.reqQualification') }}<br />
+      {{ $t('client.backOrder.experienceReq') }}<br />
+    </q-th>
+  </template>
 
-    <template v-slot:header-cell-age="props">
-      <q-th :props="props">
-        {{ $t('client.backOrder.upperAgeLimit') }}<br />
-        {{ $t('client.backOrder.employmentStatus') }}<br />
-      </q-th>
-    </template>
+  <template v-if="theme==='accent'" v-slot:header-cell-select="props">
+    <q-th :props="props">
+      {{ $t('menu.admin.organizationsTable.organizationId') }}
+      <br>
+      {{ $t('menu.admin.organizationsTable.organizationName') }}
+    </q-th>
+  </template>
 
-    <template v-slot:header-cell-work="props">
-      <q-th :props="props">
-        {{ $t('client.backOrder.workingDays') }}<br />
-        {{ $t('client.backOrder.workingDaysWeek') }}<br />
-      </q-th>
-    </template>
+  <template v-slot:header-cell-age="props">
+    <q-th :props="props">
+      {{ $t('client.backOrder.upperAgeLimit') }}<br />
+      {{ $t('client.backOrder.employmentStatus') }}<br />
+    </q-th>
+  </template>
 
-    <template v-slot:header-cell-content="props">
-      <q-th :props="props">
-        {{ $t('client.backOrder.businessContent') }}<br />
-        {{ $t('client.backOrder.otherNotes') }}<br />
-      </q-th>
-    </template>
+  <template v-slot:header-cell-work="props">
+    <q-th :props="props">
+      {{ $t('client.backOrder.workingDays') }}<br />
+      {{ $t('client.backOrder.workingDaysWeek') }}<br />
+    </q-th>
+  </template>
 
-    <template v-slot:header-cell-workingTime="props">
-      <q-th :props="props">
-        {{ $t('client.backOrder.workingHoursEarly') }}<br />
-        {{ $t('client.backOrder.workingHoursDay') }}<br />
-        {{ $t('client.backOrder.workingHoursLate') }}<br />
-        {{ $t('client.backOrder.workingHoursNight') }}<br />
-      </q-th>
-    </template>
+  <template v-slot:header-cell-content="props">
+    <q-th :props="props">
+      {{ $t('client.backOrder.businessContent') }}<br />
+      {{ $t('client.backOrder.otherNotes') }}<br />
+    </q-th>
+  </template>
 
-    <template v-slot:body-cell-type="props">
-      <q-td :props="props">
-        {{ props.row.typeCase && $t('client.backOrder.' + props.row.typeCase) }}<br />
-      </q-td>
-    </template>
-    <template v-slot:body-cell-dateRegistration="props">
-      <q-td :props="props">
-        {{ (props.row.dateOfRegistration) }}<br />
-      </q-td>
-    </template>
+  <template v-slot:header-cell-workingTime="props">
+    <q-th :props="props">
+      {{ $t('client.backOrder.workingHoursEarly') }}<br />
+      {{ $t('client.backOrder.workingHoursDay') }}<br />
+      {{ $t('client.backOrder.workingHoursLate') }}<br />
+      {{ $t('client.backOrder.workingHoursNight') }}<br />
+    </q-th>
+  </template>
 
-    <template v-slot:body-cell-qualification="props">
-      <q-td :props="props">
-        {{ props.row.qualifications && props.row.qualifications.length ? props.row.qualifications.map(q =>
-          $t('applicant.qualification.' + q)).join(', ') : '' }}<br />
-        {{ props.row.experienceReq }}
-      </q-td>
-    </template>
+  <template v-slot:body-cell-type="props">
+    <q-td :props="props">
+      {{ props.row.typeCase && $t('client.backOrder.' + props.row.typeCase) }}<br />
+    </q-td>
+  </template>
+  <template v-slot:body-cell-dateRegistration="props">
+    <q-td :props="props">
+      {{ (props.row.dateOfRegistration) }}<br />
+    </q-td>
+  </template>
 
-    <template v-slot:body-cell-age="props">
-      <q-td :props="props">
-        {{ props.row.upperAgeLimit }}<br />
-        {{ props.row.employmentType && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-' }}<br />
-      </q-td>
-    </template>
+  <template v-slot:body-cell-qualification="props">
+    <q-td :props="props">
+      {{ props.row.qualifications && props.row.qualifications.length ? props.row.qualifications.map(q =>
+        $t('applicant.qualification.' + q)).join(', ') : '' }}<br />
+      {{ props.row.experienceReq }}
+    </q-td>
+  </template>
 
-    <template v-slot:body-cell-work="props">
-      <q-td :props="props">
-        {{ $t('backOrder.daysPerWeek.'+props.row.daysPerWeekList) }}<br />
-        {{ props.row.workingDays && Array.isArray(props.row.workingDays) ? props.row.workingDays.map(days => $t('weekDay.' + days)).join(', '):'-' }}
-      </q-td>
-    </template>
+  <template v-slot:body-cell-age="props">
+    <q-td :props="props">
+      {{ props.row.upperAgeLimit }}<br />
+      {{ props.row.employmentType && Array.isArray(props.row.employmentType) ? props.row.employmentType.map((row : string) => $t('client.backOrder.' + row)).join(', ') : '-' }}<br />
+    </q-td>
+  </template>
 
-    <template v-slot:body-cell-content="props">
-      <q-td :props="props">
-        {{ props.row.work_content }}<br />
-        {{ props.row.memo_house }}
-      </q-td>
-    </template>
+  <template v-slot:body-cell-work="props">
+    <q-td :props="props">
+      {{ $t('backOrder.daysPerWeek.'+props.row.daysPerWeekList) }}<br />
+      {{ props.row.workingDays && Array.isArray(props.row.workingDays) ? props.row.workingDays.map(days => $t('weekDay.' + days)).join(', '):'-' }}
+    </q-td>
+  </template>
 
-    <template v-slot:body-cell-workingTime="props">
-      <q-td :props="props">
-        {{ props.row.workingHoursEarly_min }} - {{ props.row.workingHoursEarly_max }}<br />
-        {{ props.row.workingHoursDay_min }} - {{ props.row.workingHoursDay_max }}<br />
-        {{ props.row.workingHoursLate_min }} - {{ props.row.workingHoursLate_max }}<br />
-        {{ props.row.workingHoursNight_min }} - {{ props.row.workingHoursNight_max }}
-      </q-td>
-    </template>
+  <template v-slot:body-cell-content="props">
+    <q-td :props="props">
+      {{ props.row.work_content }}<br />
+      {{ props.row.memo_house }}
+    </q-td>
+  </template>
 
-    <template v-slot:top>
-      <q-checkbox val="xs" class="q-pt-sm" color="blue" v-model="selected" />
-      <div class="q-ml-sm q-pt-sm">{{ $t('common.numberOfSelections') }}: {{ selectedCount() }}</div>
-      <q-btn class="no-shadow q-ml-md q-mt-sm q-py-none q-px-md " :label="$t('common.delete')"
-        :class="selectedCount() == 0 ? 'bg-secondary' : 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'"
-        :disable="selectedCount() == 0" @click="deleteSelected()" />
-      <q-btn color="primary" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
-        :label="$t('common.add')" @click="addNewBo" />
-    </template>
+  <template v-slot:body-cell-workingTime="props">
+    <q-td :props="props">
+      {{ props.row.workingHoursEarly_min }} - {{ props.row.workingHoursEarly_max }}<br />
+      {{ props.row.workingHoursDay_min }} - {{ props.row.workingHoursDay_max }}<br />
+      {{ props.row.workingHoursLate_min }} - {{ props.row.workingHoursLate_max }}<br />
+      {{ props.row.workingHoursNight_min }} - {{ props.row.workingHoursNight_max }}
+    </q-td>
+  </template>
 
-  </q-table>
-  <Pagination :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
+  <template v-slot:top v-if="theme==='primary'">
+    <q-checkbox val="xs" class="q-pt-sm" color="blue" v-model="selected" />
+    <div class="q-ml-sm q-pt-sm">{{ $t('common.numberOfSelections') }}: {{ selectedCount() }}</div>
+    <q-btn class="no-shadow q-ml-md q-mt-sm q-py-none q-px-md " :label="$t('common.delete')"
+      :class="selectedCount() == 0 ? 'bg-secondary' : 'bg-red'" :text-color="selectedCount() > 0 ? 'white' : 'black'"
+      :disable="selectedCount() == 0" @click="deleteSelected()" />
+    <q-btn color="primary" text-color="white" icon="mdi-plus-thick" class="no-shadow q-mt-sm q-px-md q-ml-md" dense
+      :label="$t('common.add')" @click="addNewBo" />
+  </template>
+
+</q-table>
+</div>
+  <Pagination :theme="theme" :rows="backOrderData" @updatePage="pagination.page = $event" v-model:pagination="pagination" />
   <q-drawer v-model="cteateBoDrawer" :width="1000" :breakpoint="500" side="right" overlay elevated bordered>
     <createBO :clientId="clientId" :original-office-id="originalOfficeId" :officeId="officeId" :type="typeBoCreate" @close-dialog="cteateBoDrawer = false" @fetch-bo="fetchBOData()"
     v-if="cteateBoDrawer"
@@ -137,7 +151,11 @@ import createBO from 'src/pages/user/BackOrder/components/create/createBO.vue';
 import { BackOrderColumns } from 'src/shared/constants/BackOrder.const';
 import Pagination from 'src/components/client-factory/PaginationView.vue';
 import { QTableProps } from 'quasar';
+import { useRoute } from 'vue-router';
+import { useOrganization } from 'src/stores/organization'
 
+const route = useRoute()
+const theme = route.meta.isAdmin ? 'accent' : 'primary'
 const { t } = useI18n({ useScope: 'global' });
 const props = defineProps<{ clientId: string; officeId?: string; originalOfficeId?: string }>();
 const selected = ref(false);
@@ -150,6 +168,9 @@ const cteateBoDrawer = ref(false);
 const columns = ref<QTableProps | Ref>(BackOrderColumns);
 const loading = ref(false);
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
+const organization = useOrganization();
+const organizations = ref({})
+const allOrganizationBo = ref()
 const $q = useQuasar();
 const pagination = ref({
   sortBy: 'desc',
@@ -170,11 +191,10 @@ const showDeleteDialog = async (ids: string[]) => {
     loading.value = true
     await backOrderStore.deleteBO(ids);
     loading.value = false
-    const data = await backOrderStore.getClientBackOrder(props.clientId)
+    const data = await backOrderStore.getCfBoOfCurrentOrganization(props.officeId?props.officeId:props.originalOfficeId,theme==='accent')
     backOrderData.value = data.map(row => {
       return { ...row, selected: false };
     });
-
   });
 };
 
@@ -189,7 +209,7 @@ const deleteSelected = () => {
 
 const fetchBOData = async () => {
   loading.value = true;
-  const data = await backOrderStore.getClientBackOrder(props.clientId);
+  const data = await backOrderStore.getCfBoOfCurrentOrganization(props.officeId?props.officeId:props.originalOfficeId,theme==='accent')
   backOrderData.value = data.map((row) => {
     return { ...row, selected: false, boid: row.boId };
   });
@@ -209,7 +229,10 @@ watch(() => selected.value, (newValue) => {
   }
 });
 onMounted(async () => {
-  fetchBOData();
+  await fetchBOData();
+  if(theme==='accent'){
+    await getOrganizationCodes();
+  }
 });
 
 const selectedCount = () => {
@@ -233,6 +256,20 @@ function addNewBo() {
     });
 }
 
+const getOrganizationCodes = async () => {
+  const allOrganizations =  await organization.getAllOrganizations();
+  allOrganizations.forEach(org=>{
+    organizations.value[org.id] = {
+      name:org.name,
+      code:org.code
+    }
+  })
+}
+
+watch(organizations.value,()=>{
+  allOrganizationBo.value = organizations.value;
+})
+
 </script>
 
 <style lang="scss">
@@ -240,6 +277,11 @@ function addNewBo() {
   tbody {
     background-color: #efeded;
   }
+}
+
+.table-container {
+  width:950px;
+  overflow-x: auto;
 }
 </style>
 
