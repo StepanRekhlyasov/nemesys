@@ -19,10 +19,9 @@ export const useLicense = defineStore('license', () => {
   const branchStore = useBranch()
 
   async function search<T extends LicensePath>(search: string, collectionPath: T) {
-    search=search.toLowerCase()
     let organizations = await organizationStore.getAllOrganizations(); // function to get organizations by Code
     organizations=organizations.filter((org)=>{
-      return org.name.toLowerCase().includes(search)
+      return org.name.includes(search)
     })
     const organizationIds = organizations.map((org) => {
       return org.id;
@@ -43,7 +42,7 @@ export const useLicense = defineStore('license', () => {
   async function searchByCode<T extends LicensePath>(search: string, collectionPath: T) {
     let organizations = await organizationStore.getAllOrganizations();
     organizations=organizations.filter((org)=>{
-      return org.code.toUpperCase().includes(search)
+      return org.code.includes(search)
     })
     const organizationIds = organizations.map((org) => {
       return org.id;
