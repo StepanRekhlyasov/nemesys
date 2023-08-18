@@ -482,7 +482,6 @@ const getFacilityTypeOptions = () => {
 };
 
 const filterStation = async (val: string, update) => {
-  debugger
   if(val === '' && data.value['route']?.includes('(') && data.value['route'].includes(')') && !data.value.nearestStation){
     stationData.value = await metadataStore.createStationOptions()
     data.value['route'] = ''
