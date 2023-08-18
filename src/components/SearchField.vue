@@ -1,6 +1,6 @@
 <template>
   <div v-if="isTitle" class="text-subtitle1">
-    {{ t('common.searchKeyword') }} / {{ t('common.searchCondition') }}
+    {{ t('inquiry.table.companyID') }} / {{ t('inquiry.table.companyName') }}  {{ t('common.search') }}
   </div>
   <q-card class="row q-pt-sm items-center justify-between">
     <q-card-section class="row q-px-none items-center">

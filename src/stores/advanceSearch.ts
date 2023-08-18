@@ -283,7 +283,7 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
 
     const getTeleAppointmentData = async (constraint: string[]) => {
         const currentDate = new Date();
-        currentDate.setMonth(currentDate.getMonth() - 3);
+        currentDate.setMonth(currentDate.getMonth() - 2);
         const prevDate = convertDate(currentDate.toString())
         const offices: string[] = []
         const teleAppointmentSnapshot = await getDocs(
@@ -294,24 +294,30 @@ export const useAdvanceSearch = defineStore('advanceSearch', () => {
                 where('organizationId','==',currentOrganizationId.value),
             )
         );
+        const notConnectedId:string[] = [];
         teleAppointmentSnapshot.docs.forEach((doc)=>{
             const item = doc.data()['officeId']
-            if (doc.data()['organizationId'] === currentOrganizationId.value) {
-                if (constraint.length === 3 || constraint.includes('exist')) {
+            if (constraint.length === 3 || constraint.includes('exist')) {
+                if (!offices.includes(item)) { offices.push(item) }
+            }
+            else if (constraint.length === 2) {
+                if (['connected', 'notConnected'].includes(doc.data()['result'])) {
                     if (!offices.includes(item)) { offices.push(item) }
                 }
-                else if (constraint.length === 2) {
-                    if (['connected', 'notConnected'].includes(doc.data()['result'])) {
-                        if (!offices.includes(item)) { offices.push(item) }
-                    }
+            }
+            else {
+                if (constraint.includes(doc.data()['result'])) {
+                    if (!offices.includes(item)) { offices.push(item) }
                 }
-                else {
-                    if (constraint.includes(doc.data()['result'])) {
-                        if (!offices.includes(item)) { offices.push(item) }
-                    }
+                if(doc.data()['result']==='connected'){
+                    if (!notConnectedId.includes(item)) { notConnectedId.push(item) }
                 }
             }
         })
+        if(constraint.length===1 && constraint.includes('notConnected')){
+            const office = offices.filter(id=>{if(!notConnectedId.includes(id)){return id}})
+            return office;
+        }
         return offices;
     };
     const getCFsId = async () => {

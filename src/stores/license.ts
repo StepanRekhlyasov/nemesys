@@ -43,7 +43,7 @@ export const useLicense = defineStore('license', () => {
   async function searchByCode<T extends LicensePath>(search: string, collectionPath: T) {
     let organizations = await organizationStore.getAllOrganizations();
     organizations=organizations.filter((org)=>{
-      return org.code.includes(search)
+      return org.code.toUpperCase().includes(search)
     })
     const organizationIds = organizations.map((org) => {
       return org.id;

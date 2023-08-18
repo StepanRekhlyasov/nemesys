@@ -8,7 +8,7 @@ import { ImportLog } from 'src/shared/model/ImportLog';
 import { ReflectLog } from 'src/shared/model/ReflectLog';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
-import { ConstraintsType } from 'src/shared/utils/utils';
+import { ConstraintsType, myDateFormat } from 'src/shared/utils/utils';
 
 export const useClientFactory = defineStore('client-factory', () => {
 
@@ -26,14 +26,15 @@ export const useClientFactory = defineStore('client-factory', () => {
     //  methdods
     const getLastReflectLog = async (clientId: string, clientFactoryId: string) => {
         let reflectLog: ReflectLog | undefined
-
+        if(!clientId || !clientFactoryId){
+          return
+        }
         try {
             const lastReflectLogsQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'reflectLog'),
                 orderBy('executionDate', 'desc'),
                 limit(1)
             ))
-
             lastReflectLogsQuerySnapshot.forEach((doc) => {
 
 
@@ -157,7 +158,9 @@ export const useClientFactory = defineStore('client-factory', () => {
 
     const getLastImportLog = async (clientId: string, clientFactoryId: string) => {
         let importLog: ImportLog | undefined
-
+        if(!clientId || !clientFactoryId){
+          return
+        }
         try {
             const lastImportLogQuerySnapshot = await getDocs(query(
                 collection(db, 'clients', clientId, 'client-factory', clientFactoryId, 'importLog'),
@@ -238,10 +241,13 @@ export const useClientFactory = defineStore('client-factory', () => {
                         const clientFactory = {
                             ...clientFactoryData,
                             id: doc.id,
-                            updated_at: date.formatDate(clientFactoryData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                            created_at: date.formatDate(clientFactoryData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                             client } as ClientFactory;
-
+                        if(clientFactoryData?.updated_at instanceof Timestamp){
+                          clientFactory.updated_at = date.formatDate(clientFactoryData.updated_at.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                        }
+                        if(clientFactoryData?.created_at instanceof Timestamp){
+                          clientFactory.created_at = date.formatDate(clientFactoryData.created_at.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                        }
                         const reflectRes = await getLastReflectLog(clientFactory.clientID, clientFactory.id);
 
                         if(reflectRes) {
@@ -267,19 +273,28 @@ export const useClientFactory = defineStore('client-factory', () => {
     };
 
     const getClientFactoryList = async (client_id: string) => {
-        const docSnap =  await getDocs(query(
-            collection(db, 'clients/'+client_id+'/client-factory'),
-            orderBy('name')
-        ))
-        return docSnap.docs.map((doc) => {
-            return {
-                ...doc.data(),
-                id: doc.id,
-                updated_at: date.formatDate(doc.data()?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                created_at: date.formatDate(doc.data()?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
-            } as ClientFactory;
-        })
-    }
+      const docSnap = await getDocs(query(
+          collection(db, `clients/${client_id}/client-factory`),
+          orderBy('name')
+      ));
+
+      const formattedData = docSnap.docs.map((doc) => {
+          const data = doc.data();
+          const created_at = (data.created_at instanceof Timestamp) ? data.created_at.toDate() : null;
+          const updated_at = (data.updated_at instanceof Timestamp) ? data.updated_at.toDate() : null;
+
+          return {
+              ...data,
+              id: doc.id,
+              updated_at: updated_at ? date.formatDate(updated_at, 'YYYY-MM-DD HH:mm:ss') : null,
+              created_at: created_at ? date.formatDate(created_at, 'YYYY-MM-DD HH:mm:ss') : null
+          } as ClientFactory;
+      });
+
+      return formattedData;
+  };
+
+
 
     const addClientFactory = async (clientFactory: ClientFactory) => {
         try {
@@ -304,7 +319,9 @@ export const useClientFactory = defineStore('client-factory', () => {
 
           if(typeof createdAt === 'object'){
             if('seconds' in createdAt  && 'nanoseconds' in createdAt){
-                createdAt = new Timestamp(createdAt.seconds as number, createdAt.nanoseconds as number).toDate()
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
+                createdAt = new Timestamp(createdAt?.seconds as unknown as number, createdAt?.nanoseconds as unknown as number).toDate()
             }
           }
 
@@ -313,7 +330,7 @@ export const useClientFactory = defineStore('client-factory', () => {
               delete modifiedClientFactory[key]
             }
           }
-            
+
             const res = await addDoc(collection(db, 'clients', modifiedClientFactory.clientID, 'client-factory', modifiedClientFactory.id, 'modifiedCF'), {
                 ...modifiedClientFactory,
                 organizationId: organizationId,
@@ -334,7 +351,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF: ModifiedCF) => {
+    const updateModifiedCF = async ( clientFactoryId: string, modifiedCF:ModifiedCF) => {
         for(const [key, value] of Object.entries(modifiedCF)){
           if(!key || typeof value === undefined){
             delete modifiedCF[key]
@@ -357,7 +374,6 @@ export const useClientFactory = defineStore('client-factory', () => {
             console.log(e)
         }
     }
-
     const getModifiedCF = async (organizationId: string, originalClientFactory: ClientFactory) => {
         let modifiedCF: ModifiedCF | undefined
 
@@ -374,9 +390,13 @@ export const useClientFactory = defineStore('client-factory', () => {
                     modifiedCF = {
                         ...docData,
                         id: doc.id,
-                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                     } as ModifiedCF
+                    if(docData?.updated_at instanceof Timestamp){
+                      modifiedCF.updated_at = date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                    }
+                    if(docData?.created_at instanceof Timestamp){
+                      modifiedCF.created_at = date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
+                    }
                 })
             }
         } catch(e) {
@@ -427,27 +447,22 @@ export const useClientFactory = defineStore('client-factory', () => {
         }
     }
 
-    const updateClientFactory = async(updatedClientFactory: ClientFactory) => {
-
-        try {
-            for (const [key, value] of Object.entries(updatedClientFactory)){
-              if(typeof value === 'undefined'){
-                delete updatedClientFactory[key]
-              }
-            }
-            await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
-                ...updatedClientFactory,
-                created_at: Timestamp.fromDate(new Date(updatedClientFactory.created_at)),
-                updated_at: serverTimestamp()
-            });
-
-
-        } catch(e) {
-            Alert.warning(e)
-
-            console.log(e)
+    const updateClientFactory = async (updatedClientFactory) => {
+      for(const [key, value] of Object.entries(updatedClientFactory)){
+        if(!key || typeof value === undefined){
+          delete updatedClientFactory[key]
         }
-    }
+      }
+      try {
+          await setDoc(doc(db, 'clients', updatedClientFactory.clientID, 'client-factory', updatedClientFactory.id), {
+              ...updatedClientFactory,
+              updated_at: serverTimestamp()
+          });
+      } catch (e) {
+          Alert.warning(e);
+          console.log(e);
+      }
+  };
 
     const getHeadClientFactory = async(clientId: string) => {
         let headClientFactory: ClientFactory | undefined
@@ -468,8 +483,8 @@ export const useClientFactory = defineStore('client-factory', () => {
                 headClientFactory = {
                     ...docData,
                         id: doc.id,
-                        updated_at: date.formatDate(docData?.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
-                        created_at: date.formatDate(docData?.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
+                        updated_at: myDateFormat(docData?.updated_at, 'YYYY-MM-DD HH:mm:ss'),
+                        created_at: myDateFormat(docData?.created_at, 'YYYY-MM-DD HH:mm:ss'),
                 } as ClientFactory
             })
         } catch(e) {
@@ -482,7 +497,7 @@ export const useClientFactory = defineStore('client-factory', () => {
         const array:string[]=[]
         boSnapshot.docs.forEach(
             (doc) => {
-                if ((doc.data()['employmentType'] 
+                if ((doc.data()['employmentType']
                 && (doc.data()['employmentType'].includes(employmentType1)
                 || (employmentType2!=='' && doc.data()['employmentType'].includes(employmentType2))))) {
                     array.push(doc.id)
@@ -490,7 +505,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             }
         )
         let count = 0;
-        
+
         array.forEach((id) => {
             fixSnapshot.docs.forEach(
                 (doc) => {
@@ -551,7 +566,7 @@ export const useClientFactory = defineStore('client-factory', () => {
             } as ClientFactory
         }))
     }
-    
+
     async function getModifiedCfWithId(office_id: string) {
         const querySnapshot = await getDocs(
             query(
@@ -596,6 +611,6 @@ export const useClientFactory = defineStore('client-factory', () => {
         getModifiedCF,
         updateModifiedCF,
         getModifiedCFs,
-        setIgnoredStatus
+        setIgnoredStatus,
     }
 })

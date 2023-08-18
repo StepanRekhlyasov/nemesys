@@ -34,31 +34,50 @@ export const useBranch = defineStore('branch', () => {
       if (search?.enablity === branchEnablityFilter.Enabled) constraints.push(where('working', '==', true));
       else if (search?.enablity === branchEnablityFilter.Disabled) constraints.push(where('working', '==', false));
     }
-
     if (search && search?.queryText) {
-      constraints.push(startAt(search?.queryText || ''), endAt(search?.queryText + '\uf8ff'))
+      for (let i = 0; i < businessesIds.length; i++) {
+          const businessId = businessesIds[i];
+          const branchesQuery = query(
+              collection(db, `/organization/${organization_id}/businesses/${businessId}/branches`),
+              ...constraints
+          );
+          const branches = await getDocs(branchesQuery);
+
+          branches.forEach((branch) => {
+              const branchData = branch.data();
+              if (branchData.name.includes(search.queryText)) {
+                  if (!Array.isArray(branchesObj[businessId])) {
+                      branchesObj[businessId] = [];
+                  }
+                  branchData.created_at = toDateObject(branchData.created_at);
+                  branchData.updated_at = toDateObject(branchData.updated_at);
+                  branchData.deletedAt = toDateObject(branchData.deletedAt);
+                  branchesObj[businessId].push(branchData as Branch);
+              }
+          });
+      }
     }
+    else{
+      for (let i = 0; i < businessesIds.length; i++) {
+        const businessId = businessesIds[i]
+        const branchesQuery = query(
+          collection(db, `/organization/${organization_id}/businesses/${businessId}/branches`),
+          ...constraints
+        )
+        const branches = await getDocs(branchesQuery)
 
-    for (let i = 0; i < businessesIds.length; i++) {
-      const businessId = businessesIds[i]
-      const branchesQuery = query(
-        collection(db, `/organization/${organization_id}/businesses/${businessId}/branches`),
-        ...constraints
-      )
-      const branches = await getDocs(branchesQuery)
-
-      branches.forEach((branch) => {
-        if (!Array.isArray(branchesObj[businessId])) {
-          branchesObj[businessId] = []
-        }
-        const branchToPush = branch.data()
-        branchToPush.created_at = toDateObject(branchToPush.created_at)
-        branchToPush.updated_at = toDateObject(branchToPush.updated_at)
-        branchToPush.deletedAt = toDateObject(branchToPush.deletedAt)
-        branchesObj[businessId].push(branchToPush as Branch)
-      })
+        branches.forEach((branch) => {
+          if (!Array.isArray(branchesObj[businessId])) {
+            branchesObj[businessId] = []
+          }
+          const branchToPush = branch.data()
+          branchToPush.created_at = toDateObject(branchToPush.created_at)
+          branchToPush.updated_at = toDateObject(branchToPush.updated_at)
+          branchToPush.deletedAt = toDateObject(branchToPush.deletedAt)
+          branchesObj[businessId].push(branchToPush as Branch)
+        })
+      }
     }
-
     return branchesObj
   }
 
