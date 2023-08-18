@@ -1,4 +1,4 @@
-<template>  
+<template>
   <div :class="['text-blue text-weight-regular', labelClass]">
     {{ label }} <span v-if="required" style="color: red">*</span>
   </div>
@@ -10,7 +10,7 @@
       </slot>
     </template>
   </div>
-</template> 
+</template>
 
 <script lang="ts" setup>
 import hiddenText from 'src/components/hiddingText.component.vue';
