@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit, DocumentReference } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -634,5 +634,28 @@ export const useBackOrder = defineStore('backOrder', () => {
     return counted.data().count;
   };
 
-  return { getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
+  async function saveSearch(data: DocumentData) {
+    let docRef: DocumentReference<DocumentData>;
+    if (!data['id']) {
+      data['organizationId'] = organization.currentOrganizationId
+      data['created_at'] = serverTimestamp();
+      data['updated_at'] = serverTimestamp();
+      data['deleted'] = false;
+      docRef = doc(collection(db, 'BOSavedSearch'));
+      data['id'] = docRef.id;
+      await setDoc(docRef, data);
+    } else {
+      docRef = doc(db, 'BOSavedSearch', data['id']);
+      data['updated_at'] = serverTimestamp();
+      await updateDoc(docRef, data);
+    }
+    return true
+  }
+  async function getSaveSearch() {
+    const collectionRef = query(collection(db, 'BOSavedSearch'), where('organizationId', '==', organization.currentOrganizationId));
+    const querySnapshot = await getDocs(collectionRef);
+    return querySnapshot.docs.map(doc => doc.data());
+  }
+
+  return { getSaveSearch, saveSearch, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })

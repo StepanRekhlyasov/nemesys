@@ -36,6 +36,8 @@
                 size="sm"
                 outline
                 class="q-ml-sm"
+                @click="saveSearchConditions"
+                :disable="isSaving"
               />
             </div>
           </div>
@@ -172,7 +174,8 @@ import MapSearch from './MapSearch.vue';
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from '../../../Applicant/components/search/components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
-
+import { useBackOrder } from 'src/stores/backOrder'
+import { checkValidity } from 'src/pages/user/BackOrder/consts/index';
 import {
   employmentTypeOption,
   qualificationOption,
@@ -182,13 +185,14 @@ import {
   occupationList,
 } from 'src/shared/constants/Applicant.const';
 
+const isSaving = ref<boolean>(false);
 const searchDataSample = {
   employmenttype: [],
   qualifications: [],
   transactiontype: [],
   typecase: [],
 };
-
+const BackOrderStore = useBackOrder()
 const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
 const expanded = ref(false);
 const drawerRight = ref(false);
@@ -224,6 +228,31 @@ const cancel = () => {
   searchData.value = JSON.parse(JSON.stringify(searchDataSample));
   emit('loadSearchStaff', searchData.value);
 };
+
+const saveSearchConditions = async () => {
+  isSaving.value = true;
+  let valid = true;
+  try {
+    checkValidity(searchData.value)
+  }
+  catch (error) {
+    valid = false
+    Alert.warning(error)
+  }
+  if (valid) {
+    if (!searchData.value['keyword']) searchData.value['keyword'] = null;
+    if (!searchData.value['ageMin']) searchData.value['ageMin'] = null;
+    if (!searchData.value['ageMax']) searchData.value['ageMax'] = null;
+    if (!searchData.value['boid']) searchData.value['boid'] = null;
+    if (!searchData.value['customerRepresentative']) searchData.value['customerRepresentative'] = null;
+    if (!searchData.value['registrationDateMax']) searchData.value['registrationDateMax'] = null;
+    if (!searchData.value['registrationDateMin']) searchData.value['registrationDateMin'] = null;
+    await BackOrderStore.saveSearch(searchData.value)
+  }
+  searchData.value = JSON.parse(JSON.stringify(searchDataSample));
+  isSaving.value = false;
+}
+
 </script>
 
 <style lang="scss">
