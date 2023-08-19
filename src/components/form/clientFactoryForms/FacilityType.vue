@@ -6,7 +6,8 @@ const { t } = useI18n({ useScope: 'global' });
 
 const props = withDefaults(defineProps<{
     modelValue: Array<string>
-    industryName?: string 
+    industryName?: string
+    clientName?: string
     theme?: string
     isLabel?: boolean
 }>(), {
@@ -43,6 +44,15 @@ watch(() => [props.industryName], async () => {
       }
     isLoading.value = false
   }
+  if(!props.industryName){
+    facilityList.value = []
+  }
+}, {immediate: true})
+
+watch(() => [props.clientName], async () => {
+  if(!props.clientName){
+    facilityList.value = []
+  }
 }, {immediate: true})
 </script>
 
@@ -68,7 +78,7 @@ watch(() => [props.industryName], async () => {
                       v-if="!facilityList.includes(option)"
                       size="xs"
                       :model-value="localType.includes(option)"
-                      :val="option" 
+                      :val="option"
                       :label="option"
                       :color="`${theme}`"
                       :key="option"
