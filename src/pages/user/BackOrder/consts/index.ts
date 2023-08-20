@@ -2,8 +2,10 @@ import { ClientFactoryTableColumn } from 'src/components/client-factory/types'
 import { computed, ComputedRef, ref } from 'vue';
 import { i18n } from 'boot/i18n';
 import { DocumentData } from 'firebase/firestore';
+import { useBackOrder } from 'src/stores/backOrder';
 
 const { t } = i18n.global
+const BackOrderStore = useBackOrder()
 const searchDataSample = {
   employmenttype: [],
   qualifications: [],
@@ -48,5 +50,8 @@ else if(data['boid']){
   if (!(/^\d+$/.test(data['boid'])) || Number(data['boid'])===0) {
     throw new Error('BOID must be positive integer');
   }
+}
+else if(!BackOrderStore.checkData(data)){
+  throw new Error('Seach conditions are empty');
 }
 }
