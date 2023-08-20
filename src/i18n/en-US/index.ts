@@ -1383,7 +1383,13 @@ export default {
       three: '3 days a week',
       four: '4 days a week',
       five: '5 days a week'
-    }
+    },
+    saveSearch: {
+      minLessMaxAge : 'Min Age must be lesser than Max Age',
+      minLessMaxDate : 'Registration Date min must be lesser than Registration Date max',
+      boidFormate : 'BOID must be positive integer',
+      searchEmpty : 'Seach conditions are empty',
+    },
   },
   prefectures: {
     hokkaido: 'Hokkaido',
