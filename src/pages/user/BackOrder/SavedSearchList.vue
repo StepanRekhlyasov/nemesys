@@ -1,26 +1,24 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-// import { tableColumnsSavedCriteriaList, searchData, checkValidity } from 'src/pages/user/BackOrder/consts/index';
-import { tableColumnsSavedCriteriaList } from 'src/pages/user/BackOrder/consts/index';
+import { tableColumnsSavedCriteriaList, searchData, checkValidity } from 'src/pages/user/BackOrder/consts/index';
 import { getFirestore, orderBy, doc, deleteDoc, DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
 import { useBackOrder } from 'src/stores/backOrder'
-// import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
+import searchEditDrawer from 'src/pages/user/BackOrder/components/searchEditDrawer.vue'
 import { useRouter } from 'vue-router';
 import { updateSharedVariable } from 'src/pages/user/BackOrder/consts/index';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const router = useRouter()
-// const saveSearch = useApplicantSaveSearch()
 const BackOrderStore = useBackOrder()
 const tableData = ref<DocumentData>([])
-// const rowForEdit = ref<DocumentData>({})
-// const isSaving = ref<boolean>(false)
+const rowForEdit = ref<DocumentData>({})
+const isSaving = ref<boolean>(false)
 const { t } = useI18n({ useScope: 'global' });
 const db = getFirestore();
-// const drawerRight = ref<boolean>(false);
+const drawerRight = ref<boolean>(false);
 const loading = ref<boolean>(false)
 const searchKeyword = ref<string | null>(null);
 const pagination = ref({
@@ -59,33 +57,33 @@ const dltSearch = async (id) => {
   loadPagination.value = loadPagination.value == 0 ? 1 : 0
 };
 
-// const callRow = (row: DocumentData) => {
-//   drawerRight.value = true;
-//   rowForEdit.value = row
-// };
+const callRow = (row: DocumentData) => {
+  drawerRight.value = true;
+  rowForEdit.value = row
+};
 
 const searchApplicants = (row: DocumentData) => {
   updateSharedVariable(row)
   router.push('/backOrder/search')
 }
-// const save = async () => {
-//   isSaving.value = true;
-//   let edit_data = searchData.value
-//   let valid = true;
-//   try {
-//     checkValidity(edit_data)
-//   }
-//   catch (error) {
-//     valid = false
-//     Alert.warning(error)
-//   }
-//   if (valid) {
-//     await saveSearch.saveSearch(searchData.value);
-//     getSearchData();
-//     drawerRight.value = false;
-//   }
-//   isSaving.value = false;
-// }
+const save = async () => {
+  isSaving.value = true;
+  let edit_data = searchData.value
+  let valid = true;
+  try {
+    checkValidity(edit_data)
+  }
+  catch (error) {
+    valid = false
+    Alert.warning(error)
+  }
+  if (valid) {
+    await BackOrderStore.saveSearch(searchData.value)
+    getSearchData();
+    drawerRight.value = false;
+  }
+  isSaving.value = false;
+}
 
 const filterData = () => {
   if (searchKeyword.value) {
@@ -134,7 +132,7 @@ const clearSearch = () => {
           <template v-slot:body-cell-condition="props">
             <q-td class="no-wrap">
               <div class="row">
-                <!-- <q-icon size="sm" color="primary" class="flex table__edit-btn" name="edit" @click="callRow(props.row)" /> -->
+                <q-icon size="sm" color="primary" class="flex table__edit-btn" name="edit" @click="callRow(props.row)" />
                 <q-icon size="sm" class="table__search-btn" name="search" @click="searchApplicants(props.row)" />
                 <q-icon size="1.5rem" color="primary" class="table__delete-btn" name="delete_outline"
                 @click="dltSearch(props.row.id)" />
@@ -185,7 +183,7 @@ const clearSearch = () => {
         </div>
       </q-card-section>
     </q-card>
-    <!-- <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
+    <q-drawer v-model="drawerRight" show class="bg-grey-3" :width="1000" :breakpoint="500" side="right" overlay elevated
       bordered>
       <q-card flat class="cover">
         <q-card-section class="text-white bg-primary rounded-borders">
@@ -199,7 +197,7 @@ const clearSearch = () => {
         <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save"
           color="primary q-ml-sm" />
       </q-card>
-    </q-drawer> -->
+    </q-drawer>
   </div>
 </template>
 

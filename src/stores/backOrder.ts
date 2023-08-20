@@ -657,5 +657,13 @@ export const useBackOrder = defineStore('backOrder', () => {
     return querySnapshot.docs.map(doc => doc.data());
   }
 
-  return { getSaveSearch, saveSearch, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
+  const checkData = (data:DocumentData)=>{
+    if(data.keyword || data.customerRepresentative || data.ageMin || data.ageMax ||
+    data.registrationDateMax || data.registrationDateMin || data.boid || data.employmenttype.length || data.transactiontype.length || data.typecase.length || data.qualifications.length ){
+      return true;
+    }
+    return false;
+  }
+
+  return { checkData, getSaveSearch, saveSearch, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })

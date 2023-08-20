@@ -169,7 +169,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import MapSearch from './MapSearch.vue';
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from '../../../Applicant/components/search/components/DoubleNumberInput.vue';
@@ -184,7 +184,6 @@ import {
   applicantClassification,
   occupationList,
 } from 'src/shared/constants/Applicant.const';
-import { DocumentData } from 'firebase/firestore';
 
 
 const isSaving = ref<boolean>(false);
@@ -218,19 +217,12 @@ const updateMap = (mapData) => {
 };
 
 onMounted(()=>{
-  if(checkData(sharedData.value)){
+  if(BackOrderStore.checkData(sharedData.value)){
     expanded.value = true;
     searchData.value = sharedData.value;
   }
 })
 
-const checkData = (data:DocumentData)=>{
-  if(data.keyword || data.customerRepresentative || data.ageMin || data.ageMax ||
-  data.registrationDateMax || data.registrationDateMin || data.boid || data.employmenttype.length || data.transactiontype.length || data.typecase.length || data.qualifications.length ){
-    return true;
-  }
-  return false;
-}
 
 const searchStaff = () => {
   emit('isLoading', true);
