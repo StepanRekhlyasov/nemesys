@@ -90,7 +90,7 @@ onMounted(async () => {
               <DoubleNumberInput
                 :min-model-value="searchData['ageMin']"
                 :max-model-value="searchData['ageMax']"
-                unit-key="common.year"
+                unit-key="common.age"
                 @on-min-value-update="(v) => (searchData['ageMin'] = v)"
                 @on-max-value-update="(v) => (searchData['ageMax'] = v)"
               />
