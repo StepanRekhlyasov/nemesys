@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, defineProps, withDefaults } from 'vue';
+import { ref, computed, watch, defineProps, withDefaults, onMounted } from 'vue';
 import {ActionsType} from './types'
 import { GoogleMap, Marker as Markers, Circle as Circles, CustomMarker } from 'vue3-google-map';
 import { api } from 'src/boot/axios';
@@ -14,31 +14,34 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import { useRouter} from 'vue-router';
 import { useAdvanceSearch } from 'src/stores/advanceSearch';
 import { useAdvanceSearchAdmin } from 'src/stores/advanceSearchAdmin';
+import { useBackOrder } from 'src/stores/backOrder';
+
 const router = useRouter()
-const props = withDefaults(defineProps<{ 
-  actionsType?: ActionsType, 
-  theme: string, 
+const props = withDefaults(defineProps<{
+  actionsType?: ActionsType,
+  theme: string,
   from:string
 }>(), {
   actionsType:ActionsType.CLIENT,
   theme:'primary'
 })
-const emit = defineEmits<{ 
-  (e: 'openCFDrawer', ClientFactoryData: ClientFactory), 
-  (e: 'hideDrawer'), 
+const emit = defineEmits<{
+  (e: 'openCFDrawer', ClientFactoryData: ClientFactory),
+  (e: 'hideDrawer'),
   (e: 'openCSDrawer'),
-  (e: 'resetKey'), 
+  (e: 'resetKey'),
 }>()
 const advanceSearch = props.actionsType === ActionsType.CLIENT?useAdvanceSearch():useAdvanceSearchAdmin();
 const center = ref<{ lat: number, lng: number }>({ lat: 36.0835255, lng: 140.0 });
 const officeData = ref<Client[]>([]);
 const isLoadingProgress = ref(false)
-
+const backOrderStore = useBackOrder()
 const clientFactoryStore = useClientFactory()
 const { clientFactories } = storeToRefs(clientFactoryStore)
 const clientStore = useClient()
 const { clients } = storeToRefs(clientStore)
 
+const locationLoading = ref<boolean>(false)
 const clientFactoriesList = ref<ClientFactory[]>([]);
 const radiusKm = ref<number>(10);
 const inputRadiusKm = ref<number>(10);
@@ -55,6 +58,12 @@ const circleOption = computed(() => {
     fillOpacity: 0.05,
   };
 });
+
+onMounted(async()=>{
+  locationLoading.value = true;
+  searchInput.value = await backOrderStore.getAddresses(center.value.lat,center.value.lng)
+  locationLoading.value = false;
+})
 
 const markerDrag = (event) => {
   center.value = { lat: event.latLng.lat(), lng: event.latLng.lng() }
@@ -214,7 +223,7 @@ const resetConditionData = () => {
       <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <div class='row flex q-pl-md'>
-      <q-input type='text' v-model="searchInput" style="width:30vw" outlined dense :color="props.theme">
+      <q-input type='text' v-model="searchInput" style="width:30vw" outlined dense :color="props.theme" :loading="locationLoading">
         <template v-slot:prepend>
           <q-btn flat icon='place' :color="props.theme"></q-btn>
         </template>

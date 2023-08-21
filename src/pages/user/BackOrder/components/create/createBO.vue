@@ -29,11 +29,11 @@
         <!-- Main Information -->
         <q-card-section>
           <q-select v-model="data.client_id" @update:model-value="data['office_id'] = undefined" :loading="loading"
-            :options="applicantStore.state.clientList" option-value="id" option-label="name" :rules="[creationRule]"
-            hide-bottom-space emit-value map-options :label="$t('applicant.list.fixEmployment.client')" />
+            :options="!clientFilter?applicantStore.state.clientList:filteredClient" option-value="id" option-label="name" :rules="[creationRule]"
+            hide-bottom-space emit-value map-options :label="$t('applicant.list.fixEmployment.client')" use-input input-debounce="0" @filter="filterClient"/>
           <q-select v-model="data['office_id']" :loading="loading" emit-value map-options option-value="id"
-            option-label="name" :rules="[creationRule]" hide-bottom-space :options="clientFactoryList"
-            :disable="!data['client_id']" :label="$t('applicant.list.fixEmployment.office')" />
+            option-label="name" :rules="[creationRule]" hide-bottom-space :options="!clientFactoryFilter?clientFactoryList:filteredClientFactory"
+            :disable="!data['client_id']" :label="$t('applicant.list.fixEmployment.office')" use-input input-debounce="0" @filter="filterClientFactory"/>
           <q-select v-model="data.industry" :loading="loading" option-value="id"
             option-label="name" :rules="[creationRule]" hide-bottom-space :options="industryList"
             :disable="!data['office_id']" :label="$t('clientFactory.drawer.details.industry')" />
@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, BackOrderStatus, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
+import { BackOrderModel, BackOrderStatus, Client, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
@@ -142,6 +142,10 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n({ useScope: 'global' });
 const emits = defineEmits(['closeDialog','fetchBo']);
+const clientFilter = ref<boolean>(false)
+const clientFactoryFilter = ref<boolean>(false)
+const filteredClient = ref<Client[]>([])
+const filteredClientFactory = ref<ClientFactory[]>([])
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
@@ -326,6 +330,36 @@ watch(() => [data.value.client_id, data.value.office_id], async () => {
     }
   });
 }, { deep: true, immediate: true })
+
+const filterClient = async (val: string, update) => {
+  if (val === '') {
+    update(() => {
+      filteredClient.value = applicantStore.state.clientList;
+    })
+    clientFilter.value = false;
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clientFilter.value = true;
+    filteredClient.value = applicantStore.state.clientList.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  })
+};
+
+const filterClientFactory = async (val: string, update) => {
+  if (val === '') {
+    update(() => {
+      filteredClientFactory.value =  clientFactoryList.value
+    })
+    clientFactoryFilter.value = false
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clientFactoryFilter.value = true;
+    filteredClientFactory.value = clientFactoryList.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  })
+};
 
 </script>
 
