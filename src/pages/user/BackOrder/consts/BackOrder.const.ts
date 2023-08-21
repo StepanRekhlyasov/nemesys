@@ -5,9 +5,8 @@ export const radius = ref<number>(0);
 
 export const drawerValue = ref<boolean>(false);
 export const mapDrawerValue = ref<boolean>(false);
-
+const { t } = i18n.global;
 export const BackOrderColumns = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       name: 'BOID',
@@ -93,7 +92,6 @@ export const BackOrderColumns = computed(() => {
 });
 
 export const BackOrderStaff = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       name: 'name',
@@ -129,7 +127,6 @@ export const BackOrderStaff = computed(() => {
 });
 
 export const BackOrderStaffApplicant = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       name: 'boId',
@@ -182,7 +179,6 @@ export const BackOrderStaffApplicant = computed(() => {
 });
 
 export const moreHalfYearExpOption = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       label: t('client.backOrder.necessary'),
@@ -196,7 +192,6 @@ export const moreHalfYearExpOption = computed(() => {
 });
 
 export const employmentTypeOption = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       label: t('client.backOrder.fullTime'),
@@ -218,7 +213,6 @@ export const employmentTypeOption = computed(() => {
 });
 
 export const occupationList = computed(() => {
-  const { t } = i18n.global;
   return [
     {
   label: t('applicant.add.nurse'),
@@ -232,7 +226,6 @@ export const occupationList = computed(() => {
 })
 
 export const qualificationOption = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       label: t('applicant.qualification.registeredNurse'),
@@ -258,7 +251,6 @@ export const qualificationOption = computed(() => {
 });
 
 export const boClassification = computed(() => {
-  const { t } = i18n.global;
   return [{
     label: t('applicant.list.info.classification.introduction'),
     value: 'introduction'
