@@ -13,7 +13,6 @@ import {useClient} from 'src/stores/client'
 import { Client } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore'
-import { Industry } from 'src/shared/model/Industry.model';
 
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
@@ -34,11 +33,10 @@ const faxDataDataSample = {
 };
 const organization = useOrganization()
 const clientStore = useClient()
-const facilityTypeOptions = ref([]);
 const clients:Ref<Client[]> = ref([]);
 const faxData = ref(JSON.parse(JSON.stringify(faxDataDataSample)));
 const faxFile = ref<FileList | []>([]);
-const applicantList = ref(<{ value: string; label: string , industry?:Industry}[]>[]);
+const applicantList = ref(<{ value: string; label: string , ngFaciliTyType , ngClient}[]>[]);
 const applicantStore = useApplicant();
 const loading = ref(false);
 const faxForm = ref();
@@ -49,7 +47,34 @@ const emit = defineEmits<{
 const hideDrawer = () => {
   emit('hideDrawer');
 };
+const getFacilityOptions = computed(() => {
+      const uniqueTitles = new Set();
 
+      for (const item of applicantList.value) {
+        if (item.ngFaciliTyType && typeof item.ngFaciliTyType === 'object') {
+          for (const industryKey in item.ngFaciliTyType) {
+            if (item.ngFaciliTyType[industryKey] && item.ngFaciliTyType[industryKey].name) {
+              uniqueTitles.add(item.ngFaciliTyType[industryKey].name);
+            }
+          }
+        }
+      }
+      return Array.from(uniqueTitles);
+    });
+    const getNgClientOptions = computed(() => {
+      const ngClientTypes = new Set();
+
+      for (const item of applicantList.value) {
+        if (item.ngClient && typeof item.ngClient === 'object') {
+          for (const industryKey in item.ngClient) {
+            if (item.ngClient[industryKey] && item.ngClient[industryKey].name) {
+              ngClientTypes.add(item.ngClient[industryKey].name);
+            }
+          }
+        }
+      }
+      return Array.from(ngClientTypes);
+    });
 watch(
   () => (applicantStore.state.applicantList),
   (newVal) => {
@@ -59,26 +84,10 @@ watch(
       if (newVal[i]['dob']) {
         label += ' (' + myDateFormat(newVal[i]['dob']) + ')'
       }
-      applicantList.value.push({ label: label, value: newVal[i]['id'] , industry: newVal[i]['industry'] })
+      applicantList.value.push({ label: label, value: newVal[i]['id'] , ngFaciliTyType: newVal[i]['ngFacilityType'] , ngClient: newVal[i]['ngClient'] })
     }
   },
 )
-watch(
-  () => faxData.value['applicants'],
-  (newVal) => {
-   getFacilityTypeOptions(newVal)
-  }
-);
-const getFacilityTypeOptions = (facilityTypeData: { industry?: { uniqueItems?: { facilityForms?: Record<string, { title: string }> } } }) => {
-  if(facilityTypeData.industry && facilityTypeData.industry.uniqueItems && facilityTypeData.industry.uniqueItems.facilityForms){
-  const industryArray = Object.values(facilityTypeData.industry?.uniqueItems?.facilityForms || {}).map((formData: { title: string }) => ({
-    name: formData.title,
-  }));
-  facilityTypeOptions.value.push(...industryArray);
-}
-};
-
-
 
 watch(
   () => faxData.value.setTransmissionDateTime,
@@ -155,18 +164,6 @@ const confirmContent = () => {
     confirm.value = true
   });
 }
-const filterClients = (val:string, update) => {
-  if (val === '') {
-    update(async() => {
-    clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
-    });
-    return;
-  }
-  update(() => {
-    const needle = val.toLowerCase()
-    clients.value = clients.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
-  });
-};
 </script>
 <template>
   <q-drawer :model-value="isDrawer" :width="900" :breakpoint="500" overlay elevated bordered side="right" show>
@@ -218,8 +215,8 @@ const filterClients = (val:string, update) => {
                 {{ $t('clientFactory.fax.clientFacilityNG') }}
               </div>
               <div class="col-9 q-pt-md">
-                <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options
-                option-label="name" option-value="name" v-model="faxData['ngFacilityType']" :disable="loading"/>
+                <q-select outlined dense multiple  :options="getFacilityOptions" use-chips emit-value map-options
+                option-label="title" option-value="order" v-model="faxData['ngFacilityType']" :disable="loading"/>
               </div>
             </div>
             <div class="row">
@@ -328,9 +325,9 @@ const filterClients = (val:string, update) => {
                 </div>
                 <div class="col-9">
                   <div class="col-9  blue q-pt-sm q-mt-xs">
-                      <q-select outlined dense use-chips :options="clients"
+                      <q-select outlined dense use-chips :options="getNgClientOptions" multiple
                       option-label="name" v-model="faxData['ngClient']" :disable="loading"
-                      use-input input-debounce="0"  class="custom-q-select" emit-value map-options @filter="filterClients"/>
+                      class="custom-q-select" emit-value map-options />
                    </div>
                 </div>
               </div>
