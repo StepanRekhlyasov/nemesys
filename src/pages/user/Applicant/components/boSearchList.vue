@@ -15,7 +15,7 @@
       <q-btn class="q-mr-sm" @click="filterData" color="primary" :disable="!searchKeyword || searchKeyword.length===0">
         {{ t('common.search') }}
       </q-btn>
-      <q-btn @click="clearSearch" :disable="filteredBOList===allBoList">
+      <q-btn @click="clearSearch" :disable="(filteredBOList===allBoList) && (!searchKeyword || searchKeyword.length===0)">
         {{ t('common.clear') }}
       </q-btn>
     </form>
