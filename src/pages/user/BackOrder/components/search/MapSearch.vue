@@ -241,7 +241,7 @@ const closeMap = () => {
   <InfoBO ref="infoDrawer" @openSearchByMap="showSearchByMap = true" @passClientToMapSearch="(clientValue) => {
     selectedClient = clientValue;
   }
-    " :isHiddenDetails="false"/>
+    "/>
   <SearchByMapDrawer :modelValue="showSearchByMap" :selectedBo="selectedBo" :client="selectedClient" @close="closeMap">
   </SearchByMapDrawer>
 </template>
