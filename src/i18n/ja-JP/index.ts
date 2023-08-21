@@ -1381,6 +1381,12 @@ export default {
       three: '週3日',
       four: '週4日',
       five: '週5日'
+    },
+    saveSearch: {
+      minLessMaxAge : '最低年齢は最高年齢未満である必要があります',
+      minLessMaxDate : '最小登録日は最大登録日よりも前の日付である必要があります',
+      boidFormate : 'BOID は正の整数である必要があります',
+      searchEmpty : '空の検索条件',
     }
   },
   prefectures: {

@@ -27,10 +27,17 @@ export const useApplicantSaveSearch = defineStore('applicantSaveSearch', () => {
 
 
   async function getSaveSearch() {
-    const collectionRef = query(collection(db, 'applicantSaveSearch'), where('organizationId', '==', organization.currentOrganizationId));
+    const collectionRef = query(collection(db, 'applicantSaveSearch'), where('organizationId', '==', organization.currentOrganizationId),where('deleted','==',false));
     const querySnapshot = await getDocs(collectionRef);
     return querySnapshot.docs.map(doc => doc.data());
   }
 
-  return { saveSearch, getSaveSearch }
+  async function deleteSaveSearch(id: string) {
+    const docRef = doc(db, 'applicantSaveSearch', id);
+    await updateDoc(docRef, {
+      deleted: true,
+    });
+  }
+
+  return { saveSearch, getSaveSearch, deleteSaveSearch }
 })

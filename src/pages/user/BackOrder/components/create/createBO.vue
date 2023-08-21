@@ -173,7 +173,7 @@ const transactionTypeOptions = computed(()=>{
   if(props.type === 'dispatch') {
     return [
       {label: 'TTP', value: 'TTP'},
-      {label: t('client.backOrder.dispatchEm'), value: 'generalDispatch'},
+      {label: t('client.backOrder.dispatchEm'), value: 'dispatch'},
     ]
   }
   return [

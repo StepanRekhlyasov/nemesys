@@ -36,6 +36,8 @@
                 size="sm"
                 outline
                 class="q-ml-sm"
+                @click="saveSearchConditions"
+                :disable="isSaving"
               />
             </div>
           </div>
@@ -46,7 +48,6 @@
                 dense
                 v-model="searchData['keyword']"
                 outlined
-                autogrow
                 class="q-mr-xs"
                 :placeholder="$t('common.keyboard')"
                 clearable
@@ -57,7 +58,6 @@
                 dense
                 v-model="searchData['boid']"
                 outlined
-                autogrow
                 class="q-mr-xs"
                 placeholder="BOID"
                 clearable
@@ -68,7 +68,6 @@
                 dense
                 v-model="searchData['customerRepresentative']"
                 outlined
-                autogrow
                 class="q-mr-xs"
                 :placeholder="$t('backOrder.create.customerRepresentative')"
                 clearable
@@ -113,7 +112,7 @@
               <DoubleNumberInput
                 :min-model-value="searchData['ageMin']"
                 :max-model-value="searchData['ageMax']"
-                unit-key="common.year"
+                unit-key="common.age"
                 @on-min-value-update="(v) => (searchData['ageMin'] = v)"
                 @on-max-value-update="(v) => (searchData['ageMax'] = v)"
               />
@@ -150,7 +149,7 @@
             <div class="col-3">
               <q-option-group
                 v-model="searchData['transactiontype']"
-                :options="applicantClassification"
+                :options="boClassification"
                 type="checkbox"
                 inline
               />
@@ -167,28 +166,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import MapSearch from './MapSearch.vue';
 import { geohashForLocation } from 'geofire-common';
 import DoubleNumberInput from '../../../Applicant/components/search/components/DoubleNumberInput.vue';
 import { Alert } from 'src/shared/utils/Alert.utils';
-
+import { useBackOrder } from 'src/stores/backOrder'
+import { checkValidity, sharedData, resetSharedVariable } from 'src/pages/user/BackOrder/consts/index';
 import {
   employmentTypeOption,
   qualificationOption,
+  boClassification,
+  occupationList
 } from '../../consts/BackOrder.const';
-import {
-  applicantClassification,
-  occupationList,
-} from 'src/shared/constants/Applicant.const';
 
+const isSaving = ref<boolean>(false);
 const searchDataSample = {
   employmenttype: [],
   qualifications: [],
   transactiontype: [],
   typecase: [],
 };
-
+const BackOrderStore = useBackOrder()
 const searchData = ref(JSON.parse(JSON.stringify(searchDataSample)));
 const expanded = ref(false);
 const drawerRight = ref(false);
@@ -211,7 +210,14 @@ const updateMap = (mapData) => {
   searchData.value['mapData'] = mapData;
 };
 
-const searchStaff = async () => {
+onMounted(()=>{
+  if(BackOrderStore.checkData(sharedData.value)){
+    expanded.value = true;
+    searchData.value = sharedData.value;
+  }
+})
+
+const searchStaff = () => {
   emit('isLoading', true);
   drawerRight.value = false;
   expanded.value = false;
@@ -222,8 +228,37 @@ const searchStaff = async () => {
 const cancel = () => {
   expanded.value = false;
   searchData.value = JSON.parse(JSON.stringify(searchDataSample));
+  resetSharedVariable();
   emit('loadSearchStaff', searchData.value);
 };
+
+const saveSearchConditions = async () => {
+  isSaving.value = true;
+  let valid = true;
+  searchData.value['id'] = null
+  searchData.value['created_at'] = null
+  try {
+    checkValidity(searchData.value)
+  }
+  catch (error) {
+    valid = false
+    Alert.warning(error)
+  }
+  if (valid) {
+    if (!searchData.value['keyword']) searchData.value['keyword'] = null;
+    if (!searchData.value['ageMin']) searchData.value['ageMin'] = null;
+    if (!searchData.value['ageMax']) searchData.value['ageMax'] = null;
+    if (!searchData.value['boid']) searchData.value['boid'] = null;
+    if (!searchData.value['customerRepresentative']) searchData.value['customerRepresentative'] = null;
+    if (!searchData.value['registrationDateMax']) searchData.value['registrationDateMax'] = null;
+    if (!searchData.value['registrationDateMin']) searchData.value['registrationDateMin'] = null;
+    await BackOrderStore.saveSearch(searchData.value)
+  }
+  searchData.value = JSON.parse(JSON.stringify(searchDataSample));
+  resetSharedVariable()
+  isSaving.value = false;
+}
+
 </script>
 
 <style lang="scss">
