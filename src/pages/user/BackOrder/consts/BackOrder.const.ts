@@ -128,6 +128,59 @@ export const BackOrderStaff = computed(() => {
   ];
 });
 
+export const BackOrderStaffApplicant = computed(() => {
+  const { t } = i18n.global;
+  return [
+    {
+      name: 'name',
+      required: true,
+      label: t('backOrder.name'),
+      field: 'name',
+      align: 'left',
+    },
+    {
+      name: 'statusThisTime',
+      required: true,
+      label: t('backOrder.statusThisTime'),
+      field: 'statusThisTime',
+      align: 'left',
+    },
+    {
+      name: 'distanceBusiness',
+      required: true,
+      label: t('backOrder.distanceBusiness'),
+      field: 'distanceBusiness',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'clientName',
+      required: true,
+      label: t('backOrder.clientName'),
+      field: 'clientName',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'officeName',
+      required: true,
+      label: t('backOrder.officeName'),
+      field: 'officeName',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'matchDegree',
+      required: true,
+      label: t('backOrder.matchDegree'),
+      field: 'matchDegree',
+      align: 'left',
+      sortable: true,
+    },
+
+  ];
+});
+
 export const moreHalfYearExpOption = computed(() => {
   const { t } = i18n.global;
   return [

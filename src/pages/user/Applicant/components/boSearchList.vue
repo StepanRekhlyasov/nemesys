@@ -54,7 +54,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, BoForMapSearch, Client } from 'src/shared/model';
 import { ref, onMounted, watch, ComputedRef } from 'vue';
-import { BackOrderStaff } from 'src/pages/user/BackOrder/consts/BackOrder.const';
+import { BackOrderStaffApplicant } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useI18n } from 'vue-i18n';
 import { radius } from 'src/pages/user/Applicant/const/index';
@@ -93,7 +93,7 @@ const openDrawer = (data) => {
   }
 }
 
-const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
+const columns = ref<QTableProps | ComputedRef>(BackOrderStaffApplicant)
 const matchedData = ref({});
 
 const props = withDefaults(defineProps<{

@@ -96,10 +96,15 @@ export const useBackOrder = defineStore('backOrder', () => {
         boid: Number(searchData['boid']),
       });
     }
+    if (searchData.customerRepresentative) {
+      filters['all'].push({
+        customerrepresentative: searchData['customerRepresentative'],
+      });
+    }
 
-    const items = ['qualifications'];
+    const items = ['qualifications','employmenttype','typecase','transactiontype'];
     for (let i = 0; i < items.length; i++) {
-      if (searchData[items[i]] && searchData[items[i]].length > 0) {
+      if (searchData[items[i]] && Array.isArray(searchData[items[i]]) &&searchData[items[i]].length > 0) {
         const obj = {};
         obj[items[i]] = searchData[items[i]];
         filters['all'].push(obj);
@@ -165,21 +170,6 @@ export const useBackOrder = defineStore('backOrder', () => {
       allBOList = [...allBOList, ...boList];
     }
     state.value.BOList = allBOList
-
-    if(searchData.customerRepresentative){
-      state.value.BOList =  state.value.BOList.filter(bo=>bo.customerRepresentative && bo.customerRepresentative === searchData.customerRepresentative)
-    }
-    if(searchData.typecase && searchData.typecase.length){
-      state.value.BOList =  state.value.BOList.filter(bo=>bo.typeCase && searchData.typecase.includes(bo.typeCase))
-    }
-    if(searchData.transactiontype && searchData.transactiontype.length){
-      state.value.BOList =  state.value.BOList.filter(bo=>bo.transactionType && searchData.transactiontype.includes(bo.transactionType))
-    }
-    if(searchData.employmenttype && searchData.employmenttype.length){
-      state.value.BOList = state.value.BOList.filter(bo =>
-        bo.employmentType && bo.employmentType.some(type => searchData.employmenttype.includes(type)));
-    }
-
     state.value.isLoadingProgress = false;
   };
 
