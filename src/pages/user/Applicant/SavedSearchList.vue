@@ -48,8 +48,7 @@ watchCurrentOrganization(async () => {
 const dltSearch = async (id) => {
   loading.value = true;
   try {
-    const docRef = doc(db, 'applicantSaveSearch', id);
-    await deleteDoc(docRef);
+    await saveSearch.deleteSaveSearch(id)
     await getSearchData()
 
   } catch (error) {

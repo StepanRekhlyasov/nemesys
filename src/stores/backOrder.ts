@@ -152,10 +152,10 @@ export const useBackOrder = defineStore('backOrder', () => {
         console.log(error);
       });
 
-    loadBOData(searchData);
+    loadBOData();
   }
 
-  const loadBOData = async (searchData) => {
+  const loadBOData = async () => {
     state.value.isLoadingProgress = true;
     let allBOList: BackOrderModel[] = []
     while (state.value.currentIds.length) {
@@ -642,9 +642,16 @@ export const useBackOrder = defineStore('backOrder', () => {
     return true
   }
   async function getSaveSearch() {
-    const collectionRef = query(collection(db, 'BOSavedSearch'), where('organizationId', '==', organization.currentOrganizationId));
+    const collectionRef = query(collection(db, 'BOSavedSearch'), where('organizationId', '==', organization.currentOrganizationId),where('deleted','==',false));
     const querySnapshot = await getDocs(collectionRef);
     return querySnapshot.docs.map(doc => doc.data());
+  }
+
+  async function deleteSaveSearch(id: string) {
+    const docRef = doc(db, 'BOSavedSearch', id);
+    await updateDoc(docRef, {
+      deleted: true,
+    });
   }
 
   const checkData = (data:DocumentData)=>{
@@ -655,5 +662,5 @@ export const useBackOrder = defineStore('backOrder', () => {
     return false;
   }
 
-  return { checkData, getSaveSearch, saveSearch, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
+  return { deleteSaveSearch, checkData, getSaveSearch, saveSearch, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })

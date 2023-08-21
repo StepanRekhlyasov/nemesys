@@ -47,8 +47,7 @@ watchCurrentOrganization(async () => {
 const dltSearch = async (id) => {
   loading.value = true;
   try {
-    const docRef = doc(db, 'BOSavedSearch', id);
-    await deleteDoc(docRef);
+    await BackOrderStore.deleteSaveSearch(id)
     await getSearchData()
   } catch (error) {
     Alert.warning(error)
