@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs, writeBatch, collectionGroup } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
