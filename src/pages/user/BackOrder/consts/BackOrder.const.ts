@@ -264,7 +264,7 @@ export const boClassification = computed(() => {
     value: 'introduction'
   },{
     label: t('applicant.list.info.classification.dispatch'),
-    value: 'generalDispatch'
+    value: 'dispatch'
   },{
     label: t('applicant.list.info.classification.ttp'),
     value: 'TTP'
