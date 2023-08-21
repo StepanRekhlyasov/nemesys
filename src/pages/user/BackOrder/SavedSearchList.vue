@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { tableColumnsSavedCriteriaList, searchData, checkValidity } from 'src/pages/user/BackOrder/consts/index';
-import { getFirestore, orderBy, doc, deleteDoc, DocumentData } from 'firebase/firestore';
+import { orderBy, DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
 import { useBackOrder } from 'src/stores/backOrder'
@@ -17,7 +17,6 @@ const tableData = ref<DocumentData>([])
 const rowForEdit = ref<DocumentData>({})
 const isSaving = ref<boolean>(false)
 const { t } = useI18n({ useScope: 'global' });
-const db = getFirestore();
 const drawerRight = ref<boolean>(false);
 const loading = ref<boolean>(false)
 const searchKeyword = ref<string | null>(null);
