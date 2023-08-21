@@ -753,7 +753,7 @@ export const useApplicant = defineStore('applicant', () => {
 				dst['statusChangeTimestamp'][key]=Timestamp.fromMillis(value as number);
 			}
 		}
-		return dst;
+		return dst as Applicant;
 	}
 
   /** reset fixes on filter change */
