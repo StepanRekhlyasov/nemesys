@@ -6,6 +6,20 @@
         @click="emit('openSearchByMap')" />
     </div>
   </div>
+  <q-card-section class="q-pa-md">
+    <form class="form q-mt-sm row">
+      <q-select class="q-mr-sm" v-model="searchKeyword" outlined dense :options="filteredOptions" @update:model-value="getFormatedData"
+      hide-bottom-space use-input input-debounce="0"  option-value="value" option-label="label" emit-value map-options :label="$t('backOrder.dealType')"
+      @filter="filterOptions"
+    />
+      <q-btn class="q-mr-sm" @click="filterData" color="primary" :disable="!searchKeyword || searchKeyword.length===0">
+        {{ t('common.search') }}
+      </q-btn>
+      <q-btn @click="clearSearch" :disable="!searchKeyword || searchKeyword.length===0">
+        {{ t('common.clear') }}
+      </q-btn>
+    </form>
+  </q-card-section>
   <q-card-section class=" q-pa-none">
     <q-table :columns="columns" :loading="loading" :rows="allBoList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
@@ -64,7 +78,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, BoForMapSearch, Client } from 'src/shared/model';
 import { ref, onMounted, watch, ComputedRef } from 'vue';
-import { BackOrderStaffApplicant } from 'src/pages/user/BackOrder/consts/BackOrder.const';
+import { BackOrderStaffApplicant, occupationList } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useI18n } from 'vue-i18n';
 import { radius } from 'src/pages/user/Applicant/const/index';
@@ -81,7 +95,7 @@ import { myDateFormat } from 'src/shared/utils/utils';
 
 const showSearchByMap = ref(false)
 const selectedClient = ref<Client | undefined>(undefined);
-
+const searchKeyword = ref<string | null>('');
 const organization = useOrganization()
 const backOrderStore = useBackOrder()
 const allBoList = ref<BoForMapSearch[]>([])
@@ -102,6 +116,21 @@ const openDrawer = (data) => {
     infoDrawer.value?.openDrawer(data);
   }
 }
+
+const filteredOptions = ref(occupationList.value);
+
+const filterOptions = async (val: string, update) => {
+  if (val === '') {
+    update(() => {
+      filteredOptions.value = occupationList.value
+    })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    filteredOptions.value = occupationList.value.filter(opt=>(opt.value.toLowerCase().indexOf(needle)>-1))
+  })
+};
 
 const columns = ref<QTableProps | ComputedRef>(BackOrderStaffApplicant)
 const matchedData = ref({});
@@ -179,6 +208,15 @@ watchCurrentOrganization(async ()=>{
   await getFormatedData();
   loading.value = false;
 })
+
+async function clearSearch(){
+  searchKeyword.value = '';
+  await getFormatedData();
+}
+
+const filterData = () => {
+  allBoList.value = allBoList.value.filter(bo=>(bo.typeCase===searchKeyword.value))
+}
 
 const getFormatedData = async () => {
   allBoList.value = await backOrderStore.getBOByConstraints([where('deleted', '==', false), where('organizationId', '==', organization.currentOrganizationId)]) as BoForMapSearch[];
