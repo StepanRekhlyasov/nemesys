@@ -15,6 +15,7 @@ import { useRoute } from 'vue-router';
 import { useFix } from './fix';
 import { getMostCompletedFix } from 'src/shared/utils/Fix.utils';
 import { deepCopy } from 'src/shared/utils';
+import { useApplicantEmail } from './applicantEmail';
 
 interface ApplicantState {
   clientList: Client[],
@@ -83,6 +84,7 @@ type ApplicantsByColumn = {
 export const useApplicant = defineStore('applicant', () => {
   const db = getFirestore();
   const organization = useOrganization()
+  const applicantEmail = useApplicantEmail()
   const fixStore = useFix()
   const route = useRoute()
 
@@ -491,6 +493,35 @@ export const useApplicant = defineStore('applicant', () => {
     );
   }
 
+  async function createApplicantExclusive(data: Applicant, applicantImage?: FileList | []) {
+
+    const docRef = doc(collection(db, 'applicants'));
+    data['id'] = docRef.id;
+    data['organizationId'] = organization.currentOrganizationId;
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === 'undefined') delete data[key];
+    }
+    await applicantEmail.createApplicant(data);
+
+    const data2={}
+    if (applicantImage && applicantImage.length > 0) {
+      const file = applicantImage[0];
+      const storage = getStorage();
+      const storageRef = refStorage(storage, 'applicants/' + docRef.id + '/image/' + file['name']);
+      const snapshot = await uploadBytes(storageRef, file)
+      data2['imagePath'] = snapshot.ref.fullPath;
+      data2['imageURL'] = await getDownloadURL(storageRef)
+    }
+    /** staff rank */
+    data2['staffRank'] = countApplicantRank(data)
+    /** staff rank */
+    await updateDoc(
+      docRef,
+      data2
+    );
+    return Object.assign(data,data2);
+  }
+
   async function getApplicantsByConstraints(constraints: ConstraintsType) {
     constraints.push(where('organizationId', '==', organization.currentOrganizationId))
     const q = query(collection(db, 'applicants'), ...constraints);
@@ -681,6 +712,50 @@ export const useApplicant = defineStore('applicant', () => {
     }
   }
 
+	const toJSON = (src: Applicant)=>{
+		const dst={}
+		for (const [key, value] of Object.entries(src))dst[key]=value;
+
+		if (dst['applicationDate']) dst['applicationDate'] = dst['applicationDate'].toMillis();
+		if (dst['dob']) dst['dob'] = dst['dob'].toMillis();
+		if (dst['invitationDate']) dst['invitationDate'] = dst['invitationDate'].toMillis();
+		if (dst['attendingDate']) dst['attendingDate'] = dst['attendingDate'].toMillis();
+		if (dst['timeToWork']) dst['timeToWork'] = dst['timeToWork'].toMillis();
+		if (dst['fixDate']) dst['fixDate'] = dst['fixDate'].toMillis();
+		if (dst['inspectionDate']) dst['inspectionDate'] = dst['inspectionDate'].toMillis();
+		if (dst['offerDate']) dst['offerDate'] = dst['offerDate'].toMillis();
+		if (dst['admissionDate']) dst['admissionDate'] = dst['admissionDate'].toMillis();
+		if (dst['currentStatusTimestamp']) dst['currentStatusTimestamp'] = dst['currentStatusTimestamp'].toMillis();
+		if (dst['statusChangeTimestamp']) {
+			for (const [key, value] of Object.entries(dst['statusChangeTimestamp'])) {
+				dst['statusChangeTimestamp'][key]=(value as Timestamp).toMillis();
+			}
+		}
+		return dst;
+	}
+
+	const fromJSON = (src: object)=>{
+		const dst={}
+		for (const [key, value] of Object.entries(src))dst[key]=value;
+
+		if (dst['applicationDate']) dst['applicationDate'] = Timestamp.fromMillis(dst['applicationDate']);
+		if (dst['dob']) dst['dob'] = Timestamp.fromMillis(dst['dob']);
+		if (dst['invitationDate']) dst['invitationDate'] = Timestamp.fromMillis(dst['invitationDate']);
+		if (dst['attendingDate']) dst['attendingDate'] = Timestamp.fromMillis(dst['attendingDate']);
+		if (dst['timeToWork']) dst['timeToWork'] = Timestamp.fromMillis(dst['timeToWork']);
+		if (dst['fixDate']) dst['fixDate'] = Timestamp.fromMillis(dst['fixDate']);
+		if (dst['inspectionDate']) dst['inspectionDate'] = Timestamp.fromMillis(dst['inspectionDate']);
+		if (dst['offerDate']) dst['offerDate'] = Timestamp.fromMillis(dst['offerDate']);
+		if (dst['admissionDate']) dst['admissionDate'] = Timestamp.fromMillis(dst['admissionDate']);
+		if (dst['currentStatusTimestamp']) dst['currentStatusTimestamp'] = Timestamp.fromMillis(dst['currentStatusTimestamp']);
+		if (dst['statusChangeTimestamp']) {
+			for (const [key, value] of Object.entries(dst['statusChangeTimestamp'])) {
+				dst['statusChangeTimestamp'][key]=Timestamp.fromMillis(value as number);
+			}
+		}
+		return dst;
+	}
+
   /** reset fixes on filter change */
   watch(() => state.value.applicantProgressFilter, () => {
     state.value.applicantFixes = {}
@@ -726,6 +801,6 @@ export const useApplicant = defineStore('applicant', () => {
     }
   })
 
-  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, getApplicantContactData, saveWorkExperience, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, /* changeApplicantStatusByOkFields, */ getApplicantById }
+  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, createApplicantExclusive, getApplicantContactData, saveWorkExperience, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, /* changeApplicantStatusByOkFields, */ getApplicantById, toJSON, fromJSON }
 })
 
