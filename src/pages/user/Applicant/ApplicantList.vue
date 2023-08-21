@@ -8,12 +8,17 @@
       <q-separator color="white" size="2px" />
 
       <q-card-section class="q-pa-xs">
-        <searchForm :searchData="sharedData" @load-search-staff="loadSearchStaff" @openSMSDrawer="openSMSDrawer" />
+        <searchForm :searchData="sharedData" @load-search-staff="loadSearchStaff" @openSMSDrawer="openSMSDrawer">
+          <template v-slot:button>
+            <q-btn class="q-ml-sm" :color="'red'" @click="showDeleteDialog = true" icon="delete" :label="t('common.delete')" :disabled="!selectedIds?.length"></q-btn>
+          </template>
+        </searchForm>
       </q-card-section>
 
       <q-separator color="white" size="2px" />
       <q-card-section class=" q-pa-none">
         <q-table :columns="columns" :rows="sortedRows" row-key="id" selection="multiple"
+          v-model:selected="selection"
           class="no-shadow" v-model:pagination="pagination" hide-pagination
           :loading="applicantStore.state.isLoadingProgress">
           <template v-slot:header-cell-name="props">
@@ -153,6 +158,23 @@
       </q-card>
     </q-scroll-area>
   </q-drawer>
+
+  <q-dialog v-model="showDeleteDialog">
+    <q-card>
+      <q-card-section class="justify-center items-center q-pb-none ">
+        <div class="text-h6 text-center text-bold">{{ $t('applicant.deleteTitle') }}</div>
+        <q-space />
+      </q-card-section>
+      <q-card-section>
+        {{ $t('applicant.deleteBody') }}
+      </q-card-section>
+      <q-card-section class="flex justify-center">
+        <q-btn @click="showDeleteDialog=false" rounded class="q-mr-md q-px-xl">{{ $t('common.cancel') }}</q-btn>
+        <q-btn color="red" rounded class="q-px-xl" @click="deleteApplicants()" :disable="deletingProccess">{{ $t('common.delete') }}</q-btn>
+      </q-card-section>
+      <q-linear-progress query v-if="deletingProccess" color="primary"/>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -178,13 +200,31 @@ const applicantStore = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const sendNumber = ref(false);
 const applicantId = ref<string>('');
-
+const selection = ref([])
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
   rowsPerPage: 100
 });
+
+const showDeleteDialog = ref(false)
+const selectedIds = computed(()=>{
+  return selection.value.map((row : Applicant)=>{
+    return row.id
+  })
+})
+const deletingProccess = ref(false)
+const deleteApplicants = async () => {
+  deletingProccess.value = true
+  await applicantStore.deleteApplicants(selectedIds.value)
+  applicantStore.state.applicantList = applicantStore.state.applicantList.filter((row)=>{
+    return !selectedIds.value.includes(row.id)
+  })
+  selection.value = []
+  deletingProccess.value = false
+  showDeleteDialog.value = false
+}
 
 
 const columns: ComputedRef<QTableProps['columns']> = computed(() => {
