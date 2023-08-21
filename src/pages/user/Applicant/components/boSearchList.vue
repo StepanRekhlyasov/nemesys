@@ -9,7 +9,7 @@
   <q-card-section class="q-pa-md">
     <form class="form q-mt-sm row">
       <q-select class="q-mr-sm" v-model="searchKeyword" outlined dense :options="filteredOptions" @update:model-value="getFormatedData"
-      hide-bottom-space use-input input-debounce="0"  option-value="value" option-label="label" emit-value map-options :label="$t('backOrder.dealType')"
+      hide-bottom-space use-input input-debounce="0" emit-value map-options :label="$t('backOrder.dealType')"
       @filter="filterOptions"
     />
       <q-btn class="q-mr-sm" @click="filterData" color="primary" :disable="!searchKeyword || searchKeyword.length===0">
@@ -93,6 +93,7 @@ import { Timestamp, where } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { myDateFormat } from 'src/shared/utils/utils';
 
+const { t } = useI18n({ useScope: 'global' });
 const showSearchByMap = ref(false)
 const selectedClient = ref<Client | undefined>(undefined);
 const searchKeyword = ref<string | null>('');
@@ -105,7 +106,7 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 5
 });
-
+const filteredOptions = ref(occupationList.value)
 const selectedBo = ref<BackOrderModel | undefined>();
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
 
@@ -117,13 +118,11 @@ const openDrawer = (data) => {
   }
 }
 
-const filteredOptions = ref(occupationList.value);
-
 const filterOptions = async (val: string, update) => {
   if (val === '') {
     update(() => {
-      filteredOptions.value = occupationList.value
-    })
+    filteredOptions.value = occupationList.value
+  })
     return
   }
   update(() => {
@@ -195,7 +194,6 @@ const calculateMatchDegree = () => {
 }
 
 const loading = ref<boolean>(false);
-const { t } = useI18n({ useScope: 'global' });
 
 onMounted(async () => {
   loading.value = true;

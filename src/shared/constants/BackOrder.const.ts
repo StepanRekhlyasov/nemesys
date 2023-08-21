@@ -83,3 +83,15 @@ export const BackOrderColumns = computed<QTableProps['columns']>(() => {
     }
   ];
 });
+export const occupationList = computed(() => {
+  return [
+    {
+  label: t('applicant.add.nurse'),
+  value: 'nurse'
+  },
+  {
+  label: t('applicant.add.nursingCare'),
+  value: 'nursingCare'
+  },
+];
+})
