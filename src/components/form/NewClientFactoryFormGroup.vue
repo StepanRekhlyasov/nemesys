@@ -103,7 +103,7 @@ defineExpose({
 
 <template>
         <q-card class="no-shadow full-height q-pb-sm">
-            <q-form class="q-gutter-none" ref="formRef">
+            <q-form class="q-gutter-none" ref="formRef" greedy>
                 <q-card-section class="q-pa-none q-pt-sm scroll">
                     <q-list>
                         <ClientFactoryName v-model="clientFactoryName" :theme="theme"/>

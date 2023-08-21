@@ -117,4 +117,5 @@ export interface ContractInfo {
     contractFax: string;
     contractMail: string;
     contractPerson: string;
+    conclusionContract: boolean;
 }

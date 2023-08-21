@@ -84,6 +84,7 @@ const onSubmit = async (newClientData: Client | null) => {
                 contractFax: newClientData.personInChargeFax,
                 contractMail: newClientData.personInChargeMail,
                 contractPerson: newClientData.personInCharge,
+                conclusionContract: newClientData.conclusionContract,
             },
             officeDetails: {
                 registeredInfo: {

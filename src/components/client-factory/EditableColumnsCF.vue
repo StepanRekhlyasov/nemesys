@@ -86,6 +86,10 @@ const rightColumn = computed(() => newData.value.filter((_, index) => index % 2 
                     size="xs"
                     v-model="row.value"
                     :label="t('client.add.conclusionReferralContract')" :color="theme"/>
+                <q-checkbox v-else-if="row.editType === 'boolean'"
+                    size="xs"
+                    v-model="row.value"
+                    :color="theme"/>
                 <div v-else-if="row.editType === InputType.CLIENT && typeof row.value === 'string'">{{ row.value }}</div>
                 <ContractUnit v-else-if="row.editType === InputType.CONTRACT_UNIT && typeof row.value === 'string'" v-model="row.value" :theme="theme"/>
                 <ClientType v-else-if="row.editType === InputType.INDUSTRY && Array.isArray(row.value)" v-model="row.value" :theme="theme" :is-label="false"/>
