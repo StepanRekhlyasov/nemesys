@@ -21,6 +21,7 @@ const emit = defineEmits<{
 const { t } = useI18n({ useScope: 'global' });
 
 const selected = ref<ClientFactoryTableRow[]>([])
+const selectedAll =ref(false)
 const getSelectedString = () => {
     return selected.value.length === 0 ? '' : `${t('common.numberOfSelections')}: ${selected.value.length}`
 }
@@ -106,7 +107,7 @@ watch(()=>[props.rows, props.pagination], () => {
   const end = start + props.pagination.rowsPerPage;
   paginatedAndSortedRows.value = sortedRows.slice(start, end);
 }, {immediate: true, deep:true});
-const selectedAll =ref(false)
+
 watch (()=>selectedAll.value,()=>{
   if(selectedAll.value) selected.value = props.rows
   else selected.value = []
