@@ -8,7 +8,7 @@ const props = defineProps<{
   theme: string
 }>()
 
-const emit = defineEmits<{ (e: 'updateArea', prefecture, wards) }>()
+const emit = defineEmits<{ (e: 'updateArea', wards) }>()
 
 const { t } = useI18n({ useScope: 'global' });
 
@@ -16,13 +16,21 @@ const searchInput = ref('')
 const regionList = ref<DocumentData>({})
 const prefectures = ref<string[]>([])
 const wards = ref<string[]>([])
-const selectedPrefectures = ref<string[]>([])
 const selectedWards = ref<string[]>([])
 const isLoadingProgress = ref(false)
 const allPref = ref<string[]>([])
 const allWards = ref<string[]>([])
 const searchKeyword = ref<string[]>([])
-
+const orderRegion:string[] = [ 
+  '北海道地方',
+  '東北地方',
+  '関東地方',
+  '中部地方',
+  '近畿地方',
+  '中国地方',
+  '四国地方',
+  '九州・沖縄地方'
+]
 onMounted(async () => {
   isLoadingProgress.value = true
   regionList.value = await getAllMunicipalities() as DocumentData;
@@ -57,7 +65,7 @@ watch(
         selectedWards.value.splice(index, 1);
       }
     }
-    emit('updateArea', selectedPrefectures.value, selectedWards.value);
+    emit('updateArea', selectedWards.value);
   }, { deep: true, immediate: true }
 );
 
@@ -83,8 +91,8 @@ watch(
             if (swIndex > -1) {
               selectedWards.value.splice(swIndex, 1);
             }
+            selectedWards.value.push(prefecture[j][pref][k])
           }
-          selectedPrefectures.value.push(pref);
         }
         else if (removedItem.includes(pref)) {
           for (let k = 0; k < prefecture[j][pref].length; k++) {
@@ -97,17 +105,13 @@ watch(
               selectedWards.value.splice(swIndex, 1);
             }
           }
-          const index = selectedPrefectures.value.indexOf(pref);
-          if (index > -1) {
-            selectedPrefectures.value.splice(index, 1);
-          }
           if (searchKeyword.value.includes(pref)) {
             searchKeyword.value.splice(searchKeyword.value.indexOf(pref), 1);
           }
         }
       }
     }
-    emit('updateArea', selectedPrefectures.value, selectedWards.value);
+    emit('updateArea', selectedWards.value);
   },
 );
 
@@ -181,7 +185,7 @@ const removeSearchKeyword = (value: string) => {
       </q-card-section>
     </q-card>
     <q-list bordered class="rounded-borders">
-      <q-expansion-item expand-separator :label="region" v-for="region in Object.keys(regionList)" :key="region">
+      <q-expansion-item expand-separator :label="region" v-for="region in orderRegion" :key="region">
         <div class="row" v-for="prefecture in regionList[region]" :key="prefecture">
           <div class="col-1 text-right">
             <q-checkbox size="sm" v-model="prefectures" :val="Object.keys(prefecture)[0]" />
@@ -191,8 +195,7 @@ const removeSearchKeyword = (value: string) => {
               :style="{ backgroundColor: 'bg-white' }">
               <div class="bg-white q-pt-sm q-pb-sm">
                 <q-checkbox dense size="sm" v-model="wards" :val="ward" :label="ward" class="q-pr-sm"
-                  v-for="ward in prefecture[Object.keys(prefecture)[0]]" :key="ward.value"
-                  :disable="prefectures.includes(Object.keys(prefecture)[0])" />
+                  v-for="ward in prefecture[Object.keys(prefecture)[0]]" :key="ward.value" />
               </div>
             </q-expansion-item>
           </div>

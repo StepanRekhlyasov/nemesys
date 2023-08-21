@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, defineProps,withDefaults, watch, onMounted, defineEmits } from 'vue';
 import {ActionsType} from './types'
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { DocumentData, doc, getDoc, getFirestore } from 'firebase/firestore';
 import { getAuth } from '@firebase/auth';
 import { api } from 'src/boot/axios';
 import SearchField from '../SearchField.vue';
@@ -31,15 +31,25 @@ const db = getFirestore();
 
 const searchInput = ref('')
 const officeData = ref([])
-const regionList = ref([])
-const prefectures = ref([])
-const wards = ref([])
-const selectedPrefectures = ref([])
-const selectedWards = ref([])
+const regionList = ref<DocumentData>([])
+const prefectures = ref<string[]>([])
+const wards = ref<string[]>([])
+const selectedPrefectures = ref<string[]>([])
+const selectedWards = ref<string[]>([])
 const isLoadingProgress = ref(false)
 const allPref = ref<string[]>([])
 const allWards = ref<string[]>([])
 const searchKeyword = ref<string[]>([])
+const orderRegion:string[] = [ 
+  '北海道地方',
+  '東北地方',
+  '関東地方',
+  '中部地方',
+  '近畿地方',
+  '中国地方',
+  '四国地方',
+  '九州・沖縄地方'
+]
 onMounted(async () => {
     isLoadingProgress.value = true
     const docRef = doc(db, 'metadata', 'regionData');
@@ -82,8 +92,8 @@ watch(
 watch(
     () => (prefectures.value),
     (newVal, oldVal) => {
-        const addedItem = newVal.filter(item => oldVal.indexOf(item) < 0)
-        const removedItem = oldVal.filter(item => newVal.indexOf(item) < 0)
+        const addedItem:string[] = newVal.filter(item => oldVal.indexOf(item) < 0)
+        const removedItem:string[] = oldVal.filter(item => newVal.indexOf(item) < 0)
         const regList = Object.keys(regionList.value);
 
         for (let i = 0; i < regList.length; i++) {
@@ -101,8 +111,8 @@ watch(
                         if (swIndex > -1) {
                             selectedWards.value.splice(swIndex, 1);
                         }
+                        selectedWards.value.push(prefecture[j][pref][k]);
                     }
-                    selectedPrefectures.value.push(pref);
                 }
                 else if (removedItem.includes(pref)) {
                     for (let k = 0; k < prefecture[j][pref].length; k++) {
@@ -114,10 +124,6 @@ watch(
                         if (swIndex > -1) {
                             selectedWards.value.splice(swIndex, 1);
                         }
-                    }
-                    const index = selectedPrefectures.value.indexOf(pref);
-                    if (index > -1) {
-                        selectedPrefectures.value.splice(index, 1);
                     }
                 }
             }
@@ -215,7 +221,7 @@ const onInputSubmit = () => {
 const OnInputClear = () => {
     searchInput.value = ''
 }
-const removeSearchKeyword = (value: never) => {
+const removeSearchKeyword = (value: string) => {
     if (searchKeyword.value.includes(value)) {
         searchKeyword.value.splice(searchKeyword.value.indexOf(value), 1);
     }
@@ -268,7 +274,7 @@ const resetConditionData = () => {
             </q-chip>
         </q-card>
         <q-list bordered class="rounded-borders">
-            <q-expansion-item expand-separator :label="region" v-for="region in Object.keys(regionList)" :key="region">
+            <q-expansion-item expand-separator :label="region" v-for="region in orderRegion" :key="region">
                 <div class="row" v-for="prefecture in regionList[region]" :key="prefecture">
                     <div class="col-1 text-right">
                         <q-checkbox size="sm" v-model="prefectures" :val="Object.keys(prefecture)[0]" />
@@ -278,8 +284,7 @@ const resetConditionData = () => {
                             :style="{ backgroundColor: 'bg-white' }">
                             <div class="bg-white q-pt-sm q-pb-sm">
                                 <q-checkbox dense size="sm" v-model="wards" :val="ward" :label="ward" class="q-pr-sm"
-                                    v-for="ward in prefecture[Object.keys(prefecture)[0]]" :key="ward.value"
-                                    :disable="prefectures.includes(Object.keys(prefecture)[0])" />
+                                    v-for="ward in prefecture[Object.keys(prefecture)[0]]" :key="ward.value" />
                             </div>
                         </q-expansion-item>
                     </div>
