@@ -1581,6 +1581,8 @@ export default {
     }
   },
   clientFactory: {
+    deleteClientFactoriesText: '事業所を削除します。本社事業所を削除すると関連の事業所と関連のBOすべてのデータが削除されます。元に戻せません。 本当によろしいですか？',
+    deleteClientFactoriesTitle: 'システム警告',
     numberEmployees: '従業員数',
     facilityType: '施設形態',
     mediaOptions: 'メディアオプション',

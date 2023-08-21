@@ -35,9 +35,9 @@ export const updateClientHandler = (
 export const clientFactoriesToTableRows = (factories: ClientFactory[]) => {
     return factories.map((factory) => {
         const row = {} as ClientFactoryTableRow
-
         row.id = factory.id
-        row.distance = `${factory.distance}m`
+        row.clientId = factory.clientID
+        row.distance = `${factory.distance}m`  
         row.fax = factory.fax
         row.office= {name: factory.name, isHead: factory.isHead, clientName: factory.client?.name}
         row.address = factory.address
