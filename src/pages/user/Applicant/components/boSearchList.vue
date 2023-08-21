@@ -8,20 +8,20 @@
   </div>
   <q-card-section class="q-pa-md">
     <form class="form q-mt-sm row">
-      <q-select class="q-mr-sm" v-model="searchKeyword" outlined dense :options="filteredOptions" @update:model-value="getFormatedData"
+      <q-select class="q-mr-sm" v-model="searchKeyword" outlined dense :options="filteredOptions"
       hide-bottom-space use-input input-debounce="0" emit-value map-options :label="$t('backOrder.dealType')"
       @filter="filterOptions"
     />
       <q-btn class="q-mr-sm" @click="filterData" color="primary" :disable="!searchKeyword || searchKeyword.length===0">
         {{ t('common.search') }}
       </q-btn>
-      <q-btn @click="clearSearch" :disable="!searchKeyword || searchKeyword.length===0">
+      <q-btn @click="clearSearch" :disable="filteredBOList===allBoList">
         {{ t('common.clear') }}
       </q-btn>
     </form>
   </q-card-section>
   <q-card-section class=" q-pa-none">
-    <q-table :columns="columns" :loading="loading" :rows="allBoList" row-key="id" class="no-shadow"
+    <q-table :columns="columns" :loading="loading" :rows="filteredBOList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
       <template v-slot:body-cell-boId="props">
         <q-td :props="props" class="no-wrap q-pa-none">
@@ -109,7 +109,7 @@ const pagination = ref({
 const filteredOptions = ref(occupationList.value)
 const selectedBo = ref<BackOrderModel | undefined>();
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
-
+const filteredBOList = ref<BoForMapSearch[]>([])
 const openDrawer = (data) => {
   if (data) {
     selectedBo.value = data;
@@ -213,7 +213,7 @@ async function clearSearch(){
 }
 
 const filterData = () => {
-  allBoList.value = allBoList.value.filter(bo=>(bo.typeCase===searchKeyword.value))
+  filteredBOList.value = allBoList.value.filter(bo=>(bo.typeCase===searchKeyword.value))
 }
 
 const getFormatedData = async () => {
@@ -225,6 +225,7 @@ const getFormatedData = async () => {
     })
   calculateDistance();
   calculateMatchDegree();
+  filteredBOList.value = allBoList.value;
 }
 
 const emit = defineEmits(['openSearchByMap']);
