@@ -48,7 +48,6 @@
                 dense
                 v-model="searchData['keyword']"
                 outlined
-                autogrow
                 class="q-mr-xs"
                 :placeholder="$t('common.keyboard')"
                 clearable
@@ -59,7 +58,6 @@
                 dense
                 v-model="searchData['boid']"
                 outlined
-                autogrow
                 class="q-mr-xs"
                 placeholder="BOID"
                 clearable
@@ -70,7 +68,6 @@
                 dense
                 v-model="searchData['customerRepresentative']"
                 outlined
-                autogrow
                 class="q-mr-xs"
                 :placeholder="$t('backOrder.create.customerRepresentative')"
                 clearable
