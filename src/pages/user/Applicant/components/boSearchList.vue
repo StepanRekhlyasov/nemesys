@@ -25,6 +25,16 @@
           {{ props.row.distanceBusiness }} Km
         </q-td>
       </template>
+      <template v-slot:body-cell-clientName="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          {{ props.row.clientName?props.row.clientName.slice(0,5):'-' }}{{ props.row.clientName && props.row.clientName.length>5?'...':'' }}
+        </q-td>
+      </template>
+      <template v-slot:body-cell-officeName="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          {{ props.row.officeName?props.row.officeName.slice(0,5):'-' }}{{ props.row.officeName && props.row.officeName.length>5?'...':'' }}
+        </q-td>
+      </template>
       <template v-slot:body-cell-matchDegree="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           <q-btn @click="openPopup(props.row)" dense no-caps color="primary" :label='props.row.matchDegree' flat>%</q-btn>
