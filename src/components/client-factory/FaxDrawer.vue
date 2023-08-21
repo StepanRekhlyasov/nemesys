@@ -13,6 +13,7 @@ import {useClient} from 'src/stores/client'
 import { Client } from 'src/shared/model';
 import { useOrganization } from 'src/stores/organization';
 import { where } from 'firebase/firestore'
+import { Industry } from 'src/shared/model/Industry.model';
 
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
@@ -33,11 +34,11 @@ const faxDataDataSample = {
 };
 const organization = useOrganization()
 const clientStore = useClient()
+const facilityTypeOptions = ref([]);
 const clients:Ref<Client[]> = ref([]);
 const faxData = ref(JSON.parse(JSON.stringify(faxDataDataSample)));
 const faxFile = ref<FileList | []>([]);
-const facilityTypeOptions: { name: string }[] = [];
-const applicantList = ref(<{ value: string; label: string }[]>[]);
+const applicantList = ref(<{ value: string; label: string , industry?:Industry}[]>[]);
 const applicantStore = useApplicant();
 const loading = ref(false);
 const faxForm = ref();
@@ -48,6 +49,7 @@ const emit = defineEmits<{
 const hideDrawer = () => {
   emit('hideDrawer');
 };
+
 watch(
   () => (applicantStore.state.applicantList),
   (newVal) => {
@@ -57,10 +59,27 @@ watch(
       if (newVal[i]['dob']) {
         label += ' (' + myDateFormat(newVal[i]['dob']) + ')'
       }
-      applicantList.value.push({ label: label, value: newVal[i]['id'] })
+      applicantList.value.push({ label: label, value: newVal[i]['id'] , industry: newVal[i]['industry'] })
     }
   },
 )
+watch(
+  () => faxData.value['applicants'],
+  (newVal) => {
+   getFacilityTypeOptions(newVal)
+  }
+);
+const getFacilityTypeOptions = (facilityTypeData: { industry?: { uniqueItems?: { facilityForms?: Record<string, { title: string }> } } }) => {
+  if(facilityTypeData.industry && facilityTypeData.industry.uniqueItems && facilityTypeData.industry.uniqueItems.facilityForms){
+  const industryArray = Object.values(facilityTypeData.industry?.uniqueItems?.facilityForms || {}).map((formData: { title: string }) => ({
+    name: formData.title,
+  }));
+  facilityTypeOptions.value.push(...industryArray);
+}
+};
+
+
+
 watch(
   () => faxData.value.setTransmissionDateTime,
   () => {
@@ -188,19 +207,19 @@ const filterClients = (val:string, update) => {
                 <p>{{ faxData['applicants']['label'] }}</p>
               </div>
             </div>
-            <div class="row">
+            <div class="row q-pt-sm">
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.clientCategoryNG') }}
               </div>
               <div class="col-9"></div>
             </div>
             <div class="row">
-              <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
+              <div class="col-3 text-right q-pr-sm text-primary q-pt-lg">
                 {{ $t('clientFactory.fax.clientFacilityNG') }}
               </div>
-              <div class="col-9">
+              <div class="col-9 q-pt-md">
                 <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options
-                 option-label="name" v-model="faxData['ngFacilityType']" :disable="loading" />
+                option-label="name" option-value="name" v-model="faxData['ngFacilityType']" :disable="loading"/>
               </div>
             </div>
             <div class="row">
