@@ -476,7 +476,7 @@ async function onSubmit() {
   data['dob'] = Timestamp.fromDate(new Date(data.dob));
   data['deleted'] = false;
   try {
-    await applicantStore.createApplicant(data, applicantImage.value);
+    await applicantStore.createApplicantExclusive(data, applicantImage.value);
     applicantStore.state.needsApplicantUpdateOnMounted = true
     applicantForm.value?.reset();
   } catch (error) {
