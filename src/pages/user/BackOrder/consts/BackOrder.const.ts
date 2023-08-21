@@ -203,19 +203,33 @@ export const employmentTypeOption = computed(() => {
       value: 'fullTime',
     },
     {
-      label: t('client.backOrder.dispatchEm'),
-      value: 'dispatchEm',
+      label: t('client.backOrder.dispatch'),
+      value: 'dispatch',
     },
     {
       label: t('client.backOrder.partTime'),
       value: 'partTime',
     },
     {
-      label: t('client.backOrder.partTimeEmployee'),
-      value: 'partTimeEmployee',
+      label: t('client.backOrder.referralDispatch'),
+      value: 'referralDispatch',
     },
   ];
 });
+
+export const occupationList = computed(() => {
+  const { t } = i18n.global;
+  return [
+    {
+  label: t('applicant.add.nurse'),
+  value: 'nurse'
+  },
+  {
+  label: t('applicant.add.nursingCare'),
+  value: 'nursingCare'
+  },
+];
+})
 
 export const qualificationOption = computed(() => {
   const { t } = i18n.global;
@@ -242,3 +256,17 @@ export const qualificationOption = computed(() => {
     },
   ];
 });
+
+export const boClassification = computed(() => {
+  const { t } = i18n.global;
+  return [{
+    label: t('applicant.list.info.classification.introduction'),
+    value: 'introduction'
+  },{
+    label: t('applicant.list.info.classification.dispatch'),
+    value: 'generalDispatch'
+  },{
+    label: t('applicant.list.info.classification.ttp'),
+    value: 'TTP'
+  }]
+})

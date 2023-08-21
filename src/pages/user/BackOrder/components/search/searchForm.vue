@@ -152,7 +152,7 @@
             <div class="col-3">
               <q-option-group
                 v-model="searchData['transactiontype']"
-                :options="applicantClassification"
+                :options="boClassification"
                 type="checkbox"
                 inline
               />
@@ -179,12 +179,9 @@ import { checkValidity, sharedData, resetSharedVariable } from 'src/pages/user/B
 import {
   employmentTypeOption,
   qualificationOption,
+  boClassification,
+  occupationList
 } from '../../consts/BackOrder.const';
-import {
-  applicantClassification,
-  occupationList,
-} from 'src/shared/constants/Applicant.const';
-
 
 const isSaving = ref<boolean>(false);
 const searchDataSample = {
