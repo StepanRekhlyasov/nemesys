@@ -8,6 +8,8 @@ import { api } from 'src/boot/axios';
 import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
 import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 import { useOrganization } from './organization';
+import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
+import axios from 'axios';
 
 interface BackOrderState {
   BOList: BackOrderModel[];
@@ -634,5 +636,17 @@ export const useBackOrder = defineStore('backOrder', () => {
     return counted.data().count;
   };
 
-  return { getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
+  const getAddresses = async (lat=36.083,lon=140.0) => {
+    const api = searchConfig.mapApi;
+    const url = `https://get-address-planwvepxa-an.a.run.app?lat=${lat}&lon=${lon}&api=${api}`;
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+      return data
+    } catch (error) {
+        return ''
+    }
+  }
+
+  return { getAddresses, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })
