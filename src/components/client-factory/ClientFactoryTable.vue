@@ -114,7 +114,6 @@ watch (()=>selectedAll.value,()=>{
 </script>
 
 <template>
-
     <q-table
     :rows="paginatedAndSortedRows.length?paginatedAndSortedRows:rows"
     :columns="tableColumns"
