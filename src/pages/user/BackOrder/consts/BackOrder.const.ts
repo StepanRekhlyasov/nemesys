@@ -132,23 +132,23 @@ export const BackOrderStaffApplicant = computed(() => {
   const { t } = i18n.global;
   return [
     {
-      name: 'name',
+      name: 'boId',
       required: true,
-      label: t('backOrder.name'),
-      field: 'name',
+      label: 'BOID',
+      field: 'boId',
       align: 'left',
     },
     {
-      name: 'statusThisTime',
+      name: 'dealType',
       required: true,
-      label: t('backOrder.statusThisTime'),
-      field: 'statusThisTime',
+      label: t('backOrder.dealType'),
+      field: 'typeCase',
       align: 'left',
     },
     {
       name: 'distanceBusiness',
       required: true,
-      label: t('backOrder.distanceBusiness'),
+      label: t('client.list.distance'),
       field: 'distanceBusiness',
       align: 'left',
       sortable: true,

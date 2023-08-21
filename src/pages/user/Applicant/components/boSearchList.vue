@@ -9,13 +9,13 @@
   <q-card-section class=" q-pa-none">
     <q-table :columns="columns" :loading="loading" :rows="allBoList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
-      <template v-slot:body-cell-name="props">
+      <template v-slot:body-cell-boId="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           <q-btn flat dense no-caps color="primary" @click="openDrawer(props.row)" :label="props.row.boId"
             class="q-pa-none text-body1" />
         </q-td>
       </template>
-      <template v-slot:body-cell-statusThisTime="props">
+      <template v-slot:body-cell-dealType="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ t(`applicant.add.${props.row.typeCase}`) }}
         </q-td>
@@ -27,12 +27,12 @@
       </template>
       <template v-slot:body-cell-clientName="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ props.row.clientName?props.row.clientName.slice(0,5):'-' }}{{ props.row.clientName && props.row.clientName.length>5?'...':'' }}
+          {{ props.row.clientName?props.row.clientName.slice(0,7):'-' }}{{ props.row.clientName && props.row.clientName.length>7?'...':'' }}
         </q-td>
       </template>
       <template v-slot:body-cell-officeName="props">
         <q-td :props="props" class="no-wrap q-pa-none">
-          {{ props.row.officeName?props.row.officeName.slice(0,5):'-' }}{{ props.row.officeName && props.row.officeName.length>5?'...':'' }}
+          {{ props.row.officeName?props.row.officeName.slice(0,7):'-' }}{{ props.row.officeName && props.row.officeName.length>7?'...':'' }}
         </q-td>
       </template>
       <template v-slot:body-cell-matchDegree="props">
