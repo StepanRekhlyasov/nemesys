@@ -241,6 +241,8 @@ const cancel = () => {
 const saveSearchConditions = async () => {
   isSaving.value = true;
   let valid = true;
+  searchData.value['id'] = null
+  searchData.value['created_at'] = null
   try {
     checkValidity(searchData.value)
   }
