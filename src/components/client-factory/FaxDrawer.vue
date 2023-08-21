@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { withDefaults, defineEmits, defineProps, ref, watch } from 'vue';
+import { withDefaults, defineEmits, defineProps, ref, watch , Ref , computed , onMounted} from 'vue';
 import { useApplicant } from 'src/stores/applicant';
 import { myDateFormat } from 'src/shared/utils/utils';
 import { useFax } from 'src/stores/fax';
@@ -9,6 +9,12 @@ import { Alert } from 'src/shared/utils/Alert.utils'
 import PdfViewer from 'src/pages/user/BusinessManagement/components/PdfViewer.vue';
 import { pdfViewer } from 'src/pages/user/BusinessManagement/consts/index';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
+import {useClient} from 'src/stores/client'
+import { Client } from 'src/shared/model';
+import { useOrganization } from 'src/stores/organization';
+import { where } from 'firebase/firestore'
+import { Industry } from 'src/shared/model/Industry.model';
+
 const { t } = useI18n({ useScope: 'global' });
 const faxStore = useFax();
 const $q = useQuasar();
@@ -26,9 +32,13 @@ const faxDataDataSample = {
   setTransmissionDateTime: true,
   transmissionDateTime: '',
 };
+const organization = useOrganization()
+const clientStore = useClient()
+const facilityTypeOptions = ref([]);
+const clients:Ref<Client[]> = ref([]);
 const faxData = ref(JSON.parse(JSON.stringify(faxDataDataSample)));
 const faxFile = ref<FileList | []>([]);
-const applicantList = ref(<{ value: string; label: string }[]>[]);
+const applicantList = ref(<{ value: string; label: string , industry?:Industry}[]>[]);
 const applicantStore = useApplicant();
 const loading = ref(false);
 const faxForm = ref();
@@ -49,10 +59,27 @@ watch(
       if (newVal[i]['dob']) {
         label += ' (' + myDateFormat(newVal[i]['dob']) + ')'
       }
-      applicantList.value.push({ label: label, value: newVal[i]['id'] })
+      applicantList.value.push({ label: label, value: newVal[i]['id'] , industry: newVal[i]['industry'] })
     }
   },
 )
+watch(
+  () => faxData.value['applicants'],
+  (newVal) => {
+   getFacilityTypeOptions(newVal)
+  }
+);
+const getFacilityTypeOptions = (facilityTypeData: { industry?: { uniqueItems?: { facilityForms?: Record<string, { title: string }> } } }) => {
+  if(facilityTypeData.industry && facilityTypeData.industry.uniqueItems && facilityTypeData.industry.uniqueItems.facilityForms){
+  const industryArray = Object.values(facilityTypeData.industry?.uniqueItems?.facilityForms || {}).map((formData: { title: string }) => ({
+    name: formData.title,
+  }));
+  facilityTypeOptions.value.push(...industryArray);
+}
+};
+
+
+
 watch(
   () => faxData.value.setTransmissionDateTime,
   () => {
@@ -87,7 +114,9 @@ const filterFn = (val: string, update) => {
   });
 };
 
-
+onMounted(async () => {
+  clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
+});
 watchCurrentOrganization(async () => {
   await applicantStore.loadApplicantData()
 })
@@ -126,6 +155,18 @@ const confirmContent = () => {
     confirm.value = true
   });
 }
+const filterClients = (val:string, update) => {
+  if (val === '') {
+    update(async() => {
+    clients.value =  await clientStore.getClientsByConstraints([where('organizationId', '==', organization.currentOrganizationId)])
+    });
+    return;
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clients.value = clients.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  });
+};
 </script>
 <template>
   <q-drawer :model-value="isDrawer" :width="900" :breakpoint="500" overlay elevated bordered side="right" show>
@@ -166,17 +207,20 @@ const confirmContent = () => {
                 <p>{{ faxData['applicants']['label'] }}</p>
               </div>
             </div>
-            <div class="row">
+            <div class="row q-pt-sm">
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
                 {{ $t('clientFactory.fax.clientCategoryNG') }}
               </div>
               <div class="col-9"></div>
             </div>
             <div class="row">
-              <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
+              <div class="col-3 text-right q-pr-sm text-primary q-pt-lg">
                 {{ $t('clientFactory.fax.clientFacilityNG') }}
               </div>
-              <div class="col-9"></div>
+              <div class="col-9 q-pt-md">
+                <q-select outlined dense multiple :options="facilityTypeOptions" use-chips emit-value map-options
+                option-label="name" option-value="name" v-model="faxData['ngFacilityType']" :disable="loading"/>
+              </div>
             </div>
             <div class="row">
               <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
@@ -279,10 +323,16 @@ const confirmContent = () => {
               </div>
 
               <div class="row">
-                <div class="col-3 text-right q-pr-sm text-primary q-pt-sm">
+                <div class="col-3 text-right q-pr-sm text-primary q-pt-md q-mt-xs">
                   {{ $t('clientFactory.fax.clientNG') }}
                 </div>
-                <div class="col-9"></div>
+                <div class="col-9">
+                  <div class="col-9  blue q-pt-sm q-mt-xs">
+                      <q-select outlined dense use-chips :options="clients"
+                      option-label="name" v-model="faxData['ngClient']" :disable="loading"
+                      use-input input-debounce="0"  class="custom-q-select" emit-value map-options @filter="filterClients"/>
+                   </div>
+                </div>
               </div>
 
               <div class="row">
