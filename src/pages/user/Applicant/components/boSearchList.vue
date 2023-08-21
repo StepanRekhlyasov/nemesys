@@ -127,7 +127,7 @@ const filterOptions = async (val: string, update) => {
   }
   update(() => {
     const needle = val.toLowerCase()
-    filteredOptions.value = occupationList.value.filter(opt=>(opt.value.toLowerCase().indexOf(needle)>-1))
+    filteredOptions.value = occupationList.value.filter(opt=>(opt.value.toLowerCase().indexOf(needle)>-1 || opt.label.toLowerCase().indexOf(needle)>-1))
   })
 };
 
