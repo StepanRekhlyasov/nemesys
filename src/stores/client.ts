@@ -7,6 +7,7 @@ import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
 import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { useClientFactory } from './clientFactory';
+import { getAuth } from 'firebase/auth';
 
 export const useClient = defineStore('client', () => {
     // db
@@ -14,6 +15,7 @@ export const useClient = defineStore('client', () => {
 
     // state
     const clients = ref<Client[]>([])
+    const auth = getAuth()
 
     // methods
     const addNewClient = async (client: Client) => {
@@ -57,11 +59,11 @@ export const useClient = defineStore('client', () => {
         const clientsCollection = collection(db, 'clients');
         const filteredClientsQuery = query(clientsCollection, where('deleted', '==', false));
         onSnapshot(filteredClientsQuery, (snapshot) => {
-          clients.value = snapshot.docs.map(doc => {
-                const clientData = doc.data();
+          clients.value = snapshot.docs.map(row => {
+            const clientData = row.data();
                 return {
                     ...clientData,
-                    id: doc.id,
+                    id: row.id,
                     created_at: date.formatDate(clientData.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                     updated_at: date.formatDate(clientData.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
                 };
@@ -102,7 +104,11 @@ export const useClient = defineStore('client', () => {
 
     async function deleteClientFactories(rowData : ClientFactoryTableRow[]){
       const batch = writeBatch(db);
-      const deleteData = {deleted: true}
+      const deleteData = {
+        deleted: true,
+        deleted_by: auth.currentUser?.uid,
+        deletedAt: serverTimestamp()
+      }
       const clientFactoryStore = useClientFactory()
       for(const row of rowData){
         const isHead = row.office.isHead

@@ -191,7 +191,7 @@ export const useHeadDetails = (clientFactory: ClientFactory, relatedOfficeInfo?:
       {label: t('clientFactory.drawer.details.established'), value: safeGet(client, 'established') ?? '', editType: 'text', key: 'established'},
       {label: t('clientFactory.drawer.details.capital'), value: safeGet(client, 'capital') ?? '', editType: 'text', key: 'capital'},
       {label: t('clientFactory.drawer.details.earnings'), value: safeGet(client, 'earnings') ?? '', editType: 'text', key: 'earnings'},
-      {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(client, 'numberOffices') ?? 0, editType: 'number', key: 'numberOffices'},
+      // {label: t('clientFactory.drawer.details.numberOffices'), value: safeGet(client, 'numberOffices') ?? 0, editType: 'number', key: 'numberOffices'},
       {label: t('clientFactory.drawer.details.numberEmployees'), value: safeGet(client, 'numberEmployees') ?? 0, editType: 'number', key: 'numberEmployees'},
       {label: t('clientFactory.drawer.details.companyProfile'), value: safeGet(client, 'companyProfile') ?? '', editType: 'text', key: 'companyProfile'}
     ]

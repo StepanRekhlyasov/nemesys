@@ -26,6 +26,7 @@ interface BackOrderState {
 
 export const useBackOrder = defineStore('backOrder', () => {
   const db = getFirestore();
+  const auth = getAuth()
   const state = ref<BackOrderState>({
     BOList: [],
     selectedBo: null,
@@ -328,6 +329,8 @@ export const useBackOrder = defineStore('backOrder', () => {
       const boRef = doc(db, '/BO/' + bo.id);
       await updateDoc(boRef, {
         deleted: true,
+        deleted_by: auth.currentUser?.uid,
+        deletedAt: serverTimestamp()
       });
     });
     Promise.all(ret);

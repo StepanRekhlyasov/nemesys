@@ -795,6 +795,8 @@ export default {
     }
   },
   applicant: {
+    deleteTitle: 'Are you sure you want to delete the applicant?',
+    deleteBody: 'Delete all data of the selected applicants. It cannot be undone. Is it OK?',
     smsNotes: {
       note: '※Notes for SMS transmission:',
       note1: '・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',

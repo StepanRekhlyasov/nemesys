@@ -38,6 +38,7 @@
           <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save"
             color="primary q-ml-sm" />
           <q-btn class="q-ml-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="$emit('openSMSDrawer')" />
+          <slot name="button"></slot>
         </div>
       </div>
       <q-expansion-item hide-expand-icon :header-style="{ display: 'none' }" v-model="expanded">
