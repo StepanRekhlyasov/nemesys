@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
-import { withDefaults, defineEmits, defineProps, ref, watch , Ref , computed , onMounted} from 'vue';
+import { withDefaults, defineEmits, defineProps, ref, watch , Ref , onMounted} from 'vue';
 import { useApplicant } from 'src/stores/applicant';
 import { myDateFormat } from 'src/shared/utils/utils';
 import { useFax } from 'src/stores/fax';
