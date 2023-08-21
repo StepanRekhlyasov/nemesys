@@ -22,6 +22,7 @@ export interface ClientFactoryTableRow {
             isHead?: boolean
             clientName?: string
         },
+        clientId: string,
         distance: string,
         address: string,
         telephone: string,

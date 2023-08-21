@@ -3,6 +3,7 @@ import { ImportLog } from './ImportLog'
 import { Client } from './Client.model'
 export interface ClientFactory {
     id: string
+    deleted: boolean
     industry: string[]
     isHead: boolean
     name: string

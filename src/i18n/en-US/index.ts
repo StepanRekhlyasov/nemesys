@@ -1595,6 +1595,8 @@ export default {
     }
   },
   clientFactory: {
+    deleteClientFactoriesText: 'Delete an office. Deleting the headquarters office will delete all the data of related offices and related BOs. It cannot be undone. Are you really sure?',
+    deleteClientFactoriesTitle: 'System warning',
     numberEmployees: 'Number of employees',
     facilityType: 'Facility type',
     mediaOptions: 'Media Options',
