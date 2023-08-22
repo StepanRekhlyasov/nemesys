@@ -217,7 +217,6 @@ export const useClientFactory = defineStore('client-factory', () => {
     }
 
     const getClientFactories = async (clients: Client[]) => {
-
     // Unsubscribe from removed clients
         for (const clientId in unsubscribe.value) {
             if (!clients.some(client => client.id === clientId)) {
@@ -232,7 +231,7 @@ export const useClientFactory = defineStore('client-factory', () => {
 
         await Promise.all(clients.map(async (client) => {
             if (!unsubscribe.value[client.id as string]) {
-                unsubscribe.value[client.id as string] = onSnapshot(collection(db, `clients/${client.id}/client-factory`), async (snapshot) => {
+                unsubscribe.value[client.id as string] = onSnapshot(query(collection(db, `clients/${client.id}/client-factory`), where('deleted', '==', false)), async (snapshot) => {
                     const newClientFactories: ClientFactory[] = [];
 
                     const clientFactoryPromises = snapshot.docs.map(async (doc) => {
@@ -301,6 +300,7 @@ export const useClientFactory = defineStore('client-factory', () => {
 
             await addDoc(collection(db, 'clients', clientFactory.clientID, 'client-factory'), {
                 ...clientFactory,
+                deleted: false,
                 created_at: serverTimestamp(),
                 updated_at: serverTimestamp()
             });

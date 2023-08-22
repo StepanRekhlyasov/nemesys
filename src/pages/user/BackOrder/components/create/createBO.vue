@@ -11,7 +11,7 @@
               {{ `${$t('backOrder.clientName')} / ${$t('backOrder.officeName')} / ${$t(`backOrder.type.${type}`)}` }}
             </div>
             <div v-else class="row text-h6 text-weight-bold q-pr-xs">
-              {{ `${data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id'])?.name : undefined} / ${clientFactory.name} / ${$t(`backOrder.type.${type}`)}` }}
+              {{ `${data['client_id'] ? clientStore.clients.find(client => client.id === data['client_id'])?.name : undefined} / ${clientFactory.name} / ${$t(`backOrder.type.${type}`)}` }}
             </div>
           </div>
         </div>
@@ -29,11 +29,11 @@
         <!-- Main Information -->
         <q-card-section>
           <q-select v-model="data.client_id" @update:model-value="data['office_id'] = undefined" :loading="loading"
-            :options="applicantStore.state.clientList" option-value="id" option-label="name" :rules="[creationRule]"
-            hide-bottom-space emit-value map-options :label="$t('applicant.list.fixEmployment.client')" />
+            :options="!clientFilter?clientStore.clients:filteredClient" option-value="id" option-label="name" :rules="[creationRule]"
+            hide-bottom-space emit-value map-options :label="$t('applicant.list.fixEmployment.client')" use-input input-debounce="0" @filter="filterClient"/>
           <q-select v-model="data['office_id']" :loading="loading" emit-value map-options option-value="id"
-            option-label="name" :rules="[creationRule]" hide-bottom-space :options="clientFactoryList"
-            :disable="!data['client_id']" :label="$t('applicant.list.fixEmployment.office')" />
+            option-label="name" :rules="[creationRule]" hide-bottom-space :options="!clientFactoryFilter?clientFactoryList:filteredClientFactory"
+            :disable="!data['client_id']" :label="$t('applicant.list.fixEmployment.office')" use-input input-debounce="0" @filter="filterClientFactory"/>
           <q-select v-model="data.industry" :loading="loading" option-value="id"
             option-label="name" :rules="[creationRule]" hide-bottom-space :options="industryList"
             :disable="!data['office_id']" :label="$t('clientFactory.drawer.details.industry')" />
@@ -41,7 +41,7 @@
 
         <!-- Basic Info Section -->
         <basic-info-section :backOrder="data" :loading="loading"
-          :client="data['client_id'] ? applicantStore.state.clientList.find(client => client.id === data['client_id']) : undefined"
+          :client="data['client_id'] ? clientStore.clients.find(client => client.id === data['client_id']) : undefined"
           :officeID="data['office_id']" :offices="clientFactoryList" />
 
         <!-- Working Type Section -->
@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BackOrderModel, BackOrderStatus, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
+import { BackOrderModel, BackOrderStatus, Client, selectOptions, TypeQualifications, UserPermissionNames } from 'src/shared/model';
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 import employmentConditionsSection from './employmentConditionsSection.vue';
 import PaycheckSection from './PaycheckSection.vue';
@@ -139,9 +139,14 @@ import { useClientFactory } from 'src/stores/clientFactory';
 import { ClientFactory } from 'src/shared/model/ClientFactory.model';
 import { date } from 'quasar'
 import { useI18n } from 'vue-i18n';
+import { useClient } from 'src/stores/client';
 
 const { t } = useI18n({ useScope: 'global' });
 const emits = defineEmits(['closeDialog','fetchBo']);
+const clientFilter = ref<boolean>(false)
+const clientFactoryFilter = ref<boolean>(false)
+const filteredClient = ref<Client[]>([])
+const filteredClientFactory = ref<ClientFactory[]>([])
 const props = defineProps<{
   type: 'dispatch' | 'referral',
   clientId?: string,
@@ -153,6 +158,7 @@ const backOrderStore = useBackOrder();
 const applicantStore = useApplicant();
 const organization = useOrganization();
 const clientFactoryStore = useClientFactory();
+const clientStore = useClient();
 const userStore = useUserStore();
 const clientFactory = ref<ClientFactory>();
 const industryList = ref()
@@ -167,7 +173,7 @@ const transactionTypeOptions = computed(()=>{
   if(props.type === 'dispatch') {
     return [
       {label: 'TTP', value: 'TTP'},
-      {label: t('client.backOrder.dispatchEm'), value: 'generalDispatch'},
+      {label: t('client.backOrder.dispatchEm'), value: 'dispatch'},
     ]
   }
   return [
@@ -178,7 +184,7 @@ const transactionTypeOptions = computed(()=>{
 
 async function addBackOrder() {
   loading.value = true
-  data.value['clientName'] = applicantStore.state.clientList.find(client => client.id === data.value['client_id'])?.name
+  data.value['clientName'] = clientStore.clients.find(client => client.id === data.value['client_id'])?.name
   const officeName = clientFactoryList.value.find(office => office.id === data.value['office_id'])?.name
   if(officeName){
     data.value['officeName'] = officeName
@@ -243,7 +249,7 @@ const updateOfficeName = async ()=>{
       clientFactory.value = updatedDocument
     }
     if(clientFactory.value.clientID && !clientFactory.value.client){
-      clientFactory.value.client = applicantStore.state.clientList.find(client => client.id === data.value.client_id)
+      clientFactory.value.client = clientStore.clients.find(client => client.id === data.value.client_id)
     }
   }
 
@@ -326,6 +332,36 @@ watch(() => [data.value.client_id, data.value.office_id], async () => {
     }
   });
 }, { deep: true, immediate: true })
+
+const filterClient = async (val: string, update) => {
+  if (val === '') {
+    update(() => {
+      filteredClient.value = clientStore.clients;
+    })
+    clientFilter.value = false;
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clientFilter.value = true;
+    filteredClient.value = clientStore.clients.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  })
+};
+
+const filterClientFactory = async (val: string, update) => {
+  if (val === '') {
+    update(() => {
+      filteredClientFactory.value =  clientFactoryList.value
+    })
+    clientFactoryFilter.value = false
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    clientFactoryFilter.value = true;
+    filteredClientFactory.value = clientFactoryList.value.filter(v => v.name.toLowerCase().indexOf(needle) > -1)
+  })
+};
 
 </script>
 

@@ -15,12 +15,13 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
     (e: 'selectItem', item: ClientFactoryTableRow)
-    (e: 'selectedId', item: number[])
+    (e: 'selectedId', item: ClientFactoryTableRow[])
 }>()
 
 const { t } = useI18n({ useScope: 'global' });
 
-const selected = ref<number[]>([])
+const selected = ref<ClientFactoryTableRow[]>([])
+const selectedAll =ref(false)
 const getSelectedString = () => {
     return selected.value.length === 0 ? '' : `${t('common.numberOfSelections')}: ${selected.value.length}`
 }
@@ -29,8 +30,8 @@ const selectItem = (item: ClientFactoryTableRow) => {
     emit('selectItem', item)
 }
 
-watch(()=>selected.value,()=>{
-    emit('selectedId',selected.value)
+watch(()=>selected.value, ()=>{
+    emit('selectedId', selected.value)
 })
 
 const paginatedAndSortedRows = ref<ClientFactoryTableRow[]>([...props.rows]);
@@ -106,6 +107,11 @@ watch(()=>[props.rows, props.pagination], () => {
   const end = start + props.pagination.rowsPerPage;
   paginatedAndSortedRows.value = sortedRows.slice(start, end);
 }, {immediate: true, deep:true});
+
+watch (()=>selectedAll.value,()=>{
+  if(selectedAll.value) selected.value = props.rows
+  else selected.value = []
+})
 </script>
 
 <template>
@@ -124,13 +130,20 @@ watch(()=>[props.rows, props.pagination], () => {
     :sort-method="sortRows"
     hide-pagination>
 
-        <template v-slot:header-cell="props">
-            <q-th :props="props">
-                <div :key="item" v-for="item in props.col.label.split(' / ')">
-                    {{ item }}
-                </div>
-            </q-th>
+    <template v-slot:header="props">
+      <q-tr :props="props">
+        <q-th align="left">
+          <q-checkbox v-model="selectedAll" @click="!selectedAll"  ></q-checkbox>
+        </q-th>
+        <template v-for="col in props.cols" :key="col.name">
+          <q-th :props="props">
+            <div v-for="item in col.label.split('/')" :key="item">
+              {{ item }}
+            </div>
+          </q-th>
         </template>
+      </q-tr>
+    </template>
 
         <template v-slot:body="props">
             <q-tr :props="props" :class="`wrapper_animate_left_border_${theme === 'primary' ? 'client' : ''} relative-position`">

@@ -123,7 +123,7 @@
               </div>
             </div>
             <div class="row q-pt-sm">
-              <div class="col-3 text-right self-center q-pr-sm q-mb-md">
+              <div class="col-3 text-right self-center q-pr-sm q-mb-md q-pt-sm">
                 {{ $t('clientFactory.drawer.details.industry') }}<span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm ">

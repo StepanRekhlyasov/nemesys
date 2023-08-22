@@ -21,7 +21,7 @@ defineProps<{
 .left-container {
     background: $accent;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     color: white;
     min-width: 150px;

@@ -20,6 +20,7 @@ const inputRadius = ref<number>(10);
 const isLoadingProgress = ref(false)
 const searchInput = ref('')
 
+const locationLoading = ref<boolean>(false)
 const applicantList = ref<Applicant[]>([])
 const getApplicant = useApplicant();
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
@@ -56,6 +57,9 @@ const getMarkerColor = () => {
 
 onMounted(async () => {
   await fetchData()
+  locationLoading.value = true;
+  searchInput.value = await backOrderStore.getAddresses(center.value.lat,center.value.lng)
+  locationLoading.value = false;
 })
 
 
@@ -145,7 +149,7 @@ const clear = () => {
       <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <q-card-section class="row search">
-      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker">
+      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker" :loading="locationLoading">
         <template v-slot:prepend>
           <q-btn flat icon='place' :color="props.theme"></q-btn>
         </template>

@@ -68,12 +68,12 @@
 
     <div class="row q-pb-sm">
 
-      <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks'] || ''" :autogrow="true">
+      <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right q-mt-sm"
+        valueClass="q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks'] || ''" :autogrow="true">
         <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" type="textarea" autogrow />
       </LabelField>
-      <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center" :value="data.transactionType? $t(`client.backOrder.${data.transactionType}`):''"
-        valueClass="self-center q-pl-md col-4">
+      <LabelField :label="$t('client.backOrder.transactionType')" :edit="edit" labelClass="q-pl-md col-2 text-right q-mt-sm" :value="data.transactionType? $t(`client.backOrder.${data.transactionType}`):''"
+        valueClass="q-pl-md col-4">
         <q-radio v-for="item in transactionTypeOptions" v-model="data.transactionType" :label="item.label"
           checked-icon="mdi-checkbox-intermediate" unchecked-icon="mdi-checkbox-blank-outline" :val="item.value" :key="item.value"
           :disable="loading" class="q-pr-md" />
@@ -433,7 +433,7 @@ const transactionTypeOptions = computed(()=>{
   if(selectedBo.value.type === 'dispatch') {
     return [
       {label: 'TTP', value: 'TTP'},
-      {label: t('client.backOrder.dispatchEm'), value: 'generalDispatch'},
+      {label: t('client.backOrder.dispatchEm'), value: 'dispatch'},
     ]
   }
   return [
