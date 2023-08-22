@@ -25,6 +25,7 @@ const getApplicant = useApplicant();
 const backOrderStore = useBackOrder()
 const detailsDrawer = ref<InstanceType<typeof ApplicantDetails> | null>(null);
 const organization = useOrganization()
+const locationLoading = ref<boolean>(false)
 
 watch(()=> [organization.currentOrganizationId], async () => {
   await getApplicantMarkers();
@@ -32,6 +33,9 @@ watch(()=> [organization.currentOrganizationId], async () => {
 
 watch(mapDrawerValue,async ()=>{
   await getApplicantMarkers();
+  locationLoading.value = true;
+  searchInput.value = await backOrderStore.getAddresses(props.bo?.lat,props.bo?.lon);
+  locationLoading.value = false;
 })
 
 const getApplicantMarkers = async ()=>{
@@ -45,11 +49,10 @@ const getApplicantMarkers = async ()=>{
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   isLoadingProgress.value = true
   getClientLocation();
   isLoadingProgress.value = false;
-
 })
 
 const getClientLocation = () => {
@@ -171,7 +174,7 @@ const clear = () => {
       <q-linear-progress v-if="isLoadingProgress" indeterminate rounded :color="props.theme" />
     </div>
     <q-card-section class="row search">
-      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker">
+      <q-input class="q-mr-md searchBox" outlined v-model="searchInput" dense prefix-icon="mdi-map-marker" :loading="locationLoading">
         <template v-slot:prepend>
           <q-btn flat icon='place' :color="props.theme"></q-btn>
         </template>

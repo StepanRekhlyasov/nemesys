@@ -5,9 +5,8 @@ export const radius = ref<number>(0);
 
 export const drawerValue = ref<boolean>(false);
 export const mapDrawerValue = ref<boolean>(false);
-
+const { t } = i18n.global;
 export const BackOrderColumns = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       name: 'BOID',
@@ -93,7 +92,6 @@ export const BackOrderColumns = computed(() => {
 });
 
 export const BackOrderStaff = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       name: 'name',
@@ -128,8 +126,59 @@ export const BackOrderStaff = computed(() => {
   ];
 });
 
+export const BackOrderStaffApplicant = computed(() => {
+  return [
+    {
+      name: 'boId',
+      required: true,
+      label: 'BOID',
+      field: 'boId',
+      align: 'left',
+    },
+    {
+      name: 'dealType',
+      required: true,
+      label: t('backOrder.dealType'),
+      field: 'typeCase',
+      align: 'left',
+    },
+    {
+      name: 'distanceBusiness',
+      required: true,
+      label: t('client.list.distance'),
+      field: 'distanceBusiness',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'clientName',
+      required: true,
+      label: t('backOrder.clientName'),
+      field: 'clientName',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'officeName',
+      required: true,
+      label: t('backOrder.officeName'),
+      field: 'officeName',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'matchDegree',
+      required: true,
+      label: t('backOrder.matchDegree'),
+      field: 'matchDegree',
+      align: 'left',
+      sortable: true,
+    },
+
+  ];
+});
+
 export const moreHalfYearExpOption = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       label: t('client.backOrder.necessary'),
@@ -143,29 +192,40 @@ export const moreHalfYearExpOption = computed(() => {
 });
 
 export const employmentTypeOption = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       label: t('client.backOrder.fullTime'),
       value: 'fullTime',
     },
     {
-      label: t('client.backOrder.dispatchEm'),
-      value: 'dispatchEm',
+      label: t('client.backOrder.dispatch'),
+      value: 'dispatch',
     },
     {
       label: t('client.backOrder.partTime'),
       value: 'partTime',
     },
     {
-      label: t('client.backOrder.partTimeEmployee'),
-      value: 'partTimeEmployee',
+      label: t('client.backOrder.referralDispatch'),
+      value: 'referralDispatch',
     },
   ];
 });
 
+export const occupationList = computed(() => {
+  return [
+    {
+  label: t('applicant.add.nurse'),
+  value: 'nurse'
+  },
+  {
+  label: t('applicant.add.nursingCare'),
+  value: 'nursingCare'
+  },
+];
+})
+
 export const qualificationOption = computed(() => {
-  const { t } = i18n.global;
   return [
     {
       label: t('applicant.qualification.registeredNurse'),
@@ -189,3 +249,16 @@ export const qualificationOption = computed(() => {
     },
   ];
 });
+
+export const boClassification = computed(() => {
+  return [{
+    label: t('applicant.list.info.classification.introduction'),
+    value: 'introduction'
+  },{
+    label: t('applicant.list.info.classification.dispatch'),
+    value: 'dispatch'
+  },{
+    label: t('applicant.list.info.classification.ttp'),
+    value: 'TTP'
+  }]
+})

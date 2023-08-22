@@ -86,7 +86,6 @@ watch(()=> props.selectedIndustry?.value, async (newVal)=>{
                 <span :class="`text-${theme} line__label`">
                     {{ row.label }} 
                 </span>
-
                 <a v-if="row.key === 'homepageUrl' && typeof row.value === 'string'" :href="row.value" target="_blank" :class="`link q-pl-sm ${row.isHighlight && 'line__highlight'}`">
                     {{ row.value }}
                 </a>

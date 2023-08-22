@@ -3,6 +3,7 @@ import { ImportLog } from './ImportLog'
 import { Client } from './Client.model'
 export interface ClientFactory {
     id: string
+    deleted: boolean
     industry: string[]
     isHead: boolean
     name: string
@@ -109,7 +110,7 @@ type OfficeDetails = {
     }
 }
 
-interface ContractInfo {
+export interface ContractInfo {
     contractUnit: string;
     industry: string[]
     contractTel: string;

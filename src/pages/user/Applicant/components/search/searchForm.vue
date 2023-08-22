@@ -38,6 +38,7 @@
           <q-btn :disable="isSaving" :label="$t('client.list.saveSearchConditions')" @click="save"
             color="primary q-ml-sm" />
           <q-btn class="q-ml-sm" :label="$t('backOrder.sms.sendSMS')" color="primary" @click="$emit('openSMSDrawer')" />
+          <slot name="button"></slot>
         </div>
       </div>
       <q-expansion-item hide-expand-icon :header-style="{ display: 'none' }" v-model="expanded">
@@ -475,17 +476,8 @@ onMounted(async () => {
 
 });
 
-const updateArea = (selectedPrefectures: string, selectedMunicipality: string) => {
-  // searchData.value['prefecture'] = selectedPrefectures;
-  let prefectures = []
-  for (var i = 0; i < selectedPrefectures.length; i++) {
-    prefectures.push(Object.keys(prefJP.value).find(key => prefJP.value[key] === selectedPrefectures[i]) as never)
-  }
-  searchData.value['prefectureArea'] = [...prefectures, ...selectedPrefectures];
-
+const updateArea = (selectedMunicipality: string[]) => {
   searchData.value['municipalitiesArea'] = selectedMunicipality;
-
-  //
 }
 const updateMap = (mapData) => {
   try {

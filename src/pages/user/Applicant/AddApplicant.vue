@@ -35,10 +35,10 @@
                 <div class="row  flex justify-center centers items-center">
                   <div class="col-8">
                     <q-input class="col" outlined dense v-model="applicantData['postCode']" :rules="[creationRule]"
-                      hide-bottom-space bg-color="white" />
+                    :placeholder="$t('common.noHyphen')"  hide-bottom-space bg-color="white" />
                   </div>
                   <div class="col-4 text-center justify-center">
-                    <q-btn @click="fetchAddress" dense>Autofill</q-btn>
+                    <q-btn @click="fetchAddress" dense> {{  $t('applicant.add.addressSearch') }}</q-btn>
                   </div>
                 </div>
               </div>
@@ -123,7 +123,7 @@
               </div>
             </div>
             <div class="row q-pt-sm">
-              <div class="col-3 text-right self-center q-pr-sm q-mb-md">
+              <div class="col-3 text-right self-center q-pr-sm q-mb-md q-pt-sm">
                 {{ $t('clientFactory.drawer.details.industry') }}<span style="color: red">*</span>
               </div>
               <div class="col-6 q-ml-sm ">
@@ -139,7 +139,7 @@
                   :options="industries"
                   option-label="industryName"
                   option-value="."
-                  :rules="[val => !!val || '']"
+                  @update:model-value="onIndustrySelected"
                   > <template v-if="!applicantData['industry']" v-slot:selected>
                 <div class="text-grey-6">{{ $t('common.pleaseSelect') }}</div>
               </template></q-select>
@@ -190,14 +190,13 @@
                 <q-field ref="toggle" borderless dense v-model="applicantData['occupation']" :rules="[creationRule]"
                   hide-bottom-space>
                   <template v-slot:control>
-                    <q-radio v-model="applicantData['occupation']" val="nurse" :label="$t('applicant.add.nurse')" />
-                    <q-radio v-model="applicantData['occupation']" val="nursingCare"
-                      :label="$t('applicant.add.nursingCare')" />
-                    <q-radio v-model="applicantData['occupation']" val="lifeCounselor"
-                      :label="$t('applicant.add.lifeCounselor')" />
-                    <q-radio v-model="applicantData['occupation']" val="careManager"
-                      :label="$t('applicant.add.careManager')" />
-                    <q-radio v-model="applicantData['occupation']" val="others" :label="$t('applicant.add.others')" />
+                    <q-radio
+                      v-for="occupation in occupationOptions"
+                      :key="occupation"
+                      v-model="applicantData['occupation']"
+                      :val="occupation"
+                      :label="(occupation)"
+                    />
                   </template>
                 </q-field>
               </div>
@@ -209,16 +208,13 @@
               <div class="col-9 q-pl-sm">
                 <q-field ref="toggle" borderless dense v-model="applicantData['qualification']" hide-bottom-space>
                   <template v-slot:control>
-                    <q-checkbox v-model="applicantData['qualification']" val="registeredNurse"
-                      :label="$t('applicant.qualification.registeredNurse')" />
-                    <q-checkbox v-model="applicantData['qualification']" val="assistantNurse"
-                      :label="$t('applicant.qualification.assistantNurse')" />
-                    <q-checkbox v-model="applicantData['qualification']" val="newcomer"
-                      :label="$t('applicant.qualification.newcomer')" />
-                    <q-checkbox v-model="applicantData['qualification']" val="careWorker"
-                      :label="$t('applicant.qualification.careWorker')" />
-                    <q-checkbox v-model="applicantData['qualification']" val="worker"
-                      :label="$t('applicant.qualification.worker')" />
+                    <q-checkbox
+                      v-for="qualification in certificateOptions"
+                      :key="qualification"
+                      v-model="applicantData['qualification']"
+                      :val="qualification"
+                      :label="(qualification)"
+                    />
                   </template>
                 </q-field>
               </div>
@@ -350,7 +346,8 @@ const loading = ref(false);
 const imageURL = ref('');
 const applicantImage = ref<FileList | []>([]);
 const municipalities = ref<string[]>([])
-
+const occupationOptions = ref<string[]>([]);
+const certificateOptions = ref<string[]>([]);
 const showAddress = ref(false)
 const addressList = ref(<{ prefecture: string, municipality: string, street: string }[]>[]);
 const keepDetails = ref(false)
@@ -378,6 +375,19 @@ watch(() => applicantData.value.prefecture, async (newVal, oldVal) => {
   }
 }, { immediate: true })
 
+async function onIndustrySelected() {
+  if (applicantData.value.industry) {
+    const reqName = applicantData.value.industry.industryName;
+    applicantData.value['industry'] = applicantData.value.industry.industryName;
+
+    const cerResult = await industryStore.getCertificate(reqName);
+    const occResult = await industryStore.getOccupation(reqName);
+    occupationOptions.value = occResult ? occResult.occupationTitles : [];
+    certificateOptions.value = cerResult ? cerResult.certificateTitles : [];
+    console.log(cerResult.certificateTitles)
+    console.log(occResult.occupationTitles)
+  }
+}
 
 async function fetchAddress() {
   const pincode = applicantData.value.postCode

@@ -70,7 +70,8 @@ watchEffect(() => {
         :theme="theme"
         @open-edit="isEditForm.registeredInfo = true"
         @close-edit="isEditForm.registeredInfo = false"
-        @on-save="isEditForm.registeredInfo = false; handleEditDraft(dataForUpdating.registeredInfo as Data[])"/>
+        @on-save="isEditForm.registeredInfo = false; handleEditDraft(dataForUpdating.registeredInfo as Data[])"
+    />
 
     <EditableColumnsCF
         v-if="isEditForm.registeredInfo" @data-changed="e => getNewDataToUpdate(e, 'registeredInfo')"
@@ -93,7 +94,6 @@ watchEffect(() => {
         @data-changed="e => getNewDataToUpdate(e, `${industryType ? `${industryType}.commonItems` : 'commonItems'}`)"
         :data="officeDetails[`${industryType ? `${industryType}.commonItems` : 'commonItems'}`]" :theme="theme"/>
     
-
     <HighlightTwoColumn
         v-if="industryType"
         :is-drop-down="true"

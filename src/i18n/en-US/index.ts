@@ -23,6 +23,7 @@ export default {
     everything: 'Everything',
     minimum: 'min',
     maximum: 'max',
+    noHyphen: 'No hyphens',
     BO: 'BO',
     deny: 'Deny',
     select: 'Please, choose',
@@ -365,8 +366,8 @@ export default {
       jobs: 'Jobs',
       destination: 'Destination',
       memo: 'Memo',
-      address: 'address',
-      distance: 'distance',
+      address: 'Address',
+      distance: 'Distance',
       score: 'Score',
       phone: 'phone',
       fax: 'Fax',
@@ -795,6 +796,8 @@ export default {
     }
   },
   applicant: {
+    deleteTitle: 'Are you sure you want to delete the applicant?',
+    deleteBody: 'Delete all data of the selected applicants. It cannot be undone. Is it OK?',
     smsNotes: {
       note: '※Notes for SMS transmission:',
       note1: '・It is not possible to specify the originating phone number when sending an SMS. To avoid confusion for the recipient, it is recommended to include the company name at the beginning of the message',
@@ -808,6 +811,7 @@ export default {
       name: 'Name',
       kanaName: 'Kana Name',
       postCode: 'Post Code',
+      addressSearch: 'Address Search',
       prefecture: 'Prefecture',
       municipalities: 'Municipalities',
       street: 'Street Name',
@@ -1383,7 +1387,13 @@ export default {
       three: '3 days a week',
       four: '4 days a week',
       five: '5 days a week'
-    }
+    },
+    saveSearch: {
+      minLessMaxAge : 'Min Age must be lesser than Max Age',
+      minLessMaxDate : 'Registration Date min must be lesser than Registration Date max',
+      boidFormate : 'BOID must be positive integer',
+      searchEmpty : 'Seach conditions are empty',
+    },
   },
   prefectures: {
     hokkaido: 'Hokkaido',
@@ -1589,6 +1599,8 @@ export default {
     }
   },
   clientFactory: {
+    deleteClientFactoriesText: 'Delete an office. Deleting the headquarters office will delete all the data of related offices and related BOs. It cannot be undone. Are you really sure?',
+    deleteClientFactoriesTitle: 'System warning',
     numberEmployees: 'Number of employees',
     facilityType: 'Facility type',
     mediaOptions: 'Media Options',

@@ -125,7 +125,7 @@ onMounted(async () => {
                   <div class="row flex justify-start">
                     <div class="col-3 q-mr-sm q-pr-sm">
                       <DoubleNumberInput :min-model-value="searchData['ageMin']" :max-model-value="searchData['ageMax']"
-                        unit-key="common.year" @on-min-value-update="(v) => searchData['ageMin'] = v"
+                        unit-key="common.age" @on-min-value-update="(v) => searchData['ageMin'] = v"
                         @on-max-value-update="(v) => searchData['ageMax'] = v" />
                     </div>
                     <div class="col-3 q-mr-sm q-pr-sm">

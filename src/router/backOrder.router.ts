@@ -9,7 +9,17 @@ const backOrder_router: MenuRouter[] = [
 			requiresAuth: true,
 		},
 		menuParent: MenuParent.BackOrder,
-	}
+	},
+  {
+    path: 'backOrder/savedSearchList',
+    title: 'menu.savedSearchList',
+    component: () => import('src/pages/user/BackOrder/SavedSearchList.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    menuParent: MenuParent.BackOrder,
+
+  }
 ]
 
 export default backOrder_router;

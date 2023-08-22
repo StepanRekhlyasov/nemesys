@@ -22,7 +22,7 @@
       <q-separator />
       <q-card-actions align="right">
         <q-btn flat :label="$t('common.close')" color="red" v-close-popup />
-        <q-btn flat :label="$t('common.submit')" color="primary" @click="emit('getAddress', selectedAddress)"
+        <q-btn flat :label="$t('common.select')" color="primary" @click="emit('getAddress', selectedAddress)"
           v-close-popup :disable="selectedAddress < 0" />
       </q-card-actions>
     </DialogWrapper>

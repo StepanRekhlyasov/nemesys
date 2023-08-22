@@ -76,6 +76,15 @@ export const statusList = computed(() => {
   ];
 });
 
+export  const orderOfStatus = {
+  [ApplicantStatus.WAIT_CONTACT] : 11,
+  [ApplicantStatus.WAIT_ATTEND] : 12,
+  [ApplicantStatus.WAIT_FIX] : 13,
+  [ApplicantStatus.WAIT_VISIT] : 14,
+  [ApplicantStatus.WAIT_OFFER] : 15,
+}
+
+
 export const mediaList = computed(() => [{
   label: 'indeed',
   value: 'indeed'
