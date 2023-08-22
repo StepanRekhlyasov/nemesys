@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit } from 'firebase/firestore';
+import { setDoc, collection, doc, getDoc, getDocs, getFirestore, orderBy, query, serverTimestamp, updateDoc, where, writeBatch, DocumentData, Timestamp, addDoc, getCountFromServer, limit, DocumentReference } from 'firebase/firestore';
 import { defineStore } from 'pinia';
 import { BackOrderModel } from 'src/shared/model';
 import { ConstraintsType } from 'src/shared/utils/utils';
@@ -8,6 +8,8 @@ import { api } from 'src/boot/axios';
 import { dateToTimestampFormat, myDateFormat } from 'src/shared/utils/utils';
 import { BOElasticFilter, BOElasticSearchData } from 'src/pages/user/BackOrder/types/backOrder.types';
 import { useOrganization } from './organization';
+import { searchConfig } from 'src/shared/constants/SearchClientsAPI';
+import axios from 'axios';
 
 interface BackOrderState {
   BOList: BackOrderModel[];
@@ -24,6 +26,7 @@ interface BackOrderState {
 
 export const useBackOrder = defineStore('backOrder', () => {
   const db = getFirestore();
+  const auth = getAuth()
   const state = ref<BackOrderState>({
     BOList: [],
     selectedBo: null,
@@ -96,10 +99,15 @@ export const useBackOrder = defineStore('backOrder', () => {
         boid: Number(searchData['boid']),
       });
     }
+    if (searchData.customerRepresentative) {
+      filters['all'].push({
+        customerrepresentative: searchData['customerRepresentative'],
+      });
+    }
 
-    const items = ['qualifications'];
+    const items = ['qualifications','employmenttype','typecase','transactiontype'];
     for (let i = 0; i < items.length; i++) {
-      if (searchData[items[i]] && searchData[items[i]].length > 0) {
+      if (searchData[items[i]] && Array.isArray(searchData[items[i]]) &&searchData[items[i]].length > 0) {
         const obj = {};
         obj[items[i]] = searchData[items[i]];
         filters['all'].push(obj);
@@ -147,10 +155,10 @@ export const useBackOrder = defineStore('backOrder', () => {
         console.log(error);
       });
 
-    loadBOData(searchData);
+    loadBOData();
   }
 
-  const loadBOData = async (searchData) => {
+  const loadBOData = async () => {
     state.value.isLoadingProgress = true;
     let allBOList: BackOrderModel[] = []
     while (state.value.currentIds.length) {
@@ -165,21 +173,6 @@ export const useBackOrder = defineStore('backOrder', () => {
       allBOList = [...allBOList, ...boList];
     }
     state.value.BOList = allBOList
-
-    if(searchData.customerRepresentative){
-      state.value.BOList =  state.value.BOList.filter(bo=>bo.customerRepresentative && bo.customerRepresentative === searchData.customerRepresentative)
-    }
-    if(searchData.typecase && searchData.typecase.length){
-      state.value.BOList =  state.value.BOList.filter(bo=>bo.typeCase && searchData.typecase.includes(bo.typeCase))
-    }
-    if(searchData.transactiontype && searchData.transactiontype.length){
-      state.value.BOList =  state.value.BOList.filter(bo=>bo.transactionType && searchData.transactiontype.includes(bo.transactionType))
-    }
-    if(searchData.employmenttype && searchData.employmenttype.length){
-      state.value.BOList = state.value.BOList.filter(bo =>
-        bo.employmentType && bo.employmentType.some(type => searchData.employmenttype.includes(type)));
-    }
-
     state.value.isLoadingProgress = false;
   };
 
@@ -276,6 +269,32 @@ export const useBackOrder = defineStore('backOrder', () => {
     return list;
   }
 
+  async function getCfBoOfCurrentOrganization(office_id: string | undefined, isAdmin: boolean): Promise<BackOrderModel[]> {
+    let constraints: ConstraintsType = []
+    if(isAdmin){
+     constraints = [where('deleted', '==', false), where('office_id', '==', office_id)];
+    }
+    else{
+     constraints = [where('deleted', '==', false), where('office_id', '==', office_id),where('organizationId', '==', organization.currentOrganizationId)];
+    }
+    const docs = await getDocs(query(collection(db, '/BO'), ...constraints));
+
+    const list: BackOrderModel[] = [];
+    docs.forEach((fix) => {
+      const data = fix.data();
+      list.push({
+        ...data,
+        id: fix.id,
+      } as BackOrderModel);
+    });
+    list.forEach(bo=>{
+      bo.dateOfRegistration =  myDateFormat(
+        bo.dateOfRegistration as Timestamp
+      );
+    })
+    return list;
+  }
+
   async function updateBackOrder(backOrder: BackOrderModel) {
     if (!state.value.selectedBo) return;
     const backOrderData = { ...backOrder };
@@ -310,6 +329,8 @@ export const useBackOrder = defineStore('backOrder', () => {
       const boRef = doc(db, '/BO/' + bo.id);
       await updateDoc(boRef, {
         deleted: true,
+        deleted_by: auth.currentUser?.uid,
+        deletedAt: serverTimestamp()
       });
     });
     Promise.all(ret);
@@ -608,5 +629,53 @@ export const useBackOrder = defineStore('backOrder', () => {
     return counted.data().count;
   };
 
-  return { addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
+  async function saveSearch(data: DocumentData) {
+    let docRef: DocumentReference<DocumentData>;
+    if (!data['id']) {
+      data['organizationId'] = organization.currentOrganizationId
+      data['created_at'] = serverTimestamp();
+      data['updated_at'] = serverTimestamp();
+      data['deleted'] = false;
+      docRef = doc(collection(db, 'BOSavedSearch'));
+      data['id'] = docRef.id;
+      await setDoc(docRef, data);
+    } else {
+      docRef = doc(db, 'BOSavedSearch', data['id']);
+      data['updated_at'] = serverTimestamp();
+      await updateDoc(docRef, data);
+    }
+    return true
+  }
+  async function getSaveSearch() {
+    const collectionRef = query(collection(db, 'BOSavedSearch'), where('organizationId', '==', organization.currentOrganizationId),where('deleted','==',false));
+    const querySnapshot = await getDocs(collectionRef);
+    return querySnapshot.docs.map(doc => doc.data());
+  }
+
+  async function deleteSaveSearch(id: string) {
+    const docRef = doc(db, 'BOSavedSearch', id);
+    await updateDoc(docRef, {
+      deleted: true,
+    });
+  }
+
+  const checkData = (data:DocumentData)=>{
+    if(data.keyword || data.customerRepresentative || data.ageMin || data.ageMax ||
+    data.registrationDateMax || data.registrationDateMin || data.boid || data.employmenttype.length || data.transactiontype.length || data.typecase.length || data.qualifications.length ){
+      return true;
+    }
+    return false;
+  }
+  const getAddresses = async (lat=36.083,lon=140.0) => {
+    const api = searchConfig.mapApi;
+    const url = `https://get-address-planwvepxa-an.a.run.app?lat=${lat}&lon=${lon}&api=${api}`;
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+      return data
+    } catch (error) {
+        return ''
+    }
+  }
+  return { deleteSaveSearch, checkData, getSaveSearch, saveSearch, getAddresses, getCfBoOfCurrentOrganization, addToFix, stringToNumber, getApplicantIds, state, getDistance, matchData, loadBackOrder, addBackOrder, getClientBackOrder, deleteBackOrder, updateBackOrder, getClientFactoryBackOrder, getBoById, deleteBO, getBOByConstraints, countDaysByOfficeId }
 })

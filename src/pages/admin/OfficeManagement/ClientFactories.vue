@@ -66,10 +66,21 @@ const clientFactoryDrawerHandler = (item: ClientFactoryTableRow) => {
         }
     }, 200);
 }
+const selectedIds = ref<ClientFactoryTableRow[]>([])
+const showDeleteDialog = ref(false)
+const deletingProccess = ref(false)
+const deleteClientFactories = async () => {
+  deletingProccess.value = true
+  await clientStore.deleteClientFactories(selectedIds.value)
+  deletingProccess.value = false
+  showDeleteDialog.value = false
+}
+
+
 watch([clients], () => {
-    tableRows.value.length ? fetchData.value = false : fetchData.value = true
+    fetchData.value = true
     clientFactoryStore.getClientFactories(clients.value).then(() => {
-        tableRows.value.length ? fetchData.value = false : fetchData.value = true
+      fetchData.value = false
     })
 }, { deep: true, immediate: true });
 
@@ -121,9 +132,11 @@ const openNewClientFactoryDrawer = () => {
             <q-separator color="grey-4" size="2px" />
             <CFPageActions
                 :is-reset="adminCondition"
+                :selectedIds="selectedIds"
                 @open-client-drawer="openNewClientDrawer"
                 @open-client-factory-drawer="openNewClientFactoryDrawer"
                 @reset-selected-id="resetAdminSelectedCFsId"
+                @deleteClientFactories="showDeleteDialog = true"
                 :actions-type="ActionsType.ADMIN"
                 theme="accent"/>
             <q-card-section class="table no-padding">
@@ -133,6 +146,7 @@ const openNewClientFactoryDrawer = () => {
                 :rows="paginatedTableRows"
                 :pagination="pagination"
                 :table-columns="consts.tableColumnsClientFactory.value"
+                @selectedId="(ids)=>selectedIds=ids"
                 theme="accent"/>
                 <Pagination
                 :rows="tableRows"
@@ -161,6 +175,22 @@ const openNewClientFactoryDrawer = () => {
         theme="accent"
         :is-drawer="isNewClientFactoryDrawer"/>
 
+        <q-dialog v-model="showDeleteDialog">
+          <q-card>
+            <q-card-section class="justify-center items-center q-pb-none ">
+              <div class="text-h6 text-center text-bold">{{ $t('clientFactory.deleteClientFactoriesTitle') }}</div>
+              <q-space />
+            </q-card-section>
+            <q-card-section>
+              {{ $t('clientFactory.deleteClientFactoriesText') }}
+            </q-card-section>
+            <q-card-section class="flex justify-center">
+              <q-btn @click="showDeleteDialog=false" rounded class="q-mr-md q-px-xl">{{ $t('common.cancel') }}</q-btn>
+              <q-btn color="red" rounded class="q-px-xl" @click="deleteClientFactories()" :disable="deletingProccess">{{ $t('common.delete') }}</q-btn>
+            </q-card-section>
+            <q-linear-progress query v-if="deletingProccess" color="primary"/>
+          </q-card>
+        </q-dialog>
     </div>
 </template>
 

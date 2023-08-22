@@ -14,7 +14,7 @@ import { ClientFactoryTableRow } from 'src/components/client-factory/types';
 import { clientFactoriesToTableRows } from './handlers';
 import { tableColumnsClientFactory } from './consts';
 import { useOrganization } from 'src/stores/organization';
-import { where } from 'firebase/firestore';
+import { orderBy, where } from 'firebase/firestore';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const { t } = useI18n({ useScope: 'global' });
@@ -27,7 +27,6 @@ const fetchData = ref(false)
 
 const selectedCFsId = ref<string[]>(clientFactoryStore.selectedCFsId);
 const condition = ref<boolean>(clientFactoryStore.condition);
-// const modifiedCF = ref<ModifiedCF[]>([])
 const originalOfficeId = ref('');
 
 // drawers
@@ -78,7 +77,7 @@ watchCurrentOrganization(async () => {
 
 async function getData() {
     fetchData.value = true
-    const [CFByOrganization, CFByAdmin] = await Promise.all([clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', organization.currentOrganizationId)]), clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', null)])])
+    const [CFByOrganization, CFByAdmin] = await Promise.all([clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', organization.currentOrganizationId), where('deleted', '==', false), orderBy('name', 'asc')]), clientFactoryStore.getClientFactoryByConstraints([where('organizationId', '==', null), where('deleted', '==', false), orderBy('name', 'asc')])])
     const cf = [...CFByOrganization, ...CFByAdmin]
     clientFactories.value = cf
     if(condition.value){

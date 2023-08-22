@@ -192,14 +192,14 @@ async function onRowSave(props: { row: Row, rowIndex: number }) {
 
 async function searchOrganizations(name: string) {
   loading.value = true
-  name=name.toLowerCase()
+  name=name
   if (!name) {
     loading.value = false
     return
   }
   const organizations = [...copyRows.value].filter(function (el) {
-    const orgName= el['name'].toLowerCase()
-    const code= el['code'].toLowerCase()
+    const orgName= el['name']
+    const code= el['code']
     return orgName.includes(name) || code.includes(name)
   });
 

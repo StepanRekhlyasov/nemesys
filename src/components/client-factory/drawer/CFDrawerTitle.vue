@@ -54,6 +54,7 @@ const theme = route.meta.isAdmin ? 'accent' : 'primary'
                             </q-item>
                         </q-list>
                     </q-btn-dropdown>
+                    <span v-else-if="selectedIndustry"> / {{ selectedIndustry.value }}</span>
                 </div>
 
                 <span class="text-h5 text-weight-bolder">

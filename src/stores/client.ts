@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia';
-import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, serverTimestamp, onSnapshot, setDoc, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { ref } from 'vue';
 import { Client } from 'src/shared/model';
 import { date } from 'quasar';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import { ConstraintsType } from 'src/shared/utils/utils';
+import { ClientFactoryTableRow } from 'src/components/client-factory/types';
+import { useClientFactory } from './clientFactory';
+import { getAuth } from 'firebase/auth';
 
 export const useClient = defineStore('client', () => {
     // db
@@ -12,6 +15,7 @@ export const useClient = defineStore('client', () => {
 
     // state
     const clients = ref<Client[]>([])
+    const auth = getAuth()
 
     // methods
     const addNewClient = async (client: Client) => {
@@ -37,7 +41,7 @@ export const useClient = defineStore('client', () => {
         }
     }
 
-    const updateClient = async (id: string, client: Omit<Client, 'created_at'>) => {
+    const updateClient = async (id: string, client: Partial<Client>) => {
         try {
 
             await setDoc(doc(db, 'clients', id), {
@@ -55,11 +59,11 @@ export const useClient = defineStore('client', () => {
         const clientsCollection = collection(db, 'clients');
         const filteredClientsQuery = query(clientsCollection, where('deleted', '==', false));
         onSnapshot(filteredClientsQuery, (snapshot) => {
-            clients.value = snapshot.docs.map(doc => {
-                const clientData = doc.data();
+          clients.value = snapshot.docs.map(row => {
+            const clientData = row.data();
                 return {
                     ...clientData,
-                    id: doc.id,
+                    id: row.id,
                     created_at: date.formatDate(clientData.created_at?.toDate(), 'YYYY-MM-DD HH:mm:ss'),
                     updated_at: date.formatDate(clientData.updated_at?.toDate(), 'YYYY-MM-DD HH:mm:ss')
                 };
@@ -78,7 +82,6 @@ export const useClient = defineStore('client', () => {
     };
 
     fetchClients();
-
 
     async function getClientsByConstraints(constraints?: ConstraintsType) {
         const clientsCollection = collection(db, 'clients');
@@ -99,11 +102,68 @@ export const useClient = defineStore('client', () => {
         }) as Client[];
     }
 
+    async function deleteClientFactories(rowData : ClientFactoryTableRow[]){
+      const batch = writeBatch(db);
+      const deleteData = {
+        deleted: true,
+        deleted_by: auth.currentUser?.uid,
+        deletedAt: serverTimestamp()
+      }
+      const clientFactoryStore = useClientFactory()
+      for(const row of rowData){
+        const isHead = row.office.isHead
+        const cFId = row.id
+        const clientId = row.clientId
+        if(isHead){
+          batch.update(
+            doc(db, 'clients/' + clientId),
+            deleteData
+          );
+          const clientRef = collection(db, 'clients', clientId, 'client-factory')
+          const clientOffices = await getDocs(clientRef)
+          clientOffices.forEach((row)=>{
+            batch.update(
+              doc(db, 'clients/' + clientId + '/client-factory/' + row.id),
+              deleteData
+            );
+          })
+          const boRefs = await getDocs(query(collection(db, 'BO'), where('client_id', '==', clientId)))
+          boRefs.forEach((row)=>{
+            batch.update(
+              doc(db, 'BO/' + row.id),
+              deleteData
+            );
+          })
+          clientFactoryStore.clientFactories = clientFactoryStore.clientFactories.filter((row)=>{
+            return row.id !== cFId
+          })
+        } else {
+          batch.update(
+            doc(db, 'clients/' + clientId + '/client-factory/' + cFId),
+            deleteData
+          );
+          const boRefs = await getDocs(query(collection(db, 'BO'), where('office_id', '==', cFId)))
+          boRefs.forEach((row)=>{
+            batch.update(
+              doc(db, 'BO/' + row.id),
+              deleteData
+            );
+          })
+          clientFactoryStore.clientFactories = clientFactoryStore.clientFactories.filter((row)=>{
+            return row.id !== cFId
+          })
+        }
+      }
+      await batch.commit();
+      
+    }
+
     return {
         clients,
         addNewClient,
         updateClient,
         fetchClientsById,
-        getClientsByConstraints
+        getClientsByConstraints,
+        deleteClientFactories
     }
 })

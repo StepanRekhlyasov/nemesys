@@ -53,16 +53,15 @@ const cancelHandler = () => {
 const editDraftHandler = async(changedData: Array<{ label: string; value: string | number | boolean | string[]; key: string }>) => {
     draft.value = finishEditing(changedData, draft.value, modifiedCF.value ?? props.selectedItem)
     if(modifiedCF.value) {
-     const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
+      const mergedData = mergeWithDraft(modifiedCF.value, draft.value)
       await updateClientFactory({ ...mergedData })
       modifiedCF.value = mergedData
-      draft.value = {} as ClientFactory;
-      }
-      else {
+      // draft.value = {} as ClientFactory;
+    } else {
       const mergedDataSelected = mergeWithDraft(props.selectedItem, draft.value)
       await updateClientFactory({ ...mergedDataSelected })
       modifiedCF.value = mergedDataSelected
-      draft.value = {} as ClientFactory;
+      // draft.value = {} as ClientFactory;
     }
   }
 

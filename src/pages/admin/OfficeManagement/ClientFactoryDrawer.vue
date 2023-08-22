@@ -218,12 +218,12 @@ watch([() => props.selectedItem], (newProps, oldProps) => {
                 </q-card-section>
                 <q-card-section class="bg-grey-3">
                     <CFDrawerTabs
-                        :clientFactory="localData"
-                        :draft="localDraft"
-                        :is-loading="isLoading.isGeneral"
-                        :industryType="localData.isHead ? selectedIndustry.value ?? '' : localData.industry[0]"
                         @edit-draft="editDraftHandler" 
                         :originalOfficeId="originalOfficeId"
+                        :clientFactory="localData"
+                        :industryType="localData.isHead ? selectedIndustry.value ?? '' : localData.industry[0]"
+                        :draft="localDraft"
+                        :is-loading="isLoading.isGeneral"
                       />
                 </q-card-section>
             </q-card>

@@ -6,16 +6,30 @@
         @click="emit('openSearchByMap')" />
     </div>
   </div>
+  <q-card-section class="q-pa-md">
+    <form class="form q-mt-sm row">
+      <q-select class="q-mr-sm" v-model="searchKeyword" outlined dense :options="filteredOptions"
+      hide-bottom-space use-input input-debounce="0" emit-value map-options :label="$t('backOrder.dealType')"
+      @filter="filterOptions"
+    />
+      <q-btn class="q-mr-sm" @click="filterData" color="primary" :disable="!searchKeyword || searchKeyword.length===0">
+        {{ t('common.search') }}
+      </q-btn>
+      <q-btn @click="clearSearch" :disable="(filteredBOList===allBoList) && (!searchKeyword || searchKeyword.length===0)">
+        {{ t('common.clear') }}
+      </q-btn>
+    </form>
+  </q-card-section>
   <q-card-section class=" q-pa-none">
-    <q-table :columns="columns" :loading="loading" :rows="allBoList" row-key="id" class="no-shadow"
+    <q-table :columns="columns" :loading="loading" :rows="filteredBOList" row-key="id" class="no-shadow"
       table-class="text-grey-8" table-header-class="text-grey-9" v-model:pagination="pagination">
-      <template v-slot:body-cell-name="props">
+      <template v-slot:body-cell-boId="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           <q-btn flat dense no-caps color="primary" @click="openDrawer(props.row)" :label="props.row.boId"
             class="q-pa-none text-body1" />
         </q-td>
       </template>
-      <template v-slot:body-cell-statusThisTime="props">
+      <template v-slot:body-cell-dealType="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ t(`applicant.add.${props.row.typeCase}`) }}
         </q-td>
@@ -23,6 +37,16 @@
       <template v-slot:body-cell-distanceBusiness="props">
         <q-td :props="props" class="no-wrap q-pa-none">
           {{ props.row.distanceBusiness }} Km
+        </q-td>
+      </template>
+      <template v-slot:body-cell-clientName="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          {{ props.row.clientName?props.row.clientName.slice(0,7):'-' }}{{ props.row.clientName && props.row.clientName.length>7?'...':'' }}
+        </q-td>
+      </template>
+      <template v-slot:body-cell-officeName="props">
+        <q-td :props="props" class="no-wrap q-pa-none">
+          {{ props.row.officeName?props.row.officeName.slice(0,7):'-' }}{{ props.row.officeName && props.row.officeName.length>7?'...':'' }}
         </q-td>
       </template>
       <template v-slot:body-cell-matchDegree="props">
@@ -54,7 +78,7 @@
 <script lang="ts" setup>
 import { BackOrderModel, BoForMapSearch, Client } from 'src/shared/model';
 import { ref, onMounted, watch, ComputedRef } from 'vue';
-import { BackOrderStaff } from 'src/pages/user/BackOrder/consts/BackOrder.const';
+import { BackOrderStaffApplicant, occupationList } from 'src/pages/user/BackOrder/consts/BackOrder.const';
 import { useBackOrder } from 'src/stores/backOrder';
 import { useI18n } from 'vue-i18n';
 import { radius } from 'src/pages/user/Applicant/const/index';
@@ -69,9 +93,10 @@ import { Timestamp, where } from 'firebase/firestore';
 import { useOrganization } from 'src/stores/organization';
 import { myDateFormat } from 'src/shared/utils/utils';
 
+const { t } = useI18n({ useScope: 'global' });
 const showSearchByMap = ref(false)
 const selectedClient = ref<Client | undefined>(undefined);
-
+const searchKeyword = ref<string | null>('');
 const organization = useOrganization()
 const backOrderStore = useBackOrder()
 const allBoList = ref<BoForMapSearch[]>([])
@@ -81,10 +106,10 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 5
 });
-
+const filteredOptions = ref(occupationList.value)
 const selectedBo = ref<BackOrderModel | undefined>();
 const infoDrawer = ref<InstanceType<typeof InfoBO> | null>(null);
-
+const filteredBOList = ref<BoForMapSearch[]>([])
 const openDrawer = (data) => {
   if (data) {
     selectedBo.value = data;
@@ -93,7 +118,20 @@ const openDrawer = (data) => {
   }
 }
 
-const columns = ref<QTableProps | ComputedRef>(BackOrderStaff)
+const filterOptions = async (val: string, update) => {
+  if (val === '') {
+    update(() => {
+    filteredOptions.value = occupationList.value
+  })
+    return
+  }
+  update(() => {
+    const needle = val.toLowerCase()
+    filteredOptions.value = occupationList.value.filter(opt=>(opt.value.toLowerCase().indexOf(needle)>-1 || opt.label.toLowerCase().indexOf(needle)>-1))
+  })
+};
+
+const columns = ref<QTableProps | ComputedRef>(BackOrderStaffApplicant)
 const matchedData = ref({});
 
 const props = withDefaults(defineProps<{
@@ -156,7 +194,6 @@ const calculateMatchDegree = () => {
 }
 
 const loading = ref<boolean>(false);
-const { t } = useI18n({ useScope: 'global' });
 
 onMounted(async () => {
   loading.value = true;
@@ -170,6 +207,15 @@ watchCurrentOrganization(async ()=>{
   loading.value = false;
 })
 
+async function clearSearch(){
+  searchKeyword.value = '';
+  await getFormatedData();
+}
+
+const filterData = () => {
+  filteredBOList.value = allBoList.value.filter(bo=>(bo.typeCase===searchKeyword.value))
+}
+
 const getFormatedData = async () => {
   allBoList.value = await backOrderStore.getBOByConstraints([where('deleted', '==', false), where('organizationId', '==', organization.currentOrganizationId)]) as BoForMapSearch[];
     allBoList.value.forEach((bo)=>{
@@ -179,6 +225,7 @@ const getFormatedData = async () => {
     })
   calculateDistance();
   calculateMatchDegree();
+  filteredBOList.value = allBoList.value;
 }
 
 const emit = defineEmits(['openSearchByMap']);
