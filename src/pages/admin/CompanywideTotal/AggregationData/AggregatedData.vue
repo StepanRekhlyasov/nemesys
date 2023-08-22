@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n({ useScope: 'global' });
 import { Media } from 'src/shared/model/Media.model';
 import { ref, onBeforeMount } from 'vue';
-import { useMedia, deleteMedia, addMedia, updateMedia } from 'src/stores/media';
+import { useMedia, deleteMedia, addMedia, updateMedia, saveOrder, getOrder } from 'src/stores/media';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import draggable from 'vuedraggable';
 const { getAllmedia } = useMedia();
@@ -18,14 +18,17 @@ const newMediaData = ref<Media>({
 
 const fetchMedia = async () => {
     mediaData.value = await getAllmedia();
-    mediaData.value.sort((e1, e2) => {
-       return e1.createdAt - e2.createdAt;
-    })
+    const order = await getOrder();
+    for(let i = 0; i < mediaData.value.length; i++) {
+        mediaData.value[i] = order[i];
+    }
 }
 
 
 const deleteMediaAux = async (id: string) => {
     await deleteMedia(id);
+    mediaData.value.filter((ele) => ele.id !== id);
+    await updateOrder();
     await fetchMedia();
 }
 
@@ -39,13 +42,24 @@ const addMediaAux = async (data: Media) => {
     if (res !== undefined) {
         Alert.success();
     }
+    mediaData.value.push({name: data.name, id: res, createdAt: data.createdAt});
+    await updateOrder();
     await fetchMedia();
     newMediaData.value.name = '';
 }
 
 const updateMediaAux = async (id: string, name: string, createdAt: number) => {
     await updateMedia(id, name, createdAt);
+    await updateOrder();
     await fetchMedia();
+}
+
+const updateOrder = async () => {
+    const order = {};
+    for(let i = 0; i < mediaData.value.length; i++) {
+        order[i] = mediaData.value[i];
+    }
+    saveOrder({...order});
 }
 
 onBeforeMount(() => {
@@ -60,10 +74,10 @@ onBeforeMount(() => {
         </q-card-section>
     </q-card>
     <div class="q-ml-md" v-if="mediaData.length">
-        <draggable :list="mediaData" handle=".cursor_grab">
+        <draggable :list="mediaData" handle=".cursor_grab" @end="updateOrder">
             <template #item="{ element, index }">
                 <div class="row items-center">
-                    <div class="row items-center q-mt-md" :key="element.id">
+                    <div class="row items-center q-mt-md" :key="element.id" >
                         <q-icon name="mdi-menu" size="1.2rem" class="q-mr-md cursor_grab" />
                         <div class="q-mr-md"> {{ t('budget.media') }} {{ ` ${index + 1}` }}: </div>
                         <q-input class="q-mr-md" outlined readonly dense v-model="element.name" />

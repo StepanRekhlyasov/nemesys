@@ -324,6 +324,7 @@ import { useIndsutry } from 'src/stores/industry';
 import { storeToRefs } from 'pinia';
 import { Media } from 'src/shared/model/Media.model';
 import { useMedia } from 'src/stores/media';
+import { getOrder } from 'src/stores/media';
 const { getAllmedia } = useMedia();
 
 const applicantDataSample = {
@@ -401,6 +402,10 @@ async function fetchAddress() {
 
 const fetchMedia = async () => {
     mediaList.value = await getAllmedia();
+    const order = await getOrder();
+    for(let i = 0; i < mediaList.value.length; i++) {
+        mediaList.value[i] = order[i];
+    }
 }
 
 onBeforeMount(() => {
