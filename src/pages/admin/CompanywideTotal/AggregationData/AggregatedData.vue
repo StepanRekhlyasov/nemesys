@@ -26,7 +26,6 @@ const fetchMedia = async () => {
 
 
 const deleteMediaAux = async (id: string) => {
-    console.log(id);
     await deleteMedia(id);
     mediaData.value.filter((ele) => ele.id !== id);
     await updateOrder();
