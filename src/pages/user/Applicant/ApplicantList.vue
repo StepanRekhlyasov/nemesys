@@ -30,7 +30,6 @@
               </q-th>
               <template v-for="col in props.cols" :key="col.name">
                 <q-th :props="props" class="q-pa-none">
-                  {{ col.name }}
                   <div v-if="col.name === 'name'"> {{ $t('applicant.list.name') }} </div>
                   <div v-else-if="col.name === 'endDate'">
                     {{ $t('applicant.list.lastContact') }} <br>
@@ -43,12 +42,11 @@
                     {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} <br>
                     {{ $t('applicant.list.address') }}
                   </div>
-                  <div v-else-if="col.name === 'staffRank'">
-                    {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} <br>
-                    {{ $t('applicant.list.address') }}
-                  </div>
                   <div v-else-if="col.name === 'qualification'">
                     {{ $t('applicant.list.qualification') }} / {{ $t('applicant.list.experience') }}
+                  </div>
+                  <div v-else>
+                    {{ col.label }}
                   </div>
                 </q-th>
               </template>
