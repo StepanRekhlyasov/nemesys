@@ -35,10 +35,10 @@
                 <div class="row  flex justify-center centers items-center">
                   <div class="col-8">
                     <q-input class="col" outlined dense v-model="applicantData['postCode']" :rules="[creationRule]"
-                      hide-bottom-space bg-color="white" />
+                    :placeholder="$t('common.noHyphen')"  hide-bottom-space bg-color="white" />
                   </div>
                   <div class="col-4 text-center justify-center">
-                    <q-btn @click="fetchAddress" dense>Autofill</q-btn>
+                    <q-btn @click="fetchAddress" dense> {{  $t('applicant.add.addressSearch') }}</q-btn>
                   </div>
                 </div>
               </div>
