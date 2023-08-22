@@ -87,14 +87,12 @@ watch(() => [selectedClient.value], () => {
         <q-item-section v-if="props.modelValue.parentClient && isParentIndustry">
             <q-item-label class="q-pb-xs">
                 {{ t('industry.parentIndustry') }}
-                <span class="text-red-5">*</span>
             </q-item-label>
             <q-select
                 outlined
                 @update:modelValue="val => { selectedIndustry = val; emit('update:modelValue', { ...props.modelValue, selectedIndustry: val }) }"
                 v-model="selectedIndustry"
                 :options="industryOptions"
-                :rules="[val => !!val || '']"
                 dense emit-value
                 map-options lazy-rules
                 hide-bottom-space
