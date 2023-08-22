@@ -19,7 +19,30 @@ export class RankCount {
     }
 		return 'E'
 	}
-	
+
+  static getRankRange (rank: string | undefined) {
+    if(rank){
+      if(rank==='S') {
+        return [90,Number.MAX_VALUE]
+      }
+      else if(rank==='A'){
+        return [80,89];
+      }
+      else if(rank==='B'){
+        return [60,79];
+      }
+      else if(rank==='C'){
+        return [40,59];
+      }
+      else if(rank==='D'){
+        return [20,39];
+      }
+      else{
+        return [Number.MIN_VALUE,19]
+      }
+    }
+  }
+
 	static countRank(applicant): number {
 		let count = 0
 		// workable days per week
@@ -51,7 +74,7 @@ export class RankCount {
 		return count
 	}
 
-	// Calculation of rank from commuting time 
+	// Calculation of rank from commuting time
 	static countCommutingTime(applicant):number {
 		if (applicant['commutingTime'] < 15){
 			return 0;
@@ -65,11 +88,11 @@ export class RankCount {
 		if (applicant['commutingTime'] < 90){
 			return 8;
 		}
-		return 10  
+		return 10
 	}
 
-	// Calculation of rank from avaiable shift 
-	static countAvaiableShift(applicant):number {  
+	// Calculation of rank from avaiable shift
+	static countAvaiableShift(applicant):number {
 		let count = 0;
 		const arrayAvailableShift = [
 			applicant['workingHoursEarly'] || null,

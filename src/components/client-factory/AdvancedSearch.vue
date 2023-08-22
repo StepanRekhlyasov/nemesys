@@ -368,6 +368,8 @@ import { useSaveSearchCondition } from 'src/stores/saveSearchCondition'
 import { useSaveSearchConditionAdmin } from 'src/stores/saveSearchConditionAdmin'
 import { storeToRefs } from 'pinia';
 import { useIndsutry } from 'src/stores/industry';
+import { useQuasar } from 'quasar';
+const $q = useQuasar();
 const props = withDefaults(defineProps<{
   actionsType?: ActionsType
   from: string,
@@ -438,11 +440,18 @@ const recordOp = computed(() => {
 });
 
 const dispatchOp = computed(() => {
+  const { displayName } = {...$q.localStorage.getItem('role')}
+  if(displayName === 'Consultant') {
+    return [
+      { name: t('client.list.dispatchRecord'), value: 'dispatchRecord', class: '' },
+      { name: t('client.list.referralResults'), value: 'referralResults', class: '' },
+      { name: t('client.list.dispatchedOtherCompanies'), value: 'dispatchedOtherCompanies', class: 'bg-yellow-1' },
+      { name: t('client.list.otherCompanyReferralResults'), value: 'otherCompanyReferralResults', class: 'bg-yellow-1' },
+    ];
+  }
   return [
     { name: t('client.list.dispatchRecord'), value: 'dispatchRecord', class: '' },
     { name: t('client.list.referralResults'), value: 'referralResults', class: '' },
-    { name: t('client.list.dispatchedOtherCompanies'), value: 'dispatchedOtherCompanies', class: 'bg-yellow-1' },
-    { name: t('client.list.otherCompanyReferralResults'), value: 'otherCompanyReferralResults', class: 'bg-yellow-1' },
   ];
 });
 

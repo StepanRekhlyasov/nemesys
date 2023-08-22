@@ -1,24 +1,26 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { defineEmits, defineProps, withDefaults } from 'vue';
-import {ActionsType} from './types'
+import {ActionsType, ClientFactoryTableRow} from './types'
 import { useRouter } from 'vue-router';
 const { t } = useI18n({ useScope: 'global' });
 const router = useRouter()
 const props = withDefaults(defineProps<{
-    isReset:boolean
-    actionsType?: ActionsType
-    theme?: string
+    isReset:boolean,
+    actionsType?: ActionsType,
+    theme?: string,
+    selectedIds?: ClientFactoryTableRow[]
 }>(), {
     actionsType: ActionsType.CLIENT,
-    theme: 'primary'
+    theme: 'primary',
 })
 
 const emit = defineEmits<{
     (e: 'openClientDrawer'),
     (e: 'openClientFactoryDrawer'),
-    (e:'openFaxDrawer')
-    (e:'resetSelectedId')
+    (e:'openFaxDrawer'),
+    (e:'resetSelectedId'),
+    (e:'deleteClientFactories')
 }>()
 
 const resetSelectedCFsId = () =>{
@@ -42,6 +44,9 @@ const changeRoute = ()=>{
     else{
         router.push('/officeSearch')
     }
+}
+const deleteClientFactories = () => {
+  emit('deleteClientFactories')
 }
 </script>
 
@@ -71,6 +76,7 @@ const changeRoute = ()=>{
                 <q-btn class="action_btn" :color="theme" @click="changeRoute">
                     {{ t('actions.searchConditionChange') }}
                 </q-btn>
+                <q-btn class="q-ml-sm" :color="'red'" @click="deleteClientFactories" icon="delete" :label="t('common.delete')" :disabled="selectedIds && !selectedIds.length"></q-btn>
                 <q-btn class="q-ml-sm" @click="resetSelectedCFsId" :label="t('client.list.resetConditions')" v-if="props.isReset" :color="theme"/>
             </div>
             <div v-else>

@@ -129,11 +129,11 @@
     </div>
 
     <div class="row q-pb-sm">
-      <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right self-center"
-        valueClass="self-center q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks'] || ''" :autogrow="true">
+      <LabelField :label="$t('backOrder.create.experienceRemarks')" labelClass="q-pl-md col-2 text-right q-mt-sm"
+        valueClass="q-pl-md col-4" :edit="edit" :value="selectedBo['experienceRemarks'] || ''" :autogrow="true">
         <q-input v-model="data['experienceRemarks']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
-      <LabelField :label="$t('backOrder.create.tasks')" :edit="edit" labelClass="q-pl-md col-2 text-right self-center"
+      <LabelField :label="$t('backOrder.create.tasks')" :edit="edit" labelClass="q-pl-md col-2 text-right q-mt-sm"
         valueClass="q-pl-md col-4" :value="selectedBo['work_content'] || ''" :autogrow="true">
         <q-input v-model="data['work_content']" outlined dense :disable="loading" type="textarea" autogrow/>
       </LabelField>
@@ -443,7 +443,7 @@ const transactionTypeOptions = computed(()=>{
   if(selectedBo.value.type === 'dispatch') {
     return [
       {label: 'TTP', value: 'TTP'},
-      {label: t('client.backOrder.dispatchEm'), value: 'generalDispatch'},
+      {label: t('client.backOrder.dispatchEm'), value: 'dispatch'},
     ]
   }
   return [

@@ -15,6 +15,8 @@ import { useRoute } from 'vue-router';
 import { useFix } from './fix';
 import { getMostCompletedFix } from 'src/shared/utils/Fix.utils';
 import { deepCopy } from 'src/shared/utils';
+import { RankCount } from 'src/shared/utils/RankCount.utils';
+import { getAuth } from 'firebase/auth';
 
 interface ApplicantState {
   clientList: Client[],
@@ -244,7 +246,7 @@ export const useApplicant = defineStore('applicant', () => {
         searchData['municipalities'] = searchData['municipalitiesArea']
       }
     }
-    const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities', 'staffrank']
+    const items = ['sex', 'classification', 'occupation', 'qualification', 'daysperweek', 'prefecture', 'route', 'neareststation', 'municipalities']
     for (let i = 0; i < items.length; i++) {
       if (searchData[items[i]] && searchData[items[i]].length > 0) {
         const obj = {}
@@ -317,6 +319,12 @@ export const useApplicant = defineStore('applicant', () => {
         }
         if(searchData['yearsExperienceMax']){
           state.value.applicantList = state.value.applicantList.filter(app=>(Math.floor(app['totalMonthes']/12)<=searchData['yearsExperienceMax']))
+        }
+        if (searchData['staffrank']) {
+          const rank = RankCount.getRankRange(searchData['staffrank']);
+          if(rank){
+            state.value.applicantList = state.value.applicantList.filter(app=>app.staffRank? app.staffRank>=rank[0] && app.staffRank<=rank[1]:false)
+          }
         }
       }
     }).catch((error) => {
@@ -725,7 +733,31 @@ export const useApplicant = defineStore('applicant', () => {
       state.value.needsApplicantUpdateOnMounted = true
     }
   })
+  const auth = getAuth();
+  async function deleteApplicants(ids: string[]){
+    const batch = writeBatch(db);
+    const deleteData = {
+      deleted: true,
+      deleted_by: auth.currentUser?.uid,
+      deletedAt: serverTimestamp()
+    }
+    for(const id of ids){
+      batch.update(
+        doc(db, 'applicants/' + id),
+        deleteData
+      );
+      const fixRef = query(collection(db, 'fix'), where('applicant_id', '==', id))
+      const fixesSnap = await getDocs(fixRef)
+      fixesSnap.forEach((row)=>{
+        batch.update(
+          doc(db, 'fix/' + row.id),
+          deleteData
+        );
+      })
+    }
+    await batch.commit();
+  }
 
-  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, getApplicantContactData, saveWorkExperience, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, /* changeApplicantStatusByOkFields, */ getApplicantById }
+  return { state, getClients, loadApplicantData, getApplicantsByColumns, countApplicantsByStatus, updateApplicant, createApplicant, getApplicantContactData, saveWorkExperience, countApplicantsByMedia, getApplicantsByConstraints, saveFixDataToApplicant, deleteApplicants, getApplicantById }
 })
 

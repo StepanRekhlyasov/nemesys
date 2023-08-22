@@ -791,6 +791,8 @@ export default {
     }
   },
   applicant: {
+    deleteTitle: '応募者を削除しますか?',
+    deleteBody: '選択された応募者のすべてのデータを削除します。元に戻せません。よろしいですか？',
     smsNotes: {
       note: '※SMS送信時の注意事項',
       note1: '・SMS送信の際に送付元電話番号の指定はできません。受信者側の混乱をさける為にも、本文の最初に会社名を記載することをお勧めします。',
@@ -1381,6 +1383,12 @@ export default {
       three: '週3日',
       four: '週4日',
       five: '週5日'
+    },
+    saveSearch: {
+      minLessMaxAge : '最低年齢は最高年齢未満である必要があります',
+      minLessMaxDate : '最小登録日は最大登録日よりも前の日付である必要があります',
+      boidFormate : 'BOID は正の整数である必要があります',
+      searchEmpty : '空の検索条件',
     }
   },
   prefectures: {
@@ -1583,6 +1591,8 @@ export default {
     }
   },
   clientFactory: {
+    deleteClientFactoriesText: '事業所を削除します。本社事業所を削除すると関連の事業所と関連のBOすべてのデータが削除されます。元に戻せません。 本当によろしいですか？',
+    deleteClientFactoriesTitle: 'システム警告',
     numberEmployees: '従業員数',
     facilityType: '施設形態',
     mediaOptions: 'メディアオプション',

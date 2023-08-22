@@ -1,5 +1,4 @@
 import { boot } from 'quasar/wrappers';
-// import firebase from 'firebase'
 import { initializeApp } from 'firebase/app';
 import { User as FirebaseUser } from 'firebase/auth';
 import { getAuth } from 'firebase/auth';

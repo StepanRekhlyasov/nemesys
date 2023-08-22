@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { tableColumnsSavedCriteriaList, searchData, checkValidity } from './const/index';
+import { tableColumnsSavedCriteriaList, searchData, checkValidity } from 'src/pages/user/BackOrder/consts/index';
 import { orderBy, DocumentData } from 'firebase/firestore';
 import { Alert } from 'src/shared/utils/Alert.utils';
 import TablePagination from 'src/pages/user/Applicant/components/TablePagination.vue';
-import { prefectureLocaleKey } from 'src/shared/constants/Prefecture.const';
-import { useApplicantSaveSearch } from 'src/stores/applicantSaveSearch'
-import searchEditDrawer from 'src/pages/user/Applicant/components/seachEditDrawer.vue'
+import { useBackOrder } from 'src/stores/backOrder'
+import searchEditDrawer from 'src/pages/user/BackOrder/components/searchEditDrawer.vue'
 import { useRouter } from 'vue-router';
-import { updateSharedVariable } from './components/search/searchData'
+import { updateSharedVariable } from 'src/pages/user/BackOrder/consts/index';
 import { watchCurrentOrganization } from 'src/shared/hooks/WatchCurrentOrganization';
 
 const router = useRouter()
-const saveSearch = useApplicantSaveSearch()
+const BackOrderStore = useBackOrder()
 const tableData = ref<DocumentData>([])
 const rowForEdit = ref<DocumentData>({})
 const isSaving = ref<boolean>(false)
@@ -24,7 +23,7 @@ const searchKeyword = ref<string | null>(null);
 const pagination = ref({
   page: 1,
   rowsPerPage: 100,
-  path: 'applicantSaveSearch',
+  path: 'BOSavedSearch',
   order: orderBy('created_at', 'asc'),
 });
 
@@ -36,7 +35,7 @@ onMounted(async () => {
 
 const getSearchData = async () => {
   loading.value = true;
-  tableData.value = (await saveSearch.getSaveSearch()).sort((a, b) => b.created_at.seconds - a.created_at.seconds)
+  tableData.value = (await BackOrderStore.getSaveSearch()).sort((a, b) => b.created_at.seconds - a.created_at.seconds)
   loading.value = false;
 }
 
@@ -47,9 +46,8 @@ watchCurrentOrganization(async () => {
 const dltSearch = async (id) => {
   loading.value = true;
   try {
-    await saveSearch.deleteSaveSearch(id)
+    await BackOrderStore.deleteSaveSearch(id)
     await getSearchData()
-
   } catch (error) {
     Alert.warning(error)
   }
@@ -64,7 +62,7 @@ const callRow = (row: DocumentData) => {
 
 const searchApplicants = (row: DocumentData) => {
   updateSharedVariable(row)
-  router.push('/applicant/search')
+  router.push('/backOrder/search')
 }
 const save = async () => {
   isSaving.value = true;
@@ -78,7 +76,7 @@ const save = async () => {
     Alert.warning(error)
   }
   if (valid) {
-    await saveSearch.saveSearch(searchData.value);
+    await BackOrderStore.saveSearch(searchData.value)
     getSearchData();
     drawerRight.value = false;
   }
@@ -141,6 +139,9 @@ const clearSearch = () => {
                 <strong v-if="props.row.keyword">{{ `${t('common.searchKeyword')} : ` }}</strong>
                 {{props.row.keyword? `${props.row.keyword}/`:'' }}
 
+                <strong v-if="props.row.boid">{{ `BOID : ` }}</strong>
+                {{props.row.boid? `${props.row.boid}/`:'' }}
+
                 <strong v-if="props.row.ageMax || props.row.ageMin">{{ `${t('applicant.list.fixEmployment.age')}(${t('applicant.attendant.years')}) : ` }}</strong>
               {{ props.row.ageMin && props.row.ageMax ?
                 `${props.row.ageMin}-${props.row.ageMax}/`
@@ -148,62 +149,27 @@ const clearSearch = () => {
                   `${props.row.ageMax}(${t('common.maximum')})/` : ''))
               }}
 
-              <strong v-if="props.row.sex && props.row.sex.length">{{ `${t('applicant.add.sex')} : ` }}</strong>
-              {{props.row.sex && props.row.sex.length? `${t(`applicant.add.${props.row.sex[0]}`)}/`:'' }}
+              <strong v-if="props.row.employmenttype && props.row.employmenttype.length">{{ `${$t('backOrder.employmentType')} : ` }}</strong>
+              {{ props.row.employmenttype && props.row.employmenttype.length?`${props.row.employmenttype.map(emp=>(t(`client.backOrder.${emp}`))).join(',')}/`:'' }}
 
-              <strong v-if="props.row.staffrank">{{ `${t('applicant.list.rank')} : ` }}</strong>
-              {{props.row.staffrank?`${props.row.staffrank}/`:'' }}
+              <strong v-if="props.row.qualifications && props.row.qualifications.length">{{ `${t('client.backOrder.reqQualification')} : ` }}</strong>
+              {{ props.row.qualifications && props.row.qualifications.length?`${props.row.qualifications.map(qua=>(t(`applicant.qualification.${qua}`))).join(',')}/`:'' }}
 
-              <strong v-if="props.row.classification && props.row.classification.length">{{ `${t('applicant.list.info.classiffication')} : ` }}</strong>
-              {{ props.row.classification && props.row.classification.length?`${props.row.classification.map(clsfic=>(t(`applicant.list.info.classification.${clsfic.toLowerCase()}`))).join(',')}/`:'' }}
-
-              <strong v-if="props.row.occupation && props.row.occupation.length">{{ `${t('applicant.add.occupation')} : ` }}</strong>
-              {{ props.row.occupation && props.row.occupation.length?`${props.row.occupation.map(occ=>(t(`applicant.add.${occ}`))).join(',')}/`:'' }}
-
-              <strong v-if="props.row.prefecture">{{ `${t('applicant.progress.filters.prefecture')} : ` }}</strong>
-              {{props.row.prefecture?`${t(`prefectures.${prefectureLocaleKey[props.row.prefecture]}`)}/`:'' }}
-
-              <strong v-if="props.row.municipalities">{{ `${t('applicant.add.municipalities')} : ` }}</strong>
-              {{props.row.municipalities?`${props.row.municipalities}/`:'' }}
-
-              <strong v-if="props.row.route">{{ `${t('applicant.attendant.route')} : ` }}</strong>
-              {{props.row.route?`${props.row.route}/`:'' }}
-
-              <strong v-if="props.row.neareststation">{{ `${t('applicant.attendant.nearestStation')} : ` }}</strong>
-              {{props.row.neareststation?`${props.row.neareststation}/`:'' }}
-
-              <strong v-if="props.row.qualification && props.row.qualification.length">{{ `${t('applicant.list.qualification')} : ` }}</strong>
-              {{ props.row.qualification && props.row.qualification.length?`${props.row.qualification.map(qua=>(t(`applicant.qualification.${qua}`))).join(',')}/`:'' }}
-
-              <strong v-if="props.row.yearsExperienceMin || props.row.yearsExperienceMax">{{ `${t('applicant.list.yearsExperience')} : ` }}</strong>
-              {{ props.row.yearsExperienceMin && props.row.yearsExperienceMax ?
-                `${props.row.yearsExperienceMin}-${props.row.yearsExperienceMax}/`
-                : (props.row.yearsExperienceMin ? `${props.row.yearsExperienceMin}(${t('common.minimum')})/` : (props.row.yearsExperienceMax ?
-                  `${props.row.yearsExperienceMax}(${t('common.maximum')})/` : ''))
+              <strong v-if="props.row.registrationDateMin || props.row.registrationDateMax">{{ `${t('backOrder.registrationDate')} : ` }}</strong>
+              {{ props.row.registrationDateMin && props.row.registrationDateMax ?
+                `${props.row.registrationDateMin}-${props.row.registrationDateMax}/`
+                : (props.row.registrationDateMin ? `${props.row.registrationDateMin}(${t('common.minimum')})/` : (props.row.registrationDateMax ?
+                  `${props.row.registrationDateMax}(${t('common.maximum')})/` : ''))
               }}
 
-              <strong v-if="props.row.availableShift && props.row.availableShift.length">{{ `${t('applicant.list.availableShift')} : ` }}</strong>
-              {{ props.row.availableShift && props.row.availableShift.length?`${props.row.availableShift.map(shift=>(t(`applicant.shift.${shift}`))).join(',')}/`:'' }}
+              <strong v-if="props.row.transactiontype && props.row.transactiontype.length">{{ `${t('backOrder.transactionType')} : ` }}</strong>
+              {{ props.row.transactiontype && props.row.transactiontype.length?`${props.row.transactiontype.map(tran=>(t(`applicant.list.info.classification.${tran.toLowerCase()}`))).join(',')}/`:'' }}
 
-              <strong v-if="props.row.daysperweek && props.row.daysperweek.length">{{ `${t('applicant.attendant.daysPerWeek')} : ` }}</strong>
-              {{ props.row.daysperweek && props.row.daysperweek.length?`${props.row.daysperweek.map(days=>(t(`weekDay.${days}`))).join(',')}/`:'' }}
+              <strong v-if="props.row.typecase && props.row.typecase.length">{{ `${t('backOrder.dealType')} : ` }}</strong>
+              {{ props.row.typecase && props.row.typecase.length?`${props.row.typecase.map(typecase=>(t(`applicant.add.${typecase}`))).join(',')}/`:'' }}
 
-              <strong v-if="props.row.workPerWeekMin || props.row.workPerWeekMax">{{ `${t('applicant.attendant.daysToWork')} : ` }}</strong>
-              {{ props.row.workPerWeekMin && props.row.workPerWeekMax ?
-                `${props.row.workPerWeekMin}-${props.row.workPerWeekMax}/`
-                : (props.row.workPerWeekMin ? `${props.row.workPerWeekMin}(${t('common.minimum')})/` : (props.row.workPerWeekMax ?
-                  `${props.row.workPerWeekMax}(${t('common.maximum')})/` : ''))
-              }}
-
-              <strong v-if="props.row.applicationDateMin || props.row.applicationDateMax">{{ `${t('applicant.add.applicationDate')} : ` }}</strong>
-              {{ props.row.applicationDateMin && props.row.applicationDateMax ?
-                `${props.row.applicationDateMin} to ${props.row.applicationDateMax}/`
-                : (props.row.applicationDateMin ? `${props.row.applicationDateMin}(${t('common.minimum')})/` : (props.row.applicationDateMax ?
-                  `${props.row.applicationDateMax}(${t('common.maximum')})/` : ''))
-              }}
-
-              <strong v-if="props.row.status">{{ `${t('applicant.add.status')} : ` }}</strong>
-              {{ props.row.status? `${t(`applicant.statusOption.${props.row.status}`)}`:'' }}
+              <strong v-if="props.row.customerRepresentative">{{ `${t('backOrder.create.customerRepresentative')} : ` }}</strong>
+              {{ props.row.customerRepresentative? `${props.row.customerRepresentative}`:'' }}
 
               </div>
             </q-td>
