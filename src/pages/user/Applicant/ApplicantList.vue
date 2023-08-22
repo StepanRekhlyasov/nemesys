@@ -20,40 +20,36 @@
         <q-table :columns="columns" :rows="sortedRows" row-key="id" selection="multiple"
           v-model:selected="selection"
           class="no-shadow" v-model:pagination="pagination" hide-pagination
-          :loading="applicantStore.state.isLoadingProgress">
-          <template v-slot:header-cell-name="props">
-            <q-th :props="props" class="q-pa-none">
-              <div> {{ $t('applicant.list.name') }} </div>
-              <div> {{ $t('applicant.add.applicationDate') }} </div>
-            </q-th>
+          :loading="applicantStore.state.isLoadingProgress"
+          >
+
+          <template v-slot:header="props">
+            <q-tr :props="props">
+              <q-th align="left">
+                <q-checkbox v-model="selectedAll" @click="!selectedAll"  ></q-checkbox>
+              </q-th>
+              <template v-for="col in props.cols" :key="col.name">
+                <q-th :props="props" class="q-pa-none">
+                  <div v-if="col.name === 'name'"> {{ $t('applicant.list.name') }} </div>
+                  <div v-else-if="col.name === 'endDate'">
+                    {{ $t('applicant.list.lastContact') }} <br>
+                    {{ $t('applicant.list.contactNote') }}
+                  </div>
+                  <div v-else-if="col.name === 'station'">
+                    {{ $t('applicant.attendant.route') }} / {{ $t('applicant.list.station') }}
+                  </div>
+                  <div v-else-if="col.name === 'address'">
+                    {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} <br>
+                    {{ $t('applicant.list.address') }}
+                  </div>
+                  <div v-else-if="col.name === 'qualification'">
+                    {{ $t('applicant.list.qualification') }} / {{ $t('applicant.list.experience') }}
+                  </div>
+                </q-th>
+              </template>
+            </q-tr>
           </template>
 
-          <template v-slot:header-cell-endDate="props">
-            <q-th :props="props" class="q-pa-none">
-              <div> {{ $t('applicant.list.lastContact') }} </div>
-              <div> {{ $t('applicant.list.contactNote') }} </div>
-
-            </q-th>
-          </template>
-
-          <template v-slot:header-cell-station="props">
-            <q-th :props="props" class="q-pa-none">
-              <div> {{ $t('applicant.attendant.route') }} / {{ $t('applicant.list.station') }} </div>
-            </q-th>
-          </template>
-
-          <template v-slot:header-cell-address="props">
-            <q-th :props="props" class="q-pa-none">
-              <div> {{ $t('applicant.add.occupation') }} | {{ $t('applicant.list.category') }} </div>
-              <div> {{ $t('applicant.list.address') }} </div>
-            </q-th>
-          </template>
-
-          <template v-slot:header-cell-qualification="props">
-            <q-th :props="props" class="q-pa-none">
-              <div> {{ $t('applicant.list.qualification') }} / {{ $t('applicant.list.experience') }} </div>
-            </q-th>
-          </template>
 
           <template v-slot:body-cell-name="props">
             <q-td :props="props" class="q-pa-none">
@@ -207,7 +203,7 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 100
 });
-
+const selectedAll =ref(false)
 const showDeleteDialog = ref(false)
 const selectedIds = computed(()=>{
   return selection.value.map((row : Applicant)=>{
@@ -391,6 +387,11 @@ watch(
     }
   },
 )
+
+watch (()=>selectedAll.value,()=>{
+  if(selectedAll.value) selection.value = sortedRows.value
+  else selection.value = []
+})
 
 watchCurrentOrganization(async () => {
   await applicantStore.loadApplicantData(sharedData.value, pagination.value)
